@@ -11,11 +11,6 @@
   // CONSTANTS:
   // General value for PayPal account
 
-  /* Lynx ACCOUNT
-  define('PAYPAL_ACCOUNT',  'graffio@lynxlab.com'); // business
-  define('PAYPAL_ACTION',  'https://www.paypal.com/cgi-bin/webscr'); // form action
-  */
-
   define('PAYPAL_ACCOUNT',  'mazzon_1294835790_biz@lynxlab.com'); // business
   define('PAYPAL_ACTION',  'https://www.sandbox.paypal.com/cgi-bin/webscr'); // form action
 
@@ -38,7 +33,6 @@
    * PDT process
    */
   define('IDENTITY_CHECK','VitVtcT1xT7CMs98sSex7Ltg68y1xRGHe_fSMKsbMMGFLxnNNeBiIyNJ9U8'); // sandbox mazzon_biz
-//  define('IDENTITY_CHECK','WCuajYZjxeIi42VUF9IpmFRVNCxcOJ_qLGsIdh9KYTX0SsyTd-l90Ax0nhq'); // paypal Lynx
 
 /*
  * Internal constant to manage payments 
