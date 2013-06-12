@@ -1,0 +1,172 @@
+     Name: CHANGES.TXT
+Last edit: 29/04/01 13:02 (jpgraph@aditus.nu)
+
+Changelog for JpGraph
+=====================
+
+[29-Apr-2001] JpGraph 1.2.2
+===========================
+Bug fixes:
+* Removed reference to non-existent property 'bypass' in class RotImg
+* Changed to allow the last X-gridline to be drawn (comparison with limit was '<'
+  where it should have been '<=' )
+
+Additions:
+* Added possibility to use background image
+* Added possibility to use approximate color through the "USE_APPROX_COLORS"
+  constant
+* Handling of diffrent form of "null values" for line graphs. An y-value
+  can now be "" or "-". In the first case (a true null value) this mark
+  will cause a disruption in the line graph to indicate that the value
+  is undefined. In the other case specifying the value as "-" will cause
+  the value to be ignored bu the line will still be drawn between the
+  previous data point and the following. Neither of these cases will have
+  any mark drawn.
+* Added a fatal warning when no more colors can be allocated for the chosen 
+  graphic format.
+
+Changes:
+* "Downgraded" anti-aliasing algorithm to use fewer color levels
+  in the transition to avoid using up to much of the color palette
+* Cleaned up some of the code to not rely on PHP default initialization
+  of variables. This will help those who have got warnings when they
+  have had all error reporting enabled in php.ini (E_ALL)
+* Legends now show the plot mark (if defined) instead of just a square of
+  the right color.
+
+Acknowledgements:
+* Thanks to kevin@pricetrak.com  for suggesting the treatment of 
+  pure NULL values.
+* Thanks to luca_n@hotmail.com for getting my attention to the warnings
+  caused by relying on PHP default initialization of variables.  
+  (My installation had E_NOTICE disabled, hence I never got those warning myself.)
+
+
+[29-Mar-2001] JpGraph 1.2.1
+===========================
+Bug fixes:
+* When min and max values for autoscaling was equal this resulted in trying to calculate
+  log10(0) = INF resulting in an infinite loop in LinearTicks::Stroke()
+* When autoscaling was used with only one data point it tried to calculate log10(0) = INF
+  resulting in an infinite loop
+* fopen("xxx","r") should be fopen("xxx","rb") causes problems on windows system with IIS5
+* JPG streaming function was incorrectly called "imagejpg" should be "imagejpeg" (see the difference?)
+* Non existent color name in jpgraph_pie.php
+* Removed all deprecated forced references in function calls
+* The width of the surrunding box was not calculated correctly for internal bold font
+
+Additions:
+* Color themes for pie graphs
+* Beta release of 3D pie graphs
+* Added DIR_BASE as constant to make it possible to use one system wide copy
+of JpGraph. NOTE: This must be set to the directory where JpGraph is installed.
+
+Acknowledgements:
+* (ck1@wwwtech.de) (and a russian guy which I unfortunately lost the name of) 
+  for reporting the imagejpg spelling mistake
+* (ales.gregor@zps.skoda-auto.cz) for finding the binary file problem with IIS
+* Several people have reported the problem with autoscaling when all Y-values 
+  were equal. Thanks to you all for acting as my privet QA team!
+
+
+[18-Mar-2001] JpGraph 1.2
+=========================
+Additions:
+----------
+* Added "BRAND_TIMING" which give possibility to brand each image generated with
+the time (in ms) it took to generate the image.
+* Added Gradient Fill for bar graphs, The gradient fill allows 6 different styles.
+* Added Anti-aliasing for lines. Note drawing anti-aliased lines is 7-10 times 
+slower then "normal" lines!
+* Added full TTF support. this means an internal SC break (Source Code Break). Normal JpGraph
+script should not be affected if you have used only publized "public" frunctions. The SC break is
+to allow uniform treatment of both internal fonts and TTF. This has been achieved by changing
+the parameter list for SetFont(). However, backward compatibility with the old naming conventions
+for internal fonts are kepot, e.g. SetFont(FONT1_BOLD) still works but is deprecated and will not
+be valid from 2.0 
+* Added possibility to control font for title of Spider Axis through the added
+property 'title' to the axis in the spider graph.
+* Added 'SetColor()' in pie graphs as a shortcut to SetMarginColor() to set the background color
+* Added possibility to draw X-axis labels at arbitrary angle. Internal fonts only supports
+horizontal and verical.
+* Added possibility to draw boxed text at an angle
+* Added possibility to have different colors for axis and the labels on the axis by the addition 
+of extra parameter to SetColor()
+* Added 350 more named colors.
+* Added canvas "fake" graph to make it easy to draw arbitrary graphics
+* Added SetCenter() method for line graphs.
+* Added SetGrace() for autoscaling purposes.
+
+Changes:
+--------
+* If you use a text-scale for X-axis the default labels now start at 1 instead of 0 since this is 
+actually a counting scale and it makes more sense to start at 1.
+* Improved handling of bar-graphs with negative values.
+* Updated existing examples to use new format for SetFont()
+* Made it a critical error to specify a non existant font
+* Changed so that orientation for Text() is now given as an angle, i.e. SetOrientation(45). Old
+style of using SetOrientation("v") (for vertical) is deprecated. But will work until V2
+
+Bug fixes:
+----------
+* Improved handling of computational effects on small values in scaling where a rounding error might cause the
+last label not to be drawn.
+* The position for the title of X-axis could in some cases be slightly different in first
+and second pass due to incorrectly determination of the X-axis labels font height.
+* Specifying an minimum Y-value for Y-axis on bar graphs could on rare occasions (combination 
+of scale values and specified density of autoscaling ticks) cause a gap between the bottom of 
+each bar and the X-axis.
+
+
+[18-Feb-2001] JpGraph 1.1
+=========================
+Additions/Changes:
+------------------
+* Added Spider graphs 
+* Added Pie graph
+* Added Scatter (and impuls) graphs
+* Added possibility to rotate plots an arbitrary angle
+* Added step style rendering to lineplot
+* Added Breseham circle drawing which gives better visual apperance
+  then the built in Arc() in GD (on the expense of CPU and performance)
+* Improved Polygon and Rectangle drawing so that it will use line weight settings
+* Improved the visual appearance of lines with weight>1 by correctly calculating 
+  (angle wise) the endpoints and using a filled polygon to draw the line. 
+  Unfortunately it would require some real improvements in the GD library to really improve
+  the visual appeance of lines with weight>1. This is as good as it gets without writing
+  a low level pixe-by-pixel correct plotting. With my method you get it to look visually
+  aestethic right in 90% of the cases with just 10% work. 
+* Added MARK_FILLEDCIRCLE as new mark type. Note that due too the poor performance of the
+  basic Arc() image primitive in PHP4 the circles isn't perfect circles, they tend to be a
+  a little bit flat at multiples on PI/2.
+* Added the possibility to have a separate fill- and line- color for marks
+* Moved Class PlotMark from jpgraph_line.php to base in jpgraph.php since this class is also used
+  with scatter plots. 
+* Made it a critical error to try to use Text X-scale with specified X-data points. 
+  Previously no warning was given for this non-defined state. (Using text scale with specified
+  points really doesn't make sense.)
+* Made it a critical error to use unknown color rather than silently replacing it with black.
+* Updated documentation to reflect added capability
+
+
+Bug fixes:
+----------
+* Fixed minor bug in Line() in which it didn't update the last point for use with
+  subsequent LineTo() calls (forgotten $this->) 
+* Eliminated assumptions in DashedLine() that x1<=x2 and y1<=y2 eliminates the 
+  potential pixel overshoot.  
+* Fixed a serious bug in Line plot when used with a specified X-scale (not the normal default)
+  since the X-coordinate wasn't read from the correct vector!
+* Fixed a serious bug whe using as specified X-scale since the maximum value for a plot 
+  wasn't correctly passed to the autoscaling. 
+  Note: The reason that these two bugs haven't been discovered previously is the fact 
+  that my test specs didn't include test cases to do with specified X-axis (I almost never ever use that). 
+  This has now been corrected and added to the test suit. 
+* Fixed so the possible box around the plot area correctly honours the weight specified for it.
+
+
+[05-Feb-2001] JpGraph 1.0
+=========================
+* Initial release.
+
+[EOF]

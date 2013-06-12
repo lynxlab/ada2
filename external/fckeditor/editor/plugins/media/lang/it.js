@@ -1,0 +1,11 @@
+FCKLang['DlgMediaName'] = 'File Multimediale';
+FCKLang['DlgMediaLabel'] = 'File Multimediale selezionato';
+FCKLang['DlgMediaBrowse'] = 'Cerca sul server';
+FCKLang['DlgMediaChoose'] = 'Specifica il tipo di file multimediale';
+FCKLang['DlgMediaEmpty'] = 'Scegli';
+FCKLang['DlgMediaAudio'] = 'Audio';
+FCKLang['DlgMediaVideo'] = 'Video';
+FCKLang['DlgMediaWidth'] = 'Largezza';
+FCKLang['DlgMediaHeight'] = 'Altezza';
+FCKLang['DlgMediaSize'] = 'Dimesioni';
+FCKLang['DlgMediaTitle'] = 'Titolo';

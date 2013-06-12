@@ -1,0 +1,203 @@
+ /*
+ form layout based on the article by Nick Rigby found at
+ http://www.alistapart.com/articles/prettyaccessibleforms/
+ */
+root {
+    display: block;
+}
+div.fform {
+    width: 400px;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+form fieldset {
+  margin-bottom: 10px;
+  border: none;
+}
+form legend {
+  padding: 0 2px;
+  font-weight: bold;
+}
+form label {
+  display: inline-block;
+  line-height: 1.8;
+  vertical-align: top;
+}
+form fieldset ol {
+  margin: 0;
+  padding: 0;
+}
+form fieldset li {
+  list-style: none;
+  padding: 5px;
+  margin: 0;
+  border-bottom: 1px solid #aaaaaa;
+}
+form fieldset fieldset {
+  border: none;
+  margin: 3px 0 0;
+}
+form fieldset fieldset legend {
+  padding: 0 0 5px;
+  font-weight: normal;
+}
+form fieldset fieldset label {
+  display: block;
+  width: auto;
+}
+form em {
+  font-weight: bold;
+  font-style: normal;
+  color: #f00;
+}
+form label {
+  width: 120px; /* Width of labels */
+}
+form fieldset fieldset label {
+  margin-left: 123px; /* Width plus 3 (html space) */
+}
+
+form textarea {
+    width: 400px;
+    height: 200px;
+}
+
+form .error {
+    color: #ff0000;
+}
+
+form p {
+    text-align: center;
+}
+
+form li.hidden {
+    display: none;
+}
+/*
+* class to show general message for errors
+*/
+
+div.hide_error {
+    display: none;
+}
+
+div.show_error {
+    display:  block;
+    color: #ff0000;
+}
+
+
+/*
+ Valerio
+	NUOVO LAYOUT FORM
+ */
+
+div.fform.form {
+    width: 50%;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+fieldset.form {
+  margin-bottom: 10px;
+  border: none;
+}
+legend.form {
+  padding: 0 2px;
+  font-weight: bold;
+}
+label.form {
+  display: inline-block;
+  line-height: 1.8;
+  vertical-align: top;
+}
+fieldset.form ol.form {
+  margin: 0;
+  padding: 0;
+}
+fieldset.form li.form {
+  list-style: none;
+  padding: 5px;
+  margin: 0;
+  border-bottom: 1px solid #aaaaaa;
+}
+
+fieldset.form fieldset.form {
+  border: none;
+  margin: 0px;
+}
+
+fieldset.form fieldset.form legend.form {
+  padding: 0px;
+  font-weight: normal;
+}
+
+fieldset.form fieldset.form label.form {
+  display: block;
+  width: auto;
+  margin-left: 123px; /* Width plus 3 (html space) */
+}
+
+fieldset.form fieldset.form li.form {
+  border-bottom: 0px solid #aaaaaa;
+}
+
+em.form {
+  font-weight: bold;
+  font-style: normal;
+  color: #f00;
+}
+
+label.form {
+  width: auto;
+}
+
+input.input_text {
+	display:block;
+	width: 100%;
+}
+
+textarea.form {
+	display:block;
+    width: 100%;
+    height: 100px;
+}
+
+select.form {
+	display:block;
+	float:right;
+}
+
+.error.form {
+    color: #ff0000;
+}
+
+p.form {
+    text-align: center;
+}
+
+li.form.hidden {
+    display: none;
+}
+
+/*
+* class to show general message for errors
+*/
+
+div.hide_error {
+    display: none;
+}
+
+div.show_error {
+    display:  block;
+    color: #ff0000;
+}
+
+#error_form.form {
+	text-align:center;
+}
+
+.clear.form {
+	clear:both;
+}

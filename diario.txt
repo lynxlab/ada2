@@ -1,0 +1,4857 @@
+ADA 2.0 STANDARD
+
+11/06/2013
+Giorgio
+++++++++++++++++++
+substituting 'eta' (age) field with 'data di nasicta' (birthdate)
+++++++++++++++++++
+*	/login_required.php
+	+ added jquery masked input for birthdate
+*	modules/test/include/root.class.inc.php
+	+ fixed minor bug in building array for query parameters. removed extra space in array key.	
+	
+10/06/2013
+Giorgio
+++++++++++++++++++
+substituting 'eta' (age) field with 'data di nasicta' (birthdate)
+++++++++++++++++++
+*	admin/add_user.php	
+*	admin/edit_user.php 	
+*	admin/inlcude/htmladmoutput.inc.php
+*	browsing/edit_user.php
+*	inlcude/HtmlLibrary/AdminModuleHtmlLib.inc.php
+*	inlcude/HtmlLibrary/TutorModuleHtmlLib.inc.php
+*	inlcude/HtmlLibrary/RegistrationModuleHtmlLib.inc.php
+*	inlcude/Forms/UserRegistrationForm.inc.php (added date validator to proper field)
+*	inlcude/ama.inc.php
+*	include/user_class.inc.php
+*	services/edit_author.php
+*	switcher/add_user.php
+*	switcher/edit_switcher.php
+*	switcher/edit_user.php
+*	switcher/view_user.php
+*	switcher/zoom_user.php
+*	tutor/edit_tutor.php
+	+ changed from 'eta' to 'birthdate' and from 'age' to 'birthdate' in all above files
+*	inlcude/HtmlLibrary/FormElementCrator.inc.php
+	+ added addDateInput method to class FormElementCreator
+*	include/data_validation.in.php
+	+ added validate_birthdate to class DataValidator
+*	browsing/registration.php
+	+ added jquery masked input for birthdate
+*	config/config_main.inc.php
+	+ added JS include for masked input
+*	js/include/basic.js
+	+ added date validation to validateContent function
+*	js/admin/default.js
+	+ added init function for masked input	
+	
+svn ada, TODO: ftp ada20 and maybe everywhere else.
+TODO: run 
+ALTER TABLE `utente` CHANGE `eta` `birthdate` INT(11) UNSIGNED NULL DEFAULT NULL;
+on all provider's databases. Notice: on existing dbs, this cause loss of existing field (eta)	
+
+
+04/06/2013
+Graffio
+* browsing/main_index.php
+  fixed bug: deleted node from needed object
+
+svn ada, ftp ada20, uems, ada_ecm
+
+04/06/2013
+Giorgio
+++++++++++++++++++
+whatsnew feature
+++++++++++++++++++
+*	browsing/user.php
+	+ added course instance id to the generated link to the updated node, needed for letting the user view the node in view.php
+
+svn ada, ftp ada20
+
+03/06/2013
+Graffio
+++++++++++++++++++
+module main_index forum: 
+Fixed wrong style class in case ADA_GROUP_TYPE
+Added ADA_GROUP_TYPE to "legenda"
+++++++++++++++++++
+* browsing/include/CourseViewer.inc.php
+* browsing/main_index.php
+
+svn ada, ftp ada20, ada_ecm, UEMS
+
+03/06/2013
+Giorgio
+++++++++++++++++++
+module tutor_exercise: sort exercises of single student in different order
+added time of when the exercise was taken to the tutor exercise recap table
+++++++++++++++++++
+* include/user_class.inc.php
+  + history_ex_done_FN --> pass id to table
+  + added time as a string to the date  
+* js/tutor/tutor_exercise.js
+  + added function dataTablesExec
+* tutor/tutor_exercise.php
+  + include jquery and dataTable
+* js/include/jquery/dataTables/dateSortPlugin.js
+  + uncommented code for sorting date and time in (dd/mm/YYYY hh:ii:ss format)  
+
+svn ada, ftpada20, ftp ada_icon, ftp csf_icon
+
+03/06/2013
+Giorgio
++++++++++++++++
+added time of when the exercise was taken to the tutor exercise recap table
++++++++++++++++
+*	include/user_class.inc.php
+
+svn ada, ftp ada20
+
+01/06/2013
+graffio
++++++++++++++++
+some changes in module_init in order to prevent user see the node in instance in which he do not be enrolled
+* include/module_init.inc.php
+* browsing/include/browsing_functions.inc.php
+
+svn ada, ftp ada20, ada_icon
+
+30/05/2013 16:30
+Valerio
+++++++++++++++++++
+changed second parameter of is_a() function as string instead of class name, to don't generate notice errors
+++++++++++++++++++
+
+*	modules/test/history.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/index.php
+*	modules/test/include/management/tutorManagementTest.inc.php
+*	modules/test/switcher.php
+*	modules/test/tutor.php
+
+svn ada
+
+
+30/05/2013
+Graffio
+* switcher/list_users.php
+  + make table of users sortable and searchable
+* js/switcher/list_users.js
+  + sort table of users
+
+svn ada, ftp ada20, icon, csf_icon, uems, ada_ecm
+
+29/05/2013
+Giorgio
+++++++++++++++++++
+added student is confirmed in switcher students listing and switcher user editing form
+++++++++++++++++++
+*	switcher/list_users.php
+	+ added code to add 'confirmed' column in table view
+*	switcher/edit_user.php
+	+ passed proper parameters to UserProfileForm constructor
+	+ added code to save POST passed stato field
+*	include/Forms/UserProfileForm.inc.php
+	+ added extra parameter to constructor to allow editing of student confirmed registration
+	+ added code for html select item generation inside the form
+*	switcher/view_user.php
+	+ added code to show user registration status in edited user profile recap			
+
+svn ada, ftp ada, ftp icon, ftp csf_icon
+
+27/05/2013
+Giorgio
+++++++++++++++++++
+additional mime-types
+++++++++++++++++++
+*	includes/utilities.inc.php
+	+ added support for downloading following file types:
+  			xlsx,xltx,docx,dotx,pptx,ppsx,potx
+*	config/config_install.inc.php
+	+ added support for uploading following file types:
+  			xlsx,xltx,docx,dotx,pptx,ppsx,potx  
+
+svn ada, ftp ada, ftp icon, ftp csf_icon
+  				
+
+22/05/2013
+graffio
+* include/HTML_element_classes.inc.php
+  + class table -> added set id
+* config/config_main.inc.php
+  + added plugin to sort date in dataTables
+* js/include/jquery/dataTables/dateSortPlugin.js
+  new plugin to sort date in dataTables
+
+
+svn, ftp csf_icon, ada_icon
+todo: upload in ada_ecm, ada20, uems
+
+21/05/2013 23:11
+Valerio
+++++++++++++++++++
+module test (beta 0.1): bugfixes based on requests for ada_ecm made by franceso
+++++++++++++++++++
+
+*	browsing/exercise.php
+*	browsing/exercise_player.php
+*	modules/test/include/forms/switcherFormTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/management/switcherManagementTest.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+
+svn ada, ftp ada, ftp uems, ftp ecm
+
+21/05/2013
+Giorgio
+++++++++++++++++++
+PDF student report generation, with time periods
+++++++++++++++++++
+*	tutor/tutor.php
+	+ fixed bug in xls export
+svn ada, ftp ada, ftp ada_icon, ftp csf_icon	
+
+17/05/2013
+++++++++++++++++++
+PDF student report generation, with time periods
+++++++++++++++++++
+*	tutor/tutor.php
+*	tutor/include/tutor.inc.php
+*	include/courses_classes.inc.php
+*	config/config_class_report.inc.php
+	+ minor changes to handle unwanted column output in html and pdf separately
+	
+svn ada, ftp ada, ftp ada_icon, ftp csf_icon	
+
+
+17/05/2013
+++++++++++++++++++
+PDF student report generation, with time periods
+++++++++++++++++++
+*	include/history_class.inc.php
+	+ modified history_nodes_list_filtered_FN method of History class to produce a nicer table title writing when period=all and if no node found
+	+ modified history_nodes_list_filtered_FN to return both HTML and array
+	+ modified get_historyFN to return both HTML and array
+
+svn ada, ftp ada
+
+17/05/2013
+++++++++++++++++++
+PDF student report generation, with time periods
+++++++++++++++++++
+*	tutor/tutor_history_details.php
+	+ added student information to html and pdf export
+*	tutor/tutor_history.php
+	+ minor bug fix	
+	
+svn ada, ftp ada, ftp ada_icon
+
+16/05/2013
+++++++++++++++++++
+PDF class and student report generation
+++++++++++++++++++
+*	include/courses_classes.inc.php
+	+ added class name and id to the class report, html and pdf
+*	tutor/tutor_history.php
+	+ added class name and id to the student report, html and pdf
+	
+svn ada, ftp ada, ftp ada_icon
+
+16/05/2013
+++++++++++++++++++
+PDF class and student report generation
+++++++++++++++++++
+*	config/config_class_report.inc.php
+	+ class report columns configuration
+*	include/courses_classes.inc.php
+	+ column inclusion/exclusion logic based from values defined in config_class_report.inc.php
+*	tutor/tutor.php
+	+ added inclusion of class report configuration file	
+	
+svn ada, ftp ada	
+
+16/05/2013
+Giorgio
+++++++++++++++++++
+bug fix
+++++++++++++++++++
+*	include/ama.inc.php
+	+ FIXED: method get_student_visits_for_course_instance of class AMA_DataHandler didn't sort correctly the returned array
+
+16/05/2013
+Giorgio
+++++++++++++++++++
+PDF class and student report generation
+++++++++++++++++++
+*	tutor/tutor.php
+	+ removed unneeded code
+	
+15/05/2013
+Giorgio
+++++++++++++++++++
+whatsnew
+++++++++++++++++++
+*	layout/*/templates/browsing/user.tpl
+	+ typo corrected
+	
+svn ada, ftp ada	
+
+15/05/2013
+Giorgio
+++++++++++++++++++
+PDF class and student report generation
+++++++++++++++++++
+*	tutor/tutor.php
+	+ added menu element to perform action
+	+ added logic to generate class report pdf file
+*	tutor/tutor_history.php
+	+ added logic for pdf report generation
+*	tutor/include/tutor.inc.php
+	+ modified get_student_coursesFN function to get type parameter and pass it to Student_class->get_class_reportFN	
+*	browsing/include/graph/jpgraph.php
+	+ modified constructor to generate a truecolor image that will be correctly inserted into the PDF
+*	include/courses_classes.inc.php
+	+ added logic in get_class_reportFN method of Student_class class to return needed array for PDF generation	
+*	include/history_class.inc.php
+	+ modifed history_last_nodes_FN method of History class to return data instead of html depending on passed parameter
+	+ modified format_history_dataFN static method of History class to return data instead of html depending on passed parameter
+	+ modifed history_nodes_visited_FN method of History class to return data instead of html depending on passed parameter	
+*	include/PdfClass.inc.php
+	+ new class for managing pdf creation		
+*	include/Cezpdf/*
+	+ nes files: PDF generation library and fonts
+	
+svn ada, ftp ada	
+	
+15/05/2013
+Graffio
+++++++++++++++++++
+subscriptions: set user level = instance start user level
+++++++++++++++++++
+* switcher/include/Subscription.inc.php
+* switcher/subscribe.php
+* include/multiport.inc.php
+  + modified course_instance_subscribe_to_tester
+* info.php
+
+svn, ftp ada20, scf_icon, ada_icon
+
+14/05/2013
+Giorgio
+++++++++++++++++++
+whatsnew
+++++++++++++++++++
+*	browsing/user.php
+	+ fixed bug in 'Iscritti' generation link
+*	layout/*/templates/browsing/user.tpl
+	+ writing modified in the template
+	
+svn ada, ftp ada		
+	
+
+10/05/2013 
+Graffio
+++++++++++++++++++
+Switcher: assignment more tutors to one course instance
+++++++++++++++++++
+* switcher/assign_more_tutors.php --> new script
+* include/Forms/TutorSecondaryAssignmentForm.inc.php --> new form
+* comunica/chat.php --> modified to assign moderator permissions to all tutors even if the user is not the proprietary of the chatroom
+
+svn ada, uploaded in ada_icon, csf_icon
+
+
+09/05/2013 08:39
+Valerio
+++++++++++++++++++
+module test (beta 0): last bugfixes! module test goes beta release!
+++++++++++++++++++
+
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionSlotCloze.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+09/05/2013 21:30
+Valerio
+++++++++++++++++++
+module test (alpha 8.1): bugfixed multiple cloze quesion
+++++++++++++++++++
+
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionMultipleCloze.class.inc.php
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+09/05/2013 17:40
+Giorgio
+++++++++++++++++++
+bug fix
+++++++++++++++++++
+*	include/ama.inc.php
+	+ fixed bug in regexp at line 6726, it mached two digits only and gived back no match for the first 9 courses!
+
+svn ada, ftp ada
+
+09/05/2013 08:39
+Valerio
+++++++++++++++++++
+module test (alpha 8.1): finished multiple slot cloze
+++++++++++++++++++
+
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+08/05/2013 21:45
+Valerio
+++++++++++++++++++
+module test (alpha 8.1): added a check. student score will never be more than max score
+++++++++++++++++++
+
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/include/questionMultipleCloze.class.inc.php
+*	modules/test/include/questionSlotCloze.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+08/05/2013 10:25
+Giorgio
+++++++++++++++++++
+what's new functionality
+++++++++++++++++++
+* browsing/user.php
+  + bug fixed in whatsnew page
+  
+svn ada, ftp ada  
+
+08/05/2013 10:25
+Giorgio
+++++++++++++++++++
+what's new functionality
+++++++++++++++++++
+* layout/ada_blu/css/browsing/user.css 
+  + added css file for whatsnew page rendering
+* layout/clear/css/browsing/user.css 
+  + added css file for whatsnew page rendering
+* layout/silver_gray/css/browsing/user.css 
+  + added css file for whatsnew page rendering
+* layout/standard/css/browsing/user.css 
+  + added css file for whatsnew page rendering
+  
+svn ada, ftp ada     
+
+08/05/2013 0:20
+Valerio
+++++++++++++++++++
+module test (alpha 8.1): development of last kind of exercise Multiple Cloze is nearly finished! missing student and tutor feedback
+++++++++++++++++++
+
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionMultipleCloze.class.inc.php
+*	modules/test/include/questionSlotCloze.class.inc.php
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+07/05/2013 07:37
+Valerio
+++++++++++++++++++
+module test (alpha 8.1): refactored EraseCloze type edit form
+++++++++++++++++++
+
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/config/config.inc.php
+*	modules/test/include/forms/questionEraseClozeFormTest.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionMultipleCloze.class.inc.php
+*	modules/test/include/forms/questionMultipleClozeFormTest.inc.php
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+07/05/2013 00:01
+Valerio
+++++++++++++++++++
+module test (alpha 8.1): development of last kind of exercise Multiple Cloze
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+*	modules/test/include/forms/answersMultipleClozeFormTest.inc.php
+*	modules/test/include/forms/questionMultipleClozeFormTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionMultipleCloze.class.inc.php
+*	modules/test/js/answers_multiple_cloze.js
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+
+06/05/2013
+Giorgio
+++++++++++++++++++
+what's new functionality
+++++++++++++++++++
+
+* browsing/user.php
+  + whastnew page displays news from every course. fixed by adding an if condition at line 308
+* include/ama.inc.php
+  + changed logic and queries of get_new_nodes method of AMA_DataHandler class.
+
+  
+svn ada, ftp ada, svn ecm, ftp uems
+  
+
+06/05/2013 08:30
+Valerio
+++++++++++++++++++
+module test (alpha 8): development of last kind of exercise: author mode is finished!
+++++++++++++++++++
+
+*	modules/test/include/forms/answersMultipleClozeFormTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/questionMultipleCloze.class.inc.php
+*	modules/test/js/answers_multiple_cloze.js
+*	modules/test/js/dragdrop.js
+*	modules/test/js/jquery.typing.min.js
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+05/05/2013 01:20
+Valerio
+++++++++++++++++++
+module test (alpha 8): fixed bug on answer generation for EraseCloze and SlotCloze questions, development of last kind of exercise: author mode is nearly finished!
+++++++++++++++++++
+
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionMultipleCloze.class.inc.php
+*	modules/test/js/answers_cloze.js
+*	modules/test/js/answers_multiple_cloze.js
+*	modules/test/js/dragdrop.js
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+04/05/2013 12:20
+valerio
+++++++++++++++++++
+module test (alpha 8): fixed bug for exercise total point in latest cloze type exercise
+bugfixed fkceditor media plugin ("OK" button was not working on chrome)
+bugfixed missing semicolon on fkceditor clozemarker plugin
+++++++++++++++++++
+
+*	external/fckeditor/editor/plugins/clozemarker/clozemarker.js
+*	external/fckeditor/editor/plugins/clozemarker/lang/en.js
+*	external/fckeditor/editor/plugins/clozemarker/lang/it.js
+
+*	external/fckeditor/editor/plugins/media/media.html
+*	external/fckeditor/editor/plugins/media/media.js
+
+*	modules/test/include/forms/controls/answerClozeControlTest.inc.php
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/question.class.inc.php
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+03/05/2013
+graffio
++++++++++++++++++++++
+Some fixex
++++++++++++++++++++++
+* include/ama.inc.php
+  + get_students_for_course_instance --> added ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED
+* include/Forms/CourseInstancedSubscriptionsForm.inc.php 
+  + added ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED
+
+svn ada, ftp uems
+
+30/04/2013
+giorgio
+++++++++++++++++++
+what's new functionality
+++++++++++++++++++
+* browsing/class_info.php
+	added file, copied from icon
+* layout/*/templates/browsing/user.tpl
+	New template for showing what's new
+* browsing/user.php
+	modified to show what's new info if user has subscribed to one course instance only or if a what's new link if user has subscried to multiple course instances.
+* include/multiport.inc.php
+	added   static public function count_new_notes(ADALoggableUser $userObj, $courseInstanceId)
+	added   public function update_new_nodes_in_session ($userObj)
+	added   public static function get_new_nodes($userObj, $courseInstanceId) get new nodes as an assoc array
+	added   static public function checkWhatsNew (ADALoggableUser $userObj, $courseInstanceId)
+* include/ama.inc.php
+	added count_new_notes_in_course_instances
+	added get_new_nodes
+	added get_updates_nodes
+	modified _edit_node to force updating of 'data_creazione' if needed
+* services/include/NodeEditing.inc.php
+	added a checkbox in the form to force node to appear in whatsnew page
+* services/include/editnode_funcs.inc.php
+	modified getNodeDataFromPost to read whatsnew checkbox
+* include/user_class.inc.php
+	added protected member whatsnew in ADAUser class, with getter and setter
+	added updateWhatsNew method in ADAUserclass, to keep whatsnew array in sync with data from db 
+	
+svn ada, ftp ada, svn ecm, ftp uems	
+
+
+29/04/2013
+valerio
+++++++++++++++++++
+module test (alpha 8): fixed bug for exercise total point (author)
+++++++++++++++++++
+* modules/test/include/question.class.inc.php
+	+ it wasn't using the dedicated function getMaxScore().
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+26/04/2013
+graffio
+++++++++++++++++++
+some fixes in test
+++++++++++++++++++
+* modules/test/include/test_class.inc.php
+  + commented part of mail to switcher in case of course completed. To be fixed
+  + added parameter $level to course_instance_student_subscribe
+  + $this->id_istanza = $sess_id_course_instance 
+    Maybe we have to investigate more
+* include/courses_classes.inc.php
+  + modified get_class_reportFN in order to include also student with status = ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED
+* inclued/ama.inc.php
+  + course_instance_students_presubscribe_get_list 
+    get also students with status = ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED
+  + get_course_max_level
+    changed getValue in getOne
+
+svn, ftp UEMS
+
+
+24/04/2013
+giorgio
+++++++++++++++++++
+print functionality
+++++++++++++++++++
+* browsing/view.php
+  modified print link
+* browsing/print.php
+  new file, sames as view.php with delete unnecessary parts
+* include/media_viewing_classes.inc.php
+  modified getViewer function to wrap returned html around a div element
+* layout/*/css/browsing/print.css
+  new css files for printing
+* layout/*/templates/browsing/print.tpl
+  new tpl files for outputting to the printer
+
+22/04/2013 
+graffio
+++++++++++++++++++
+some changes in videoconference
+++++++++++++++++++
+* comunica/include/videochat_config.inc.php
+  changed room type
+* comunica/include/videoroom_classes.inc.php
+  fixed in order to give tutor moderation
+* comunica/include/videoroom_classes.inc.php
+  pass id_profile to room_access
+
+ada svn
+
+20/04/2013 21:56
+Valerio
+++++++++++++++++++
+module test (alpha 8.1): advanced developing of last kind of exercise
+++++++++++++++++++
+
+*	modules/test/include/forms/answersMultipleClozeFormTest.inc.php
+*	modules/test/layout/standard/css/answers.css
+*	modules/test/layout/ada_blu/css/answers.css
+*	modules/test/layout/clear/css/answers.css
+*	modules/test/js/answers_multiple_cloze.js
+*	modules/test/layout/silver_gray/css/answers.css
+
+ada svn, ftp ada, ftp icon, ftp UEMS
+
+20/04/2013 14:21
+Valerio
+++++++++++++++++++
+module test (alpha 8): Fixed bug in isAnswerCorrect
+++++++++++++++++++
+
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionSlotCloze.class.inc.php
+
+ada svn, ftp ada, ftp icon, ftp UEMS
+
+18/04/2013
+graffio (Valerio)
+++++++++++++++++++
+Fixed error in exercise correction
+++++++++++++++++++
+* modules/test/include/questionDragDropCloze.class.inc.php
+    fixed method exerciseCorrection
+* modules/test/include/questionSelectCloze.class.inc.php
+    fixed method exerciseCorrection
+
+svn, ftp UEMS
+
+17/04/2013 09:10
+graffio
+++++++++++++++++++
+varie modifiche: videochat, navigazione, traduzione registrazione utente
+++++++++++++++++++
+* comunica/include/comunica_functions.inc.php 
+  + Changes in order to make it compliant to new API of openmeetings
+* comunica/include/videoroom_classes.inc.php
+  + Changes in order to make it compliant to new API of openmeetings
+* include/Forms/UserRegistrationForm.inc.php
+  + added translation of countries
+* include/Forms/nationList.inc.php
+  + classes and array for countries list
+* include/node_classes.inc.php
+  + modified isNodeExercise in order to recognize ADA_PERSONAL_EXERCISE_TYPE
+* include/exercise_classes.inc.php
+  + modified construct in order to check if an exercise is repeatable or not
+
+svn, ftp UEMS 
+
+05/04/2013 21:26
+Valerio
+++++++++++++++++++
+updated module test (alpha 8): added ability to specify a minimum level for student
+++++++++++++++++++
+
+*	include/user_class.inc.php
+	+ bugfixed: added default value for $dh parameter
+
+*	modules/test/include/forms/rootFormTest.inc.php
+	+ added ability to specify a minimum level for student
+*	modules/test/include/management/rootManagementTest.inc.php
+	+ added ability to specify a minimum level for student
+*	modules/test/include/root.class.inc.php
+	+ added ability to specify a minimum level for student
+*	modules/test/include/survey.class.inc.php
+	+ added ability to specify a minimum level for student
+*	modules/test/include/test.class.inc.php
+	+ added ability to specify a minimum level for student
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+05/04/2013 21:26
+Valerio
+++++++++++++++++++
+updated module test (alpha 8): changed global $dh; with $dh = $GLOBALS['dh'];
+++++++++++++++++++
+
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/management/switcherManagementTest.inc.php
+*	modules/test/include/management/managementTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/forms/switcherFormTest.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/forms/answersMultipleClozeFormTest.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/test.class.inc.php
+*	modules/test/include/management/tutorManagementTest.inc.php
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+>>>>>>> .r719
+05/04/2013 09:10
+Valerio
+++++++++++++++++++
+updated module test (alpha 8): added integration with ada custom exercise and module test
+++++++++++++++++++
+
+*	browsing/exercise.php
+*	browsing/exercise_player.php
+*	modules/test/config/config.inc.php
+*	modules/test/include/forms/rootFormTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/ada_blu/templates/index.tpl
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/clear/templates/index.tpl
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/silver_gray/templates/index.tpl
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/standard/templates/index.tpl
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+04/04/2013 
+Graffio
+++++++++++++++++++
+Improve navigation panel
+++++++++++++++++++
+* include/node_classes.inc.php 
+  --> get_mediaFN: added css class to the table
+  --> parseInternalLinkMedia: commented query_filter temporarily
+* include/media_viewing_classes.inc.php 
+  --> link: truncate file name in case length > 15
+
+svn, uems. Va riportato nelle altre installazioni
+
+
+02/04/2013 
+Graffio
+++++++++++++++++++
+Improve navigation panel
+++++++++++++++++++
+* include/node_classes.inc.php 
+  --> get_linksFN: added css class to the table
+
+svn, standard, uems. Va riportato nelle altre installazioni
+
+29/03/2013 18:30
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): bugfixing
+++++++++++++++++++
+
+*	layout/ada_blu/templates/header.tpl
+*	modules/test/ada_test_module.sql
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/forms/answersMultipleClozeFormTest.inc.php
+*	modules/test/include/forms/rootFormTest.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/js/answers_multiple_cloze.js
+*	modules/test/js/index.js
+*	modules/test/layout/ada_blu/img/add.png
+*	modules/test/layout/ada_blu/img/delete.png
+*	modules/test/layout/clear/img/add.png
+*	modules/test/layout/clear/img/delete.png
+*	modules/test/layout/silver_gray/img/add.png
+*	modules/test/layout/silver_gray/img/delete.png
+*	modules/test/layout/standard/img/add.png
+*	modules/test/layout/standard/img/delete.png
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+29/03/2013 11:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): refactored some cloze functions, added file for "multiple" cloze execise (still to be implemented)
+++++++++++++++++++
+
+*	modules/test/ada_test_module.sql
+*	modules/test/include/questionMultipleCloze.class.inc.php
+*	modules/test/include/forms/answersMultipleClozeFormTest.inc.php
+*	modules/test/include/questionSlotCloze.class.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+29/03/2013 08:51
+Valerio
+++++++++++++++++++
+moved media icon inside each layout folder
+added user template variable to PHPjavascript.php
+++++++++++++++++++
+
+*	external/fckeditor/editor/filemanager/connectors/php/config.php
+*	external/fckeditor/editor/plugins/media/media.js
+*	include/PHPjavascript.php
+*	layout/ada_blu/img/_exe.png
+*	layout/ada_blu/img/media_audio.png
+*	layout/ada_blu/img/media_doc.png
+*	layout/ada_blu/img/media_exe.png
+*	layout/ada_blu/img/media_img.png
+*	layout/ada_blu/img/media_linka.png
+*	layout/ada_blu/img/media_video.png
+*	layout/clear/img/_exe.png
+*	layout/clear/img/media_audio.png
+*	layout/clear/img/media_doc.png
+*	layout/clear/img/media_exe.png
+*	layout/clear/img/media_img.png
+*	layout/clear/img/media_linka.png
+*	layout/clear/img/media_video.png
+*	layout/silver_gray/img/_exe.png
+*	layout/silver_gray/img/media_audio.png
+*	layout/silver_gray/img/media_doc.png
+*	layout/silver_gray/img/media_exe.png
+*	layout/silver_gray/img/media_img.png
+*	layout/silver_gray/img/media_linka.png
+*	layout/silver_gray/img/media_video.png
+*	layout/standard/img/media_audio.png
+*	layout/standard/img/media_doc.png
+*	layout/standard/img/media_exe.png
+*	layout/standard/img/media_img.png
+*	layout/standard/img/media_linka.png
+*	layout/standard/img/media_video.png
+
+removed files
+
+*	layout/img
+*	layout/img/_audio.png
+*	layout/img/_doc.png
+*	layout/img/_exe.png
+*	layout/img/_img.png
+*	layout/img/_linka.png
+*	layout/img/_video.png
+
+svn ada, ftp ada
+
+
+28/03/2013 16:35
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): last bug fixing
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+*	modules/test/include/forms/controls/answerHeaderControlTest.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/js/questionForm.js
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+28/03/2013 15:46
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): bug fixing
+++++++++++++++++++
+
+*	modules/test/include/forms/controls/answerClozeControlTest.inc.php
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/js/answers.js
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+28/03/2013
+graffio
+++++++++++++++++++
+fixed error in translationTranslatedMessageEditForm
+++++++++++++++++++
+* include/HtmlLibrary/UserModuleHtmlLib.inc.php
+
+svn, ftp ada20, uems
+
+
+28/03/2013 12:50
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): added message to switcher and tutor when user reaches max course's level
+++++++++++++++++++
+
+*	modules/test/include/test.class.inc.php
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+28/03/2013 12:05
+Valerio
+++++++++++++++++++
+added function for get course level (from database, it gets maximum node level)
+updated module test (alpha 7.9): bugfixing on module test
+++++++++++++++++++
+
+*	browsing/exercise.php
+*	external/fckeditor/editor/filemanager/connectors/php/config.php
+*	include/Course.inc.php
+*	include/CourseInstance.inc.php
+*	include/ama.inc.php
+*	include/courses_classes.inc.php
+*	layout/standard/templates/browsing/view.tpl
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/forms/rootFormTest.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/questionOpenUpload.class.inc.php
+*	modules/test/include/questionSlotCloze.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/test.class.inc.php
+*	modules/test/layout/ada_blu/css/default.css
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/tutor_ajax.php
+
+svn ada, ftp ada, ftp icon, ftp uems
+
+
+26/03/2013
+graffio
+++++++++++++++++++
+Added fckeditor to mylog
+++++++++++++++++++
+* browsing/mylog.php
+* js/browsing/mylog.js
+
+svn ada, uems, ada20
+
+
+26/03/2013 13:25
+Valerio
+++++++++++++++++++
+Minor fixes coming from merge with ECM branch (used for UEMS)
+Fixed css linking errors on module test files
+++++++++++++++++++
+*	include/node_classes.inc.php
+*	browsing/user.php
+*	browsing/view.php
+*	services/include/exercise_classes.inc.php
+
+*	modules/test/layout/ada_blu/css/default.css
+*	modules/test/layout/clear/css/default.css
+*	modules/test/layout/silver_gray/css/default.css
+*	modules/test/layout/standard/css/default.css
+
+svn ada, ftp ada
+
+
+25/03/2013 17:46
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): question type "slot" cloze completed.
+++++++++++++++++++
+
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/tutorManagementTest.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/questionSlotCloze.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/js/dragdrop.js
+	+ fixed typos
+*	modules/test/js/index.js
+	+ added check on submit for question "erase" cloze and question "slot" cloze
+*	modules/test/layout/ada_blu/css/index.css
+	+ updated css for question "slot" cloze
+*	modules/test/layout/clear/css/index.css
+	+ updated css for question "slot" cloze
+*	modules/test/layout/silver_gray/css/index.css
+	+ updated css for question "slot" cloze
+*	modules/test/layout/standard/css/index.css
+	+ updated css for question "slot" cloze
+
+svn ada, ftp ada, ftp icon
+
+
+22/03/2013 18:05
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): question type "slot" cloze. alghoritm is ok but it is missing author and tutor view. exercise correction too.
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+*	modules/test/include/forms/questionSlotClozeFormTest.inc.php
+	+ removed. it was useless
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionSlotCloze.class.inc.php
+*	modules/test/index.php
+*	modules/test/js/dragdrop.js
+	+ was missing a semicolon
+*	modules/test/js/erasehighlight.js
+	+ moved here cloze erase/highlight javascript functionalities
+*	modules/test/js/index.js
+*	modules/test/js/variation.js
+	+ moved here variations erase/highlight javascript functionalities
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+
+svn ada, ftp ada, ftp icon
+
+
+22/03/2013 12:35
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): started question type "slot" cloze. still a lot to do!
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+*	modules/test/include/forms/questionSlotClozeFormTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionSlotCloze.class.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+22/03/2013 00:20
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): finished question type "erase / highlight" cloze. missing comments
+++++++++++++++++++
+
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+
+svn ada, ftp ada, ftp icon
+
+
+21/03/2013 18:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): added new kind of question "erase / highlight" cloze, but it is not finished yet.
+++++++++++++++++++
+
+*	modules/test/include/forms/controls/answerClozeControlTest.inc.php
+*	modules/test/include/forms/questionEraseClozeFormTest.inc.php
+*	modules/test/include/forms/questionStandardFormTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/js/commons.js
+*	modules/test/js/index.js
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/template/template.css
+
+svn ada, ftp ada, ftp icon
+
+
+20/03/2013 17:00
+Valerio
+++++++++++++++++++
+Bugfixing
+++++++++++++++++++
+
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ Force data_creazione field to contain current timestamp on node creation
+*	include/media_viewing_classes.inc.php
+	+ Restored a function that was missing from media_viewing_classes.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+13/03/2013 18:52
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): added visualization code for variants
+++++++++++++++++++
+
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/js/index.js
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+13/03/2013 18:05
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.9): added variants on standard and multiple check question, missing visualization code
+added configuration defines for four new questions' type
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/forms/controls/answerClozeControlTest.inc.php
+*	modules/test/include/forms/controls/answerFooterControlTest.inc.php
+*	modules/test/include/forms/controls/answerHeaderControlTest.inc.php
+*	modules/test/include/forms/questionEmptyFormTest.inc.php
+*	modules/test/include/forms/questionEraseClozeFormTest.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/forms/questionStandardFormTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionEraseCloze.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/js/answers.js
+*	modules/test/js/answers_cloze.js
+*	modules/test/js/commons.js
+*	modules/test/js/form.js
+*	modules/test/js/questionFormStep2.js
+
+svn ada, ftp ada, ftp icon
+
+
+12/03/2013 11:10
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.8): bug fixing on existant type of feedback: rating
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+11/03/2013 17:14
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.8): added a new type of feedback: show correct answer
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+*	modules/test/include/answer.class.inc.php
+*	modules/test/include/forms/rootFormTest.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/nullTest.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/questionOpenManual.class.inc.php
+*	modules/test/include/questionOpenUpload.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/survey.class.inc.php
+*	modules/test/include/test.class.inc.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/js/commons.js
+*	modules/test/js/index.js
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+
+svn ada, ftp ada, ftp icon
+
+
+06/03/2013 17:50
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.7): added a wizard to insert image as answers.
+++++++++++++++++++
+
+*	include/COREv0.1/html4/classes.inc.php
+	+ added support to ';' char in setAttribute
+*	include/COREv0.1/html4/classes_noregexp.inc.php
+	+ added support to ';' char in setAttribute
+
+*	modules/test/layout/ada_blu/css/answers.css
+*	modules/test/js/answers.js
+*	modules/test/include/forms/controls/answerClozeControlTest.inc.php
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/js/answers_cloze.js
+
+svn ada, ftp ada, ftp icon
+
+
+06/03/2013 11:30
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.7): tables styled.
+++++++++++++++++++
+
+*	modules/test/js/commons.js
+	+bugfix
+
+*	modules/test/template/template.css
+
+svn ada, ftp ada, ftp icon
+
+
+
+05/03/2013 23:30
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.7): added submit confirm when empty answers found.
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+*	modules/test/js/index.js
+
+svn ada, ftp ada, ftp icon
+
+
+
+05/03/2013 23:30
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.7): bugfixed topic division
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+
+05/03/2013 18:05
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.7):
+various bugfixes, store selected exercise type in session, fixed navigation when topic division is used
+++++++++++++++++++
+
+*	modules/test/edit_answers.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/forms/controls/forgetExerciseTypeControlTest.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/js/answers_cloze.js
+*	modules/test/js/commons.js
+*	modules/test/js/index.js
+*	modules/test/js/tutor.js
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/template/3 colonne.html
+
+svn ada, ftp ada, ftp icon
+
+
+====================
+01/03/2013
+Graffio
+* browsing/external_link.php
+  + added external resource of type URL
+* include/utilities.inc.php
+  + added function truncate
+
+svn ada
+
+====================
+01/03/2013
+Graffio
+++++++++++++++++++
+added specific class in column of tableElement of BaseHtmlLib.inc.php
+++++++++++++++++++
+*	include/HtmlLibrary/BaseHtmlLib.inc.php
+
+svn ada
+
+====================
+28/02/2013
+Graffio
+++++++++++++++++++
+added language of the user in PHPjavascript.php
+++++++++++++++++++
+*	include/PHPjavascript.php
+
+svn ada
+
+
+27/02/2013 18:03
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.6): commented source code
+++++++++++++++++++
+
+*	modules/test/include/management/historyManagementTest.inc.php
+*	modules/test/include/forms/formTest.inc.php
+*	modules/test/include/management/switcherManagementTest.inc.php
+*	modules/test/include/management/tutorManagementTest.inc.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/include/forms/surveyFormTest.inc.php
+*	modules/test/include/questionOpenUpload.class.inc.php
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+*	modules/test/include/nullTest.class.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/test.class.inc.php
+*	modules/test/include/forms/rootFormTest.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/forms/testFormTest.inc.php
+*	modules/test/include/questionOpenManual.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/forms/deleteFormTest.inc.php
+*	modules/test/include/forms/controls/answerHeaderControlTest.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/management/testManagementTest.inc.php
+*	modules/test/include/forms/controls/templateEditorControlTest.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/forms/controls/answerClozeControlTest.inc.php
+*	modules/test/include/management/managementTest.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/survey.class.inc.php
+*	modules/test/include/forms/controls/answerFooterControlTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/include/management/surveyManagementTest.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+27/02/2013 13:37
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.6): updated tutor: now use new function to generate tables
+updated function HtmlLibrary::tableElement: added footer and caption functionalities
+++++++++++++++++++
+
+*	include/COREv0.1/html4/classes.inc.php
+	+ now it's possible to type spaces inside attributes
+*	include/COREv0.1/html4/classes_noregexp.inc.php
+	+ now it's possible to type spaces inside attributes
+*	include/HtmlLibrary/BaseHtmlLib.inc.php
+	+ added tfoot and caption functionalities
+*	layout/ada_blu/css/page.css
+	+ added css for tfoot tag
+*	layout/clear/css/page.css
+	+ added css for tfoot tag
+*	layout/silver_gray/css/page.css
+	+ added css for tfoot tag
+*	layout/standard/css/page.css
+	+ added css for tfoot tag
+*	modules/test/include/management/tutorManagementTest.inc.php
+	+ changed table function
+
+svn ada, ftp ada, ftp icon
+
+
+27/02/2013 12:15
+Valerio
+++++++++++++++++++
+bugfixing media type recognition
+++++++++++++++++++
+
+*	config/config_main.inc.php
+*	external/fckeditor/editor/plugins/media/media.js
+*	include/media_viewing_classes.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+27/02/2013 07:41
+Valerio
+++++++++++++++++++
+bugfixing fckeditor media plugin and module test template
+++++++++++++++++++
+
+*	external/fckeditor/editor/plugins/media/fckplugin.js
+*	external/fckeditor/editor/plugins/media/lang/en.js
+*	external/fckeditor/editor/plugins/media/lang/it.js
+*	external/fckeditor/editor/plugins/media/media.html
+*	modules/test/template/3 colonne.html
+
+svn ada, ftp ada, ftp icon
+
+
+26/02/2013 13:35
+Valerio
+++++++++++++++++++
+changed files to use new jquery references
+++++++++++++++++++
+
+
+*	config/config_main.inc.php
+	+ created jquery references
+*	config/config_modules.inc.php
+	+ bugfixed references
+
+*	include/node_classes.inc.php
+	+ bugfixing parsingInternalLinkMedia
+
+edited files to use new jquery references:
+
+*	browsing/download.php
+*	modules/test/edit_answers.php
+*	modules/test/edit_question.php
+*	modules/test/edit_test.php
+*	modules/test/edit_topic.php
+*	modules/test/history.php
+*	modules/test/index.php
+*	modules/test/switcher.php
+*	modules/test/tutor.php
+
+deleted files (moved inside ADA):
+
+*	modules/test/js/images
+*	modules/test/js/images/animated-overlay.gif
+*	modules/test/js/images/ui-bg_flat_0_aaaaaa_40x100.png
+*	modules/test/js/images/ui-bg_flat_55_fbec88_40x100.png
+*	modules/test/js/images/ui-bg_glass_75_d0e5f5_1x400.png
+*	modules/test/js/images/ui-bg_glass_85_dfeffc_1x400.png
+*	modules/test/js/images/ui-bg_glass_95_fef1ec_1x400.png
+*	modules/test/js/images/ui-bg_gloss-wave_55_5c9ccc_500x100.png
+*	modules/test/js/images/ui-bg_inset-hard_100_f5f8f9_1x100.png
+*	modules/test/js/images/ui-bg_inset-hard_100_fcfdfd_1x100.png
+*	modules/test/js/images/ui-icons_217bc0_256x240.png
+*	modules/test/js/images/ui-icons_2e83ff_256x240.png
+*	modules/test/js/images/ui-icons_469bdd_256x240.png
+*	modules/test/js/images/ui-icons_6da8d5_256x240.png
+*	modules/test/js/images/ui-icons_cd0a0a_256x240.png
+*	modules/test/js/images/ui-icons_d8e7f3_256x240.png
+*	modules/test/js/images/ui-icons_f9bd01_256x240.png
+*	modules/test/js/jquery-1.9.1.min.js
+*	modules/test/js/jquery-ui-1.10.0.custom.min.css
+*	modules/test/js/jquery-ui-1.10.0.custom.min.js
+*	modules/test/js/jquery.noConflict.js
+
+svn ada, ftp ada, ftp icon
+
+
+26/02/2013 12:01
+Valerio
+++++++++++++++++++
+bugfixing fckeditor media plugin and media viewing classes
+++++++++++++++++++
+
+*	external/fckeditor/editor/plugins/media/media.html
+*	fckeditor/editor/plugins/media/media.js
+*	include/PHPjavascript.php
+*	include/media_viewing_classes.inc.php
+*	include/node_classes.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+26/02/2013 10:45
+Valerio
+++++++++++++++++++
+now layout functions use CONSTANTS instead of global vars
+++++++++++++++++++
+
+*	include/layout_classes.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+25/02/2013 22:00
+Valerio
+++++++++++++++++++
+fckeditor media plugin: now supports title, width, height and edit mode
+++++++++++++++++++
+
+*	external/fckeditor/editor/plugins/clozemarker/fckplugin.js
+*	external/fckeditor/editor/plugins/media/media.html
+*	external/fckeditor/editor/plugins/media/lang/it.js
+*	external/fckeditor/editor/plugins/media/fckplugin.js
+*	external/fckeditor/editor/plugins/media/media.js
+*	external/fckeditor/editor/plugins/media/lang/en.js
+
+svn ada, ftp ada, ftp icon
+
+
+
+25/02/2013 17:08
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.6): added support for ADA media viewer
+media viewer: refactored and enanched, now it's possibile to pass custom width and height
+fckeditor media plugin: created media plugin that works with ADA media viewer
+++++++++++++++++++
+*	external/fckeditor/editor/plugins/clozemarker/fckplugin.js
+*	external/fckeditor/editor/plugins/media
+*	external/fckeditor/editor/plugins/media/fckplugin.js
+*	external/fckeditor/editor/plugins/media/lang
+*	external/fckeditor/editor/plugins/media/lang/en.js
+*	external/fckeditor/editor/plugins/media/lang/it.js
+*	external/fckeditor/editor/plugins/media/media.html
+*	external/fckeditor/editor/plugins/media/media.png
+*	external/fckeditor/fckconfig.js
+*	include/media_viewing_classes.inc.php
+*	include/node_classes.inc.php
+*	js/include/fckeditor_integration.js
+*	layout/img
+*	layout/img/_audio.png
+*	layout/img/_doc.png
+*	layout/img/_exe.png
+*	layout/img/_img.png
+*	layout/img/_linka.png
+*	layout/img/_video.png
+*	modules/test/ada_test_module.sql
+*	modules/test/edit_answers.php
+*	modules/test/edit_question.php
+*	modules/test/edit_test.php
+*	modules/test/edit_topic.php
+*	modules/test/history.php
+*	modules/test/include/forms/controls/answerClozeControlTest.inc.php
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/forms/rootFormTest.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/index.php
+*	modules/test/js/dragdrop.js
+*	modules/test/switcher.php
+*	modules/test/template/template.css
+*	modules/test/tutor.php
+
+
+svn ada, ftp ada, ftp icon
+
+
+=======
+20/02/2013
+Graffio
+++++++++++++++++++
+introduced sorting tables in sharing file
+++++++++++++++++++
+* browsing/download.php
+* js/browsing/download.js
+* js/include/jquery/*
+  + jquery
+  + UI
+  + dataTables
+* js/include/jquery.noClonflict.js
+
+svn ada, icon su Lynx, ada20, alfa, dante, ecm, icon_fei, rios, sicurezza, uems
+
+
+19/02/2013 10:45
+Valerio
+++++++++++++++++++
+upgraded fckeditor to 2.6.9 (last version available)
+++++++++++++++++++
+
+*	external/fckeditor/*
+	+ reported configuration and active plugins
+
+
+svn ada, ftp ada, ftp icon
+
+
+18/02/2013 18:55
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.5): bugfixing fckconfig.js, updated sql and the way to do queries in AMATestDataHandler.inc.php
+++++++++++++++++++
+
+*	modules/test/ada_test_module.sql
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	external/fckeditor/fckconfig.js
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+13/02/2013 17:25
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.5): bugfixing on template and fckeditor toolbars
+++++++++++++++++++
+
+*	external/fckeditor/fckconfig.js
+*	modules/test/layout/*
+
+svn ada, ftp ada, ftp icon
+
+
+13/02/2013 17:25
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.5): added switcher functionality to assign survey to course, minor bugfixing
+++++++++++++++++++
+
+*	layout/ada_blu/templates/tutor/tutor.tpl
+	+ fixed some errors on ada_blu template (tutor)
+*	modules/test/ada_test_module.sql
+	+ updated sql dump
+*	modules/test/history.php
+	+ bug fixing
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ added queries to support switcher functionality
+*	modules/test/include/forms/switcherFormTest.inc.php
+	+ added form for switcher functionality
+*	modules/test/include/management/rootManagementTest.inc.php
+	+ minor bug fixing
+*	modules/test/include/management/switcherManagementTest.inc.php
+	+ added management for switcher functionality
+*	modules/test/layout/ada_blu/css/switcher.css
+	+ added for switcher functionality
+*	modules/test/layout/ada_blu/templates/switcher.tpl
+	+ added for switcher functionality
+*	modules/test/layout/ada_blu/templates/tutor.tpl
+	+ template bug fixing
+*	modules/test/layout/clear/css/switcher.css
+	+ added for switcher functionality
+*	modules/test/layout/clear/templates/switcher.tpl
+	+ added for switcher functionality
+*	modules/test/layout/clear/templates/tutor.tpl
+	+ template bug fixing
+*	modules/test/layout/silver_gray/css/switcher.css
+	+ added for switcher functionality
+*	modules/test/layout/silver_gray/templates/switcher.tpl
+	+ added for switcher functionality
+*	modules/test/layout/silver_gray/templates/tutor.tpl
+	+ template bug fixing
+*	modules/test/layout/standard/css/switcher.css
+	+ added for switcher functionality
+*	modules/test/layout/standard/templates/switcher.tpl
+	+ added for switcher functionality
+*	modules/test/layout/standard/templates/tutor.tpl
+	+ template bug fixing
+*	modules/test/switcher.php
+	+ added switcher page
+*	modules/test/tutor.php
+	+ minor bug fixing
+*	switcher/list_courses.php
+	+ added link to module test switcher functionality
+
+svn ada, ftp ada, ftp icon
+
+
+13/02/2013 15:06
+Valerio
+++++++++++++++++++
+bugfixed PHPjavascript.php: admin and switcher user type were added
+++++++++++++++++++
+
+*	include/PHPjavascript.php
+
+svn ada, ftp ada, ftp icon
+
+
+13/02/2013 12:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.5): refactored tables' names, setted popup image max width
+++++++++++++++++++
+
+*	modules/test/js/index.js
+	+ setted popup image max width size
+*	modules/test/ada_test_module.sql
+	+ added new table for switcher module
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ refactored tables' names
+
+
+svn ada, ftp ada, ftp icon
+
+
+12/02/2013 16:35
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.4): completed tutor functionality: now correct answers are displayed on a tooltip for cloze questions, udpated jquery and jqueryui, added image zoom on click
+++++++++++++++++++
+
+*	modules/test/edit_answers.php
+*	modules/test/edit_question.php
+*	modules/test/edit_test.php
+*	modules/test/edit_topic.php
+*	modules/test/history.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/questionOpenManual.class.inc.php
+*	modules/test/include/questionOpenUpload.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/index.php
+*	modules/test/js/dragdrop.js
+*	modules/test/js/images
+*	modules/test/js/images/animated-overlay.gif
+*	modules/test/js/images/ui-bg_flat_0_aaaaaa_40x100.png
+*	modules/test/js/images/ui-bg_flat_55_fbec88_40x100.png
+*	modules/test/js/images/ui-bg_glass_75_d0e5f5_1x400.png
+*	modules/test/js/images/ui-bg_glass_85_dfeffc_1x400.png
+*	modules/test/js/images/ui-bg_glass_95_fef1ec_1x400.png
+*	modules/test/js/images/ui-bg_gloss-wave_55_5c9ccc_500x100.png
+*	modules/test/js/images/ui-bg_inset-hard_100_f5f8f9_1x100.png
+*	modules/test/js/images/ui-bg_inset-hard_100_fcfdfd_1x100.png
+*	modules/test/js/images/ui-icons_217bc0_256x240.png
+*	modules/test/js/images/ui-icons_2e83ff_256x240.png
+*	modules/test/js/images/ui-icons_469bdd_256x240.png
+*	modules/test/js/images/ui-icons_6da8d5_256x240.png
+*	modules/test/js/images/ui-icons_cd0a0a_256x240.png
+*	modules/test/js/images/ui-icons_d8e7f3_256x240.png
+*	modules/test/js/images/ui-icons_f9bd01_256x240.png
+*	modules/test/js/index.js
+*	modules/test/js/jquery-1.9.1.min.js
+*	modules/test/js/jquery-ui-1.10.0.custom.min.css
+*	modules/test/js/jquery-ui-1.10.0.custom.min.js
+*	modules/test/js/tutor.js
+*	modules/test/layout/ada_blu/css/answers.css
+*	modules/test/layout/ada_blu/css/index.css
+*	modules/test/layout/clear/css/answers.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/answers.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/answers.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/tutor.php
+
+
+svn ada, ftp ada, ftp icon
+
+
+12/02/2013 12:04
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.4): message tutor -> student: added link to test review
+++++++++++++++++++
+
+*	modules/test/tutor_ajax.php
+
+svn ada, ftp ada, ftp icon
+
+
+11/02/2013 23:51
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.4): added history test and survey
+++++++++++++++++++
+
+*	layout/ada_blu/templates/browsing/view.tpl
+	+ added template fields to test history and survey history
+*	layout/clear/templates/browsing/view.tpl
+	+ added template fields to test history and survey history
+*	layout/standard/templates/browsing/view.tpl
+	+ added template fields to test history and survey history
+*	layout/silver_gray/templates/browsing/view.tpl
+	+ added template fields to test history and survey history
+*	browsing/view.php
+	+ added link to test history and survey history
+
+*	modules/test/layout/silver_gray/templates/tutor.tpl
+	+ added tutor template that was missing
+*	modules/test/layout/standard/templates/tutor.tpl
+	+ added tutor template that was missing
+
+*	modules/test/include/root.class.inc.php
+	+ bugfixing
+*	modules/test/include/management/tutorManagementTest.inc.php
+	+ modified tutor functionality
+*	modules/test/include/management/historyManagementTest.inc.php
+	+ added history functionality
+*	modules/test/history.php
+	+ added history functionality
+
+*	modules/test/include/questionSelectCloze.class.inc.php
+	+ now prints answers points (for tutor)
+*	modules/test/include/questionStandard.class.inc.php
+	+ now prints answers points (for tutor)
+*	modules/test/include/questionLikert.class.inc.php
+	+ now prints answers points (for tutor)
+*	modules/test/include/questionMultipleCheck.class.inc.php
+	+ now prints answers points (for tutor)
+
+
+svn ada, ftp ada, ftp icon
+
+
+11/02/2013 17:22
+Valerio
+++++++++++++++++++
+fixed path label on exercise history
+++++++++++++++++++
+
+*	browsing/exercise_history.php
+	+ fixed path label on exercise history
+
+svn ada, ftp ada
+
+
+11/02/2013 16:15
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.3): added com tools support in template files
+++++++++++++++++++
+
+*	layout/clear/templates/browsing/com_tools.tpl
+	+ file moved to parent folder
+*	layout/standard/templates/browsing/com_tools.tpl
+	+ file moved to parent folder
+*	layout/silver_gray/templates/browsing/com_tools.tpl
+	+ file moved to parent folder
+*	layout/ada_blu/templates/browsing/com_tools.tpl
+	+ file moved to parent folder
+*	layout/ada_blu/templates/com_tools.tpl
+	+ copied file outside browsing directory
+*	modules/test/edit_question.php
+	+ added com tools support
+*	modules/test/edit_answers.php
+	+ added com tools support
+*	modules/test/edit_test.php
+	+ added com tools support
+*	modules/test/edit_topic.php
+	+ added com tools support
+*	modules/test/include/question.class.inc.php
+	+ prints question point for author
+
+svn ada, ftp ada, ftp icon
+
+
+06/02/2013 18:42
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.3): added tutor functionality as: comment every exercise, assign points on open questions, write correct answer for open questions
+++++++++++++++++++
+
+*	layout/ada_blu/templates/header.tpl
+	+ removed logo link (it was pointing to ecm version)
+
+*	modules/test/ada_test_module.sql
+	+ removed an unused field in history_answer
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionOpenManual.class.inc.php
+*	modules/test/include/questionOpenUpload.class.inc.php
+*	modules/test/include/management/tutorManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/forms/questionOpenFormTest.inc.php
+*	modules/test/delete.php
+*	modules/test/toggleRepeatable.php
+	+ replaced by tutor_ajax.php
+*	modules/test/tutor_ajax.php
+
+*	modules/test/js/tutor.js
+
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/ada_blu/css/index.css
+
+svn ada, ftp ada, ftp icon
+
+
+06/02/2013 12:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.2): bugfixing on dragdrop.js
+++++++++++++++++++
+
+*	modules/test/js/dragdrop.js
+
+svn ada, ftp ada, ftp icon
+
+
+05/02/2013 21:55
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.2): updated tutor module: ability to mark a test instance as repeatable
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/js/index.js
+*	modules/test/toggleRepeatable.php
+*	modules/test/js/tutor.js
+
+svn ada, ftp ada, ftp icon
+
+
+05/02/2013 17:50
+Valerio
+++++++++++++++++++
+moved tutor link to tutor module test inside "evalutate" section
+updated module test (alpha 7.2): added function to calculate user points, bugfixed tutor functionality, bugfixed inclusion path, bugfixed saveAnswers function call, css improvements for drag'n'drop
+++++++++++++++++++
+
+*	modules/test/ada_test_module.sql
+	+ updated table definitions
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ added function to calculate user points
+*	include/courses_classes.inc.php
+	+ added link to tutor module section
+*	tutor/include/tutor.inc.php
+	+ removed link to tutor module section
+
+*	modules/test/layout/silver_gray/css/index.css
+	+ css improvements for drag'n'drop
+*	modules/test/layout/standard/css/index.css
+	+ css improvements for drag'n'drop
+*	modules/test/layout/clear/css/index.css
+	+ css improvements for drag'n'drop
+*	modules/test/layout/ada_blu/css/index.css
+	+ css improvements for drag'n'drop
+
+*	config/config_modules.inc.php
+	+ included test module config file
+
+*	modules/test/include/root.class.inc.php
+	+ bugfixed tutor functionality
+	+ bugfixed saveAnswers function call
+
+*	modules/test/include/forms/answersStandardFormTest.inc.php
+	+ bugfixed inclusion path
+*	modules/test/include/init.inc.php
+	+ bugfixed inclusion path
+*	modules/test/edit_question.php
+	+ bugfixed inclusion path
+*	modules/test/edit_test.php
+	+ bugfixed inclusion path
+*	modules/test/index.php
+	+ bugfixed inclusion path
+*	modules/test/move.php
+	+ bugfixed inclusion path
+*	modules/test/include/management/answersManagementTest.inc.php
+	+ bugfixed inclusion path
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+	+ bugfixed inclusion path
+*	modules/test/delete.php
+	+ bugfixed inclusion path
+*	modules/test/include/forms/questionFormTest.inc.php
+	+ bugfixed inclusion path
+*	modules/test/include/management/rootManagementTest.inc.php
+	+ bugfixed inclusion path
+*	modules/test/edit_answers.php
+	+ bugfixed inclusion path
+*	modules/test/edit_topic.php
+	+ bugfixed inclusion path
+*	modules/test/include/management/topicManagementTest.inc.php
+	+ bugfixed inclusion path
+*	modules/test/config/config.inc.php
+	+ bugfixed inclusion path
+*	modules/test/tutor.php
+	+ bugfixed inclusion path
+*	modules/test/include/management/questionManagementTest.inc.php
+	+ bugfixed inclusion path
+*	modules/test/include/nodeTest.class.inc.php
+	+ bugfixed inclusion path
+
+svn ada, ftp ada, ftp icon
+
+
+04/02/2013 17:20
+Valerio
+++++++++++++++++++
+changed default value 'it' with ADA_LOGIN_PAGE_DEFAULT_LANGUAGE define
+++++++++++++++++++
+
+*	include/output_funcs.inc.php
+	+ changed default value 'it' with ADA_LOGIN_PAGE_DEFAULT_LANGUAGE define
+
+svn ada, ftp ada, ftp icon
+
+
+
+04/02/2013 13:35
+Valerio
+++++++++++++++++++
+added generic config for modules (config_modules.inc.php) and check for test module presence
+++++++++++++++++++
+
+*	browsing/view.php
+	+ added check for module test presence
+*	config/ada_config.inc.php
+	+ added require_once for config_modules.inc.php
+*	config/config_modules.inc.php
+	+ added code to check module test presence and set defines
+*	tutor/include/tutor.inc.php
+	+ added check for module test presence
+*	modules/test/config/config.inc.php
+*	modules/test/edit_answers.php
+*	modules/test/edit_question.php
+*	modules/test/edit_test.php
+*	modules/test/edit_topic.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/forms/controls/templateEditorControlTest.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/forms/testFormTest.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/management/tutorManagementTest.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/index.php
+*	modules/test/tutor.php
+
+
+svn ada, ftp ada, ftp icon
+
+
+04/02/2013 12:42
+Valerio
+++++++++++++++++++
+module test: added support to ada_blu template
+++++++++++++++++++
+
+*	modules/test/layout/ada_blu/*
+
+svn ada, ftp ada
+
+
+04/02/2013 12:25
+Valerio
+++++++++++++++++++
+added default value to titles in audio AudioPlayer, VideoPlayer and ImageViewer
+++++++++++++++++++
+
+*	include/media_viewing_classes.inc.php
+
+svn ada, ftp ada
+
+
+04/02/2013 12:20
+Valerio
+++++++++++++++++++
+added ada_blu template to versioning
+++++++++++++++++++
+
+*	layout/ada_blu/*
+
+svn ada, ftp ada
+
+
+31/01/2012 19:11
+Valerio
+++++++++++++++++++
+updated AMATestDataHandler.inc.php references: now use $this instead of $db directly
+better form css
+++++++++++++++++++
+
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/layout/silver_gray/css/form.css
+*	modules/test/layout/clear/css/form.css
+*	modules/test/layout/standard/css/form.css
+
+svn ada, ftp ada, ftp icon
+
+
+31/01/2012 11:45
+Valerio
+++++++++++++++++++
+updated module test (alpha 7.1): updated clozemarker fckeditor's plugin, added templates support, minor tweaks over existing files
+++++++++++++++++++
+
+*	external/fckeditor/editor/plugins/clozemarker/clozemarker.js
+	+ updated plugin to be compatible with inline tags
+*	external/fckeditor/editor/plugins/clozemarker/fckplugin.js
+	+ updated plugin to be compatible with inline tags
+
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/js/questionFormStep2.js
+*	modules/test/template/2 colonne.html
+*	modules/test/template/3 colonne.html
+*	modules/test/template/media_or_image.png
+*	modules/test/template/template.css
+*	modules/test/edit_question.php
+*	modules/test/edit_answers.php
+*	modules/test/index.php
+*	modules/test/edit_test.php
+*	modules/test/edit_topic.php
+*	modules/test/move.php
+*	modules/test/tutor.php
+*	modules/test/delete.php
+*	modules/test/ada_test_module.sql
+
+
+svn ada, ftp ada, ftp icon
+
+
+30/01/2012 11:30
+Valerio
+++++++++++++++++++
+bug fixed form class: select and radios didn't work when setted required
+++++++++++++++++++
+
+*	include/Forms/lib/classes/FormControl.inc.php
+*	include/Forms/lib/classes/FForm.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+29/01/2012 12:35
+Valerio
+++++++++++++++++++
+updated module test (alpha 7): refactored file inclusion
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/init.inc.php
+*	modules/test/edit_answers.php
+*	modules/test/index.php
+*	modules/test/edit_test.php
+*	modules/test/edit_topic.php
+*	modules/test/move.php
+*	modules/test/tutor.php
+*	modules/test/delete.php
+
+svn ada, ftp ada, ftp icon
+
+
+29/01/2012 12.15
+Valerio
+++++++++++++++++++
+updated module test (alpha 7): integrated template css and html with fckeditor
+++++++++++++++++++
+
+*	external/fckeditor/editor/css/fck_editorarea.css
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/template/template_exercise.css
+*	modules/test/template/2 colonne.html
+*	modules/test/include/forms/controls/templateEditorControlTest.inc.php
+*	modules/test/template/template_2_colonne.html
+*	modules/test/template/3 colonne.html
+*	modules/test/js/questionFormStep2.js
+*	modules/test/template/template.css
+*	modules/test/js/form.js
+
+svn ada, ftp ada, ftp icon
+
+
+24/01/2012 19:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 7): added tutor module, added field "consegna" on questions
+++++++++++++++++++
+
+*	tutor/include/tutor.inc.php
+	+ added link to tutor module for test
+*	external/fckeditor/fckconfig.js
+	+ added toolbar specific for clozemarker
+
+*	modules/test/edit_question.php
+*	modules/test/edit_answers.php
+*	modules/test/edit_test.php
+*	modules/test/index.php
+*	modules/test/edit_topic.php
+*	modules/test/tutor.php
+*	modules/test/js/questionFormStep2.js
+*	modules/test/js/form.js
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/management/tutorManagementTest.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/layout/clear/css/tutor.css
+*	modules/test/layout/silver_gray/css/tutor.css
+*	modules/test/layout/standard/css/tutor.css
+
+svn ada, ftp ada, ftp icon
+
+
+22/01/2012 19:00
+graffio
+++++++++++++++++++
+info.php added credits in order to standardize ecm (no more need a personalized info.php)
+++++++++++++++++++
+svn, ftp in ada_ecm
+
+
+21/01/2012 22:50
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.9): added title on dragdrop box, added template injection on question
+++++++++++++++++++
+
+
+*	modules/test/ada_test_module.sql
+*	modules/test/include/forms/controls/templateEditorControlTest.inc.php
+	+ added control to inject template inside fckeditor
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/forms/questionDragDropClozeFormTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/management/tutorManagementTest.inc.php
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/index.php
+*	modules/test/js/dragdrop.js
+*	modules/test/js/questionFormStep2.js
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/template
+	+ create folder that will contain templates used inside questions
+
+
+svn ada, ftp ada, ftp icon
+
+
+
+21/01/2012 11:22
+Valerio
+++++++++++++++++++
+bugfix get_class_reportFN function: sum of exercise points was incorrect
+++++++++++++++++++
+
+*	include/courses_classes.inc.php
+	+ bugfix: it was summed the node id instead of points
+
+svn ada, ftp tutte le installazioni
+
+
+16/01/2012 23:15
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.9): minor improvements and a lot of refactoring for bugfixing
+++++++++++++++++++
+
+*	external/fckeditor/fckconfig.js
+*	modules/test/edit_answers.php
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/forms/rootFormTest.inc.php
+*	modules/test/include/forms/testFormTest.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/management/tutorManagementTest.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/index.php
+*	modules/test/js/answers_cloze.js
+*	modules/test/js/dragdrop.js
+*	modules/test/js/images/ui-bg_flat_55_fbec88_40x100.png
+*	modules/test/js/index.js
+*	modules/test/js/jquery-ui-1.9.2.custom.min.css
+*	modules/test/js/jquery-ui-1.9.2.custom.min.js
+*	modules/test/js/testForm.js
+*	modules/test/layout/clear/css/answers.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/clear/img/ajax-loader.gif
+*	modules/test/layout/silver_gray/css/answers.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/silver_gray/img/ajax-loader.gif
+*	modules/test/layout/standard/css/answers.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/standard/img/ajax-loader.gif
+
+
+svn ada, ftp ada, ftp icon
+
+
+14/01/2012 18:15
+Graffio
+* modified login_required in order to fix a bug
+svn ada, ftp tutte le installazioni
+
+14/01/2012 18:15
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.8): added check for non repeteable test, some minor bug fixing
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+*	modules/test/ada_test_module.sql
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/forms/controls/answerClozeControlTest.inc.php
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+*	modules/test/include/forms/management/answerManagementTest.inc.php
+*	modules/test/include/test.class.inc.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/forms/rootFormTest.inc.php
+*	modules/test/include/survey.class.inc.php
+
+
+svn ada, ftp ada, ftp icon
+
+
+
+10/01/2012 01:05
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.8): improvements and bugfixing on test module. drag'n'drop, not answered questions and minor things
+++++++++++++++++++
+
+*	include/PHPjavascript.php
+	+ added strings for javascript button confirm and cancel
+*	modules/test/edit_answers.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/managementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/js/answers_cloze.js
+*	modules/test/js/answers.js
+*	modules/test/js/dragdrop.js
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/clear/templates/answers.tpl
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/silver_gray/templates/answers.tpl
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/standard/templates/answers.tpl
+
+svn ada, ftp ada, ftp icon
+
+
+
+09/01/2012 13:15
+Valerio
+++++++++++++++++++
+added a variable to bypass record page in navigation history
+++++++++++++++++++
+
+*	include/PHPjavascript.php
+	+ added $trackPageToNavigationHistory = false; variable
+*	include/module_init.inc.php
+	+ added $trackPageToNavigationHistory variable verification
+*	include/module_init_functions.inc.php
+	+ added $trackPageToNavigationHistory variable to bypass record page in navigation history
+
+svn ada, ftp ada, ftp icon
+
+
+09/01/2012 12:05
+Valerio
+++++++++++++++++++
+modified PHPjavascript.php and added a way to print translated message to javascript
+++++++++++++++++++
+
+*	include/PHPjavascript.php
+
+svn ada, ftp ada, ftp icon
+
+
+08/01/2012 17:52
+Valerio
+++++++++++++++++++
+drag'n'drop fixes on test module
+++++++++++++++++++
+
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/js/dragdrop.js
+
+svn ada, ftp ada, ftp icon
+
+
+08/01/2012 16:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.7): fixed cloze edit answer button
+++++++++++++++++++
+
+*	modules/test/layout/silver_gray/img/pencil.png
+*	modules/test/layout/standard/img/pencil.png
+*	modules/test/layout/clear/img/pencil.png
+*	modules/test/layout/standard/css/answers.css
+*	modules/test/layout/clear/css/answers.css
+*	modules/test/layout/silver_gray/css/answers.css
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+08/01/2012 15:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.7): finished cloze editor
+++++++++++++++++++
+
+*	modules/test/include/forms/answersStandardFormTest.inc.php
+*	modules/test/layout/standard/templates/form.tpl
+*	modules/test/layout/standard/templates/answers.tpl
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/standard/css/answers.css
+*	modules/test/layout/silver_gray/templates/form.tpl
+*	modules/test/layout/silver_gray/templates/answers.tpl
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/silver_gray/css/answers.css
+*	modules/test/layout/clear/templates/form.tpl
+*	modules/test/layout/clear/templates/answers.tpl
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/clear/css/answers.css
+*	modules/test/js/answers.js
+*	modules/test/js/answers_cloze.js
+*	modules/test/index.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/forms/controls/answerHeaderControlTest.inc.php
+*	modules/test/include/forms/controls/answerFooterControlTest.inc.php
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+*	modules/test/include/forms/controls/answerClozeControlTest.inc.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/edit_answers.php
+
+
+svn ada, ftp ada, ftp icon
+
+
+
+08/01/2012 13:23
+Valerio
+++++++++++++++++++
+fixed language translation on clozemarker fckeditor plugin
+++++++++++++++++++
+
+*	external/fckeditor/editor/plugins/clozemarker/lang/it.js
+*	external/fckeditor/editor/plugins/clozemarker/lang/en.js
+
+svn ada, ftp ada, ftp icon
+
+
+08/01/2012 13:22
+Valerio
+++++++++++++++++++
+fixed background color bug on dropdown menu
+++++++++++++++++++
+
+*	layout/clear/css/page.css
+*	layout/silver_gray/css/page.css
+*	layout/standard/css/page.css
+
+
+svn ada, ftp ada
+
+
+07/01/2012 15:45
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.7): updated fckeditor clozemarker plugin, now it checks already used position
+++++++++++++++++++
+
+*	external/fckeditor/editor/plugins/clozemarker/fckplugin.js
+*	external/fckeditor/editor/plugins/clozemarker/lang/it.js
+*	external/fckeditor/editor/plugins/clozemarker/lang/en.js
+*	external/fckeditor/editor/plugins/clozemarker/clozemarker.js
+
+
+svn ada, ftp ada, ftp icon
+
+
+07/01/2012 12:15
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.7): updated jquery ui: added theme "redmond" and dialog library
+++++++++++++++++++
+
+*	modules/test/js/jquery-ui-1.9.2.custom.min.css
+*	modules/test/js/jquery-ui-1.9.2.custom.min.js
+*	modules/test/js/images/*
+
+
+svn ada, ftp ada, ftp icon
+
+
+07/01/2012 12:08
+Valerio
+++++++++++++++++++
+update output_classes.inc.php: now it's possibile to load custom css files with rendering function
+++++++++++++++++++
+
+*	include/output_classes.inc.php
+
+svn ada, ftp ada, ftp icon
+
+
+07/01/2012 09:33
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.7): updated plugin fckeditor clozemarker
+++++++++++++++++++
+
+*	external/fckeditor/editor/plugins/clozemarker/fckplugin.js
+*	external/fckeditor/editor/plugins/clozemarker/lang/it.js
+*	external/fckeditor/editor/plugins/clozemarker/lang/en.js
+*	external/fckeditor/editor/plugins/clozemarker/clozemarker.js
+*	external/fckeditor/editor/plugins/clozemarker/clozemarker.html
+
+*	modules/test/include/questionCloze.class.inc.php
+	+ improved cloze tag regular expression
+*	modules/test/js/form.js
+	+ switched fckeditor toolbar to use the Test dedicated one
+
+svn ada, ftp ada, ftp icon
+
+
+06/01/2012 22:45
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.7): created plugin (clozemarker) to mark text or image with cloze tag
+++++++++++++++++++
+
+*	external/fckeditor/editor/plugins/clozemarker/clozemarker.html
+	+ clozemarker popup window html code
+*	external/fckeditor/editor/plugins/clozemarker/fckplugin.js
+	+ clozemarker plugin definition
+*	external/fckeditor/editor/plugins/clozemarker/clozemarker.gif
+	+ clozemarker plugin button icon (on toolbar)
+*	external/fckeditor/editor/plugins/clozemarker/clozemarker.js
+	+ clozemarker popup window javascript code
+*	external/fckeditor/editor/plugins/clozemarker/lang/it.js
+	+ interface translation for clozemarker plugin
+*	external/fckeditor/editor/plugins/clozemarker/lang/en.js
+	+ interface translation for clozemarker plugin
+*	external/fckeditor/fckconfig.js
+	+ added clozemarker plugin and a specific toolbar for Test module
+*	external/fckeditor/editor/css/fck_editorarea.css
+	+ added style to show cloze tag
+
+svn ada, ftp ada, ftp icon
+
+
+06/01/2012 22:45
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.6): added warning if no answers are inserted on certain type of question
+++++++++++++++++++
+
+*	modules/test/include/question.class.inc.php
+	+ added warning if no answers are inserted on certain type of question
+
+svn ada, ftp ada, ftp icon
+
+06/01/2012 22:45
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.6): bug fixing on question management for cloze (select and drag'n'drop)
+++++++++++++++++++
+
+*	modules/test/include/management/questionManagementTest.inc.php
+	+ bug fixing on question management for cloze (select and drag'n'drop)
+
+svn ada, ftp ada, ftp icon
+
+04/01/2012 11:56
+Valerio
+++++++++++++++++++
+bug fixing default validator (added multiline support)
+++++++++++++++++++
+
+*	include/Forms/lib/classes/FormValidator.inc.php
+	+ bug fixing default validator (added multiline support)
+
+svn ada, ftp ada, ftp icon
+
+04/01/2012 18:20
+Valerio
+++++++++++++++++++
+bug fixing on editing question
+++++++++++++++++++
+
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ bug fixing
+*	modules/test/include/management/questionManagementTest.inc.php
+	+ bug fixing on editing question
+
+svn ada, ftp ada, ftp icon
+
+
+03/01/2012 18:20
+Valerio
+++++++++++++++++++
+removed final from methods render and getHtml for extension purposes
+++++++++++++++++++
+
+*	include/Forms/lib/classes/FForm.inc.php
+	+ removed final from methods render and getHtml for extension purposes
+
+svn ada, ftp ada, ftp icon
+
+
+28/12/2012 00:15
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.6): bug fixing on answers' form checkboxes
+++++++++++++++++++
+
+*	modules/test/js/answers.js
+	+ bug fixing on answers' form checkboxes
+*	modules/test/include/forms/answersStandardFormTest.inc.php
+	+ bug fixing on answers' form checkboxes
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+	+ bug fixing on answers' form checkboxes
+*	modules/test/include/management/answersManagementTest.inc.php
+	+ bug fixing on answers' form checkboxes
+
+
+svn ada, ftp ada, ftp icon
+
+
+27/12/2012 15:30
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.6): bug fixing on ordering answers
+++++++++++++++++++
+
+*	modules/test/js/answers.js
+	+ bug fixing on ordering answers
+
+svn ada, ftp ada, ftp icon
+
+
+22/12/2012 22:50
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.6): implements answers for non-cloze questions, added duration input field for test/survet and topic. missing: cloze question answers.
+++++++++++++++++++
+
+*	modules/test/include/forms/answersStandardFormTest.inc.php
+*	modules/test/delete.php
+*	modules/test/edit_answers.php
+*	modules/test/include/forms/answersClozeFormTest.inc.php
+*	modules/test/include/forms/controls
+*	modules/test/include/forms/controls/answerControlTest.inc.php
+*	modules/test/include/forms/controls/answerFooterControlTest.inc.php
+*	modules/test/include/forms/controls/answerHeaderControlTest.inc.php
+*	modules/test/include/management/answersManagementTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/questionOpenManual.class.inc.php
+*	modules/test/include/questionOpenUpload.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/js/answers.js
+*	modules/test/layout/clear/css/answers.css
+*	modules/test/layout/clear/css/form.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/layout/clear/templates/answers.tpl
+*	modules/test/layout/silver_gray/css/answers.css
+*	modules/test/layout/silver_gray/css/form.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/silver_gray/templates/answers.tpl
+*	modules/test/layout/standard/css/answers.css
+*	modules/test/layout/standard/css/form.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/standard/templates/answers.tpl
+
+svn ada, ftp ada, ftp icon
+
+
+22/12/2012 11:25
+Valerio
+++++++++++++++++++
+bugfixing and improvements (test time limit) on test module
+++++++++++++++++++
+
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/forms/rootFormTest.inc.php
+*	modules/test/include/management/rootManagementTest.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+
+*	modules/test/layout/clear/css/form.css
+	+ deleted unused code
+*	modules/test/layout/standard/css/form.css
+	+ deleted unused code
+*	modules/test/layout/silver_gray/css/form.css
+	+ deleted unused code
+
+
+svn ada, ftp ada, ftp icon
+
+
+20/12/2012 18:45
+Valerio
+++++++++++++++++++
+minor improvement over FForm class
+updated module test (alpha 6.5): consistency check on DeleteFormTest. still missing answers.
+++++++++++++++++++
+
+*	include/Forms/lib/classes/FForm.inc.php
+	+ now it's possible to add custom controls (private function addControl() -> public function addControl())
+*	modules/test/include/forms/deleteFormTest.inc.php
+	+ now DeleteFormTest class extends FormTest instead of FForm
+
+svn ada, ftp ada, ftp icon
+
+
+20/12/2012 17:14
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.5): added function to add/edit question node. still missing answers.
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+*	modules/test/include/forms/topicFormTest.inc.php
+*	modules/test/include/forms/questionFormTest.inc.php
+*	modules/test/include/forms/questionStandardFormTest.inc.php
+*	modules/test/include/forms/questionDragDropClozeFormTest.inc.php
+*	modules/test/include/forms/questionSelectClozeFormTest.inc.php
+*	modules/test/include/management/questionManagementTest.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/management/topicManagementTest.inc.php
+*	modules/test/edit_question.php
+*	modules/test/js/form.js
+*	modules/test/js/questionForm.js
+*	modules/test/js/questionFormStep2.js
+*	modules/test/js/topicForm.js
+
+svn ada, ftp ada, ftp icon
+
+
+20/12/2012 17:07
+Valerio
+++++++++++++++++++
+improved setCustomJavascript function
+++++++++++++++++++
+*	include/Forms/lib/classes/FForm.inc.php
+	+ improved setCustomJavascript function
+
+svn ada, ftp ada, ftp icon
+
+
+19/12/2012 22:56
+Valerio
+++++++++++++++++++
+added pagination to sequenced test for author
+++++++++++++++++++
+*	modules/test/include/root.class.inc.php
+	+ added pagination to sequenced test for author
+
+svn ada, ftp ada, ftp icon
+
+
+
+18/12/2012 17:30
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.4):
+improved drag'n'drop experience, bugfixing in topic navigation and management, improved rendering, changed student level increment on test with barrier
+++++++++++++++++++
+
+*	modules/test/layout/clear/css/index.css
+	+ improved rendering
+*	modules/test/layout/standard/css/index.css
+	+ improved rendering
+*	modules/test/layout/silver_gray/css/index.css
+	+ improved rendering
+
+*	modules/test/layout/clear/css/form.css
+	+ improved rendering
+*	modules/test/layout/standard/css/form.css
+	+ improved rendering
+*	modules/test/layout/silver_gray/css/form.css
+	+ improved rendering
+
+*	modules/test/js/testForm.js
+	+ improved management
+*	modules/test/js/topicForm.js
+	+ improved management
+
+*	modules/test/js/dragdrop.js
+	+ improved drag'n'drop
+*	modules/test/js/index.js
+	+ improved drag'n'drop
+*	modules/test/js/form.js
+	+ improved management
+
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ bug fixing
+
+*	modules/test/include/nodeTest.class.inc.php
+	+ bug fixing
+*	modules/test/include/root.class.inc.php
+	+ bug fixing
+*	modules/test/include/topic.class.inc.php
+	+ bug fixing
+*	modules/test/include/test.class.inc.php
+	+ bug fixing
+
+*	modules/test/include/questionDragDropCloze.class.inc.php
+	+ improved drag'n'drop
+
+*	modules/test/include/management/topicManagementTest.inc.php
+	+ bug fixing
+
+*	modules/test/include/forms/rootFormTest.inc.php
+	+ added navigation on sequenced test for author
+*	modules/test/include/forms/testFormTest.inc.php
+	+ changed student level increment on test with barrier
+*	modules/test/include/forms/topicFormTest.inc.php
+	+ bug fixing
+
+
+svn ada, ftp ada, ftp icon
+
+
+17/12/2012 12:51
+Valerio
+++++++++++++++++++
+added function setHidden() to Forms classes
+++++++++++++++++++
+
+*	include/Forms/lib/classes/FForm.inc.php
+	+ added function setHidden()
+*	include/Forms/lib/classes/FormControl.inc.php
+	+ added code to support the new function setHidden()
+
+svn ada, ftp ada, ftp icon
+
+17/12/2012 11:25
+Valerio
+++++++++++++++++++
+bugfixed a variable in topicManagementTest.inc.php
+++++++++++++++++++
+
+*	modules/test/include/management/topicManagementTest.inc.php
+	+ bugfixed a variable
+
+svn ada, ftp icon
+
+*********************
+14/12/2012
+Graffio
+* services/addnode.php
+  + added breadcrambs
+* services/author.php
+  + added translation of some menù
+* js/include/menu_functions.js
+  + modified in order to allow reduction of div contentcontent
+
+svn e ftp in tutte le installazioni
+
+*********************
+13/12/2012
+Graffio
+* include/ama.inc.php
+  + add_risorsa_esterna fixed error in writing external link.
+* include/media_viewving_classes.inc.php
+  + getMediaLink added case _LINK
+* include/node_classes.inc.php
+  + class media. Fixed error in media_path
+* services/include/NodeEditing.inc.php
+  + fixed error. replaced _LINK to 3 (case external link)
+* layout/clear/templates/browsing/view.tpl
+  + uncommented field media
+* services/edit_node.php
+  deleted some useless comment
+
+
+*********************
+13/12/2012 17:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.4): added autoscrolling while reordering nodes
+++++++++++++++++++
+
+*	modules/test/include/topic.class.inc.php
+	+ added id on container li
+*	modules/test/include/question.class.inc.php
+	+ added id on container li
+
+*	modules/test/js/index.js
+	+ added autoscrolling
+
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ added new queries and refactoring
+
+svn ada, ftp icon
+
+13/12/2012 13:40
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.4): upgrade jquery and jquery ui, added topic management, enanched test management, still missing: questions.
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+	+ reordered defines and added few comments
+
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ added new queries and refactoring
+
+*	modules/test/index.php
+	+ deleted management link for topic and questions
+*	modules/test/edit_test.php
+	+ refactored
+*	modules/test/edit_topic.php
+	+ refactored
+
+*	modules/test/move.php
+	+ ajax script file called to order test nodes
+
+*	modules/test/include/management/managementTest.inc.php
+	+ added readTipoFromRecord method
+*	modules/test/include/management/rootManagementTest.inc.php
+	+ fixed few bugs
+*	modules/test/include/management/topicManagementTest.inc.php
+	+ file added
+
+*	modules/test/include/forms/rootFormTest.inc.php
+	+ refactored
+*	modules/test/include/forms/topicFormTest.inc.php
+	+ file added
+
+*	modules/test/include/root.class.inc.php
+	+ added print of test settings and link to topic management
+*	modules/test/include/topic.class.inc.php
+	+ added link to topic management
+
+*	modules/test/js/topicForm.js
+	+ contains topic form javascript functionalities
+
+*	modules/test/js/form.js
+	+ added common functionality to all forms (e.g.: fckeditor)
+
+*	modules/test/js/index.js
+	+ added function to move (order) test nodes (topics and questions)
+
+*	modules/test/js/jquery-1.8.2.min.js
+	+ deleted (see upgrade)
+*	modules/test/js/jquery-1.8.3.min.js
+	+ upgrade of old version
+*	modules/test/js/jquery-ui-1.9.1.custom.min.js
+	+ deleted (see upgrade)
+*	modules/test/js/jquery-ui-1.9.2.custom.min.js
+	+ upgrade of old version
+*	modules/test/js/jquery-ui-1.9.1.custom.min.css
+	+ deleted (see upgrade)
+*	modules/test/js/jquery-ui-1.9.2.custom.min.css
+	+ upgrade of old version
+
+*	modules/test/layout/clear/templates/index.tpl
+	+ removed action menu entries (topic and question management)
+*	modules/test/layout/silver_gray/templates/index.tpl
+	+ removed action menu entries (topic and question management)
+*	modules/test/layout/standard/templates/index.tpl
+	+ removed action menu entries (topic and question management)
+
+*	modules/test/layout/clear/css/index.css
+	+ added style for test management
+*	modules/test/layout/silver_gray/css/index.css
+	+ added style for test management
+*	modules/test/layout/standard/css/index.css
+	+ added style for test management
+
+svn ada, ftp icon
+
+13/12/2012 13:15
+Valerio
+++++++++++++++++++
+bug fixing import of css and js on output_classes.inc.php
+improvement on fform.inc.php
+++++++++++++++++++
+
+*	include/Forms/lib/classes/FForm.inc.php
+	+ added function to run custom javascript in form
+*	include/output_classes.inc.php
+	+ bug fixing import of css and js on output_classes.inc.php
+
+svn ada, ftp icon
+
+12/12/2012
+Graffio
+++++++++++
+In order to make possible to set a firm language modified:
+* config/config_install.inc.php
+  + added define('ADA_DYNAMIC_LANGUAGE', TRUE);
+* include/translator_class.inc.php
+  modified method negotiateLoginPageLanguage
+++++++++++
+* browsing/exercise.php
+  + added confirm to delete operation
+
+svn + aggiornamento tutte le installazioni
+*********************
+
+11/12/2012 23:20
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.3): added feedback functionality
+unified form representation in ADA
+++++++++++++++++++
+
+*	layout/clear/templates/browsing/exercise.tpl
+	+ fixed bug on action menu
+*	layout/silver_gray/templates/browsing/exercise.tpl
+	+ fixed bug on action menu
+*	layout/standard/templates/browsing/exercise.tpl
+	+ fixed bug on action menu
+
+*	include/Forms/lib/classes/FormControl.inc.php
+	+ unified form repesentation with the add of class "form"
+
+*	browsing/view.php
+	+ added action menu entries: "add test" and "add survey"
+
+*	modules/test/layout/clear/css/form.css
+	+ improved style for forms
+*	modules/test/layout/standard/css/form.css
+	+ improved style for forms
+*	modules/test/layout/silver_gray/css/form.css
+	+ improved style for forms
+
+*	modules/test/layout/clear/css/index.css
+	+ improved style
+*	modules/test/layout/silver_gray/css/index.css
+	+ improved style
+*	modules/test/layout/standard/css/index.css
+	+ improved style
+
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ added functions relatives to test management
+*	modules/test/include/questionDragDropCloze.class.inc.php
+	+ added some css classes
+*	modules/test/include/root.class.inc.php
+	+ added functionality for Author user
+*	modules/test/include/topic.class.inc.php
+	+ added functionality for Author user
+
+*	modules/test/wizard.php
+	+ renamed in edit_test.php
+*	modules/test/edit_test.php
+	+ file to manage test
+*	modules/test/index.php
+	+ restructured file to execute test
+
+*	modules/test/include/forms/formTest.inc.php
+	+ class to manage test
+*	modules/test/include/forms/rootFormTest.inc.php
+	+ class to manage test
+*	modules/test/include/forms/testFormTest.inc.php
+	+ class to manage test
+*	modules/test/include/forms/surveyFormTest.inc.php
+	+ class to manage test
+*	modules/test/include/forms/deleteFormTest.inc.php
+	+ class to manage test
+
+*	modules/test/include/management/managementTest.inc.php
+	+ added file to manage test
+*	modules/test/include/management/rootManagementTest.inc.php
+	+ added file to manage test
+*	modules/test/include/management/testManagementTest.inc.php
+	+ added file to manage test
+*	modules/test/include/management/surveyManagementTest.inc.php
+	+ added file to manage test
+
+*	modules/test/edit_topic.php
+	+ added file to manage test
+*	modules/test/config/config.inc.php
+	+ reordered and declared two new defines
+
+*	modules/test/layout/standard/templates/wizard.tpl
+	+ renamed in form.tpl
+*	modules/test/layout/clear/templates/wizard.tpl
+	+ renamed in form.tpl
+*	modules/test/layout/silver_gray/templates/wizard.tpl
+	+ renamed in form.tpl
+
+*	modules/test/layout/clear/templates/form.tpl
+	+ added form template
+*	modules/test/layout/silver_gray/templates/form.tpl
+	+ added form template
+*	modules/test/layout/standard/templates/form.tpl
+	+ added form template
+
+*	modules/test/layout/clear/templates/index.tpl
+	+ modified test menu
+*	modules/test/layout/silver_gray/templates/index.tpl
+	+ modified test menu
+*	modules/test/layout/standard/templates/index.tpl
+	+ modified test menu
+
+svn ada, ftp icon
+
+
+04/12/2012 18:21
+Valerio
+++++++++++++++++++
+improved default form class, javascript validation routines and form style
+++++++++++++++++++
+
+*	include/Forms/lib/classes/FormControl.inc.php
+	+ added a css class to each component
+	+ fixed references to class constants
+*	include/Forms/lib/classes/FForm.inc.php
+	+ added a css class to each component
+	+ updated javascript validation routine to use new validateContent
+*	layout/standard/css/form.css
+	+ updated with new style
+*	layout/silver_gray/css/form.css
+	+ updated with new style
+*	layout/clear/css/form.css
+	+ updated with new style
+*	include/Forms/lib/javascript/FormValidator.js (maybe this file is not used)
+	+ updated validateContent function
+*	js/include/basic.js
+	+ updated validateContent function
+
+svn ada, ftp ada, ftp icon
+
+03/12/2012 12:30
+Valerio
+++++++++++++++++++
+added link to "add survey" on browsing/view
+++++++++++++++++++
+
+*	browsing/view.php
+	+ added link to "add survey" in browser/view.php
+*	layout/clear/templates/browsing/view.tpl
+	+ added template var for link to "add survey" in browser/view.php
+*	layout/silver_gray/templates/browsing/view.tpl
+	+ added template var for link to "add survey" in browser/view.php
+*	layout/standard/templates/browsing/view.tpl
+	+ added template var for link to "add survey" in browser/view.php
+
+svn ada, ftp ada, ftp icon
+
+03/12/2012 12:00
+Valerio
+++++++++++++++++++
+bug fixing su BaseHtmlLib.inc.php e ServiceModuleHtmlLib.inc.php
+++++++++++++++++++
+
+*	include/HtmlLibrary/BaseHtmlLib.inc.php
+	- added check on array $data before passing it to foreach
+*	include/HtmlLibrary/ServiceModuleHtmlLib.inc.php
+	- deleted unused array $countryAr in ServicesModuleHtmlLib getAddExerciseForm()
+
+svn ada, ftp ada, ftp icon
+DA FARE: Caricare anche su altri siti
+
+27/11/2012 18:30
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.2): added feedback functionality
+++++++++++++++++++
+
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/answer.class.inc.php
+*	modules/test/config/config.inc.php
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/index.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/nullTest.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/questionOpenManual.class.inc.php
+*	modules/test/include/questionOpenUpload.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/survey.class.inc.php
+*	modules/test/include/test.class.inc.php
+*	modules/test/include/topic.class.inc.php
+
+svn ada
+
+
+27/11/2012 18:30
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.1.6): prepared environment to develop test creation wizard
+updated images references on css.
+++++++++++++++++++
+
+*	layout/standard/templates/com_tools.tpl
+	+ copied com_tools template in generic templates directory so it will be accessible from external modules
+*	layout/silver_gray/templates/com_tools.tpl
+	+ copied com_tools template in generic templates directory so it will be accessible from external modules
+*	layout/clear/templates/com_tools.tpl
+	+ copied com_tools template in generic templates directory so it will be accessible from external modules
+*	modules/test/layout/silver_gray/css/default.css
+	+ updated images references
+*	modules/test/layout/clear/css/default.css
+	+ updated images references
+*	modules/test/layout/standard/css/default.css
+	+ updated images references
+*	modules/test/layout/standard/templates/index.tpl
+	+ updated template for test
+*	modules/test/layout/clear/templates/index.tpl
+	+ updated template for test
+*	modules/test/layout/silver_gray/templates/index.tpl
+	+ updated template for test
+*	modules/test/wizard.php
+	+ added file for wizard (test creation)
+*	modules/test/layout/standard/templates/wizard.tpl
+	+ added template for wizard (test creation)
+*	modules/test/layout/silver_gray/templates/wizard.tpl
+	+ added template for wizard (test creation)
+*	modules/test/layout/clear/templates/wizard.tpl
+	+ added template for wizard (test creation)
+
+
+svn ada
+
+
+27/11/2012 14:45
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.1.5): now it's possible to pick questions randomly, specifying the amount of questions for each topic. added link to "create test" on browsing/view.php
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+	+ added code to exec topic logic
+	+ added id to test description html
+	+ added code that assign a new level to students' that pass the tester
+*	modules/test/include/question.class.inc.php
+	+ added first and last class on question html
+*	modules/test/include/topic.class.inc.php
+	+ added "pick random questions" feature
+*	modules/test/include/test.class.inc.php
+	+ fixed a wrong comment
+*	modules/test/config/config.inc.php
+	+ removed unused defines
+	+ added defines for topic "pick random questions"
+*	modules/test/index.php
+	+ updated index page to work flawlessy with ADA Standard
+
+*	browsing/view.php
+	+ added link to "add test" in browser/view.php
+*	layout/clear/templates/browsing/view.tpl
+	+ added template var for link to "add test" in browser/view.php
+*	layout/silver_gray/templates/browsing/view.tpl
+	+ added template var for link to "add test" in browser/view.php
+*	layout/standard/templates/browsing/view.tpl
+	+ added template var for link to "add test" in browser/view.php
+
+svn ada, ftp icon
+
+
+26/11/2012 13:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.1.2): now it prints description of test, improved index.php
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+	+ added test description on buildHtmlObj();
+*	modules/test/index.php
+	+ added code to load test course, instance and node and to display (eg: on breadcrumb)
+	+ changed code in order to use session references of node, course, course_instance. Now a test can be loaded from a node containing a link like: ../modules/test/index.php?test=*id*
+
+svn ada, ftp icon
+
+*********************
+26/11/2012 13:00
+Valerio
+++++++++++++++++++
+added support to microtemplate for external modules
+rules: load microtemplate in external module, if not exists, load it from default path
+++++++++++++++++++
+
+*	include/layout_classes.inc.php
+	+ changed local var $external_module to class attribute
+*	include/output_classes.inc.php
+	+ added class attribute $external_module and used it to determine how microtemplates have to be loaded
+
+svn ada, ada ftp, ftp icon
+
+*********************
+15/11/2012
+Graffio
+* fixed home page author: cannot create course!
+svn and all installations
+
+*********************
+14/11/2012 23:00
+Valerio
+++++++++++++++++++
+updated module test (alpha 6.1): added case sensitive and case insensitive compare option to each answers
+plus minor fixes
+++++++++++++++++++
+
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/layout/clear/css/index.css
+*	modules/test/js/dragdrop.js
+*	modules/test/index.php
+*	modules/test/config/config.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/answer.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+
+svn ada
+
+*********************
+14/11/2012 14:41
+Valerio
+++++++++++++++++++
+added define for module dir (exported also in js)
+++++++++++++++++++
+
+*	include/PHPjavascript.php
+	+ exported constant MODULES_DIR
+*	config/config_install.inc.php
+	+ added constant MODULES_DIR
+
+svn ada
+
+*********************
+13/11/2012 23:58
+Valerio
+++++++++++++++++++
+update layout classes: now it's possibile to include custom javascript files.
+maybe is needed something to remove javascript too?
+it is possibile to apply same approach to css files
+++++++++++++++++++
+
+*	include/layout_classes.inc.php
+	+ cleaning garbage code left unintentionally
+*	include/output_classes.inc.php
+	+ added ability to include custom javascript files
+
+svn ada
+
+*********************
+13/11/2012 23:56
+Valerio
+++++++++++++++++++
+updated module test (alpha 6): added preliminary Drag'n'Drop
+added jquery and jquery ui to provide drag'n'drop functionality
+preliminary upgrade of css to accomodate drag'n'drop
+
+will follow an update to permit inclusion of custom javascript file (jquery in this case)
+++++++++++++++++++
+
+*	modules/test/layout/standard/css/default.css
+*	modules/test/layout/clear/css/default.css
+*	modules/test/layout/silver_gray/css/default.css
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/layout/clear/css/index.css
+*	modules/test/js/default.js
+*	modules/test/js/dragdrop.js
+*	modules/test/js/jquery-1.8.2.min.js
+*	modules/test/js/jquery-ui-1.9.1.custom.min.js
+*	modules/test/js/jquery.noConflict.js
+*	modules/test/js/index.js
+*	modules/test/js/jquery-ui-1.9.1.custom.min.css
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/topic.class.inc.php
+*	modules/test/include/questionOpenUpload.class.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/nullTest.class.inc.php
+*	modules/test/include/test.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/questionOpenManual.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/answer.class.inc.php
+*	modules/test/include/survey.class.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+*	modules/test/config/config.inc.php
+*	modules/test/index.php
+
+svn ada
+
+*********************
+07/11/2012 18:51
+Valerio
+++++++++++++++++++
+added disabled attribute on option element
+++++++++++++++++++
+
+*	include/COREv0.1/html4/CHtml_tags.inc.php
+	+ added disabled attribute on option element
+*	include/COREv0.1/html4/classes.inc.php
+	+ added disabled attribute on option element
+*	include/COREv0.1/html4/classes_noregexp.inc.php
+	+ added disabled attribute on option element
+
+svn ada, ftp ada, ftp icon
+
+*********************
+31/10/2012 15:01
+Valerio
+++++++++++++++++++
+updated module test (alpha 5.1): added searchParent method
+++++++++++++++++++
+
+*	modules/test/include/questionSelectCloze.class.inc.php
+	+ using searchParent to reach root node
+*	modules/test/include/questionStandard.class.inc.php
+	+ using searchParent to reach root node
+*	modules/test/include/nodeTest.class.inc.php
+	+ added searchParent method
+*	modules/test/include/questionMultipleCheck.class.inc.php
+	+ using searchParent to reach root node
+
+svn ada
+
+*********************
+31/10/2012 15:01
+Valerio
+++++++++++++++++++
+updated module test (alpha 5): added cloze standard exercise
+missing: cloze with drag'n'drop
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+*	modules/test/include/root.class.inc.php
+*	modules/test/layout/silver_gray/css/index.css
+	+ added new css classes to change colors to select option on cloze synonym exercise
+*	modules/test/layout/standard/css/index.css
+	+ added new css classes to change colors to select option on cloze synonym exercise
+*	modules/test/include/AMATestDataHandler.inc.php
+*	modules/test/include/questionDragDropCloze.class.inc.php
+*	modules/test/layout/clear/css/index.css
+	+ added new css classes to change colors to select option on cloze synonym exercise
+*	modules/test/include/topic.class.inc.php
+*	modules/test/include/questionSelectCloze.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/config/config.inc.php
+*	modules/test/include/questionMediumCloze.class.inc.php
+*	modules/test/include/test.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/questionNormalCloze.class.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+
+svn ada
+
+*********************
+31/10/2012 15:01
+Valerio
+++++++++++++++++++
+updated module test (alpha 4): added validators and most type of exercise.
+missing: testing of OpenUpload Exercise and implementation of CLOZE exercise
+added sql schema
+renamed file database.inc.php to AMATestDataHandler.inc.php
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+*	modules/test/ada_test_module.sql
+	+ added sql schema
+*	modules/test/include/AMATestDataHandler.inc.php
+	+ file added (renamed from database.inc.php)
+*	modules/test/include/database.inc.php
+	+ file deleted (renamed to AMATestDataHandler.inc.php)
+*	modules/test/include/question.class.inc.php
+*	modules/test/include/questionOpenUpload.class.inc.php
+*	modules/test/index.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/config/config.inc.php
+*	modules/test/include/test.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/questionOpenManual.class.inc.php
+*	modules/test/include/questionOpenAutomatic.class.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionCloze.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+
+svn ada
+
+*********************
+31/10/2012 10:38
+Valerio
+++++++++++++++++++
+changed behaviour of raise_student_level (now it only increment the level)
+fixed references in files that were using the old raise_student_level
+++++++++++++++++++
+
+*	ECM/browsing/exercise.php
+	+ used set_student_level instead of raise_user_level
+*	include/ama.inc.php
+	+ changed behaviour of raise_student_level
+*	browsing/exercise.php
+	+ used raise_user_level (new behaviour) because the variable $user_level seemd not initialized
+
+UPLOAD SU TUTTE LE INSTALLAZIONI (ove necessario)
+svn ada, svn icon, svn ecm, ftp ada, ftp icon già fatti.
+
+*********************
+30/10/2012
+graffio
+++++++++++++++++++
+fixed a bug in user.php. It didn't control subscription status
+* browsing/user.php
+
+svn
+
+*********************
+30/10/2012 16:16
+Valerio
+++++++++++++++++++
+added missing separator ? and ! to tokenizeString function
+++++++++++++++++++
+
+*	services/include/exercise_classes.inc.php
+
+svn ada, ftp ada, ftp icon
+
+*********************
+30/10/2012 15:54
+Valerio
+++++++++++++++++++
+fixed bug on shuffleList function and added an empty option as first option on close simplified mode
+++++++++++++++++++
+
+*	services/include/exercise_classes.inc.php
+
+svn ada, ftp ada, ftp icon
+
+*********************
+30/10/2012 12.54
+Valerio
+++++++++++++++++++
+fixed bug on attributes value when it is equals to 0 or '0'
+++++++++++++++++++
+
+*	include/COREv0.1/html4/classes.inc.php
+*	include/COREv0.1/html4/classes_noregexp.inc.php
+	+ still not used, it was not uploaded on ftp
+
+svn ada, ftp ada, ftp icon
+
+=======
+29/10/2012
+Graffio
+fixed to allow to change the node parent
+* browsing/include/CourseViewer.inc.php
+  + function struct
+  + function internalLinkSelector
+  + getDisclosureElement
+* js/include/fckeditor_integration.js
+  + toggleVisibilityByClassName
+* page.css (all layout)
+  + added class selectable
+
+solo svn.
+Va copiato in ftp ovunque
+Riportare in ICON (fatto da valerio)
+
+*********************
+26/10/2012 11:11
+Valerio
+++++++++++++++++++
+fixed bug on empty attributes of html's tag
+++++++++++++++++++
+
+*	include/COREv0.1/html4/classes.inc.php
+*	include/COREv0.1/html4/classes_noregexp.inc.php
+	+ still not used, it was not uploaded on ftp
+
+svn ada, ftp ada, ftp icon
+
+
+*********************
+26/10/2012 11:05
+Valerio
+++++++++++++++++++
+updated module test (alpha 3): workflow completed. missing exercise validators and various type of exercise
+++++++++++++++++++
+
+*	modules/test/include/root.class.inc.php
+*	modules/test/layout/silver_gray/css/index.css
+*	modules/test/layout/standard/css/index.css
+*	modules/test/include/database.inc.php
+*	modules/test/js/index.js
+*	modules/test/layout/clear/css/index.css
+*	modules/test/include/topic.class.inc.php
+*	modules/test/include/question.class.inc.php
+*	modules/test/index.php
+*	modules/test/include/questionStandard.class.inc.php
+*	modules/test/include/questionLikert.class.inc.php
+*	modules/test/include/nodeTest.class.inc.php
+*	modules/test/include/questionMultipleCheck.class.inc.php
+
+svn ada
+
+*********************
+25/10/2012 23:16
+Graffio
++++++++++++++++++
+fixed to allow to change the node parent
+* browsing/include/CourseViewer.inc.php
+  + function struct
+
+svn e dante
+
+*********************
+23/10/2012 16:52
+Valerio
+++++++++++++++++++
+removed unused require_once from module test's config
+++++++++++++++++++
+
+*	modules/test/config/config.inc.php
+	+ removed unused require_once
+
+svn ada
+
+*********************
+23/10/2012 15:30
+Valerio
+++++++++++++++++++
+added missing exit() after location() redirect on upload.php
+updated module test (alpha 2): save answers, save test, pagination, timer javascript
+++++++++++++++++++
+
+*	services/upload.php
+	+ added missing exit() afterc location() redirect
+*	modules/test/layout/silver_gray/css/index.css
+	+ added style for countdown timer
+*	modules/test/layout/standard/css/index.css
+	+ added style for countdown timer
+*	modules/test/include/database.inc.php
+	+ added functions to save answers and test
+*	modules/test/layout/clear/css/index.css
+	+ added style for countdown timer
+*	modules/test/include/topic.class.inc.php
+	+ updated to alpha 2
+*	modules/test/js/default.js
+	+ added javascript common function zeroFill
+*	layout/clear/templates/test/default.tpl
+	+ fixed logout link
+*	modules/test/layout/silver_gray/templates/default.tpl
+	+ fixed logout link
+*	modules/test/index.php
+*	modules/test/include/nullTest.class.inc.php
+	+ updated to alpha 2
+*	modules/test/include/questionLikert.class.inc.php
+	+ updated to alpha 2
+*	modules/test/include/root.class.inc.php
+	+ updated to alpha 2
+*	modules/test/js/index.js
+	+ implemented test timer
+*	modules/test/include/question.class.inc.php
+	+ updated to alpha 2
+*	modules/test/include/questionStandard.class.inc.php
+	+ updated to alpha 2
+*	modules/test/config/config.inc.php
+	+ updated to alpha 2
+*	modules/test/layout/clear/templates/default.tpl
+	+ fixed logout link
+*	modules/test/layout/standard/templates/default.tpl
+	+ fixed logout link
+*	modules/test/include/nodeTest.class.inc.php
+	+ updated to alpha 2
+*	modules/test/include/questionMultipleCheck.class.inc.php
+	+ updated to alpha 2
+
+svn ada
+
+*********************
+17/10/2012 15:50
+Valerio
+++++++++++++++++++
+fixed a bug on node_classes.inc.php
+++++++++++++++++++
+
+*	include/node_classes.inc.php
+	+ indexFN, line 358: corrected variable name inside AMA Error check
+
+svn ada, ftp ada
+
+*********************
+16/10/2012 18:37
+Valerio
+++++++++++++++++++
+Moved modules layout files inside module directory
+++++++++++++++++++
+
+*	include/layout_classes.inc.php
+	+ Changed construtor of classes: Layout, Template, CSS, JS
+*	include/output_classes.inc.php
+	+ fixed bug on resetImgSrcFN(): now it replace with absolute path
+*	config/config_install.inc.php
+	+ added $modules_dir variable containing modules path
+
+svn ada
+
+
+*********************
+16/10/2012 17:00
+Valerio
+++++++++++++++++++
+Added beta file classes_noregexp.inc.php (needs testing and improvements) to be moved to production
+++++++++++++++++++
+
+*	include/COREv0.1/html4/classes_noregexp.inc.php
+	+ Added beta file classes_noregexp.inc.php (needs testing and improvements) to be moved to production
+
+svn ada
+
+*********************
+16/10/2012
+Graffio
+++++++++++++++++++
+Optimization of connection to DB
+* include/ama_pear_mdb2_wrapper.inc.php
+  + connect
+  + getDSN
+
+++++++++++++++++++
+Optimization of view
+* inclde/ama.inc.php
+  + added get_node_children_complete
+* include/node_classes.inc.php
+  + indexFN
+  + get_notesFN
+
+++++++++++++++++++
+* layout/clear/templates/browsing/view.tpl
+  restored link to notes in view
+
+solo SVN.
+va fatto ftp su tutte le installazioni ada standard più icon (solo per ama_pear_mdb2_wrapper.inc.php)
+
+*********************
+15/10/2012 17:15
+Valerio
+++++++++++++++++++
+Added redirect function to redirect browser
+++++++++++++++++++
+
+*	include/utilities.inc.php
+	+ added redirect function
+
+svn ada, ftp ada, ftp icon
+
+*********************
+15/10/2012 15:41
+Valerio
+++++++++++++++++++
+Deploy of the external module test (in alpha stage)
+++++++++++++++++++
+*	modules/test/*
+*	layout/clear/css/test/*
+*	layout/clear/templates/test/*
+*	layout/silver_gray/css/test/*
+*	layout/silver_gray/templates/test/*
+*	layout/standard/css/test/*
+*	layout/standard/templates/test/*
+
+svn ada
+
+*********************
+15/10/2012 12:30
+Valerio
+++++++++++++++++++
+Added support for attribute "start" on COREv0.1 classes
+++++++++++++++++++
+
+*	include/COREV0.1/html4/classes.inc.php
+	+ added protected $start attribute on COl class
+*	include/COREV0.1/html4/CHtml_tags.inc.php
+	+ added %start% string on COl Element case
+
+svn ada, ftp ada
+
+
+*********************
+15/10/2012 12:30
+Valerio
+++++++++++++++++++
+Changed AMA_DataHandler, AMA_Common_DataHandler static variables for inheritance purpose
+++++++++++++++++++
+
+*	include/ama.inc.php
+	+ changed from private to protected static variables $instance and $tester_dsn
+
+svn ada, ftp ada
+
+
+*********************
+15/10/2012 12:30
+Valerio
+++++++++++++++++++
+Refactored html rendering class to load css and javascript with absolute urls (useful for external modules)
+++++++++++++++++++
+*	include/layout_classes.inc.php
+	+ added this file
+	+ modified class JS
+	+ modified class CSS
+
+*	include/output_classes.inc.php
+	+ modified _apply_JSFN
+	+ modified _apply_CSSFN
+
+svn ada, ftp ada
+
+
+******************************
+21/09/2012 22:33
+Valerio
+++++++++++++++++++
+replaced number values with correct constants
+++++++++++++++++++
+*	include/ama.inc.php
+	+ replaced number values with correct constants
+
+ftp ada, svn ada
+
+******************************
+21/09/2012 22:15
+Valerio
+++++++++++++++++++
+Added exercise history for student
+++++++++++++++++++
+
+*	browsing/exercise_history.php
+	+ added new module
+*	services/include/exercise_classes.inc.php
+	+ refactored getTutorForm functions, added function getExercise, some minor fixes on text outputted
+*	layout/standard/templates/browsing/view.tpl
+	+ added link to exercise_history.php on "tools" menu
+*	layout/clear/templates/browsing/view.tpl
+	+ added link to exercise_history.php on "tools" menu
+*	layout/silver_gray/templates/browsing/view.tpl
+	+ added link to exercise_history.php on "tools" menu
+*	include/user_class.inc.php
+	+ fixes needed to show the istance course name exercise list (tutor and student)
+*	browsing/view.php
+	+ added link to exercise_history.php on "tools" menu
+
+ftp ada, svn ada
+
+
+******************************
+21/09/2012 22:11
+Valerio
+++++++++++++++++++
+fixed bug on breadcrumb on tutor and tutor_exercise modules
+++++++++++++++++++
+
+*	include/node_classes.inc.php
+	+ fixed bug on breadcrumb
+*	tutor/tutor_exercise.php
+	+ fixed bug on breadcrumb
+*	tutor/tutor.php
+	+ fixed bug on breadcrumb
+
+ftp ada, svn ada
+
+******************************
+21/09/2012 22:10
+Valerio
+++++++++++++++++++
+fixed tooltip background bug on "clear" layout
+++++++++++++++++++
+
+*	layout/clear/css/switcher/default.css
+	+ fixed tooltip background bug on "clear" layout
+
+ftp ada, svn ada
+
+******************************
+21/09/2012 22:10
+Valerio
+++++++++++++++++++
+added default parameter option to MediaViewer constructor
+++++++++++++++++++
+
+*	include/media_viewing_classes.inc.php
+	+ added default parameter option to MediaViewer constructor
+
+ftp ada, svn ada
+
+******************************
+21/09/2012 22:00
+Valerio
+++++++++++++++++++
+Updated and added new templates and content files from FTP
+++++++++++++++++++
+
+*	layout/clear/templates/browsing/header.tpl
+*	layout/clear/templates/browsing/footer.tpl
+*	docs/help/help_it.txt
+*	docs/info/info_it.txt
+*	docs/news/news_it.txt
+*	layout/clear/templates/main/guest_view.tpl
+
+ftp ada, svn ada
+
+******************************
+21/09/2012 15:20
+Valerio
+++++++++++++++++++
+Added silver_gray layout
+++++++++++++++++++
+
+* layout/silver_gray/*
+
+ftp ada, svn ada
+
+
+******************************
+21/09/2012
+Graffio
+++++++++++++++++++
+New module: edit news published in home page. The Admin can edit the files.
+++++++++++++++++++
+* admin/edit_news.php
+  new script
+* admin/admin.php
+  added new voice in menu actions
+* layout/clear/css/main/default.css
+  deleted classes Welcome P
+* README
+  Added instructions to edit the news
+* js/admin/edit_news.js
+  new script. contains also the function to load fckeditor
+* include/HtmlLibrary/AdminModuleHtmlLib.inc.php
+  added method to create form to edit news
+* include/translator_class.inc.php
+  added method getLanguageNameForLanguageCode
+
+svn, ada20, alfa_fcm, icon su server Lynx, ada_ecm
+
+******************************
+07/09/2012
+Graffio
+++++++++++++++++++
+* switcher/course_instance.php --> fixed a bug
+  (svn, ftp su: icon su ADA, icon su CAP, ada20, alfa_fcm)
+* info.php --> fixed a bug
+
+++++++++++++++++++
+Note: va modificata la classe Subscription per aggiungere la gestione dei dati codice e data iscrizione
+++++++++++++++++++
+
+
+******************************
+04/09/2012 00:52
+Valerio
+++++++++++++++++++
+fixed bug on tooltip (switcher/course_instance.php)
++++++++++++++++++
+
+*	switcher/course_instance.php
+	+ fixed bug on tooltip
+
+svn ada, svn icon, ftp icon
+
+******************************
+19/08/2012 10:58
+Valerio
+++++++++++++++++++
+added course instance title in info.php
++++++++++++++++++
+
+*	info.php
+	+ added column "provider" on services' list
+	+ added column "title" on course instances' list
+*	include/ama.inc.php
+	+ added function "get_services_tester_info"
+
+svn ada, svn icon, ftp icon
+
+
+******************************
+14/08/2012 10:16
+Valerio
+++++++++++++++++++
+in switcher section added tooltips for:
+- tutor assigned course instances
+- student subscribed course instances
++++++++++++++++++
+
+*	include/Forms/TutorAssignmentForm.inc.php
+	+ fixed class comments
+*	js/switcher/default.js
+	+ added loading of tooltip.js
+*	js/switcher/tooltip.js
+	+ added this file (tooltip library)
+*	layout/standard/css/switcher/default.css
+	+ added tooltip css
+*	include/ama.inc.php
+	+ added function "get_students_subscribed_course_instance"
+	+ added function "get_tutors_assigned_course_instance"
+*	switcher/assign_tutor.php
+	+ added code to generate tooltip: logic and html
+*	switcher/course_instace.php
+	+ added code to generate tooltip: logic and html
+
+
+svn ada, svn icon, ftp icon
+
+******************************
+01/08/2012 13:25
+Valerio
+++++++++++++++++++
+changed "view nodes in depth n" with functions to open and close forum nodes (by javascript)
++++++++++++++++++
+
+*	browsing/include/CourseViewer.inc.php
+	+ adeguated html to new javascript workflow
+	+ removed root node from javascript manipulation
+*  browsing/main_index.php
+	+ changed "view nodes in depth n" with open/close nodes
+	+ this mode now appear only with structured node
+*  js/browsing/default.js
+	+ rewrote toggleVisibilityByClassName to work with new html and added 'show','hide' functionality instead of just 'toggle'
+
+svn ada, svn icon, ftp icon
+
+
+******************************
+01/08/2012 00:05
+Valerio
+++++++++++++++++++
+show course instance name on breadcrumb and on tutor's homepage
++++++++++++++++++
+
+*	browsing/view.php
+	+ show course instance name on breadcrumb
+*	browsing/main_index.php
+	+ show course instance name on breadcrumb
+*	tutor/include/tutor.inc.php
+	+ show course instance name, when available, on tutor's homepage
+
+svn ada, svn icon, ftp icon
+
+
+******************************
+29/07/2012 23:00
+Valerio
+++++++++++++++++++
+forum: removed the print of "visits: 0" on root node
++++++++++++++++++
+
+*	browsing/include/CourseViewer.inc.php
+	+ added a condition on an existing if
+
+svn ada, svn icon, ftp icon
+
+
+******************************
+25/07/2012 00:15
+Valerio
+++++++++++++++++++
+Reverted configuration files to original
+added css relative to forum message preview
+++++++++++++++++++
+
+*  layout/standard/css/browsing/default.css
+	+ added css relative to forum message preview
+*  layout/clear/css/browsing/default.css
+	+ added css relative to forum message preview
+
+svn ada, svn icon, ftp icon
+
+
+******************************
+23/07/2012 23:00
+Valerio
+++++++++++++++++++
+Fix to reduce loading time translated message with a temporary and simple cache.
+Added alphabetical ordering on forum section
+Added the message preview on forum section
+Added a function to cut strings without truncate the last word
+++++++++++++++++++
+
+*  include/utilities.inc.php
+	+ added function that cut strings without truncate last word (substr_gentle)
+*  include/translator_class.inc.php
+	+ added temporary cache system
+*  include/ama.inc.php
+	+ fixed query "get_notes_for_this_course_instance" to support alphabetical ordering
+*  browsing/main_index.php
+	+ added alphabetical ordering option
+*  browsing/include/CourseViewer.inc.php
+	+ added alphabetical ordering
+	+ added forum message preview
+
+svn ada, svn icon, ftp icon
+
+
+******************************
+18/07/2012 23:33
+Valerio
+++++++++++++++++++
+Fix to reduce loading time of "forum index" module.
+Before the fix, the module loaded every node with a single query plus an extra query for each node to get visit data
+Now it works with only 2 queries: one for nodes data and another for nodes' visits data
+++++++++++++++++++
+
+*  include/user_class.inc.php
+   + added function is_someone_there_courseFN to return nodes' visits data for a specific course
+*  include/ama.inc.php
+   + modified _find_nodes_history_list with an optional parameter to return also associative resulset
+*  browsing/include/CourseViewer.inc.php
+   + modified function displayForumIndex to collect and bundle nodes' visits data to nodes data
+   + modified function forumCommonCallback to use node's visit bundled data instead of retrieving it from database
+
+svn ada, svn icon, ftp icon
+
+
+******************************
+18/07/2012 00:29
+Valerio
+++++++++++++++++++
+Corrected AMADataHandler to AMA_DataHandler (bugfix)
+++++++++++++++++++
+
+* include/banner.inc.php
+
+svn
+
+
+******************************
+16/07/2012
+graffio
+++++++++++++++++++
+fixed an error in js validation form
+* include/Forms/lib/classes/FormValidator.inc.php
+  + changed NON_NEGATIVE_MONEY_VALIDATOR_REGEXP
+* js/include/basic.js (and include/Forms/lib/javascript/FormValidator.js)
+  fixed validateContent to check id element id exists
+
+svn, ada, icon, alfa
+
+******************************
+16/07/2012
+steve
+++++++++++++++++++
+* map.php:
+breadcrumb modified to point to map.php?id_node=* instead of view.php?id_node=*
+$node_path = $nodeObj->findPathFN('map');
+
+* search.php:
+changed search behavoiur on GET parameters
+	s_title (used in keyword links in view.php)
+	s_name (not used)
+search ONLY in those fields
+	s_node_text (used in searchl form)
+search everywhere (title, node, text fields)
+
+* info.php
+building the course instance list (from all providers), if the (service) provider = ADA_PUBLIC_PROVIDER (as defined in config_install), the link is not to registration page but to view module ("Enter")
+
+* author trying to delete a node: corrected the menu item in the view.tpl template
+
+* switcher/translation.php
+added the path (Translation module)
+
+* switcher/default.tpl
+added the link to the translation module
+
+* readded map.tpl template (why was it thrown away?)
+
+* main/default.tpl:
+commented out com_tools microtemplate field
+
+* cache mechanism modified:
+config_main.inc.php
+    added ADA_FORCE_UPDATE_CACHE
+view.php
+    revised cache writing mechanism
+
+* translated some sentences (common DB) for ADA_LEAF_WORD_TYPE cases
+
+******************************
+13/07/2012
+steve
+++++++++++++++++++
+* added cache behaviours (view.php, output_classes, config_main and config_install)
+ONLY for visitors.
+The behavoiur is managed via config_install constant ADA_CACHEMODE
+Possible values are:
+    ADA_NO_CACHE always dynamically read from DB
+    ADA_READONLY_CACHE read only: the file is always loaded but never rewritten
+    ADA_UPDATE_CACHE static rw: the node content is read from file only if lifetime is > $ic_lifetime, otherwise it is read from DB and then written back to file
+
+but also at runtime via GET params
+Possible modes (GET params) are:
+    cache (default: read from file only if it is up to date;  otherwise read from DB and then write to file)
+    nocache (read from db, don't write file)
+    updatecache (forced to read from db, write file)
+    readcache (read always from file if exists)
+
+* added xml export (view.php, output_classes)
+Only some data are exported (see ada.dtd)
+Not so userful by now...
+
+* a problem arose in view when a registered user didn't have a specific layout
+(layout_classes)
+-> property "family" of object Layout now is set to the system defaul if null
+
+* some minor changes in ama_inc about reading banners table
+* banner class has been reviewed to use these functions and not file system
+TODO: make them working
+
+* added a new layout named silver_gray
+
+* added some contents for home page (news_it.txt) (only italian)
+
+* added some text for guest and user help (only italian)
+
+
+******************************
+26/06/2012
+Graffio
+++++++++++++++++++
+Added field open_subscription to instanza corso
+++++++++++++++++++
+
+* include/ama.inc.php
+  + modified course_instance_get --> rebuilded methods
+  + course_instance_subscribeable_get_list
+  + course_instance_set
+  + course_instance_add
+* js/include/basic.js
+  + fixed error in validateContent
+* include/Forms/CourseInstanceForm.inc.php
+  + added new fields
+* switcher/edit_instance.php
+* switcher/add_instance.php
+* include/coursesInstance.inc.php
+  + added new geter
+* include/courses_classes.inc.php
+* switcher/list_instances.php
+  + show the name of class in the list of instances
+
+svn, alfa, icon (ama personalized)
+
+
+******************************
+26/06/2012
+graffio
+* include/ama.inc.php
+  + fixed course_instance_subscribeable_get_list
+
+
+******************************
+25/06/2012
+graffio
+* switcher/subscriptions.php
+  + added email to users
+
+svn, icon su ada, alfa_fcm
+
+******************************
+21/06/2012
+graffio
+* admin/add_user
+  + fix in order to create the upload directory od switcher and tutor
+* switcher/subscriptions.php
+  + fix to change the path of upload file
+
+svn, icon su ada, alfa_fcm
+
+******************************
+18/06/2012
+++++++++++++++
+changes to Course Instance
+++++++++++++++
+Graffio
+Table instanza_corso. added new fields.
+
+ALTER TABLE  `istanza_corso` ADD  `title` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+ADD  `price` DECIMAL( 4, 2 ) NOT NULL ,
+ADD  `self_instruction` TINYINT( 1 ) NOT NULL ,
+ADD  `self_registration` TINYINT( 1 ) NOT NULL ,
+ADD  `start_level_student` INT( 2 ) NOT NULL ,
+ADD  `duration_subscription` INT( 3 ) NOT NULL,
+ADD  `open_subscription` TINYINT( 1 ) NOT NULL
+
+* include/ama.inc.php
+  + modified course_instance_get --> rebuilded methods
+  + course_instance_subscribeable_get_list
+  + course_instance_set
+  + course_instance_add
+* js/include/basic.js
+  + fixed error in validateContent
+* include/Forms/CourseInstanceForm.inc.php
+  + added new fields
+* switcher/edit_instance.php
+* switcher/add_instance.php
+* include/coursesInstance.inc.php
+  + added new geter
+* include/courses_classes.inc.php
+* include/Forms/lib/classes/FormValidator.inc.php
+  + added regex to validate not negative money
+
+svn, alfa, icon (ama personalized)
+
+
+******************************
+30/05/2012
+Graffio
+* admin/list_users.php
+  + added filter on user_type
+* admin/tester_profile.php
+  + changed menu actions
+* include/ama.inc.php
+  * modified get_users_by_type_from_position_to_position to return also user type (tipo)
+* include/HtmlLibrary/AdminModuleHtmlLib.inc.php
+  + added user type and sort of the results in table
+* js/admin/default.js
+  + added tablekit.js inclusion (table sort)
+* layout/clear/css/page.css
+  + added classes for tablekit
+* layout/standard/css/page.css
+  + added classes for tablekit
+* include/data_validation.inc.php
+  + changed the regex of validate_username to allow . and - in username
+
+svn
+
+******************************
+07/05/2012
+Graffio
+* include/data_validation.inc.php
+  + changed the regex of validate_username to allow username of number only before @
+
+svn, locale, ICON, alfa
+
+******************************
+03/05/2012
+Graffio
+* include/Forms/lib/FormValidator.inc.php
+  + added MULTILINE_TEXT_VALIDATOR
+  + reduced to 2 the characther needed in name
+
+svn, locale, ICON (sia lynx che cap), alfa
+
+******************************
+02/05/2012
+Graffio
+* browsing/download.php
+  + small fix
+
+svn, locale, ICON, alfa
+
+******************************
+27/04/2012
+Graffio
+* browsing/registration.php
+  + added DIV error
+* include/Forms/UserRegistrationForm.inc.php
+  + added CODE field to subscribe a course. (come from ICON)
+  + added all the nations
+* include/Forms/lib/classes/FormValidator.inc.php
+  changed regexep to validate name and surname
+* js/include/basic.js
+  + changed validateContent to show div error in case there is at least an error in the form
+* layout/clear/css/form.css
+  + added classes div.hide_error and div.show_error
+
+svn, locale, ICON, alfa
+
+******************************
+24/04/2012
+Graffio
+* browsing/search.php
+  + changed sql to search no contiguous words
+* browsing/view.php
+  + added $querystring to parameters og filter_nodeFN
+* include/node_classes.inc.php
+  - modified get_textFN to point out searched words
+
+svn
+
+******************************
+19/04/2012
+Graffio
+
+* include/node_classes.inc.php
+  + classe media:
+    Cerca il media nella dir dell'autore del nodo e se non lo trova nella dir dell'autore del corso.
+* include/media_viewing_class.inc.php
+  + fixed loading audio player
+* browsing/seach.php
+  + fixed to search in all the node
+* browsign/view.php
+  + changed link to main_index.php from course_title
+
+
+++++++++++++++++++++++++++++
+chat fix
+++++++++++++++++++++++++++++
+* comunica/edit_chat.php
+  + small fixes
+* include/Forms/chatManagementForm.inc.php
+  + changed option for chat type
+
+++++++++++++++++++++++++++++
+course subscription
+++++++++++++++++++++++++++++
+* include/multiport.inc.php
+  + added methods to subscribe a course having a code
+* info.php
+  + fixed the subscription process (it didn't work before)
+* layout/clear/templates/main/default.tpl
+  + changed link to home
+* layout/standard/templates/main/default.tpl
+  + changed link to home
+* layout/clear/templates/browsing/default.tpl
+  + added link to info.php instead of navigation
+* layout/standard/templates/browsing/default.tpl
+  + added link to info.php instead of navigation
+---------- i files precedenti sono in svn e server ADA -------
+
+
+******************************
+13/04/2012
+Graffio
+++++++++++++++++++++++++++++
+messagges fix
+++++++++++++++++++++++++++++
+* comunica/send_messagge.php
+  + modified case default
+* include/HtmlLibrary/BaseHtmlLib.inc.php
+  + added function CheckBox
+* layout/clear/templates/comunica/read_message.tpl
+  + small fixes
+* layout/clear/css/comunica/default.css
+  + small fixes
+* include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php
+  + small fix in getReceivedMessagesFormContent
+
+locale, svn riportato in alfa_fcm
+
+
+******************************
+13/04/2012
+Graffio
+++++++++++++++++++++++++++++
+CHAT correzioni
+++++++++++++++++++++++++++++
+* templates/clear/comunica/list_chatrooms.tpl
+  + spostamento voci da agisci a comunica
+* templates/standard/comunica/list_chatrooms.tpl
+  + spostamento voci da agisci a comunica
+* comunica/list_chatrooms.php
+  + some changes
+* comunica/delete_chat.php
+  * new to delete chatroom
+* comunica/create_chat.php
+  + disallowed private chat
+* comunica/include/ChatRoom.inc.php
+  + modified remove_chatroomFN to allow static call
+* include/Forms/ChatRemovalForm.inc.php
+  form to confirm delete chatroom
+
+++++++++++++++++++++++++++++
+WHO'S ONLINE FIX
+++++++++++++++++++++++++++++
+* include/HtmlLibrary/BaseHtmlLib.inc.php
+  + modified plainListElement to allow list without label
+* include/user_class.inc.php
+  + modified get_online_usersFN and _online_usersFN
+* tutor/tutor.php
+  + activated on line user
+* browsing/view.php
+  + activated on line user
+
+svn e locale
+Va riportato il tutto in icon
+
+******************************
+05/04/2012
+Graffio
+* comunica/create_chat.php
+  + fixed a bug in creation of User Data Handler
+* comunica/report_chat.php
+  + fixed some bugs
+* comunica/list_chatrooms.php
+  + added some more info to the table
+
+******************************
+04/04/2012
+Graffio
+++++++++++++++++++++++++++++
+CHAT + varie
+++++++++++++++++++++++++++++
+* layout/clear/templates/browsing/view_note.tpl --> riportare in ICON e alfa
+  + changed link to download in menù
+* layout/standard/templates/browsing/view_note.tpl --> riportare in ICON e alfa
+  + changed link to download in menù
+* layout/clear/templates/browsing/view.tpl --> riportare in ICON e alfa
+  + changed link to download in menù
+* layout/standard/templates/browsing/view.tpl --> riportare in ICON e alfa
+  + changed link to download in menù
+* layout/standard/templates/comunica/list_chat_rooms.tpl --> riportare in ICON e alfa
+  + changed some classes (menu --> menu_std)
+* layout/clear/templates/comunica/list_chat_rooms.tpl --> riportare in ICON e alfa
+  + changed some classes (menu --> menu_std)
+* layout/clear/css/comunica/default.css --> riportare in ICON e alfa
+  + changed some classes and added other to fix chat, report_chat, and list chat (menu_std)
+* layout/standard/css/comunica/default.css --> riportare in ICON e alfa
+  + changed some classes and added other to fix chat, report_chat, and list chat (menu_std)
+* layout/clear/css/comunica/chat.css --> riportare in ICON e alfa
+  + changed some classes and added other to fix chat, report_chat, and list chat (menu_std)
+* layout/standard/css/comunica/chat.css --> riportare in ICON e alfa
+  + changed some classes and added other to fix chat, report_chat, and list chat (menu_std)
+* js/comunica/default.js
+  + includes tablekit (sort tables)
+* js/include/tablekit/tablekit.js
+  + html table manager (sort, etc.)
+* js/include/tablekit/fabtabulous.js
+  + html table manager (sort, etc.)
+* comunica/report_chat.php
+  + some changes and fix
+* comunica/list_chatrooms.php
+  + some changes:
+    tutor can: view report also chat not closed, cannot delete chatrooms, cannot add users
+    switcher can: view report also chat not closed, cannot add users
+* comunica/include/comunica_functions.inc.php
+  + some fix
+* comunica/chat.php
+  + some fix
+
+
+
+******************************
+02/04/2012
+Graffio
+++++++++++++++++++++++++++++
+REPORT CHATROOM
+++++++++++++++++++++++++++++
+* comunica/report_chat.php
+  riscritta partendo da versione di ada 1.8
+* comunica/list_chatrooms.php
+  + cambiato link a report
+
+
+******************************
+30/03/2012
+Graffio
+++++++++++++++++++++++++++++
+GESTIONE CHATROOM
+++++++++++++++++++++++++++++
+prosecuzione da 12/03/2012
+
+----------
+logica:
++ creando la classe viene creata una chatroom. owner = switcher che crea la classe
++ switcher assegna il tutor alla classe: aggiornamento della stanza owner = tutor
++ swicher cambia le date e la durata della classe: aggiornamento della stanza: inizio, fine, durata
+
+----------
+Rimane fuori per il momento:
+* chat privata ad inviti perchè ci sono da ripensare varie cose in termini di codice e GUI
+
+----------
+Va riportato/fatto ancora:
+* da wisp: il modulo di fine sessione (semplificato: in cui il tutor scrive come è andata la chat)
+* da ada 1.8: il report della chat
+* modificare i templates/css
+
+----------
+Va verificato ancora:
+* come viene impostato lo stato dell'utente? l'owner è Operatore?
+
+
+----------
+Files modificati/nuovi:
+* include/Utilities.inc.php
+  + riattivato controllo timezone usando php invece che controllo locale
+* layout/clear/templates/comunica/list_chatrooms.tpl
+  + aggiunto link x lista chatrooms
+* comunica/list_chatrooms.php
+  + piccole modifiche
+* comunica/edit_chat.php
+  + corretti vari bug
+* comunica/include/ChatRoom.inc.php
+  + aggiunto metodo get_class_chatroom_for_instance
+* comunica/include/ChatDataHandler.inc.php
+  + aggiunto metodo get_class_chatroom_for_instance
+* switcher/edit_instance.php
+  + modificato modo di leggere la stanza: se le data inizio e/o fine cambiano
+    creava una nuova stanza invece di aggiornare quella esistente
+* switcher/list_courses.php
+  + aggiunto link a list_chatrooms.php
+* switcher/add_instance.php
+  + aggiunto titolo corso (usabilità)
+* switcher/list_instances.php
+  + aggiunto titolo corso (usabilità)
+* switcher/assign_tutor.php
+  + aggiunto aggiornamento chatroom per cambiare owner
+* include/Forms/CourseInstanceForm.inc.php
+  + aggiunta maschera data (usabilità)
+
+locale SVN
+
+******************************
+28/03/2012
+Graffio
+riportate modifiche per aggiunta crediti in modello corso da ada_alfa
+* include/course.inc.php
+* include/ama.inc.php.inc.php
+* include/course_classes.inc.php
+* include/Forms/CourseModelForm.inc.php
+* switcher/add_course.php
+* switcher/edit_course.php
+* switcher/view_course.php
+
+******************************
+23/03/2012
+Graffio
+ISCRIZIONE (info.php) non funzionava
+file modificati:
+* info.php
+  --> molte modifiche
+  --> va revisionato il menù che è quello dell'utente anonimo
+* include/ama.inc.php
+  --> nuova funzione --> get_course_info_for_course_instance
+  --> course_instance_subscribeable_get_list --> cambiato il controllo della data
+* include/DB_read.inc.php
+  --> read_user --> rilettura dei provider a cui è associato l'utente anche se utente in sessione
+* browsing/user.php
+  --> aggiunti controlli per corso iniziato/finito per consentire l'accesso all'utente solo se true
+  --> aggiungere link a info.php
+
+solo in svn
+* riportato in ICON (solo svn)
+* va riportato in ada_alfa e vocabolario (?)
+
+******************************
+12/03/2012
+Graffio
+GESTIONE CHAT
+* include/Forms/lib/classes/FormControl.inc.php --> aggiunto time validator (da controllare)
+* include/Forms/chatManagementForm.inc.php --> form per edit chat
+* layout/clear/templates/comunica/list_chatrooms.tpl
+* layout/clear/css/comunica/default.css --> importazione di altri css (page, form)
+* comunica/edit_chat.php --> riportato da 1.8 riscrittura dei form
+* comunica/list_chatrooms.php --> small modifications
+* comunica/create_chat.php --> descrizioni. Nulla del codice
+* comunica/include/ChatRoom.inc.php --> pulizia
+* switcher/add_instance.php --> modifica x creare la chat room quando viene creata l'istanza
+
+locale e svn
+N.B. Luca dovrà rivedere la grafica...

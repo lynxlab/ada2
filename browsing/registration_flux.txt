@@ -1,0 +1,58 @@
+non mostrare i servizi pubblici in info
+non mostrare i servizi non selezionati in registration
+
+form
+- include/adminmodulehtmllib.inc.php.formelementcreator
+ajax per caricare lista servizi -> provider
+oppure
+paese/provincia -> servizio 
+
+separare registration da subscription 
+
+
+
+registration/subscription
+
+- se submit: 46
+-- se è indicato anche un id_course
+--- prende il servizio
+--- prende il tester del servizio
+
+-- se è stato inviato almeno il campo "name" 62
+--- è una registrazione
+--- verifica campi 99
+--- se campi vuoti
+---- se necessari (FIXME: non si sa se non si prende il livello del servizio richeisto)
+-----esce con messaggio
+---- se non necessari
+-----continua
+
+-- controlla validità dei dati 117
+-- se ok
+--- setta username = email
+--- setta password sha1 nome
+
+-- add_user su Common
+-- se ok (id intero positivo)
+--- aggiunge riga a user_tester in Common
+--- se ok
+---- aggiunge studente su tester
+---- se ok
+------ aggiunge utente su tester
+
+- se no submit
+-- se non sess_id_user
+---- mostro il form per la registrazione
+-- se si e <> 0
+--- mostro solo la lista dei servizi
+
+
+
+
+- se sess_id_user è vuoto o è 0
+-- mostra form registrazione
+
+- se id_course è passato
+-- check della riga corrispondente della lista dei servizi
+
+

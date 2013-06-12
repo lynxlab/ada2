@@ -1,0 +1,5 @@
+<!--
+<p>
+Se hai bisogno di aiuto, consulta l'<a href="http://ada.lynxlab.com/ada20/help.php">Help</a>
+</p>
+-->

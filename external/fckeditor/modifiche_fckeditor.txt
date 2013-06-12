@@ -1,0 +1,16 @@
+***********************
+24 dic 2011
+Graffio
+---
+Modifiche a editor per aggiungere possibilità di gestire immagini, link e flash interne ad ada.
+La modifica consente inoltre di gestire la directory di upload dei file dinamicamente
+posizionandosi nella directory dell'utente logato (tipicamente: services/media/id_user)
+
+File modificati:
+* external/fckeditor/fckconfig.js:
+  + FCKConfig.PreserveSessionOnFileBrowser = true ; // riga 98
+  + aggiunte varie icone (immagini, flash, link, etc) a FCKConfig.ToolbarSets["Basic"]
+* external/fckeditor/editor/filemanager/connectors/php/config.php
+  + session_start(); // riga 36
+  + $Config['UserFilesPath'] = '/services/media/'.$_SESSION['sess_id_user'].'/'; //riga 37
+  + modificati i path per i tipi di files in modo che non sia specifico (righe 128, 135, 142, 149)

@@ -1,0 +1,154 @@
+@import url("../page.css");
+@import url("../exercises.css");
+
+#back A {
+    background: url(../../img/back.png) no-repeat center left; 
+    display:block;
+    padding:0 0 0 40px;
+}
+
+/*
+ * Node editor
+ */
+#editor_form_div {
+}
+#jseditor_form {
+ width: 720px;
+}
+#jsbuttons .unselected{
+	background: url(../../img/buttonb.png) no-repeat top left;
+}
+#jsbuttons .selected{
+	background: url(../../img/selected_buttonb.png) no-repeat top left;
+}
+
+#jsdata_textarea {
+	width: 100%;
+	height: 350px;
+}
+#jsdata_hyphenarea {
+	width: 100%;
+	height: 50px;
+}
+#jsdata_semanticarea {
+	width: 100%;
+	height: 50px;
+}
+#jsdata_grammararea {
+	width: 100%;
+	height: 50px;
+}
+#jsdata_notesarea {
+	width: 100%;
+	height: 50px;
+}
+#jsdata_examplesarea {
+	width: 100%;
+	height: 50px;
+}
+
+#jsnode_data_div {
+	left: 740px;
+	/*top: -320px;*/
+	top: 310px;
+	position: absolute;
+	height: 0;
+	width: 349px;
+	background: #c2c2c2;
+	right:10px;
+}
+#jsnode_data_div div {
+	background: #c2c2c2;
+	margin:0;
+	padding: 5px;
+}
+#jsbuttons {
+	position: absolute;
+	width: 350px;
+	line-height: 2;
+	left: 740px;
+	/*right:10px;*/
+	top: 220px;
+        height: 100px;
+}
+.editor_input {
+	font-size: small;
+	color: Black;
+	font-weight: normal;
+	padding: 5px;
+}
+#jsbutton_forjsnode_data_div{
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+	width: 170px;
+	z-index: 10;
+	top: 54px;
+	left: 171px;
+	right: -2px;
+}
+#jsbutton_forjsnode_data_div:hover {
+	color: White;
+}
+#jsbutton_forjsid_divfu{
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+	width: 170px;
+	top: -128px;
+	left: -2px;
+	z-index: 1;
+}
+#jsbutton_forjsid_divfu:hover {
+	color: White;
+}
+#jsbutton_forjsid_divli {
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+	width: 170px;
+	height: 63px;
+	top: -98px;
+	left: 171px;
+/*	right: -2px;*/
+
+}
+#jsbutton_forjsid_divli:hover {
+	color: White;
+}
+#jsbutton_forjsid_divle{
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+	width: 170px;
+	height: 63px;
+	top: -25px;
+	left: -2px;
+}
+#jsbutton_forjsid_divle:hover {
+	color: White;
+}
+#jsaddons {
+	position: absolute;
+	background: #c2c2c2;
+	top: 310px;
+	left: 740px;
+	right: 10px;
+	width: 349px;
+}
+
+#jsid_divli,#jsid_divle,#jsid_divfu {
+	padding: 5px;
+}
+#text {
+}
+#jsid_select_files, #jsid_select_external_links {
+	width: 335px;
+}
+
+/*
+ * Preview menu
+ */
+#back_link A { background: url(../../img/back.png) no-repeat center left; display:block; padding:0 0 0 40px;  }
+#edit_link A { background: url(../../img/edit.png) no-repeat center left; display:block; padding:0 0 0 40px;  }
+#save_link A { background: url(../../img/salva.png) no-repeat center left; display:block; padding:0 0 0 40px;  }

@@ -1,0 +1,713 @@
+cloze {
+	background-color: rgba(255,0,0,0.30);
+}
+
+cloze img {
+	border: 3px solid rgba(255,0,0,0.30);
+}
+
+#testForm table, #testForm tbody, #testForm tr, #testForm td, #testForm th {
+    border-collapse: collapse;
+    font-family: inherit;
+    font-size: 100%;
+    font-style: inherit;
+    font-weight: inherit;
+    line-height: 1.5em;
+    text-align: left;
+    vertical-align: baseline;
+	border-color: #DFDFDF;
+}
+
+#testForm th {
+    background-color: #6F7E9B;
+    color: white;
+    text-transform: none;
+}
+
+#testForm tbody td, #testForm td {
+    background-color: #EEEEEE;
+    padding: 0px 5px;
+    vertical-align: middle;
+    border-bottom: 1px solid #DFDFDF;
+}
+
+#testForm tbody td p, #testForm td p {
+    left: 0;
+    position: relative;
+    top: 0;
+}
+
+#exerciseWrap {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.exercise {
+    float: left;
+    margin: 0px 10px;
+}
+
+.exerciseFull {
+    width: 100%;
+}
+
+#exerciseWrap #media {
+    background-color: #EDEDED;
+    border-radius: 10px 10px 10px 10px;
+    float: left;
+    height: auto;
+    overflow: hidden;
+    width: 250px;
+}
+
+#exerciseWrap #media li {
+    color: #313D53;
+    font: 14px Georgia,"Times New Roman",Times,serif;
+    margin-left: 40px;
+    margin-right: 25px;
+    text-align: left;
+    width: 200px;
+}
+
+#exerciseWrap #media p {
+    color: #313D53;
+    font: 14px/1.3em Georgia,"Times new roman",serif;
+    margin-left: 25px;
+    margin-right: 25px;
+    text-align: left;
+    width: 200px;
+}
+
+#exerciseWrap #media img {
+    border-radius: 10px 10px 10px 10px;
+}
+
+.question {
+    background-color: #DDDDDD;
+    border-radius: 10px 10px 10px 10px;
+    height: auto;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.question table {
+    float: left;
+}
+
+.question table.rightTableOneCol tr:nth-child(2n+1) td {
+    background-color: #F9F9F9 !important;
+}
+
+.question table.rightTableTwoCols tr:nth-child(2n+1) td {
+    background-color: #F9F9F9 !important;
+}
+
+.question table th {
+    padding: 10px;
+    text-align: center;
+}
+
+.exerciseFull .question table {
+    float: left;
+}
+
+.question table + table {
+    float: left;
+    margin-left: 50px;
+}
+
+.exerciseFull .question table + table {
+    float: left;
+    margin-left: 50px;
+    max-width: 400px;
+}
+
+.question .imageViewer, .question .videoPlayer {
+    height: auto;
+    overflow: hidden;
+    width: 100px;
+}
+
+.question .audioPlayer {
+    height: 40px;
+    width: 200px;
+}
+
+#navigation {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+ul.tableLike li {
+    border-bottom: 1px solid #DDDDDD;
+    display: block;
+}
+
+.word, .complete {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 100px;
+}
+
+.image {
+    display: inline-block;
+    height: 50px;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 100%;
+}
+
+.exercise .question .questionChoiceSingle, .exerciseFull .question .questionChoiceSingle {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionChoiceSingle {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.exercise .question .questionChoiceSingle.has_media {
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 729px;
+}
+
+.exercise .question .questionChoiceSingle.has_media .imageViewer {
+    float: left;
+    height: 100px;
+}
+
+.exercise .question .questionChoiceSingle.has_media p {
+    color: #313D53;
+    float: left;
+    font: 14px Georgia,"Times new roman",serif;
+    margin-left: 10px;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.exercise .question .questionDd {
+    float: left;
+    height: auto;
+}
+
+.questionDd p {
+    line-height: 2em;
+}
+
+.questionDd .word.draggable.pointed {
+    border-bottom: 1px dashed #AAAAAA;
+    width: auto !important;
+}
+
+.exercise .question .questionDd p .draggable.pointed.neutral.wautolength, .exercise .question .questionDd p .draggable.pointed.wrong.wfixedlength, .exercise .question .questionDd p .word.complete.wrongborded {
+    width: auto !important;
+}
+
+.exercise .question .questionDd p .word.complete {
+    width: 100px !important;
+}
+
+.exercise .question .questionDd {
+    background-color: #EEEEEE;
+    margin: 10px 10px 10px 10px;
+}
+
+.exercise .question .questionDd table td {
+	min-width: 20px;
+    width: auto !important;
+}
+
+.exercise .question .questionDd p {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.exercise .question .questionDd p .word, .exercise .question .questionDd p .complete, .exercise .question .questionDd p .pointed {
+    cursor: pointer;
+    margin: -5px 0 0 !important;
+    min-width: 50px !important;
+    padding: 0 0 4px !important;
+}
+
+.exercise .question .questionDd p .word.complete.draggable.pointed {
+    width: auto;
+}
+
+.question .questionTi, .question .questionTiGrid, .question .questionTiGridRandom {
+    background-color: #EEEEEE;
+    height: auto;
+    margin: 10px;
+    overflow: hidden;
+}
+
+.question .questionTi table td .imageViewer {
+    max-height: 100px;
+}
+
+.question .questionTi ul {
+    background-color: #EEEEEE;
+}
+
+.exercise .question .questionTi p {
+    display: block;
+    margin: 20px 10px;
+}
+
+.question .questionTi table, .question .questionTiGrid table {
+    width: 100%;
+}
+
+.question .questionTi table td:first-child, .question .questionTiGrid table td:first-child {
+    text-align: left;
+    width: 100px;
+}
+
+.question .questionTi td object, .question .questionTiGrid td object {
+    max-width: 400px;
+}
+
+.question .questionTi table td p, .question .questionTiGrid table td p {
+    display: block;
+    text-align: left;
+}
+
+.question .questionGridFromTextTi {
+    background-color: white;
+    margin: 10px;
+}
+
+.question .questionGridFromTextTi table {
+    background-color: #EEEEEE;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.question .questionGridFromTextTi table td {
+    max-width: 49%;
+}
+
+.question .questionGridFromTextTi td object {
+    max-width: 49%;
+}
+
+.question .questionSel {
+    background-color: #EEEEEE;
+    height: auto;
+    margin: 10px;
+    overflow: hidden;
+}
+
+.question .questionSel p {
+    display: block;
+    margin: 20px 10px;
+}
+
+.rightTableOneCol {
+    margin-left: 10px;
+}
+
+.exercise .question .questionReorder {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionReorder {
+    margin: 10px 5px 10px 10px;
+}
+
+.exercise .question .questionReorder table {
+    width: 100%;
+}
+
+.exercise .question .questionReorder table .droppable, .exercise .question .questionReorder table .word {
+    line-height: 12px;
+    width: 340px;
+}
+
+.exercise .question .questionReorderSC {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionReorderSC {
+    float: left !important;
+    margin: 10px 5px 10px 10px;
+    width: 470px !important;
+}
+
+.exercise .question .questionReorderSC table tr td {
+    max-width: 100px;
+    width: auto !important;
+}
+
+.exercise .question .questionReorderSC table {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+.exercise .question .questionReorderSC table td .droppable {
+    width: 70px !important;
+}
+
+.exercise .question .questionReorderSC + .rightTableTwoCols {
+    margin-left: 0 !important;
+    width: 100%;
+}
+
+.exercise .question .questionReorderSC table th {
+    border-right: 1px solid #EEEEEE;
+}
+
+.exercise .question .questionReorderSC table td {
+    border-right: 1px solid #DFDFDF;
+}
+
+.exercise .question .questionReorderSC table tr td:nth-child(2) {
+    margin-right: 10px;
+    max-width: 100px !important;
+}
+
+.exercise .question .questionReorderSC table tr td > object.audioPlayer {
+    width: 200px !important;
+}
+
+.exercise .question .questionReorderDC, .exerciseFull .question .questionReorderDC {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionReorderDC {
+    margin: 10px 5px 10px 10px;
+}
+
+.exercise .question .questionReorderDC table {
+    float: left;
+    width: 309px;
+}
+.exercise .question .questionReorderDC table tr td {
+    max-width: 200px;
+    width: auto !important;
+}
+
+.exercise .question .questionReorderDC table {
+    margin-left: 0 !important;
+    width: 100%;
+}
+
+.exercise .question .questionReorderDC + secondBlock table.rightTableTwoCols {
+    margin-left: 0 !important;
+    width: 100%;
+}
+
+.exercise .question .questionReorderDC table th {
+    border-right: 1px solid #EEEEEE;
+}
+
+.exercise .question .questionReorderDC table td {
+    border-right: 1px solid #DFDFDF;
+}
+
+.exercise .question .questionReorderTC, .exerciseFull .question .questionReorderTC {
+    float: left;
+    height: auto;
+}
+
+.exercise .question .questionReorderTC {
+    margin: 10px 5px 10px 10px;
+}
+
+.exercise .question .questionReorderTC table tr td {
+    max-width: 200px;
+    width: auto !important;
+}
+
+.exercise .question .questionReorderTC table {
+    float: left;
+    width: 309px;
+}
+
+.exercise .question .questionReorderTC table {
+    margin-left: 0 !important;
+    width: 100%;
+}
+
+.exercise .question .questionReorderTC + secondBlock table.rightTableTwoCols {
+    margin-left: 0 !important;
+    width: 100%;
+}
+
+.exercise .question .questionReorderGrid, .exerciseFull .question .questionReorderGrid {
+    float: left;
+    height: auto;
+}
+
+.exercise .question .questionReorderGrid {
+    margin: 10px 5px 10px 10px;
+}
+
+.exercise .question .questionReorderGrid table {
+    float: left;
+    width: 358px;
+}
+
+.exercise .question .questionReorderGrid table {
+    margin-left: 0 !important;
+    width: 100%;
+}
+
+.exercise .question .questionReorderGrid + .rightTableTwoCols {
+    margin-left: 0 !important;
+    width: 100%;
+}
+
+.exercise .question .questionClozeFill, .exerciseFull .question .questionClozeFill {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.question .questionClozeFill table td .imageViewer {
+    max-height: 100px;
+}
+
+.exercise .question .questionClozeFill {
+    margin: 10px 5px 10px 10px;
+}
+
+.questionClozeFill .word.draggable.pointed {
+    border-bottom: 1px dashed #AAAAAA;
+    width: auto !important;
+}
+.questionClozeFill .complete.word.wrongborded {
+    width: auto !important;
+}
+
+.exercise .question .questionClozeFill table td .imageViewer {
+    max-height: 80px;
+}
+
+.exercise .question .questionClozeFill {
+    background-color: #EEEEEE;
+}
+
+.exercise .question .questionClozeFill p {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.exercise .question .questionClozePreSel, .exerciseFull .question .questionClozePreSel {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionClozePreSel {
+    margin: 10px;
+}
+
+.exercise .question .questionClozePreSel p {
+    background-color: #EEEEEE;
+    display: block;
+    margin: 0;
+    padding: 10px;
+    width: 699px;
+}
+
+.exercise .question .questionClozePreSel + .secondBock {
+    margin: 10px 10px 10px 5px;
+}
+
+.exercise .question .questionClozePreSel .first_option {
+    color: #4C5E80 !important;
+}
+
+.exercise .question .questionErasable, .exerciseFull .question .questionErasable {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionErasable {
+    margin: 5px;
+    width: 733px !important;
+}
+.exercise .question .questionErasable p {
+    background-color: #EEEEEE;
+    display: block;
+    margin: 5px;
+    padding: 10px;
+    width: 729px;
+}
+.exercise .question .questionChoiceMultiple {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionChoiceMultiple {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.exercise .question .questionChoiceMultiple.has_media {
+    width: 100%;
+}
+.exercise .question .questionChoiceMultiple.has_media object.imageViewer {
+    float: left;
+    height: 100px !important;
+    margin-right: 30px;
+}
+.exercise .question .questionChoiceMultiple.has_media object.imageViewer + p {
+    width: 600px;
+}
+.exercise .question .questionRewriteWord, .exerciseFull .question .questionRewriteWord {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionDdFromTextRandom, .exerciseFull .question .questionDdFromTextRandom {
+    background-color: #EEEEEE;
+    height: auto;
+    padding: 10px;
+}
+
+.exercise .question .questionDdFromTextRandom {
+    margin: 10px 10px 5px;
+}
+
+.exercise .question .questionDdFromTextRandom .word.draggable.pointed {
+    border-bottom: medium none !important;
+    width: auto !important;
+}
+
+.exercise .question .questionTiGrid, .exerciseFull .question .questionTiGrid {
+    background-color: #EEEEEE;
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionTiGrid {
+    margin: 10px 5px 10px 10px;
+}
+.exercise .question .questionTiGrid table {
+    width: 100%;
+}
+.exercise .question .questionTiGrid table td {
+    width: 50%;
+}
+.exercise .question .questionTiGrid + .secondBock {
+    margin: 10px 10px 10px 5px;
+}
+.exercise .question .questionTiGridRandom {
+    background-color: #EEEEEE;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionClozeDdFromText {
+    background-color: #EEEEEE;
+    float: left;
+    height: auto;
+    overflow: visible;
+}
+
+.exercise .question .questionClozeDdFromText {
+    margin: 10px 10px 5px;
+}
+.exercise .question .questionClozeDdFromText p {
+    margin: 10px;
+}
+
+.exercise .question .questionClozeDdFromText .word.draggable.pointed {
+    border-bottom: medium none !important;
+    width: auto !important;
+}
+
+.exercise .question .questionGridFromTextTi {
+    float: left;
+    height: auto;
+    overflow: hidden;
+}
+
+.exercise .question .questionClozeFit {
+    background-color: #EEEEEE;
+    float: left;
+    height: auto;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.exercise .question .questionClozeFit p {
+    display: block;
+    margin: 20px 10px;
+}
+
+.exercise .question .questionClozeFit p .word.draggable.pointed {
+    width: auto;
+}
+
+.exercise .question .questionRewritePhrase {
+    background-color: #EEEEEE;
+    float: left;
+    height: auto;
+    margin: 10px;
+    overflow: hidden;
+}
+
+.exercise .question .questionRewritePhrase p {
+    display: block;
+    margin: 20px 10px;
+}
+
+.exercise .question .questionRewriteWord {
+    background-color: #EEEEEE;
+    float: left;
+    height: auto;
+    margin: 10px;
+    overflow: hidden;
+}
+
+.exercise .question .questionRewriteWord p {
+    display: block;
+    margin: 20px 10px;
+}
+.exercise .question .questionHighlightable {
+    background-color: #EEEEEE;
+    float: left;
+    height: auto;
+    margin: 10px;
+    overflow: hidden;
+}
+
+.exercise .question .questionHighlightTable p {
+    display: block;
+    margin: 20px 10px;
+}
+
+.didascalia {
+    font-style: italic;
+    margin: 10px auto;
+    width: 300px;
+	margin-left:5px;
+}
+
+.primo_elemento {
+    color: #4C5E80;
+}

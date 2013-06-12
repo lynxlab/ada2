@@ -1,0 +1,214 @@
+@import url("../mainmenu.css");
+
+/* IMPOSTAZIONI GENERALI
+----------------------------------------------- */
+html, body { font-family: Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:10px; color:#000; font-size: small;
+			 background: #FFFFFF; }
+			 
+A IMG {border:none;}
+table,tbody, tr, td, th { border-collapse: collapse;font-weight: inherit;font-style: inherit;font-size: 100%;line-height: 1;
+						  font-family: inherit;text-align: left;vertical-align: baseline;}
+						  
+thead { border-collapse: collapse; background: #ececea; height:30px; font-weight: bold; line-height: 1; font-style: inherit;
+		font-size: 100%;line-height: 1;font-family: inherit;text-align: center; vertical-align: baseline;}
+		
+th{ vertical-align:middle; text-transform: uppercase; }
+
+tbody td { border-bottom:1px solid #ECECEA;	height:30px; line-height:1.5em;}
+
+colgroup { }
+col { }
+
+caption {	text-align: center;	border-collapse: collapse;	font-weight: bold;	font-style: inherit;	font-size: 100%;	line-height: 2;	font-family: inherit;	vertical-align: baseline;	text-transform: uppercase;}
+
+a:link {color: Black; text-decoration: none; }
+a:hover { color: Red; }
+a:visited { text-decoration: none; }
+
+
+/* STRUTTURA
+----------------------------------------------- */
+#header {margin:0 0 15px 0;}
+#mainmenucom { position: absolute; top: 20px; left:0px; margin:0 0px 0 0px; padding: 0; z-index: 1000; width:100%; }
+/*#journey {display:none;}*/
+#user_wrap 	{background:#808080 url(../../img/userid.png) no-repeat 99% 50%; width:100%}
+/*#label	   	{background:#55f;}*/
+#content	{background:#fff; padding:10px; clear:both;}
+#container {background:#fff;  border-bottom:10px solid #808080;}
+
+/* CLEAR FIX*/
+#user_wrap:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+#user_wrap {display: inline-block;}
+
+/* MENU
+----------------------------------------------- */
+#menu {  background-color:#808080; border:10px solid white; }
+UL#menu  {margin:0 20px 0 300px; padding:0; height:50px; line-height:50px; list-style-type:none;}
+UL#menu  LI {margin:0; padding:0; list-style-type:none; float:left; margin:0 0px 0 20px; }
+UL#menu LI A {text-transform: lowercase; color:#fff; font-weight:bold; text-decoration:none;}
+
+#selfclose A { background: url(../../img/selfclose.png) no-repeat center left; display:block; padding:0 0 0 40px;  }
+
+/*azioni*/
+
+.bottomsubmenu {width:300px;height:20px;background: url(../../img/bottomsubmenu.png) no-repeat;}
+#menu span{ font-style: normal;}
+
+/* LABEL
+----------------------------------------------- */
+/*#label {float:left; background:#fff url(../../img/topright.png) no-repeat right top; width:30%; padding:0 0 0 10px;}
+*/
+#label H1 {margin:0; padding:20px 0 5px 0; font-size:1.5em;color:#fff}
+/*#user_data {float:right; width:60%; color:#fff; text-align:right; padding:10px 40px 0 0;}
+*/
+/* CHAT
+----------------------------------------------- */
+#chat
+{
+	background-color:#ffffff;
+}
+#top{
+/*	height: 30px;*/
+/*	width: 700px;*/
+}
+#messages{
+	overflow: auto;
+	/*overflow: scroll;*/
+	height: 300px;
+	width: 490px;
+	float: left;
+	border: 1px solid #ececea;
+
+}
+#controlchat{
+	margin-left: 5px;
+	height: 300px;
+	width: 200px;
+	float: right;
+	border: 1px solid #ececea;
+	text-align: center;
+}
+#sendmessage{
+	margin-top: 5px;
+	padding: 5px;
+	height: 50px;
+	width: 480px;
+	float: left;
+	border: 1px solid #ececea;
+}
+
+#exitchat{
+	margin-top: 5px;
+	padding: 5px;
+	height: 50px;
+	width: 190px;
+	float: right;
+	border: 1px solid #ececea;
+}
+
+#middle{
+	width:700px;
+}
+
+#user_status
+{
+	margin-top: 5px;
+}
+
+#user_actions
+{
+	margin-top: 5px;
+}
+
+#users_list
+{
+	margin-top:5px;
+	margin-bottom: 5px;
+}
+
+#bottom{
+	width:700px;
+}
+
+#data{
+	display: none;
+}
+
+div.admin_message
+{
+	margin-top: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding: 5px;
+	background-color: #FF6600;
+}
+div.message
+{
+	margin-top: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding: 5px;
+	background-color: #ECECEA;
+}
+
+div.private_message
+{
+	margin-top: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding: 5px;
+	background-color: #CCFF99;
+}
+
+span.message_time
+{
+	margin-right: 10px;
+	
+}
+span.user_name
+{
+	font-weight: bold;
+}
+
+span.message_text
+{
+	margin-left: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+span.operator_name
+{
+
+}
+
+div.mood_message
+{
+	margin-top: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding: 5px;
+	background-color: #99CCCC;
+}
+
+div.operator_message
+{
+
+}
+div.php_error
+{
+	margin-top: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding: 5px;
+	background-color: #ff0000;
+}
+
+div.javascript_error
+{
+	margin-top: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding: 5px;
+	background-color: #ffff00;
+}
