@@ -176,7 +176,7 @@ adminAda --> Super Admin
 AutoreAda1 --> author of provider1
 TutorAda1 --> tutor of provider1
 SwitcherAda1 --> Admin of provider1
-studente_ada --> Student of provider1
+studenteAda1 --> Student of provider1
 
 passwords are the same of the username
 
