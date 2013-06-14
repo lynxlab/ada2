@@ -34,8 +34,17 @@ class ADAUser extends ADAAbstractUser
 	 * PLS set the list of properties you want the extra user to have, and the class code
 	 * should take care of the rest. If no extra properites are needed, delete them all!
 	 */
-// 	public $curriculum;
-	
+	public $picture;
+	public $preferredJob;
+	public $preferredJobCodes;
+	public $socialSkills;
+	public $organizationalSkills;
+	public $technicalSkills;
+	public $computerSkills;
+	public $artisticSkills;
+	public $otherSkills;
+	public $drivingLicences;
+			 
 	/**
 	 * boolean to tell if the class is for a customization
 	 * and thus has extra values (i.e. properties).

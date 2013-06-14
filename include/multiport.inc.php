@@ -366,7 +366,7 @@ class MultiPort
    * @param  $testers array
    * @return boolean
    */
-  static public function setUser(ADALoggableUser $userObj, $new_testers = array(), $update_user_data = FALSE) {      
+  static public function setUser(ADALoggableUser $userObj, $new_testers = array(), $update_user_data = FALSE, $extraTableName=false ) {      
     $user_id = $userObj->getId();
     $testers = $userObj->getTesters();
     if(!is_array($testers)) {
@@ -391,7 +391,7 @@ class MultiPort
         //
         switch($userObj->getType()) {
         case AMA_TYPE_STUDENT:
-          $result = $tester_dh->set_student($user_id,$user_dataAr);
+          $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj);
           break;
 
         case AMA_TYPE_AUTHOR:
@@ -619,7 +619,7 @@ class MultiPort
     	if ($userObj->hasExtra())
     	{
     		$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($user_testersAr[0]));
-    		$extraAr = $tester_dh->getExtraData($userObj->getId());
+    		$extraAr = $tester_dh->getExtraData($userObj);
     		if (!AMA_DB::isError($extraAr)) {
     			$userObj->setExtras($extraAr);
     			$return = $userObj;

@@ -45,7 +45,7 @@ abstract class CBaseElement extends CBase
     public function setAttributes($a_list_of_attribute_value_pairs)
     {
         // FIXME: verificare bene l'espressione regolare relativa al valore
-        $attribute_value_pair = '/\s*([a-z-]+)\s*:\s*([\s\(\)a-zA-Z0-9:;\.\[\]\/=\?\+%&_@-]+)\s*/';
+        $attribute_value_pair = '/\s*([a-z-]+)\s*:\s*([\s\(\)a-zA-Z0-9:;\.\[\]\/=\?\+%&_@#-]+)\s*/';
         //$attribute_value_pair = '/\s*([a-z]+)\s*:\s*(.*)\s*/';
 
         $matches = array();

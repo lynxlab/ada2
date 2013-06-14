@@ -15,6 +15,7 @@
 /**
  * Base config file
  */
+ini_set ('display_errors','0'); error_reporting(E_ALL);
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
@@ -42,58 +43,100 @@ include_once 'include/browsing_functions.inc.php';
  * YOUR CODE HERE
  */
 require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
+require_once ROOT_DIR . '/include/Forms/UserSkillsForm.inc.php';
 $languages = Translator::getLanguagesIdAndName();
+/**
+ * @author giorgio 14/giu/2013
+ * 
+ * data saving is handled through ajax calls now, just check which form
+ * to show checking the hasExtra properties of userObj
+ * 
+ */
 
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $form = new UserProfileForm($languages);
-    $form->fillWithPostData();
+$user_dataAr = $userObj->toArray();
 
-    if ($form->isValid()) {
-        $user_layout = $_POST['layout'];
-        $userObj->setFirstName($_POST['nome']);
-        $userObj->setLastName($_POST['cognome']);
-        $userObj->setFiscalCode($_POST['codice_fiscale']);
-        $userObj->setEmail($_POST['email']);
-        if (trim($_POST['password']) != '') {
-            $userObj->setPassword($_POST['password']);
-        }
-        $userObj->setLayout($user_layout);
-        $userObj->setAddress($_POST['indirizzo']);
-        $userObj->setCity($_POST['citta']);
-        $userObj->setProvince($_POST['provincia']);
-        $userObj->setCountry($_POST['nazione']);
-        $userObj->setBirthDate($_POST['birthdate']);
-        $userObj->setGender($_POST['sesso']);
-        $userObj->setPhoneNumber($_POST['telefono']);
-        $userObj->setLanguage($_POST['lingua']);
-        MultiPort::setUser($userObj, array(), true);
-//        $_SESSION['sess_userObj'] = $userObj;
-
-        $navigationHistoryObj = $_SESSION['sess_navigation_history'];
-        $location = $navigationHistoryObj->lastModule();
-        header('Location: ' . $location);
-        exit();
-    }
+if (!$userObj->hasExtra()) {	
+	// user has no extra, let's build standard form	
+	$form = new UserProfileForm($languages);	
+	unset($user_dataAr['password']);
+	$user_dataAr['email'] = $user_dataAr['e_mail'];
+	unset($user_dataAr['e_mail']);
+	$form->fillWithArrayData($user_dataAr);
+	$data = $form->render();	
 } else {
-    $form = new UserProfileForm($languages);
-    $user_dataAr = $userObj->toArray();
-    unset($user_dataAr['password']);
-    $user_dataAr['email'] = $user_dataAr['e_mail'];
-    unset($user_dataAr['e_mail']);
-    $form->fillWithArrayData($user_dataAr);
+	
+	$tabContents = array();
+	
+	$etichette = array ( translateFN("Anagrafica"), translateFN("Lavoro") ,
+						  translateFN("Formazione"), translateFN("Capacit&agrave;"),
+						  translateFN("Lingue") );
+		
+	$tabsContainer = CDOMElement::create('div','id:tabs');	
+	$tabsUL = CDOMElement::create('ul');
+	$tabsContainer->addChild($tabsUL);	
+	
+	for ($currTab=0; $currTab<count($etichette); $currTab++)
+	{	
+		// create a LI
+		$tabsLI = CDOMElement::create('li');
+		// add a link to the div that holds tab content
+		$tabsLIContent = BaseHtmlLib::link('#divTab'.$currTab, $etichette[$currTab]);
+		// add the save icon to the link
+		$tabsLIContent->addChild(CDOMElement::create('span','class:ui-icon ui-icon-disk,id:tabSaveIcon'.$currTab));
+		$tabsLI->addChild($tabsLIContent);
+		$tabsUL->addChild($tabsLI);				
+		$tabContents[$currTab] = CDOMElement::create('div','id:divTab'.$currTab);
+		
+		switch ($currTab)
+		{
+			case 0: // personal datas				
+				$form = new UserProfileForm($languages);				
+				unset($user_dataAr['password']);
+				$user_dataAr['email'] = $user_dataAr['e_mail'];
+				unset($user_dataAr['e_mail']);
+				$form->fillWithArrayData($user_dataAr);
+// 				$tabContents[$currTab]->addChild(new CText($form->render()));
+				break;
+			case 3: // skills (aka capacita' in italian)
+				$form = new UserSkillsForm($languages);	
+				$form->fillWithArrayData($user_dataAr);
+				break;
+			default: // job profile				
+				break;
+		}
+		
+		// add generated form (if any) to proper tab
+		if (isset($form))
+		{
+			$tabContents[$currTab]->addChild(new CText($form->render()));
+			unset ($form);
+		}
+		else
+		{
+			$tabContents[$currTab]->addChild (new CText(translateFN("Prova tab ".$currTab)));
+		}
+		
+		$tabsContainer->addChild ($tabContents[$currTab]);
+	}
+	$data.= $tabsContainer->getHtml();
 }
 
-$label = translateFN('Modifica dati utente');
+$label = translateFN('Modifica dati utente VERSIONE ESTESA OPENLABOR');
 
-$help = translateFN('Modifica dati utente');
+$help = translateFN('Modifica dati utente VERSIONE ESTESA OPENLABOR');
 
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
+		JQUERY_UI,
 		JQUERY_MASKEDINPUT,
 		JQUERY_NO_CONFLICT
 );
 
-$optionsAr['onload_func'] = 'initDateField();';
+$layout_dataAr['CSS_filename'] = array(
+		JQUERY_UI_CSS
+);
+
+$optionsAr['onload_func'] = 'initUserRegistrationForm('.$userObj->hasExtra().');';
 
 $content_dataAr = array(
     'user_name' => $user_name,
@@ -102,7 +145,7 @@ $content_dataAr = array(
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
     'title' => translateFN('Modifica dati utente'),
-    'data' => $form->getHtml(),
+    'data' => $data,
     'help' => $help
 );
 

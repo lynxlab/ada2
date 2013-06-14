@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+/* giorgio, to style jquery ui tab with icons */
+#tabs .ui-tabs-nav .ui-icon { 
+    display: inline-block;
+    float:left;  
+    visibility:hidden;
+}
+#tabs  li a  {
+	padding: .5em 1em .5em .1em;
+}
