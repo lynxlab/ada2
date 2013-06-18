@@ -81,7 +81,7 @@ var ADA_TEMPLATE_FAMILY = '<?php echo $_SESSION['sess_template_family'];?>';
 <?php else: ?>
 var ADA_TEMPLATE_FAMILY = '<?php echo ADA_TEMPLATE_FAMILY;?>';
 <?php endif; ?>
-<?php if(!empty($_SESSION['sess_id_user'])): ?>
+<?php if(!empty($_SESSION['sess_user_language'])): ?>
 var USER_LANGUAGE = '<?php echo $_SESSION['sess_user_language'];?>';
 <?php else: ?>
 var USER_LANGUAGE = null;
