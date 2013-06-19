@@ -1,4 +1,4 @@
-OpenLabor
+[OpenLabor][2]
 =========
 
 ### OpenLabor (opendata + labor) 
@@ -37,3 +37,4 @@ is a platform for job and training search that aggregates and make accessible th
 * outcome of job interviews
 
 [1]:http://www.lynxlab.com/it/openlabor-android-app.html
+[2]:http://www.lynxlab.com/en/eng_open_labor.html
