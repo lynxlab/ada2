@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_definition>
+	<service_code>006</service_code>
+        <http_method>POST</http_method>
+	<attributes>
+		<attribute>
+			<variable>true</variable>
+			<code>jurisdiction_id </code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description>This is only required if the endpoint serves multiple jurisdictions</datatype_description>		
+			<order>1</order>	
+			<description>jurisdiction id</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>locale</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description>Choose of preferred language</datatype_description>		
+			<order>1</order>	
+			<description>language in format en_US, it_IT,</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>nameTraining</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description>name of the training</datatype_description>		
+			<order>1</order>	
+			<description>name of the training</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>companyName</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>		
+			<order>1</order>	
+			<description>The name of the company delivering the training</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>durationHours</code>
+			<datatype>number</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>		
+			<order>1</order>	
+			<description>Duration of the training in hours</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>trainingType</code>
+			<datatype>singleValueList</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>	
+			<order>1</order>
+			<description>training type</description>
+                        <values>
+                            <value>
+                                <key>1</key>
+                                <name>qualification</name>
+                            </value>
+                            <value>
+                                <key>2</key>
+                                <name>specialization</name>
+                            </value>
+                            <value>
+                                <key>3</key>
+                                <name>complete basic school</name>
+                            </value>
+                        </values>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>userType</code>
+			<datatype>singleValueList</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>	
+			<order>1</order>
+			<description>type of users target</description>
+                        <values>
+                            <value>
+                                <key>1</key>
+                                <name>adult</name>
+                            </value>
+                            <value>
+                                <key>2</key>
+                                <name>underage</name>
+                            </value>
+                            <value>
+                                <key>3</key>
+                                <name>migrant</name>
+                            </value>
+                        </values>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>qualificationRequired</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>		
+			<order>2</order>	
+			<description>educational qualification of the candidate</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>address</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>		
+			<order>2</order>	
+			<description>Human entered address or location</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>city</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>
+			<order>2</order>
+			<description>City in which training is delivered</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>contact</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>
+			<order>2</order>
+			<description>contact of the company that delivers the training (email, phone, web site)</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>QualificationRequired</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description>qualification Required</datatype_description>		
+			<order>1</order>	
+			<description>Qualification Required</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>lat</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>		
+			<order>2</order>	
+			<description>Latitude using the (WGS84) projection.</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>long</code>
+			<datatype>string</datatype>multiple attribute
+			<required>false</required>
+			<datatype_description></datatype_description>
+			<order>2</order>
+			<description>Longitude using the (WGS84) projection.</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>source_training</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>
+			<order>2</order>
+			<description>email address of the person or his/her id</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>media_url</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>
+			<order>2</order>
+			<description>URL to media</description>
+		</attribute>
+	</attributes>
+</service_definition>

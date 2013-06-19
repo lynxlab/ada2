@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_definition>
+	<service_code>002</service_code>
+        <http_method>POST</http_method>
+	<attributes>
+		<attribute>
+			<variable>true</variable>
+			<code>jurisdiction_id </code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description>This is only required if the endpoint serves multiple jurisdictions</datatype_description>		
+			<order>1</order>	
+			<description>jurisdiction id</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>locale</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description>Choose of preferred language</datatype_description>		
+			<order>1</order>	
+			<description>language in format en_US, it_IT,</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>professionalProfile</code>
+			<datatype>text</datatype>
+			<required>true</required>
+			<datatype_description>Professional profile</datatype_description>		
+			<order>1</order>	
+			<description>Professional profile</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>positionCode</code>
+			<datatype>singlevaluelist</datatype>
+			<required>true</required>
+			<datatype_description>National Professional Code according with international professional code (ISCO-08)</datatype_description>		
+			<order>1</order>	
+			<description>Professional profile</description>
+                        <values>get the value from national professional code system (ex: in Italy from ISTAT: http://cp2011.istat.it/)</values>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>position</code>
+			<datatype>text</datatype>
+			<required>true</required>
+			<datatype_description>Position</datatype_description>		
+			<order>1</order>	
+			<description>Position</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>qualificationRequired</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>		
+			<order>2</order>	
+			<description>educational qualification of the candidate</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>professionalTrainingRequired</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description>professional Training Required</datatype_description>		
+			<order>1</order>	
+			<description>professional Training Required</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>address</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>		
+			<order>2</order>	
+			<description>Human entered address or location</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>address</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>		
+			<order>2</order>	
+			<description>Human entered address or location</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>city</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>
+			<order>2</order>
+			<description>City in which looking for job</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>lat</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>		
+			<order>2</order>	
+			<description>Latitude using the (WGS84) projection.</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>long</code>
+			<datatype>string</datatype>multiple attribute
+			<required>false</required>
+			<datatype_description></datatype_description>
+			<order>2</order>
+			<description>Longitude using the (WGS84) projection.</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>source_job</code>
+			<datatype>string</datatype>
+			<required>true</required>
+			<datatype_description></datatype_description>
+			<order>2</order>
+			<description>email address of the person or his/her id</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>media_url</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>
+			<order>2</order>
+			<description>URL to media</description>
+		</attribute>
+	</attributes>
+</service_definition>
