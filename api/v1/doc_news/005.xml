@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service_definition>
+	<service_code>005</service_code>
+        <http_method>get</http_method>
+	<attributes>
+		<attribute>
+			<variable>true</variable>
+			<code>jurisdiction_id </code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description>This is only required if the endpoint serves multiple jurisdictions</datatype_description>		
+			<order>1</order>	
+			<description>jurisdiction id</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>locale</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description>Choose of preferred language</datatype_description>		
+			<order>1</order>	
+			<description>language in format en_US, it_IT,</description>
+		</attribute>	
+                <attribute>
+			<variable>true</variable>
+			<code>keywords</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description>keywords separated by comas</datatype_description>		
+			<order>1</order>	
+			<description>keywords to find a course/training</description>
+		</attribute>	
+		<attribute>
+			<variable>true</variable>
+			<code>city</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>		
+			<order>2</order>	
+			<description>City in which looking for training</description>
+		</attribute>
+		<attribute>
+			<variable>true</variable>
+			<code>qualification</code>
+			<datatype>string</datatype>
+			<required>false</required>
+			<datatype_description></datatype_description>		
+			<order>2</order>	
+			<description>educational qualification of the candidate</description>
+		</attribute>
+	</attributes>
+</service_definition>

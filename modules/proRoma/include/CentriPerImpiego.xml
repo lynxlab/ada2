@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<dataroot>
+<CentroPerImpiego>
+  <idCentro>SILD</idCentro>  
+<Denominazione>Servizio Inserimento Lavorativo Disabili</Denominazione>
+<Indirizzo>recarsi presso il proprio CPI</Indirizzo>
+<Cap>00100</Cap>
+<Comune>Roma</Comune>
+<BacinoDiCompetenza>persone con disabilità e coloro che appartengono alle categorie protette</BacinoDiCompetenza>
+<Telefono></Telefono>
+<Fax></Fax>
+<eMail></eMail>
+<Latitudine></Latitudine>
+<Longitudine></Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+<idCentro>PORTA FUTURO</idCentro>  
+<Denominazione>Porta Futuro</Denominazione>
+<Indirizzo>Via Galvani 108,</Indirizzo>
+<Cap>00153</Cap>
+<Comune>Roma</Comune>
+<BacinoDiCompetenza></BacinoDiCompetenza>
+<Telefono>0667664868</Telefono>
+<Fax>0667664871</Fax>
+<eMail>info@portafuturo.it</eMail>
+<Latitudine>41.876931</Latitudine>
+<Longitudine>12.474369</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>CINECITTA'</idCentro>  
+<Denominazione>Centro per l&apos;Impiego di Roma Cinecittà</Denominazione>
+<Indirizzo>Viale Rolando Vignali 14</Indirizzo>
+<Cap>00173</Cap>
+<Comune>Roma</Comune>
+<BacinoDiCompetenza>Municipi Roma I, Roma II, Roma VI, Roma IX, Roma X, Roma XI, Roma XVII</BacinoDiCompetenza>
+<Telefono>06.67668278</Telefono>
+<Fax>06.7213302</Fax>
+<eMail>impiego.roma1@provincia.roma.it</eMail>
+<Latitudine>41.856489</Latitudine>
+<Longitudine>12.579389</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+    <idCentro>OSTIA</idCentro>  
+<Denominazione>Centro per l&apos;Impiego di Roma Ostia</Denominazione>
+<Indirizzo>Via Domenico Baffico 145</Indirizzo>
+<Cap>00121</Cap>
+<Comune>Ostia</Comune>
+<BacinoDiCompetenza>Municipi Roma XII, Roma XIII, Roma XV</BacinoDiCompetenza>
+<Telefono>06.67664869 </Telefono>
+<Fax>06.67667758</Fax>
+<eMail>cpi.ostia@provincia.roma.it</eMail>
+<Latitudine>41.739425</Latitudine>
+<Longitudine>12.255442</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>FIUMICINO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego di Roma Fiumicino</Denominazione>
+<Indirizzo>Chiuso</Indirizzo>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>PRIMAVALLE</idCentro>  
+<Denominazione>Centro per l&apos;Impiego di Roma Primavalle</Denominazione>
+<Indirizzo>Via Decio Azzolino 7</Indirizzo>
+<Cap>00167</Cap>
+<Comune>Roma</Comune>
+<BacinoDiCompetenza>Municipi Roma XVIII, Roma XVI, Roma XIX, Roma XX</BacinoDiCompetenza>
+<Telefono>06.61662682 </Telefono>
+<Fax>06.6270798</Fax>
+<eMail>impiego.primavalle@provincia.roma.it</eMail>
+<Latitudine>41.917144</Latitudine>
+<Longitudine>12.406075</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>TIBURTINO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego di Roma Tiburtino</Denominazione>
+<Indirizzo>Via Scorticabove 77</Indirizzo>
+<Cap>00156 </Cap>
+<Comune>Roma</Comune>
+<BacinoDiCompetenza>Municipi Roma III, Roma IV, Roma V</BacinoDiCompetenza>
+<Telefono>06.45614909 </Telefono>
+<Fax>06.45614921</Fax>
+<eMail>impiego.tiburtino@provincia.roma.it</eMail>
+<Latitudine>41.935216</Latitudine>
+<Longitudine>12.586706</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>TORRE ANGELA</idCentro>  
+<Denominazione>Centro per l&apos;Impiego di Roma Torre Angela</Denominazione>
+<Indirizzo>Via Jacopo Torriti 7</Indirizzo>
+<Cap>00133</Cap>
+<Comune>Roma</Comune>
+<BacinoDiCompetenza>Municipi Roma VII, Roma VIII</BacinoDiCompetenza>
+<Telefono>06.2017542 </Telefono>
+<Fax>06.20627827</Fax>
+<eMail>impiego.torreangela@provincia.roma.it</eMail>
+<Latitudine>41.867899</Latitudine>
+<Longitudine>12.625415</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>SAPIENZA</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Sapienza</Denominazione>
+<Indirizzo>Via Cesare de Lollis 22</Indirizzo>
+<Comune>Roma</Comune>
+<Telefono>06.45606976</Telefono>
+<eMail>impiego.sapienza@provincia.roma.it</eMail>
+<Latitudine>41.901463</Latitudine>
+<Longitudine>12.515745</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>ROMA TRE</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Roma Tre</Denominazione>
+<Indirizzo>Via Ostiense 169</Indirizzo>
+<Comune>Roma</Comune>
+<Telefono>06.57332858</Telefono>
+<eMail>impiego.romatre@provincia.roma.it</eMail>
+<Latitudine>41.862019</Latitudine>
+<Longitudine>12.478836</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>TOR VERGATA</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Tor Vergata</Denominazione>
+<Indirizzo>Via Orazio Raimondo 18</Indirizzo>
+<Comune>Roma</Comune>
+<Telefono>06.72592533</Telefono>
+<eMail>impiego.torvergata@provincia.roma.it</eMail>
+<Latitudine>41.848945</Latitudine>
+<Longitudine>12.597692</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>ALBANO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Albano Laziale</Denominazione>
+<Indirizzo>Corso S. Francesco 28</Indirizzo>
+<Cap>00041</Cap>
+<Comune>Albano Laziale</Comune>
+<BacinoDiCompetenza>Albano Laziale, Ariccia, Castel Gandolfo, Genzano di Roma, Nemi</BacinoDiCompetenza>
+<Telefono>06.93262006 </Telefono>
+<Fax>06.9320849</Fax>
+<eMail>impiego.albano@provincia.roma.it</eMail>
+<Latitudine>41.731083</Latitudine>
+<Longitudine>12.663159</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>ANZIO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Anzio</Denominazione>
+<Indirizzo>Via Lussemburgo snc</Indirizzo>
+<Cap>00042</Cap>
+<Comune>Anzio</Comune>
+<BacinoDiCompetenza>Anzio, Nettuno</BacinoDiCompetenza>
+<Telefono>06.67663764-66-71 </Telefono>
+<Fax>06.67667707</Fax>
+<eMail>impiego.anzio@provincia.roma.it</eMail>
+<Latitudine>41.463629</Latitudine>
+<Longitudine>12.630066</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>BRACCIANO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Bracciano</Denominazione>
+<Indirizzo>Via di Valle Foresta 6</Indirizzo>
+<Cap>00062</Cap>
+<Comune>Bracciano</Comune>
+<BacinoDiCompetenza>Anguillara Sabazia, Bracciano, Canale Monterano, Manziana, Trevignano Romano</BacinoDiCompetenza>
+<Telefono>06.98268000 </Telefono>
+<Fax>06.97240799</Fax>
+<eMail>impiego.bracciano@provincia.roma.it</eMail>
+<Latitudine>42.086408</Latitudine>
+<Longitudine>12.180083</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>CERVETERI</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Cerveteri</Denominazione>
+<Indirizzo>Largo di Villa Olio 9/10</Indirizzo>
+<Cap>00052</Cap>
+<Comune>Cerveteri</Comune>
+<BacinoDiCompetenza>Cerveteri, Ladispoli </BacinoDiCompetenza>
+<Telefono>06.99552849 </Telefono>
+<Fax>06.9940020</Fax>
+<eMail>impiego.cerveteri@provincia.roma.it</eMail>
+<Latitudine>42.008999</Latitudine>
+<Longitudine>12.091827</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>CIVITAVECCHIA</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Civitavecchia</Denominazione>
+<Indirizzo>Via Lepanto 13</Indirizzo>
+<Cap>00053</Cap>
+<Comune>Civitavecchia</Comune>
+<BacinoDiCompetenza>Allumiere, Civitavecchia, Santa Marinella, Tolfa</BacinoDiCompetenza>
+<Telefono>0766.547025 </Telefono>
+<Fax>0766.542489</Fax>
+<eMail>impiego.civitavecchia@provincia.roma.it</eMail>
+<Latitudine>42.091376</Latitudine>
+<Longitudine>11.807106</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>COLLEFERRO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Colleferro</Denominazione>
+<Indirizzo>Via Carpinetana Sud, 144 </Indirizzo>
+<Cap>00034</Cap>
+<Comune>Colleferro</Comune>
+<BacinoDiCompetenza>Artena, Carpineto Romano, Colleferro, Gavignano, Gorga, Labico, Montelanico, Segni, Valmontone</BacinoDiCompetenza>
+<Telefono>06.97235000 </Telefono>
+<Fax>06.97236327</Fax>
+<eMail>impiego.colleferro@provincia.roma.it</eMail>
+<Latitudine>41.723812</Latitudine>
+<Longitudine>13.011224</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>FRASCATI</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Frascati</Denominazione>
+<Indirizzo>P.le Aldo Moro snc </Indirizzo>
+<Cap>00044</Cap>
+<Comune>Frascati</Comune>
+<BacinoDiCompetenza>Colonna, Frascati, Montecompatri, Monte Porzio Catone, Rocca Priora, San Cesareo</BacinoDiCompetenza>
+<Telefono>06.94015468</Telefono>
+<Fax>06.94015468</Fax>
+<eMail>impiego.frascati@provincia.roma.it</eMail>
+<Latitudine>41.818248</Latitudine>
+<Longitudine>12.688329</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>GUIDONIA</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Guidonia</Denominazione>
+<Indirizzo>Via Roma, 192 </Indirizzo>
+<Cap>00012</Cap>
+<Comune>Guidonia Montecelio</Comune>
+<BacinoDiCompetenza>Guidonia Montecelio, Marcellina, San Polo dei Cavalieri</BacinoDiCompetenza>
+<Telefono>0774.300831 </Telefono>
+<Fax>0774.340568</Fax>
+<eMail>impiego.guidonia@provincia.roma.it</eMail>
+<Latitudine>41.986929</Latitudine>
+<Longitudine>12.716181</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>MARINO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Marino</Denominazione>
+<Indirizzo>Corso V. Colonna snc </Indirizzo>
+<Cap>00047</Cap>
+<Comune>Marino</Comune>
+<BacinoDiCompetenza>Ciampino, Grottaferrata, Marino, Rocca di Papa</BacinoDiCompetenza>
+<Telefono>06.93801054 </Telefono>
+<Fax>06.9387194</Fax>
+<eMail>impiego.marino@provincia.roma.it</eMail>
+<Latitudine>41.769439</Latitudine>
+<Longitudine>12.663159</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>MONTEROTONDO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Monterotondo</Denominazione>
+<Indirizzo>Via Val di Fassa 1/C </Indirizzo>
+<Cap>00015</Cap>
+<Comune>Monterotondo</Comune>
+<BacinoDiCompetenza>Fonte Nuova, Mentana, Monteflavio, Montelibretti, Monterotondo, Montorio Romano, Moricone, Nerola, Palombara Sabina, Sant’Angelo Romano </BacinoDiCompetenza>
+<Telefono>06.9004918 </Telefono>
+<Fax>06.9060892</Fax>
+<eMail>impiego.monterotondo@provincia.roma.it</eMail>
+<Latitudine>42.060382</Latitudine>
+<Longitudine>12.583616</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>MORLUPO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Morlupo</Denominazione>
+<Indirizzo>Via San Michele, 87/89 </Indirizzo>
+<Cap>00060</Cap>
+<Comune>Morlupo</Comune>
+<BacinoDiCompetenza>Campagnano di Roma, Capena, Castelnuovo di Porto, Civitella San Paolo, Fiano Romano, Filacciano, Formello, Magliano Romano, Mazzano, Morlupo, Nazzano, Ponzano Romano, Riano, Rignano Flaminio,Sacrofano, Sant’Oreste, Torrita Tiberina</BacinoDiCompetenza>
+<Telefono>06.9072763 </Telefono>
+<Fax>06.90192776</Fax>
+<eMail>impiego.morlupo@provincia.roma.it</eMail>
+<Latitudine>42.147814</Latitudine>
+<Longitudine>12.497592</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+    <idCentro>PALESTRINA</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Palestrina</Denominazione>
+<Indirizzo>Via degli Arcioni,15 </Indirizzo>
+<Cap>00036</Cap>
+<Comune>Palestrina</Comune>
+<BacinoDiCompetenza>Capranica Prenestina, Castel San Pietro Romano, Cave, Gallicano nel Lazio,  Genazzano, Olevano Romano, Palestrina, Poli, Rocca di Cave, San Vito Romano, Zagarolo</BacinoDiCompetenza>
+<Telefono>06.95311091 </Telefono>
+<Fax>06.9538237</Fax>
+<eMail>impiego.palestrina@provincia.roma.it</eMail>
+<Latitudine>41.838379</Latitudine>
+<Longitudine>12.891233</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>POMEZIA</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Pomezia</Denominazione>
+<Indirizzo>Via Pontina Vecchia,13 </Indirizzo>
+<Cap>00040</Cap>
+<Comune>Pomezia</Comune>
+<BacinoDiCompetenza>Ardea, Pomezia</BacinoDiCompetenza>
+<Telefono>06.91801050 </Telefono>
+<Fax>06.91601246</Fax>
+<eMail>impiego.pomezia@provincia.roma.it</eMail>
+<Latitudine>41.656914</Latitudine>
+<Longitudine>12.527568</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>SUBIACO</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Subiaco</Denominazione>
+<Indirizzo>Piazza 15 Martiri – loc. Madonna della Pace </Indirizzo>
+<Cap>00020</Cap>
+<Comune>Agosta</Comune>
+<BacinoDiCompetenza>Affile, Agosta, Anticoli Corrado, Arcinazzo Romano, Arsoli, Bellegra,Camerata Nuova, Canterano, Cervara di Roma, Cineto Romano, Jenne, Marano Equo, Riofreddo, Rocca Canterano, Rocca Santo Stefano, Roiate, Roviano, Subiaco, Vallepietra, Vallinfreda, Vivaro Romano</BacinoDiCompetenza>
+<Telefono>0774.809131 </Telefono>
+<Fax>0774.809382</Fax>
+<eMail>impiego.subiaco@provincia.roma.it</eMail>
+<Latitudine>41.959682</Latitudine>
+<Longitudine>13.053432</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>TIVOLI</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Tivoli</Denominazione>
+<Indirizzo>Via Empolitana, 234/236 </Indirizzo>
+<Cap>00019</Cap>
+<Comune>Tivoli</Comune>
+<BacinoDiCompetenza>Casape, Castel Madama, Cerreto Laziale, Ciciliano, Gerano, Licenza,Mandela, Percile, Pisoniano, Roccagiovine, Sambuci, San Gregorio da Sassola, Saracinesco, Tivoli, Vicovaro</BacinoDiCompetenza>
+<Telefono>0774.334984 </Telefono>
+<Fax>0774.333171</Fax>
+<eMail>impiego.tivoli@provincia.roma.it</eMail>
+<Latitudine>41.954815</Latitudine>
+<Longitudine>12.806733</Longitudine>
+</CentroPerImpiego>
+<CentroPerImpiego>
+  <idCentro>VELLETRI</idCentro>  
+<Denominazione>Centro per l&apos;Impiego Velletri</Denominazione>
+<Indirizzo>C.so della Repubblica 241 </Indirizzo>
+<Cap>00049</Cap>
+<Comune>Velletri</Comune>
+<BacinoDiCompetenza>Lanuvio, Lariano, Velletri</BacinoDiCompetenza>
+<Telefono>06.9640372 </Telefono>
+<Fax>06.96142597</Fax>
+<eMail>impiego.velletri@provincia.roma.it</eMail>
+<Latitudine>41.686278</Latitudine>
+<Longitudine>12.778237</Longitudine>
+</CentroPerImpiego>
+</dataroot>

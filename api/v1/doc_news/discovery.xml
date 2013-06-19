@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery>
+    <changeset>2013-02-08T00:00:00Z</changeset>
+    <contact>Send email to info@lynxlab.com</contact>
+    <endpoints>
+      <endpoint>
+        <changeset>2013-01-18T00:00:00Z</changeset>
+        <formats>
+          <format>text/xml</format>
+          <format>application/json</format>
+        </formats>
+        <specification>http://wiki.open311.org/GeoReport_v2</specification>
+        <type>develop</type>
+        <url>http://openlabor.lynxlab.com/api/v1</url>
+      </endpoint>
+    </endpoints>
+    <key_service>Read access is open to all. For write access either: 1. return the 'guid' cookie on each call (unique to each client) or 2. use an api key from a user account which can be generated here: http://seeclickfix.com/register The unversioned url will always point to the latest supported version.</key_service>
+    <max_requests>20</max_requests>
+  </discovery>

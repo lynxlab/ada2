@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<services>
+    <service>
+        <service_code>001</service_code>
+        <service_name>search_jobs</service_name>
+        <description>jobs find</description>
+        <metadata>true</metadata>
+        <type>realtime</type>
+        <keywords>retrives single job, retrives list of jobs </keywords>
+        <group>training and job</group>
+    </service>
+    <service>
+        <service_code>002</service_code>
+        <service_name>job_reports</service_name>
+        <description>reports jobs</description>
+        <metadata>true</metadata>
+        <type>realtime</type>
+        <keywords></keywords>
+        <group>training and job</group>
+    </service>
+    <service>
+        <service_code>003</service_code>
+        <service_name>job_comment</service_name>
+        <description>comment jobs</description>
+        <metadata>true</metadata>
+        <type>realtime</type>
+        <keywords></keywords>
+        <group>training and job</group>
+    </service>
+    <service>
+        <service_code>004</service_code>
+        <service_name>jobs_vote</service_name>
+        <description>vote a jobs</description>
+        <metadata>true</metadata>
+        <type>realtime</type>
+        <keywords></keywords>
+        <group>training and job</group>
+    </service>
+    <service>
+        <service_code>005</service_code>
+        <service_name>search_training</service_name>
+        <description>retrive training</description>
+        <metadata>true</metadata>
+        <type>realtime</type>
+        <keywords>retrives single training, retrives list of training</keywords>
+        <group>trainig and job</group>
+    </service>
+    <service>
+        <service_code>006</service_code>
+        <service_name>training_reports</service_name>
+        <description>report training</description>
+        <metadata>true</metadata>
+        <type>realtime</type>
+        <keywords></keywords>
+        <group>trainig and job</group>
+    </service>
+    <service>
+        <service_code>007</service_code>
+        <service_name>training_comment</service_name>
+        <description>comment training</description>
+        <metadata>true</metadata>
+        <type>realtime</type>
+        <keywords></keywords>
+        <group>training and job</group>
+    </service>
+    <service>
+        <service_code>008</service_code>
+        <service_name>training_vote</service_name>
+        <description>vote a training</description>
+        <metadata>true</metadata>
+        <type>realtime</type>
+        <keywords></keywords>
+        <group>training and job</group>
+    </service>
+    <service>
+        <service_code>010</service_code>
+        <service_name>CPI</service_name>
+        <description>retrive CPI</description>
+        <metadata>true</metadata>
+        <type>realtime</type>
+        <keywords>retrives single CPI, retrives list of CPI </keywords>
+        <group>trainig and job</group>
+    </service>
+</services>
