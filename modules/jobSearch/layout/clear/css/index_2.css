@@ -1,0 +1,383 @@
+@import url("../../../template/template.css");
+
+/* This file will hold styles for the exercises */
+/*
+#testForm li, #testForm ol, #testForm ul, #testForm table, #testForm tbody, #testForm tr, #testForm td, #testForm th {
+    vertical-align: top;
+}
+*/
+
+#mainmenu {
+    z-index: 0;
+}
+
+.first ul li {
+    border: none;
+    color: #000000;
+    line-height: 2em;
+}
+
+/* intro box - test_description */
+#test_description {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 16px;
+	color: #6e6e6e;
+	margin-top:15px;
+	margin-bottom:25px;
+	padding-top:10px;
+	padding-left:10px;
+	padding-right:10px;
+	padding-bottom:25px;
+	line-height: 25px;
+	border-bottom: 1px solid #999999;
+}
+
+/* lista domande */
+ul.topic_group_test
+{
+	list-style-image:url('../img/punto-elenco.png');
+	/* list-style:none;  */
+}
+
+/* Domande_principali */
+.topic_test {
+	margin: 0px 0px 20px;
+	font-weight:bold;
+	font-size:16px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+	padding-right:35px;
+	border-bottom-width: 1px;
+	border-bottom-style: dotted;
+	border-bottom-color: #999999;
+}
+
+/* descrizione ed esempi delle domande */
+.topic_test_description {
+	font-weight:normal;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 14px;
+	color: #6e6e6e;
+	margin:20px 0px;
+}
+
+/* domande */
+.question_test {
+	margin: 5px 0px 10px;
+	font-weight:normal;
+	font-size:12px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+/* indentazione domande */
+.question_group_test {
+	padding-left: 0px;
+	list-style:none;
+}
+
+/* testo nelle form */
+input {
+	font-family:"Courier New", Courier, monospace;
+	font-size: 12px;
+}
+
+.answer_likert_test {
+	display:inline-block;
+}
+
+.answer_standard_test, .answer_standard_test {
+	margin:5px 0px;
+}
+
+.extra_area_test {
+	margin: 15px 0px 15px;
+}
+
+.tutor_comment_div {
+	display: none;
+}
+
+.answer_group_test {
+	margin: 15px 0px 25px;
+	padding-left: 15px;
+}
+
+ul.answer_group_test {
+	list-style:none;
+	margin-bottom:45px;
+}
+
+li.draggable {
+	border: none;
+}
+
+ul.sortable {
+	list-style:none;
+}
+
+.extra_answer_test {
+	display:block;
+	width:90%;
+	height:75px;
+}
+
+.question_test {
+	margin: 5px 0px 10px;
+	font-weight:normal;
+	font-size:12px;
+}
+
+.submit_test {
+	text-align:center;
+}
+
+.absoluteTimer {
+	display:none;
+	float:right;
+	font-weight:bold;
+	font-size:14px;
+	border:1px solid #000000;
+	padding: 5px;
+}
+
+.answer_cloze_select_synonym_test .answer_cloze_option_synonym_test {
+	color:#2B5AD7;
+	font-style: italic;
+}
+
+.fleft {
+	float:left;
+}
+
+.fright {
+	float:right;
+}
+
+.title_dragdrop {
+	font-weight: bold;
+	display:block;
+	text-align:center;
+	padding: 3px 5px;
+}
+
+/*
+.divDragDropBox {
+	padding: 5px;
+	background-color: #FFFF99;
+	border: 1px solid #E8E88B;
+}
+*/
+
+.divDragDropBox {
+	padding: 5px;
+	background-color: #DDDDDD;
+    border-radius: 10px 10px 10px 10px;
+    height: auto;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.sortable.dragdropBox {
+	width: 99%;
+	border: none;
+}
+
+.divDragDropBox.left .dragdropBox, .divDragDropBox.right .dragdropBox {
+	width: auto;
+}
+
+.divDragDropBox.top {
+	margin-bottom: 15px;
+}
+
+.divDragDropBox.left {
+	float:left;
+	margin-right:20px;
+}
+
+.divDragDropBox.right {
+	float:right;
+	margin-left:20px;
+}
+
+.divDragDropBox.left, .divDragDropBox.right {
+	text-align: center;
+	max-width:20%;
+}
+
+.divDragDropBox.left .draggable, .divDragDropBox.right .draggable {
+	display:list-item;
+}
+
+.divDragDropBox.bottom {
+	margin-top:20px;
+}
+
+.textDragDropLeft, .textDragDropRight {
+	max-width:75%;
+	float:left;
+}
+
+.sortable {
+	display: inline-block;
+	width: auto;
+	min-height: 16px;
+	min-width: 50px;
+	border-bottom: 1px dashed #333333;
+	padding: 0px;
+	margin: 0px;
+}
+
+.sortable.full {
+	border-bottom: 0px;
+	background-color: #DDDDDD;
+}
+
+.draggable {
+	padding: 0 5px;
+	border: 1px solid #000000;
+	display: inline-block;
+	cursor:pointer;
+}
+
+.dragdropBox .draggable.target, .draggable.target {
+	cursor: crosshair;
+	background: rgba(249, 249, 249, 0.4);
+	border: 1px solid #BFBFBF;
+}
+
+.dragdropBox .draggable.target img, .draggable.target img {
+	opacity:0.4;
+	filter:alpha(opacity=40); /* For IE8 and earlier */
+}
+
+/*
+.dragdropBox .draggable {
+	height: auto;
+	border: 1px dotted #000000;
+	padding: 3px;
+	margin: 5px 0px;
+}
+*/
+
+.dragdropBox .draggable {
+	height: auto;
+	padding: 3px;
+	margin: 5px 0px;
+	background-color: #F9F9F9;
+ 	vertical-align: top;
+	border:#FFFFFF thin solid;
+}
+
+#content .draggable {
+	border: 1px dotted #000000;
+	padding: 5px;
+	float: left;
+}
+
+.drop-highlight {
+	min-height: 16px;
+	width: auto;
+	background-color: #DAFC8F;
+	display:inline-block;
+}
+
+.wrong_answer_test {
+	color: #d51801;
+}
+
+.right_answer_test {
+	color: #0b942e;
+}
+
+.wrong_answer_test_bg {
+	background-color: #ffb3AA;
+}
+
+.right_answer_test_bg {
+	background-color: #99fcb2;
+}
+
+.rating_question_test {
+	float: right;
+}
+
+.answer_dragdrop_test {
+	display: inline-block;
+	width: auto;
+}
+
+.answer_dragdrop_test.empty_answer_test {
+	border-bottom: 1px dotted #333333;
+    display: inline-block;
+	min-height:16px;
+	min-width:30px;
+}
+
+.answer_dragdrop_test.empty_answer_test.wrong_answer_test {
+	background-color: #d51801;
+}
+
+#test_info {
+	margin-bottom: 5px;
+}
+
+#ul_test_info {
+	padding:0;
+	margin:0;
+}
+
+.li_test_info {
+	display:inline-block;
+	list-style:none;
+	margin: 5px;
+}
+
+.admin_link {
+	font-size: 10px;
+	margin: 5px 0px;
+}
+
+.topic_test .admin_link {
+	font-weight: normal;
+}
+
+.clear {
+	clear:both;
+}
+
+.answer_cloze_test {
+	position: relative;
+	height: auto;
+}
+
+.open_answer_test {
+	width:48%;
+	height:100px;
+}
+
+.open_answer_test_image {
+	max-width: 250px;
+	max-height: 250px;
+}
+
+.file_upload_test {
+	margin-bottom: 15px;
+}
+
+.ajaxloading {
+	background: url('../img/ajax-loader.gif') no-repeat center center;
+}
+
+#divLoading {
+	background: url('../img/ajax-loader.gif') no-repeat center center;
+	display: hidden;
+}
+
+.clozePopup {
+	cursor: pointer;
+	background: url('../img/pencil.png');
+	width:16px;
+	height:16px;
+	display:inline-block;
+	vertical-align: middle;
+}

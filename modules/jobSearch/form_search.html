@@ -1,0 +1,34 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div>Cerca Lavoro o formazione</div>
+        <div>
+            <form method="post" action="search.php">
+            <!--form method="post" action="http://graffiolabor.lynxlab.com/"-->
+                <!--Profilo: <input type="text" value="" name="DescrizioneProfiloProfessionale"-->
+                Qualifica/corso: <input type="text" value="" name="keywords">
+                Comune: <input type="text" value="" name="city">
+                Titolo di studio richiesto: <input type="text" value="" name="qualification">
+                cerco <select name="op">
+                    <option value="jobs">lavoro</option>
+                    <option value="training">formazione</option>
+                </select>
+                output: 
+                <select name="out">
+                    <option value="html">html</option>
+                    <option value="json">json</option>
+                </select>
+                <!--input type="hidden" value="html" name="out"-->
+                <input type="submit" value="cerca">
+            </form>
+        </div>
+    </body>
+</html>
