@@ -10,10 +10,10 @@ is a platform for job and training search that aggregates and make accessible th
 * collect open data on job opportunities
 * collect open data on public and private training
 * clean up data, index them and make them "semantically" comprehensible for users
-* propose data to programmers and companies via webservices and/or API
+* propose data to programmers and companies via RESTful API
 * offer to public administrations real time statistics and reports on requests from users
 
-### OpenLabor is also an application (web and Smartphones) which:
+### OpenLabor is also an application (web and [Smartphones][1]) which:
 * crosses and filters the data on the user's profile (skills, interests, experiences, biography, research)
 * makes users specific proposals, including through informal channels such as Social Neworks
 * allows improvement through user feedback
@@ -35,3 +35,5 @@ is a platform for job and training search that aggregates and make accessible th
 * most required training (by age, by gender, for curriculum, for user profile)
 * training experience satisfaction
 * outcome of job interviews
+
+[1]:http://www.lynxlab.com/it/openlabor-android-app.html
