@@ -41,6 +41,10 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 	 * Do no call parent function here, since we do not want to save
 	 * standard user (student) data (they're personal data and are saved separately)
 	 *
+	 * NOTE:
+	 * This is usally called by the save_*.php file in the ajax directory 
+	 * via a call to the MultiPort.
+	 *
 	 * @param number id_student id of the student whose datas are to be updated
 	 * @param array datas to be saved
 	 *
@@ -49,7 +53,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 	 *
 	 * @see AMA_Tester_DataHandler::set_student()
 	 */
-	public function set_student($id_student ,$user_dataAr, $extraTableName = false, $userObj=null) {
+	public function set_student($id_student ,$user_dataAr, $extraTableName = false, $userObj=null, $idFromPublicTester = null) {
 		$db =& $this->getConnection();
 
 		/*
@@ -63,7 +67,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 		{
 			switch ($extraTableName)
 			{
-				case 'studente':
+				case 'studente': // aka skills, stored in studente table
 					$user_id_sql =  'SELECT id_utente_studente FROM '.$extraTableName.' WHERE id_utente_studente=?';
 					$user_id = $this->getOnePrepared($user_id_sql, array($id_student));
 					// if it's an error return it right away
@@ -94,22 +98,93 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 						foreach ($extraFields as $field)
 						{
 							if (isset ($user_dataAr[$field]))
-								$valuesAr[] = $user_dataAr[$field];
+							{
+								// check if it's a date and convert it to timestamp
+								if (stripos($field,"date") !==false)
+									$valuesAr[] = $this->date_to_ts($user_dataAr[$field]);									
+								else 									
+									$valuesAr[] = $user_dataAr[$field];
+							}
 							else
 								$valuesAr[] = null;
 						}
-
 						$result = $this->queryPrepared($saveQry, $valuesAr);
 						if (AMA_DB::isError($result)) $retval = $result;
 						else $retval = true;						
 					}						
 					break;
-				case 'xxx':
+				case 'educationTraining': // stored in OL_educationTraining
+					$uniqueField = $extraTableName::getKeyProperty();
+					
+					$tblPrefix = ADAUser::getTablesPrefix();
+					
+					$fieldList = $extraTableName::getFields();
+
+					// search for the unique field int the fieldList array
+					$pos = array_search($uniqueField, $fieldList,true);
+					// if found unset it since it doesn't need to be saved
+					if ($pos!==false) unset ($fieldList[$pos]);
+					
+					$rowsToSave = $user_dataAr[$extraTableName];					
+					
+					foreach ($rowsToSave as $rowToSave)
+					{
+						// if row element is not to be saved, continue to next element
+						if ($rowToSave['_isSaved']==1) continue;
+						
+						if ($rowToSave[$uniqueField])
+						{
+							$saveQry  = "UPDATE ".$tblPrefix.$extraTableName." SET ";
+							foreach ($fieldList as $num=>$field)
+							{
+								$saveQry .= $field."=?";
+								if ($num < count($fieldList)) $saveQry .= ", ";
+							}
+							$saveQry .= " WHERE ".$uniqueField."=".$rowToSave[$uniqueField];
+						}
+						else
+						{ 
+							// if using the public tester and the idFromPublicTester is not set or lt 0
+							if (MultiPort::getDSN(ADA_PUBLIC_TESTER)===$this->dsn &&  intval($idFromPublicTester)<=0)
+							{
+							// retrieve the id for the next insert
+								$nextIDQry = "SELECT MAX(".$uniqueField.") FROM ".$tblPrefix.$extraTableName;
+								$nextID = $db->getOne ($nextIDQry);
+								$nextID = (is_null($nextID)) ? 1 : ++$nextID;
+								$idFromPublicTester = $nextID;
+							}	
+							else $nextID = $idFromPublicTester;						
+							$saveQry  = "INSERT INTO ".$tblPrefix.$extraTableName . "( ".$uniqueField.", ";
+							$saveQry .= implode (", ", $fieldList)." ) VALUES ( ".$nextID;
+							$saveQry .= str_repeat(" ,?", count($fieldList)) . " )";
+						}
+						
+						unset ($rowToSave[$uniqueField]);
+						// prepare the array to be passed to the query
+						$valuesArr = array();
+						foreach ($fieldList as $field) {
+							
+							if (isset($rowToSave[$field]))
+							{
+								// check if it's a date and convert it to timestamp
+								if (stripos($field,"date") !==false)
+									$valuesArr[] = $this->date_to_ts($rowToSave[$field]);
+								else
+									$valuesArr[] = $rowToSave[$field];
+							}
+							else $valuesArr[] = null;
+						}
+
+						$result = $this->queryPrepared($saveQry,$valuesArr);
+						if (AMA_DB::isError($result)) {
+							$retval = $result;
+						}
+						else $retval = $nextID;						
+					}
 					break;
 			}
 		}
-
-		return $retval; // return true on success, else the erorr
+		return $retval; // return insertedId on success, else the erorr
 	}
 
 
@@ -130,12 +205,29 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 		 * get extras from table studente
 		 */
 		$selQry = "SELECT ". implode(", ", $userObj->getExtraFields()) . " FROM studente WHERE id_utente_studente=?";
-		$extraAr = $this->getRowPrepared($selQry,array($userObj->getId()),AMA_FETCH_ASSOC);	
+		$extraAr = $this->getRowPrepared($selQry,array($userObj->getId()),AMA_FETCH_ASSOC);
+			
 		/**
-		 * TODO: load other tables here and merge values into $extraAr
+		 * load data form tables that have a 1:n relationship with studente table.
+		 * 
+		 *  $tablseToLoad is the array of tables to be loaded. WITHOUT PREFIX.
+		 *  $tablesPrefix is the prefix of the table in the DB.
+		 *  
+		 *  the foreach loop does the magic
 		 */
+		
+		$tablesToLoad = ADAUser::getLinkedTables();
+		$tablesPrefix = ADAUser::getTablesPrefix();
+		
+		foreach ($tablesToLoad as $table)
+		{		
+			$selQry = "SELECT ". implode(", ", $table::getFields()) . 
+					  " FROM ".$tablesPrefix.$table." WHERE studente_id_utente_studente=?";
+			$eduArr = $this->getAllPrepared($selQry, array($userObj->getId()),AMA_FETCH_ASSOC);
+			
+			if (!empty($eduArr)) $extraAr[$table] = $eduArr;
+		}		
 		return $extraAr;
-
 	}
 
 }

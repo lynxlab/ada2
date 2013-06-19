@@ -57,7 +57,7 @@ function initDateField() {
 	$j("#birthdate").mask("99/99/9999");
 }
 
-function validateContent(elements, regexps) {
+function validateContent(elements, regexps, formName) {
 	var error_found = false;
 	for (i in elements) {
 		var label = 'l_' + elements[i];
@@ -85,17 +85,18 @@ function validateContent(elements, regexps) {
 				/**
 				 * giorgio, if element it's a date field it may validate the regexp,
 				 * but could be an invalid date. Must check it.
-				 * NOTE: assumption is made that a date field contains 'date' in its id.
+				 * NOTE: assumption is made that a date field 
+				 * contains 'date' (NOT case sensitive) in its id.
 				 */
 				
-				if (id.indexOf('date')!==-1)
+				if (id.match(/date/i))
 				{			
 				 ok = null;
 				 dateArray = value.split("/");
 				 d = new Date (dateArray[2], dateArray[1]-1, dateArray[0]);
 				 now = new Date();				 
 				 if ( parseInt(dateArray[2]) < 1900) ok = false;
-				 else if (d.getTime() > now.getTime()) ok = false; 
+				 else if ( id.match(/birthdate/i) && (d.getTime() > now.getTime())) ok = false; 
 				 else if (d.getFullYear() == dateArray[2] && d.getMonth() + 1 == dateArray[1] && d.getDate() == dateArray[0])
 					 ok = true;
 				 else ok = false;
@@ -113,15 +114,15 @@ function validateContent(elements, regexps) {
 	}
 
 	if (error_found) {
-		if($('error_form')) {
-			$('error_form').addClassName('show_error');
-			$('error_form').removeClassName('hide_error');
+		if($('error_form_'+formName)) {
+			$('error_form_'+formName).addClassName('show_error');
+			$('error_form_'+formName).removeClassName('hide_error');
 		}
 	}
 	else {
-		if($('error_form')) {
-			$('error_form').addClassName('hide_error');
-			$('error_form').removeClassName('show_error');
+		if($('error_form_'+formName)) {
+			$('error_form_'+formName).addClassName('hide_error');
+			$('error_form_'+formName).removeClassName('show_error');
 		}
 	}
 

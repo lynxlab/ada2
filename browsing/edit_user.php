@@ -44,6 +44,7 @@ include_once 'include/browsing_functions.inc.php';
  */
 require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 require_once ROOT_DIR . '/include/Forms/UserSkillsForm.inc.php';
+require_once ROOT_DIR . '/include/Forms/UserEducationTrainingForm.inc.php';
 $languages = Translator::getLanguagesIdAndName();
 /**
  * @author giorgio 14/giu/2013
@@ -52,9 +53,8 @@ $languages = Translator::getLanguagesIdAndName();
  * to show checking the hasExtra properties of userObj
  * 
  */
-
 $user_dataAr = $userObj->toArray();
-
+// var_dump($userObj); 
 if (!$userObj->hasExtra()) {	
 	// user has no extra, let's build standard form	
 	$form = new UserProfileForm($languages);	
@@ -79,11 +79,10 @@ if (!$userObj->hasExtra()) {
 	{	
 		// create a LI
 		$tabsLI = CDOMElement::create('li');
-		// add a link to the div that holds tab content
-		$tabsLIContent = BaseHtmlLib::link('#divTab'.$currTab, $etichette[$currTab]);
 		// add the save icon to the link
-		$tabsLIContent->addChild(CDOMElement::create('span','class:ui-icon ui-icon-disk,id:tabSaveIcon'.$currTab));
-		$tabsLI->addChild($tabsLIContent);
+		$tabsLI->addChild(CDOMElement::create('span','class:ui-icon ui-icon-disk,id:tabSaveIcon'.$currTab));
+		// add a link to the div that holds tab content
+		$tabsLI->addChild(BaseHtmlLib::link('#divTab'.$currTab, $etichette[$currTab]));
 		$tabsUL->addChild($tabsLI);				
 		$tabContents[$currTab] = CDOMElement::create('div','id:divTab'.$currTab);
 		
@@ -95,7 +94,14 @@ if (!$userObj->hasExtra()) {
 				$user_dataAr['email'] = $user_dataAr['e_mail'];
 				unset($user_dataAr['e_mail']);
 				$form->fillWithArrayData($user_dataAr);
-// 				$tabContents[$currTab]->addChild(new CText($form->render()));
+				break;
+			case 2: // educationTraining
+				if (count ($userObj->tbl_educationTraining) >0)
+				{
+					// TODO: code to build HTML for each tbl_educationTraining
+				}
+				$form = new UserEducationTrainingForm ($languages);
+				$form->fillWithArrayData(array ('studente_id_utente_studente'=>$userObj->getId()));				
 				break;
 			case 3: // skills (aka capacita' in italian)
 				$form = new UserSkillsForm($languages);	

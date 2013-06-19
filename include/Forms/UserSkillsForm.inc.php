@@ -29,6 +29,7 @@ class UserSkillsForm extends FForm
             $this->setAction($action);
         }
         $this->setName('skills');
+        $this->setSubmitValue(translateFN('Salva'));
         
         // $this->addFileInput('picture', translateFN('Immagine'));
 

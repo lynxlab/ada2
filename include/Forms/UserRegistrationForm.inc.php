@@ -29,6 +29,7 @@ class UserRegistrationForm extends FForm
             $this->setAction($action);
         }
         $this->setName('registration');
+        $this->setSubmitValue(translateFN('Salva'));
 
         $this->addTextInput('nome', translateFN('Nome'))
              ->setRequired()

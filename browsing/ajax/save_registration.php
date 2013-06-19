@@ -46,6 +46,7 @@ require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 $languages = Translator::getLanguagesIdAndName();
 
 $retArray = array();
+$title = translateFN('Salvataggio');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -73,18 +74,18 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		MultiPort::setUser($userObj, array(), true);
 		$_SESSION['sess_userObj'] = $userObj;
 
-		$retArray = array ("status"=>"OK", "msg"=>translateFN('Scheda Anagrafica Salvata') );
+		$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN('Scheda Anagrafica Salvata') );
 	}
 	else
 	{
-		$retArray = array ("status"=>"ERROR", "msg"=>translateFN("I dati non sono validi") );
+		$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("I dati non sono validi") );
 	}
 }
 else {
-	$retArray = array ("status"=>"ERROR", "msg"=>trasnlateFN("Errore nella trasmissione dei dati"));
+	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>trasnlateFN("Errore nella trasmissione dei dati"));
 }
 
-if (empty($retArray)) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore sconosciuto")); 
+if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto")); 
 	
 echo json_encode($retArray);
 

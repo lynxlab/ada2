@@ -386,12 +386,20 @@ class MultiPort
     }
 
     if ($update_user_data) {
+    	
+    	$idFromPublicTester=0;
+    	
       foreach($testers as $tester) {
         $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
         //
         switch($userObj->getType()) {
         case AMA_TYPE_STUDENT:
-          $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj);
+          /**
+		   * @author giorgio
+		   * if it's an extraTable I need set_student to return me the id of the inserted
+		   * record in the table on DEFAULT that will be used as an id for all other providers
+           */ 
+          $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj, &$idFromPublicTester);
           break;
 
         case AMA_TYPE_AUTHOR:
@@ -436,7 +444,11 @@ class MultiPort
       switch($userObj->getType()) {
         case AMA_TYPE_STUDENT:
 
-          $result = $tester_dh->add_student($user_dataAr);
+          $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj);
+          /**
+           * TODO: controllo se ha extra e fare set_student dell'extra (tab. studemte)
+           * e poi il foreach delle altre collegate
+           */
           break;
 
         case AMA_TYPE_AUTHOR:
@@ -478,6 +490,8 @@ class MultiPort
         $userObj->addTester($tester_to_add);
       }
     }
+    
+    if (isset($result)) return $result;
   }
 
 

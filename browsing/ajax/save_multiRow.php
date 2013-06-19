@@ -1,7 +1,8 @@
 <?php
 /**
- * save skills - save user personal data in the DB
+ * save educationTraining - save user personal data in the DB
  *
+ * WARNING: This files must be called 'save_'<tablename> and IS CASE SENSITIVE!
  *
  * @package
  * @author 	giorgio <g.consorti@lynxlab.com>
@@ -42,7 +43,8 @@ require ROOT_DIR .'/browsing/include/browsing_functions.inc.php';
 /*
  * YOUR CODE HERE
 */
-require_once ROOT_DIR . '/include/Forms/UserSkillsForm.inc.php';
+
+// require_once ROOT_DIR . '/include/Forms/UserEducationTrainingForm.inc.php';
 $languages = Translator::getLanguagesIdAndName();
 
 $retArray = array();
@@ -50,22 +52,55 @@ $title = translateFN('Salvataggio');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	$form = new UserSkillsForm($languages);
+	if (!isset($_POST['extraTableName'])) die ("Cannot go on, don't know what to save");
+	else
+	{
+		/**
+		 * include and instantiate form class based on extraTableName POST
+		 * variable that MUST be set, else dont' know what and how to save.
+		 */
+		
+		$extraTableClass = trim($_POST['extraTableName']);
+		$extraTableFormClass = "User".ucfirst($extraTableClass)."Form";	
+					
+		if (is_file(ROOT_DIR . '/include/Forms/'.$extraTableFormClass.'.inc.php'))
+			require_once ROOT_DIR . '/include/Forms/'.$extraTableFormClass.'.inc.php';
+		else die ("Form class not found, don't know how to save");		
+	}
+	
+	$form = new $extraTableFormClass($languages);
 	$form->fillWithPostData();
 
 	if ($form->isValid()) {
-		
-		$userObj->setExtras($_POST);
-		$result = MultiPort::setUser($userObj, array(), true,'studente');
+		$arr = array();
+		$arr[$extraTableClass][0] = $extraTableClass::buildArrayFromPOST($_POST);
+		$userObj->setExtras($arr);
+		$result = MultiPort::setUser($userObj, array(), true,$extraTableClass);
+				
 		if (!AMA_DB::isError($result))
 		{
+			/**
+			 * the added extra arr shall be the last one added, need to set its
+			 * state to saved and to give it the returned id
+			 */
+			$extraTableProperty = 'tbl_'.$extraTableClass;
+			$lastInsertKey = count($userObj->$extraTableProperty)-1;
+				
+			/**
+			 * WEIRD STUFF:  NEED TO ACCESS OBJECT THIS WAY OTHERWISE WON'T WORK
+			 */
+			$extraTableKeyProperty = $extraTableClass::getKeyProperty();							
+			$temp1 = $userObj->$extraTableProperty;
+			$temp =  $temp1[$lastInsertKey];
+			$temp->$extraTableKeyProperty = $result;
+			$temp->setSavestate (true);
+								
 			$_SESSION['sess_userObj'] = $userObj;
-			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda Capacit&agrave; salvata"));
+
+			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda Formazione salvata ".$result));
 		}
 		else 
 			$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore nel salvataggio") );
-
-		
 	}
 	else
 	{
@@ -79,5 +114,6 @@ else {
 if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto")); 
 	
 echo json_encode($retArray);
+
 
 ?>
