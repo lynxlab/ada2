@@ -378,6 +378,7 @@ class MultiPort
 
     $common_dh = AMA_Common_DataHandler::instance();
     $user_dataAr = $userObj->toArray();
+    
     if ($update_user_data) {
       $result = $common_dh->set_user($user_id, $user_dataAr);
       if (AMA_Common_DataHandler::isError($result)) {
@@ -1985,6 +1986,44 @@ class MultiPort
 	  $msg_forum_count = MultiPort::count_new_notes($userObj,$courseInstanceId);
 	  	  	  
 	  return ( ($count_new_nodes >0) || ($msg_forum_count>0) );	  
+  }
+  
+  /**
+   * removeUserExtraData
+   * 
+   * Removes a row from the user extra datas.
+   * 
+   * @author giorgio 20/giu/2013
+   * 
+   * @param ADALoggableUser $userObj user for which to delete the row
+   * @param int $extraTableId	row id to be deleted
+   * @param string $extraTableClass class of row to be deleted
+   * 
+   * @return boolean on error | query result
+   * 
+   * @access public
+   */
+  
+  static public function removeUserExtraData (ADALoggableUser $userObj ,$extraTableId=null, $extraTableClass=false )
+  {
+  	if ($extraTableId!==null && $extraTableClass!==false)
+  	{
+  		$user_id = $userObj->getId();
+  		$testers = $userObj->getTesters();
+  		if(!is_array($testers)) {
+  			$testers = array();
+  		}
+  		if ($user_id == 0) {
+  			return FALSE;
+  		}
+  		
+  		foreach($testers as $tester) {
+  			$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+  			$result = $tester_dh->remove_user_extraRow($user_id, $extraTableId, $extraTableClass);
+  		}
+  		return $result;
+  	}
+  	else return false;  
   }
   
 }

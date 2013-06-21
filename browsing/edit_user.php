@@ -7,15 +7,16 @@
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
+ * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2009-2010, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @license	http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
- * @version		0.1
+ * @version	0.1
  */
 /**
  * Base config file
  */
-ini_set ('display_errors','0'); error_reporting(E_ALL);
+// ini_set ('display_errors','0'); error_reporting(E_ALL);
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
@@ -44,7 +45,7 @@ include_once 'include/browsing_functions.inc.php';
  */
 require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 require_once ROOT_DIR . '/include/Forms/UserSkillsForm.inc.php';
-require_once ROOT_DIR . '/include/Forms/UserEducationTrainingForm.inc.php';
+require_once ROOT_DIR .'/include/HtmlLibrary/UserExtraModuleHtmlLib.inc.php';
 $languages = Translator::getLanguagesIdAndName();
 /**
  * @author giorgio 14/giu/2013
@@ -70,6 +71,7 @@ if (!$userObj->hasExtra()) {
 	$etichette = array ( translateFN("Anagrafica"), translateFN("Lavoro") ,
 						  translateFN("Formazione"), translateFN("Capacit&agrave;"),
 						  translateFN("Lingue") );
+	$data = "";
 		
 	$tabsContainer = CDOMElement::create('div','id:tabs');	
 	$tabsUL = CDOMElement::create('ul');
@@ -86,31 +88,70 @@ if (!$userObj->hasExtra()) {
 		$tabsUL->addChild($tabsLI);				
 		$tabContents[$currTab] = CDOMElement::create('div','id:divTab'.$currTab);
 		
-		switch ($currTab)
+		$doMultiRowTab = false;
+		
+		if ($currTab==0) // personal datas, no extra at all!
 		{
-			case 0: // personal datas				
-				$form = new UserProfileForm($languages);				
-				unset($user_dataAr['password']);
-				$user_dataAr['email'] = $user_dataAr['e_mail'];
-				unset($user_dataAr['e_mail']);
-				$form->fillWithArrayData($user_dataAr);
-				break;
-			case 2: // educationTraining
-				if (count ($userObj->tbl_educationTraining) >0)
-				{
-					// TODO: code to build HTML for each tbl_educationTraining
-				}
-				$form = new UserEducationTrainingForm ($languages);
-				$form->fillWithArrayData(array ('studente_id_utente_studente'=>$userObj->getId()));				
-				break;
-			case 3: // skills (aka capacita' in italian)
-				$form = new UserSkillsForm($languages);	
-				$form->fillWithArrayData($user_dataAr);
-				break;
-			default: // job profile				
-				break;
+			$form = new UserProfileForm($languages);
+			unset($user_dataAr['password']);
+			$user_dataAr['email'] = $user_dataAr['e_mail'];
+			unset($user_dataAr['e_mail']);
+			$form->fillWithArrayData($user_dataAr);
+		}
+		else if ($currTab==1) // jobExperience
+		{
+			$doMultiRowTab = true;
+			$extraTableName = "jobExperience";			
+		}
+		else if ($currTab==2) // educationTraining
+		{
+			$doMultiRowTab = true;
+			$extraTableName = "educationTraining";			
+		}
+		else if ($currTab==3)
+		{
+			/**
+			 * skills (aka capacita' in italian)
+			 * These datas are stored in the table
+			 * whose name is returned by ADAUser::getExtraTableName()
+			 */
+			$form = new UserSkillsForm($languages);
+			$form->fillWithArrayData($user_dataAr);			
+		}
+		else if ($currTab==4) // languageSkills
+		{
+			$doMultiRowTab = true;
+			$extraTableName = "languageSkills";
 		}
 		
+		if ($doMultiRowTab===true)
+		{
+			// include proper form class definition file
+			$extraTableFormClass = "User".ucfirst($extraTableName)."Form";
+			
+			require_once ROOT_DIR . '/include/Forms/'.$extraTableFormClass.'.inc.php';
+			$container = CDOMElement::create('div','class:extraRowsContainer,id:container_'.$extraTableName);
+			$objProperty = 'tbl_'.$extraTableName;
+			if (count ($userObj->$objProperty) >0)
+			{
+				// create a div to wrap up all the rows of the array tbl_educationTrainig
+				foreach ($userObj->$objProperty as $num=>$aElement)
+				{
+					$keyFieldName = $aElement::getKeyProperty();
+					$keyFieldVal = $aElement->$keyFieldName;
+					// $divToAdd = CDOMElement::create('div','id:div_educationTraining_'+$keyFieldVal);
+					// $divToAdd->addChild (new CText( UserExtraModuleHtmlLib::extraObjectRow($aElement) ));
+					// $tabContents[$currTab]->addChild($divToAdd);
+					$container->addChild(new CText( UserExtraModuleHtmlLib::extraObjectRow($aElement) ));
+					// $divToAdd = null;
+				}
+			}
+			$tabContents[$currTab]->addChild($container);
+			$formClassName = 
+			$form = new $extraTableFormClass($languages);
+			$form->fillWithArrayData(array (educationTraining::getForeignKeyProperty()=>$userObj->getId()));			
+		}
+
 		// add generated form (if any) to proper tab
 		if (isset($form))
 		{
@@ -123,13 +164,13 @@ if (!$userObj->hasExtra()) {
 		}
 		
 		$tabsContainer->addChild ($tabContents[$currTab]);
-	}
+	} // end cycle through all tabs
 	$data.= $tabsContainer->getHtml();
 }
 
-$label = translateFN('Modifica dati utente VERSIONE ESTESA OPENLABOR');
+$label = translateFN('Modifica dati utente');
 
-$help = translateFN('Modifica dati utente VERSIONE ESTESA OPENLABOR');
+$help = translateFN('Modifica dati utente');
 
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,

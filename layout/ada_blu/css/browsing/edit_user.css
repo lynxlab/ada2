@@ -8,6 +8,7 @@
 }
 #tabs  li a  {
 	padding: .5em 1em .5em .1em;
+	outline-color: transparent;	
 }
 
 .saveResults {
@@ -39,5 +40,36 @@
 	padding: 15px 0px 0px 0px;
 	color:#fff;	
 	text-align : center;
+	width: 100%;	
+}
+
+.extraTableContainer {
+	width: 96%;
+	padding:1% 2% 1% 2%;
+	border: 1px dotted #a0a0a0;
+	background: #f4f4f4;
+	margin-bottom: 1%;
+	float: left;
+}
+
+.extraTableDatas {
+	width:100%;
+}
+
+.extraButtonDiv {
+	margin-top: 1%;
+}
+
+.extraDeleteButton {
+	float: right;
+	margin: 0 1% 0 0 !important;
+}
+
+.extraEditButton {
+	float:right;
+}
+
+.extraRowsContainer {
+	display: table;
 	width: 100%;	
 }

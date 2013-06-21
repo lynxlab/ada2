@@ -26,51 +26,56 @@ class UserEducationTrainingForm extends FForm
         parent::__construct();
         
         $formName = 'educationTraining';
+        $classObj = new $formName();
+        $fieldList = $formName::getFields();
         
         if ($action != NULL) {
             $this->setAction($action);
         }
         $this->setName($formName);
         $this->setSubmitValue(translateFN('Salva'));
-        
+                
+        // pls don't touch theese hidden fields
         $this->addHidden('saveAsMultiRow')->withData(1);
         $this->addHidden('_isSaved')->withData(0);
         $this->addHidden('extraTableName')->withData($formName);           
-        $this->addHidden('studente_id_utente_studente');
+        $this->addHidden($formName::getForeignKeyProperty());        
+        $this->addHidden($formName::getKeyProperty())->withData(0);
         
-        $this->addTextInput($formName::getKeyProperty(),'(id key property if exists) hidden2');       
-        
-        $this->addTextInput('eduStartDate', translateFN('Data di inizio'))
+        // the firsrt two fields are 'service' fields, so start at index 2
+        $fieldIndex = 2;
+        // 3
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setRequired()
              ->setValidator(FormValidator::DATE_VALIDATOR);
-        
-        $this->addTextInput('eduEndDate', translateFN('Data di fine'))
+        // 4
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setRequired()
         	 ->setValidator(FormValidator::DATE_VALIDATOR);
-        
-        $this->addTextInput('title', translateFN('Titolo'))
+        // 5
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setRequired()
         	 ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
-        
-        $this->addTextInput('schoolType', translateFN('Tipo di Scuola'))
+        // 6
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setValidator(FormValidator::DEFAULT_VALIDATOR);
-        
-        $this->addTextInput('mark', translateFN('Mark'))
+        // 7
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setValidator(FormValidator::DEFAULT_VALIDATOR);
-        
-        $this->addTextInput('organizationProvided', translateFN('Provider'))
+        // 8
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setValidator(FormValidator::DEFAULT_VALIDATOR);
-        
-        $this->addTextInput('organizationAddress', translateFN('Indirizzo'))
+        // 9
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setValidator(FormValidator::DEFAULT_VALIDATOR);
-        
-        $this->addTextInput('organizationCity', translateFN('Citta\''))
+        // 10
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setValidator(FormValidator::DEFAULT_VALIDATOR);
-        
-        $this->addTextInput('organizationCountry', translateFN('Paese'))
+        // 11
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setValidator(FormValidator::DEFAULT_VALIDATOR);
-        
-        $this->addTextInput('principalSkills', translateFN('Capacit&agrave; Principali'))
+        // 12
+        $this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
         	 ->setValidator(FormValidator::DEFAULT_VALIDATOR);
     }
 }

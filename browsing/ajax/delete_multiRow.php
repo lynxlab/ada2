@@ -1,7 +1,8 @@
 <?php
 /**
- * save skills - save user personal data in the DB
+ * save educationTraining - save user personal data in the DB
  *
+ * WARNING: This files must be called 'save_'<tablename> and IS CASE SENSITIVE!
  *
  * @package
  * @author 	giorgio <g.consorti@lynxlab.com>
@@ -42,42 +43,43 @@ require ROOT_DIR .'/browsing/include/browsing_functions.inc.php';
 /*
  * YOUR CODE HERE
 */
-require_once ROOT_DIR . '/include/Forms/UserSkillsForm.inc.php';
+
+// require_once ROOT_DIR . '/include/Forms/UserEducationTrainingForm.inc.php';
 $languages = Translator::getLanguagesIdAndName();
 
 $retArray = array();
-$title = translateFN('Salvataggio');
+$title = translateFN('Cancellazione');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	$form = new UserSkillsForm($languages);
-	$form->fillWithPostData();
-
-	if ($form->isValid()) {
-		
-		$userObj->setExtras($_POST);
-		$result = MultiPort::setUser($userObj, array(), true, ADAUser::getExtraTableName());
-		if (!AMA_DB::isError($result))
-		{
-			$_SESSION['sess_userObj'] = $userObj;
-			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda Capacit&agrave; salvata"));
-		}
-		else 
-			$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore nel salvataggio") );
-
-		
-	}
+	if (!isset($_POST['extraTableName'])) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Non so cosa cancellare"));
 	else
 	{
-		$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("I dati non sono validi") );
+		/**
+		 * include and instantiate form class based on extraTableName POST
+		 * variable that MUST be set, else dont' know what and how to save.
+		 */
+
+		$extraTableClass = trim($_POST['extraTableName']);
+		$extraTableId = isset ($_POST['id']) ? intval($_POST['id']) : null;
+		
+		$result = MultiPort::removeUserExtraData($userObj, $extraTableId ,$extraTableClass);
+
+		if (!AMA_DB::isError($result))
+		{
+			$userObj->removeExtras($extraTableId, $extraTableClass);
+			$_SESSION['sess_userObj'] = $userObj;
+			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda Formazione cancellata"));
+		}
+		else
+			$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore di cancellazione") );
 	}
 }
 else {
 	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>trasnlateFN("Errore nella trasmissione dei dati"));
 }
 
-if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto")); 
-	
-echo json_encode($retArray);
+if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto"));
 
+echo json_encode($retArray);
 ?>

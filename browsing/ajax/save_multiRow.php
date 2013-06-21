@@ -40,6 +40,8 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 require ROOT_DIR .'/browsing/include/browsing_functions.inc.php';
 
+require_once ROOT_DIR.'/include/HtmlLibrary/UserExtraModuleHtmlLib.inc.php';
+
 /*
  * YOUR CODE HERE
 */
@@ -52,54 +54,63 @@ $title = translateFN('Salvataggio');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	if (!isset($_POST['extraTableName'])) die ("Cannot go on, don't know what to save");
+	if (!isset($_POST['extraTableName'])) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Non so cosa salvare"));
 	else
 	{
 		/**
 		 * include and instantiate form class based on extraTableName POST
 		 * variable that MUST be set, else dont' know what and how to save.
 		 */
-		
+
 		$extraTableClass = trim($_POST['extraTableName']);
-		$extraTableFormClass = "User".ucfirst($extraTableClass)."Form";	
-					
+		$extraTableFormClass = "User".ucfirst($extraTableClass)."Form";
+			
 		if (is_file(ROOT_DIR . '/include/Forms/'.$extraTableFormClass.'.inc.php'))
 			require_once ROOT_DIR . '/include/Forms/'.$extraTableFormClass.'.inc.php';
-		else die ("Form class not found, don't know how to save");		
+		else die ("Form class not found, don't know how to save");
 	}
-	
+
 	$form = new $extraTableFormClass($languages);
 	$form->fillWithPostData();
 
 	if ($form->isValid()) {
 		$arr = array();
 		$arr[$extraTableClass][0] = $extraTableClass::buildArrayFromPOST($_POST);
-		$userObj->setExtras($arr);
+		// setExtras returns the index of the updated element, be it inserted or updated
+		$updatedElementKey = $userObj->setExtras($arr);
+		// setUser returns last insert id, or empty on update
 		$result = MultiPort::setUser($userObj, array(), true,$extraTableClass);
-				
+
 		if (!AMA_DB::isError($result))
 		{
+// 			$_SESSION['sess_userObj'] = $userObj;
+			
 			/**
-			 * the added extra arr shall be the last one added, need to set its
+			 * need to set the added extra arr
 			 * state to saved and to give it the returned id
 			 */
 			$extraTableProperty = 'tbl_'.$extraTableClass;
-			$lastInsertKey = count($userObj->$extraTableProperty)-1;
-				
+			// $lastInsertKey = count($userObj->$extraTableProperty)-1;
+
 			/**
 			 * WEIRD STUFF:  NEED TO ACCESS OBJECT THIS WAY OTHERWISE WON'T WORK
 			 */
-			$extraTableKeyProperty = $extraTableClass::getKeyProperty();							
+			$extraTableKeyProperty = $extraTableClass::getKeyProperty();
 			$temp1 = $userObj->$extraTableProperty;
-			$temp =  $temp1[$lastInsertKey];
+// 			$temp =  $temp1[$lastInsertKey];
+			$temp =  $temp1[$updatedElementKey];
 			$temp->$extraTableKeyProperty = $result;
 			$temp->setSavestate (true);
-								
+			
+// 			ini_set('display_errors', '1'); error_reporting(E_ALL);
+			$myhtml = UserExtraModuleHtmlLib::extraObjectRow($temp);
+
 			$_SESSION['sess_userObj'] = $userObj;
 
-			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda Formazione salvata ".$result));
+			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda Formazione salvata"), 
+							    "extraID"=>$result ,"html"=>$myhtml  );
 		}
-		else 
+		else
 			$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore nel salvataggio") );
 	}
 	else
@@ -111,8 +122,8 @@ else {
 	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>trasnlateFN("Errore nella trasmissione dei dati"));
 }
 
-if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto")); 
-	
+if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto"));
+
 echo json_encode($retArray);
 
 
