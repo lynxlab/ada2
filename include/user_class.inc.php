@@ -522,7 +522,14 @@ abstract class ADALoggableUser extends ADAGenericUser {
      Viene passato $id_course_instance per filtrare l'istanza di corso
      su cui si sta lavorando.
         */
-
+        
+        /**
+         * @author giorgio 28/giu/2013
+         * fixed bug: if neither course instance nor session course instance is set, then return null
+         */
+        if (!isset($id_course_instance) && (
+        		!isset($sess_id_course_instance) || is_null($sess_id_course_instance))) return null;
+        
         if (!isset($id_course_instance))
             $id_course_instance = $sess_id_course_instance;
         $now = time();
