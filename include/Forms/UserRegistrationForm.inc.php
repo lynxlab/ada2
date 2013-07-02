@@ -29,6 +29,7 @@ class UserRegistrationForm extends FForm
             $this->setAction($action);
         }
         $this->setName('registration');
+        $this->setSubmitValue(translateFN('Salva'));
 
         $this->addTextInput('nome', translateFN('Nome'))
              ->setRequired()
@@ -61,6 +62,10 @@ class UserRegistrationForm extends FForm
                  ->setRequired()
                  ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
         }
+        
+//         $myfields[0] = $control = FormControl::create(FormControl::INPUT_TEXT, 'telefono' , translateFN('Telefono'))->withData("test telefono");
+//         $myfields[1] = $control = FormControl::create(FormControl::INPUT_TEXT, 'indirizzo', translateFN('Indirizzo'));        
+//         $this->addFieldset("FIELDSET")->withData($myfields);
 
         $this->addTextInput('telefono', translateFN('Telefono'));
        

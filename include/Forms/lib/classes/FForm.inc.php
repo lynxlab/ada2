@@ -136,6 +136,16 @@ abstract class FForm
     protected function setSubmitValue($submitValue) {
         $this->_submitValue = $submitValue;
     }
+    
+    /**
+     * @author giorgio 01/lug/2013
+     * 
+     * getter for the form name
+     * @return string
+     */
+    public function getName() {
+    	return $this->_name;
+    }
     /*
      * Form controls creational methods
      */
@@ -327,7 +337,7 @@ abstract class FForm
         $html .= '
    </ol>
    </fieldset>
-   <div id="error_form" class="hide_error form">
+   <div id="error_form_'.$this->_name.'" class="hide_error form">
 		'.translateFN('Sono presenti errori nel form, si prega di correggere le voci evidenziate in rosso').'
    </div>
    <p class="'.FormControl::DEFAULT_CLASS.' submit"><input class="'.FormControl::DEFAULT_CLASS.'" type="submit" id="submit" name="submit" onClick="return validate_'.$this->_name.'();"'.$this->submitValue().'/></p>
@@ -380,7 +390,7 @@ abstract class FForm
 					var validateContentFields_'.$this->_name.' = new Array("'.implode('","',$jsFields).'");
 					var validateContentRegexps_'.$this->_name.' = new Array('.implode(',',$jsRegexps).');
 					function validate_'.$this->_name.'() {
-						return validateContent(validateContentFields_'.$this->_name.',validateContentRegexps_'.$this->_name.');
+						return validateContent(validateContentFields_'.$this->_name.',validateContentRegexps_'.$this->_name.' , "'.$this->_name.'");
 					}
 				</script>';
 		

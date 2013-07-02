@@ -1,0 +1,50 @@
+1357898719|127.0.0.1|/openlabor/WS/jobs||Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:18.0) Gecko/20100101 Firefox/18.0|200|GET|it,en;q=0.8,en-us;q=0.7,it-it;q=0.5,es-es;q=0.3,es;q=0.2|421357898854|127.0.0.1|/openlabor/WS/training|keywords=web|Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:18.0) Gecko/20100101 Firefox/18.0|200|GET|it,en;q=0.8,en-us;q=0.7,it-it;q=0.5,es-es;q=0.3,es;q=0.2|431357899206|127.0.0.1|/openlabor/WS/training|keywords=web|Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:18.0) Gecko/20100101 Firefox/18.0|200|GET|it,en;q=0.8,en-us;q=0.7,it-it;q=0.5,es-es;q=0.3,es;q=0.2|43
+1357899234|127.0.0.1|/openlabor/WS/jobs|keywords=web|Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:18.0) Gecko/20100101 Firefox/18.0|200|GET|it,en;q=0.8,en-us;q=0.7,it-it;q=0.5,es-es;q=0.3,es;q=0.2|0
+1357899248|127.0.0.1|/openlabor/WS/jobs|keywords=informatica|Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:18.0) Gecko/20100101 Firefox/18.0|200|GET|it,en;q=0.8,en-us;q=0.7,it-it;q=0.5,es-es;q=0.3,es;q=0.2|12
+1371550676|127.0.0.1|/openlabor/api/v1/jobs.json||Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371550734|127.0.0.1|/openlabor/api/v1/jobs.json||Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371551606|127.0.0.1|/openlabor/api/v1/jobs.json||Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371551620|127.0.0.1|/openlabor/api/v1/jobs.json||Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371551633|127.0.0.1|/openlabor/api/v1/jobs.json||Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371551662|127.0.0.1|/openlabor/api/v1/jobs.json|keywords=segretario|Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371551727|127.0.0.1|/openlabor/api/v1/jobs.json|keywords=segretario|Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371560547|127.0.0.1|/openlabor/api/v1/jobs.json|keywords=segretario|Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371560622|127.0.0.1|/openlabor/api/v1/jobs.json|keywords=segretario&qualificationRequired=laurea|Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371562155|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&keywords=segretario||200|GET||0
+1371562354|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&keywords=programmatore||200|GET||0
+1371562386|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&keywords=programmatore||200|GET||0
+1371562411|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371562725|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&keywords=segretario||200|GET||0
+1371562953|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&keywords=segretario||200|GET||0
+1371563076|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371563081|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&jobID=464||200|GET||
+1371563748|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&jobID=464||200|GET||
+1371563830|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&jobID=464||200|GET||
+1371563865|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&jobID=464||200|GET||
+1371563954|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371564005|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371565492|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371566025|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371566125|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&jobID=487||200|GET||
+1371566164|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371566273|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371566369|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371566442|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371566515|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371566656|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371567364|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371567413|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
+1371567419|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&jobID=477||200|GET||
+1371567582|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&jobID=477||200|GET||
+1371567682|127.0.0.1|/openlabor/api/v1/jobs.json||Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.45 Safari/537.36|200|GET|it-IT,it;q=0.8,en;q=0.6,en-US;q=0.4|0
+1371567701|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&qualificationRequired=laurea||200|GET||0
+1371567717|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&qualificationRequired=diploma||200|GET||0
+1371567736|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&qualificationRequired=licenza+elementare||200|GET||0
+1371567753|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&qualificationRequired=elementari||200|GET||0
+1371567759|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&qualificationRequired=meida||200|GET||0
+1371567767|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&qualificationRequired=media||200|GET||0
+1371567794|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&keywords=operaio||200|GET||0
+1371567836|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&jobID=157||200|GET||
+1371567845|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&keywords=operaio||200|GET||0
+1371567853|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001&jobID=465||200|GET||
+1371572286|127.0.0.1|/openlabor/api/v1/requests.json|service_code=001||200|GET||0
