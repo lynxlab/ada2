@@ -16,7 +16,7 @@
 /**
  * Base config file
  */
-// ini_set ('display_errors','0'); error_reporting(E_ALL);
+
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
@@ -55,7 +55,7 @@ $languages = Translator::getLanguagesIdAndName();
  * 
  */
 $user_dataAr = $userObj->toArray();
-// var_dump($userObj); 
+ 
 if (!$userObj->hasExtra()) {	
 	// user has no extra, let's build standard form	
 	$form = new UserProfileForm($languages);	
@@ -128,10 +128,36 @@ if (!$userObj->hasExtra()) {
 		{
 			// include proper form class definition file
 			$extraTableFormClass = "User".ucfirst($extraTableName)."Form";
-			
 			require_once ROOT_DIR . '/include/Forms/'.$extraTableFormClass.'.inc.php';
-			$container = CDOMElement::create('div','class:extraRowsContainer,id:container_'.$extraTableName);
+
+			// generate the form
+			$form = new $extraTableFormClass($languages);
+			$form->fillWithArrayData(array ($extraTableName::getForeignKeyProperty()=>$userObj->getId()));
+			
+			// create a div for placing 'new' and 'discard changes button'
+			$divButton = CDOMElement::create('div','class:formButtons');
+				
+				$showButton = CDOMElement::create('a');
+				$showButton->setAttribute('href', 'javascript:toggleForm(\''.$form->getName().'\', true);');
+				$showButton->setAttribute('class', 'showFormButton '.$form->getName());
+				
+				$showButton->addChild (new CText(translateFN('Nuova scheda')));
+					
+				$hideButton = CDOMElement::create('a');
+				$hideButton->setAttribute('href', 'javascript:toggleForm(\''.$form->getName().'\');');
+				$hideButton->setAttribute('class', 'hideFormButton '.$form->getName());
+				$hideButton->setAttribute('style', 'display:none');
+				$hideButton->addChild (new CText(translateFN('Chiudi e scarta modifiche')));
+			
+			$divButton->addChild($showButton);
+			$divButton->addChild($hideButton);			
+			
 			$objProperty = 'tbl_'.$extraTableName;
+			$container = CDOMElement::create('div','class:extraRowsContainer,id:container_'.$extraTableName);
+			
+			// if have 3 or more rows, add the new and discard buttons on top also
+			if (count ($userObj->$objProperty) >=3) $tabContents[$currTab]->addChild (new CText($divButton->getHtml()));
+						
 			if (count ($userObj->$objProperty) >0)
 			{
 				// create a div to wrap up all the rows of the array tbl_educationTrainig
@@ -139,17 +165,17 @@ if (!$userObj->hasExtra()) {
 				{
 					$keyFieldName = $aElement::getKeyProperty();
 					$keyFieldVal = $aElement->$keyFieldName;
-					// $divToAdd = CDOMElement::create('div','id:div_educationTraining_'+$keyFieldVal);
-					// $divToAdd->addChild (new CText( UserExtraModuleHtmlLib::extraObjectRow($aElement) ));
-					// $tabContents[$currTab]->addChild($divToAdd);
+					
+					$rowLabelTxt = 'Scheda '.($num+1);
+					
 					$container->addChild(new CText( UserExtraModuleHtmlLib::extraObjectRow($aElement) ));
-					// $divToAdd = null;
 				}
 			}
-			$tabContents[$currTab]->addChild($container);
-			$formClassName = 
-			$form = new $extraTableFormClass($languages);
-			$form->fillWithArrayData(array (educationTraining::getForeignKeyProperty()=>$userObj->getId()));			
+			// in theese cases form is added here
+			$container->addChild (new CText($form->render()));
+			unset($form);
+			$container->addChild (new CText($divButton->getHtml()));
+			$tabContents[$currTab]->addChild($container); 
 		}
 
 		// add generated form (if any) to proper tab
@@ -157,10 +183,6 @@ if (!$userObj->hasExtra()) {
 		{
 			$tabContents[$currTab]->addChild(new CText($form->render()));
 			unset ($form);
-		}
-		else
-		{
-			$tabContents[$currTab]->addChild (new CText(translateFN("Prova tab ".$currTab)));
 		}
 		
 		$tabsContainer->addChild ($tabContents[$currTab]);
@@ -179,9 +201,17 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_NO_CONFLICT
 );
 
-$layout_dataAr['CSS_filename'] = array(
-		JQUERY_UI_CSS
-);
+/**
+ * if the jqueru-ui theme directory is there in the template family,
+ * do not include the default jquery-ui theme but use the one imported
+ * in the edit_user.css file instead
+ */
+if (!is_dir(ROOT_DIR.'/layout/'.$userObj->template_family.'/css/jquery-ui'))
+{
+	$layout_dataAr['CSS_filename'] = array(
+			JQUERY_UI_CSS
+	);
+}
 
 $optionsAr['onload_func'] = 'initUserRegistrationForm('.$userObj->hasExtra().');';
 

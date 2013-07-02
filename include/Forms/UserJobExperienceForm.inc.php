@@ -53,12 +53,12 @@ class UserJobExperienceForm extends FForm
 		->setRequired()
 		->setValidator(FormValidator::DATE_VALIDATOR);
 		// 5
+		$this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))		
+		->setValidator(FormValidator::DEFAULT_VALIDATOR);
+		// 6
 		$this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
 		->setRequired()
 		->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
-		// 6
-		$this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
-		->setValidator(FormValidator::DEFAULT_VALIDATOR);
 		// 7
 		$this->addTextInput($fieldList[$fieldIndex], $classObj->getLabel($fieldIndex++))
 		->setValidator(FormValidator::DEFAULT_VALIDATOR);

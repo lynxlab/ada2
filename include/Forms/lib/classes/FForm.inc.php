@@ -136,6 +136,16 @@ abstract class FForm
     protected function setSubmitValue($submitValue) {
         $this->_submitValue = $submitValue;
     }
+    
+    /**
+     * @author giorgio 01/lug/2013
+     * 
+     * getter for the form name
+     * @return string
+     */
+    public function getName() {
+    	return $this->_name;
+    }
     /*
      * Form controls creational methods
      */

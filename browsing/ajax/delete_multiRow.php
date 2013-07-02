@@ -69,7 +69,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		{
 			$userObj->removeExtras($extraTableId, $extraTableClass);
 			$_SESSION['sess_userObj'] = $userObj;
-			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda Formazione cancellata"));
+			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda cancellata"));
 		}
 		else
 			$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore di cancellazione") );

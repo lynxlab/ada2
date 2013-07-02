@@ -107,7 +107,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 			$_SESSION['sess_userObj'] = $userObj;
 
-			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda Formazione salvata"), 
+			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN("Scheda salvata"), 
 							    "extraID"=>$result ,"html"=>$myhtml  );
 		}
 		else

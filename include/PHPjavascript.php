@@ -71,6 +71,8 @@ $JS_i18n = array(
 	'confirmDelete' => translateFN('Stai per cancellare l\'elemento in modo definitivo. Confermi?'),
 	'confirm' => translateFN('Conferma'),
 	'cancel' => translateFN('Annulla'),
+	'confirmTabChange' => translateFN('Ci sono dati non salvati in questa scheda. Continuare senza salvarli?'),
+	'confirmLeavePage' => translateFN('Ci sono dati non salvati in questa scheda.')
 );
 ?>
 //main vars
