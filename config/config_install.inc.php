@@ -31,18 +31,16 @@ define('ADA_COMMON_DB_HOST',  'localhost');
 define('ADA_PUBLIC_TESTER', 'client0');
 define('ADA_DEFAULT_TESTER_DB_TYPE',  'mysql');
 define('ADA_DEFAULT_TESTER_DB_NAME',  'ada_provider0');
-define('ADA_DEFAULT_TESTER_DB_USER',  'user');
-define('ADA_DEFAULT_TESTER_DB_PASS',  'password');
+define('ADA_DEFAULT_TESTER_DB_USER',  'ada_db_provider0');
+define('ADA_DEFAULT_TESTER_DB_PASS',  'zero');
 define('ADA_DEFAULT_TESTER_DB_HOST',  'localhost');
 
 /**
- * DataBase abstraction layer,
- * kept for possible future implementations.
- * 
- * Only possible value is PDO_DB as of 30/mag/2013
+ * AMA PEAR abstraction layer.
  */
-define('PDO_DB', 1);
-define('DB_ABS_LAYER', PDO_DB);
+define('PEAR_DB', 1);
+define('PEAR_MDB2', 2);
+define('DB_ABS_LAYER', PEAR_MDB2);
 
 
 /**
@@ -108,23 +106,23 @@ define('MAX_HEIGHT', "200");
 /**
  * Default admin mail address
  */
-define('ADA_ADMIN_MAIL_ADDRESS','mail@lynxlab.com');
+define('ADA_ADMIN_MAIL_ADDRESS','g.consorti@lynxlab.com');
 
 /**
  *
  */
-define('PORTAL_NAME','ADA 2.1');
+define('PORTAL_NAME','ADA 2.1 local git');
 
 /**
  * ADA version
  */
-define('ADA_VERSION','2.1alpha0');
+define('ADA_VERSION','2.1a');
 
 /**
  * URL
  * DO NOT REMOVE the trailing // *js_import*
  */
-define('HTTP_ROOT_DIR','http://ada.lynxlab.com'); // *js_import*
+define('HTTP_ROOT_DIR','http://www.localada.com'); // *js_import*
 define('MODULES_DIR',ROOT_DIR.'/modules'); // *js_import*
 
 /**

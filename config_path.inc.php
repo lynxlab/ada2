@@ -16,7 +16,7 @@
   /**
   *  Root dir relative path
   */
-  define('ROOT_DIR','/var/www/html/ada');
+  define('ROOT_DIR','/home/giorgio/public_html/ADA2.1');
 /**
 * Main include file
 */
