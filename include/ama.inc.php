@@ -1809,8 +1809,27 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         return $testers_result;
     }
-
-
+    
+    /**
+     * gets the max id of a course in the whole ADA system
+     *
+     * Mainly used in course creation (
+     *
+     * @author giorgio
+     *
+     * @return AMA_Error | integer
+     * @access public
+     */
+    public function get_course_max_id()
+    {
+    	$sql = "SELECT MAX(id_corso) FROM servizio_tester";    	 
+    	$max_id = $this->getOnePrepared($sql);
+    	
+    	if (AMA_DB::isError($max_id)) $retval = new AMA_Error(AMA_ERR_GET);
+    	else $retval = $max_id;
+    	    	 
+    	return $retval;    	
+    }
 
     /**
      * Get informations about service
@@ -5315,7 +5334,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         return $result;
     }
-
+    
     /**
      * function get_course_instances_student_can_subscribe_to:
      *
@@ -5928,10 +5947,18 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         // insert a row into table modello_corso
-        $sql1 =  "insert into modello_corso (nome, titolo, id_utente_autore, descrizione, data_creazione, data_pubblicazione, id_nodo_toc, id_nodo_iniziale, media_path, static_mode, id_lingua, crediti)";
-        $sql1 .= " values ($nome, $titolo, $id_autore, $descr, $d_create, $d_publish, $id_nodo_toc, $id_nodo_iniziale, $media_path,$static_mode,$id_lingua, $crediti);";
+        $sql1 =  "insert into modello_corso (id_corso, nome, titolo, id_utente_autore, descrizione, data_creazione, data_pubblicazione, id_nodo_toc, id_nodo_iniziale, media_path, static_mode, id_lingua, crediti)";
+        $sql1 .= " values (";
+        /**
+         * @author giorgio 03/lug/2013
+         *
+         * call to common dh to get the new id_corso for the course to be inserted
+         */        
+        $sql1 .= (AMA_Common_DataHandler::instance()->get_course_max_id()+1);
+        $sql1 .= ", $nome, $titolo, $id_autore, $descr, $d_create, $d_publish, $id_nodo_toc, $id_nodo_iniziale, $media_path,$static_mode,$id_lingua, $crediti);";
 
         $res = $this->executeCritical( $sql1 );
+        
         if (AMA_DB::isError($res)) {
             return $res;
         }
