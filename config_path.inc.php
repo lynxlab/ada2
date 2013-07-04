@@ -16,9 +16,8 @@
   /**
   *  Root dir relative path
   */
-  define('ROOT_DIR','/home/giorgio/public_html/ADA2.1');
+  define('ROOT_DIR','/var/www/html/ada');
 /**
 * Main include file
 */
 require_once(ROOT_DIR.'/config/ada_config.inc.php');
-                 
