@@ -20,9 +20,9 @@
  * ADA Common database
  */
 define('ADA_COMMON_DB_TYPE',  'mysql');
-define('ADA_COMMON_DB_NAME',  'ada_common');
-define('ADA_COMMON_DB_USER',  'ada_db_common');
-define('ADA_COMMON_DB_PASS',  'common');
+define('ADA_COMMON_DB_NAME',  'ada20_common');
+define('ADA_COMMON_DB_USER',  'root');
+define('ADA_COMMON_DB_PASS',  '');
 define('ADA_COMMON_DB_HOST',  'localhost');
 
 /*
