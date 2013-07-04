@@ -27,13 +27,13 @@ define('CLIENT0_DB_NAME',  'ada_provider0');
  *
  * @name CLIENT0_DB_USER
  */
-define('CLIENT0_DB_USER',  'ada_db_provider0');
+define('CLIENT0_DB_USER',  'user');
 
 /**
  *
  * @name CLIENT0_DB_PASS
  */
-define('CLIENT0_DB_PASS',  'zero');
+define('CLIENT0_DB_PASS',  'password');
 
 /**
  *
