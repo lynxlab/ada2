@@ -3,7 +3,7 @@ ADA 2.0 STANDARD
 28/06/2013
 Giorgio
 ++++++++++++++++++
-fixed bug preventing node editing
+fixed bugs preventing node editing
 ++++++++++++++++++
 *	include/user_class.inc.php
 	+ if neither course instance nor session course instance is set, then return null
