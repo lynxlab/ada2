@@ -1,0 +1,72 @@
+html,body {
+	background: #fff;
+}
+
+#corsi {
+	position: absolute;
+	top: 20px;
+	left: 170px;
+}
+
+#manuali {
+	position: absolute;
+	top: 20px;
+	left: 310px;
+}
+
+#contatti {
+	position: absolute;
+	top: 20px;
+	left: 460px;
+}
+
+#submenubanner {
+	background: #FFA400;
+	color: #FFFFFF;
+}
+
+#newscont {
+	width: 100%;
+	float: left;
+}
+
+#newscont .news {
+	width: 30%;
+	float: left;
+	background: #9da5b8;
+	color: #fff;
+	margin-right: 5px;
+	padding: 10px;
+	height: 175px;
+	position: relative;
+}
+
+#newscont .news .newstitle {
+	font-size: 150%;
+	font-weight: bold;
+}
+
+#newscont .news .continuelink {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+}
+
+#footer {
+	background: #c5C9D2;
+	color: #fff;
+	font-size: 120%;
+	padding: 5px;
+}
+
+#footer .copyright {
+	color: #fff;
+}
+
+#footer a:link,#footer a:visited {
+	color: #fff;
+}
+
+#footer a:hover {
+	color: #aeaeae;
+}
