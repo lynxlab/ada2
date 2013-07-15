@@ -15,14 +15,18 @@
 <div id="container">
 <!-- contenuto -->
 <div id="content">
-<div id="topcont"></div>	 
+<div id="topcont">
+    <div id="submenubanner">
+ <template_field class="template_field" name="infomsg">infomsg</template_field>
+</div>
+
+</div>	 
 <div id="contentcontent">
          <div class="first">
             <div class="sx">
                 <div class="wellcome">
                 <template_field class="template_field" name="message">message</template_field>
-                <template_field class="template_field" name="help">help</template_field> 
-                <template_field class="template_field" name="text">text</template_field>
+                <template_field class="template_field" name="newsmsg">newsmsg</template_field>                                
                 </div>
             </div>
             <div class="dx">
@@ -35,11 +39,18 @@
 
                 </div-->
 		</div>
-		  
+		<div class="helpcont">
+		  <template_field class="template_field" name="helpmsg">helpmsg</template_field>
             </div>
+         </div>
          </div>
 <br class="clearfix">
 </div>
+
+<div id="newscont">
+	<template_field class="template_field" name="bottomnews">bottomnews</template_field> 	
+</div>
+<br class="clearfix">
 <div id="bottomcont"></div>
 </div> <!--  / contenuto -->
 </div> 
