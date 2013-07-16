@@ -47,11 +47,17 @@ class UserProfileForm extends UserRegistrationForm {
             $this->addTextarea('profilo', translateFN('Il tuo profilo utente'));
         }
 
+        $layoutsAr = array(
+          'none'         => translateFN('seleziona un layout')
+        );            
         $layoutObj = new UILayout();
+        $avalaibleLayoutAr = $layoutObj->getAvailableLayouts();
+        $layouts = array_merge($layoutsAr,$avalaibleLayoutAr);
         $this->addSelect(
             'layout',
              translateFN('Layout'),
-             $layoutObj->getAvailableLayouts(),
+//             $layoutObj->getAvailableLayouts(),
+             $layouts,
              0);
 
         if(is_array($languages) && count($languages) > 0) {
