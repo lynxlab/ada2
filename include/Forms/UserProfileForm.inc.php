@@ -56,12 +56,12 @@ class UserProfileForm extends UserRegistrationForm {
         $this->addSelect(
             'layout',
              translateFN('Layout'),
-//             $layoutObj->getAvailableLayouts(),
              $layouts,
              0);
 
         if(is_array($languages) && count($languages) > 0) {
-
+            $languagesAr[0]=translateFN('seleziona una lingua');            
+            $languages = array_merge($languagesAr,$languages);
             $this->addSelect(
                 'lingua',
                  translateFN('Lingua'),
