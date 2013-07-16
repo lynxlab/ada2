@@ -49,7 +49,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->fillWithPostData();
 
     if ($form->isValid()) {
-        $user_layout = $_POST['layout'];
+        if(isset($_POST['layout']) && $_POST['layout'] != 'none') {
+            $user_layout = $_POST['layout'];
+        } else {
+            $user_layout = '';
+        }
         $userObj->setFirstName($_POST['nome']);
         $userObj->setLastName($_POST['cognome']);
         $userObj->setFiscalCode($_POST['codice_fiscale']);
