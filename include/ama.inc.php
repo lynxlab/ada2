@@ -2683,6 +2683,58 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         return $result;
     }
+    
+    /**
+     * return the identificatore_tabella of language given a language id
+     * added on 17/lug/2013 for course exporting, feel free to use it!
+     * 
+     * @author giorgio
+     * 
+     */
+    public function find_language_table_identifier_by_langauge_id ($language_id)
+    {
+    	$db =& $this->getConnection();
+    	if (AMA_DB::isError($db)) return $db;
+    	
+    	$sql_select_languages = "SELECT identificatore_tabella FROM lingue WHERE id_lingua=".$language_id;
+    	$result = $db->getOne($sql_select_languages, null, AMA_FETCH_ASSOC);
+    	
+    	if (AMA_DB::isError($result)) {
+    		return new AMA_Error(AMA_ERR_GET);
+    	}
+    	
+    	if(empty($result)) {
+    		return new AMA_Error(AMA_ERR_NOT_FOUND);
+    	}
+    	
+    	return $result;    	    	
+    }
+
+    /**
+     * return the id_lingua of language given a identificatore_tabella
+     * added on 17/lug/2013 for course exporting, feel free to use it!
+     *
+     * @author giorgio
+     *
+     */
+    public function find_language_id_by_langauge_table_identifier ($table_identifier)
+    {
+    	$db =& $this->getConnection();
+    	if (AMA_DB::isError($db)) return $db;
+    	 
+    	$sql_select_languages = "SELECT id_lingua FROM lingue WHERE identificatore_tabella='".$table_identifier."'";
+    	$result = $db->getOne($sql_select_languages, null, AMA_FETCH_ASSOC);
+    	 
+    	if (AMA_DB::isError($result)) {
+    		return new AMA_Error(AMA_ERR_GET);
+    	}
+    	 
+    	if(empty($result)) {
+    		return new AMA_Error(AMA_ERR_NOT_FOUND);
+    	}
+    	 
+    	return $result;    	
+    }
 
     /**
      * function get_translation_table_name_for_language_code(): used to obtain the name of
@@ -5919,17 +5971,30 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $descr = $this->or_null($this->sql_prepared($course_ha['descr']));
         $d_create = $this->date_to_ts($this->or_null($course_ha['d_create']));
 
-        if (isset($course_ha['d_create'])) {
-            $date_to_ts = $course_ha['d_create'];
-        }
-        else if(isset($course_ha['d_publish'])) {
-            $date_to_ts = $course_ha['d_publish'];
-        }
-        else {
-            $date_to_ts = null;
-        }
+        /**
+         * @author giorgio 15/lug/2013
+         * nobody remembers how come this lines of code sets the published date 
+         * value to either creation or publication date.
+         * Anyway, today it was decided to comment 'em out and set the published date
+         * to the passed one.
+         */
+        
+//         if (isset($course_ha['d_create'])) {
+//             $date_to_ts = $course_ha['d_create'];
+//         }
+//         else if(isset($course_ha['d_publish'])) {
+//             $date_to_ts = $course_ha['d_publish'];
+//         }
+//         else {
+//             $date_to_ts = null;
+//         }
 
-        $d_publish = $this->date_to_ts($this->or_null($date_to_ts));
+//         $d_publish = $this->date_to_ts($this->or_null($date_to_ts));
+		/**
+         * @author giorgio 15/lug/2013
+         * this line was added
+		 */
+        $d_publish = $this->date_to_ts($this->or_null($course_ha['d_publish']));        
 
         $id_autore = $this->or_zero($course_ha['id_autore']);
         $id_nodo_iniziale = $this->or_zero($this->sql_prepared($course_ha['id_nodo_toc']));
@@ -6628,7 +6693,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *
      * @see add_node()
      */
-    private function _add_extension_node($node_ha) {
+    protected function _add_extension_node($node_ha) {
         ADALogger::log_db("entered _add_extension_node");
 
         $db =& $this->getConnection();
@@ -6673,7 +6738,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @see add_node()
      */
     // FIXME: probabiltmente dovrà diventare pubblico.
-    private function _add_node($node_ha) {
+    protected function _add_node($node_ha) {
         ADALogger::log_db("entered _add_node");
 
         $db =& $this->getConnection();
@@ -7646,7 +7711,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql  = "select id_utente, id_posizione, nome, titolo, testo, tipo, ";
         $sql .= "data_creazione, id_nodo_parent, ordine, ";
         $sql .= "livello, versione, n_contatti, icona, colore_didascalia, colore_sfondo,";
-        $sql .= "correttezza, copyright, id_istanza";
+        $sql .= "correttezza, copyright, id_istanza, lingua, pubblicato";
         $sql .= " from nodo where id_nodo='$node_id'";
         $res_ar =  $db->getRow($sql);
         if (AMA_DB::isError($res_ar)) {
@@ -7817,7 +7882,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // build comma separated string out of $field_list_ar array
         if (count($out_fields_ar)) {
             $more_fields = ', '.implode(', ', $out_fields_ar);
-        }
+        } else $more_fields = '';
 
         // add an 'and' on top of the clause
         // handle null clause, too
@@ -8240,7 +8305,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *
      * @return true on success, an AMA_Error object on failure
      */
-    private function _add_position($pos_ar) {
+    protected function _add_position($pos_ar) {
 
         ADALogger::log_db("entered _add_position (".serialize($pos_ar).")");
 
@@ -8300,14 +8365,17 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     /**
      * Get a position's id from the coordinates array
      *
-     * @access private
+     * @access protected
      *
      * @param pos_ar - the four elements array containing the x0, y0, x1, y1 coordinates
      *
      * @return the id if it's found existsing, -1 otherwise, ana AMA_Error object on failure
      *
+     *	@author giorgio 16/lug/2013
+     *  modified access to proteced (was private) because this method is needed in the
+     *  import/export course module own datahandler
      */
-    private function _get_id_position($pos_ar) {
+    protected function _get_id_position($pos_ar) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
@@ -8390,6 +8458,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $copyright = $this->or_zero($res_ha['copyright']);
         $id_nodo = $this->sql_prepared($res_ha['id_nodo']);
         $keywords = $this->sql_prepared($res_ha['keywords']);
+        /**
+		 * @author giorgio 16/lug/2013
+		 * is this mapping titolo=>keywords correct??
+         */
         $titolo = $this->sql_prepared($res_ha['keywords']);
         $pubblicato = $this->or_zero($res_ha['pubblicato']);
         $descrizione = $this->sql_prepared($res_ha['descrizione']);
