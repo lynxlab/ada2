@@ -54,9 +54,21 @@ $menu_dataAr = array(
   array('href' => 'add_tester.php', 'text' => translateFN('Aggiungi provider')),
   array('href' => 'add_service.php', 'text' => translateFN('Aggiungi servizio')),
   array('href' => 'add_user.php', 'text' => translateFN('Aggiungi utente')),
-  array('href' => 'edit_news.php', 'text' => translateFN('Edit home page news')),
+//  array('href' => 'edit_news.php', 'text' => translateFN('Edit home page news')),
   array('href' => 'import_language.php', 'text' => translateFN('Import Language'))
   );
+
+// grab available content types for editing and build menu items
+// $availableTypes = ;
+
+foreach (dirTree (ROOT_DIR.'/docs') as $aType) {
+    array_push($menu_dataAr, 
+    	array ('href' => 'edit_content.php?type='.$aType, 'text' => 'Edit '.$aType.' content' )
+    );
+}
+
+
+
 $actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
 
 $content_dataAr = array(

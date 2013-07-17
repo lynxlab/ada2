@@ -1,27 +1,27 @@
-<h3>Benvenuti in ADA 2.1 ! </h3>
-<img src="docs/news/DSC_1349.JPG" border="0" width="400"><br/><br/>
-ADA &egrave; una piattaforma di e-learning progettata e mantenuta da <a href="http://www.lynxlab.com" target="_blank">Lynx</a> fin dal 2000.<br />
-Questa installazione &egrave; aperta al test pubblico.<br/>
-Ci sono alcuni corsi aperti agli utenti Guest, che non necessitano di login.<br/>
-Altri sono invece riservati agli studenti registrati e iscritti.<br/>
-Per entrare come studente, utilizza come dati di accesso i seguenti:<br/>
+<h3>Benvenuti in ADA 2.1 !</h3>
+<p><img width="399" vspace="2" hspace="2" height="283" border="0" align="left" src="/ada20/services/media/1/forthnet_lit.jpg" alt="" /><br />
+<br />
+ADA è una piattaforma di e-learning progettata e mantenuta da <a target="_blank" href="http://www.lynxlab.com">Lynx</a> fin dal 2000.<br />
+Questa installazione è aperta al test pubblico.<br />
+Ci sono alcuni corsi aperti agli utenti Guest, che non necessitano di login.<br />
+Altri sono invece riservati agli studenti registrati e iscritti.<br />
+Per entrare come studente, utilizza come dati di accesso i seguenti:</p>
 <ul>
-<li>username: studente_ada</li>
-<li>password: studente_ada</li>
+    <li>username: studente_ada</li>
+    <li>password: studente_ada</li>
 </ul>
-<br/>
-Per entrare come tutor, utilizza come dati di accesso i seguenti:<br/>
+<p><br />
+Per entrare come tutor, utilizza come dati di accesso i seguenti:</p>
 <ul>
-<li>username: tutor_ada </li>
-<li>password:  tutor_ada </li>
+    <li>username: tutor_ada</li>
+    <li>password:  tutor_ada</li>
 </ul>
-<br/><br/>
-<hr>
-Se vuoi avere un'idea generale della piattaforma, guarda questo <a href="http://ada.lynxlab.com/demo/ADA_Overview/ADA_Overview.swf"  target="_blank">tutorial</a> dedicato ad un'installazione di ADA per i corsi di Lingua.
-<br/><br/>
-ADA &egrave; una piattaforma opensource rilasciata con licenza <a href="http://ada.lynxlab.com/ada20/browsing/external_link.php?file=gpl.txt"   target="_blank">GPL</a>. <br/>
-Se vuoi sapere chi l'ha sviluppata, leggi i <a href="http://ada.lynxlab.com/ada20/credits.php">crediti</a>.<br/>
-<br/>
-Altre informazioni sullo sviluppo di ADA le trovi nel nostro <a href="http://www.lynxlab.com/it/ada20.html" target="_blank">sito</a>.<br/>
-Buona navigazione.
-
+<p></p>
+<hr />
+<p>Se vuoi avere un'idea generale della piattaforma, guarda questo <a target="_blank" href="http://ada.lynxlab.com/demo/ADA_Overview/ADA_Overview.swf">tutorial</a> dedicato ad un'installazione di ADA per i corsi di Lingua. <br />
+<br />
+ADA è una piattaforma opensource rilasciata con licenza <a target="_blank" href="http://ada.lynxlab.com/ada20/browsing/external_link.php?file=gpl.txt">GPL</a>. <br />
+Se vuoi sapere chi l'ha sviluppata, leggi i <a href="http://ada.lynxlab.com/ada20/credits.php">crediti</a>.<br />
+<br />
+Altre informazioni sullo sviluppo di ADA le trovi nel nostro <a target="_blank" href="http://www.lynxlab.com/it/ada20.html">sito</a>.<br />
+Buona navigazione.</p>

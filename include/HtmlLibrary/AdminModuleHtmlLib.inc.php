@@ -154,8 +154,8 @@ class AdminModuleHtmlLib
     return self::getFormForService('edit_service.php',$testersAr, $service_dataAr, $errorsAr);
   }
   
-  static public function getEditNewsForm($newsmsg, $fileToEdit) {
-    return self::getFormForNews('edit_news.php',$newsmsg, $fileToEdit);
+  static public function getEditNewsForm($newsmsg, $fileToEdit, $reqType) {
+    return self::getFormForNews('edit_content.php',$newsmsg, $fileToEdit, $reqType);
   }
   
   static public function getTestersActivityReport($testers_dataAr=array()) {
@@ -591,15 +591,19 @@ class AdminModuleHtmlLib
   /*
    * getFormForNews:
    */
-    static public function getFormForNews($form_action,$newsmsg, $file) {
+    static public function getFormForNews($form_action,$newsmsg, $file, $type) {
         $form = CDOMElement::create('form','id:edit_news, name:edit_news, method:post');
         $form->setAttribute('action', $form_action);
 
-        $newsEditText = FormElementCreator::addTextArea('news', 'news', $newsmsg);
+        $newsEditText = FormElementCreator::addTextArea($type, $type, $newsmsg);
         $form->addChild($newsEditText);
         $file_edit = CDOMElement::create('hidden','id:file_edit, name:file_edit');
         $file_edit->setAttribute('value',$file);
         $form->addChild($file_edit);
+
+        $reqTypeForm = CDOMElement::create('hidden','id:reqType, name:type');
+        $reqTypeForm->setAttribute('value', $type);
+        $form->addChild ($reqTypeForm); 
 
         $buttons = FormElementCreator::addSubmitAndResetButtons();
         $form->addChild($buttons);

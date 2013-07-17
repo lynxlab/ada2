@@ -200,11 +200,59 @@ if(isset($_GET['message'])) {
   $message->addChild(new CText($_GET['message']));
 }
 
+/*
+ *  Load news from public course indicated in PUBLIC_COURSE_ID_FOR_NEWS
+ */
+
+$testers = $_SESSION['sess_userObj']->getTesters();
+$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($testers[0]));
+// select nome or empty string (whoever is not null) as title to diplay for the news
+$newscontent = $tester_dh->find_course_nodes_list(
+		array ( "COALESCE(if(nome='NULL' OR ISNULL(nome ),NULL, nome), '')", "testo" ) ,
+		"1 ORDER BY data_creazione DESC LIMIT ".NEWS_COUNT,
+		PUBLIC_COURSE_ID_FOR_NEWS);
+
+// watch out: $newscontent is NOT associative
+$bottomnewscontent = '';
+$maxLength = 600;
+foreach ( $newscontent as $num=>$aNews )
+{
+	$aNewsDIV = CDOMElement::create('div','class:news,id:news-'.($num+1));
+	$aNewsTitle = CDOMElement::create('a', 'class:newstitle,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+			PUBLIC_COURSE_ID_FOR_NEWS.'&id_node='.$aNews[0]);
+	$aNewsTitle->addChild (new CText($aNews[1]));
+	$aNewsDIV->addChild ($aNewsTitle);
+
+	// strip off HTML
+	$newstext = strip_tags($aNews[2]);
+	// check if content is too long...
+	if (strlen($newstext) > $maxLength)
+	{
+		// cut the content to the first $maxLength characters of words (the $ in the regexp does the trick)
+		$newstext = preg_replace('/\s+?(\S+)?$/', '', substr($newstext, 0, $maxLength+1));
+		$addContinueLink = true;
+	}
+	else $addContinueLink = false;
+
+	$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
+
+	if ($addContinueLink)
+	{
+		$contLink = CDOMElement::create('a', 'class:continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+				PUBLIC_COURSE_ID_FOR_NEWS.'&id_node='.$aNews[0]);
+		$contLink->addChild (new CText(translateFN('Continua...')));
+		$aNewsDIV->addChild ($contLink);
+	}
+	$bottomnewscontent .= $aNewsDIV->getHtml();
+}
+
+
 $content_dataAr = array(
 	'form' => $login->getHtml().$forget_link,
-	'text' => $newsmsg,
-	'help' => $hlpmsg,
-    'info' => $infomsg,
+	'newsmsg' => $newsmsg,
+	'helpmsg' => $hlpmsg,
+        'infomsg' => $infomsg,
+	'bottomnews' => $bottomnewscontent,
 	'status' => $status,
 	'message' => $message->getHtml()
 );
