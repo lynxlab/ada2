@@ -30,6 +30,7 @@
  * The "body" styles should match your editor web site, mainly regarding
  * background color and font family and size.
  */
+@import url('../../../../include/css_to_load_in_editor.php');
 
 body
 {

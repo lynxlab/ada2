@@ -108,4 +108,9 @@
 		<Attribute name="border" value="2" />
 		<Attribute name="align" value="right" />
 	</Style>
+        
+        <!-- ADA styles -->
+        <Style name="test_class" element="span">
+            <Attribute name="class" value="test_class" />
+        </Style>        
 </Styles>

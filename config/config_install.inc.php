@@ -20,7 +20,7 @@
  * ADA Common database
  */
 define('ADA_COMMON_DB_TYPE',  'mysql');
-define('ADA_COMMON_DB_NAME',  'ada20_common');
+define('ADA_COMMON_DB_NAME',  'ada2.0_common');
 define('ADA_COMMON_DB_USER',  'root');
 define('ADA_COMMON_DB_PASS',  '');
 define('ADA_COMMON_DB_HOST',  'localhost');
@@ -30,10 +30,20 @@ define('ADA_COMMON_DB_HOST',  'localhost');
  */
 define('ADA_PUBLIC_TESTER', 'client0');
 define('ADA_DEFAULT_TESTER_DB_TYPE',  'mysql');
-define('ADA_DEFAULT_TESTER_DB_NAME',  'ada_provider0');
-define('ADA_DEFAULT_TESTER_DB_USER',  'user');
-define('ADA_DEFAULT_TESTER_DB_PASS',  'password');
+define('ADA_DEFAULT_TESTER_DB_NAME',  'ada2.0_provider0');
+define('ADA_DEFAULT_TESTER_DB_USER',  'root');
+define('ADA_DEFAULT_TESTER_DB_PASS',  '');
 define('ADA_DEFAULT_TESTER_DB_HOST',  'localhost');
+
+/**
+ * ID of the public course to get the latest news
+ */
+define ('PUBLIC_COURSE_ID_FOR_NEWS', 1);
+/**
+ * How many news to get from the above mentioned course
+ */
+define ('NEWS_COUNT', 3);
+
 
 /**
  * DataBase abstraction layer,
@@ -108,7 +118,7 @@ define('MAX_HEIGHT', "200");
 /**
  * Default admin mail address
  */
-define('ADA_ADMIN_MAIL_ADDRESS','mail@lynxlab.com');
+define('ADA_ADMIN_MAIL_ADDRESS','graffio@lynxlab.com');
 
 /**
  *
@@ -124,7 +134,7 @@ define('ADA_VERSION','2.1alpha0');
  * URL
  * DO NOT REMOVE the trailing // *js_import*
  */
-define('HTTP_ROOT_DIR','http://ada.lynxlab.com'); // *js_import*
+define('HTTP_ROOT_DIR','http://localhost/ada20'); // *js_import*
 define('MODULES_DIR',ROOT_DIR.'/modules'); // *js_import*
 
 /**
