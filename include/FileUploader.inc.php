@@ -56,7 +56,7 @@ class FileUploader
         }
         if ($this->_size >= ADA_FILE_UPLOAD_MAX_FILESIZE) {
             //return ADA_FILE_UPLOAD_ERROR_FILESIZE;
-            $this->_errorMessage = 'The uploaded file sieze exceeds the maximum permitted filesize';
+            $this->_errorMessage = 'The uploaded file size exceeds the maximum permitted filesize';
             return false;
         }
 
