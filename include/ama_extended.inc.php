@@ -49,6 +49,12 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 	{
 
 	}
+	
+	public function disconnect() {
+		parent::disconnect();
+		self::$instance = NULL;
+	}
+	
 
 }
 ?>
