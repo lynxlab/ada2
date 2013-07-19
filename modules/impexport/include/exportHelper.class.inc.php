@@ -65,7 +65,7 @@ class exportHelper
 	 * @param int $course_id the id of the course to export
 	 * @param string $nodeId the id of the node to export, in ADA format (e.g. xxx_yyy)
 	 * @param DOMDocument $domtree the XML object to append nodes to
-	 * @param AMA_Tester_DataHandler $dh the dataHandler used to retreive datas
+	 * @param AMAImportExportDataHandler $dh the dataHandler used to retreive datas
 	 * @param boolean $mustRecur if set to true, will do recursion for exporting children
 	 *
 	 * @return void on error | DOMElement pointer to the exported root XML node
@@ -484,7 +484,55 @@ class exportHelper
 		return (AMA_DB::isError($res)) ? '' : $res;
 	}
 	
+	/**
+	 * Recursively gets an array with passed node and all of its children
+	 * inlcuded values are name and id, used for json encoding when building
+	 * course tree for selecting which node to export.
+	 * 
+	 * @param string $rootNode the id of the node to be treated as root
+	 * @param AMAImportExportDataHandler $dh the data handler used to retreive datas
+	 * @param string $mustRecur
+	 * 
+	 * @return array
+	 * 
+	 * @access public
+	 */
+	public function getAllChildrenArray ($rootNode, $dh, $mustRecur = true)
+	{
+		// first get all passed node data
+		$nodeInfo =& $dh->get_node_info($rootNode);		
+		
+		$retarray = array ('id'=>$rootNode, 'label'=>$nodeInfo['name']);
+
+		if ($mustRecur)
+		{
+			// get node children only having instance=0
+			$childNodesArray =& $dh->get_node_children ($rootNode,0);
+			if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray))
+			{
+				$i=0;
+				$children = array();
+				foreach ($childNodesArray as &$childNodeId)
+				{
+					$children[$i++] = $this->getAllChildrenArray($childNodeId, $dh, $mustRecur);
+				}
+				$retarray['children'] = $children;
+			}
+		}
+		return $retarray;
+	}
 	
+	/**
+	 * does the proper string substitution on the path of the multimedia files
+	 * in node text and node icon
+	 * 
+	 * @param string $name text or icon
+	 * @param string $value value to perform substitution on
+	 * 
+	 * @return string the substitued string
+	 * 
+	 * @access private
+	 */
 	private function _doPathExportingSubstitutions($name, $value)
 	{
 		/**
@@ -518,8 +566,6 @@ class exportHelper
 			unset ($regExp);
 		}
 		return $value;
-	}
-	
-	
+	}	
 }
 ?>

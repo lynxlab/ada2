@@ -43,7 +43,7 @@ class AMAImpExportDataHandler extends AMA_DataHandler {
 	 * @see get_node_info
 	 *
 	 */
-	public function &get_node_children($node_id,$id_course_instance="") {
+	public function get_node_children($node_id,$id_course_instance="") {
 		$db =& $this->getConnection();
 
 		$excludeNodeTypes = array ( ADA_NOTE_TYPE, ADA_PRIVATE_NOTE_TYPE );

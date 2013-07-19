@@ -56,18 +56,18 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
 	}
 	else
 	{
-		$data = "<h3>IMPORT RESULTS</h3>";
+		$data = "<h3>".translateFN('RISULTATI IMPORTAZIONE')."</h3>";
 		$str = "";
 		foreach ($result as $courseId=>$importedItems)
 		{
-			$str .= "<br/>COURSE WAS GENERATED WITH id:".$courseId;
+			$str .= "<br/>".translateFN('IL CORSO &EGRAVE; STATO CREATO CON id:').$courseId;
 			$str .= "<ul>"; 
 			foreach ($importedItems as $type=>$count)
 			{
-				$str .="<li><b>".$count."</b> items of type <b>".$type."</b> were added</li>";
+				$str .="<li><b>".$count."</b> ".translateFN('oggetti di tipo')." <b>".$type."</b> ".
+				translateFN('aggiunti')."</li>";
 			}
-			$str .= "</ul>";
-			
+			$str .= "</ul>";			
 		}				
 		$data .= $str;		
 	}
@@ -77,8 +77,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
 		// if it's an ajax request, echo the html and die
 		echo $data;
 		die();
-	}
-	
+	}	
 }
 else
 {
@@ -100,6 +99,10 @@ else
 
 
 	if (!$error) {
+		/**
+		 * generate the HTML used for import steps, strictyl handled by javascript (import.js)
+		 */
+		
 		/**
 		 * form1 has a css class in form.css to hide the submit button
 		 * should someone ever chagne its name, pls reflect change in css
@@ -146,7 +149,6 @@ else
 
 }
 
-
 $content_dataAr = array(
 		'user_name' => $user_name,
 		'user_type' => $user_type,
@@ -162,7 +164,7 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT,
 		MODULES_IMPEXPORT_PATH.'/js/pekeUpload.js',
-		MODULES_IMPEXPORT_PATH.'/js/impexport.js'
+		MODULES_IMPEXPORT_PATH.'/js/import.js'
 );
 $layout_dataAr['CSS_filename'] = array(
 		JQUERY_UI_CSS,

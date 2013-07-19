@@ -134,16 +134,6 @@ class importHelper
 									    substr_count($XMLfile, '</survey>') +
 									    substr_count($XMLfile, '</test>'));
 			
-// 			for ($i<0; $i<30; $i++)
-// 			{				
-// 				$_SESSION['importProgress']['totalItems'] = 30;
-// 				$_SESSION['importProgress']['currentItem']++;
-// 				session_write_close();
-// 				sleep(1);
-// 				session_start();
-// 			}
-// 			die();
-			
 			foreach ($XMLObj as $objName=>$course)
 			{
 				// first level object must be 'modello_corso'
@@ -930,8 +920,15 @@ class importHelper
 	/**
 	 * Private methods dealing with sessions
 	 * 
+	 * all of the below methods open and close session because the requestProgress.php file
+	 * that is used to display to the user the progress of the import must reads theese
+	 * session vars, and if the session is left open, it gets stuck until this php ends.
+	 * 
 	 */
 	
+	/**
+	 * Initializes empty progress session vars
+	 */
 	private function _progressInit()
 	{
 		/**
@@ -944,6 +941,10 @@ class importHelper
 		session_write_close();
 
 	}
+	
+	/**
+	 * Unsets progress session vars
+	 */
 	private function _progressDestroy()
 	{
 		session_start();
@@ -953,6 +954,11 @@ class importHelper
 		session_write_close();
 	}
 
+	/**
+	 * Resets (aka initializes with values) the progress session vars
+	 * 
+	 * @param int $total count of total items to be imported
+	 */
 	private function _progressResetValues( $total )
 	{
 		session_start();
@@ -962,6 +968,11 @@ class importHelper
 		session_write_close();
 	}
 	
+	/**
+	 * Sets the status of the import process
+	 * 
+	 * @param string $status status to be set
+	 */
 	private function _progressSetStatus ($status)
 	{
 		session_start();
@@ -969,6 +980,9 @@ class importHelper
 		session_write_close();
 	}
 	
+	/**
+	 * Increments the current item count being imported
+	 */
 	private function _progressIncrement()
 	{
 		session_start();
@@ -976,6 +990,11 @@ class importHelper
 		session_write_close();
 	}
 	
+	/**
+	 * Sets the title of the course being imported
+	 * 
+	 * @param string $title the title to be set
+	 */
 	private function _progressSetTitle($title)
 	{
 		session_start();

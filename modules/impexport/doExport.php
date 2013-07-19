@@ -53,8 +53,14 @@ if (MODULES_TEST) {
  * if value associated to a key is not an array, or is an empty array
  * then all the course will be exported!
  *
-*/
-$nodesToExport =  array( 110=>null );
+ */
+
+$exportCourse = (isset($_GET['selCourse']) && (intval($_GET['selCourse'])>0)) ? intval ($_GET['selCourse']) : 0;
+$exportNode = (isset($_GET['selNode']) && (trim($_GET['selNode'])!=='')) ? trim ($_GET['selNode']) : '';
+
+if ($exportCourse>0 && $exportNode!=='') {
+	$nodesToExport =  array( $exportCourse=>$exportNode );
+} else $nodesToExport = array();
 /**
  * exportHelper object to help us in the exporting process...
 */

@@ -9,6 +9,11 @@
  * @link			impexport
  * @version		0.1
  */
+
+/**
+ * This files request and echo in json format the importProgress session vars
+ * to be displayed to the user using jquery calls
+ */
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 
 session_start();

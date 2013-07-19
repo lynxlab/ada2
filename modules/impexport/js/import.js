@@ -2,6 +2,11 @@ var progressbar;
 var progressLabel;
 var repeatTimer;
 
+/**
+ * Initializations
+ * 
+ * @param maxSize the max uploadable file size 
+ */
 function initDoc(maxSize) {
 	
 	$j("#importfile").pekeUpload({
@@ -33,6 +38,10 @@ function initDoc(maxSize) {
 	});
 }
 
+/**
+ * request the importProgress session vars via an async post ajax call
+ * displays them nicely to the user, in the progressbar
+ */
 function requestProgress()
 {
 	var requestPB = progressbar;
@@ -73,10 +82,18 @@ function requestProgress()
 	
 }
 
+/**
+ * performs actual import via an async post ajax call to the proper php file
+ * prevents the displayed form to be submitted.
+ * (note that the php file should work as well if the form's being submitted and
+ * no ajax call is made).
+ * 
+ * @returns {Boolean} false
+ */
 function goToImportStepThree ()
 {	
 	var authorSelect = document.getElementById('author');
-	var authorID = authorSelect.options[author.selectedIndex].value; 
+	var authorID = authorSelect.options[authorSelect.selectedIndex].value; 
 	
 	if (authorID <= 0)
 	{
@@ -113,6 +130,11 @@ function goToImportStepThree ()
 	return false;
 }
 
+/**
+ * displays import step two
+ * 
+ * @param file uploaded file name to be displayed
+ */
 function goToImportStepTwo(file) {
 	$j('#importFileName').val(file.name);
 	$j('#uploadedFileName').html(file.name);

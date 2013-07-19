@@ -147,3 +147,32 @@
 	width: 96%;
 	margin: 0 auto;
 }
+
+.exportFormStep2 {
+	text-align : center;
+}
+
+#courseTreeLoading {
+display: block;
+text-align: center;
+margin-top: 50px;
+}
+
+form[name=exportStep1Form] input[type=submit] ,
+#exportButton {
+float: right;
+}
+
+.step3Title {
+font-size: 1.2em;
+font-weight: bold;
+display: block;
+text-align: center;
+margin-bottom: 20px;
+}
+
+.step3Text {
+display: block;
+text-align: center;
+}
+
