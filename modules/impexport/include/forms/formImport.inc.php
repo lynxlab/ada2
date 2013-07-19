@@ -44,6 +44,8 @@ class FormSelectAuthorForImport extends FForm {
 		
 		$this->addSelect('author', translateFN ("Seleziona l'autore a cui assegnare il corso importato"), $authorsList, 0)
 			->setRequired()
-			->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);		
+			->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);	
+
+		$this->setOnSubmit('return goToImportStepThree();');
 	}
 }

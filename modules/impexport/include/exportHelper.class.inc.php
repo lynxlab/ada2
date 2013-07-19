@@ -6,6 +6,8 @@
  * @license	http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @version	0.1
  */
+require_once ROOT_DIR.'/include/logger_class.inc.php';
+
 class exportHelper
 {
 	/**
@@ -88,7 +90,7 @@ class exportHelper
 		 *
 		*/
 		$nodeInfo['id'] = self::stripOffCourseId($course_id, $nodeId);
-		$nodeInfo['parent_id'] = self::stripOffCourseId($course_id, $nodeInfo['parent_id']);		
+		$nodeInfo['parent_id'] = self::stripOffCourseId($course_id, $nodeInfo['parent_id']);
 
 		// create XML node for current course node
 		$XMLnode =& $domtree->createElement("nodo");
@@ -99,36 +101,7 @@ class exportHelper
 			if ($name==='position') continue;
 			else if (in_array($name, self::$cDataElementNameForCourseNode))
 			{
-				/**
-				 * check for media files inside the text or in the icon
-				 */
-				if ($name==='text')
-				{
-					// remove HTTP_ROOT_DIR so that it'll become
-					// a relative path
-					$value = str_replace(HTTP_ROOT_DIR."/", '', $value);
-					$regExp = '/('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/([^\"]+)/';
-				}
-				else if ($name==='icon')
-				{
-					// substitute ROOT_DIR with a special tag that will
-					// be used to restore ROOT_DIR in the import environment
-					$value = str_replace(ROOT_DIR, '<root_dir/>', $value);
-					$regExp = '/('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/(.+)/';
-				}
-
-				/**
-				 * run regExp on $value to check for media files
-				 */
-				if (isset ($regExp))
-				{
-					if (preg_match($regExp, $value, $matches)) {
-						$this->addFileToMediaArray($course_id,$matches[0]);
-						$replacement = '<id_autore/>';
-						$value = preg_replace($regExp, "$1".$replacement."/$3", $value);
-					}
-					unset ($regExp);
-				}
+				if ($name==='text' || $name==='icon') $value = $this->_doPathExportingSubstitutions($name, $value);
 				$XMLElementForCourseNode = self::buildCDATASection($domtree, $name, $value);
 			}
 			else if (preg_match('/id/',$name))
@@ -184,7 +157,7 @@ class exportHelper
 				$extResInfo =& $dh->get_risorsa_esterna_info ($extResId);
 				if (!AMA_DB::isError($extResInfo))
 				{
-					 $XMLnode->appendChild( self::buildExternalResourceXML($domtree, $extResInfo, $course_id));
+					$XMLnode->appendChild( self::buildExternalResourceXML($domtree, $extResInfo, $course_id));
 				}
 			}
 		}
@@ -236,15 +209,14 @@ class exportHelper
 	public function exportTestNodeChildren ($course_id, $nodeId, $domtree, $dh_test, $XMLElement)
 	{
 		$nodeInfo = $dh_test->test_getNode($nodeId);
-		/**
-		 * TODO check filename & path!!!!
-		*/
-		$nodeInfo['icona'] = basename($nodeInfo['icona']);
-		$XMLElement = $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
+		if (!AMA_DB::isError($nodeInfo))
+		{
+			$XMLElement = $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
 
-		$childrenNodesArr = $dh_test->test_getNodesByParent ($nodeId);
-		foreach ($childrenNodesArr as $childNode)
-			self::exportTestNodeChildren($course_id, $childNode['id_nodo'], $domtree, $dh_test, $XMLElement);
+			$childrenNodesArr = $dh_test->test_getNodesByParent ($nodeId, null, array('id_istanza'=>0));
+			foreach ($childrenNodesArr as $childNode)
+				self::exportTestNodeChildren($course_id, $childNode['id_nodo'], $domtree, $dh_test, $XMLElement);
+		}
 	}
 
 	/**
@@ -271,7 +243,7 @@ class exportHelper
 	 * @param string $value the contents of the generated CDATA section
 	 *
 	 * @return DOMDocument the generated XML node
-	 * 
+	 *
 	 * @access public
 	 */
 	public function buildCDATASection ($domtree, $name, $value)
@@ -320,13 +292,13 @@ class exportHelper
 
 	/**
 	 * builds the XML for external resource
-	 * 
+	 *
 	 * @param DOMDocument $domtree the XML object to append nodes to
 	 * @param array $extResInfo the array for which XML will be generated
 	 * @param int $course_id the id of the course that's being exported
-	 * 
+	 *
 	 * @return DOMDocument the generated XML node
-	 * 
+	 *
 	 * @access public
 	 */
 	public function buildExternalResourceXML ($domtree, $extResInfo, $course_id)
@@ -355,7 +327,7 @@ class exportHelper
 			{
 				$XMLElementForCourseRes = $domtree->createElement($name,$value);
 			}
-			
+				
 			$XMLNodeExtRes->appendChild($XMLElementForCourseRes);
 		}
 		return $XMLNodeExtRes;
@@ -383,6 +355,9 @@ class exportHelper
 			}
 			else if (in_array($name, self::$cDataElementNameForTest))
 			{
+				if ($name==='icona') $value = $this->_doPathExportingSubstitutions('icon', $value);
+				else if ($name==='testo') $value = $this->_doPathExportingSubstitutions('text', $value);
+				
 				$XMLTest->appendChild( self::buildCDATASection($domtree, $name, $value) );
 			}
 			else $XMLTest->appendChild($domtree->createElement($name,$value));
@@ -442,7 +417,7 @@ class exportHelper
 	 *
 	 * @param int $course_id id of the course to which add the file
 	 * @param string $filePath filename to add
-	 * 
+	 *
 	 * @access private
 	 */
 	private function addFileToMediaArray ($course_id, $filePath)
@@ -461,7 +436,7 @@ class exportHelper
 	 *
 	 * @param string $XMLFile the string containing the generate XML string
 	 * @return string|NULL created zip file name or null on error
-	 * 
+	 *
 	 * @access public
 	 */
 	public function makeZipFile ($XMLFile)
@@ -491,22 +466,60 @@ class exportHelper
 		if ($zip->close()) return $zipFileName;
 		else return null;
 	}
-	
+
 	/**
-	 * static method to get the table identifier corresponding to the passed language id 
+	 * static method to get the table identifier corresponding to the passed language id
 	 * (e.g. on most installations, passing 'it' will return 1)
 	 *
-	 * @param int $languageID language id 
-	 * 
+	 * @param int $languageID language id
+	 *
 	 * @return string empty if value <=0 is passed|AMA_Error on error|int retrieved table identifier on success
 	 *
-	 * @access private
+	 * @access public
 	 */
-	private static function getLanguageTableFromID ($languageID)
+	public static function getLanguageTableFromID ($languageID)
 	{
-		if (intval ($languageID) <=0 ) return '';		
+		if (intval ($languageID) <=0 ) return '';
 		$res = $GLOBALS['common_dh']->find_language_table_identifier_by_langauge_id ($languageID);
 		return (AMA_DB::isError($res)) ? '' : $res;
 	}
+	
+	
+	private function _doPathExportingSubstitutions($name, $value)
+	{
+		/**
+		 * check for media files inside the text or in the icon
+		 */
+		if ($name==='text')
+		{
+			// remove HTTP_ROOT_DIR so that it'll become
+			// a relative path (no more, it will be substituted with other abs path)
+			$value = str_replace(HTTP_ROOT_DIR, '<http_root/>', $value);
+			$regExp = '/('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/([^\"]+)/';
+		}
+		else if ($name==='icon')
+		{
+			// substitute ROOT_DIR with a special tag that will
+			// be used to restore ROOT_DIR in the import environment
+			$value = str_replace(ROOT_DIR, '<root_dir/>', $value);
+			$regExp = '/('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/(.+)/';
+		}
+		
+		/**
+		 * run regExp on $value to check for media files
+		 */
+		if (isset ($regExp))
+		{
+			if (preg_match($regExp, $value, $matches)) {
+				$this->addFileToMediaArray($course_id,$matches[0]);
+				$replacement = '<id_autore/>';
+				$value = preg_replace($regExp, "$1".$replacement."/$3", $value);
+			}
+			unset ($regExp);
+		}
+		return $value;
+	}
+	
+	
 }
 ?>

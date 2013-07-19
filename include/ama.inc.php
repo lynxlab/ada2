@@ -8407,7 +8407,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @return an array of four elements on success, ana AMA_Error object on failure
      *
      */
-    private function _get_position($id) {
+    protected function _get_position($id) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
@@ -8458,11 +8458,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $copyright = $this->or_zero($res_ha['copyright']);
         $id_nodo = $this->sql_prepared($res_ha['id_nodo']);
         $keywords = $this->sql_prepared($res_ha['keywords']);
-        /**
-		 * @author giorgio 16/lug/2013
-		 * is this mapping titolo=>keywords correct??
-         */
-        $titolo = $this->sql_prepared($res_ha['keywords']);
+        $titolo = $this->sql_prepared($res_ha['titolo']);
         $pubblicato = $this->or_zero($res_ha['pubblicato']);
         $descrizione = $this->sql_prepared($res_ha['descrizione']);
         $lingua = $this->sql_prepared($res_ha['lingua']);

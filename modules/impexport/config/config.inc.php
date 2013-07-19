@@ -10,4 +10,6 @@
  define ('MODULES_IMPEXPORT_PATH', MODULES_DIR.'/impexport');
   
  define ('XML_EXPORT_FILENAME', 'ada_export.xml');
+ define ('MODULES_IMPEXPORT_LOGDIR' , ROOT_DIR.'/log/impexport/');
+ 
 ?>

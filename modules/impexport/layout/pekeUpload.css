@@ -25,7 +25,6 @@
 	margin: 0 0 10px 10px;
 }
 
-
 .btn-pekeupload:hover {
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #0688fa
 		), color-stop(1, #2dabf9));
@@ -46,10 +45,14 @@
 	top: 1px;
 }
 
+#progressbar {
+	position: relative;
+}
+
 /*
  * Base
  */
-.progress-pekeupload {
+.progress-pekeupload,#progressbar {
 	width: 100%;
 	height: 16px;
 	margin: 0 auto 20px auto;
@@ -70,6 +73,9 @@
 
 .bar-pekeupload {
 	height: 100%;
+}
+
+.bar-pekeupload,.ui-progressbar-value {
 	background: #999;
 	background-size: 18px 18px;
 	background-color: #7ce;
@@ -97,15 +103,16 @@
 	position: absolute;
 	top: 0;
 }
+
 .progress-pekeupload {
 	position: relative;
 }
+
 .progress-pekeupload center {
 	position: relative;
-	z-index:1;
+	z-index: 1;
 }
 /* FINE GIORGIO */
-
 .alert-pekeupload {
 	padding: 8px 15px 8px 14px;
 	margin-bottom: 20px;
@@ -127,4 +134,16 @@
 	margin: 0;
 	float: right;
 	cursor: pointer;
+}
+
+#progress-label {
+	position: absolute;
+	left: 50%;
+	font-size: inherit !important;
+	font-family: inherit !important;
+}
+
+.importFormStep3 {
+	width: 96%;
+	margin: 0 auto;
 }

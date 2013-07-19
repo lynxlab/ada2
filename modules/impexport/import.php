@@ -34,8 +34,8 @@ $neededObjAr = array(
 /**
  * Performs basic controls before entering this module
 */
-require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 
 // MODULE's OWN IMPORTS
 require_once dirname(__FILE__).'/config/config.inc.php';
@@ -46,6 +46,7 @@ $self = 'form';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  && !empty($_POST))
 {
+	
 	$importHelper = new importHelper($_POST);
 	$result = $importHelper->runImport();
 	
@@ -70,6 +71,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
 		}				
 		$data .= $str;		
 	}
+	
+	if (isset($_POST['op']) && $_POST['op']=='ajaximport')
+	{
+		// if it's an ajax request, echo the html and die
+		echo $data;
+		die();
+	}
+	
 }
 else
 {
@@ -110,8 +119,29 @@ else
 			
 		$step2DIV->addChild ($paragraph);		
 		$step2DIV->addChild (new CText($form2->getHtml()));
+		
+		
+		$step3DIV = CDOMElement::create('div','class:importFormStep3');
+		$step3DIV->setAttribute('style', 'display:none');		
+		
+			$divProgressBar = CDOMElement::create('div','id:progressbar');
+				$divProgressLabel = CDOMElement::create('div','id:progress-label');			
+			$divProgressBar->addChild ($divProgressLabel);			
+		
+			$divCourse =  CDOMElement::create('div','class:currentCourse');
+			$divCourse->addChild (new CText(translateFN('Corso:').'&nbsp;'));
+				$spanCourse = CDOMElement::create('span','id:coursename');
+			$divCourse->addChild(new CText($spanCourse->getHtml()));
+			
+			$divCopyZip = CDOMElement::create('div','class:copyzip');
+			$divCopyZip->addChild (new CText(translateFN('Copia files multimediali in corso')));
+			$divCopyZip->setAttribute('style', 'display:none');
+			
+		$step3DIV->addChild($divProgressBar);	
+		$step3DIV->addChild($divCourse);
+		$step3DIV->addChild($divCopyZip);
 
-		$data = $step1DIV->getHtml().$step2DIV->getHtml();
+		$data = $step1DIV->getHtml().$step2DIV->getHtml().$step3DIV->getHtml();
 	}
 
 }
