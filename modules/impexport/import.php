@@ -36,13 +36,14 @@ $neededObjAr = array(
 */
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
+require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
 // MODULE's OWN IMPORTS
 require_once dirname(__FILE__).'/config/config.inc.php';
 require_once MODULES_IMPEXPORT_PATH.'/include/forms/formImport.inc.php';
 require_once MODULES_IMPEXPORT_PATH.'/include/importHelper.class.inc.php';
 
-$self = 'form';
+$self = 'impexport';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  && !empty($_POST))
 {
@@ -60,7 +61,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
 		$str = "";
 		foreach ($result as $courseId=>$importedItems)
 		{
-			$str .= "<br/>".translateFN('IL CORSO &EGRAVE; STATO CREATO CON id:').$courseId;
+			$str .= "<br/>".translateFN('IL CORSO &Egrave; STATO CREATO CON id:').$courseId;
 			$str .= "<ul>"; 
 			foreach ($importedItems as $type=>$count)
 			{
@@ -75,6 +76,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
 	if (isset($_POST['op']) && $_POST['op']=='ajaximport')
 	{
 		// if it's an ajax request, echo the html and die
+		sleep (1); // if we're too fast, the jquery switching divs is going to flicker
 		echo $data;
 		die();
 	}	
@@ -90,13 +92,22 @@ else
 	foreach($providerAuthors as $author) {
 		$authors[$author[0]] = $author[1];
 	}
+	
+	/**
+	 * load course list from the DB
+	 */
+	$providerCourses = $dh->get_courses_list (array ('nome','titolo'));
+	
+	$courses = array();
+	foreach($providerCourses as $course) {
+		$courses[$course[0]] = '('.$course[0].') '.$course[1].' - '.$course[2];
+	}
 
 	if (empty($authors))
 	{
 		$data = translateFN ("Nessun autore trovato. Impossibile continuare l'importazione");
 		$error = true;
 	}
-
 
 	if (!$error) {
 		/**
@@ -108,7 +119,7 @@ else
 		 * should someone ever chagne its name, pls reflect change in css
 		 */
 		$form1 = new FormUploadImportFile('importStep1Form');
-		$form2 = new FormSelectAuthorForImport('importStep2Form', $authors);
+		$form2 = new FormSelectDatasForImport('importStep2Form', $authors, $courses);
 
 		$step1DIV = CDOMElement::create('div','class:importFormStep1');
 		$step1DIV->addChild (new CText($form1->getHtml()));
@@ -119,9 +130,47 @@ else
 			$paragraph = CDOMElement::create('div');
 			$paragraph->addChild (new CText(translateFN("File caricato per l'importazione: ")));
 			$paragraph->addChild(CDOMElement::create('span','id:uploadedFileName'));
-			
-		$step2DIV->addChild ($paragraph);		
+			$step2DIV->addChild ($paragraph);
 		$step2DIV->addChild (new CText($form2->getHtml()));
+		
+		$importSelectNode = CDOMElement::create('div','class:divImportSN');
+		$importSelectNode->setAttribute('style', 'display:none');
+		
+		$spanHelpText = CDOMElement::create('span','class:importSNHelp');
+		$spanHelpText->addChild (new CText(translateFN('Scegli il nodo del corso che sar&agrave; genitore dei nodi importati.')));
+		
+		$courseTreeDIV = CDOMElement::create('div','id:courseTree');
+		
+		$courseTreeLoading = CDOMElement::create('span','id:courseTreeLoading');
+		$courseTreeLoading->addChild (new CText(translateFN('Caricamento albero del corso').'...<br/>'));
+		
+		$spanSelCourse = CDOMElement::create('span','id:selCourse');
+		$spanSelCourse->setAttribute('style', 'display:none');
+		$spanSelNode = CDOMElement::create('span','id:selNode');
+		$spanSelNode->setAttribute('style', 'display:none');
+		
+		$buttonDIV = CDOMElement::create('div','class:importSN2buttons');
+		
+		$buttonPrev = CDOMElement::create('button','id:backButton');
+		$buttonPrev->setAttribute('type', 'button');
+		$buttonPrev->setAttribute('onclick', 'javascript:returnToImportStepTwo();');
+		$buttonPrev->addChild (new CText('&lt;&lt;'.translateFN('Indietro')));
+		
+		$buttonNext = CDOMElement::create('button','id:exportButton');
+		$buttonNext->setAttribute('type', 'button');
+		$buttonNext->setAttribute('onclick', 'javascript:goToImportStepThree();');
+		$buttonNext->addChild (new CText(translateFN('Importa')));
+		
+		$buttonDIV->addChild($buttonPrev);
+		$buttonDIV->addChild($buttonNext);
+			
+		$importSelectNode->addChild ($spanHelpText);
+		$importSelectNode->addChild ($courseTreeDIV);
+		$importSelectNode->addChild ($courseTreeLoading);
+		$importSelectNode->addChild ($spanSelCourse);
+		$importSelectNode->addChild ($spanSelNode);
+		$importSelectNode->addChild ($buttonDIV);
+		
 		
 		
 		$step3DIV = CDOMElement::create('div','class:importFormStep3');
@@ -132,7 +181,7 @@ else
 			$divProgressBar->addChild ($divProgressLabel);			
 		
 			$divCourse =  CDOMElement::create('div','class:currentCourse');
-			$divCourse->addChild (new CText(translateFN('Corso:').'&nbsp;'));
+			$divCourse->addChild (new CText(translateFN('Importazione dal corso:').'&nbsp;'));
 				$spanCourse = CDOMElement::create('span','id:coursename');
 			$divCourse->addChild(new CText($spanCourse->getHtml()));
 			
@@ -144,7 +193,7 @@ else
 		$step3DIV->addChild($divCourse);
 		$step3DIV->addChild($divCopyZip);
 
-		$data = $step1DIV->getHtml().$step2DIV->getHtml().$step3DIV->getHtml();
+		$data = $step1DIV->getHtml().$step2DIV->getHtml().$importSelectNode->getHtml().$step3DIV->getHtml();
 	}
 
 }
@@ -164,11 +213,13 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT,
 		MODULES_IMPEXPORT_PATH.'/js/pekeUpload.js',
+		MODULES_IMPEXPORT_PATH.'/js/tree.jquery.js',
 		MODULES_IMPEXPORT_PATH.'/js/import.js'
 );
 $layout_dataAr['CSS_filename'] = array(
 		JQUERY_UI_CSS,
-		MODULES_IMPEXPORT_PATH.'/layout/pekeUpload.css'
+		MODULES_IMPEXPORT_PATH.'/layout/pekeUpload.css',
+		MODULES_IMPEXPORT_PATH.'/layout/jqtree.css'
 );
 
 $maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024*1024));

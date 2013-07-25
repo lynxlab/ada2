@@ -1,6 +1,7 @@
 var progressbar;
 var progressLabel;
 var repeatTimer;
+var tree;
 
 /**
  * Initializations
@@ -24,7 +25,8 @@ function initDoc(maxSize) {
 		url : 'upload.php'
 	});
 
-	progressbar = $j("#progressbar"), progressLabel = $j("#progress-label");
+	progressbar = $j("#progressbar");
+	progressLabel = $j("#progress-label");
 
 	progressbar.progressbar({
 		value : 0,
@@ -36,6 +38,10 @@ function initDoc(maxSize) {
 			progressLabel.text(progressbar.progressbar("option","max") + " / " + progressbar.progressbar("option","max"));
 		}
 	});
+	
+	tree = $j('#courseTree');
+	$j('.importSN2buttons').css('display','none');
+	tree.css ('display','none');
 }
 
 /**
@@ -102,19 +108,39 @@ function goToImportStepThree ()
 	else
 	{
 		var fileName = $j('#importFileName').val();
+
+		var courseID = $j('#selCourse').text();
+		var nodeID = $j('#selNode').text();
 		
-		$j('.importFormStep2').effect('drop', function() {
+		var postData = new Object();
+		
+		postData.importFileName = fileName;
+		postData.author = authorID;
+		postData.op = 'ajaximport';
+		
+		if (courseID!='') postData.courseID = parseInt (courseID);
+		if (nodeID!='') postData.nodeID = $j.trim(nodeID);
+		
+		if ($j('.importFormStep2').is(':visible'))
+		{
+			divToHide = '.importFormStep2';
+			
+		} else {
+			divToHide = '.divImportSN';
+		}
+		
+		$j(divToHide).effect('drop', function() {
 			$j('.importFormStep3').effect('slide');
 		});
 		
-		requestProgress();
 		
 		/** make an ajax POST call to the script doing the import **/
 		$j.ajax({
 			type	:	'POST',
 			url		: HTTP_ROOT_DIR+ '/modules/impexport/import.php',
-			data	: { importFileName: fileName, author: authorID, op:'ajaximport' },
-			dataType: 'html'
+			data	: postData,
+			dataType: 'html',
+			beforeSend : function () { requestProgress(); }
 			})
 			.done ( function (html) { 
 				$j('.importFormStep3').effect('drop', function() {
@@ -130,15 +156,78 @@ function goToImportStepThree ()
 	return false;
 }
 
+function goToImportSelectNode()
+{
+	var courseSelect = document.getElementById('courseID');
+	var courseID = courseSelect.options[courseSelect.selectedIndex].value; 
+	
+	if (courseID <=0 ) return goToImportStepThree();
+	else
+	{
+		$j('.importFormStep2').effect('drop', function() {
+			$j('.divImportSN').effect('slide');
+		});
+		
+		$j('#selCourse').text(courseID);
+		$j('#selNode').text(courseID + '_0');
+		
+		// loads the treeview..
+
+		tree.tree({
+			data : [],
+			useContextMenu : false,
+			autoOpen : 0
+		});
+		
+		tree.tree('loadDataFromUrl', HTTP_ROOT_DIR
+				+ '/modules/impexport/getNodeList.php?courseID=' + courseID,
+				null, function() {					
+					var rootNode = tree.tree('getNodeById', courseID + "_0");
+					tree.tree('selectNode', rootNode);	
+					tree.slideDown ('slow', function () {
+						$j('#courseTreeLoading').hide( function() { $j('.importSN2buttons').effect('fade'); } );
+							
+					});
+				});
+
+		// bind 'tree.click' event
+		tree.bind('tree.click', function(event) {
+			// The clicked node is 'event.node'
+			var node = event.node;
+			$j('#selNode').text(node.id);
+		});
+	}
+	return false;
+}
+
+function returnToImportStepTwo()
+{
+	$j('.divImportSN').effect('drop', function() {
+		$j('.importFormStep2').effect('slide');	
+	});
+	
+	$j('#selCourse').text('');
+	$j('#selNode').text('');
+	
+	$j('.importSN2buttons').css('display','none');
+	$j('#courseTreeLoading').show();
+	
+}
+
 /**
  * displays import step two
  * 
  * @param file uploaded file name to be displayed
  */
 function goToImportStepTwo(file) {
-	$j('#importFileName').val(file.name);
-	$j('#uploadedFileName').html(file.name);
+	if (typeof file !='undefined')
+	{
+		$j('#importFileName').val(file.name);
+		$j('#uploadedFileName').html(file.name);
+	}
+	
 	$j('.importFormStep1').effect('drop', function() {
 		$j('.importFormStep2').effect('slide');
 	});
+
 }

@@ -43,12 +43,12 @@ require_once MODULES_IMPEXPORT_PATH.'/include/exportHelper.class.inc.php';
 require_once MODULES_IMPEXPORT_PATH.'/include/forms/formExport.inc.php';
 
 
-$self = 'form';
+$self = 'impexport';
 
 $error = false;
 
 /**
- * load authors list from the DB
+ * load course list from the DB
  */
 $providerCourses = $dh->get_courses_list (array ('nome','titolo'));
 
@@ -124,8 +124,6 @@ if (!$error)
 	
 	$data = $step1DIV->getHtml().$step2DIV->getHtml().$step3DIV->getHtml();
 }
-
-
 
 $content_dataAr = array(
 		'user_name' => $user_name,

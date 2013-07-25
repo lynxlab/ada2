@@ -90,85 +90,42 @@ class AMAImpExportDataHandler extends AMA_DataHandler {
 	{
 		return parent::_add_position ($pos_ar);
 	}
+
 	/**
-	 * Need to promote this method to public
-	 * @see AMA_Tester_DataHandler::_add_extension_node
+	 * gets all the nodes that have an internal link in their text (aka testo) field.
+	 * 
+	 * @param int $course_id the id of the course to search for
+	 * 
+	 * @return array of fetched rows
+	 * 
+	 * @access public
 	 */
-	public function add_extension_node($node_ha)
+	public function get_nodes_with_internal_link_for_course ($course_id)
 	{
-		return parent::_add_extension_node($node_ha);
+		$sql = 'SELECT `id_nodo`  FROM `nodo` WHERE UPPER(`testo`) LIKE ? AND `id_nodo` LIKE ?';
+		
+		$values = array ( '<%LINK%TYPE="INTERNAL"%VALUE%>%' , $course_id.'_%'); 
+		
+		return $this->getAllPrepared($sql, $values );
 	}
-
+	
 	/**
-	 * This is an exact duplicate of the method found in ama.inc.php
-	 * BUT IT DOES NOT GENERATE A NEW node_id FOR EVERY PASSED NODE
-	 * IT WILL USE THE node_id PASSED IN THE $node_ha ARRAY
-	 *
-	 *
-	 * @see AMA_Tester_DataHandler::_add_node()
+	 * gets all the course nodes that 
+	 * 
+	 * @param int $course_id the id of the course to search for
+	 * 
+	 * @return array of fetched rows
+	 * 
+	 * @access public
 	 */
-	protected function _add_node($node_ha) {
-		ADALogger::log_db("entered _add_node");
+	public function get_nodes_with_test_link_for_course ($course_id)
+	{
+		$sql = 'SELECT N.`id_nodo`FROM `nodo` N 
+				JOIN 
+				`module_test_nodes` MT ON N.`id_nodo` = MT.`id_nodo_riferimento`
+				WHERE N.`id_nodo` LIKE ? AND N.`testo` LIKE \'%modules/test/index.php?id_test=%\'';
 
-		$db =& $this->getConnection();
-		if ( AMA_DB::isError( $db ) ) return $db;
-
-		
-		// uncommented below line in this version of the method
-		// @author giorgio 17/lug/2013
-		$id_node = $this->sql_prepared($node_ha['id']);
-		$id_author = $node_ha['id_node_author'];
-		$name = $this->sql_prepared($this->or_null($node_ha['name']));
-		$title = $this->sql_prepared($this->or_null($node_ha['title']));
-
-		$text = $this->sql_prepared($node_ha['text']);
-		$type = $this->sql_prepared($this->or_zero($node_ha['type']));
-		$creation_date = $this->date_to_ts($this->or_null($node_ha['creation_date']));
-		$parent_id = $this->sql_prepared($node_ha['parent_id']);
-		$order = $this->sql_prepared($this->or_null($node_ha['order']));
-		$level = $this->sql_prepared($this->or_zero($node_ha['level']));
-		$version = $this->sql_prepared($this->or_zero($node_ha['version']));
-		$n_contacts = $this->sql_prepared($this->or_zero($node_ha['n_contacts']));
-		$icon = $this->sql_prepared($this->or_null($node_ha['icon']));
-
-		// modified 7/7/01 ste
-		// $color = $this->or_zero($node_ha['color']);
-		$bgcolor = $this->sql_prepared($this->or_null($node_ha['bgcolor']));
-		$color = $this->sql_prepared($this->or_null($node_ha['color']));
-		// end
-		$correctness = $this->sql_prepared($this->or_zero($node_ha['correctness']));
-		$copyright = $this->sql_prepared($this->or_zero($node_ha['copyright']));
-		// added 6/7/01 ste
-		$id_position = $this->sql_prepared($node_ha['id_position']);
-		$lingua = $this->sql_prepared($node_ha['lingua']);
-		$pubblicato = $this->sql_prepared($node_ha['pubblicato']);
-		// end
-		// added 24/7/02 ste
-		//  $family = $this->date_to_ts($this->or_null($node_ha['family']));
-		// end
-
-		// added  2/4/03
-		if (array_key_exists('id_instance',$node_ha)) {
-			$id_instance = $this->sql_prepared($this->or_null($node_ha['id_instance']));
-		}
-		else {
-			$id_instance = "''";
-		}
-		//end
-		
-		$sql  = "insert into nodo (id_nodo, id_utente,id_posizione, nome, titolo, testo, tipo, data_creazione, id_nodo_parent, ordine, livello, versione, n_contatti, icona, colore_didascalia, colore_sfondo, correttezza, copyright, lingua, pubblicato, id_istanza)";
-		$sql .= " values ($id_node,  $id_author, $id_position, $name, $title, $text, $type, $creation_date, $parent_id, $order, $level, $version, $n_contacts, $icon, $color, $bgcolor, $correctness, $copyright, $lingua, $pubblicato, $id_instance)";
-		ADALogger::log_db("trying inserting the node: $sql");
-
-		$res = $db->query($sql);
-		// if an error is detected, an error is created and reported
-		if (AMA_DB::isError($res)) {
-			return new AMA_Error($this->errorMessage(AMA_ERR_ADD) . " while in _add_node." .
-					AMA_SEP . ": " . $res->getMessage());
-		}
-
-		//return true;
-		return $new_node_id;
+		return $this->getAllPrepared ( $sql, array ($course_id.'%'));		
 	}
 }
 

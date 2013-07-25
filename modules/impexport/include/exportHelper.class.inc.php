@@ -101,7 +101,7 @@ class exportHelper
 			if ($name==='position') continue;
 			else if (in_array($name, self::$cDataElementNameForCourseNode))
 			{
-				if ($name==='text' || $name==='icon') $value = $this->_doPathExportingSubstitutions($name, $value);
+				if ($name==='text' || $name==='icon') $value = $this->_doPathExportingSubstitutions($name, $value, $course_id);
 				$XMLElementForCourseNode = self::buildCDATASection($domtree, $name, $value);
 			}
 			else if (preg_match('/id/',$name))
@@ -313,7 +313,8 @@ class exportHelper
 				{
 					// add to the mediaFilesArray
 					$fileName = ROOT_DIR.MEDIA_PATH_DEFAULT.$extResInfo['id_utente'].'/'.$value;
-					$this->addFileToMediaArray($course_id, $fileName);
+					// do the path substitution as if it was an icon
+					$this->_doPathExportingSubstitutions('icon', $fileName, $course_id);
 				}
 				else if ($name==='id_utente') continue;
 
@@ -327,7 +328,7 @@ class exportHelper
 			{
 				$XMLElementForCourseRes = $domtree->createElement($name,$value);
 			}
-				
+
 			$XMLNodeExtRes->appendChild($XMLElementForCourseRes);
 		}
 		return $XMLNodeExtRes;
@@ -355,9 +356,15 @@ class exportHelper
 			}
 			else if (in_array($name, self::$cDataElementNameForTest))
 			{
-				if ($name==='icona') $value = $this->_doPathExportingSubstitutions('icon', $value);
-				else if ($name==='testo') $value = $this->_doPathExportingSubstitutions('text', $value);
-				
+				// substitute url path with specail tag
+				$value = str_replace (parse_url(HTTP_ROOT_DIR, PHP_URL_PATH),'<http_path/>',$value);
+
+				if ($name==='icona' || $name==='nome')
+				{
+					$value = $this->_doPathExportingSubstitutions('icon', $value, $testElement['id_corso']);
+				}
+				else if ($name==='testo') $value = $this->_doPathExportingSubstitutions('text', $value, $testElement['id_corso']);
+
 				$XMLTest->appendChild( self::buildCDATASection($domtree, $name, $value) );
 			}
 			else $XMLTest->appendChild($domtree->createElement($name,$value));
@@ -422,7 +429,7 @@ class exportHelper
 	 */
 	private function addFileToMediaArray ($course_id, $filePath)
 	{
-		if (is_file(ROOT_DIR.'/'.$filePath))
+		if (is_file(ROOT_DIR.'/'.$filePath) || is_file ($filePath))
 		{
 			if (!isset($this->mediaFilesArray[$course_id]))
 				$this->mediaFilesArray[$course_id] = array();
@@ -483,25 +490,25 @@ class exportHelper
 		$res = $GLOBALS['common_dh']->find_language_table_identifier_by_langauge_id ($languageID);
 		return (AMA_DB::isError($res)) ? '' : $res;
 	}
-	
+
 	/**
 	 * Recursively gets an array with passed node and all of its children
 	 * inlcuded values are name and id, used for json encoding when building
 	 * course tree for selecting which node to export.
-	 * 
+	 *
 	 * @param string $rootNode the id of the node to be treated as root
 	 * @param AMAImportExportDataHandler $dh the data handler used to retreive datas
 	 * @param string $mustRecur
-	 * 
+	 *
 	 * @return array
-	 * 
+	 *
 	 * @access public
 	 */
 	public function getAllChildrenArray ($rootNode, $dh, $mustRecur = true)
 	{
 		// first get all passed node data
-		$nodeInfo =& $dh->get_node_info($rootNode);		
-		
+		$nodeInfo =& $dh->get_node_info($rootNode);
+
 		$retarray = array ('id'=>$rootNode, 'label'=>$nodeInfo['name']);
 
 		if ($mustRecur)
@@ -521,19 +528,19 @@ class exportHelper
 		}
 		return $retarray;
 	}
-	
+
 	/**
 	 * does the proper string substitution on the path of the multimedia files
-	 * in node text and node icon
-	 * 
+	 * in node text and node icon and adds it to the media files array to be zipped
+	 *
 	 * @param string $name text or icon
 	 * @param string $value value to perform substitution on
-	 * 
+	 *
 	 * @return string the substitued string
-	 * 
+	 *
 	 * @access private
 	 */
-	private function _doPathExportingSubstitutions($name, $value)
+	private function _doPathExportingSubstitutions($name, $value, $course_id)
 	{
 		/**
 		 * check for media files inside the text or in the icon
@@ -552,7 +559,7 @@ class exportHelper
 			$value = str_replace(ROOT_DIR, '<root_dir/>', $value);
 			$regExp = '/('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/(.+)/';
 		}
-		
+
 		/**
 		 * run regExp on $value to check for media files
 		 */
@@ -566,6 +573,6 @@ class exportHelper
 			unset ($regExp);
 		}
 		return $value;
-	}	
+	}
 }
 ?>

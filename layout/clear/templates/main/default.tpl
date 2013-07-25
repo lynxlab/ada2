@@ -92,17 +92,17 @@
         <div id="mainmenu">
             <ul id="menu">
                 <li id="home">
-                    <a href="browsing/user.php">
+                    <a href="/browsing/user.php">
                         <i18n>home</i18n>
                     </a>
                 </li>
                 <li id="question_mark" class="unselectedquestion_mark">
-                    <a href="help.php" target="_blank">
+                    <a href="/help.php" target="_blank">
                         <i18n>aiuto</i18n>
                     </a>
                 </li>
                 <li id="esc">
-                    <a href="index.php">
+                    <a href="/index.php">
                         <i18n>esci</i18n>
                     </a>
                 </li>

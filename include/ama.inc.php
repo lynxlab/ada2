@@ -8895,6 +8895,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      */
     public function _add_risorse_nodi($sqlnode_id, $res_id) {
         ADALogger::log_db("entered _add_risorse_nodi (node_id: $sqlnode_id, res_id: $res_id)");
+        
+        if ($sqlnode_id == "''")
+        {
+        	ADALogger::log_db("passed node id is empty, returning true right away");
+        	return true;
+        }
 
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;

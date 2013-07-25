@@ -31,12 +31,14 @@ class FormUploadImportFile extends FForm {
  *
  * @author giorgio
  */
-class FormSelectAuthorForImport extends FForm {
+class FormSelectDatasForImport extends FForm {
 
-	public function __construct( $formName, $authorsList ) {
+	public function __construct( $formName, $authorsList, $courseList ) {
 		parent::__construct();
 		
 		$authorsList[0] = translateFN('Scegli un autore per il corso');
+
+		$courseList[0] = translateFN('Importa come nuovo corso');
 		
 		$this->setName($formName);
 		
@@ -45,7 +47,13 @@ class FormSelectAuthorForImport extends FForm {
 		$this->addSelect('author', translateFN ("Seleziona l'autore a cui assegnare il corso importato"), $authorsList, 0)
 			->setRequired()
 			->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);	
-
-		$this->setOnSubmit('return goToImportStepThree();');
+		
+		$this->addSelect('courseID', translateFN ("Seleziona il corso in cui importare"), $courseList, 0)
+			->setRequired()
+			->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR);
+		
+		$this->setSubmitValue(translateFN('Avanti')."&nbsp;&gt;&gt;");
+		
+		$this->setOnSubmit('return goToImportSelectNode();');
 	}
 }

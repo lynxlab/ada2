@@ -1,0 +1,130 @@
+div.fform.form {
+	padding: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+fieldset.form {
+	margin-bottom: 10px;
+	border: none;
+}
+
+legend.form {
+	padding: 0 2px;
+	font-weight: bold;
+}
+
+label.form {
+	display: inline-block;
+	line-height: 1.8;
+	vertical-align: top;
+	width: auto;
+}
+
+fieldset.form ol.form {
+	margin: 0;
+	padding: 0;
+}
+
+fieldset.form li.form {
+	list-style: none;
+	padding: 5px;
+	margin: 0;
+	border-bottom: 1px solid #aaaaaa;
+}
+
+fieldset.form fieldset.form {
+	border: none;
+	margin: 0px;
+}
+
+fieldset.form fieldset.form legend.form {
+	padding: 0px;
+	font-weight: normal;
+}
+
+fieldset.form fieldset.form label.form {
+	display: block;
+	width: auto;
+	margin-left: 123px; /* Width plus 3 (html space) */
+}
+
+fieldset.form fieldset.form li.form {
+	border-bottom: 0px solid #aaaaaa;
+	display: inline;
+}
+
+em.form {
+	font-weight: bold;
+	font-style: normal;
+	color: #f00;
+}
+
+input.input_text {
+	float: right;
+	display: inline-block;
+	text-align: right;
+	width: 45%;
+}
+
+textarea.form {
+	display: block;
+	width: 100%;
+	height: 100px;
+}
+
+select.form {
+	display: block;
+	float: right;
+}
+
+.error.form {
+	color: #ff0000;
+}
+
+p.form {
+	text-align: center;
+}
+
+li.form.hidden {
+	display: none;
+}
+
+div.fform {
+	width: 95%;
+}
+/*
+* class to show general message for errors
+*/
+div.hide_error {
+	display: none;
+}
+
+div.show_error {
+	display: block;
+	color: #ff0000;
+}
+
+#error_form.form {
+	text-align: center;
+}
+
+.clear.form {
+	clear: both;
+}
+
+.hidden {
+	display: none;
+}
+/*
+* hide submit on form that uploads import file
+*/
+form[name=importStep1Form] input[type=submit] {
+	display: none;
+}
+
+.exportFormStep2,.divImportSN {
+	text-align: center;
+	width: 95%;
+	margin: 0 auto;
+}

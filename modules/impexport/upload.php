@@ -41,7 +41,10 @@ require_once ROOT_DIR . '/include/FileUploader.inc.php';
 $fileUploader = new FileUploader(ADA_UPLOAD_PATH);
 if($fileUploader->upload() == false) {
 	$data = $fileUploader->getErrorMessage();
-} else $data = '1'; // '1' means okay
+} else {
+	 $_SESSION['importHelper']['filename'] = $fileUploader->getPathToUploadedFile();
+	 $data = '1'; // '1' means okay
+}
 
 echo $data;
 ?>
