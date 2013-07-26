@@ -39,7 +39,7 @@ class AMA_Error extends RuntimeException
     AMA_ERROR                 => 'sconosciuto',                        // 1 unknown error
     AMA_ERR_ADD               => 'aggiunta del record non riuscita',           // 2 error while adding
     AMA_ERR_REMOVE            => 'cancellazione del record non riuscita',     // 3 error while removing
-    AMA_ERR_UNIQUE_KEY        => 'record gi&agreve;esistente',                      // 4  "unique key violated"
+    AMA_ERR_UNIQUE_KEY        => 'record gi&agrave; esistente',                      // 4  "unique key violated"
     AMA_ERR_NOT_FOUND         => 'record non trovato',                        // 5  "record was not found"
     AMA_ERR_INCONSISTENT_DATA => 'inconsistenza nei dati',                    // 6  "inconsistency in the data was detected"
     AMA_ERR_UPDATE            => 'aggiornamento del database non riuscito',    // 7  "error while updating"

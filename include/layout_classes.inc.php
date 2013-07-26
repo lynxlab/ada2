@@ -230,14 +230,24 @@ class CSS {
         }
 
 	if ($is_external_module) {
-		$CSS_dir = $rel_pref.$module_dir."/layout/$family/css/";
+		$CSS_module_dir = $rel_pref.$module_dir."/layout/$family/css/";
+		// as an extreme fallback, use css/main
+		$CSS_dir = $rel_pref."layout/$family/css/main/";
 	}
 	else {
 		$CSS_dir = $rel_pref."layout/$family/css/$module_dir/";
 	}
 
-        $CSS_files[] = $CSS_dir."default.css"; //adding default file
-        $CSS_files[] = $CSS_dir.$node_type.".css"; //adding specific node type file
+		if (is_file($CSS_module_dir."default.css"))
+			$CSS_files[] = $CSS_module_dir."default.css";
+        else 
+        	$CSS_files[] = $CSS_dir."default.css"; //adding default file
+        
+        if (is_file($CSS_module_dir.$node_type.".css"))
+        	$CSS_files[] = $CSS_module_dir.$node_type.".css";
+        else
+        	$CSS_files[] = $CSS_dir.$node_type.".css"; //adding specific node type file
+        
         if (!empty($node_author_id)) {
             if (!empty($node_course_id)) {
                 $CSS_files[] = $http_root_dir."/courses/media/$node_author_id/css/$node_course_id.css";
