@@ -357,7 +357,7 @@ class exportHelper
 			else if (in_array($name, self::$cDataElementNameForTest))
 			{
 				// substitute url path with specail tag
-				$value = str_replace (parse_url(HTTP_ROOT_DIR, PHP_URL_PATH),'<http_path/>',$value);
+				// $value = str_replace (parse_url(HTTP_ROOT_DIR, PHP_URL_PATH),'<http_path/>',$value);
 
 				if ($name==='icona' || $name==='nome')
 				{
@@ -550,6 +550,8 @@ class exportHelper
 			// remove HTTP_ROOT_DIR so that it'll become
 			// a relative path (no more, it will be substituted with other abs path)
 			$value = str_replace(HTTP_ROOT_DIR, '<http_root/>', $value);
+			$value = str_replace (parse_url(HTTP_ROOT_DIR, PHP_URL_PATH),'<http_path/>',$value);
+			
 			$regExp = '/('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/([^\"]+)/';
 		}
 		else if ($name==='icon')
