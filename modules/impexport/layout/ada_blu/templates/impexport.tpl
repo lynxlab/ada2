@@ -79,7 +79,7 @@
                 <div id="topcom_t">
                 </div>
                 <div id="com_toolscontent">
-                    <template_field class="microtemplate_field_disabled" name="com_tools">com_tools</template_field>
+                    <!--template_field class="microtemplate_field_disabled" name="com_tools">com_tools</template_field-->
                 </div>
                 <div id="bottomcom_t">
                 </div>
@@ -92,17 +92,17 @@
         <div id="mainmenu">
             <ul id="menu">
                 <li id="home">
-                    <a href="browsing/user.php">
+                    <a href="../../browsing/user.php">
                         <i18n>home</i18n>
                     </a>
                 </li>
                 <li id="question_mark" class="unselectedquestion_mark">
-                    <a href="help.php" target="_blank">
+                    <a href="../../help.php" target="_blank">
                         <i18n>aiuto</i18n>
                     </a>
                 </li>
                 <li id="esc">
-                    <a href="index.php">
+                    <a href="../../index.php">
                         <i18n>esci</i18n>
                     </a>
                 </li>
