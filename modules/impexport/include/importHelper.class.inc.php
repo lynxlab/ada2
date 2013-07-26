@@ -807,9 +807,12 @@ class importHelper
 
 			$outArr['icon'] = str_replace('<root_dir/>', ROOT_DIR, $outArr['icon']);
 			$outArr['icon'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['icon']);
+			$outArr['icon'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['icon']);
+			
 
 			$outArr['text'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['text']);
 			$outArr['text'] = str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['text']);
+			$outArr['text'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['text']);
 
 			// oldID is needed below, for creating the array that maps the old node id
 			// to the new node id. This must be done AFTER node is saved.
