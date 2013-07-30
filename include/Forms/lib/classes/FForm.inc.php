@@ -265,6 +265,17 @@ abstract class FForm
         return $this->addControl($control);
     }
     /**
+     * Adds a new button.
+     *
+     * @param string $id
+     * @param string $label
+     * @return FormControl
+     */    
+     protected final function addButton($id, $label) {
+    	$control = FormControl::create(FormControl::INPUT_BUTTON, $id, $label);
+    	return $this->addControl($control);
+    }
+    /**
      * Adds a new hidden input.
      *
      * @param string $id
@@ -282,8 +293,8 @@ abstract class FForm
      * @param string $label
      * @return FormControl
      */
-    protected final function addFieldset($label) {
-        $control = FormControl::create(FormControl::FIELDSET, '', $label);
+    protected final function addFieldset($label,$id='') {
+        $control = FormControl::create(FormControl::FIELDSET, $id, $label);
         return $this->addControl($control);
     }
     protected final function addSubmit($id) {
