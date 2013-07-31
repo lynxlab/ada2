@@ -58,8 +58,9 @@ abstract class FormControl
                 return new FCTextarea($controlType, $controlId, $labelText);
             case self::FIELDSET:
                 return new FCFieldset($controlType, $controlId, $labelText);
-            case self::INPUT_IMAGE:
             case self::INPUT_BUTTON:
+            	return new FCButton($controlType, $controlId, $labelText);
+            case self::INPUT_IMAGE:            	
             default:
                 return new FCNullControl($controlType, $controlId, $labelText);
         }
@@ -444,7 +445,7 @@ class FCTextarea extends FormControl {
  */
 class FCFieldset extends FormControl {
     public function withData($data) {
-        if(is_array($data) && count($data) > 0) {
+        if(empty ($this->_controls) && is_array($data) && count($data) > 0) {
             $this->_controls = $data;
         } else if(is_array($this->_controls)) {
 			$this->_controlData = $data;
@@ -453,7 +454,9 @@ class FCFieldset extends FormControl {
                     $control->setSelected();
                 } else if($control->isSelected()){
                     $control->setNotSelected();
-                }
+                } else {
+                	$control->withData($data[$control->getId()]);
+                }                
             }
         }
         return $this;
@@ -461,8 +464,9 @@ class FCFieldset extends FormControl {
 
     public function render() {
         $html = $this->label().
-				'<fieldset class="'.self::DEFAULT_CLASS.'"><ol class="'.self::DEFAULT_CLASS.'">';
+				'<fieldset id="'.$this->_controlId.'" class="'.self::DEFAULT_CLASS.'"><ol class="'.self::DEFAULT_CLASS.'">';
 				foreach ($this->_controls as $control) {
+					$control->_controlId = $this->_controlId.'['.$control->_controlId.']';
 					$html .= '<li class="'.self::DEFAULT_CLASS.'">' . $control->render() .'</li>';
 				}
         $html .= '</ol></fieldset>';
@@ -471,6 +475,18 @@ class FCFieldset extends FormControl {
 
     private $_controls = array();
 }
+
+/**
+ * class for html button
+ * @author giorgio
+ */
+class FCButton extends FormControl {
+	public function render() {
+		$html = '<button id="'.$this->_controlId.'" type="button" name="'.$this->_controlId.'"'.$this->renderAttributes().'>'.$this->_labelText.'</button>';
+		return $html;
+	}
+}
+
 /**
  * 
  */
