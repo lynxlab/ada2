@@ -73,6 +73,10 @@ if (!AMA_DB::isError($newslettersList))
 
 	foreach ($newslettersList as $i=>$newsletterAr)
 	{
+
+		$sentDetails = $dh->get_newsletter_history ( $newsletterAr['id'] );
+		if (AMA_DB::isError($sentDetails)) $displayDetailsLink = false;
+		else $displayDetailsLink = ( count($sentDetails) > 0 );
 			
 		$links = array();
 		$linksHtml = "";
@@ -84,30 +88,38 @@ if (!AMA_DB::isError($newslettersList))
 				case 0:
 					$type = 'edit';
 					$title = translateFN('Clicca per modificare la newsletter');
+					$link = 'self.document.location.href=\'edit_newsletter.php?id='.$newsletterAr['id'].'\';';
+					$disabled = false;
 					break;
 				case 1:
-					if ($newsletterAr['draft']!=1) {
-						$type = 'send';
-						$title = translateFN('Clicca per inviare la newsletter');
-					}
+					$type = 'send';
+					$title = translateFN('Clicca per inviare la newsletter');
+					$link = 'test1.php';
+					$disabled = ($newsletterAr['draft']==1);
 					break;
-				case 2:					
+				case 2:
 					$type = 'details';
-					$title = translateFN('Clicca per i dettagli della newsletter');					
+					$title = translateFN('Clicca per i dettagli della newsletter');
+					$link = 'test2.php';
+					$disabled = (!$displayDetailsLink);
+						
 					break;
 				case 3:
 					$type = 'delete';
 					$title = translateFN ('Clicca per cancellare la newsletter');
+					$link = 'deleteNewsletter ($j(this), '.$newsletterAr['id'].' , \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
+					$disabled = false;
 					break;
 			}
-			
+				
 			if (isset($type))
 			{
 				$links[$j] = CDOMElement::create('li','class:liactions');
 
-				$linkshref = CDOMElement::create('a');
-				$linkshref->setAttribute('href','test.php');
+				$linkshref = CDOMElement::create('button');
+				$linkshref->setAttribute('onclick','javascript:'.$link);
 				$linkshref->setAttribute('class', $type.'Button tooltip');
+				if ($disabled) $linkshref->setAttribute('disabled', 'true'); // tells jquery to disable the button
 				$linkshref->setAttribute('title',$title);
 				$links[$j]->addChild ($linkshref);
 				// unset for next iteration
@@ -122,17 +134,17 @@ if (!AMA_DB::isError($newslettersList))
 			$linksHtml = $linksul->getHtml();
 		} else $linksHtml = '';
 
-		$newsletterData[$i] = array ($labels[0]=>$newsletterAr['subject'], 
-									  $labels[1]=>ts2dFN($newsletterAr['date']),
-				 					  $labels[2]=>($newsletterAr['draft']==1) ? translateFN('Sì') : translateFN('No'),
-									  $lables[3]=>$linksHtml);
+		$newsletterData[$i] = array ($labels[0]=>$newsletterAr['subject'],
+				$labels[1]=>ts2dFN($newsletterAr['date']),
+				$labels[2]=>($newsletterAr['draft']==1) ? translateFN('Sì') : translateFN('No'),
+				$labels[3]=>$linksHtml);
 	}
 
 	$historyTable = new Table();
 	$historyTable->initTable('0','center','1','1','90%','','','','','1','0','','default','newsletterHistory');
 	$historyTable->setTable($newsletterData,translateFN('Archivio Newsletter'),translateFN('Archivio Newsletter'));
 
-		
+
 	$newsletterIndexDIV->addChild($newButton);
 	$newsletterIndexDIV->addChild(new CText($historyTable->getTable()));
 
@@ -144,9 +156,9 @@ else
 
 $data = $newsletterIndexDIV->getHtml();
 
-	/**
-	 * include proper jquery ui css file depending on wheter there's one
-	 * in the template_family css path or the default one
+/**
+ * include proper jquery ui css file depending on wheter there's one
+ * in the template_family css path or the default one
 */
 if (!is_dir(MODULES_NEWSLETTER_PATH.'/layout/'.$userObj->template_family.'/css/jquery-ui'))
 {
@@ -179,8 +191,7 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
-		JQUERY_NO_CONFLICT,
-		MODULES_NEWSLETTER_PATH.'/js/index.js'
+		JQUERY_NO_CONFLICT
 );
 
 $optionsAr['onload_func'] = 'initDoc();';

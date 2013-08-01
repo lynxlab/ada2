@@ -1,0 +1,33 @@
+@CHARSET "UTF-8";
+
+#back a {
+    /*
+    position: absolute;
+    top: -2px;
+    left: 0px;
+    clear: both;
+    background: url(../../../../../layout/ada_blu/img/back.png) no-repeat left;
+    */
+background: url(../../../../../layout/ada_blu/img/back.png) no-repeat center left; display:block; padding:0 0 0 40px;
+}
+
+#subject,#sender,#plaintext {
+	width: 100%;
+}
+
+form label {
+	width: auto;
+	margin-right: 10px;
+}
+
+.newsletterSaveResultstext {
+	display: block;
+	text-align: center;
+	margin: 20px;
+}
+
+.newsletterSaveResults {
+	text-align: center;
+}
+
+.ui-effects-transfer { border: 2px dotted gray; }

@@ -1,3 +1,5 @@
+var datatable;
+
 function initDoc()
 {
 	initDataTables();
@@ -7,6 +9,34 @@ function initDoc()
 
 function newNewsletter() {
 	self.document.location.href = 'edit_newsletter.php';
+}
+
+
+function deleteNewsletter (jqueryObj, id_newsletter, message)
+{	
+	// the trick below should emulate php's urldecode behaviour
+	if (confirm ( decodeURIComponent((message + '').replace(/\+/g, '%20')) ))
+	{
+		$j.ajax({
+			type	:	'POST',
+			url		:	'ajax/delete_newsletter.php',
+			data	:	{ id: id_newsletter },
+			dataType:	'json'
+		})
+		.done  (function (JSONObj) {
+			if (JSONObj)
+				{
+					if (JSONObj.status=='OK')
+					{
+						// deletes the corresponding row from the DOM with a fadeout effect
+						jqueryObj.parents("tr").fadeOut("slow", function () {
+							var pos = datatable.fnGetPosition(this);
+							datatable.fnDeleteRow(pos);
+							});
+					}
+				}
+		});
+	}
 }
 
 /**
@@ -57,7 +87,7 @@ function initButtons()
 }
 
 function initDataTables() {
-	var datatable = $j('#newsletterHistory').dataTable( {
+	datatable = $j('#newsletterHistory').dataTable( {
 		 		"bJQueryUI": true,
                 "bFilter": true,
                 "bInfo": false,

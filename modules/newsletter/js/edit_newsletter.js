@@ -26,6 +26,14 @@ function initDoc()
 		$j('#date').mask("99/99/9999");
 		loadFCKeditor('htmltext');
 		$j('form[name=editnewsletter] :submit').button();
+		/**
+		 * generate plain text button
+		 */
+		$j('#generatePlainText').button({
+			icons : {
+				primary : 'ui-icon-refresh'
+			}
+		});
 	} else {	
 		/**
 		 * save results ok button
@@ -51,15 +59,23 @@ function initDoc()
 				dataType: 'html'
 			})
 			.done(function (html) {
-				$j('div.fform.form').effect('drop', function() {
-					$j('#moduleContent').html(html).hide();
-					$j('#newsletterSaveResultsbutton').button();
-					$j('#moduleContent').effect('slide');
-				});
+				$j('div.fform.form').css('display','none');
+				
+				$j('#moduleContent').html(html).hide();
+				$j('#newsletterSaveResultsbutton').button();
+				$j('#moduleContent').effect('slide');
 			} );
 			
 			return false;
 		}
-	});
+	});	
+}
+
+function toPlainText (htmlText)
+{
+	$j('#l_htmltext').effect ('transfer', { to: '#l_plaintext' , className:'ui-effects-transfer'}, 500, function() {
+		$j('#plaintext').val(html_to_text(htmlText));
+	} );
+	
 	
 }

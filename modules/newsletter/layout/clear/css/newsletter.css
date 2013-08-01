@@ -23,3 +23,11 @@
 .DataTables_sort_icon {
 	float: right;
 }
+
+.editButton,
+.sendButton,
+.detailsButton,
+.deleteButton {
+	height: 1.5em;
+}
+

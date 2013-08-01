@@ -33,6 +33,50 @@ class AMANewsletterDataHandler extends AMA_DataHandler {
 		return self::$instance;
 	}
 	
+	public function get_newsletter ( $id )
+	{
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'newsletters` WHERE id=?';
+		
+		$retval = $this->getRowPrepared($sql, $id, AMA_FETCH_ASSOC);
+		
+		if (!AMA_DB::isError($retval)) $retval['date'] = ts2dFN($retval['date']);
+		
+		return $retval;
+		
+	}
+	
+	public function delete_newsletter ( $id_newsletter )
+	{
+		$sql = 'DELETE FROM `'.self::$PREFIX.'history` WHERE id_newsletter=?';		
+		$retval = $this->executeCriticalPrepared($sql, $id_newsletter);
+		
+		/**
+		 *  error checking and handling must be don by the caller
+		 *  anyway, I don't care if I have delete nothing with the query 
+		 *  above, this means that the newsletter has no history
+		 */
+		
+		$sql = 'DELETE FROM `'.self::$PREFIX.'newsletters` WHERE id=?';
+		$retval = $this->executeCriticalPrepared($sql, $id_newsletter);
+
+		return $retval;
+	}
+	
+	public function get_newsletter_history ( $id_newsletter )
+	{
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'history` WHERE id_newsletter=?';
+		
+		$retval = $this->getAllPrepared($sql, $id_newsletter, AMA_FETCH_ASSOC);
+		
+		if (!AMA_DB::isError($retval))
+		{
+			for ($i=0; $i<count($retval); $i++)	
+			 $retval[$i]['datesent'] = ts2dFN($retval[$i]['datesent']);
+		}
+		
+		return $retval;		
+	}
+	
 	public function get_newsletters ($fields=array())
 	{
 		$sql = 'SELECT ';
@@ -40,7 +84,7 @@ class AMANewsletterDataHandler extends AMA_DataHandler {
 		if (empty($fields)) $sql .= '*';
 		else $sql .= implode(',', $fields);
 		
-		$sql .= ' FROM '.self::$PREFIX.'newsletters';
+		$sql .= ' FROM `'.self::$PREFIX.'newsletters`';
 		
 		return $this->getAllPrepared($sql, null, AMA_FETCH_ASSOC);
 	}

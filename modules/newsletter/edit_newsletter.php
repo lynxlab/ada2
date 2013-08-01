@@ -42,7 +42,7 @@ require_once MODULES_NEWSLETTER_PATH.'/config/config.inc.php';
 require_once MODULES_NEWSLETTER_PATH.'/include/forms/formEditNewsletter.inc.php';
 require_once MODULES_NEWSLETTER_PATH.'/include/AMANewsletterDataHandler.inc.php';
 
-$self = 'newsletter';
+$self = whoami();
 
 $GLOBALS['dh'] = AMANewsletterDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
@@ -85,10 +85,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
 			echo $data;
 			die();
 		}
-		
-	
 } else {
 	$containedElement = new FormEditNewsLetter( 'editnewsletter' );
+	
+	$newsletterId = (isset ($_GET['id']) && intval ($_GET['id'])>0) ? intval ($_GET['id']) : 0;
+	
+	if ($newsletterId > 0)
+	{
+		$loadedNewsletter = $dh->get_newsletter ($newsletterId);
+		if (!AMA_DB::isError($loadedNewsletter)) $containedElement->fillWithArrayData($loadedNewsletter);
+	}
+	
 	$data = $containedElement->render();
 }
 
@@ -125,12 +132,10 @@ $content_dataAr = array(
 
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
-// 		JQUERY_DATATABLE,
-// 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_MASKEDINPUT,
 		JQUERY_NO_CONFLICT,
-		MODULES_NEWSLETTER_PATH.'/js/edit_newsletter.js'
+		MODULES_NEWSLETTER_PATH.'/js/html2text.js'
 );
 
 $optionsAr = array();

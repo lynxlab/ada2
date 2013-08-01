@@ -25,6 +25,8 @@ class FormEditNewsLetter extends FForm {
 		
 		$isDraftOptions = array ('0'=>translateFN('No'), '1'=>translateFN('Sì'));
 		
+		$this->addHidden('id');
+		
 		$this->addTextInput('subject', translateFN('Oggetto'))
 			->setRequired()
 			->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
@@ -44,6 +46,10 @@ class FormEditNewsLetter extends FForm {
 		$this->addTextarea('htmltext', translateFN('Testo HTML'))
 			->setRequired()
 			->setValidator(FormValidator::MULTILINE_TEXT_VALIDATOR);
+		
+		$this->addButton('generatePlainText', translateFN('Genera testo dall\'HTML'))
+			->setAttribute('onclick','javascript:toPlainText(FCKeditorAPI.GetInstance(\'htmltext\').GetData());');
+		
 				
 		$this->addTextarea('plaintext', translateFN('Testo Alternativo'))
 			->setRequired()
