@@ -49,8 +49,18 @@ abstract class FForm
      */
     public final function fillWithPostData() {
         foreach($this->_controls as $control) {
-            if(isset($_POST[$control->getId()])) {
+            if(isset($_POST[$control->getId()]) &&!($control instanceof FCFieldset) ) {
                 $control->withData($_POST[$control->getId()]);
+            }
+            else if ($control instanceof FCFieldset)
+            {            	
+            	foreach ($control->getControls() as $field)
+            	{            		
+            		if (isset($_POST[$field->getId()]))
+            		{
+            			$field->withData($_POST[$field->getId()]);
+            		}
+            	}
             }
         }
     }
@@ -59,8 +69,20 @@ abstract class FForm
      */
     public final function fillWithArrayData($formData = array()) {
         foreach($this->_controls as $control) {
-            if(isset($formData[$control->getId()])) {
+            if(isset($formData[$control->getId()]) && !($control instanceof FCFieldset)) {
                 $control->withData($formData[$control->getId()]);
+            }
+            else if ($control instanceof FCFieldset)
+            {
+            	foreach ($control->getControls() as $field)
+            	{
+            		if (isset($formData[$field->getId()]))
+            		{
+            			$field->withData($formData[$field->getId()]);
+            		}
+            			
+            	}
+            	
             }
         }
     }
