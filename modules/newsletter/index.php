@@ -48,40 +48,35 @@ $GLOBALS['dh'] = AMANewsletterDataHandler::instance(MultiPort::getDSN($_SESSION[
 
 /**
  * generate HTML for 'New Newsletter' button and the table with
- * old newsletters for editing, sending, deleting and details view.
+ * old newsletters for editing, sending, deleting, duplicating and details view.
 */
 
 $newsletterIndexDIV = CDOMElement::create('div','id:newsletterindex');
 
 $newButton = CDOMElement::create('button');
-$newButton->setAttribute('class', 'newButton');
+$newButton->setAttribute('class', 'newButton top');
 $newButton->setAttribute('onclick', 'javascript:newNewsletter();');
 $newButton->addChild (new CText(translateFN('Nuova Newsletter')));
 
 $newsletterData = array();
 
-/**
- * generate 25 rows as test datas, all with all possible actions
- * in real life, must check for which newsletter has which action
-*/
-
 $newslettersList = $dh->get_newsletters( array ( 'id','subject', 'date','draft' ));
 
 if (!AMA_DB::isError($newslettersList))
 {
-	$labels = array (translateFN('oggetto'), translateFN('data'), translateFN('bozza') , translateFN('azioni'));
+	$labels = array (translateFN('oggetto'), translateFN('data'), translateFN('bozza') , translateFN('N. Invii'), translateFN('azioni'));
 
 	foreach ($newslettersList as $i=>$newsletterAr)
 	{
-
 		$sentDetails = $dh->get_newsletter_history ( $newsletterAr['id'] );
+		$isSending = $dh->isSending ( $newsletterAr['id'] );
 		if (AMA_DB::isError($sentDetails)) $displayDetailsLink = false;
 		else $displayDetailsLink = ( count($sentDetails) > 0 );
 			
 		$links = array();
 		$linksHtml = "";
 			
-		for ($j=0;$j<4;$j++)
+		for ($j=0;$j<5;$j++)
 		{
 			switch ($j)
 			{
@@ -94,17 +89,23 @@ if (!AMA_DB::isError($newslettersList))
 				case 1:
 					$type = 'send';
 					$title = translateFN('Clicca per inviare la newsletter');
-					$link = 'test1.php';
-					$disabled = ($newsletterAr['draft']==1);
+					$link = 'self.document.location.href=\'send_newsletter.php?id='.$newsletterAr['id'].'\';';
+					$disabled = ($newsletterAr['draft']==1) || $isSending;
 					break;
 				case 2:
 					$type = 'details';
 					$title = translateFN('Clicca per i dettagli della newsletter');
-					$link = 'test2.php';
+					$link = 'self.document.location.href=\'details_newsletter.php?id='.$newsletterAr['id'].'\';';
 					$disabled = (!$displayDetailsLink);
 						
 					break;
 				case 3:
+					$type = 'copy';
+					$title = translateFN('Clicca per duplicare la newsletter');
+					$link = 'duplicateNewsletter('.$newsletterAr['id'].');';
+					$disabled = false;
+					break;
+				case 4:
 					$type = 'delete';
 					$title = translateFN ('Clicca per cancellare la newsletter');
 					$link = 'deleteNewsletter ($j(this), '.$newsletterAr['id'].' , \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
@@ -134,10 +135,12 @@ if (!AMA_DB::isError($newslettersList))
 			$linksHtml = $linksul->getHtml();
 		} else $linksHtml = '';
 
-		$newsletterData[$i] = array ($labels[0]=>$newsletterAr['subject'],
+		$newsletterData[$i] = array (
+				$labels[0]=>$newsletterAr['subject'],
 				$labels[1]=>ts2dFN($newsletterAr['date']),
 				$labels[2]=>($newsletterAr['draft']==1) ? translateFN('Sì') : translateFN('No'),
-				$labels[3]=>$linksHtml);
+				$labels[3]=>($isSending) ? translateFN('Invio in corso').'...' : count($sentDetails),
+				$labels[4]=>$linksHtml);
 	}
 
 	$historyTable = new Table();
@@ -147,7 +150,13 @@ if (!AMA_DB::isError($newslettersList))
 
 	$newsletterIndexDIV->addChild($newButton);
 	$newsletterIndexDIV->addChild(new CText($historyTable->getTable()));
-
+	// if there are more than 10 rows, repeat the add new button below the table
+	if ($i>10)
+	{
+		$bottomButton = clone $newButton;
+		$bottomButton->setAttribute('class', 'newButton bottom');
+		$newsletterIndexDIV->addChild($bottomButton);
+	} 
 } // if (!AMA_DB::isError($newslettersAr))
 else
 {
@@ -197,5 +206,4 @@ $layout_dataAr['JS_filename'] = array(
 $optionsAr['onload_func'] = 'initDoc();';
 
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
-
 ?>

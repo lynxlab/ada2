@@ -12,7 +12,7 @@
 
 .ulactions {
 	list-style-type: none;
-	margin-left: -40px;
+	margin-left: -53px;
 }
 
 .liactions {
@@ -27,6 +27,7 @@
 .editButton,
 .sendButton,
 .detailsButton,
+.copyButton,
 .deleteButton {
 	height: 1.5em;
 }

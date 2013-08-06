@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `module_newsletter_history` (
   `filter` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `datesent` int(11) NOT NULL,
   `recipientscount` int(6) unsigned NOT NULL,
+  `status` tinyint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 

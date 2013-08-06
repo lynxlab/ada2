@@ -7,12 +7,20 @@
 
 .newButton {
 	float: right;
+	margin: 0;
+}
+
+.newButton.top {
 	margin-bottom: 20px;
+}
+
+.newButton.bottom {
+	margin-top: 20px;
 }
 
 .ulactions {
 	list-style-type: none;
-	margin-left: -40px;
+	margin-left: -53px;
 }
 
 .liactions {
@@ -24,10 +32,6 @@
 	float: right;
 }
 
-.editButton,
-.sendButton,
-.detailsButton,
-.deleteButton {
+.editButton,.sendButton,.detailsButton,.copyButton,.deleteButton {
 	height: 1.5em;
 }
-

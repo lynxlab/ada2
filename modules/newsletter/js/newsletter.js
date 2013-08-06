@@ -39,6 +39,28 @@ function deleteNewsletter (jqueryObj, id_newsletter, message)
 	}
 }
 
+function duplicateNewsletter (id_newsletter)
+{
+	$j.ajax({
+		type	:	'POST',
+		url		:	'ajax/duplicate_newsletter.php',
+		data	:	{ id: id_newsletter },
+		dataType:	'json'
+	})
+	.done(function (JSONObj) {
+		var error = false;
+		if (JSONObj)
+		{
+				if (JSONObj.status=='OK') self.document.location.reload();
+				else error = true;
+		}
+		else error = true;
+		
+		if (error) alert ('Errore nella duplicazione della newsletter');
+	})
+	.fail (function () { alert ('Errore nella duplicazione della newsletter'); });
+}
+
 /**
  * inits jquery buttons
  */
@@ -77,6 +99,13 @@ function initButtons()
 		},
 		text : false
 	});
+
+	$j('.copyButton').button({
+		icons : {
+			primary : 'ui-icon-copy'
+		},
+		text : false
+	});	
 	
 	$j('.deleteButton').button({
 		icons : {
@@ -100,6 +129,7 @@ function initDataTables() {
                                   "bVisible":    false },
                                 null,
                                 { "sType": "date-eu" },                                           
+                                null,
                                 null,
                                 { "bSearchable" : false, "bSortable" : false, "sWidth" : "15%"}
                             ]

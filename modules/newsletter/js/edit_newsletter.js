@@ -45,9 +45,15 @@ function initDoc()
 	{
 		// do standard submit if we don't want ajax call
 		// else proceed with ajax
-		if (!isAjax) return true;
+		if (!isAjax)
+		{
+			return true;
+		}
 		else {
 			event.preventDefault();
+			
+			// must load correct fck content before serializing
+			$j('#htmltext').val ( FCKeditorAPI.GetInstance('htmltext').GetData() );
 			
 			var postData = $j(this).serialize();
 			postData += '&requestType=ajax';

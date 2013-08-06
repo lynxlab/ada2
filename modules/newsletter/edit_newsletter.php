@@ -48,10 +48,9 @@ $GLOBALS['dh'] = AMANewsletterDataHandler::instance(MultiPort::getDSN($_SESSION[
 
 $containerDIV = CDOMElement::create('div','id:moduleContent');
 
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  && !empty($_POST)) 
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  && !empty($_POST))
 {
 	// saves the newsletter
-		
 	$newsletterHa['date'] = ( isset($_POST['subject']) && trim($_POST['subject'])!=='' ) ? $dh->date_to_ts(trim($_POST['date'])) : $dh->date_to_ts(date("d/m/Y"));
 	$newsletterHa['subject'] = ( isset($_POST['subject']) && trim($_POST['subject'])!=='' ) ? trim ($_POST['subject']) : null;
 	$newsletterHa['sender'] = ( isset($_POST['sender']) && trim($_POST['sender'])!=='' ) ? trim ($_POST['sender']) : null;
@@ -59,43 +58,42 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
 	$newsletterHa['plaintext'] = ( isset($_POST['plaintext']) && trim($_POST['plaintext'])!=='' ) ? trim ($_POST['plaintext']) : null;
 	$newsletterHa['draft'] = intval ($_POST['draft']);
 	$newsletterHa['id'] = ( isset($_POST['id']) && intval($_POST['id'])>0 ) ? intval($_POST['id']) : 0;
-	
+
 	$retval = $dh->save_newsletter ( $newsletterHa );
-	
+
 	if (AMA_DB::isError($retval)) $msg = new CText(translateFN('Errore nel salvataggio della newsletter'));
 	else $msg = new CText(translateFN('Newsletter salvata'));
-	
+
 	$containedElement = CDOMElement::create('div','class:newsletterSaveResults');
-	
-		$spanmsg = CDOMElement::create('span','class:newsletterSaveResultstext');
-		$spanmsg->addChild ($msg);
-		
-		$button = CDOMElement::create('button','id:newsletterSaveResultsbutton');
-		$button->addChild (new CText(translateFN('OK')));
-		$button->setAttribute('onclick', 'javascript:self.document.location.href=\''.MODULES_NEWSLETTER_HTTP.'\'');
-		
-		$containedElement->addChild ($spanmsg);
-		$containedElement->addChild ($button);
-	
-		$data = $containedElement->getHtml();
-		
-		/// if it's an ajax request, output html and die
-		if (isset($_POST['requestType']) && trim($_POST['requestType'])==='ajax')
-		{
-			echo $data;
-			die();
-		}
+
+	$spanmsg = CDOMElement::create('span','class:newsletterSaveResultstext');
+	$spanmsg->addChild ($msg);
+
+	$button = CDOMElement::create('button','id:newsletterSaveResultsbutton');
+	$button->addChild (new CText(translateFN('OK')));
+	$button->setAttribute('onclick', 'javascript:self.document.location.href=\''.MODULES_NEWSLETTER_HTTP.'\'');
+
+	$containedElement->addChild ($spanmsg);
+	$containedElement->addChild ($button);
+
+	$data = $containedElement->getHtml();
+
+	/// if it's an ajax request, output html and die
+	if (isset($_POST['requestType']) && trim($_POST['requestType'])==='ajax')
+	{
+		echo $data;
+		die();
+	}
 } else {
 	$containedElement = new FormEditNewsLetter( 'editnewsletter' );
-	
+
 	$newsletterId = (isset ($_GET['id']) && intval ($_GET['id'])>0) ? intval ($_GET['id']) : 0;
-	
+
 	if ($newsletterId > 0)
 	{
 		$loadedNewsletter = $dh->get_newsletter ($newsletterId);
 		if (!AMA_DB::isError($loadedNewsletter)) $containedElement->fillWithArrayData($loadedNewsletter);
 	}
-	
 	$data = $containedElement->render();
 }
 
@@ -105,7 +103,7 @@ $data = $containerDIV->getHtml();
 /**
  * include proper jquery ui css file depending on wheter there's one
  * in the template_family css path or the default one
- */
+*/
 if (!is_dir(MODULES_NEWSLETTER_PATH.'/layout/'.$userObj->template_family.'/css/jquery-ui'))
 {
 	$layout_dataAr['CSS_filename'] = array(

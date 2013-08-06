@@ -444,29 +444,34 @@ class FCTextarea extends FormControl {
  * 
  */
 class FCFieldset extends FormControl {
-    public function withData($data) {
+    public function withData($data) {    	    	
         if(empty ($this->_controls) && is_array($data) && count($data) > 0) {
             $this->_controls = $data;
         } else if(is_array($this->_controls)) {
-			$this->_controlData = $data;
+        	print_r($data);			
             foreach($this->_controls as $control) {
+            	print_r($control);
                 if($control->getData() === $data) {
                     $control->setSelected();
                 } else if($control->isSelected()){
                     $control->setNotSelected();
                 } else {
-                	$control->withData($data[$control->getId()]);
+                	$control->withData($data);
                 }                
             }
         }
         return $this;
+    }
+    
+    public function getControls()
+    {
+    	return $this->_controls;
     }
 
     public function render() {
         $html = $this->label().
 				'<fieldset id="'.$this->_controlId.'" class="'.self::DEFAULT_CLASS.'"><ol class="'.self::DEFAULT_CLASS.'">';
 				foreach ($this->_controls as $control) {
-					$control->_controlId = $this->_controlId.'['.$control->_controlId.']';
 					$html .= '<li class="'.self::DEFAULT_CLASS.'">' . $control->render() .'</li>';
 				}
         $html .= '</ol></fieldset>';
