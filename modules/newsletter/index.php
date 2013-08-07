@@ -84,7 +84,7 @@ if (!AMA_DB::isError($newslettersList))
 					$type = 'edit';
 					$title = translateFN('Clicca per modificare la newsletter');
 					$link = 'self.document.location.href=\'edit_newsletter.php?id='.$newsletterAr['id'].'\';';
-					$disabled = false;
+					$disabled = $isSending;
 					break;
 				case 1:
 					$type = 'send';
@@ -109,7 +109,7 @@ if (!AMA_DB::isError($newslettersList))
 					$type = 'delete';
 					$title = translateFN ('Clicca per cancellare la newsletter');
 					$link = 'deleteNewsletter ($j(this), '.$newsletterAr['id'].' , \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
-					$disabled = false;
+					$disabled = $isSending;
 					break;
 			}
 				
