@@ -13,5 +13,18 @@
 	else {
 		define('MODULES_TEST', false);
 	}
+	
+	//defines for module newsletter
+	define('MODULES_NEWSLETTER_PATH', MODULES_DIR.'/newsletter');
+	if (file_exists(MODULES_NEWSLETTER_PATH.'/index.php'))
+	 {
+		require_once(MODULES_NEWSLETTER_PATH.'/config/config.inc.php');
+	
+		define('MODULES_NEWSLETTER', true);
+		define('MODULES_NEWSLETTER_HTTP', HTTP_ROOT_DIR.'/modules/newsletter');
+	}
+	else {
+		define('MODULES_NEWSLETTER', false);
+	}
 
 ?>

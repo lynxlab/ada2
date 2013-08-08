@@ -1,0 +1,34 @@
+@CHARSET "UTF-8";
+
+#newsletterHistory caption {
+	margin-top: -26px;
+	color: #fff;
+}
+
+.newButton {
+	float: right;
+	margin-bottom: 20px;
+}
+
+.ulactions {
+	list-style-type: none;
+	margin-left: -53px;
+}
+
+.liactions {
+	float: left;
+	border: none !important;
+}
+
+.DataTables_sort_icon {
+	float: right;
+}
+
+.editButton,
+.sendButton,
+.detailsButton,
+.copyButton,
+.deleteButton {
+	height: 1.5em;
+}
+

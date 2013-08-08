@@ -444,12 +444,13 @@ class FCTextarea extends FormControl {
  * 
  */
 class FCFieldset extends FormControl {
-    public function withData($data) {
+    public function withData($data) {    	    	
         if(empty ($this->_controls) && is_array($data) && count($data) > 0) {
             $this->_controls = $data;
         } else if(is_array($this->_controls)) {
-			$this->_controlData = $data;
+        	print_r($data);			
             foreach($this->_controls as $control) {
+            	print_r($control);
                 if($control->getData() === $data) {
                     $control->setSelected();
                 } else if($control->isSelected()){

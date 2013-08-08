@@ -135,6 +135,11 @@
                             <li>
                             <template_field class="template_field" name="mychat">mychat</template_field>
                             </li>
+                            <li>
+                            	<a href="../modules/newsletter">
+                                	    <i18n>newsletter</i18n>
+                                </a>
+                            </li>                            
                         </ul>
                     </div>
                     <div class="bottomsubmenu">

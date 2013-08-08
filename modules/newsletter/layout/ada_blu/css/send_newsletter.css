@@ -1,0 +1,93 @@
+@CHARSET "UTF-8";
+
+#back a {
+	/*
+    position: absolute;
+    top: -2px;
+    left: 0px;
+    clear: both;
+    background: url(../../../../../layout/ada_blu/img/back.png) no-repeat left;
+    */
+	background: url(../../../../../layout/ada_blu/img/back.png) no-repeat
+		center left;
+	display: block;
+	padding: 0 0 0 40px;
+}
+
+form label {
+	width: 400px;
+	margin-right: 10px;
+}
+
+#userChoice,#courseChoice {
+	border: 1px dotted lightgray;
+	padding: 20px 15px 15px 20px;
+}
+
+form fieldset li {
+	border: none;
+}
+
+#userChoice li.form,#courseChoice li.form {
+	width: 48%;
+	float: left;
+	border: none;
+}
+
+#userChoice li.form {
+	width: 32%;
+}
+
+#courseChoice select {
+	width: 100%;
+}
+
+#userChoice li.form label,#courseChoice li.form label {
+	margin: 0;
+}
+
+#l_userChoice,#l_courseChoice,#newsletterSummary {
+	background: lightgoldenrodyellow;
+	border: 1px solid lightgray;
+	-webkit-box-shadow: 3px 3px 6px 0px #aeaeae;
+	box-shadow: 3px 3px 6px 0px #aeaeae;
+}
+
+#l_userChoice,#l_courseChoice {
+	width: auto;
+	position: relative;
+	top: 15px;
+	left: 20px;
+	padding: 0px 25px 0px 25px;
+}
+
+#newsletterSummary {
+	width: 23%;
+	float: right;
+	margin-top: 39px;
+	min-height: 200px;
+	padding: 10px;
+	line-height : 1.6em;	
+}
+
+#summaryText {
+	text-shadow: 0px 2px 2px #fff;
+	filter: dropshadow(color = #ffffff, offx = 0, offy = 2);
+}
+
+#moduleContent div.fform {
+	width: 75%;
+	float: left;
+	padding: 0;
+	margin: 0;
+}
+
+.sendNewsletterTitle {
+	width: 100%;
+	display: block;
+	text-align: center;
+	margin: 0;
+	font-size: 1.2em;
+	text-shadow: 0px 2px 2px #bebebe;
+	filter: dropshadow(color = #bebebe, offx = 0, offy = 2);
+}
