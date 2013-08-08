@@ -81,7 +81,7 @@ function initButtons()
 	
 	$j('.editButton').button({
 		icons : {
-			primary : 'ui-icon-folder-open'
+			primary : 'ui-icon-pencil'
 		},
 		text : false
 	});

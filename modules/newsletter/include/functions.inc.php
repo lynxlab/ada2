@@ -22,20 +22,21 @@ function convertFilterArrayToString ($filterArray, $dh, $futureSentence = true)
 	{
 		if ($filterArray['userType']!=AMA_TYPE_STUDENT)
 		{
-			$html .= " ".translateFN("tutti")." ";
-			if 	($filterArray['userType']==AMA_TYPE_AUTHOR) $html .= translateFN("gli")." ".translateFN("autori");
-			else if ($filterArray['userType']==AMA_TYPE_SWITCHER) $html .= translateFN("gli")." ".translateFN("switcher");
-			else if ($filterArray['userType']==AMA_TYPE_TUTOR) $html .= translateFN("i")." ".translateFN("tutor");
-			else if ($filterArray['userType']==9999) $html .= translateFN("gli")." ".translateFN("utenti");
+			$html .= " <strong>".translateFN("tutti")."</strong> ";
+			if 	($filterArray['userType']==AMA_TYPE_AUTHOR) $html .= translateFN("gli")." <strong>".translateFN("autori");
+			else if ($filterArray['userType']==AMA_TYPE_SWITCHER) $html .= translateFN("gli")." <strong>".translateFN("switcher");
+			else if ($filterArray['userType']==AMA_TYPE_TUTOR) $html .= translateFN("i")." <strong>".translateFN("tutor");
+			else if ($filterArray['userType']==9999) $html .= translateFN("gli")." <strong>".translateFN("utenti");
+			$html .= '</strong>';
 		}
 		else
 		{
 			if ( !((isset($filterArray['userPlatformStatus']) &&  $filterArray['userPlatformStatus']!=-1) ||
 					(isset($filterArray['userCourseStatus']) && $filterArray['userCourseStatus']!=-1)) )
 			{
-				$html .= " ".translateFN("tutti")." ";
+				$html .= " <strong>".translateFN("tutti")."</strong> ";
 			}
-			$html .= translateFN("gli")." ".translateFN("studenti");
+			$html .= translateFN("gli")." <strong>".translateFN("studenti")."</strong>";
 
 
 			if ( (isset($filterArray['userPlatformStatus']) &&  $filterArray['userPlatformStatus']!=-1) ||
@@ -74,7 +75,7 @@ function convertFilterArrayToString ($filterArray, $dh, $futureSentence = true)
 		}
 		else
 		{
-			$html .= " ".translateFN("di tutte le istanze");
+			$html .= " <strong>".translateFN("di tutte le istanze")."</strong>";
 		}
 
 		if (isset($filterArray['idCourse']) && intval($filterArray['idCourse'])>0 )
@@ -85,7 +86,7 @@ function convertFilterArrayToString ($filterArray, $dh, $futureSentence = true)
 		}
 		else
 		{
-			$html .= " ".translateFN("di tutti i corsi");
+			$html .= " <strong>".translateFN("di tutti i corsi")."</strong>";
 		}
 			
 		$html = ucfirst (strtolower ($html)).'.';
