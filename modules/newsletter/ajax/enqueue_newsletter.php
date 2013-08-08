@@ -106,6 +106,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 			$HTMLModelText = str_replace(array('{coursename}','{instancename}'),array( $courseTitle, $instanceTitle), $newsLetterArray['htmltext']);
 			$PLAINModelText = str_replace(array('{coursename}','{instancename}'),array( $courseTitle, $instanceTitle), $newsLetterArray['plaintext']);
 			
+			// perform general substitutions for relative path images
+			$HTMLModelText = preg_replace('/(src=[\'"])\/?[^>]*(\/?services\/media\/)/', '$1'.HTTP_ROOT_DIR.'/$2', $HTMLModelText);
+			
 			// email class init and common values
 			$phpmailer = new PHPMailer();
 			$phpmailer->CharSet = 'UTF-8';
