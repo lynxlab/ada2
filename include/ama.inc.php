@@ -1637,23 +1637,23 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
     public function add_tester($tester_dataAr=array()) {
 
         $tester_sql = 'INSERT INTO tester(nome, ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione) '
-                . 'VALUES (?,?,?,?,?,?,?,?,?,?)';
+                . 'VALUES (?,?,?,?,?,?,?,?,?,?,?)';
 
         $valuesAr = array(
                 $tester_dataAr['tester_name'],
                 $tester_dataAr['tester_rs'],
                 $tester_dataAr['tester_address'],
-                $tester_dataAr['tester_province'],
-                $tester_dataAr['tester_city'],
+        		$tester_dataAr['tester_city'],
+                $tester_dataAr['tester_province'],                
                 $tester_dataAr['tester_country'],
                 $tester_dataAr['tester_phone'],
                 $tester_dataAr['tester_email'],
-                $tester_dataAr['tester_desc'],
-                $tester_dataAr['tester_resp'],
-                $tester_dataAr['tester_pointer']
+        		$tester_dataAr['tester_resp'],
+        		$tester_dataAr['tester_pointer'],
+                $tester_dataAr['tester_desc']
         );
 
-        $result = $this->queryPrepared($tester_sql, $valuesAr);
+        $result = $this->queryPrepared($tester_sql, $valuesAr); print_r($result); die();
         if(AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_ADD);
         }
