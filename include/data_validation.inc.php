@@ -115,9 +115,15 @@ class DataValidator
     return false;
   }
 
-  public static function validate_testername($testername) {
+  public static function validate_testername($testername, $multiprovider = true) {
     if(isset($testername) && !empty($testername)) {
+    /**
+	 * giorgio, set proper pattern validation depending on multiprovider environment
+     */
+    if ($multiprovider===true)
       $pattern = '/^(?:client)[0-9]{1,2}$/';
+    else
+     $pattern = '/^\w+$/';
       if(preg_match($pattern,$testername)) {
         return $testername;
       }

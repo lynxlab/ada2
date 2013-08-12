@@ -28,6 +28,23 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
      */
       ADALogger::log('session failed to start');
   }
+  
+  /*
+   * giorgio 11/ago/2013
+   * if it's not multiprovider and we're asking for index page,
+   * sets the selected provider by detecting it from the filename that's executing
+   */
+  if (!MULTIPROVIDER) {  	
+  	preg_match('/\/(\w*)\/?.*/i', $_SERVER['REQUEST_URI'],$matches);
+  	if (!isset($_SESSION['sess_user_provider']) && isset ($matches[1]) && 
+  	     !empty($matches[1]) && is_dir(ROOT_DIR.'/clients/'.$matches[1]))  		
+  	{
+  		$_SESSION['sess_user_provider'] = $matches[1];
+  		// other session vars per provider may go here...  		  		
+  	}
+  	$GLOBALS['user_provider'] = $_SESSION['sess_user_provider'];  	
+  }
+  
   /*
    * Navigation history
    */

@@ -85,6 +85,13 @@ $_SESSION['sess_user_language'] = $login_page_language_code;
  */
 $_SESSION['ada_remote_address'] = $_SERVER['REMOTE_ADDR'];
 
+/**
+ * giorgio 12/ago/2013
+ * if it isn't multiprovider, loads proper files into clients directories * 
+ */
+if (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) $files_dir = $root_dir.'/clients/'.$GLOBALS['user_provider'];
+else $files_dir = $root_dir;
+
 /*
  * Load news file
  */
@@ -99,7 +106,7 @@ $_SESSION['ada_remote_address'] = $_SERVER['REMOTE_ADDR'];
 */
 
 if ($newsmsg == ''){
-   $newsfile = $root_dir.'/docs/news/'.$newsfile; //  txt files in ada browsing directory
+   $newsfile = $files_dir.'/docs/news/'.$newsfile; //  txt files in ada browsing directory
    if ($fid = @fopen($newsfile,'r')){
       while (!feof($fid))
         $newsmsg .= fread($fid,4096);
@@ -110,7 +117,7 @@ if ($newsmsg == ''){
 }
 
 if ($hlpmsg == ''){
-   $helpfile = $root_dir.'/docs/help/'.$helpfile;  //  txt files in ada browsing directory
+   $helpfile = $files_dir.'/docs/help/'.$helpfile;  //  txt files in ada browsing directory
    if ($fid = @fopen($helpfile,'r')){
       while (!feof($fid))
         $hlpmsg .= fread($fid,4096);
@@ -121,7 +128,7 @@ if ($hlpmsg == ''){
 }
 
 if ($infomsg == ''){
-   $infofile = $root_dir.'/docs/info/'.$infofile;  //  txt files in ada browsing directory
+   $infofile = $files_dir.'/docs/info/'.$infofile;  //  txt files in ada browsing directory
    if ($fid = @fopen($infofile,'r')){
       while (!feof($fid))
         $infomsg .= fread($fid,4096);
@@ -187,9 +194,17 @@ $form_action = HTTP_ROOT_DIR .'/index.php';
 $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_page_language_code, $login_error_message);
 
 //$login = UserModuleHtmlLib::loginForm($supported_languages,$login_page_language_code, $login_error_message);
+ /**
+ * giorgio 12/ago/2013
+ * set up proper link path in a multiproivder environment
+ */
+  if (!MULTIPROVIDER && isset($GLOBALS['user_provider']))
+  {
+	$linkPath = '/'.$GLOBALS['user_provider'];
+  } else $linkPath = '';
 
   $forget_div  = CDOMElement::create('div');
-  $forget_linkObj = CDOMElement::create('a', 'href:'.HTTP_ROOT_DIR.'/browsing/forget.php?lan='.$_SESSION['sess_user_language']);
+  $forget_linkObj = CDOMElement::create('a', 'href:'.HTTP_ROOT_DIR.$linkPath.'/browsing/forget.php?lan='.$_SESSION['sess_user_language']);
   $forget_linkObj->addChild(new CText(translateFN("Did you forget your password?")));
   $forget_link = $forget_linkObj->getHtml();
 //  $status = translateFN('Explore the web site or register and ask for a practitioner');
@@ -215,36 +230,39 @@ $newscontent = $tester_dh->find_course_nodes_list(
 // watch out: $newscontent is NOT associative
 $bottomnewscontent = '';
 $maxLength = 600;
-foreach ( $newscontent as $num=>$aNews )
+if (!AMA_DB::isError($newscontent) && count($newscontent)>0)
 {
-	$aNewsDIV = CDOMElement::create('div','class:news,id:news-'.($num+1));
-	$aNewsTitle = CDOMElement::create('a', 'class:newstitle,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
-			PUBLIC_COURSE_ID_FOR_NEWS.'&id_node='.$aNews[0]);
-	$aNewsTitle->addChild (new CText($aNews[1]));
-	$aNewsDIV->addChild ($aNewsTitle);
-
-	// strip off HTML
-	$newstext = strip_tags($aNews[2]);
-	// check if content is too long...
-	if (strlen($newstext) > $maxLength)
+	foreach ( $newscontent as $num=>$aNews )
 	{
-		// cut the content to the first $maxLength characters of words (the $ in the regexp does the trick)
-		$newstext = preg_replace('/\s+?(\S+)?$/', '', substr($newstext, 0, $maxLength+1));
-		$addContinueLink = true;
-	}
-	else $addContinueLink = false;
-
-	$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
-
-	if ($addContinueLink)
-	{
-		$contLink = CDOMElement::create('a', 'class:continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+		$aNewsDIV = CDOMElement::create('div','class:news,id:news-'.($num+1));
+		$aNewsTitle = CDOMElement::create('a', 'class:newstitle,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
 				PUBLIC_COURSE_ID_FOR_NEWS.'&id_node='.$aNews[0]);
-		$contLink->addChild (new CText(translateFN('Continua...')));
-		$aNewsDIV->addChild ($contLink);
+		$aNewsTitle->addChild (new CText($aNews[1]));
+		$aNewsDIV->addChild ($aNewsTitle);
+
+		// strip off HTML
+		$newstext = strip_tags($aNews[2]);
+		// check if content is too long...
+		if (strlen($newstext) > $maxLength)
+		{
+			// cut the content to the first $maxLength characters of words (the $ in the regexp does the trick)
+			$newstext = preg_replace('/\s+?(\S+)?$/', '', substr($newstext, 0, $maxLength+1));
+			$addContinueLink = true;
+		}
+		else $addContinueLink = false;
+
+		$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
+
+		if ($addContinueLink)
+		{
+			$contLink = CDOMElement::create('a', 'class:continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+					PUBLIC_COURSE_ID_FOR_NEWS.'&id_node='.$aNews[0]);
+			$contLink->addChild (new CText(translateFN('Continua...')));
+			$aNewsDIV->addChild ($contLink);
+		}
+		$bottomnewscontent .= $aNewsDIV->getHtml();
 	}
-	$bottomnewscontent .= $aNewsDIV->getHtml();
-}
+} else $bottomnewscontent = '';
 
 
 $content_dataAr = array(
