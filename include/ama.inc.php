@@ -1653,7 +1653,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
                 $tester_dataAr['tester_desc']
         );
 
-        $result = $this->queryPrepared($tester_sql, $valuesAr); print_r($result); die();
+        $result = $this->queryPrepared($tester_sql, $valuesAr);
         if(AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_ADD);
         }
