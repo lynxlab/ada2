@@ -36,13 +36,27 @@ define('ADA_DEFAULT_TESTER_DB_PASS',  '');
 define('ADA_DEFAULT_TESTER_DB_HOST',  'localhost');
 
 /**
- * ID of the public course to get the latest news
+ * sets multiprovider flag, true is the default
+ * multiprovider behaviour, false is single provider
+ * each with its own home page and anonymous pages
  */
-define ('PUBLIC_COURSE_ID_FOR_NEWS', 1);
-/**
- * How many news to get from the above mentioned course
- */
-define ('NEWS_COUNT', 3);
+define ('MULTIPROVIDER',true);
+
+if (MULTIPROVIDER) {
+	/**
+	 * In a single provider environment, each one
+	 * shall have theese set in its own config file
+	 */
+	/**
+	 * ID of the public course to get the latest news
+	 */
+	define ('PUBLIC_COURSE_ID_FOR_NEWS', 1);
+	/**
+	 * How many news to get from the above mentioned course
+	*/
+	define ('NEWS_COUNT', 3);
+}
+
 
 
 /**
