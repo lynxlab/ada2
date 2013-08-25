@@ -3,7 +3,10 @@ require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
 
 include 'graph/jpgraph.php';
 include 'graph/jpgraph_pie.php';
-import_request_variables("gP","");
+//import_request_variables("gP","");
+extract($_GET,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
+extract($_POST,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
+
 $nodes_percent_decode = urldecode($nodes_percent);
 
 // Array dei dati

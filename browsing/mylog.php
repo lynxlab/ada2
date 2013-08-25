@@ -51,7 +51,7 @@ $self =  whoami();  // = mylog
 
 $ymdhms = today_dateFN();
 
-import_request_variables("gP","");
+//import_request_variables("gP","");
 
 // ******************************************************
 $reg_enabled = TRUE; // link to edit bookmarks
