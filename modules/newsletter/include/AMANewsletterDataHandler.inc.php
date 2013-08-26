@@ -61,10 +61,11 @@ class AMANewsletterDataHandler extends AMA_DataHandler {
 		$fields = array();
 		
 		$sql = "SHOW COLUMNS FROM ".self::$PREFIX.$tablename." WHERE field NOT LIKE 'id'";
-		$res = $db->getAll($sql, array(), AMA_FETCH_ASSOC);
+		$res = $db->getAll($sql, array(), AMA_FETCH_ORDERED);
 		
 		if (!AMA_DB::isError($res)){
-			foreach ($res as $row) $fields[] = (($backTick) ? '`' : '') . $row['Field'] . (($backTick) ? '`' : '');
+			// row index 0 is 'Field' field
+			foreach ($res as $row) $fields[] = (($backTick) ? '`' : '') . $row[0] . (($backTick) ? '`' : '');
 		}		
 		return $fields;		
 	}	

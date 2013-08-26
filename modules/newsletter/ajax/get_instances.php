@@ -39,6 +39,9 @@ require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 
 // MODULE's OWN IMPORTS
 require_once MODULES_NEWSLETTER_PATH .'/config/config.inc.php';
+require_once MODULES_NEWSLETTER_PATH.'/include/AMANewsletterDataHandler.inc.php';
+
+$GLOBALS['dh'] = AMANewsletterDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $retval = array();
 
