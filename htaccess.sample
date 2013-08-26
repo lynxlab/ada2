@@ -6,6 +6,7 @@
 # you must replace <YOUR_DIR_HERE> with actual directory ada is installed in
 ##############################################################################
 
+
 RewriteEngine On
 
 RewriteCond %{REQUEST_URI} ^/clients/client(\d*)$ [OR,NC]
