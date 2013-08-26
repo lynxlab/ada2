@@ -50,7 +50,10 @@ require_once ROOT_DIR . '/include/navigation_history.inc.php';
 /**
  * Imports $_GET and $_POST variables
  */
-import_request_variables('GP',ADA_GP_VARIABLES_PREFIX);
+//import_request_variables('GP',ADA_GP_VARIABLES_PREFIX);
+extract($_GET,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
+extract($_POST,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
+
 
 /**
  *	Validates $_SESSION data

@@ -62,7 +62,9 @@ $sess_id_course = $_SESSION['sess_id_course'];
 $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
 $sess_id_user = $_SESSION['sess_id_user'];
 
-import_request_variables("gP","");
+//import_request_variables("gP","");
+extract($_GET,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
+extract($_POST,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
 
 // ******************************************************
 if($sess_id_course){

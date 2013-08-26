@@ -34,7 +34,9 @@ $neededObjAr = array(
   AMA_TYPE_SWITCHER => array('layout')
 );
 
-import_request_variables("gP","");
+//import_request_variables("gP","");
+//extract($_GET,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
+//extract($_POST,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
 //$self =  whoami();  // = admin!
