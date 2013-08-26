@@ -92,7 +92,7 @@
         <div id="mainmenu">
             <ul id="menu">
                 <li id="home">
-                    <a href="switcher.php">
+                    <a href="../switcher/switcher.php">
                         <i18n>home</i18n>
                     </a>
                 </li>
@@ -151,21 +151,9 @@
                 <div id="submenu_actions" class="sottomenu sottomenu_off">
                     <div id="_actionscontent">
                         <ul>
-                            <li>
-                                <a href="edit_switcher.php" alt="edit profile">
-                                    <i18n>cambia profilo</i18n>
-                                </a>
-                            </li>
-                            <li><a href="list_users.php?list=authors"><i18n>Lista autori</i18n></a></li>
-                            <li><a href="list_users.php?list=tutors"><i18n>Lista tutor</i18n></a></li>
-                            <li><a href="list_users.php?list=students"><i18n>Lista studenti</i18n></a></li>
-                            <li><a href="add_user.php"><i18n>Aggiungi utente</i18n></a></li>
-                            <li><a href="list_courses.php"><i18n>Lista corsi</i18n></a></li>
-                            <li><a href="add_course.php"><i18n>Aggiungi corso</i18n></a></li>
-                            <li><a href="translation.php"><i18n>Traduci messaggi</i18n></a></li>
-                            <li><a href="../modules/impexport/import.php"><i18n>Importa corso</i18n></a></li>
-                            <li><a href="../modules/impexport/export.php"><i18n>Esporta corso</i18n></a></li>
-                            <li><a href="../admin/edit_content.php"><i18n>Edit home page contents</i18n></a></li>
+<li><a href="../admin/edit_content.php?type=news"><i18n>Edit news content</i18n></a></li>
+<li><a href="../admin/edit_content.php?type=info"><i18n>Edit info content</i18n></a></li>
+<li><a href="../admin/edit_content.php?type=help"><i18n>Edit help content</i18n></a></li>
                             <!--li>
                             <template_field class="template_field" name="class_student">class_student</template_field>
                             </li>

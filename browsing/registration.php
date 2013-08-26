@@ -68,7 +68,21 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         // Random password.
         $userObj->setPassword(sha1(time()));
         
-        $id_user = Multiport::addUser($userObj,array($tester));
+        /**
+		 * giorgio 19/ago/2013
+		 * 
+		 * if it's not multiprovider, must register the user
+		 * both in the public and in the selected tester
+         */
+        
+        $regProvider = array ($tester);
+        
+        if (!MULTIPROVIDER && isset ($GLOBALS['user_provider']))
+        {
+        	array_push ($regProvider, $GLOBALS['user_provider']);
+        }
+        
+        $id_user = Multiport::addUser($userObj,$regProvider);
         if($id_user < 0) {
             $message = translateFN('Impossibile procedere. Un utente con questi dati esiste?')
                      . ' ' . $id_user;
@@ -155,6 +169,22 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
               . '<br />'
               . translateFN('You will receive an email with informations on how to login.');
 } else {
+	/**
+	 * giorgio 21/ago/2013
+	 * if it's not a multiprovider environment and the provider is not
+	 * selected, must redirect to index
+	 */
+	if (!MULTIPROVIDER)
+	{
+		// if provider is not set the redirect
+		if (!isset($GLOBALS['user_provider']))
+		{
+			$url = HTTP_ROOT_DIR . ((isset($_COOKIE['ada_provider'])) ? '/'.$_COOKIE['ada_provider'].'/browsing/registration.php' : '');
+			header ('Location: '.$url);
+			die();
+		}
+	}
+		
     /*
      * Display the registration form.
      */

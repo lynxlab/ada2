@@ -29,11 +29,13 @@ $variableToClearAR = array('layout');
  */
 $allowedUsersAr = array(AMA_TYPE_ADMIN);
 
+if (!MULTIPROVIDER) { array_push($allowedUsersAr, AMA_TYPE_SWITCHER); }
+
 /**
  * Performs basic controls before entering this module
  */
 $neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout', 'course')
+    AMA_TYPE_SWITCHER => array('layout')
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
@@ -58,6 +60,16 @@ $reqType = (isset($_REQUEST['type'])) ? trim ($_REQUEST['type']) : '';
 // set 'news' as default type if passed is invalid or not set
 if (!in_array($reqType,$availableTypes)) $reqType = 'news';
 
+/**
+ * giorgio 12/ago/2013
+ * sets files path if it's switcher or admin
+ */
+if (!MULTIPROVIDER && $userObj->getType()==AMA_TYPE_SWITCHER)
+{
+	$testers = $userObj->getTesters();
+	$filePath = '/clients/'.$testers[0];
+}
+else $filePath ='';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
    $newsfile =  $_POST['file_edit'];
@@ -73,7 +85,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 // @author giorgio 08/mag/2013
 // this must be here to list newly created files possibly generated
 // when handling $_POST datas.
-$files_news = read_dir(ROOT_DIR.'/docs/'.$reqType,'txt');
+$files_news = read_dir(ROOT_DIR. $filePath .'/docs/'.$reqType,'txt');
 //print_r($files_news);
 
 
@@ -83,7 +95,7 @@ switch ($op) {
         $newsmsg = array();
         // @author giorgio 08/mag/2013
         // builds something like docs/news/news_it.txt
-        $fileToOpen = ROOT_DIR . '/docs/'. $reqType .'/'. $reqType .'_'.$codeLang.'.txt';
+        $fileToOpen = ROOT_DIR . $filePath . '/docs/'. $reqType .'/'. $reqType .'_'.$codeLang.'.txt';
         $newsfile = $fileToOpen; 
         if ($fid = @fopen($newsfile,'r')){
             while (!feof($fid))
@@ -121,7 +133,7 @@ switch ($op) {
             $files_to_edit[$index]['link'] = BaseHtmlLib::link($href, $text);
             // @author giorgio 08/mag/2013
             // builds something like docs/news/news_it.txt
-            $fileNews = ROOT_DIR . '/docs/'. $reqType .'/'. $reqType .'_'.$codeLang.'.txt';
+            $fileNews = ROOT_DIR . $filePath .'/docs/'. $reqType .'/'. $reqType .'_'.$codeLang.'.txt';
             $lastChange = 'no file';
             foreach ($files_news as $key => $value) {
 //                print_r(array($fileNews,$value['path_to_file']));
@@ -137,8 +149,10 @@ switch ($op) {
         break;
 }
 $label = translateFN('Modifica dei contenuti');
-$help = translateFN('Da qui l\'admin può modificare i contenuti di tipo '.$reqType.' che appaiono in home page');
+$help = translateFN('Da qui puoi modificare i contenuti di tipo '.$reqType.' che appaiono in home page');
 
+if ($userObj->getType()==AMA_TYPE_ADMIN)
+{
 $menu_dataAr = array(
   array('href' => 'add_tester.php', 'text' => translateFN('Aggiungi tester')),
   array('href' => 'add_service.php', 'text' => translateFN('Aggiungi servizio')),
@@ -146,18 +160,25 @@ $menu_dataAr = array(
   array('href' => 'import_language.php', 'text' => translateFN('Import Language'))
   );
 $actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
-
+}
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
-    'actions_menu' => $actions_menu->getHtml(),
+//    'actions_menu' => $actions_menu->getHtml(),
     'data' => $data->getHtml(),
     'module' => $module,
     'messages' => $user_messages->getHtml()
 );
+/**
+ * giorgio 12/ago/2013
+ * 
+ *  if it's the admin, load the menu. if it's the swithcer force the template in the swithcer dir
+ */
+if ($userObj->getType()==AMA_TYPE_ADMIN) $content_dataAr['actions_menu'] = $actions_menu->getHtml();
+else if ($userObj->getType()==AMA_TYPE_SWITCHER) $layout_dataAr['module_dir'] = 'switcher';
 //print_r($options);
 //ARE::render($layout_dataAr, $content_dataAr, $options);
 ARE::render($layout_dataAr, $content_dataAr, NULL, $options);

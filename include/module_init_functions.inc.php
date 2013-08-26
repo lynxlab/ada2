@@ -29,21 +29,37 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
       ADALogger::log('session failed to start');
   }
   
-  /*
+  /**
    * giorgio 11/ago/2013
    * if it's not multiprovider and we're asking for index page,
    * sets the selected provider by detecting it from the filename that's executing
    */
-  if (!MULTIPROVIDER) {  	
-  	preg_match('/\/(\w*)\/?.*/i', $_SERVER['REQUEST_URI'],$matches);
-  	if (!isset($_SESSION['sess_user_provider']) && isset ($matches[1]) && 
-  	     !empty($matches[1]) && is_dir(ROOT_DIR.'/clients/'.$matches[1]))  		
+  if (!MULTIPROVIDER) { 
+  	/*
+  	 * if it's a direct request (e.g. /info.php and NOT provider/info.php)
+  	 * all previously set data must be unset, so that the selected provider
+  	 * (if any) becomes unselected. 
+  	 */
+  	if (preg_match('/\/\S+\/+/',$_SERVER['REQUEST_URI'])==0)
   	{
-  		$_SESSION['sess_user_provider'] = $matches[1];
-  		// other session vars per provider may go here...  		  		
+  		// must unset
+  		unset ($_SESSION['sess_user_provider']);
+  		unset ($GLOBALS['user_provider']);  		
   	}
-  	$GLOBALS['user_provider'] = $_SESSION['sess_user_provider'];  	
-  }
+	else 
+	{
+	  	preg_match('/\/(\w*)\/?.*/i', $_SERVER['REQUEST_URI'],$matches);
+	  	if (!isset($_SESSION['sess_user_provider']) && isset ($matches[1]) && 
+	  	     !empty($matches[1]) && is_dir(ROOT_DIR.'/clients/'.$matches[1]))  		
+	  	{
+	  		$_SESSION['sess_user_provider'] = $matches[1];
+	  		// other session vars per provider may go here...  		  		
+	  	}
+	  	$GLOBALS['user_provider'] = $_SESSION['sess_user_provider'];
+	  	// if it's not set, set a cookie that shall expire in one year
+	  	if (!isset($_COOKIE['ada_provider'])) setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
+	}  	
+  } // end if !MULTIPROVIDER
   
   /*
    * Navigation history
@@ -96,7 +112,15 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
     $redirectTo = $sess_userObj->getHomePage();
   }
   else {
-    $redirectTo = 'index.php';
+  	/**
+	 * giorgio 21/ago/2013
+	 * if it's not a multiprovider environment, try to redirect the user
+	 * to the selected provider that should be stored in the browser's cookie
+  	 */
+  	if (!MULTIPROVIDER && isset($_COOKIE['ada_provider'])) $redirectTo = $_COOKIE['ada_provider']. '/';
+  	else $redirectTo = '';
+  	
+    $redirectTo .= 'index.php';
   }
 
   if($parm_errorHa['course']) {
@@ -270,7 +294,19 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
    * ADA tester data handler
    * Data validation on $sess_selected_tester is performed by MultiPort::getDSN()
    */
-  $sess_selected_tester = $_SESSION['sess_selected_tester'];
+  /**
+   * giorgio 12/ago/2013
+   * set selected tester if it's not a multiprovider environment
+   */
+  if (!MULTIPROVIDER && isset($GLOBALS['user_provider']))
+  {
+  	$sess_selected_tester = $GLOBALS['user_provider'];
+  }
+  else
+  {
+  	$sess_selected_tester = $_SESSION['sess_selected_tester'];
+  }
+  
   //$dh = AMA_DataHandler::instance(MultiPort::getDSN($sess_selected_tester));
   
   $sess_selected_tester_dsn = MultiPort::getDSN($sess_selected_tester);

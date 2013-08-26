@@ -302,7 +302,50 @@ if($op !== false && $op == 'course_info') {
     }
 }
 else {
-    $publishedServices = $common_dh->get_published_courses();
+	/**
+	 * giorgio 13/ago/2013
+	 * if it's not a multiprovider environment, must load only published course
+	 * of the only selected single provider stored in GLOBALS.
+	 * else make the default function call
+	 */
+	if (!MULTIPROVIDER)
+	{
+		// if provider is not set or there's an error loading its id, retirect to home
+		$redirect = false;
+		
+		/**
+		 * either the user is anonymous and has the $_GLOBALS['user_provider'] set
+		 * or it is a logged user and then it'll have client0 by default and only 
+		 * the client it's registered into and this info will be index 1 of the returned array
+		 * 
+		 */
+		if (isset($GLOBALS['user_provider']))
+			$user_provider_name = $GLOBALS['user_provider'];
+		else if ($userObj instanceof ADALoggableUser)
+		{
+			$tmpTesters = $userObj->getTesters();
+			if (!empty($tmpTesters)) $user_provider_name = $tmpTesters[1];
+		}
+			 		
+		if (isset($user_provider_name))
+		{
+			$userTesterInfo = $common_dh->get_tester_info_from_pointer($user_provider_name);
+			$user_provider_id = (!AMA_DB::isError($userTesterInfo)) ? $userTesterInfo[0] : null;
+			$redirect = is_null($user_provider_id);
+		}
+		 
+		else $redirect = true;
+		
+		if (!$redirect) $publishedServices = $common_dh->get_published_courses($user_provider_id);
+		else {
+			$url = HTTP_ROOT_DIR . ((isset($_COOKIE['ada_provider'])) ? '/'.$_COOKIE['ada_provider'].'/info.php' : '');
+			header ('Location: '.$url);
+			die();
+		}		
+	} else {
+    	$publishedServices = $common_dh->get_published_courses();
+	}
+	
     if(!AMA_Common_DataHandler::isError($publishedServices)) {
 //        $thead_data = array('nome', 'descrizione', 'durata (giorni)', 'informazioni');
         $thead_data = array(translateFN('nome'), translateFN('descrizione'), translateFN('crediti'), translateFN('informazioni'));
@@ -345,14 +388,19 @@ else {
             $more_info_link = BaseHtmlLib::link(
                     "info.php?op=course_info&id=$serviceId",
                     translateFN('More info'));
-
-            $tbody_data[] = array(
-                $service['nome'],
-                $service['descrizione'],
-                $credits,
-//                $service['durata_servizio'],
-                $more_info_link
-            );
+            
+            // giorgio 13/ago/2013 if it's not the news course, add it to the displayed results
+            if (defined ('PUBLIC_COURSE_ID_FOR_NEWS') && intval(PUBLIC_COURSE_ID_FOR_NEWS)>0 &&
+            PUBLIC_COURSE_ID_FOR_NEWS!=$courseData['id_corso'])
+            {
+	            $tbody_data[] = array(
+	                $service['nome'],
+	                $service['descrizione'],
+	                $credits,
+	//                $service['durata_servizio'],
+	                $more_info_link
+	            );
+            }
         }
 
         $data = BaseHtmlLib::tableElement('', $thead_data, $tbody_data);

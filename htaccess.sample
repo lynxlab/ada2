@@ -50,5 +50,5 @@ RewriteCond $2 !^$
 RewriteCond %{DOCUMENT_ROOT}/<YOUR_DIR_HERE>/clients/$1/$2  -f
 RewriteRule ^(\w*)/(.*) /<YOUR_DIR_HERE>/clients/$1/$2 [L,QSA]
 
-RewriteCond %{DOCUMENT_ROOT}/<YOUR_DIR_HERE>/$2 -f [NC]
+RewriteCond %{DOCUMENT_ROOT}/<YOUR_DIR_HERE>/$2 -f
 RewriteRule ^(\w*)/(.*) /<YOUR_DIR_HERE>/$2 [L,QSA]

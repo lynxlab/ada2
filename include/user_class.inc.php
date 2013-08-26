@@ -302,7 +302,7 @@ abstract class ADAGenericUser {
 
 
     public function addTester($tester) {
-        $tester = DataValidator::validate_testername($tester);
+        $tester = DataValidator::validate_testername($tester,MULTIPROVIDER);
         if($tester !== FALSE) {
             array_push($this->testers, $tester);
             return TRUE;
@@ -433,7 +433,22 @@ class ADAGuest extends ADAGenericUser {
         $this->timezone = 0;
         $this->testers = array(ADA_PUBLIC_TESTER);
 
-        $this->setHomePage(HTTP_ROOT_DIR);
+        /**
+         * giorgio 21/ago/2013
+         * if it's not a multiprovider environment, the user
+         * home page shall be the selected provider one
+         */
+        $homePage = HTTP_ROOT_DIR;
+        
+        if (!MULTIPROVIDER) {
+        	
+        	if (isset($_COOKIE['ada_provider']))
+        		$homePage .= '/' . $_COOKIE['ada_provider'];
+        	else if (isset ($GLOBALS['user_provider']))
+        		$homePage .= '/' . $GLOBALS['user_provider'];
+        }
+        	
+        $this->setHomePage($homePage);
     }
 }
 

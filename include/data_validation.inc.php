@@ -119,10 +119,15 @@ class DataValidator
     if(isset($testername) && !empty($testername)) {
     /**
 	 * giorgio, set proper pattern validation depending on multiprovider environment
+	 * modified 14/ago/2013 if the commented lines are kept, admin will not view
+	 * testers whose name is NOT 'clientX' in singleprovider mode.
+	 * Thought that this was not a desirable behaviour...
+	 * anyway, i keep passing the multiprovider params for
+	 * easy switching to whatsoever behaviour is desired.
      */
-    if ($multiprovider===true)
-      $pattern = '/^(?:client)[0-9]{1,2}$/';
-    else
+//     if ($multiprovider===true)
+//       $pattern = '/^(?:client)[0-9]{1,2}$/';
+//     else
      $pattern = '/^\w+$/';
       if(preg_match($pattern,$testername)) {
         return $testername;

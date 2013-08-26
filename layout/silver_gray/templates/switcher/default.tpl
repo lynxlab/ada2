@@ -139,7 +139,7 @@
                             	<a href="../modules/newsletter">
                                 	    <i18n>newsletter</i18n>
                                 </a>
-                            </li>                            
+                            </li>
                         </ul>
                     </div>
                     <div class="bottomsubmenu">
@@ -164,7 +164,8 @@
                             <li><a href="add_course.php"><i18n>Aggiungi corso</i18n></a></li>
                             <li><a href="translation.php"><i18n>Traduci messaggi</i18n></a></li>
                             <li><a href="../modules/impexport/import.php"><i18n>Importa corso</i18n></a></li>
-                            <li><a href="../modules/impexport/export.php"><i18n>Esporta corso</i18n></a></li>                            
+                            <li><a href="../modules/impexport/export.php"><i18n>Esporta corso</i18n></a></li>
+                            <li><a href="../admin/edit_content.php"><i18n>Edit home page contents</i18n></a></li>
                             <!--li>
                             <template_field class="template_field" name="class_student">class_student</template_field>
                             </li>

@@ -46,7 +46,7 @@ class MultiPort
    * @return string dsn or null
    */
   static public function getDSN($tester) {
-    if(DataValidator::validate_testername($tester) === FALSE) {
+    if(DataValidator::validate_testername($tester,MULTIPROVIDER) === FALSE) {
       return NULL;
     }
     // FIXME:usare require_once?
@@ -76,7 +76,7 @@ class MultiPort
    * @return string dsn or null
    */
   static public function getTesterTimeZone($tester) {
-    if(DataValidator::validate_testername($tester) === FALSE) {
+    if(DataValidator::validate_testername($tester,MULTIPROVIDER) === FALSE) {
       return NULL;
     }
     // FIXME:usare require_once?

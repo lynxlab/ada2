@@ -65,14 +65,19 @@ $menu_dataAr = array(
  */
 // grab available content types for editing and build menu items
 // $availableTypes = ;
-if (MULTIPROVIDER)
-{
+// if (MULTIPROVIDER)
+// {
 	foreach (dirTree (ROOT_DIR.'/docs') as $aType) {
+		/**
+		 * if is singleprovider, admin cannot edit news content
+		 * It will not be shown anyway
+		 */
+		if (!MULTIPROVIDER && $aType=='news') continue;
     	array_push($menu_dataAr, 
     		array ('href' => 'edit_content.php?type='.$aType, 'text' => 'Edit '.$aType.' content' )
     	);
 	}
-}
+// }
 
 
 

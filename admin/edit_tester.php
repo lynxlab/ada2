@@ -97,7 +97,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $errorsAr['tester_resp'] = true;
   }
 
-  if(DataValidator::validate_testername($_POST['tester_pointer']) === FALSE) {
+  if(DataValidator::validate_testername($_POST['tester_pointer'],MULTIPROVIDER) === FALSE) {
     $errorsAr['tester_pointer'] = true;
   }
   

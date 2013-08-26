@@ -185,12 +185,23 @@ class Template {
 		/**
 		 * giorgio 11/ago/2013
 		 * if it's not multiprovider, let's firstly check for a template
-		 * in the clients/provider dir with only one possibility in $module_dir
-		 */
+		 * in the clients/provider dir with only one possibility in $module_dir 
+		 */		
 		if (!MULTIPROVIDER)
-		{
+		{			
 			$tpl_dir = $root_dir."/clients/".$user_provider."/templates/";
 			$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
+			/**
+			 * giorgio 12/ago/2013
+			 * 
+			 * checking for default template in user selected provider may not be
+			 * a good idea because it's not known where and when ada shall use this
+			 * template, and it's unpleasant that all of a sudden the user finds
+			 * him/her self in the provider template while he/she is browsing....
+			 * 
+			 *  Should you disable it, check carefully all 'anonymous' pages
+			 *  at least info.php should use the default template
+			 */
 			if (!file_exists($tpl_filename))
 			{
 				$tpl_filename = $tpl_dir."default".$tpl_fileextension;
