@@ -206,7 +206,7 @@ $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_
  */
   if (!MULTIPROVIDER)
   {
-  	if (isset($GLOBALS['user_provider']))
+  	if (isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider']))
   	{
 		$linkPath = '/'.$GLOBALS['user_provider'];
 		$testerName = $GLOBALS['user_provider'];

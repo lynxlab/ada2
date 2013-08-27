@@ -34,30 +34,40 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
    * if it's not multiprovider and we're asking for index page,
    * sets the selected provider by detecting it from the filename that's executing
    */
-  if (!MULTIPROVIDER) { 
+   if (!MULTIPROVIDER) { 
+	$httpParts = explode ('/',HTTP_ROOT_DIR);
+	$httpDir = $httpParts[count($httpParts)-1];
+
+	$parts = explode ('/',$_SERVER['REQUEST_URI']);
+	$potentialProvider = $parts[1];
   	/*
   	 * if it's a direct request (e.g. /info.php and NOT provider/info.php)
   	 * all previously set data must be unset, so that the selected provider
   	 * (if any) becomes unselected. 
   	 */
-  	if (preg_match('/\/\S+\/+/',$_SERVER['REQUEST_URI'])==0)
+//  	if (preg_match('/\/\S+\/+/',$_SERVER['REQUEST_URI'])==0)
+	if ($httpDir == $potentialProvider || is_dir(ROOT_DIR.'/'.$potentialProvider) || is_file(ROOT_DIR.'/'.$potentialProvider))
   	{
   		// must unset
   		unset ($_SESSION['sess_user_provider']);
-  		unset ($GLOBALS['user_provider']);  		
+  		unset ($GLOBALS['user_provider']); 
+  		unset ($_COOKIE['ada_provider']);
   	}
 	else 
 	{
-	  	preg_match('/\/(\w*)\/?.*/i', $_SERVER['REQUEST_URI'],$matches);
-	  	if (!isset($_SESSION['sess_user_provider']) && isset ($matches[1]) && 
-	  	     !empty($matches[1]) && is_dir(ROOT_DIR.'/clients/'.$matches[1]))  		
+		// preg_match('/\/(\w*)\/?.*/i', $_SERVER['REQUEST_URI'],$matches);
+
+	  	// if (!isset($_SESSION['sess_user_provider']) && isset ($matches[1]) && 
+	  	//     !empty($matches[1]) && is_dir(ROOT_DIR.'/clients/'.$matches[1]))
+		if (!empty ($parts) && isset ($potentialProvider) &&
+		     is_dir(ROOT_DIR.'/clients/'.$potentialProvider))
 	  	{
-	  		$_SESSION['sess_user_provider'] = $matches[1];
+	  		$_SESSION['sess_user_provider'] = $potentialProvider;
 	  		// other session vars per provider may go here...  		  		
 	  	}
 	  	$GLOBALS['user_provider'] = $_SESSION['sess_user_provider'];
 	  	// if it's not set, set a cookie that shall expire in one year
-	  	if (!isset($_COOKIE['ada_provider'])) setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
+	  	if (!isset($_COOKIE['ada_provider']) && isset($GLOBALS['user_provider'])) setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
 	}  	
   } // end if !MULTIPROVIDER
   

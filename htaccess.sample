@@ -6,11 +6,10 @@
 # you must replace <YOUR_DIR_HERE> with actual directory ada is installed in
 ##############################################################################
 
-
 RewriteEngine On
 
-RewriteCond %{REQUEST_URI} ^/clients/client(\d*)$ [OR,NC]
-RewriteCond %{REQUEST_URI} ^/client(\d*)$
+RewriteCond %{REQUEST_URI} ^/<YOUR_DIR_HERE>/clients/client(\d*)$ [OR,NC]
+RewriteCond %{REQUEST_URI} ^/<YOUR_DIR_HERE>/client(\d*)$
 RewriteRule .* %{HTTP_ROOT_DIR}/<YOUR_DIR_HERE> [R=301,L]
 
 ##################################################
@@ -22,7 +21,7 @@ RewriteRule .* %{HTTP_ROOT_DIR}/<YOUR_DIR_HERE> [R=301,L]
 #################################################
          
 RewriteCond %{REQUEST_URI} ^<YOUR_DIR_HERE>/(\w+)$
-RewriteRule ^(.*)$ %{HTTP_ROOT}/<YOUR_DIR_HERE>/$1/ [L,R=301]
+RewriteRule ^(.*)$ %{HTTP_ROOT_DIR}/<YOUR_DIR_HERE>/$1/ [L,R=301]
 
 #################################################
 # rewrites provider url to point to clients,
