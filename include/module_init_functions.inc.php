@@ -45,13 +45,17 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
   	 * all previously set data must be unset, so that the selected provider
   	 * (if any) becomes unselected. 
   	 */
-//  	if (preg_match('/\/\S+\/+/',$_SERVER['REQUEST_URI'])==0)
-	if ($httpDir == $potentialProvider || is_dir(ROOT_DIR.'/'.$potentialProvider) || is_file(ROOT_DIR.'/'.$potentialProvider))
+	//  	if (preg_match('/\/\S+\/+/',$_SERVER['REQUEST_URI'])==0)	
+	// unset session and global provider var only if user has asked for the home page
+	if ($httpDir == $potentialProvider) //  || is_dir(ROOT_DIR.'/'.$potentialProvider) || is_file(ROOT_DIR.'/'.$potentialProvider)
   	{
+  		var_dump ('unset');
   		// must unset
   		unset ($_SESSION['sess_user_provider']);
   		unset ($GLOBALS['user_provider']); 
+  		// remove the cookie
   		unset ($_COOKIE['ada_provider']);
+  		setcookie ('ada_provider', false, time() - 4800,'/');
   	}
 	else 
 	{
