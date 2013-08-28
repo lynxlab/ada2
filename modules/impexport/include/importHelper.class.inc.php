@@ -47,7 +47,7 @@ class importHelper
 	 * @var array
 	 */
 	private $_courseNodeIDMapping;
-	
+
 	/**
 	 * stores all the internal link between nodes that must be saved after the
 	 * last imported node insertions
@@ -105,7 +105,7 @@ class importHelper
 	 *
 	 * The constructor shall add tests and surveys if MODULES_TEST is set
 	 * also, it can add other stuff provided the _import* method is implemented
-	 * 
+	 *
 	 * @var array
 	 */
 	private $_specialNodes = array ('nodi');
@@ -114,7 +114,7 @@ class importHelper
 	 * must save the selected tester that's usually stored in $_SESSION
 	 * because this class is going to write_close and open the session
 	 * several times.
-	 */
+	*/
 	private $_selectedTester;
 
 	/**
@@ -125,7 +125,7 @@ class importHelper
 	 */
 	public function __construct( $postDatas )
 	{
-// 		$this->_importFile = $postDatas['importFileName'];
+		// 		$this->_importFile = $postDatas['importFileName'];
 		$this->_importFile = basename ( $_SESSION['importHelper']['filename']);
 		$this->_assignedAuthorID = $postDatas['author'];
 		$this->_selectedTester = $_SESSION['sess_selected_tester'];
@@ -140,7 +140,7 @@ class importHelper
 		$this->_dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($this->_selectedTester));
 
 		unset ( $_SESSION['importHelper']['filename']);
-		
+
 		$this->_progressInit();
 
 		if (MODULES_TEST)
@@ -148,7 +148,7 @@ class importHelper
 			/**
 			 * entries will be processed in the order they appear.
 			 * So in this case it is IMPORTANT that surveys MUST be added AFTER the tests are imported
-			 * 
+			 *
 			 * Keep this in mind should you ever add other specialNodes to the array
 			 */
 			$this->_specialNodes = array_merge( $this->_specialNodes, array ('tests', 'surveys'));
@@ -159,9 +159,9 @@ class importHelper
 
 		/**
 		 * REMOVE THEESE WHEN YOU'VE FINISHED!!!!
-		*/		
-// 		$this->_selectedCourseID = 110;
-// 		$this->_selectedNodeID = $this->_selectedCourseID.self::$courseSeparator."0";
+		*/
+		// 		$this->_selectedCourseID = 110;
+		// 		$this->_selectedNodeID = $this->_selectedCourseID.self::$courseSeparator."0";
 	}
 
 	/**
@@ -208,7 +208,7 @@ class importHelper
 					"_".date('d-m-Y_His').".log";
 
 					$this->_logMessage('**** IMPORT STARTED at '.date('d/m/Y H:i:s'). ' ****');
-					
+						
 					$this->_progressSetTitle( (string) $course->titolo);
 					/**
 					 * ADDS THE COURSE TO THE APPROPIATE TABLES
@@ -218,7 +218,7 @@ class importHelper
 						if (is_null($this->_selectedCourseID))
 							$courseNewID = $this->_add_course($course);
 						else
-						{							
+						{
 							$courseNewID = $this->_selectedCourseID;
 						}
 
@@ -266,7 +266,7 @@ class importHelper
 								$this->_recapArray[$courseNewID][$groupName] = $specialVal;
 							}
 						}
-						
+
 						if ($groupName==='nodi') {
 							// save all the links and clean the array
 							$this->_saveLinks($courseNewID);
@@ -276,10 +276,10 @@ class importHelper
 							// restores the import/export data handler
 							$this->_dh->disconnect();
 							$this->_dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($this->_selectedTester));
-							if ($groupName==='tests') $this->_updateTestLinksInNodes ( $courseNewID );							
+							if ($groupName==='tests') $this->_updateTestLinksInNodes ( $courseNewID );
 						}
 					}
-// 					$this->_updateTestLinksInNodes ( $courseNewID );
+					// 					$this->_updateTestLinksInNodes ( $courseNewID );
 				} // if ($objName === 'modello_corso')
 				$this->_logMessage('**** IMPORT ENDED at '.date('d/m/Y H:i:s'). ' ****');
 				$this->_logMessage('If there\'s no zip log below, this is a multi course import: pls find unzip log at the end of the last course log');
@@ -406,10 +406,10 @@ class importHelper
 
 		unset ($extdendedArr['id']);
 		$retval = $extdendedArr;
-		
+
 		if (!isset($this->_recapArray[$courseNewID]['extended-nodes'])) $this->_recapArray[$courseNewID]['extended-nodes']=1;
 		else $this->_recapArray[$courseNewID]['extended-nodes']++;
-		
+
 		$this->_logMessage(__METHOD__.' Successfully built extended node array: '.print_r($retval,true));
 			
 		return $retval;
@@ -441,12 +441,12 @@ class importHelper
 		$resourceArr['id_utente'] = $this->_assignedAuthorID;
 
 		$retval = $resourceArr;
-		
+
 		if (!isset($this->_recapArray[$courseNewID]['resource'])) $this->_recapArray[$courseNewID]['resource']=1;
 		else $this->_recapArray[$courseNewID]['resource']++;
 
 		$this->_logMessage(__METHOD__.' Successfully built external resource array: '.print_r($retval,true));
-		
+
 		return $retval;
 	}
 
@@ -454,7 +454,7 @@ class importHelper
 	 * Builds an internal link array from the passed XML element.
 	 * Links are saved after all the nodes have been imported in the
 	 * _saveLinks method that does also the convertion from exported
-	 * node id to imported ones. 
+	 * node id to imported ones.
 	 *
 	 * @param SimpleXMLElement $linkObj the element to be saved
 	 * @param int $courseNewID the generated ID of the imported course
@@ -484,18 +484,18 @@ class importHelper
 		/**
 		 * keep the old node id in the links, they will be converted into new ones
 		 * just after all the nodes have been inserted
-		 */
+		*/
 		$linkArr['id_nodo'] = $this->_courseOldID.self::$courseSeparator.$linkArr['id_nodo'];
 		$linkArr['id_nodo_to'] = $this->_courseOldID.self::$courseSeparator.$linkArr['id_nodo_to'];
 		$linkArr['id_utente'] = $this->_assignedAuthorID;
 		$linkArr['data_creazione'] = ts2dFN(time());
 
 		$retval = $linkArr;
-		
+
 		// the recapArray shall be updated when actually saving links in the _saveLinks method
-		
+
 		$this->_logMessage(__METHOD__.' Successfully built link element: '.print_r($retval,true));
-		
+
 		return $retval;
 	}
 
@@ -730,7 +730,7 @@ class importHelper
 
 		if (self::$_DEBUG) echo '<pre>'.__METHOD__.PHP_EOL;
 
-		$outArr = array();		
+		$outArr = array();
 		$resourcesArr = array( 0=>'unused' );
 
 		$currentElement = $xml;
@@ -748,7 +748,7 @@ class importHelper
 				$outArr['pos_y1'] = (int) $value['y1'];
 			}
 			else if ($name === 'resource')
-			{ 				
+			{
 				// must do an array push because the method that saves the resources expects
 				// the array to start at index 1
 				array_push($resourcesArr, $this->_buildResourceArray ( $value, $courseNewID.self::$courseSeparator.$outArr['id'] , $courseNewID));
@@ -756,8 +756,8 @@ class importHelper
 			}
 			else if ($name === 'link')
 			{
-				// this array is saved in the _saveLinks method				
-				$this->_linksArray[] = $this->_buildLinkArray ( $value, $courseNewID );				
+				// this array is saved in the _saveLinks method
+				$this->_linksArray[] = $this->_buildLinkArray ( $value, $courseNewID );
 			}
 			else if ($name === 'extended')
 			{
@@ -793,81 +793,81 @@ class importHelper
 				}
 					
 			}
-// 			else
-// 			{
-// 				$outArr['parent_id'] = null;
-// 			}
-			unset ($outArr['id_parent']);
+			// 			else
+				// 			{
+				// 				$outArr['parent_id'] = null;
+				// 			}
+					unset ($outArr['id_parent']);
 
-			$outArr['id_course'] = $courseNewID;
-			$outArr['creation_date'] = ts2dFN(time());
-			$outArr['id_node_author'] = $this->_assignedAuthorID;
-			$outArr['version'] = 0;
-			$outArr['contacts'] = 0;
+					$outArr['id_course'] = $courseNewID;
+					$outArr['creation_date'] = ts2dFN(time());
+					$outArr['id_node_author'] = $this->_assignedAuthorID;
+					$outArr['version'] = 0;
+					$outArr['contacts'] = 0;
 
-			$outArr['icon'] = str_replace('<root_dir/>', ROOT_DIR, $outArr['icon']);
-			$outArr['icon'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['icon']);
-			$outArr['icon'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['icon']);
-			
+					$outArr['icon'] = str_replace('<root_dir/>', ROOT_DIR, $outArr['icon']);
+					$outArr['icon'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['icon']);
+					$outArr['icon'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['icon']);
+						
 
-			$outArr['text'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['text']);
-			$outArr['text'] = str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['text']);
-			$outArr['text'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['text']);
+					$outArr['text'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['text']);
+					$outArr['text'] = str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['text']);
+					$outArr['text'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['text']);
 
-			// oldID is needed below, for creating the array that maps the old node id
-			// to the new node id. This must be done AFTER node is saved.
-			$oldID = $outArr['id'];
-			unset ($outArr['id']); // when a generated id will be used and comment below
+					// oldID is needed below, for creating the array that maps the old node id
+					// to the new node id. This must be done AFTER node is saved.
+					$oldID = $outArr['id'];
+					unset ($outArr['id']); // when a generated id will be used and comment below
 
-			// set array of resources to be saved together with the node
-			// for some unbelievable reason the _add_media method called by add_node
-			// expects the resources array to start at index 1, so let's make it happy.
-			unset ($resourcesArr[0]);
-			$outArr['resources_ar'] =  $resourcesArr;
+					// set array of resources to be saved together with the node
+					// for some unbelievable reason the _add_media method called by add_node
+					// expects the resources array to start at index 1, so let's make it happy.
+					unset ($resourcesArr[0]);
+					$outArr['resources_ar'] =  $resourcesArr;
 
-			// sets the parent if an exported root node is made child in import
-			if (!isset($outArr['parent_id']) && !is_null ($this->_selectedNodeID))
-				$outArr['parent_id'] = $this->_selectedNodeID;
+					// sets the parent if an exported root node is made child in import
+					if (!isset($outArr['parent_id']) && !is_null ($this->_selectedNodeID))
+						$outArr['parent_id'] = $this->_selectedNodeID;
 
-			// prints out some basic info if in debug mode
-			if (self::$_DEBUG)
-			{
-				echo "count=".$count.PHP_EOL;
-				if ($count==1) {
-					//				if ($outArr['id']==$courseNewID.self::$courseSeparator.'1') {
-					print_r($outArr);
-					echo "<hr/>";
-				}
-				else {
-					var_dump($outArr['id']);
-					var_dump($outArr['parent_id']);
-					var_dump($outArr['name']);
-				}
-			}
+					// prints out some basic info if in debug mode
+					if (self::$_DEBUG)
+					{
+						echo "count=".$count.PHP_EOL;
+						if ($count==1) {
+							//				if ($outArr['id']==$courseNewID.self::$courseSeparator.'1') {
+							print_r($outArr);
+							echo "<hr/>";
+						}
+						else {
+							var_dump($outArr['id']);
+							var_dump($outArr['parent_id']);
+							var_dump($outArr['name']);
+						}
+					}
 
-			/**
-			 * ACTUALLY SAVE THE NODE!! YAHOOOO!!!
-			 */
-			if (!self::$_DEBUG)
-			{
-				// $outArr['id'] = $courseNewID.self::$courseSeparator.$outArr['id'];
+					/**
+					 * ACTUALLY SAVE THE NODE!! YAHOOOO!!!
+					 */
+					if (!self::$_DEBUG)
+					{
+						// $outArr['id'] = $courseNewID.self::$courseSeparator.$outArr['id'];
 
-				$this->_logMessage('Saving course node, passing:');
-				$this->_logMessage(print_r($outArr, true));
+						$this->_logMessage('Saving course node, passing:');
+						$this->_logMessage(print_r($outArr, true));
 
-				$addResult = $this->_dh->add_node($outArr);
-				// if it's an error return it right away, as usual
-				if (AMA_DB::isError($addResult)) {
-					$this->_logMessage(__METHOD__.' Error saving course node. DB returned the following:');
-					$this->_logMessage(print_r($addResult,true));
-					return $addResult;
-				} else {
-					// add node to the course node mapping array,
-					// keys are exported node ids, values are imported ones
-					$this->_courseNodeIDMapping[$this->_courseOldID.self::$courseSeparator.$oldID] = $addResult;
-					$this->_logMessage(__METHOD__.' Successfully saved course node');
-				}
-			}
+						$addResult = $this->_dh->add_node($outArr);
+						// if it's an error return it right away, as usual
+						if (AMA_DB::isError($addResult)) {
+							$this->_logMessage(__METHOD__.' Error saving course node. DB returned the following:');
+							$this->_logMessage(print_r($addResult,true));
+							return $addResult;
+						} else {
+							// add node to the course node mapping array,
+							// keys are exported node ids, values are imported ones
+							$this->_courseNodeIDMapping[$this->_courseOldID.self::$courseSeparator.$oldID] = $addResult;
+							$this->_logMessage(__METHOD__.' Successfully saved course node');
+						}
+					}
 		}
 
 		// recur the children
@@ -919,7 +919,26 @@ class importHelper
 		$this->_logMessage('Adding course model by calling data handler add_course with the following datas:');
 		$this->_logMessage(print_r($courseArr, true));
 
-		$courseNewID = $this->_dh->add_course($courseArr);
+		$rename_count = 0;
+		do {
+			$courseNewID = $this->_dh->add_course($courseArr);
+			if (AMA_DB::isError($courseNewID))
+			{
+				if (strlen($courseArr['nome'])>32) // 32 is the size of the field in the database
+				{
+					$this->_logMessage('Generated name will be over maximum allowed size, I\'ll give up and generate an error message.');
+					$rename_count = -1; // this will force an exit from the while loop
+				} else
+				{				
+					$this->_logMessage($courseArr['nome'].' will generate a duplicate key, rename attempt #'.++$rename_count);
+					$courseArr['nome'] .= '-DUPLICATE';
+				}
+			}
+			else 
+			{
+				$this->_logMessage('Successfully created new corse with name:'.$courseArr['nome'].' and id: '.$courseNewID);
+			}
+		} while (AMA_DB::isError($courseNewID) && $rename_count>=0);
 
 		if (!AMA_DB::isError($courseNewID))
 		{
@@ -955,54 +974,54 @@ class importHelper
 
 		return $retval;
 	}
-	
+
 	/**
 	 * updates the internal link ADA-html internal link tag with the new node id to ling to.
 	 * e.g. <LINK TYPE="INTERNAL" VALUE="8"> will be converted in <LINK TYPE="INTERNAL" VALUE="NEWID">
-	 *  
+	 *
 	 * @param int $courseNewID
-	 * 
+	 *
 	 * @access private
 	 */
 	private function _updateInternalLinksInNodes ( $courseNewID )
 	{
 		$this->_logMessage(__METHOD__.' Updating nodes that have an internal link');
-		
+
 		$nodesToUpdate = $this->_dh->get_nodes_with_internal_link_for_course ( $courseNewID );
-		
+
 		if (!AMA_DB::isError($nodesToUpdate))
 		{
 			$this->_logMessage(__METHOD__." Candidates for updating: \n".print_r($nodesToUpdate, true));
 			$this->_logMessage(__METHOD__." This is the replacement NODE ids array \n".print_r($this->_courseNodeIDMapping,true));
-			
-			/**  
+				
+			/**
 			 * build up source and replacements array
 			 * replacements are going to have a random string as
 			 * a fake attribute to prevent cyclic substitutions
 			 * e.g. if we have in text:
-			 * 
+			 *
 			 * blablabla... value='1'.... blablabla.... value='7'...blablabla value='1'...
-			 * 
+			 *
 			 * and in the mapping array: 1=>7 .... 7=>23....
-			 * 
+			 *
 			 * the result will be that all 1 become 7, and all 7 become 23 and at the and
 			 * all of the three links will point to 23.
-			 */
-			
+			*/
+				
 			$randomStr = substr(md5(time()), 0, 8);
-			
+				
 			$prefix = '<LINK TYPE="INTERNAL" VALUE="';
 			$suffix = '">';
 			$suffix2 = '"'.$randomStr.'>';
-			
+				
 			$search = array();
 			$replace = array();
-			
+				
 			foreach ($this->_courseNodeIDMapping as $oldID=>$newID)
 			{
 				$oldID = str_replace($this->_courseOldID.self::$courseSeparator, '', $oldID);
 				$newID = str_replace($courseNewID.self::$courseSeparator, '', $newID);
-				
+
 				$search[] = $prefix.$oldID.$suffix;
 				$replace[] = $prefix.$newID.$suffix2;
 			}
@@ -1012,24 +1031,24 @@ class importHelper
 			{
 				foreach ($arrElem as $nodeID)
 				{
-					$this->_logMessage(__METHOD__.' UPDATING NODE id='.$nodeID);					
+					$this->_logMessage(__METHOD__.' UPDATING NODE id='.$nodeID);
 					$nodeInfo = $this->_dh->get_node_info($nodeID);
 					$nodeInfo['text'] = str_ireplace($search, $replace, $nodeInfo['text']);
 					// strip off the random fake attribute
 					$nodeInfo['text'] = str_ireplace($randomStr, '', $nodeInfo['text']);
-					$this->_dh->set_node_text($nodeID, $nodeInfo['text']);	
+					$this->_dh->set_node_text($nodeID, $nodeInfo['text']);
 
 				}
-			}			
+			}
 		}
 	}
 
 	/**
 	 * updates the links to the test nodes inside the testo fields of the node
 	 * the id of the test MUST be substituted with the generated ones
-	 * 
+	 *
 	 * @param int $courseNewID
-	 * 
+	 *
 	 * @access private
 	 */
 	private function _updateTestLinksInNodes ( $courseNewID )
@@ -1064,43 +1083,43 @@ class importHelper
 			$this->_logMessage(__METHOD__. ' Error in retreiving nodes to be updated: '.$nodesToUpdate->getMessage());
 		}
 	}
-	
+
 	/**
 	 * Saves into the DB all the intrenal links between nodes.
 	 * Before adding the row to the DB, it maps the exported
 	 * id nodes to the imported ones. That's the reason why
 	 * this must be execute AFTER all nodes have been imported.
-	 * 
+	 *
 	 * @param int $courseNewID
-	 */	
-	private function _saveLinks( $courseNewID ) 
+	 */
+	private function _saveLinks( $courseNewID )
 	{
 		if (is_array($this->_linksArray))
 		{
 			$this->_logMessage(__METHOD__. ' Saving internal links for course');
 			foreach ($this->_linksArray as $num=>$linkArray)
 			{
-				if (isset ($this->_courseNodeIDMapping[$linkArray['id_nodo']]) && 
-				    isset ($this->_courseNodeIDMapping[$linkArray['id_nodo_to']]))
+				if (isset ($this->_courseNodeIDMapping[$linkArray['id_nodo']]) &&
+				isset ($this->_courseNodeIDMapping[$linkArray['id_nodo_to']]))
 				{
 					$linkArray['id_nodo'] = $this->_courseNodeIDMapping[$linkArray['id_nodo']];
 					$linkArray['id_nodo_to'] = $this->_courseNodeIDMapping[$linkArray['id_nodo_to']];
-					
+						
 					$res = $this->_dh->add_link($linkArray);
-					
+						
 					if (!AMA_DB::isError($res))
 					{
 						if (!isset($this->_recapArray[$courseNewID]['links'])) $this->_recapArray[$courseNewID]['links']=1;
-						else $this->_recapArray[$courseNewID]['links']++;					
-						$this->_logMessage(__METHOD__.' link # '.$num.' successfully saved. id_nodo='.$linkArray['id_nodo'].' id_nodo_to='.$linkArray['id_nodo_to']);						
-					} else $this->_logMessage(__METHOD__.' link # '.$num.' FAILED! id_nodo='.$linkArray['id_nodo'].' id_nodo_to='.$linkArray['id_nodo_to']); 
+						else $this->_recapArray[$courseNewID]['links']++;
+						$this->_logMessage(__METHOD__.' link # '.$num.' successfully saved. id_nodo='.$linkArray['id_nodo'].' id_nodo_to='.$linkArray['id_nodo_to']);
+					} else $this->_logMessage(__METHOD__.' link # '.$num.' FAILED! id_nodo='.$linkArray['id_nodo'].' id_nodo_to='.$linkArray['id_nodo_to']);
 				} else {
 					$this->_logMessage(__METHOD__.' could not find a match in the mapping array. id_nodo='.$linkArray['id_nodo'].' id_nodo_to='.$linkArray['id_nodo_to']);
-				}				
-			}			
+				}
+			}
 		}
 		else $this->_logMessage(__METHOD__.' No links to be saved this time');
-		$this->_linksArray = null;		
+		$this->_linksArray = null;
 	}
 
 	/**

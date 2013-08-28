@@ -54,6 +54,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
 	if (AMA_DB::isError($result))
 	{
 		$data = translateFN("ERRORE NELL'IMPORTAZIONE: ").$result->errorMessage();
+
+		/* only a call to the add_course data handler method should
+		 * generate a duplicate record error. Shall give out a 'special' error for it
+		*/
+		if ($result->code == AMA_ERR_ADD || $reslut->code == AMA_ERR_UNIQUE_KEY) 
+		    $data .= '<br/>'.translateFN('Provare a modificare il campo nome del corso nel file ada_export.xml contenuto nel file .zip e riprovare.');
 	}
 	else
 	{
