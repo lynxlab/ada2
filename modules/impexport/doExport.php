@@ -59,7 +59,7 @@ $exportCourse = (isset($_GET['selCourse']) && (intval($_GET['selCourse'])>0)) ? 
 $exportNode = (isset($_GET['selNode']) && (trim($_GET['selNode'])!=='')) ? trim ($_GET['selNode']) : '';
 
 if ($exportCourse>0 && $exportNode!=='') {
-	$nodesToExport =  array( $exportCourse=>$exportNode );
+	$nodesToExport =  array( $exportCourse=>array($exportNode) );
 } else $nodesToExport = array();
 /**
  * exportHelper object to help us in the exporting process...
