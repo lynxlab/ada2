@@ -93,7 +93,7 @@ $_SESSION['ada_remote_address'] = $_SERVER['REMOTE_ADDR'];
 
 /**
  * giorgio 12/ago/2013
- * if it isn't multiprovider, loads proper files into clients directories 
+ * if it isn't multiprovider, loads proper files into clients directories
  */
 if (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) $files_dir = $root_dir.'/clients/'.$GLOBALS['user_provider'];
 else $files_dir = $root_dir;
@@ -157,7 +157,8 @@ if(isset($p_login)) {
     //User has correctly inserted un & pw
 
     $userObj = MultiPort::loginUser($username, $password);
-    if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)){     
+    
+    if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)){
       $status = $userObj->getStatus();
 	  if ($status == ADA_STATUS_REGISTERED)
       {
@@ -170,8 +171,15 @@ if(isset($p_login)) {
 		  $GLOBALS['sess_id_user_type']  = $userObj->getType();
 		  $_SESSION['sess_userObj'] = $userObj;
 		  $user_default_tester = $userObj->getDefaultTester();
+		  
 		  if($user_default_tester !== NULL) {
 		    $_SESSION['sess_selected_tester'] = $user_default_tester;
+
+			// sets var for non multiprovider environment
+		    $_SESSION['sess_user_provider'] = $user_default_tester;
+		    $GLOBALS['user_provider'] = $_SESSION['sess_user_provider'];
+		    // if it's not set, set a cookie that shall expire in one year
+		    if (isset($GLOBALS['user_provider'])) setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
 		  }
 
 		  header('Location:'.$userObj->getHomePage());
@@ -223,22 +231,22 @@ $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_
   			if (!preg_match('/^(?:client)[0-9]{1,2}$/',$aTester['puntatore']) &&
   				is_dir (ROOT_DIR . '/clients/' .$aTester['puntatore'])) {
   				$addHtml = true;
-  				
+
   				$testerLink = CDOMElement::create('a','href:'.HTTP_ROOT_DIR.'/'.$aTester['puntatore']);
   				$testerLink->addChild (new CText($aTester['puntatore']));
-  				
+
   				$providerListElement = CDOMElement::create('li');
   				$providerListElement->addChild ($testerLink);
-  				
+
   				$providerListUL->addChild ($providerListElement);
-  			}  			  
+  			}
   		}
   		$newsmsg = $addHtml ? $providerListUL->getHtml() : translateFN ('Nessun fornitore di servizi &egrave; stato configurato');
-  	}  	
+  	}
   } else  {
   	$linkPath = '';
   	$testers = $_SESSION['sess_userObj']->getTesters();
-  	$testerName = $testers[0];  	
+  	$testerName = $testers[0];
   } // end if (!MULTIPROVIDER)
 
   $forget_div  = CDOMElement::create('div');
