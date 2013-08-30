@@ -153,6 +153,22 @@ class ADAUser extends ADAAbstractUser
 	public function hasExtra() {
 		return $this->_hasExtra;
 	}
+	
+	/**
+	 * getDefaultTester implementation:
+	 * - if it's not a multiprovider environment, return the user selected provider
+	 * - else return parent's method
+	 * 
+	 * @see ADAAbstractUser::getDefaultTester()
+	 */
+	public function getDefaultTester() {
+		if(!MULTIPROVIDER && isset($_COOKIE['ada_provider'])) {
+			$tester = DataValidator::validate_testername($_COOKIE['ada_provider'],MULTIPROVIDER);
+			if ($tester!==false) return $tester;
+			else return NULL;
+		}
+		else return parent::getDefaultTester();
+	}
 }
 
 ?>

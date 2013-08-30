@@ -193,7 +193,7 @@ if (in_array('course',$thisUserNeededObjAr)){
 
 if (in_array('course_instance',$thisUserNeededObjAr)){
 
-  if(!MultiPort::isUserBrowsingThePublicTester()) {
+  if(!MultiPort::isUserBrowsingThePublicTester() && $sess_id_course!=PUBLIC_COURSE_ID_FOR_NEWS) {
 
     /**
      *  get Course_Instance object
@@ -203,7 +203,7 @@ if (in_array('course_instance',$thisUserNeededObjAr)){
       /**
        * 	@var Object
        */
-      $courseInstanceObj = read_course_instance_from_DB($sess_id_course_instance);
+      $courseInstanceObj = read_course_instance_from_DB($sess_id_course_instance); 
       if (ADA_Error::isError($courseInstanceObj)){
         $courseInstanceObj->handleError();
       }
@@ -255,7 +255,7 @@ if (in_array('node',$thisUserNeededObjAr)){
   /**
    * @var Object
    */
-  $nodeObj = read_node_from_DB($id_node);
+  $nodeObj = read_node_from_DB($id_node);  
   //  mydebug(__LINE__,__FILE__,$nodeObj);
   if (ADA_Error::isError($nodeObj)){
     $nodeObj->handleError();

@@ -425,11 +425,14 @@ class  Generic_Html extends Output
 		}
 		
 		// giorgio: 12/ago/2013 try to load provider microtemplate if it's singleprovider environment
-		if (!MULTIPROVIDER && isset($GLOBALS['user_provider']))
+		if (!MULTIPROVIDER && !$this->external_module && isset($GLOBALS['user_provider']))
 		{
-			$provider_microtpl_filename = $root_dir."/clients/".$GLOBALS['user_provider']."/templates/".$microtpl_name.$tpl_fileextension;
+			$provider_microtpl_filename = $root_dir."/clients/".$GLOBALS['user_provider']."/layout/".$this->family."/templates/$module_dir/".$microtpl_name.$tpl_fileextension;
+
 			if (file_exists($provider_microtpl_filename)) {
-				$microtpl_filename = $provider_microtpl_filename;
+				$microtpl_filename = $provider_microtpl_filename;				
+			} else {
+				$microtpl_filename = $root_dir."/clients/".$GLOBALS['user_provider']."/layout/".$this->family."/templates/".$microtpl_name.$tpl_fileextension;
 			}
 		}
 		// giorgio: 12/ago/2013 end

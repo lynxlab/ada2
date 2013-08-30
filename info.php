@@ -314,28 +314,22 @@ else {
 		$redirect = false;
 		
 		/**
-		 * either the user is anonymous and has the $_GLOBALS['user_provider'] set
-		 * or it is a logged user and then it'll have client0 by default and only 
-		 * the client it's registered into and this info will be index 1 of the returned array
-		 * 
+		 * sets user selected provider name
 		 */
 		if (isset($GLOBALS['user_provider']))
 			$user_provider_name = $GLOBALS['user_provider'];
-		else if ($userObj instanceof ADALoggableUser)
-		{
-			$tmpTesters = $userObj->getTesters();
-			if (!empty($tmpTesters)) $user_provider_name = $tmpTesters[1];
-		}
 			 		
+		/**
+		 * check if user selected provider name has a valid id in the database
+		 */
 		if (isset($user_provider_name))
 		{
 			$userTesterInfo = $common_dh->get_tester_info_from_pointer($user_provider_name);
 			$user_provider_id = (!AMA_DB::isError($userTesterInfo)) ? $userTesterInfo[0] : null;
 			$redirect = is_null($user_provider_id);
 		}
-		 
 		else $redirect = true;
-		
+			
 		if (!$redirect) $publishedServices = $common_dh->get_published_courses($user_provider_id);
 		else {
 			$url = HTTP_ROOT_DIR . ((isset($_COOKIE['ada_provider'])) ? '/'.$_COOKIE['ada_provider'].'/info.php' : '');

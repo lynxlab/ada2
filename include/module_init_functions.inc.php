@@ -49,7 +49,6 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 	// unset session and global provider var only if user has asked for the home page
 	if ($httpDir == $potentialProvider) //  || is_dir(ROOT_DIR.'/'.$potentialProvider) || is_file(ROOT_DIR.'/'.$potentialProvider)
   	{
-  		var_dump ('unset');
   		// must unset
   		unset ($_SESSION['sess_user_provider']);
   		unset ($GLOBALS['user_provider']); 
@@ -72,7 +71,9 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 	  	$GLOBALS['user_provider'] = $_SESSION['sess_user_provider'];
 	  	// if it's not set, set a cookie that shall expire in one year
 	  	if (!isset($_COOKIE['ada_provider']) && isset($GLOBALS['user_provider'])) setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
-	}  	
+	}
+// 	var_dump ($_SESSION['sess_user_provider']);
+// 	var_dump ($GLOBALS['user_provider']);
   } // end if !MULTIPROVIDER
   
   /*
@@ -371,7 +372,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     if ($nodeObj instanceof Node){
       $node_id_courseAr = explode ('_',$nodeObj->id);
       $node_id_course = $node_id_courseAr[0];   
-      $sess_courseObj = read_course($node_id_course);
+      $sess_courseObj = read_course($node_id_course);  
       
       if (ADA_Error::isError($sess_courseObj)) {
        if($sess_userObj instanceof ADAGuest) {
@@ -383,6 +384,11 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
         }
         $sess_courseObj->handleError();
       }
+      else if ($sess_userObj instanceof ADAGuest  && $id_course!=PUBLIC_COURSE_ID_FOR_NEWS) {
+      	header('Location: '.$sess_userObj->getHomePage());
+      	exit();
+      }
+      
       $_SESSION['sess_courseObj'] = $sess_courseObj;
       $_SESSION['sess_id_course'] = $node_id_course;
     }    
@@ -427,9 +433,9 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
      * dato che non ce ne sono.
      */
 //      var_dump(array($sess_id_course_instance,$id_course_instance,MultiPort::isUserBrowsingThePublicTester()));
-    if(!MultiPort::isUserBrowsingThePublicTester()) {
+    if(!MultiPort::isUserBrowsingThePublicTester() && $id_course!=PUBLIC_COURSE_ID_FOR_NEWS) {
       $id_course_instance      = DataValidator::is_uinteger($_REQUEST['id_course_instance']/*$GLOBALS['id_course_instance']*/); // FIXME: qui ci va $_REQUEST['id_course_instance']
-      $sess_id_course_instance = DataValidator::is_uinteger($_SESSION['sess_id_course_instance']);
+      $sess_id_course_instance = DataValidator::is_uinteger($_SESSION['sess_id_course_instance']);      
       if($id_course_instance !== FALSE) {
         $course_instanceObj = read_course_instance_from_DB($id_course_instance);
         if (ADA_Error::isError($course_instanceObj)) {
