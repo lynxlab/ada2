@@ -224,12 +224,13 @@ $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_
   		 */
   		$allTesters = $common_dh->get_all_testers ();
   		$addHtml = false;
+
   		foreach ($allTesters as $aTester)
-  		{
-  			$providerListUL = CDOMElement::create('ol');
+  		{  			
   			// skip testers having punatore like 'clientXXX'
   			if (!preg_match('/^(?:client)[0-9]{1,2}$/',$aTester['puntatore']) &&
   				is_dir (ROOT_DIR . '/clients/' .$aTester['puntatore'])) {
+  				if (!$addHtml) $providerListUL = CDOMElement::create('ol');
   				$addHtml = true;
 
   				$testerLink = CDOMElement::create('a','href:'.HTTP_ROOT_DIR.'/'.$aTester['puntatore']);
