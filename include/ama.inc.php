@@ -394,7 +394,8 @@ abstract class Abstract_AMA_DataHandler {
      * @return bool whether $value is an error
      */
     public function isError($value) {
-        return (is_object($value) && ($value instanceof  AMA_Error));
+        return (is_object($value) && AMA_DB::isError($value));
+                        //         ($value instanceof  AMA_Error)
                         // (get_class($value) == 'AMA_Error' || is_subclass_of($value, 'PEAR_Error')));
     }
 
