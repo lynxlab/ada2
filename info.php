@@ -332,7 +332,7 @@ else {
 			
 		if (!$redirect) $publishedServices = $common_dh->get_published_courses($user_provider_id);
 		else {
-			$url = HTTP_ROOT_DIR . ((isset($_COOKIE['ada_provider'])) ? '/'.$_COOKIE['ada_provider'].'/info.php' : '');
+			$url = HTTP_ROOT_DIR . ((isset($GLOBALS['ada_provider'])) ? '/'.$GLOBALS['ada_provider'].'/info.php' : '');
 			header ('Location: '.$url);
 			die();
 		}		

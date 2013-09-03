@@ -118,7 +118,7 @@ if ($newsmsg == ''){
         $newsmsg .= fread($fid,4096);
       fclose($fid);
     } else {
-       $newsmsg = translateFN("File news non trovato");
+       $newsmsg = '<p>'.translateFN("File news non trovato").'</p>';
     }
 }
 
@@ -129,7 +129,7 @@ if ($hlpmsg == ''){
         $hlpmsg .= fread($fid,4096);
       fclose($fid);
     } else {
-       $hlpmsg = translateFN("File help non trovato");
+       $hlpmsg = '<p>'.translateFN("File help non trovato").'</p>';
     }
 }
 
@@ -140,7 +140,7 @@ if ($infomsg == ''){
         $infomsg .= fread($fid,4096);
       fclose($fid);
     } else {
-       $infomsg = translateFN("File info non trovato");
+       $infomsg = '<p>'.translateFN("File info non trovato").'</p>';
     }
 }
 

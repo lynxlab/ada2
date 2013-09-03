@@ -69,11 +69,10 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 	  		// other session vars per provider may go here...  		  		
 	  	}
 	  	$GLOBALS['user_provider'] = $_SESSION['sess_user_provider'];
-	  	// if it's not set, set a cookie that shall expire in one year
-	  	if (!isset($_COOKIE['ada_provider']) && isset($GLOBALS['user_provider'])) setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
+	  	// if it's not set and its value is not equal to the new passed one, set a cookie that shall expire in one year
+	  	if (isset($GLOBALS['user_provider']) && $_COOKIE['ada_provider']!=$GLOBALS['ada_provider'])
+	  		setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
 	}
-// 	var_dump ($_SESSION['sess_user_provider']);
-// 	var_dump ($GLOBALS['user_provider']);
   } // end if !MULTIPROVIDER
   
   /*
