@@ -19,5 +19,5 @@
 	define ('MODULES_NEWSLETTER_LOGDIR' , ROOT_DIR.'/log/newsletter/');
 	
 	define ('MODULES_NEWSLETTER_EMAILS_PER_HOUR' , 60); // numer of emails per hour to be sent out
-	define ('MODULES_NEWSLETTER_DEFAULT_EMAIL_ADDRESS' , 'noreply'); // @domain.ext will be appended at send time (enqueue_newsletter.php)
+	define ('MODULES_NEWSLETTER_DEFAULT_EMAIL_ADDRESS' , 'noreply@lynxlab.com');
 ?>

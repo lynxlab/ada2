@@ -99,7 +99,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 				 if (!AMA_DB::isError($instanceInfo)) $instanceTitle = $instanceInfo['title'];
 			}
 			
-			$senderEmail = MODULES_NEWSLETTER_DEFAULT_EMAIL_ADDRESS.'@'.get_domain(HTTP_ROOT_DIR);
+			$senderEmail = MODULES_NEWSLETTER_DEFAULT_EMAIL_ADDRESS; // uncomment to get domain from HTTP_ROOT_DIR.'@'.get_domain(HTTP_ROOT_DIR);
 			$senderFullName = (isset($newsLetterArray['sender'])) ? $newsLetterArray['sender'] : $senderEmail;
 			
 			// perform general substitutions for course and instance
