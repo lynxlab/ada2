@@ -100,11 +100,17 @@ class AMAImpExportDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function get_nodes_with_internal_link_for_course ($course_id)
+	public function get_nodes_with_internal_link_for_course ($course_id, $start_import_time=null)
 	{
 		$sql = 'SELECT `id_nodo`  FROM `nodo` WHERE UPPER(`testo`) LIKE ? AND `id_nodo` LIKE ?';
 		
-		$values = array ( '<%LINK%TYPE="INTERNAL"%VALUE%>%' , $course_id.'_%'); 
+		$values = array ( '<%LINK%TYPE="INTERNAL"%VALUE%>%' , $course_id.'_%');
+
+		if (!is_null($start_import_time))
+		{
+			$sql .= ' AND `data_creazione`>= ?';
+			array_push ($values, $start_import_time);
+		}
 		
 		return $this->getAllPrepared($sql, $values );
 	}
@@ -118,14 +124,22 @@ class AMAImpExportDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function get_nodes_with_test_link_for_course ($course_id)
+	public function get_nodes_with_test_link_for_course ($course_id, $start_import_time=null)
 	{
 		$sql = 'SELECT N.`id_nodo`FROM `nodo` N 
 				JOIN 
 				`module_test_nodes` MT ON N.`id_nodo` = MT.`id_nodo_riferimento`
 				WHERE N.`id_nodo` LIKE ? AND N.`testo` LIKE \'%modules/test/index.php?id_test=%\'';
+		
+		$values = array ($course_id.'%');
+		
+		if (!is_null($start_import_time))
+		{
+			$sql .= ' AND N.`data_creazione`>= ?';
+			array_push ($values, $start_import_time);
+		}
 
-		return $this->getAllPrepared ( $sql, array ($course_id.'%'));		
+		return $this->getAllPrepared ( $sql, $values);		
 	}
 }
 

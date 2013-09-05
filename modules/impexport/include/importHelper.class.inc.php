@@ -91,6 +91,13 @@ class importHelper
 	 * @var string
 	 */
 	private $_selectedNodeID;
+	
+	/**
+	 * starting time of the running import
+	 * @var string
+	 */
+	private $_importStartTime;
+	
 
 	/**
 	 * @var string char for separating courseId from nodeId (e.g. 110_0) in tabella nodo
@@ -138,6 +145,8 @@ class importHelper
 
 		$this->_common_dh = $GLOBALS['common_dh'];
 		$this->_dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($this->_selectedTester));
+		
+		$this->_importStartTime = $this->_dh->date_to_ts('now');
 
 		unset ( $_SESSION['importHelper']['filename']);
 
@@ -207,7 +216,7 @@ class importHelper
 					$this->_logFile = MODULES_IMPEXPORT_LOGDIR . "import-".$this->_courseOldID .
 					"_".date('d-m-Y_His').".log";
 
-					$this->_logMessage('**** IMPORT STARTED at '.date('d/m/Y H:i:s'). ' ****');
+					$this->_logMessage('**** IMPORT STARTED at '.date('d/m/Y H:i:s'). '(timestamp: '.$this->_dh->date_to_ts('now').') ****');
 						
 					$this->_progressSetTitle( (string) $course->titolo);
 					/**
@@ -281,7 +290,7 @@ class importHelper
 					}
 					// 					$this->_updateTestLinksInNodes ( $courseNewID );
 				} // if ($objName === 'modello_corso')
-				$this->_logMessage('**** IMPORT ENDED at '.date('d/m/Y H:i:s'). ' ****');
+				$this->_logMessage('**** IMPORT ENDED at '.date('d/m/Y H:i:s'). '(timestamp: '.$this->_dh->date_to_ts('now').') ****');
 				$this->_logMessage('If there\'s no zip log below, this is a multi course import: pls find unzip log at the end of the last course log');
 			} // foreach ($XMLObj as $objName=>$course)
 
@@ -800,7 +809,7 @@ class importHelper
 					unset ($outArr['id_parent']);
 
 					$outArr['id_course'] = $courseNewID;
-					$outArr['creation_date'] = ts2dFN(time());
+					$outArr['creation_date'] = 'now';
 					$outArr['id_node_author'] = $this->_assignedAuthorID;
 					$outArr['version'] = 0;
 					$outArr['contacts'] = 0;
@@ -986,8 +995,9 @@ class importHelper
 	private function _updateInternalLinksInNodes ( $courseNewID )
 	{
 		$this->_logMessage(__METHOD__.' Updating nodes that have an internal link');
+		$this->_logMessage(__METHOD__.' Timestamp used to select node to update is: '.$this->_importStartTime);
 
-		$nodesToUpdate = $this->_dh->get_nodes_with_internal_link_for_course ( $courseNewID );
+		$nodesToUpdate = $this->_dh->get_nodes_with_internal_link_for_course ( $courseNewID, $this->_importStartTime );
 
 		if (!AMA_DB::isError($nodesToUpdate))
 		{
@@ -1008,7 +1018,7 @@ class importHelper
 			 * all of the three links will point to 23.
 			*/
 				
-			$randomStr = substr(md5(time()), 0, 8);
+			$randomStr = '#'.substr(md5(time()), 0, 8);
 				
 			$prefix = '<LINK TYPE="INTERNAL" VALUE="';
 			$suffix = '">';
@@ -1055,7 +1065,7 @@ class importHelper
 	{
 		$this->_logMessage(__METHOD__.' Updating nodes that have a link to a test:');
 
-		$nodesToUpdate = $this->_dh->get_nodes_with_test_link_for_course ( $courseNewID );
+		$nodesToUpdate = $this->_dh->get_nodes_with_test_link_for_course ( $courseNewID, $this->_importStartTime );
 
 		if (!AMA_DB::isError($nodesToUpdate))
 		{
