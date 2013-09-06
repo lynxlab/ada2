@@ -35,6 +35,15 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 
   $debug_backtrace = debug_backtrace();
   $level = sizeof($debug_backtrace) - 1;
+  
+  /**
+   * giorgio 06/set/2013
+   * detect mobile device feature
+   */  
+  if (!isset($_SESSION['mobile-detect']))
+  { 
+  	$_SESSION['mobile-detect'] = new Mobile_Detect();
+  }
 
   if ($trackPageToNavigationHistory) {
 	$caller_file     = $debug_backtrace[$level]['file'];

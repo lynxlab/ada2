@@ -48,6 +48,13 @@ require_once ROOT_DIR . '/include/HTML_element_classes.inc.php';
 require_once ROOT_DIR . '/include/navigation_history.inc.php';
 
 /**
+ * giorgio 06/set/2013
+ * detect mobile device feature
+ */
+require_once ROOT_DIR . '/include/MobileDetect/Mobile_Detect.php';
+
+
+/**
  * Imports $_GET and $_POST variables
  */
 //import_request_variables('GP',ADA_GP_VARIABLES_PREFIX);
