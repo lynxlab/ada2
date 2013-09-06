@@ -314,6 +314,19 @@ class VideoPlayer {
      * @return string
      */
     public function view( $http_file_path, $file_name, $VideoPlayingPreferences = VIDEO_PLAYING_MODE, $videoTitle = null, $width = null,$height = null) {
+    	
+    	require_once ROOT_DIR.'/include/getid3/getid3.php';
+
+    	$getID3 = new getID3();
+    	$toAnalyze = $http_file_path.$file_name;
+    	$fileInfo = $getID3->analyze(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze));
+    	 
+    	if (isset ($fileInfo['video']) && !empty($fileInfo['video']))
+    	{
+    		$width = (intval ($fileInfo['video']['resolution_x'])>0) ? intval($fileInfo['video']['resolution_x']) : null;
+    		$height = (intval ($fileInfo['video']['resolution_y'])>0) ? intval($fileInfo['video']['resolution_y']) : null;
+    	}
+    	
 		if (is_null($width)) {
 			$width = self::DEFAULT_WIDTH;
 		}
@@ -350,23 +363,37 @@ class VideoPlayer {
 					break;
 
                     case 'flv':
+                    case 'mp4':                    	
                         if(defined('USE_MEDIA_CLASS') && class_exists(USE_MEDIA_CLASS, false)) {
                             $className = USE_MEDIA_CLASS;
                             $file_name = $className::getPathForFile($file_name);
                         } else {
                             $file_name = Media::getPathForFile($file_name);
                         }
+                        
+                        if (!$_SESSION['mobile-detect']->isMobile()) $playerAttr = ' data-engine="flash" ';
+                        else $playerAttr = '';
+                        
+                        if ($extension=='mp4')
+                        {
+                        	$exploded_video = '<div class="ADAflowplayer" style="width:'.$width.'px; height:'.$height.'px;"'.
+                        						$playerAttr.'data-swf="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/flowplayer.swf" data-embed="false">
+                        			<video>
+                        				<source src="'.$http_file_path.$file_name.'" type="video/mp4" />
+                        			</video></div>';                        
+                        }
+                        else {                        
 						$exploded_video = '
 							<object id="flowplayer" width="'.$width.'" height="'.$height.'" data="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer/flowplayer.swf"	type="application/x-shockwave-flash">
 							<param name="movie" value="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer/flowplayer.swf" />
 							<param name="allowfullscreen" value="true" />
 							<param name="flashvars" value="config={\'clip\':{\'url\':\''.$http_file_path.$file_name.'\', \'autoPlay\':false, \'autoBuffering\':true}}" />
 						</object>';
+                        }						
 					break;
 
                     case 'avi':
-                    case 'mpg':
-                    case 'mp4':
+                    case 'mpg':                    
                     default:
 						$exploded_video = '<embed src="'.$http_file_path.$file_name.'" controls="smallconsole" width="'.$width.'" height="'.$height.'" loop="false" autostart="false">';
 					break;

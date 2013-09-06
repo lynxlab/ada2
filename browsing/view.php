@@ -492,6 +492,30 @@ switch ($op){
 	case 'view':
 	default:
 		// Sends data to the rendering engine
+		
+		// giorgio 06/set/2013, jquery and flowplayer inclusion
+		
+		$layout_dataAR['JS_filename'] = array(
+				JQUERY,
+				JQUERY_UI,
+				JQUERY_NO_CONFLICT,
+				ROOT_DIR. '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js'
+		);		
+
+		/**
+		 * if the jqueru-ui theme directory is there in the template family,
+		 * do not include the default jquery-ui theme but use the one imported
+		 * in the .css file instead
+		*/
+		if (!is_dir(ROOT_DIR.'/layout/'.$userObj->template_family.'/css/jquery-ui'))
+		{
+			$layout_dataAR['CSS_filename'] = array(
+					JQUERY_UI_CSS,
+					ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css'
+			);
+		}
+
+		
 		ARE::render($layout_dataAR,$content_dataAr, null,$optionsAr);
 
 }
