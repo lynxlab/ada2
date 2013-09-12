@@ -507,15 +507,17 @@ switch ($op){
 		 * do not include the default jquery-ui theme but use the one imported
 		 * in the .css file instead
 		*/
+		if (!isset($userObj->template_family) || $userObj->template_family=='') $userObj->template_family = ADA_TEMPLATE_FAMILY;
+
 		if (!is_dir(ROOT_DIR.'/layout/'.$userObj->template_family.'/css/jquery-ui'))
 		{
 			$layout_dataAR['CSS_filename'] = array(
-					JQUERY_UI_CSS,
-					ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css'
+					JQUERY_UI_CSS
 			);
-		}
+		} else $layout_dataAR['CSS_filename'] = array();
 
-		
+		array_push ($layout_dataAR['CSS_filename'],ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css');
+
 		ARE::render($layout_dataAR,$content_dataAr, null,$optionsAr);
 
 }
