@@ -53,9 +53,12 @@ $self =  "registration";
 /**
  * Negotiate login page language
  */
+
+$lang_get = $_GET['lan'];
+
 Translator::loadSupportedLanguagesInSession();
 $supported_languages = Translator::getSupportedLanguages();
-$login_page_language_code = Translator::negotiateLoginPageLanguage();
+$login_page_language_code = Translator::negotiateLoginPageLanguage($lang_get);
 $_SESSION['sess_user_language'] = $login_page_language_code;
 
 

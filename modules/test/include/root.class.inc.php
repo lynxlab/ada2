@@ -115,7 +115,7 @@ abstract class RootTest extends NodeTest
 						}
 						$answer_data = $question->serializeAnswers($answer_data);
 						$obj = $dh->test_saveAnswer($this->_id_history_test,$_SESSION['sess_id_user'],$topic_id,$question_id,$_SESSION['sess_id_course'],$_SESSION['sess_id_course_instance'],$answer_data,$points,$attachment);
-						if (is_object($obj) && (get_class($obj) == 'AMA_Error')) {
+						if (is_object($obj) && (get_class($obj) == 'AMA_Error' || is_subclass_of($obj, 'PEAR_Error'))) {
 							$result = false;
 							break 2;
 						}
@@ -180,7 +180,7 @@ abstract class RootTest extends NodeTest
 		$res = $dh->test_saveTest($this->_id_history_test,$tempo_scaduto,$points,$repeatable,$min_barrier_points,$level_gained);
 
 		//checking if we got errors
-		if (is_object($res) && (get_class($res) == 'AMA_Error')) {
+		if (is_object($res) && (get_class($res) == 'AMA_Error' || is_subclass_of($res, 'PEAR_Error'))) {
 			$this->_onSaveError = true;
 			$this->rollBack();
 			return false;
@@ -301,7 +301,7 @@ abstract class RootTest extends NodeTest
 			$global = true;
 			foreach($this->_children as $k=>$v) {
 				$durata+= $v->durata;
-			}			
+			}
 			if ($this->sequenced && $this->_currentTopic !== self::EOT)
 			{
 				$global = false;
@@ -348,7 +348,7 @@ abstract class RootTest extends NodeTest
 		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
 			$changeState = true;
 			if (!is_array($this->_randomQuestion) || empty($this->_randomQuestion)) {
-				$res = $dh->test_getHistoryTest(array('id_utente'=>$_SESSION['sess_id_user'],'id_nodo'=>$this->id_nodo,'consegnato'=>0,'tempo_scaduto'=>0));
+				$res = $dh->test_getHistoryTest(array('id_utente '=>$_SESSION['sess_id_user'],'id_nodo'=>$this->id_nodo,'consegnato'=>0,'tempo_scaduto'=>0));
 				if (!$dh->isError($res) && !empty($res[count($res)-1]['domande'])) {
 					$this->_randomQuestion = unserialize($res[count($res)-1]['domande']);
 				}
@@ -374,7 +374,7 @@ abstract class RootTest extends NodeTest
 						if (!empty($sub->_children)) {
 							foreach($sub->_children as $i) {
 								$i->setDisplay(false);
-								if (is_a($i,'TopicTest')) {
+								if (is_a($i,TopicTest)) {
 									if (!empty($i->_children)) {
 										foreach($i->_children as $v) {
 											$v->setDisplay(false);
@@ -421,7 +421,7 @@ abstract class RootTest extends NodeTest
 				$i = $sub->_children[$r];
 				if (!in_array($i->id_nodo,$tmpList)) {
 					$tmpList[] = $i->id_nodo;
-					if (is_a($i,'QuestionTest')) {
+					if (is_a($i,QuestionTest)) {
 						$this->_randomQuestion[] = $i->id_nodo;
 					}
 					else {
@@ -623,18 +623,19 @@ abstract class RootTest extends NodeTest
 
 		if (!$feedback) {
 			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
-				$submit = CDOMElement::create('submit');
-				$submit->setAttribute('value',translateFN('Invia Modulo'));
+				$submit = CDOMElement::create('submit','id:confirm');
+				$submit->setAttribute('value',translateFN('Conferma'));
 
-				$reset = CDOMElement::create('reset');
-				$reset->setAttribute('value',translateFN('Reset Modulo'));
+				$reset = CDOMElement::create('reset','id:redo');
+				$reset->setAttribute('value',translateFN('Ripeti'));
 
 				$div = CDOMElement::create('div');
 				$div->setAttribute('class', 'submit_test');
-				$div->addChild($submit);
-				$div->addChild(new CText('&nbsp;'));
 				$div->addChild($reset);
-
+				$div->addChild(new CText('&nbsp;'));
+				$div->addChild($submit);
+				
+				$out->addChild(CDOMElement::create('div','class:clearfix'));
 				$out->addChild($div);
 			}
 			else if ($this->sequenced) {
@@ -672,6 +673,7 @@ abstract class RootTest extends NodeTest
 					$div->addChild($a);
 					$div->addChild(new CText(' ] '));
 				}
+				$out->addChild(CDOMElement::create('div','class:clearfix'));
 				$out->addChild($div);
 			}
 		}
@@ -728,7 +730,7 @@ abstract class RootTest extends NodeTest
 								$questions[] = $child;
 							}
 							unset($genericItems[$k]);
-						}						
+						}
 					}
 				}
 				unset($genericItems);
@@ -773,7 +775,7 @@ abstract class RootTest extends NodeTest
 				}
 
 				//show total Score
-				if ($this->rating) {					
+				if ($this->rating) {
 					$div = CDOMElement::create('div','id:test_score');
 					$div->setAttribute('id', 'score_test');
 					if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
@@ -973,7 +975,7 @@ abstract class RootTest extends NodeTest
 
 
 			//test di sbarramento
-			if (is_a($this,'TestTest')) {
+			if (is_a($this,TestTest)) {
 				$sbarramento = ($this->barrier)?translateFN('Si'):translateFN('No');
 				$lis[++$i] = CDOMElement::create('li','class:li_test_info');
 				$lis[$i]->addChild(new CText('<b>'.translateFN('Test di sbarramento').'</b>: '.$sbarramento));
@@ -1000,7 +1002,7 @@ abstract class RootTest extends NodeTest
 
 			foreach($lis as $li) {
 				$ul->addChild($li);
-			}			
+			}
 			$div->addChild($ul);
 			$out->addChild($div);
 		}
@@ -1033,12 +1035,12 @@ abstract class RootTest extends NodeTest
 				$topic = $this->getChild($i);
 				if (!empty($topic->_children)) {
 					foreach($topic->_children as $subTopic) {
-						if (is_a($subTopic,'TopicTest')) {
+						if (is_a($subTopic,TopicTest)) {
 							foreach($subTopic->_children as $v) {
 								$questions[] = $v;
 							}
 						}
-						else if (is_a($subTopic,'QuestionTest')) {
+						else if (is_a($subTopic,QuestionTest)) {
 							$questions[] = $subTopic;
 						}
 					}
@@ -1079,9 +1081,9 @@ abstract class RootTest extends NodeTest
 
 	/**
 	 * Checks if a test or a survey is repeatable by current student
-	 * 
+	 *
 	 * @global type $dh
-	 * 
+	 *
 	 * @return boolean
 	 */
 	protected function checkRepeatable() {
@@ -1089,7 +1091,7 @@ abstract class RootTest extends NodeTest
 
 		if ($this->repeatable) {
 			return true;
-		}	
+		}
 
 		$res = $dh->test_getHistoryTest(array('id_nodo'=>$this->id_nodo, 'id_utente'=>$_SESSION['sess_id_user'], 'consegnato' => 1));
 		if ($dh->isError($res) || empty($res)) {

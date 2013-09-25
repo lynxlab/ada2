@@ -2139,12 +2139,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
     }
 
 
-
-    public function get_published_courses() {
+	/**
+	 * giorgio 13/ago/2013
+	 * added id_tester parameter that is passed if it's not a multiprovider environment
+	 */    
+    public function get_published_courses($id_tester=null) {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $courses_sql = 'SELECT S.id_servizio, S.nome, S.descrizione, S.durata_servizio FROM servizio AS S, (SELECT distinct(id_servizio) FROM servizio_tester) AS ST WHERE S.id_servizio = ST.id_servizio';
+        $courses_sql = 'SELECT S.id_servizio, S.nome, S.descrizione, S.durata_servizio FROM servizio AS S, (SELECT distinct(id_servizio) FROM servizio_tester';
+        if (!is_null($id_tester) && intval($id_tester)>0) $courses_sql .= ' WHERE id_tester='.intval($id_tester); 
+        $courses_sql .= ') AS ST WHERE S.id_servizio = ST.id_servizio';
 
         $result = $db->getAll($courses_sql, null, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {

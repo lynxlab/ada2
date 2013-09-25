@@ -149,6 +149,12 @@ class Template {
 
         $tpl_fileextension =  $GLOBALS['tpl_fileextension'];
 
+        /**
+         * giorgio 12/ago/2013
+         * sets user select provider
+         */
+        if (!MULTIPROVIDER) $user_provider = $GLOBALS['user_provider'];
+
         // templates file extensions could be .tpl or .dwt or .HTML etc
         // default: .tpl
         if (!isset($tpl_fileextension)) {
@@ -180,11 +186,45 @@ class Template {
 
 	if ($is_external_module) {
 		$tpl_dir = $root_dir."/$module_dir/layout/$family/templates/";
+		$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
 	}
 	else {
-		$tpl_dir = $root_dir."/layout/$family/templates/$module_dir/";
+		/**
+		 * giorgio 11/ago/2013
+		 * if it's not multiprovider, let's firstly check for a template
+		 * in the clients/provider dir with only one possibility in $module_dir
+		 */
+		if (!MULTIPROVIDER)
+		{
+			if (stristr($module_dir,$user_provider)) $module_dir='main';
+			$tpl_dir = $root_dir."/clients/".$user_provider."/layout/$family/templates/$module_dir/";
+			$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
+			/**
+			 * giorgio 12/ago/2013
+			 *
+			 * checking for default template in user selected provider may not be
+			 * a good idea because it's not known where and when ada shall use this
+			 * template, and it's unpleasant that all of a sudden the user finds
+			 * him/her self in the provider template while he/she is browsing....
+			 *
+			 *  Should you disable it, check carefully all 'anonymous' pages
+			 *  at least info.php should use the default template
+			 */
+			if (!file_exists($tpl_filename))
+			{
+				$tpl_filename = $tpl_dir."default".$tpl_fileextension;
+			}
+		}
 	}
-        $tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
+	/**
+	 * giorgio 11/ago/2013
+	 * if $tpl_filename is not found inside client dir, resume normal operation
+	 */
+	if (!file_exists($tpl_filename))
+	{
+		$tpl_dir = $root_dir."/layout/$family/templates/$module_dir/";
+		$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
+	}
 
         // es. layout/clear/templates/browsing/default/view.tpl
         if (!file_exists($tpl_filename)) {
@@ -201,7 +241,6 @@ class Template {
                 //mydebug(__LINE__,__FILE__, "  $tpl_filename...<br>");
             }
         }
-
         $this->template = $tpl_filename;
         $this->template_dir = $tpl_dir;
         $this->family = $family;
@@ -220,6 +259,13 @@ class CSS {
 
         $root_dir = $GLOBALS['root_dir'];
         $http_root_dir = $GLOBALS['http_root_dir'];
+
+        /**
+         * giorgio 12/ago/2013
+         * sets user select provider
+         */
+        if (!MULTIPROVIDER) $user_provider = $GLOBALS['user_provider'];
+
         $CSS_files = array();
         // reads CSS from filesystem
         //  la struttura dei CSS ricopia quella di ADA (default)
@@ -242,28 +288,56 @@ class CSS {
 		$CSS_dir = $rel_pref."layout/$family/css/main/";
 	}
 	else {
+		/**
+		 * giorgio 11/ago/2013
+		 * module_dir comes as 'clients/PROVIDERNAME'
+		 * let's put it back in place
+		 */
+		if (!MULTIPROVIDER && stristr ($module_dir,$user_provider))
+		{
+			$module_dir = 'main';
+		}
+
 		$CSS_dir = $rel_pref."layout/$family/css/$module_dir/";
 	}
 
+
 		if (is_file($CSS_module_dir."default.css"))
 			$CSS_files[] = $CSS_module_dir."default.css";
-        else 
+        else
         	$CSS_files[] = $CSS_dir."default.css"; //adding default file
-        
+
         if (is_file($CSS_module_dir.$node_type.".css"))
         	$CSS_files[] = $CSS_module_dir.$node_type.".css";
         else
         	$CSS_files[] = $CSS_dir.$node_type.".css"; //adding specific node type file
-        
+
         if (!empty($node_author_id)) {
             if (!empty($node_course_id)) {
                 $CSS_files[] = $http_root_dir."/courses/media/$node_author_id/css/$node_course_id.css";
             }
         }
 
+        /**
+         * giorgio 11/ago/2013
+         * if it's not multiprovider add node_type css and default css
+         * (same structure as in 'main' css sudir)
+         */
+        if (!MULTIPROVIDER)
+        {
+        	$CSS_provider_dir = $rel_pref."clients/".$user_provider."/layout/$family/css/$module_dir/"; 
+        	
+        	if (is_file($CSS_provider_dir."default.css"))
+        		$CSS_files[] = $CSS_provider_dir."default.css";
+
+        	if (is_file($CSS_provider_dir.$node_type.".css"))
+        		$CSS_files[] = $CSS_provider_dir.$node_type.".css";
+        }
+
         $this->CSS_filename = implode(';',$CSS_files);
         $this->CSS_dir = $CSS_dir;
         $this->family = $family;
+
         //  mydebug(__LINE__,__FILE__,"CSS DDS: $duplicate_dir_structure fgroup:$function_group mdir:$module_dir bdir:$basedir_ada". $this->CSS_filename."<br>");
 
     } //end function CSS

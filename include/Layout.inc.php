@@ -21,7 +21,13 @@ class UILayout
 {
     public function __construct()
     {
-        $this->_pathToLayoutDir = ROOT_DIR . DIRECTORY_SEPARATOR . 'layout';
+    	if (!MULTIPROVIDER && isset($GLOBALS['user_provider']))
+    	{
+    		$this->_pathToLayoutDir = ROOT_DIR . DIRECTORY_SEPARATOR . 'clients' .DIRECTORY_SEPARATOR . $GLOBALS['user_provider'] . DIRECTORY_SEPARATOR .  'layout';    		
+    	} else 
+    	{
+        	$this->_pathToLayoutDir = ROOT_DIR . DIRECTORY_SEPARATOR . 'layout';
+    	}
 
         if(isset($_GET['family']) && !empty($_GET['family'])) {
             $this->_layoutsPrecedence[] = $_GET['family'];

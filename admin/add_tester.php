@@ -97,7 +97,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $errorsAr['tester_resp'] = true;
   }
   // validate_testername valida il puntatore, non il nome del tester.
-  if(DataValidator::validate_testername($_POST['tester_pointer']) === FALSE) {
+  if(DataValidator::validate_testername($_POST['tester_pointer'],MULTIPROVIDER) === FALSE) {
     $errorsAr['tester_pointer'] = true;
   }
   

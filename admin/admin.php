@@ -58,14 +58,26 @@ $menu_dataAr = array(
   array('href' => 'import_language.php', 'text' => translateFN('Import Language'))
   );
 
+/**
+ * giorgio 12/ago/2013
+ * 
+ * add content editing to menu only if it's a multiprovider environment
+ */
 // grab available content types for editing and build menu items
 // $availableTypes = ;
-
-foreach (dirTree (ROOT_DIR.'/docs') as $aType) {
-    array_push($menu_dataAr, 
-    	array ('href' => 'edit_content.php?type='.$aType, 'text' => 'Edit '.$aType.' content' )
-    );
-}
+// if (MULTIPROVIDER)
+// {
+	foreach (dirTree (ROOT_DIR.'/docs') as $aType) {
+		/**
+		 * if is singleprovider, admin cannot edit news content
+		 * It will not be shown anyway
+		 */
+		if (!MULTIPROVIDER && $aType=='news') continue;
+    	array_push($menu_dataAr, 
+    		array ('href' => 'edit_content.php?type='.$aType, 'text' => 'Edit '.$aType.' content' )
+    	);
+	}
+// }
 
 
 
