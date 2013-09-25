@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+<widget>
+	<active>1</active>
+	<field>fbRSS</field>
+	<id>fb</id>
+	<module>getFacebook.php</module>
+	<param name="format" value="rss2"/>
+	<param name="pippo" value="pluto"/>
+</widget>
+
+<widget>
+	<field>twitterRSS</field>
+	<id>twitter</id>
+	<module>getTwitter.php</module>
+</widget>
+</widgets>
+

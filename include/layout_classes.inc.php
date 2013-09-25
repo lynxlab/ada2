@@ -24,6 +24,10 @@ class Layout {
     var $error_msg;
     var $full;
 	var $external_module = false;
+	// @author giorgio 25/set/2013
+	// widgets configuration file name and dir
+	var $WIDGET_filename;
+	var $WIDGET_dir;
 
     //constructor
     function Layout($user_type,$node_type,$family="",$node_author_id="",$node_course_id="",$module_dir="") {
@@ -69,6 +73,9 @@ class Layout {
 	$this->JS_filename = $JSObj->JS_filename;
 	$this->JS_dir = $JSObj->JS_dir;
 	//$this->debug();
+	
+	// Widgets
+	$PageWidgetObj = new PageWidget($node_type, $module_dir, $this->external_module);
 
     }//end function Layout
 
@@ -305,5 +312,42 @@ class JS {
         $this->JS_filename = implode(';',$JS_files);
         $this->JS_dir = $JS_dir;
     } //end function JS
+}
+
+
+/**
+ * class for setting the needed XML for the page widget, if any.
+ *
+ * @author giorgio 25/set/2013
+ */
+class PageWidget
+{
+    /**
+     * PageWidget constructor.
+     * 
+     * @param string $node_type type of the node to find a widget xml file for
+	 * @param string $module_dir modules directory (aka function group) of the node
+	 * @param string $is_external_module true if it's an external module
+     */
+    public function __construct($node_type="", $module_dir="main", $is_external_module = false)
+    {
+        var_dump ($node_type);
+        var_dump($function_group);
+        var_dump($is_external_module);
+        
+        if ($module_dir=="") $module_dir = "main";
+        
+        if ($is_external_module) {
+        	$widget_dir = ROOT_DIR."/$module_dir/widgets/";
+        }
+        else {
+        	$widget_dir = ROOT_DIR."/widgets/$module_dir/";
+        }
+        
+        
+        
+        
+        
+    }
 }
 ?>
