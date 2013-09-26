@@ -41,6 +41,8 @@
 		</div>
 		<div class="helpcont">
 		  <template_field class="template_field" name="helpmsg">helpmsg</template_field>
+		  <template_field class="template_field" name="lynxRSS">lynxRSS</template_field>
+		  <template_field class="template_field" name="ecmRSS">ecmRSS</template_field>
             </div>
          </div>
          </div>

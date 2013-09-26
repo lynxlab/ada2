@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widgets>
 <widget>
-	<active>1</active>
-	<field>fbRSS</field>
-	<id>fb</id>
-	<module>getFacebook.php</module>
-	<param name="format" value="rss2"/>
-	<param name="pippo" value="pluto"/>
+	<!--
+		this entry has neither active nor async set,
+		so it's going to take the default values:
+		active = 1 (true)
+		async  = 1 (async mode)
+	-->
+	<field>lynxRSS</field>
+	<id>lynxRSS</id>
+	<module>getRss.php</module>
+	<param name="url" value="http://www.lynxlab.com/rss.xml"/>	
 </widget>
 
 <widget>
-	<field>twitterRSS</field>
-	<id>twitter</id>
-	<module>getTwitter.php</module>
+	<active>0</active>
+	<async>0</async>
+	<field>ecmRSS</field>
+	<id>ecmRSS</id>
+	<module>getRss.php</module>
+	<param name="url" value="http://ada.lynxlab.com/ecm/?feed=rss2"/>	
 </widget>
 </widgets>
 

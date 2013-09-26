@@ -75,7 +75,9 @@ class Layout {
 	//$this->debug();
 	
 	// Widgets
-	$PageWidgetObj = new PageWidget($node_type, $module_dir, $this->external_module);
+	$pageWidgetObj = new PageWidget($this->template);
+	$this->WIDGET_dir = $pageWidgetObj->pageWidgetsDir;
+	$this->WIDGET_filename = $pageWidgetObj->pageWidgets;
 
     }//end function Layout
 
@@ -396,32 +398,78 @@ class JS {
  */
 class PageWidget
 {
+	/**
+	 * holds widgets configuration file full pathname or null on error
+	 * @var string
+	 */
+	var $pageWidgets;
+	
+	/**
+	 * holds widgets configuration file full dirname or null on error
+	 * @var string
+	 */	
+	var $pageWidgetsDir;
+	
+	/**
+	 * hold error string if any
+	 * @var string
+	 */
+	var $error;
+	
+	/**
+	 * default widget configuration file extension
+	 * @var string
+	 */
+	private static $widgetConfFileExtension = '.xml';
+	
+	/**
+	 * where to start looking for dirname.
+	 * e.g. assuming template is in ROOT_DIR .'layout/ada_blu/templates/main/default.tpl'
+	 * it'll extract the dir starting AND NOT INCLUDING the value of the variable.
+	 * e.g. 'main/'
+	 * 
+	 * @var string
+	 */	
+	private static $extractPathStartingFrom = 'templates/';
+	
     /**
-     * PageWidget constructor.
+     * PageWidget constructor, the XML filename is the same as the template, but with xml
+     * extension. If one with same name is found inside the currently active provider, that
+     * one is preferred over the standard one.
      * 
-     * @param string $node_type type of the node to find a widget xml file for
-	 * @param string $module_dir modules directory (aka function group) of the node
-	 * @param string $is_external_module true if it's an external module
+     * @param string $filename template file name used to build widget xml file name
      */
-    public function __construct($node_type="", $module_dir="main", $is_external_module = false)
-    {
-        var_dump ($node_type);
-        var_dump($function_group);
-        var_dump($is_external_module);
-        
-        if ($module_dir=="") $module_dir = "main";
-        
-        if ($is_external_module) {
-        	$widget_dir = ROOT_DIR."/$module_dir/widgets/";
-        }
-        else {
-        	$widget_dir = ROOT_DIR."/widgets/$module_dir/";
-        }
-        
-        
-        
-        
-        
+    public function __construct($filename)
+    {    	
+    	$this->pageWidgets = null;
+    	$this->pageWidgetsDir = null;
+    	$this->error = '';
+    	
+    	$extractStringFrom = strpos($filename, self::$extractPathStartingFrom) + strlen (self::$extractPathStartingFrom);
+    	$extractLength  = strrpos($filename, '/') - $extractStringFrom + 1 ; 
+    	
+    	$dirname = substr ($filename, $extractStringFrom, $extractLength);
+    	$filename = preg_replace('/\..*$/', self::$widgetConfFileExtension, basename($filename));
+
+    	$widgets_filename = '';
+    	
+    	if (!MULTIPROVIDER)
+    	{
+    		$widgets_dir = ROOT_DIR."/clients/".$GLOBALS['user_provider']."/widgets/$dirname";
+    		$widgets_filename = $widgets_dir.$filename;
+    	}
+    	
+    	if (!file_exists($widgets_filename))
+    	{
+    		$widgets_dir = ROOT_DIR . "/widgets/$dirname";
+    		$widgets_filename = $widgets_dir.$filename;
+    		if (!file_exists($widgets_filename)) {
+    			$widgets_dir = $widgets_filename = null;
+    			$this->error = "$widgets_filename not found";    		
+    		}
+    	}    	
+    	$this->pageWidgets = $widgets_filename;
+    	$this->pageWidgetsDir = $widgets_dir;    	
     }
 }
 ?>
