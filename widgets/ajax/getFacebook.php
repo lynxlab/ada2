@@ -74,22 +74,33 @@ $i = 0;
 foreach($spObj->get_items() as $item) {
 	$title = html_entity_decode($item->get_title() );
 	if ($title=='' && !$showDescription) continue;
-	$rss_link =  BaseHtmlLib::link($item->get_link(),$title);
-	$rss_items[] = 	$rss_link->getHTML().( $showDescription ? '<br/>'.$item->get_description() : '' );
+	
+	$facebookDIV = CDOMElement::create('div','class:facebookContainer');
+		$facebookLINK = CDOMElement::create('a','href:'.$item->get_link());
+		$facebookLINK->setAttribute('target', '_blank');
+		$facebookLINK->addChild(new CText($title));
+	$facebookDIV->addChild($facebookLINK);
+	
+	if ($showDescription)
+	{
+		$facebookDIV->addChild(new CText('<br class="clearfix" />'));
+		$facebookDIV->addChild(new CText($item->get_description()));
+	}
+	
+	$rss_items[] = 	$facebookDIV->getHtml();
 	if (++$i>=$count) break;
 }
-$rss_msg = BaseHtmlLib::plainListElement('',$rss_items,false);
 
 /**
  * Common output in sync or async mode
  */
  switch ($widgetMode) {
 		case ADA_WIDGET_SYNC_MODE:
-			return $rss_msg->getHtml();
+			return implode('<br class="clearfix" />', $rss_items);
 			break;
 		case ADA_WIDGET_ASYNC_MODE:
 		default:
-			echo $rss_msg->getHtml();
+			echo implode('<br class="clearfix" />', $rss_items);
 		
 }
 ?>

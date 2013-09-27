@@ -77,44 +77,61 @@ $spObj->init();
 // $spObj->set_cache_location('./cache')
 // $spObj->enable_cache(true);
 
+$rssDIV = CDOMElement::create('div','class:RSSContainer');
+
+if ($headerLink) {
+
+	$headerHREF = CDOMElement::create('a','href:'.$headerLink);
+	$headerHREF->setAttribute('target', '_blank');
+	$headerHREF->setAttribute('class', 'RSSheader');
+	if ($headerTitle) $headerHREF->setAttribute('title', $headerTitle);
+
+	if ($headerImage)
+	{
+		$headerIMG = CDOMElement::create('img','src:'.$headerImage);
+		$headerIMG->setAttribute('class', 'RSSheader');
+		$headerIMG->setAttribute('height', '50px');
+		if ($headerTitle) $headerIMG->setAttribute('alt', $headerTitle);
+		$headerHREF->addChild($headerIMG);
+	} else {
+		$headerHREF->addChild(new CText($headerTitle ? $headerTitle : $headerLink));
+	}
+	$rssDIV->addChild ($headerHREF);
+}
+
 $rss_items = array();
 $i=0;
 foreach($spObj->get_items() as $item) {
-    $href = $item->get_link() ;
 	$title = $item->get_title() ;
-	$rss_link = CDOMElement::create('a','href:'.$item->get_link());
-	$rss_link->setAttribute('target', '_blank');
-	$rss_link->addChild (new CText($title));
-	$rss_items[] = 	$rss_link->getHTML().( $showDescription ? '<br/>'.$item->get_description() : '' );
+	if ($title=='' && !$showDescription) continue;
+
+	$rssCONTENT = CDOMElement::create('div','class:RSSContent');
+		$rssLINK = CDOMElement::create('a','href:'.$item->get_link());
+		$rssLINK->setAttribute('target', '_blank');
+		$rssLINK->addChild(new CText($title));
+	$rssCONTENT->addChild($rssLINK);
+
+	if ($showDescription)
+	{
+		$rssCONTENT->addChild(new CText('<br class="clearfix" />'));
+		$rssCONTENT->addChild(new CText($item->get_description()));
+	}
+
+	$rssDIV->addChild($rssCONTENT);
+	$rssDIV->addChild(new CText('<br class="clearfix" />'));
 	if (++$i>=$count) break;
 }
-$rss_msg = BaseHtmlLib::plainListElement('',$rss_items,false);
-
-if ($headerLink) {
-	if ($headerImage)
-	{
-		$headerImageHtml = "<img src='".$headerImage."' height='50px'";
-		if ($headerTitle) $headerImageHtml .= " alt='".$headerTitle."'";
-		$headerImageHtml .= '/>';
-	}	
-	$rss_title = CDOMElement::create('a','href:'.$headerLink);
-	$rss_title->setAttribute('target', '_blank');
-	if ($headerTitle) $rss_title->setAttribute('title', $headerTitle);
-	$rss_title->addChild (new CText(($headerImage ? $headerImageHtml : ($headerTitle ? $headerTitle : $headerLink))));	
-}
-
-$rss_string = ($headerLink ? $rss_title->getHtml() : '').$rss_msg->getHtml();
 
 /**
  * Common output in sync or async mode
  */
  switch ($widgetMode) {
 		case ADA_WIDGET_SYNC_MODE:
-			return $rss_string;
+			return $rssDIV->getHtml();
 			break;
 		case ADA_WIDGET_ASYNC_MODE:
 		default:
-			echo $rss_string;
+			echo $rssDIV->getHtml();
 		
 }
 ?>

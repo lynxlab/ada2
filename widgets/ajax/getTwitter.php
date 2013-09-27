@@ -14,7 +14,9 @@
  * 
  * supported params you can pass either via XML or php array:
  * 
- * 	name="screen_name"	   mandatory, value: twitter username of the displayed timeline 
+ * 	name="screen_name"	   mandatory, value: twitter username of the displayed timeline
+ *  name="showImage"       optional,  value: shows or hides the user image. values: 0 or nonzero
+ *                                           if invalid or omitted, image will be hidden  
  *	name="count"		   optional,  value: how many tweets to display 
  *                                           if invalid or omitted 20 tweets are displayed
  *         
@@ -57,6 +59,7 @@ require_once ADA_WIDGET_AJAX_ROOTDIR .'/include/TwitterAccess.inc.php';
 
 if (!isset($screen_name)) die ('no twitter timeline to load');
 if (!isset($count) || !is_numeric($count)) $count=20;
+if (!isset($showImage) || !is_numeric($showImage)) $showImage = 0;
 
 $url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 $getfield = '?screen_name='.$screen_name.'&count='.$count;
@@ -74,6 +77,9 @@ $searchForBuildURL = array ('<URL>','<EXPANDED_URL>','<DISPLAY_URL>');
 $items = array();
 foreach($twDatas as $k=>$twitterAr) {
 
+// 	var_dump ($twitterAr->user->profile_image_url);
+// 	if ($k>0) die();
+	
 	$hashText = array();
 	$hashLinks = array();
 	
@@ -147,21 +153,35 @@ foreach($twDatas as $k=>$twitterAr) {
 	}
 	$displayText = str_replace($searchUser, $replaceUser, $displayText);
 	
-	$items[] = $firstLine.$displayText;
+	$twitterDIV = CDOMElement::create('div','class:twitterContainer');
+	$twitterText = CDOMElement::create('div','class:twitterText');
+	$twitterText->addChild(new CText($firstLine.$displayText));
+	
+	if ($showImage)
+	{
+		$imgUrl = ($isRetweeded) ? $twitterAr->retweeted_status->user->profile_image_url :  $twitterAr->user->profile_image_url;
+		
+		$twitterImage = CDOMElement::create('div','class:twitterImage');
+		$twitterImage->setAttribute('style', 'float:left');
+		$twitterImage->addChild(CDOMElement::create('img','src:'.$imgUrl));
+		$twitterText->setAttribute('style', 'margin-left:55px');
+		$twitterDIV->addChild($twitterImage);
+	}	
+	$twitterDIV->addChild($twitterText);
+	
+	$items[] = $twitterDIV->getHtml();
 }
-
-$listHTML = BaseHtmlLib::plainListElement('',$items,false);
 
 /**
  * Common output in sync or async mode
  */
  switch ($widgetMode) {
 		case ADA_WIDGET_SYNC_MODE:
-			return $listHTML->getHtml();
+			return implode('<br class="clearfix" />', $items);
 			break;
 		case ADA_WIDGET_ASYNC_MODE:
 		default:
-			echo $listHTML->getHtml();
+			echo implode('<br class="clearfix" />', $items);
 		
 }
 ?>

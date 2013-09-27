@@ -60,6 +60,7 @@
 	<id>twitter</id>
 	<module>getTwitter.php</module>
 	<param name="screen_name" value="YOUR_TWITTER_SCREEN_NAME_HERE" />
+	<param name="showImage" value="1" />
 	<!-- <param name="count" value="10" /> -->
 </widget>
 </widgets>
