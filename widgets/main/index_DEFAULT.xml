@@ -31,25 +31,35 @@
 		and configure there your private access tokens.
 -->
 <widgets>
-	<widget>
-		<!-- this entry has neither active nor async set, so it's going to take 
-			the default values: 
-			active = 1 (true)
-			async = 1 (async mode) 
-		-->
-		<field>lynxRSS</field>
-		<id>lynxRSS</id>
-		<module>getRss.php</module>
-		<param name="url" value="http://www.lynxlab.com/rss.xml" />
-	</widget>
+<widget>
+	<!-- <active>1</active> -->
+	<!-- <async>1</async> -->
+	<field>lynxRSS</field>
+	<id>lynxRSS</id>
+	<module>getRss.php</module>
+	<param name="url" value="http://ada.lynxlab.com/ecm/?feed=rss2"/>
+	<!-- <param name="count" value="5" /> -->
+    <!-- <param name="showDescription" value="1" /> -->     
+    <param name="headerImage" value="http://ada.lynxlab.com/ecm/wp-content/uploads/2013/03/ecmNews+subtitle-short.png" />
+    <param name="headerTitle" value="Click here to go to ecm.lynxlab.com" />
+    <param name="headerLink"  value="http://ecm.lynxlab.com" />
+</widget>
 
-	<widget>
-		<active>0</active>
-		<async>0</async>
-		<field>ecmRSS</field>
-		<id>ecmRSS</id>
-		<module>getRss.php</module>
-		<param name="url" value="http://ada.lynxlab.com/ecm/?feed=rss2" />
-	</widget>
+<widget>
+	<field>fbRSS</field>
+	<id>facebook</id>
+	<module>getFacebook.php</module>
+	<param name="id" value="YOUR_FACEBOOK_ID_HERE" />
+	<!-- <param name="format" value="atom10" /> -->	
+	<!-- <param name="count" value="10" /> -->
+	<!-- <param name="showDescription" value="1" /> -->
+</widget>
+
+<widget>
+	<field>twitterTimeLine</field>
+	<id>twitter</id>
+	<module>getTwitter.php</module>
+	<param name="screen_name" value="YOUR_TWITTER_SCREEN_NAME_HERE" />
+	<!-- <param name="count" value="10" /> -->
+</widget>
 </widgets>
-

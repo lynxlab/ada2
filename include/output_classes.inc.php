@@ -202,7 +202,9 @@ class ARE
          */
         if (!is_null($layoutObj->WIDGET_filename))
         {
-        	$content_dataAr = array_merge ($content_dataAr, $html_renderer->fillin_widgetsFN($layoutObj->WIDGET_filename,$layout_dataAr['widgets']));		
+        	$widgets_dataAr = $html_renderer->fillin_widgetsFN($layoutObj->WIDGET_filename,$layout_dataAr['widgets']);
+        	if (!ADA_Error::isError($widgets_dataAr))
+        		$content_dataAr = array_merge ($content_dataAr, $widgets_dataAr);		
         }                
         $html_renderer->fillin_templateFN($content_dataAr);
 
@@ -1086,13 +1088,25 @@ EOT;
    * 
    * @param string $widgetsConfFilename xml configuration filename for the widgets
    * @param arrayn $optionsArray array of option to be passed to the widget loader
+   * 
+   * @return array|AMA_Error
    */
   public function fillin_widgetsFN ($widgetsConfFilename = '', $optionsArray = array())
   {
   	
   	require_once ROOT_DIR.'/widgets/include/widget_includes.inc.php';
   	
-  	$widgetAr = ArrayToXML::toArray(file_get_contents($widgetsConfFilename));
+  	try {
+  		$widgetAr = ArrayToXML::toArray(file_get_contents($widgetsConfFilename));
+  	}
+  	catch (Exception $e) {
+  		/*
+  		 * see config_errors.inc.php line 167 and following.
+  		 * depending on the erorr phase / severity something will happen...
+  		 */
+  		return new ADA_Error(NULL,'Widget configuration XML is not valid',__METHOD__,ADA_ERROR_ID_XML_PARSING);
+  	
+  	}  	
   	$widgets = $widgetAr['widget'];
   	$retArray = array();
   	

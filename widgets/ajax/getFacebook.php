@@ -1,10 +1,10 @@
 <?php
 /**
- * RSS Feed reader
+ * RSS Feed reader for Facebook
  * uses: simplepie.inc.php
  *
  * @package		widget
- * @author		Stefano Penge <steve@lynxlab.com>
+ * @author		Stefano Penge <steve@lynxlab.com> 
  * @author		giorgio <g.consorti@lynxlab.com>
  * 
  * @copyright	Copyright (c) 2013, Lynx s.r.l.
@@ -14,20 +14,13 @@
  *
  * supported params you can pass either via XML or php array:
  *   
- *  name="url"			   mandatory, value: rss url to be loaded
+ *  name="id"			   mandatory, value: facebook user id of the displayed timeline
+ *  name="format"		   optional,  value: feed format to be loaded, possible values: "atom10" or "rss20"
+ *                                           if invalid or omitted, atom10 will be used
  *  name="showDescription" optional,  value: shows or hides the post description. values: 0 or nonzero
  *                                           if invalid or omitted, description will be hidden
  *	name="count"		   optional,  value: how many posts to display
- *                                           if invalid or omitted all returned entries are displayed
- *  name="headerLink"      optional,  value: if set, a link with passed url will be built and put as
- *                                           RSS listing header
- *  name="headerTitle"     optional,  value: if the link will be generated, it will take the passed title
- *                                           and as link text
- *                                           if omitted, headerLink will be used
- *  name="headerImage"     optional,  value: if the link will be generated, it will have the passed image
- *                                           as a clickable element.
- *                                           if omitted, headerTitle will be used
- *  
+ *                                           if invalid or omitted 20 posts are displayed 
  */
 
 /**
@@ -64,57 +57,39 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
 require_once ROOT_DIR.'/widgets/ajax/include/simplepie.inc.php';
 
-if (!isset($url)) die ('No url  to be loaded.');
+if (!isset($id)) die ('na facebook feed to load');
+if (!isset($format) && !in_array($format, array('atom10','rss20'))) $format = "atom10";
 if (!isset($showDescription) || !is_numeric($showDescription)) $showDescription=0;
-if (!isset($count) || !is_numeric($count)) $count=PHP_INT_MAX;
-if (!isset($headerImage)) $headerImage = false;
-if (!isset($headerTitle)) $headerTitle = false;
-if (!isset($headerLink))  $headerLink  = false;
+if (!isset($count) || !is_numeric($count)) $count=20;
+
+$url = "http://www.facebook.com/feeds/page.php?format=$format&id=$id";
 
 $spObj = new simplepie();
 $spObj->set_feed_url($url);
 $spObj->init();
 // $spObj->set_cache_location('./cache')
 // $spObj->enable_cache(true);
-
 $rss_items = array();
-$i=0;
+$i = 0;
 foreach($spObj->get_items() as $item) {
-    $href = $item->get_link() ;
-	$title = $item->get_title() ;
-	$rss_link = CDOMElement::create('a','href:'.$item->get_link());
-	$rss_link->setAttribute('target', '_blank');
-	$rss_link->addChild (new CText($title));
+	$title = html_entity_decode($item->get_title() );
+	if ($title=='' && !$showDescription) continue;
+	$rss_link =  BaseHtmlLib::link($item->get_link(),$title);
 	$rss_items[] = 	$rss_link->getHTML().( $showDescription ? '<br/>'.$item->get_description() : '' );
 	if (++$i>=$count) break;
 }
 $rss_msg = BaseHtmlLib::plainListElement('',$rss_items,false);
-
-if ($headerLink) {
-	if ($headerImage)
-	{
-		$headerImageHtml = "<img src='".$headerImage."' height='50px'";
-		if ($headerTitle) $headerImageHtml .= " alt='".$headerTitle."'";
-		$headerImageHtml .= '/>';
-	}	
-	$rss_title = CDOMElement::create('a','href:'.$headerLink);
-	$rss_title->setAttribute('target', '_blank');
-	if ($headerTitle) $rss_title->setAttribute('title', $headerTitle);
-	$rss_title->addChild (new CText(($headerImage ? $headerImageHtml : ($headerTitle ? $headerTitle : $headerLink))));	
-}
-
-$rss_string = ($headerLink ? $rss_title->getHtml() : '').$rss_msg->getHtml();
 
 /**
  * Common output in sync or async mode
  */
  switch ($widgetMode) {
 		case ADA_WIDGET_SYNC_MODE:
-			return $rss_string;
+			return $rss_msg->getHtml();
 			break;
 		case ADA_WIDGET_ASYNC_MODE:
 		default:
-			echo $rss_string;
+			echo $rss_msg->getHtml();
 		
 }
 ?>
