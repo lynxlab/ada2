@@ -70,3 +70,34 @@ html,body {
 #footer a:hover {
 	color: #aeaeae;
 }
+
+/**
+ * widget classes, general and specific
+ */
+.ADAwidget
+ {
+	border:1px dotted beige;
+	background: #eaeaea;
+	padding: 20px;
+	border-radius: 10px;
+	margin: 5px 10px 20px 0;
+    -webkit-box-shadow:  0px 5px 15px 0px rgba(120, 120, 120, .4);     
+    box-shadow:  0px 5px 15px 0px rgba(120, 120, 120, .4);
+}
+
+.twitterContainer, .facebookContainer, .RSSContent
+{
+	padding-bottom: 10px;
+	border-bottom: 1px dotted darkgray;
+}
+
+.twitterContainer:last-child,
+.facebookContainer:last-child,
+.RSSContent:last-child
+{
+	border: none;
+}
+
+.column.ui-sortable { width: 100%; min-height: 25px; }
+.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; background:#ffffe0; }
+.ui-sortable-placeholder * { visibility: hidden;  }

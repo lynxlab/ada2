@@ -42,6 +42,14 @@ if (isset($_SESSION['ada_access_from'])) {
     exit();
   }
 }
+
+/**
+ * save session user provider before destroying the session
+ * and after redirect to provider's own index.php
+ */
+
+if (isset($_SESSION['sess_user_provider'])) $saved_provider = $_SESSION['sess_user_provider'];
+
 session_unset();
 session_destroy();
 
@@ -63,7 +71,9 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = whoami(); // index
 include_once 'include/'.$self.'_functions.inc.php';
 
-
+// if module_init did not set a new provider in session
+// and a saved provider is set, redirect to saved provider index
+if (!isset($_SESSION['sess_user_provider']) && isset($saved_provider)) { header ('Location: '.$saved_provider.'/index.php'); exit(); }
 
 // non serve più...
 // require_once ROOT_DIR.'/include/aut/login.inc.php';
@@ -73,9 +83,11 @@ $lang_get = $_GET['lang'];
 
 /**
  * sets language if it is not multiprovider
+ * if commented, then language is handled by ranslator::negotiateLoginPageLanguage
+ * that will check if the browser language is supported by ADA and set it accordingly
  */
 
-if (!MULTIPROVIDER && defined('PROVIDER_LANGUAGE')) $lang_get = PROVIDER_LANGUAGE;
+// if (!MULTIPROVIDER && defined('PROVIDER_LANGUAGE')) $lang_get = PROVIDER_LANGUAGE;
 
 
 /**
@@ -204,7 +216,9 @@ if(isset($p_login)) {
 /**
  * Show login page
  */
-$form_action = HTTP_ROOT_DIR .'/index.php';
+$form_action = HTTP_ROOT_DIR ;
+if (!MULTIPROVIDER && isset ($GLOBALS['user_provider']) && $GLOBALS['user_provider']!='') $form_action .= '/'.$GLOBALS['user_provider'];
+$form_action .= '/index.php';
 $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_page_language_code, $login_error_message);
 
 //$login = UserModuleHtmlLib::loginForm($supported_languages,$login_page_language_code, $login_error_message);
@@ -339,5 +353,13 @@ $content_dataAr = array(
  * and the index.tpl has some template_field for the widget
  * it will be AUTOMAGICALLY filled in!!
  */
-ARE::render($layout_dataAr,$content_dataAr);
+// ARE::render($layout_dataAr,$content_dataAr);
+		$layout_dataAr['JS_filename'] = array(
+				JQUERY,
+				JQUERY_UI,
+				JQUERY_NO_CONFLICT,
+				ROOT_DIR . "/js/main/index.js"
+		);
+		$optionsAr['onload_func'] = 'initDoc();';
+ARE::render($layout_dataAr, $content_dataAr, NULL, (isset($optionsAr) ? $optionsAr : NULL) );
 ?>

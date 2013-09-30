@@ -77,7 +77,7 @@ $spObj->init();
 // $spObj->set_cache_location('./cache')
 // $spObj->enable_cache(true);
 
-$rssDIV = CDOMElement::create('div','class:RSSContainer');
+// $rssDIV = CDOMElement::create('div','class:RSSContainer');
 
 if ($headerLink) {
 
@@ -96,7 +96,7 @@ if ($headerLink) {
 	} else {
 		$headerHREF->addChild(new CText($headerTitle ? $headerTitle : $headerLink));
 	}
-	$rssDIV->addChild ($headerHREF);
+// 	$rssDIV->addChild ($headerHREF);
 }
 
 $rss_items = array();
@@ -117,21 +117,28 @@ foreach($spObj->get_items() as $item) {
 		$rssCONTENT->addChild(new CText($item->get_description()));
 	}
 
-	$rssDIV->addChild($rssCONTENT);
-	$rssDIV->addChild(new CText('<br class="clearfix" />'));
+// 	$rssDIV->addChild($rssCONTENT);
+// 	$rssDIV->addChild(new CText('<br class="clearfix" />'));
+	$rss_items[] = $rssCONTENT->getHtml();
 	if (++$i>=$count) break;
 }
+
+$output = '';
+
+if ($headerLink) $output = $headerHREF->getHtml()."<br class='clearfix' />";
+
+$output .= implode("<br class='clearfix' />", $rss_items);
 
 /**
  * Common output in sync or async mode
  */
  switch ($widgetMode) {
 		case ADA_WIDGET_SYNC_MODE:
-			return $rssDIV->getHtml();
+			return $output;
 			break;
 		case ADA_WIDGET_ASYNC_MODE:
 		default:
-			echo $rssDIV->getHtml();
+			echo $output;
 		
 }
 ?>

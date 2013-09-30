@@ -41,6 +41,9 @@
 		</div>
 		<div class="helpcont">
 		  <template_field class="template_field" name="helpmsg">helpmsg</template_field>
+		  <!-- widget sample 
+		  <template_field class="template_field" name="widgetSample">widgetSample</template_field>
+		   -->
             </div>
          </div>
          </div>
