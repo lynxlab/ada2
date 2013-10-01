@@ -20,7 +20,7 @@ RewriteRule .* %{HTTP_ROOT_DIR}/<YOUR_DIR_HERE> [R=301,L]
 # properly handled by the browser
 #################################################
          
-RewriteCond %{REQUEST_URI} ^<YOUR_DIR_HERE>/(\w+)$
+RewriteCond %{REQUEST_URI} ^/<YOUR_DIR_HERE>/(\w+)$
 RewriteRule ^(.*)$ %{HTTP_ROOT_DIR}/<YOUR_DIR_HERE>/$1/ [L,R=301]
 
 #################################################
