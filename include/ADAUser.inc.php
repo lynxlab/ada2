@@ -162,8 +162,24 @@ class ADAUser extends ADAAbstractUser
 	 * @see ADAAbstractUser::getDefaultTester()
 	 */
 	public function getDefaultTester() {
-		if(!MULTIPROVIDER && isset($_COOKIE['ada_provider'])) {
-			$tester = DataValidator::validate_testername($_COOKIE['ada_provider'],MULTIPROVIDER);
+		if(!MULTIPROVIDER) {	
+					
+			$candidate = null;		
+			/**
+			 * the default tester is the only one in which the user is listed
+			 * that is NOT the public tester. So let's take the list of all
+			 * providers the user is registered into, remove the public one and
+			 * if what is left has only one element, this is the default tester.
+			 * Else we cannot tell for certain the default testers and return null.
+			 */
+			$testersArr = $this->getTesters();
+			if (!empty($testersArr))
+			{					
+				$testersArr = array_values(array_diff ($testersArr, array(ADA_PUBLIC_TESTER)));
+				if (count($testersArr)===1) $candidate = $testersArr[0];
+			}			
+
+			$tester = DataValidator::validate_testername($candidate,MULTIPROVIDER);
 			if ($tester!==false) return $tester;
 			else return NULL;
 		}
