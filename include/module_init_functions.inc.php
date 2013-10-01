@@ -39,7 +39,17 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 	$httpDir = $httpParts[count($httpParts)-1];
 
 	$parts = explode ('/',$_SERVER['REQUEST_URI']);
-	$potentialProvider = $parts[1];
+		/*
+         * the last part uf the uri is the potential provider.
+         * e.g.
+         * http://ada.lynxlab.com/directory/potentialProvider/
+         * 1. keep in mind that .htaccess forced the last '/' that will always be there
+         * 2. knowing point 1. it's known that the last item of $parts array will be an empty string
+	     * 3. it follows that the potentialProvider shall be the second to last elemets of $parts array.
+         *
+         */
+	$potentialProvider = $parts[count($parts)-2];
+	
   	/*
   	 * if it's a direct request (e.g. /info.php and NOT provider/info.php)
   	 * all previously set data must be unset, so that the selected provider
