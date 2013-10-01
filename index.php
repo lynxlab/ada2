@@ -15,7 +15,7 @@
  * @link		index
  * @version		0.1
  */
-
+ 
 /**
  * Destroy session
  */
@@ -71,9 +71,9 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = whoami(); // index
 include_once 'include/'.$self.'_functions.inc.php';
 
-// if module_init did not set a new provider in session
+// if it's not multiprovider and module_init did not set a new provider in session
 // and a saved provider is set, redirect to saved provider index
-if (!isset($_SESSION['sess_user_provider']) && isset($saved_provider)) { header ('Location: '.$saved_provider.'/index.php'); exit(); }
+if (!MULTIPROVIDER && !isset($_SESSION['sess_user_provider']) && isset($saved_provider)) { header ('Location: '.$saved_provider.'/index.php'); exit(); }
 
 // non serve più...
 // require_once ROOT_DIR.'/include/aut/login.inc.php';
@@ -300,8 +300,28 @@ if (isset($testerName))
 			$aNewsTitle->addChild (new CText($aNews[1]));
 			$aNewsDIV->addChild ($aNewsTitle);
 
-			// strip off HTML
-			$newstext = strip_tags($aNews[2]);
+			// @author giorgio 01/ott/2013
+			// remove unwanted div ids: tabs
+			// NOTE: slider MUST be removed BEFORE tabs because tabs can contain slider and not viceversa
+			$removeIds = array ('slider','tabs');
+			
+			$html = new DOMDocument('1.0', 'UTF-8');
+			$html->loadHTML(utf8_decode($aNews[2]));
+
+			foreach ($removeIds as $removeId)
+			{
+				$removeElement = $html->getElementById($removeId);
+				if (!is_null($removeElement)) $removeElement->parentNode->removeChild($removeElement);				
+			}
+			
+			// output in newstext only the <body> of the generated html
+			$newstext = '';
+			foreach ($html->getElementsByTagName('body')->item(0)->childNodes as $child)
+			{
+				$newstext .= $html->saveXML($child);
+			}
+			// strip off html tags
+			$newstext = strip_tags($newstext);
 			// check if content is too long...
 			if (strlen($newstext) > $maxLength)
 			{

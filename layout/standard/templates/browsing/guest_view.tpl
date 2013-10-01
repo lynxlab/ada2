@@ -26,7 +26,7 @@
                     <template_field class="template_field" name="path">path</template_field>
                 </span>
                 <div class="dattilo" id="dattilo">
-                      <template_field class="template_field" name="dattilo">dattilo</template_field>
+                      <!--template_field class="template_field_disabled" name="dattilo">dattilo</template_field-->
                 </div>
 
             </div>
@@ -131,7 +131,7 @@
             </div> <!-- /com_tools -->
             <!-- menudestra -->
 
-            <div id="menuright" class="sottomenu_on menuright_view">
+            <div id="menuright" class="sottomenu_off menuright_view">
             <!--<div id="menuright" class="sottomenu_off menuright_view">--><!-- to hide right panel -->
 
                 <div id="topmenur">
