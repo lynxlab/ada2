@@ -9,4 +9,4 @@
  * @version		0.1
  */
 // just include view.js and it's all set
-document.write("<script type='text/javascript' src='js/browsing/view.js'></script>");
+document.write("<script type='text/javascript' src='../js/browsing/view.js'></script>");
