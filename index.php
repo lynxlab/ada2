@@ -43,13 +43,6 @@ if (isset($_SESSION['ada_access_from'])) {
   }
 }
 
-/**
- * save session user provider before destroying the session
- * and after redirect to provider's own index.php
- */
-
-if (isset($_SESSION['sess_user_provider'])) $saved_provider = $_SESSION['sess_user_provider'];
-
 session_unset();
 session_destroy();
 
@@ -70,10 +63,6 @@ $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_T
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = whoami(); // index
 include_once 'include/'.$self.'_functions.inc.php';
-
-// if it's not multiprovider and module_init did not set a new provider in session
-// and a saved provider is set, redirect to saved provider index
-if (!MULTIPROVIDER && !isset($_SESSION['sess_user_provider']) && isset($saved_provider)) { header ('Location: '.$saved_provider.'/index.php'); exit(); }
 
 // non serve più...
 // require_once ROOT_DIR.'/include/aut/login.inc.php';
@@ -227,7 +216,6 @@ if(isset($p_login)) {
  * Show login page
  */
 $form_action = HTTP_ROOT_DIR ;
-// if (!MULTIPROVIDER && isset ($GLOBALS['user_provider']) && $GLOBALS['user_provider']!='') $form_action .= '/'.$GLOBALS['user_provider'];
 $form_action .= '/index.php';
 $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_page_language_code, $login_error_message);
 
