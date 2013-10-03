@@ -139,11 +139,6 @@ define('MAX_HEIGHT', "200");
 define('ADA_ADMIN_MAIL_ADDRESS','graffio@lynxlab.com');
 
 /**
- *
- */
-define('PORTAL_NAME','ADA 2.1');
-
-/**
  * ADA version
  */
 define('ADA_VERSION','2.1alpha0');
