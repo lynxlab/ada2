@@ -5044,6 +5044,35 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         return true;
     }
 
+    
+  /**
+   * Get all informations about the users subscribed the course instances
+   *
+   * @access public
+   *
+   * @param $id the course's id
+   *
+   * @return an array containing all the informations about users
+   *   corso                - course model the instance is originated from
+   *
+   */
+  public function course_users_instance_get($id) {
+        ADALogger::log_db("course_users_instance_get (id_corso:$id)");
+
+        $db =& $this->getConnection();
+        if ( AMA_DB::isError( $db ) ) return $db;
+
+        $sql = 'SELECT distinct U.id_utente, U.nome, U.cognome, U.username, IC.id_corso, I.id_utente_studente, I.id_istanza_corso, IC.data_inizio, I.status FROM
+        iscrizioni AS I, istanza_corso AS IC, utente AS U
+        WHERE IC.id_corso = '.$id.' AND I.id_istanza_corso = IC.id_istanza_corso AND U.id_utente = I.id_utente_studente order by U.cognome';
+        $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
+        if (AMA_DB::isError($result)) {
+          return new AMA_Error(AMA_ERR_GET);
+        }
+        return $result;
+  }
+
+    
     /**
      * Get all informations about a course instance
      *
@@ -10034,6 +10063,55 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // no tutor found
         return false;
     }
+    
+  /**
+   * get the tutor(s) complete informations of the course_instance
+   *
+   * @access public
+   *
+   * @param $id_tutor    - tutor id
+   * @param $id_instance    - course instance id
+   * @param $number    - mode: a single tutor  or array
+   *
+   * @return an error if something goes wrong, an array if $number >=1, an integer else
+   */
+  public function course_instance_tutor_info_get($id_instance,$number=0){
+    $db =& $this->getConnection();
+    if ( AMA_DB::isError( $db ) ) return $db;
+
+    $sql =  "select TS.id_utente_tutor, U.nome, U.cognome, U.username from tutor_studenti AS TS, utente AS U where id_istanza_corso=$id_instance AND TS.id_utente_tutor=U.id_utente";
+    if ($number==1) {
+      $res =  $db->getRow($sql);
+    }
+    else {
+      $res =  $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
+    }
+    if(AMA_DB::isError($res)) {
+      return new AMA_Error(AMA_ERR_GET);
+    }
+    return $res;
+    /*
+    if ((!empty($res)) && (!AMA_dataHandler::isError($res))){
+      if ($number==1){
+        $id_utente_tutor = $res[0];
+        return $id_utente_tutor;
+      }
+      else {
+        $tutorAr = array();
+        foreach ($res as $tutor) {
+          $id_utente_tutor = $tutor[0];
+          $tutorAr[] = $id_utente_tutor;
+        }
+        return $tutorAr;
+      }
+    }
+     *
+     */
+
+    // no tutor found
+    return false;
+  }
+
 
     /**
      * get the course_instance of the tutor
