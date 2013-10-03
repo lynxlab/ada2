@@ -20,6 +20,19 @@
 require_once('config_main.inc.php');
 
 /**
+ * if it's not a multiprovider environment 
+ * find out 3rd level domain name and include
+ * provider config file accordingly
+ */
+if (!MULTIPROVIDER)
+{
+	list ($client) = explode ('.',preg_replace('/(http[s]?:\/\/)/', '', $_SERVER['SERVER_NAME']));
+	
+	if (isset($client) && !empty ($client) && is_dir(ROOT_DIR.'/clients/'.$client))
+		require_once ROOT_DIR.'/clients/'.$client.'/client_conf.inc.php';
+}
+
+/**
  * constants and global variables from installation process 
  * 
  * YOU NEED TO EDIT THIS FILE WHEN INSTALLING THE SOFTWARE

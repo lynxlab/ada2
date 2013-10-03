@@ -332,8 +332,7 @@ else {
 			
 		if (!$redirect) $publishedServices = $common_dh->get_published_courses($user_provider_id);
 		else {
-			$url = HTTP_ROOT_DIR . ((isset($GLOBALS['ada_provider'])) ? '/'.$GLOBALS['ada_provider'].'/info.php' : '');
-			header ('Location: '.$url);
+			header ('Location: '.HTTP_ROOT_DIR.'/info.php');
 			die();
 		}		
 	} else {

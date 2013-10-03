@@ -34,56 +34,22 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
    * if it's not multiprovider and we're asking for index page,
    * sets the selected provider by detecting it from the filename that's executing
    */
-   if (!MULTIPROVIDER) { 
-	$httpParts = explode ('/',HTTP_ROOT_DIR);
-	$httpDir = $httpParts[count($httpParts)-1];
-
-	$parts = explode ('/',$_SERVER['REQUEST_URI']);
-		/*
-         * the last part uf the uri is the potential provider.
-         * e.g.
-         * http://ada.lynxlab.com/directory/potentialProvider/
-         * 1. keep in mind that .htaccess forced the last '/' that will always be there
-         * 2. knowing point 1. it's known that the last item of $parts array will be an empty string
-	     * 3. it follows that the potentialProvider shall be the second to last elemets of $parts array.
-         *
-         */
-	$potentialProvider = $parts[count($parts)-2];
+   if (!MULTIPROVIDER) {
+   	 
+	list($client) = explode ('.',preg_replace('/(http[s]?:\/\/)/', '', $_SERVER['SERVER_NAME']));
 	
-  	/*
-  	 * if it's a direct request (e.g. /info.php and NOT provider/info.php)
-  	 * all previously set data must be unset, so that the selected provider
-  	 * (if any) becomes unselected. 
-  	 */
-	//  	if (preg_match('/\/\S+\/+/',$_SERVER['REQUEST_URI'])==0)	
-	// unset session and global provider var only if user has asked for the home page
-	if ($httpDir == $potentialProvider) //  || is_dir(ROOT_DIR.'/'.$potentialProvider) || is_file(ROOT_DIR.'/'.$potentialProvider)
-  	{
-  		// must unset
-  		unset ($_SESSION['sess_user_provider']);
-  		unset ($GLOBALS['user_provider']); 
-  		// remove the cookie
-  		unset ($_COOKIE['ada_provider']);
-  		setcookie ('ada_provider', false, time() - 4800,'/');
+	if (isset($client) && !empty ($client) && is_dir(ROOT_DIR.'/clients/'.$client))
+  	{	  		
+  		// $_SESSION['sess_user_provider'] = $client;
+  		$GLOBALS['user_provider'] = $client;
+  		// other session vars per provider may go here...  		  		
   	}
-	else 
-	{
-		// preg_match('/\/(\w*)\/?.*/i', $_SERVER['REQUEST_URI'],$matches);
-
-	  	// if (!isset($_SESSION['sess_user_provider']) && isset ($matches[1]) && 
-	  	//     !empty($matches[1]) && is_dir(ROOT_DIR.'/clients/'.$matches[1]))
-		if (!empty ($parts) && isset ($potentialProvider) && !empty($potentialProvider) &&
-		     is_dir(ROOT_DIR.'/clients/'.$potentialProvider))
-	  	{	  		
-	  		$_SESSION['sess_user_provider'] = $potentialProvider;
-	  		// other session vars per provider may go here...  		  		
-	  	}
-	  	if (isset($_SESSION['sess_user_provider']) && !empty($_SESSION['sess_user_provider']))
-	  		$GLOBALS['user_provider'] = $_SESSION['sess_user_provider'];
-	  	// if it's not set and its value is not equal to the new passed one, set a cookie that shall expire in one year
-	  	if (isset($GLOBALS['user_provider']) && $_COOKIE['ada_provider']!=$GLOBALS['ada_provider'])
-	  		setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
-	}
+  	else unset ($GLOBALS['user_provider']);
+//   	if (isset($_SESSION['sess_user_provider']) && !empty($_SESSION['sess_user_provider']))
+//   		$GLOBALS['user_provider'] = $_SESSION['sess_user_provider'];
+  	// if it's not set and its value is not equal to the new passed one, set a cookie that shall expire in one year
+//   	if (isset($GLOBALS['user_provider']) && $_COOKIE['ada_provider']!=$GLOBALS['ada_provider'])
+//   		setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
   } // end if !MULTIPROVIDER
   
   /*
@@ -146,15 +112,7 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
     $redirectTo = $sess_userObj->getHomePage();
   }
   else {
-  	/**
-	 * giorgio 21/ago/2013
-	 * if it's not a multiprovider environment, try to redirect the user
-	 * to the selected provider that should be stored in the browser's cookie
-  	 */
-  	if (!MULTIPROVIDER && isset($_COOKIE['ada_provider'])) $redirectTo = $_COOKIE['ada_provider']. '/';
-  	else $redirectTo = '';
-  	
-    $redirectTo .= 'index.php';
+    $redirectTo = 'index.php';
   }
 
   if($parm_errorHa['course']) {
