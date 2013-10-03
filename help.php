@@ -51,15 +51,7 @@ include_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 
 $self =  'index';
 $docDir = '/docs/';
-
-/**
- * giorgio 12/ago/2013
- * set up proper path redirect in a multiproivder environment 
- */
-if (!MULTIPROVIDER && isset($GLOBALS['user_provider']))
-{
-	$helpPath = '/'.$GLOBALS['user_provider'];
-} else $helpPath = '';
+$helpPath = '';
 
 if (isset($_GET['type'])){
   $fileext = $_GET['type'];

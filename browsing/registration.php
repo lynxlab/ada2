@@ -179,8 +179,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		// if provider is not set the redirect
 		if (!isset($GLOBALS['user_provider']) || empty($GLOBALS['user_provider']))
 		{  
-			$url = HTTP_ROOT_DIR . ((isset($GLOBALS['ada_provider'])) ? '/'.$GLOBALS['ada_provider'].'/browsing/registration.php' : '');
-			header ('Location: '.$url);
+			header ('Location: '.HTTP_ROOT_DIR);
 			die();
 		}
 	}

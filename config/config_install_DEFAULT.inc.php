@@ -35,28 +35,32 @@ define('ADA_DEFAULT_TESTER_DB_USER',  'root');
 define('ADA_DEFAULT_TESTER_DB_PASS',  '');
 define('ADA_DEFAULT_TESTER_DB_HOST',  'localhost');
 
-/**
- * sets multiprovider flag, true is the default
- * multiprovider behaviour, false is single provider
- * each with its own home page and anonymous pages
- */
-define ('MULTIPROVIDER',true);
-
 if (MULTIPROVIDER) {
 	/**
 	 * In a single provider environment, each one
-	 * shall have theese set in its own config file
+	 * shall have these set in its own config file
 	 */
+	
 	/**
 	 * ID of the public course to get the latest news
 	 */
 	define ('PUBLIC_COURSE_ID_FOR_NEWS', 1);
 	/**
 	 * How many news to get from the above mentioned course
-	*/
+	 */
 	define ('NEWS_COUNT', 3);
 }
 
+/**
+ * URL
+ * DO NOT REMOVE the trailing // *js_import*
+ */
+if (!defined('HTTP_ROOT_DIR')) define('HTTP_ROOT_DIR','http://localhost/ada20'); // *js_import*
+
+/**
+ * portal name string - displayed in window titlebar
+*/
+if (!defined('PORTAL_NAME')) define('PORTAL_NAME','ADA 2.1 local git');
 
 
 /**
@@ -148,7 +152,6 @@ define('ADA_VERSION','2.1alpha0');
  * URL
  * DO NOT REMOVE the trailing // *js_import*
  */
-define('HTTP_ROOT_DIR','http://localhost/ada20'); // *js_import*
 define('MODULES_DIR',ROOT_DIR.'/modules'); // *js_import*
 
 /**

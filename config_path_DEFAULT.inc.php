@@ -13,11 +13,20 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @version		0.1
  */
-  /**
+
+ /**
   *  Root dir relative path
   */
   define('ROOT_DIR','/var/www/html/ada');
-/**
-* Main include file
-*/
-require_once(ROOT_DIR.'/config/ada_config.inc.php');
+
+ /**
+  * sets multiprovider flag, true is the default
+  * multiprovider behaviour, false is single provider
+  * each with its own home page and anonymous pages
+  */
+  define ('MULTIPROVIDER',true);
+  
+ /**
+  * Main include file
+  */
+  require_once(ROOT_DIR.'/config/ada_config.inc.php');
