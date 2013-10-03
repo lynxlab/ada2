@@ -75,7 +75,7 @@ $JS_i18n = array(
 ?>
 //main vars
 var HTTP_ROOT_DIR='<?php echo HTTP_ROOT_DIR;?>';
-var MODULES_DIR='<?php echo MODULES_DIR;?>';
+
 <?php if (!empty($_SESSION['sess_template_family'])): ?>
 var ADA_TEMPLATE_FAMILY = '<?php echo $_SESSION['sess_template_family'];?>';
 <?php else: ?>
