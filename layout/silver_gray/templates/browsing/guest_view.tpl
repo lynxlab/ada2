@@ -131,7 +131,7 @@
             </div> <!-- /com_tools -->
             <!-- menudestra -->
 
-            <div id="menuright" class="sottomenu_on menuright_view">
+            <div id="menuright" class="sottomenu_off menuright_view">
             <!--<div id="menuright" class="sottomenu_off menuright_view">--><!-- to hide right panel -->
 
                 <div id="topmenur">

@@ -326,3 +326,5 @@ define('JQUERY_MASKEDINPUT',	ROOT_DIR.'/js/include/jquery/maskedinput/jquery.mas
 define('JQUERY_DATATABLE_DATE',	ROOT_DIR.'/js/include/jquery/dataTables/dateSortPlugin.js');
 define('JQUERY_DATATABLE_CSS',	ROOT_DIR.'/js/include/jquery/dataTables/jquery.dataTables.css');
 define('JQUERY_NO_CONFLICT',	ROOT_DIR.'/js/include/jquery.noConflict.js');
+define('JQUERY_NIVOSLIDER',		ROOT_DIR.'/js/include/jquery/nivo-slider/jquery.nivo.slider.pack.js');
+define('JQUERY_NIVOSLIDER_CSS', ROOT_DIR.'/js/include/jquery/nivo-slider/nivo-slider.css');
