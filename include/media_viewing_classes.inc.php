@@ -376,7 +376,7 @@ class VideoPlayer {
                         
                         if ($extension=='mp4')
                         {
-                        	$exploded_video = '<div class="ADAflowplayer" style="width:'.$width.'px; height:'.$height.'px;"'.
+                        	$exploded_video = '<div class="ADAflowplayer color-light no-background" style="width:'.$width.'px; height:'.$height.'px;"'.
                         						$playerAttr.'data-swf="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/flowplayer.swf" data-embed="false">
                         			<video>
                         				<source src="'.$http_file_path.$file_name.'" type="video/mp4" />
