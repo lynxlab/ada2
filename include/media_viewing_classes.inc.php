@@ -318,19 +318,19 @@ class VideoPlayer {
     	require_once ROOT_DIR.'/include/getid3/getid3.php';
 
     	$getID3 = new getID3();
-    	$toAnalyze = $http_file_path.$file_name;
+    	$toAnalyze = ( !empty($http_file_path) ? $http_file_path : ROOT_DIR).$file_name;
     	$fileInfo = $getID3->analyze(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze));
-    	 
-    	if (isset ($fileInfo['video']) && !empty($fileInfo['video']))
+
+    	if ( (empty($width) || empty($height) ) && isset ($fileInfo['video']) && !empty($fileInfo['video']))
     	{
     		$width = (intval ($fileInfo['video']['resolution_x'])>0) ? intval($fileInfo['video']['resolution_x']) : null;
     		$height = (intval ($fileInfo['video']['resolution_y'])>0) ? intval($fileInfo['video']['resolution_y']) : null;
     	}
     	
-		if (is_null($width)) {
+		if (empty($width)) {
 			$width = self::DEFAULT_WIDTH;
 		}
-		if (is_null($height)) {
+		if (empty($height)) {
 			$height = self::DEFAULT_HEIGHT;
 		}
 
