@@ -48,28 +48,44 @@ abstract class FForm
      * Fills the controls in the form with contents of $_POST.
      */
     public final function fillWithPostData() {
-        foreach($this->_controls as $control) {
-            if(isset($_POST[$control->getId()]) &&!($control instanceof FCFieldset) ) {
-                $control->withData($_POST[$control->getId()]);
-            }
-            else if ($control instanceof FCFieldset)
-            {            	
-            	foreach ($control->getControls() as $field)
-            	{            		
-            		if (isset($_POST[$field->getId()]))
-            		{
-            			$field->withData($_POST[$field->getId()]);
-            		}
-            	}
-            }
-        }
+    		$this->fillWithArrayData($_POST);
+//         foreach($this->_controls as $control) {
+//             if(isset($_POST[$control->getId()]) &&!($control instanceof FCFieldset) ) {
+//                 $control->withData($_POST[$control->getId()]);
+//             }
+//             else if ($control instanceof FCFieldset)
+//             {            	
+//             	foreach ($control->getControls() as $field)
+//             	{            		
+//             		if (isset($_POST[$field->getId()]))
+//             		{
+//             			$field->withData($_POST[$field->getId()]);
+//             		}
+//             	}
+//             }
+//         }
     }
     /**
      * Fills the controls in the form with contents of the given array.
      */
     public final function fillWithArrayData($formData = array()) {
         foreach($this->_controls as $control) {
-            if(isset($formData[$control->getId()]) && !($control instanceof FCFieldset)) {
+
+        	$mustFillIn = false;
+        	if (method_exists($control, 'getControls'))
+        	{
+	        	foreach ($control->getControls() as $singleControl)
+	        	{
+	        		if ($singleControl instanceof FCInputCheckable)
+	        		{
+	        			$mustFillIn = true;
+	        			break;
+	        		}
+	        	}
+        	}
+        	
+            if(isset($formData[$control->getId()]) && (!($control instanceof FCFieldset) || $mustFillIn)) 
+            {
                 $control->withData($formData[$control->getId()]);
             }
             else if ($control instanceof FCFieldset)
