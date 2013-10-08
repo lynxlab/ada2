@@ -70,21 +70,7 @@ abstract class FForm
      */
     public final function fillWithArrayData($formData = array()) {
         foreach($this->_controls as $control) {
-
-        	$mustFillIn = false;
-        	if (method_exists($control, 'getControls'))
-        	{
-	        	foreach ($control->getControls() as $singleControl)
-	        	{
-	        		if ($singleControl instanceof FCInputCheckable)
-	        		{
-	        			$mustFillIn = true;
-	        			break;
-	        		}
-	        	}
-        	}
-        	
-            if(isset($formData[$control->getId()]) && (!($control instanceof FCFieldset) || $mustFillIn)) 
+            if(isset($formData[$control->getId()]) && (!($control instanceof FCFieldset)))  
             {
                 $control->withData($formData[$control->getId()]);
             }
@@ -96,12 +82,12 @@ abstract class FForm
             		{
             			$field->withData($formData[$field->getId()]);
             		}
-            			
             	}
             	
             }
         }
     }
+    
     /**
      * Iterates over each control in the form and uses FormValidator to validate
      * it. If all the controls in the form are valid, the form is valid.
@@ -379,7 +365,7 @@ abstract class FForm
    <div id="error_form" class="hide_error form">
 		'.translateFN('Sono presenti errori nel form, si prega di correggere le voci evidenziate in rosso').'
    </div>
-   <p class="'.FormControl::DEFAULT_CLASS.' submit"><input class="'.FormControl::DEFAULT_CLASS.'" type="submit" id="submit" name="submit" onClick="return validate_'.$this->_name.'();"'.$this->submitValue().'/></p>
+   <p class="'.FormControl::DEFAULT_CLASS.' submit"><input class="'.FormControl::DEFAULT_CLASS.'" type="submit" id="submit_"'.$this->_name.' name="submit_"'.$this->_name. ' onClick="return validate_'.$this->_name.'();"'.$this->submitValue().'/></p>
 </form>
 </div>';
 
