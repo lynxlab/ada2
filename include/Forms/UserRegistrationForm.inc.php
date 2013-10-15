@@ -42,6 +42,10 @@ class UserRegistrationForm extends FForm
         	 ->setRequired()
              ->setValidator(FormValidator::DATE_VALIDATOR);
 
+        $this->addTextInput('email', translateFN('Email'))
+             ->setRequired()
+             ->setValidator(FormValidator::EMAIL_VALIDATOR);
+
         $this->addSelect(
             'sesso',
              translateFN('Genere'),
@@ -52,30 +56,16 @@ class UserRegistrationForm extends FForm
              ),
              0);
 
-        $this->addTextInput('email', translateFN('Email'))
-             ->setRequired()
-             ->setValidator(FormValidator::EMAIL_VALIDATOR);
-
+        $this->addTextInput('matricola', translateFN('numero di matricola (se studente)'));
+/*
+ * 
         if ($cod) {
             $this->addTextInput('codice', translateFN('Codice'))
                  ->setRequired()
                  ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
         }
 
-        $this->addTextInput('telefono', translateFN('Telefono'));
-       
-        $this->addTextInput('indirizzo', translateFN('Indirizzo'));
-        
-        $this->addTextInput('citta', translateFN('Città'));
-
-        $this->addTextInput('provincia', translateFN('Provincia'));
-        
-        $countries = countriesList::getCountriesList($_SESSION['sess_user_language']);
-        $this->addSelect(
-            'nazione',
-             translateFN('Nazione'),
-             $countries,
-        'IT');
-        $this->addTextInput('codice_fiscale', translateFN('Cod. Fiscale'));
+ * 
+ */
     }
 }

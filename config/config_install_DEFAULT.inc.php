@@ -133,6 +133,12 @@ define('DOC_VIEWING_MODE',   2);
 define('MAX_WIDTH', "200");
 define('MAX_HEIGHT', "200");
 
+/*
+ * size of Avatar image reduction
+ */
+define('AVATAR_MAX_WIDTH', "600");
+define('AVATAR_MAX_HEIGHT', "500");
+
 /**
  * Default admin mail address
  */
@@ -188,6 +194,11 @@ define('ADA_DEFAULT_EMAIL_FOOTER', 'This message has been sent to you by ADA. Fo
  * default author upload path
  */
 define('ADA_UPLOAD_PATH', ROOT_DIR.'/upload_file/uploaded_files/');
+
+/**
+ * default HTTP upload path for each user
+ */
+define('HTTP_UPLOAD_PATH', HTTP_ROOT_DIR.'/upload_file/uploaded_files/');
 
 /**
  * default tutor upload path
@@ -318,6 +329,7 @@ $ADA_MIME_TYPE["audio/x-aiff"]['permission'] = _GO;
 $ADA_MIME_TYPE["image/gif"]['permission'] = _GO;
 $ADA_MIME_TYPE["image/jpeg"]['permission'] = _GO;
 $ADA_MIME_TYPE["image/pjpeg"]['permission'] = _GO;
+$ADA_MIME_TYPE["image/png"]['permission'] = _GO;
 $ADA_MIME_TYPE["image/x-png"]['permission'] = _GO;
 $ADA_MIME_TYPE["text/html"]['permission'] = _GO;
 $ADA_MIME_TYPE["text/css"]['permission'] = _GO;

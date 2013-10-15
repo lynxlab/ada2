@@ -41,6 +41,9 @@ abstract class ADAGenericUser {
     protected $stato;
     protected $lingua;
     protected $timezone;
+    protected $cap;
+    protected $SerialNumber;
+    protected $avatar;
 
     // we do not store user's password ???
     protected $password;
@@ -177,7 +180,20 @@ abstract class ADAGenericUser {
     public function getUserName() {
         return $this->username;
     }
+    
+    public function getCap() {
+        return $this->cap;
+    }
 
+    public function getSerialNumber() {
+        return $this->setSerialNumber;
+    }
+
+    public function getAvatar() {
+        return $this->avatar;
+    }
+    
+    
     public function getTesters() {
         if(is_array($this->testers)) {
             return $this->testers;
@@ -300,6 +316,18 @@ abstract class ADAGenericUser {
         }
     }
 
+    public function setCap($cap) {
+        $this->cap = $cap;
+    }
+
+    public function setSerialNumber($matricola) {
+        $this->SerialNumber = $matricola;
+    }
+
+    public function setAvatar($avatar) {
+        $this->avatar = $avatar;
+    }
+    
 
     public function addTester($tester) {
         $tester = DataValidator::validate_testername($tester,MULTIPROVIDER);
@@ -334,7 +362,10 @@ abstract class ADAGenericUser {
                 'telefono'               => ($this->telefono != 'NULL') ? $this->telefono : '',
                 'stato'                  => $this->stato,
                 'lingua'                 => $this->lingua,
-                'timezone'               => $this->timezone
+                'timezone'               => $this->timezone,
+                'cap'                    => ($this->cap != NULL) ? $this->cap : '',
+                'matricola'              => ($this->SerialNumber != NULL) ? $this->SerialNumber : '',
+                'avatar'                 => ($this->avatar != NULL) ? $this->avatar :''
 
         );
 
@@ -431,6 +462,9 @@ class ADAGuest extends ADAGenericUser {
         $this->stato                  = NULL;
         $this->lingua = 0;
         $this->timezone = 0;
+        $this->cap             = NULL;
+        $this->SerialNumber    = NULL;
+        $this->avatar          = NULL;
         $this->testers = array(ADA_PUBLIC_TESTER);
         	
         $this->setHomePage(HTTP_ROOT_DIR);
@@ -473,9 +507,12 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $this->telefono               = $user_dataHa['telefono'];
 
         $this->stato                  = $user_dataHa['stato'];
-        $this->lingua                  = $user_dataHa['lingua'];
-        $this->timezone                  = $user_dataHa['timezone'];
+        $this->lingua                 = $user_dataHa['lingua'];
+        $this->timezone               = $user_dataHa['timezone'];
 
+        $this->cap                    = $user_dataHa['cap'];
+        $this->SerialNumber           = $user_dataHa['matricola'];
+        $this->avatar                 = $user_dataHa['avatar'];
 
 
     }

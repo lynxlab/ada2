@@ -17,24 +17,32 @@
  */
 class FileUploader
 {
-    public function __construct($pathToUploadFolder)
+    public function __construct($pathToUploadFolder,$fieldUploadName='uploaded_file')
     {
-        $this->_error = $_FILES['uploaded_file']['error'];
-        $this->_name = $_FILES['uploaded_file']['name'];
-        $this->_size = $_FILES['uploaded_file']['size'];
-        $this->_tmpName = $_FILES['uploaded_file']['tmp_name'];
-        $this->_type = $_FILES['uploaded_file']['type'];
+//        print_r($_FILES);
+        $this->_error = $_FILES[$fieldUploadName]['error'];
+        $this->_name = $_FILES[$fieldUploadName]['name'];
+        $this->_size = $_FILES[$fieldUploadName]['size'];
+        $this->_tmpName = $_FILES[$fieldUploadName]['tmp_name'];
+        $this->_type = $_FILES[$fieldUploadName]['type'];
 
         $this->_destinationFolder = $pathToUploadFolder;
         $this->_errorMessage = '';
     }
 
-    public function upload()
+    public function upload($reduction=false)
     {
-
         $this->cleanFileName();
 
-        if (!is_dir($this->_destinationFolder) || !is_writable($this->_destinationFolder)) {
+        if (!is_dir($this->_destinationFolder)) {
+            if ($this->createUploadDir($this->_destinationFolder)) {
+                $this->_errorMessage = 'Upload directory do not exists';
+                //return ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH;
+                return false;
+            }
+        }
+                
+        if (!is_writable($this->_destinationFolder)) {
             $this->_errorMessage = 'Upload directory not writable';
             //return ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH;
             return false;
@@ -59,6 +67,7 @@ class FileUploader
             $this->_errorMessage = 'The uploaded file size exceeds the maximum permitted filesize';
             return false;
         }
+        if ($reduction) $this->reduceImage();
 
         return $this->moveFileToDestinationFolder();
     }
@@ -132,6 +141,44 @@ class FileUploader
                 return true;
         }
     }
+
+    /**
+     * Creates the upload directory for the user 
+     *
+     * @param integer $user_id
+     * @return FALSE if an error occurs, a string containing the path to the
+     * directory on success
+     */
+    static public function createUploadDir() {
+  
+        if (mkdir($this->_destinationFolder) == FALSE) {
+            return FALSE;
+        }
+
+        return $this->_destinationFolder;
+    }
+    
+    /**
+     * Reduce image using GD
+     * 
+     */
+    public function reduceImage() {
+        require_once ROOT_DIR .'/browsing/include/class_image.inc.php';
+        $id_img = new ImageDevice();
+        $new_img = $id_img->resize_image($this->_tmpName, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
+        if(stristr($this->_type, 'png')) {
+          imagepng($new_img,$this->_tmpName);
+        }
+        if(stristr($this->_type, 'jpeg')) {
+          imagejpeg($new_img,$this->_tmpName);
+        }
+        if(stristr($this->_type, 'gif')) {
+          imagegif($new_img,$this->_tmpName);        
+        }
+//        imagejpeg($new_img,$this->_tmpName);
+    } 
+            
+    
     private $_name;
     private $_tmpName;
     private $_size;

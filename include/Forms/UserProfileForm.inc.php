@@ -19,13 +19,47 @@ class UserProfileForm extends UserRegistrationForm {
 	 * added extra parameter to constructor to allow editing of student confirmed registration
 	 * 
 	 */
-    public function  __construct($languages=array(),$allowEditProfile=false,$allowEditConfirm=false) {
+    public function  __construct($languages=array(),$allowEditProfile=false,$allowEditConfirm=false,$action=null) {
         parent::__construct();
         $this->addHidden('id_utente')->withData(0);
         $this->addPasswordInput('password', translateFN('Password'));
              //->setValidator(FormValidator::PASSWORD_VALIDATOR);
 
         $this->addPasswordInput('passwordcheck', translateFN('Conferma la password'));
+        
+	$this->addFileInput('avatarfile', translateFN ('Seleziona un file immagine per il tuo avatar'));
+        $this->addTextInput('avatar',NULL);
+        if ($action != null) {
+            $this->setAction($action);
+        }
+
+        /// $this->addTextInput('telefono', translateFN('Telefono'));
+        $telefono = FormControl::create(FormControl::INPUT_TEXT, 'telefono', translateFN('Telefono'));
+        $cap = FormControl::create(FormControl::INPUT_TEXT, 'cap', translateFN('cap'));
+        $citta = FormControl::create(FormControl::INPUT_TEXT, 'citta', translateFN('Città'));
+        $indirizzo = FormControl::create(FormControl::INPUT_TEXT, 'indirizzo', translateFN('Indirizzo'));
+        $provincia = FormControl::create(FormControl::INPUT_TEXT, 'provincia', translateFN('Provincia'));
+        $countries = countriesList::getCountriesList($_SESSION['sess_user_language']);
+        $nazione = FormControl::create(FormControl::SELECT,'nazione',translateFN('Nazione'));
+        $nazione->withData($countries);
+        $this->addFieldset(translateFN('Dati residenza'),'residenza')->withData(array($indirizzo,$cap,$citta,$provincia,$nazione,$telefono));
+       
+//        $this->addTextInput('indirizzo', translateFN('Indirizzo'));
+        
+//        $this->addTextInput('citta', translateFN('Città'));
+
+//        $this->addTextInput('provincia', translateFN('Provincia'));
+        
+/*
+        $countries = countriesList::getCountriesList($_SESSION['sess_user_language']);
+        $this->addSelect(
+            'nazione',
+             translateFN('Nazione'),
+             $countries,
+        'IT');
+ * 
+ */
+        $this->addTextInput('codice_fiscale', translateFN('Cod. Fiscale'));
         
         /**
          * @author giorgio 29/mag/2013

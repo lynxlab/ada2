@@ -1,0 +1,178 @@
+.btn-pekeupload {
+	-moz-box-shadow: inset 0px -3px 7px 0px #29bbff;
+	-webkit-box-shadow: inset 0px -3px 7px 0px #29bbff;
+	box-shadow: inset 0px -3px 7px 0px #29bbff;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #2dabf9
+		), color-stop(1, #0688fa));
+	background: -moz-linear-gradient(top, #2dabf9 5%, #0688fa 100%);
+	background: -webkit-linear-gradient(top, #2dabf9 5%, #0688fa 100%);
+	background: -o-linear-gradient(top, #2dabf9 5%, #0688fa 100%);
+	background: -ms-linear-gradient(top, #2dabf9 5%, #0688fa 100%);
+	background: linear-gradient(to bottom, #2dabf9 5%, #0688fa 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2dabf9',
+		endColorstr='#0688fa', GradientType=0);
+	background-color: #2dabf9;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #0b0e07;
+	display: inline-block;
+	color: #ffffff !important;
+	font-weight: normal;
+	padding: 5px;
+	text-decoration: none !important;
+	text-shadow: 0px 1px 0px #263666;
+	margin: 0 0 10px 10px;
+}
+
+.btn-pekeupload:hover {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #0688fa
+		), color-stop(1, #2dabf9));
+	background: -moz-linear-gradient(top, #0688fa 5%, #2dabf9 100%);
+	background: -webkit-linear-gradient(top, #0688fa 5%, #2dabf9 100%);
+	background: -o-linear-gradient(top, #0688fa 5%, #2dabf9 100%);
+	background: -ms-linear-gradient(top, #0688fa 5%, #2dabf9 100%);
+	background: linear-gradient(to bottom, #0688fa 5%, #2dabf9 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0688fa',
+		endColorstr='#2dabf9', GradientType=0);
+	background-color: #0688fa;
+	text-decoration: none;
+	color: #fff;
+}
+
+.btn-pekeupload:active {
+	position: relative;
+	top: 1px;
+}
+
+#progressbar {
+	position: relative;
+}
+
+/*
+ * Base
+ */
+.progress-pekeupload,#progressbar {
+	width: 100%;
+	height: 16px;
+	margin: 0 auto 20px auto;
+	padding: 0px;
+	background: #cfcfcf;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #aaa #bbb #fff #bbb;
+	box-shadow: inset 0px 2px 3px #bbb;
+}
+
+.progress-pekeupload,.bar-pekeupload {
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-o-border-radius: 4px;
+}
+
+.bar-pekeupload {
+	height: 100%;
+}
+
+.bar-pekeupload,.ui-progressbar-value {
+	background: #999;
+	background-size: 18px 18px;
+	background-color: #7ce;
+	background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .2)
+		25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%,
+		rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+	background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, .2)
+		25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%,
+		rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+	background-image: -ms-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%,
+		transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%,
+		rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+	background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%,
+		transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%,
+		rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+	background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%,
+		transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%,
+		rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+	box-shadow: inset 0px 2px 8px rgba(255, 255, 255, .5), inset -1px -1px
+		0px rgba(0, 0, 0, .2);
+}
+
+/* GIORGIO */
+.bar-pekeupload {
+	position: absolute;
+	top: 0;
+}
+
+.progress-pekeupload {
+	position: relative;
+}
+
+.progress-pekeupload center {
+	position: relative;
+	z-index: 1;
+}
+/* FINE GIORGIO */
+.alert-pekeupload {
+	padding: 8px 15px 8px 14px;
+	margin-bottom: 20px;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	color: #b94a48;
+	background-color: #f2dede;
+	border: 1px solid #eed3d7;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	border-color:;
+}
+
+.alert-pekeupload .close {
+	margin-top: 2px;
+	background: none;
+	padding: 0;
+	border: none;
+	margin: 0;
+	float: right;
+	cursor: pointer;
+}
+
+#progress-label {
+	position: absolute;
+	left: 50%;
+	font-size: inherit !important;
+	font-family: inherit !important;
+}
+
+.importFormStep3 {
+	width: 96%;
+	margin: 0 auto;
+}
+
+.exportFormStep2 {
+	text-align : center;
+}
+
+#courseTreeLoading {
+display: block;
+text-align: center;
+margin-top: 50px;
+}
+
+form[name=exportStep1Form] input[type=submit] ,
+#exportButton {
+float: right;
+}
+
+.step3Title {
+font-size: 1.2em;
+font-weight: bold;
+display: block;
+text-align: center;
+margin-bottom: 20px;
+}
+
+.step3Text {
+display: block;
+text-align: center;
+}
+

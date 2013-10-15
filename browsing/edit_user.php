@@ -37,6 +37,7 @@ $neededObjAr = array(
 require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 include_once 'include/browsing_functions.inc.php';
+require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
 /*
  * YOUR CODE HERE
@@ -61,6 +62,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if (trim($_POST['password']) != '') {
             $userObj->setPassword($_POST['password']);
         }
+        $userObj->setSerialNumber($_POST['matricola']);
         $userObj->setLayout($user_layout);
         $userObj->setAddress($_POST['indirizzo']);
         $userObj->setCity($_POST['citta']);
@@ -70,6 +72,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $userObj->setGender($_POST['sesso']);
         $userObj->setPhoneNumber($_POST['telefono']);
         $userObj->setLanguage($_POST['lingua']);
+        $userObj->setAvatar($_POST['avatar']);
+        $userObj->setCap($_POST['cap']);
+        
         MultiPort::setUser($userObj, array(), true);
 //        $_SESSION['sess_userObj'] = $userObj;
 
@@ -79,25 +84,45 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
 } else {
-    $form = new UserProfileForm($languages);
+    $allowEditProfile=false;
+    $allowEditConfirm=false;
+   
+    $form = new UserProfileForm($languages,$allowEditProfile, $allowEditConfirm, $self.'.php');
     $user_dataAr = $userObj->toArray();
     unset($user_dataAr['password']);
     $user_dataAr['email'] = $user_dataAr['e_mail'];
+//    $user_dataAr['avatarFileHidden']=$user_dataAr['avatarfile'];
     unset($user_dataAr['e_mail']);
     $form->fillWithArrayData($user_dataAr);
 }
 
 $label = translateFN('Modifica dati utente');
 
+$divProgressBar = CDOMElement::create('div','id:progressbar');
+$divProgressLabel = CDOMElement::create('div','id:progress-label');			
+$divProgressBar->addChild ($divProgressLabel);			
+
+
 $help = translateFN('Modifica dati utente');
 
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
+		JQUERY_UI,
 		JQUERY_MASKEDINPUT,
-		JQUERY_NO_CONFLICT
+		JQUERY_NO_CONFLICT,
+		ROOT_DIR.'/js/include/jquery/pekeUpload/pekeUpload.js'
 );
 
-$optionsAr['onload_func'] = 'initDateField();';
+$layout_dataAr['CSS_filename'] = array(
+		JQUERY_UI_CSS,
+		ROOT_DIR.'/js/include/jquery/pekeUpload/pekeUpload.css'
+);
+
+$maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024*1024));
+
+$optionsAr['onload_func'] = 'initDoc('.$maxFileSize.','. $userObj->getId().');';
+
+//$optionsAr['onload_func'] = 'initDateField();';
 
 $content_dataAr = array(
     'user_name' => $user_name,
@@ -106,7 +131,7 @@ $content_dataAr = array(
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
     'title' => translateFN('Modifica dati utente'),
-    'data' => $form->getHtml(),
+    'data' => $form->getHtml(), //.$divProgressBar->getHtml(),
     'help' => $help
 );
 

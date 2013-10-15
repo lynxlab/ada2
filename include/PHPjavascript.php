@@ -72,10 +72,17 @@ $JS_i18n = array(
 	'confirm' => translateFN('Conferma'),
 	'cancel' => translateFN('Annulla'),
 );
+
+/**
+ * GIORGIO, this is not needed and exposes a security hole.
+ * Removed and placed here on 13/set/2013
+ * 
+ * // var MODULES_DIR='<?php echo MODULES_DIR;?>';
+ */
 ?>
 //main vars
 var HTTP_ROOT_DIR='<?php echo HTTP_ROOT_DIR;?>';
-
+var HTTP_UPLOAD_PATH='<?php echo HTTP_UPLOAD_PATH;?>';
 <?php if (!empty($_SESSION['sess_template_family'])): ?>
 var ADA_TEMPLATE_FAMILY = '<?php echo $_SESSION['sess_template_family'];?>';
 <?php else: ?>
@@ -85,6 +92,11 @@ var ADA_TEMPLATE_FAMILY = '<?php echo ADA_TEMPLATE_FAMILY;?>';
 var USER_LANGUAGE = '<?php echo $_SESSION['sess_user_language'];?>';
 <?php else: ?>
 var USER_LANGUAGE = null;
+<?php endif; ?>
+<?php if(defined('GCAL_HOLIDAYS_FEED')): ?>
+var GCAL_HOLIDAYS_FEED = '<?php echo GCAL_HOLIDAYS_FEED; ?>';
+<?php else :?>
+var GCAL_HOLIDAYS_FEED = '';
 <?php endif; ?>
 
 //media type
