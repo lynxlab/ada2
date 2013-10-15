@@ -353,6 +353,13 @@ class FCInputCheckable extends FormControl {
               . $this->_labelText;
         return $html;
     }
+    
+    public function withData($data) {
+        if (is_null($this->_controlData)) parent::withData($data);
+        else if ($this->getData() == $data) $this->setSelected ();
+        else $this->setNotSelected ();
+        return $this;
+    }
 }
 /**
  * 
