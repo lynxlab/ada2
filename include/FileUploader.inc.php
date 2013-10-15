@@ -35,8 +35,8 @@ class FileUploader
         $this->cleanFileName();
 
         if (!is_dir($this->_destinationFolder)) {
-            if ($this->createUploadDir($this->_destinationFolder)) {
-                $this->_errorMessage = 'Upload directory do not exists';
+            if (!$this->createUploadDir()) {
+                $this->_errorMessage = 'Upload directory do not exists: ' . $this->_destinationFolder;
                 //return ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH;
                 return false;
             }
@@ -149,7 +149,7 @@ class FileUploader
      * @return FALSE if an error occurs, a string containing the path to the
      * directory on success
      */
-    static public function createUploadDir() {
+    public function createUploadDir() {
   
         if (mkdir($this->_destinationFolder) == FALSE) {
             return FALSE;

@@ -14,10 +14,12 @@ function initDoc(maxSize,userId) {
          */
         if ($j('#avatar').val() != '') {
             var avatarValue = $j('#avatar').val();
-            var imgSrcAvatar = $j('<img>').attr('src',HTTP_UPLOAD_PATH+userId+'/'+avatarValue).attr('id','imgAvatar');
-            $j('#l_avatarfile').append($j('<div></div>').attr('id', 'avatar_preview'));
-            $j('#avatar_preview').append(imgSrcAvatar);
-        };
+        } else {
+            var avatarValue = '../owl.png';
+        }
+        var imgSrcAvatar = $j('<img>').attr('src',HTTP_UPLOAD_PATH+userId+'/'+avatarValue).attr('id','imgAvatar');
+        $j('#l_avatarfile').append($j('<div></div>').attr('id', 'avatar_preview'));
+         $j('#avatar_preview').append(imgSrcAvatar);
         
 	$j("#avatarfile").pekeUpload({
 		// onSubmit: true,
