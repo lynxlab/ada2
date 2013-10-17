@@ -458,3 +458,18 @@ html,body {
   height:60px;
   background: url('../img/header-logo.png') no-repeat center 0px;
 }
+
+#avatar_preview {
+    padding: 5px;
+    float: right;
+}
+#imgAvatar {
+    width: 100px;
+    border-radius: 20px;
+    border: 1px;
+    border-style: solid;
+}
+
+#avatar {
+    display: none;
+}

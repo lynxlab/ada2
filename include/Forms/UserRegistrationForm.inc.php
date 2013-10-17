@@ -56,7 +56,7 @@ class UserRegistrationForm extends FForm
              ),
              0);
 
-        $this->addTextInput('matricola', translateFN('numero di matricola (se studente)'));
+        $this->addTextInput('matricola', translateFN('numero di matricola'));
 /*
  * 
         if ($cod) {
