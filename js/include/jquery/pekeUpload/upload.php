@@ -45,6 +45,7 @@ if($fileUploader->upload(true) == false) {
 	$data = $fileUploader->getErrorMessage();
 } else {
 	 $_SESSION['importHelper']['filename'] = $fileUploader->getPathToUploadedFile();
+	 $_SESSION['importHelper']['fileNameWithoutPath'] = $fileUploader->getFileName();
 	 $data = '1'; // '1' means okay
 }
 

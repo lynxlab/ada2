@@ -72,7 +72,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $userObj->setGender($_POST['sesso']);
         $userObj->setPhoneNumber($_POST['telefono']);
         $userObj->setLanguage($_POST['lingua']);
-        $userObj->setAvatar($_POST['avatar']);
+//        $userObj->setAvatar($_POST['avatar']);
+        if (isset($_SESSION['importHelper']['fileNameWithoutPath'])) $userObj->setAvatar($_SESSION['importHelper']['fileNameWithoutPath']);
         $userObj->setCap($_POST['cap']);
         
         MultiPort::setUser($userObj, array(), true);

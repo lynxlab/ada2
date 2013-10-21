@@ -97,6 +97,11 @@ class FileUploader
         return $this->_destinationFolder . $this->_name;
     }
 
+    public function getFileName()
+    {
+        return $this->_name;
+    }
+    
     public static function listDirectoryContents($pathToDirectory, $filterFiles=FileUploader::FILES_AND_DIRS, $includeFullPath = false)
     {
 
