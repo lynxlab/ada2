@@ -13,7 +13,7 @@
  */
 
 class MediaViewer {
-	private $viewing_preferences;
+    private $viewing_preferences;
     private $user_data;
     private $media_path;
     private $media_title;
@@ -363,6 +363,7 @@ class VideoPlayer {
 					break;
 
                     case 'flv':
+                    case 'avi':
                     case 'mp4':                    	
                         if(defined('USE_MEDIA_CLASS') && class_exists(USE_MEDIA_CLASS, false)) {
                             $className = USE_MEDIA_CLASS;
@@ -392,7 +393,6 @@ class VideoPlayer {
                         }						
 					break;
 
-                    case 'avi':
                     case 'mpg':                    
                     default:
 						$exploded_video = '<embed src="'.$http_file_path.$file_name.'" controls="smallconsole" width="'.$width.'" height="'.$height.'" loop="false" autostart="false">';
