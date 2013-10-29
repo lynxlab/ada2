@@ -1233,20 +1233,28 @@ function search_text_in_glosary($text) {
 		if ($tag == 'LINK' && $type == 'INTERNAL') {
 			$type = INTERNAL_LINK;
 		}
+		
+		if (isset ($_SESSION['sess_userObj']->template_family) && !empty($_SESSION['sess_userObj']->template_family))
+			$template_family = $_SESSION['sess_userObj']->template_family;		
+		else
+			$template_family = ADA_TEMPLATE_FAMILY;
+		
+		$path = HTTP_ROOT_DIR.'/layout/'.$template_family.'/img/';
+		
 		$src = array(
-			_IMAGE => HTTP_ROOT_DIR.'/layout/img/_img.png',
-			_SOUND => HTTP_ROOT_DIR.'/layout/img/_audio.png',
-			_VIDEO => HTTP_ROOT_DIR.'/layout/img/_video.png',
-			_LINK => HTTP_ROOT_DIR.'/layout/img/_linkext.png',
-			_DOC => HTTP_ROOT_DIR.'/layout/img/_doc.png',
-			_EXE => HTTP_ROOT_DIR.'/layout/img/_exe.png',
-			INTERNAL_LINK => HTTP_ROOT_DIR.'/layout/img/_linka.png',
-			POSSIBLE_TYPE => HTTP_ROOT_DIR.'/layout/img/_linka.png',
-			_MONTESSORI => HTTP_ROOT_DIR.'/layout/img/_img_montessori.png',
-			_PRONOUNCE => HTTP_ROOT_DIR.'/layout/img/_audio_pronounce.png',
-			_FINGER_SPELLING => HTTP_ROOT_DIR.'/layout/img/_video_finger_spelling.png',
-			_LABIALE => HTTP_ROOT_DIR.'/layout/img/_video_labiale.png',
-			_LIS => HTTP_ROOT_DIR.'/layout/img/_video_lis.png',
+			_IMAGE =>           $path.'_img.png',
+			_SOUND =>           $path.'_audio.png',
+			_VIDEO =>           $path.'_video.png',
+			_LINK =>            $path.'_linkext.png',
+			_DOC =>             $path.'_doc.png',
+			_EXE =>             $path.'_exe.png',
+			INTERNAL_LINK =>    $path.'_linka.png',
+			POSSIBLE_TYPE =>    $path.'_linka.png',
+			_MONTESSORI =>      $path.'_img_montessori.png',
+			_PRONOUNCE =>       $path.'_audio_pronounce.png',
+			_FINGER_SPELLING => $path.'_video_finger_spelling.png',
+			_LABIALE =>         $path.'_video_labiale.png',
+			_LIS =>             $path.'_video_lis.png',
 		);
 
 		$str = '<img title="'.$title.'" type="'.$type.'" alt="ada_media" src="'.$src[$type].'"';
