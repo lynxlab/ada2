@@ -3,7 +3,7 @@ FCKCommands.RegisterCommand(
     new FCKDialogCommand(
         'Media',
 		FCKLang['DlgMediaName'],
-        FCKConfig.PluginsPath + 'media/media.html', 375, 300));
+        FCKConfig.PluginsPath + 'media/media.php', 375, 300));
 var oMediaItem = new FCKToolbarButton('media', FCKLang['DlgMediaName']);
 oMediaItem.IconPath = FCKConfig.PluginsPath + 'media/media.png' ;
 FCKToolbarItems.RegisterItem( 'Media', oMediaItem ) ;

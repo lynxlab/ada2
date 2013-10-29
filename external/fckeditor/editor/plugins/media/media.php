@@ -1,4 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<?php
+	require_once '../../../../../config_path.inc.php';
+?>
 <html>
     <head>
         <title>Audio file embedder</title>
@@ -56,9 +59,9 @@
 				<td>
 					<b><span fckLang="DlgMediaSize">DlgMediaSize</span></b>
 					<br />
-					<span fckLang="DlgMediaWidth">DlgMediaWidth</span>: <input id="width" type="text" size="4" value="125" />
+					<span fckLang="DlgMediaWidth">DlgMediaWidth</span>: <input id="width" type="text" size="4" value="<?php echo DEFAULT_VIDEO_WIDTH;  ?>" />
 					<br />
-					<span fckLang="DlgMediaHeight">DlgMediaHeight</span>: <input id="height" type="text" size="4" value="125" />
+					<span fckLang="DlgMediaHeight">DlgMediaHeight</span>: <input id="height" type="text" size="4" value="<?php echo DEFAULT_VIDEO_HEIGHT;  ?>" />
 				</td>
 			</tr>
         </table>

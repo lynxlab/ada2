@@ -303,8 +303,8 @@ class AudioPlayer {
  *
  */
 class VideoPlayer {
-	const DEFAULT_WIDTH = 150;
-	const DEFAULT_HEIGHT = 150;
+	const DEFAULT_WIDTH = DEFAULT_VIDEO_WIDTH;
+	const DEFAULT_HEIGHT = DEFAULT_VIDEO_HEIGHT;
     /**
      * function view
      *

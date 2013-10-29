@@ -134,6 +134,12 @@ define('MAX_WIDTH', "200");
 define('MAX_HEIGHT', "200");
 
 /*
+ * default video width and height
+*/
+define('DEFAULT_VIDEO_WIDTH', 290);
+define('DEFAULT_VIDEO_HEIGHT', 250);
+
+/*
  * size of Avatar image reduction
  */
 define('AVATAR_MAX_WIDTH', "600");
