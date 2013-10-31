@@ -319,7 +319,7 @@ class VideoPlayer {
 
     	$getID3 = new getID3();
     	$toAnalyze = ( !empty($http_file_path) ? $http_file_path : ROOT_DIR).$file_name;
-    	$fileInfo = $getID3->analyze(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze));
+    	$fileInfo = $getID3->analyze(urldecode(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze)));
 
     	if ( (empty($width) || empty($height) ) && isset ($fileInfo['video']) && !empty($fileInfo['video']))
     	{
