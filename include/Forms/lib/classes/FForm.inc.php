@@ -365,7 +365,7 @@ abstract class FForm
    <div id="error_form" class="hide_error form">
 		'.translateFN('Sono presenti errori nel form, si prega di correggere le voci evidenziate in rosso').'
    </div>
-   <p class="'.FormControl::DEFAULT_CLASS.' submit"><input class="'.FormControl::DEFAULT_CLASS.'" type="submit" id="submit_"'.$this->_name.' name="submit_"'.$this->_name. ' onClick="return validate_'.$this->_name.'();"'.$this->submitValue().'/></p>
+   <p class="'.FormControl::DEFAULT_CLASS.' submit"><input value="'.translateFN('Invia').'" class="'.FormControl::DEFAULT_CLASS.'" type="submit" id="submit_'.$this->_name.'" name="submit_'.$this->_name. '" onClick="return validate_'.$this->_name.'();"'.$this->submitValue().'/></p>
 </form>
 </div>';
 
