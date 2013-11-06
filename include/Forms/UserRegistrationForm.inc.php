@@ -50,11 +50,11 @@ class UserRegistrationForm extends FForm
             'sesso',
              translateFN('Genere'),
              array(
-                 0 => translateFN('Scegli un genere'),
+                 '0' => translateFN('Scegli un genere'),
                  'M' => translateFN('Maschio'),
                  'F' => translateFN('Femmina')
              ),
-             0);
+             '0');
 
         $this->addTextInput('matricola', translateFN('numero di matricola'));
 /*
