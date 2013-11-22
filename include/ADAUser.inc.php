@@ -26,15 +26,53 @@
  * @version		0.1
  */
 
+// include needed table managing class
+include_once ROOT_DIR.'/include/UserExtraTables.class.inc.php';
 
 class ADAUser extends ADAAbstractUser
 {
+	/**
+	 * array to list linked tables that have
+	 * a 1:n relationship with the user, must be private
+	 * each item MUST have a corresponding class with its own fields.
+	 * 
+	 * The constructor will build a public variable called $tbl_<array element>
+	 * of type array to hold the rows from the corresponding table.
+	 * 
+	 * @var array
+	 */
+	protected static $_linkedTables = array ('');
+
+	/**
+	 * table prefix used in the DB.
+	 * eg. if in the linkedTables there is 'moreUserFields'
+	 * the corresponding table in the db must be $prefix.'moreUserFields'
+	 * 
+	 * * @var string
+	 */
+	protected static $_tablesPrefix = "";
+	
+	/**
+	 * extra table name: the table where are stored
+	 * extra datas in a 1:1 relationship with the user
+	 * 
+	 * @var string
+	 */
+	protected static $_extraTableName = "studente";
+	
+	/**
+	 * extra table (see above) unique index field name
+	 * 
+	 * @var string
+	 */
+	protected static $_extraTableKeyProperty = "id_utente_studente";
+
 	/**
 	 * Public properties.
 	 * PLS set the list of properties you want the extra user to have, and the class code
 	 * should take care of the rest. If no extra properites are needed, delete them all!
 	 */
-// 	public $curriculum;
+// 	public $samplefield;
 	
 	/**
 	 * boolean to tell if the class is for a customization
@@ -46,6 +84,34 @@ class ADAUser extends ADAAbstractUser
 	 * @var boolean
 	 */
 	protected $_hasExtra;
+	
+	/**
+	 * boolean to tell if the system must use AJAX or standard POST
+	 * when saving user data.
+	 * Defaults to true, because ADA is a cool system and use AJAX
+	 * 
+	 * NOTE: if $_linkedTables is not empty, MUST save through ajax
+	 *       can use POST only if there are no tabs and you only
+	 *       have $_extraTableName + public properties.
+	 *       
+	 * @var boolean       
+	 */
+	protected $_useAjax;
+	
+	/**
+	 * boolean to tell if you are free to decide to save
+	 * via ajax or not.
+	 * 
+	 * NOTE: - if there are no extras you are forced to have no tabs
+	 *         in the form and save using POST
+	 *       - if there are extras and linkedTables you are forced
+	 *         to have tabs in the form and save using ajx
+	 *       - if there are extras and NO linkedTables you are free
+	 *         to decide if you want: (tabs AND ajax) OR (no tabs AND POST)
+	 * 
+	 * @var boolean
+	 */
+	private $_canSetAjax;
 	
 	/**
 	 * array containg extra fields list, builded automatically in the constructor
@@ -63,15 +129,38 @@ class ADAUser extends ADAAbstractUser
 	public function __construct($user_dataAr=array()) {
 		parent::__construct($user_dataAr);
 
+		$this->_canSetAjax = true;
+		$this->useAjax();
+		
 		$this->_extraFieldsArray = $this->buildExtraFieldsArray();
 		$this->_hasExtra = !is_null($this->_extraFieldsArray);
 
 		if ($this->_hasExtra)
 		{
-			foreach ($this->_extraFieldsArray as $propertyName)
-				$this->$propertyName = isset ($user_dataAr[$propertyName]) ? $user_dataAr[$propertyName] : '';
-		}
+			// sets the properties with values coming from $user_dataAr
+			if (!is_null($this->_extraFieldsArray))
+			{
+				foreach ($this->_extraFieldsArray as $propertyName)
+					$this->$propertyName = isset ($user_dataAr[$propertyName]) ? $user_dataAr[$propertyName] : '';
+			}
 
+			// build up a property called 'tbl_'.tableName
+			// containing an empty array for each linkedTable
+			if (isset(self::$_linkedTables) && !empty(self::$_linkedTables))
+			{
+				// there are some linked tables, must use ajax to save datas
+				$this->useAjax(true);
+				$this->_canSetAjax = false;
+				foreach (self::$_linkedTables as $tableName)
+				{
+					$varName = 'tbl_'.$tableName;
+					$this->$varName = array();
+				}
+			}
+		} else {
+			$this->useAjax(false);
+			$this->_canSetAjax = false;
+		}
 	}
 
 	/**
@@ -87,6 +176,26 @@ class ADAUser extends ADAAbstractUser
 		$stdValues = parent::toArray();
 		if ($this->_hasExtra) {
 			foreach ($this->_extraFieldsArray as $propertyName) $extraValues[$propertyName] = $this->$propertyName;
+			if (property_exists($this, '_linkedTables'))
+			{
+				foreach (self::$_linkedTables as $tableName)
+				{
+					$propertyName = 'tbl_'.$tableName;
+					if (isset($this->$propertyName) && is_array($this->$propertyName))
+					{
+						foreach ($this->$propertyName as $num=>$tableObject)
+						{
+							foreach ($tableObject->getFields() as $field)
+							{
+								$extraValues[$tableName][$num][$field] = $tableObject->$field;
+							}
+							// force protected property _isSaved
+							if ($tableObject->getSaveState()) $extraValues[$tableName][$num]['_isSaved'] = 1;
+	
+						}
+					}
+				}
+			}
 			return array_merge ($stdValues,$extraValues);
 		}
 		else return $stdValues;
@@ -103,7 +212,76 @@ class ADAUser extends ADAAbstractUser
 	public function setExtras ($extraAr) {
 		if ($this->_hasExtra) {
 			foreach ($extraAr as $property=>$value) {
+				// first check if $property is a class property
 				if (property_exists($this, $property)) $this->$property = $value;
+				// next check if $property is an array, which means
+				// it's a value coming from a table that has a 1:n relationship with the student
+				else if (is_array($value))
+				{
+					// in this case must return the key of the new or substituted element
+					$classPropertyName = 'tbl_'.$property;
+					$classKeyProperty = $property::getKeyProperty();
+					// $classProperyName hold something like 'tbl_moreUserFields'
+
+					foreach ($value as $arrayValues)
+					{
+						if ($arrayValues[$classKeyProperty]>0 && isset($arrayValues['_isSaved']) && $arrayValues['_isSaved']==0 )
+						{
+							// look for array index that has the passed id
+							$tempArray = &$this->$classPropertyName;							
+ 							foreach ($tempArray as $key=>$aElement)
+ 							{
+ 								if ($aElement->$classKeyProperty == $arrayValues[$classKeyProperty]) break;
+ 							}
+ 							// substitute the element with the modified one
+ 							$tempArray[$key] = new $property ($arrayValues);
+						}
+						else
+						{
+							// push all incoming arrays into the object array
+							array_push($this->$classPropertyName, new $property($arrayValues));
+							$key = count($this->$classPropertyName)-1;
+						}
+
+					}
+				}
+			}
+			if (isset ($key)) return $key;
+		}
+	}
+
+	/**
+	 * removeExtras
+	 *
+	 * remove the passed extra object id from the corresponding user object array
+	 *
+	 * @author giorgio 20/giu/2013
+	 *
+	 * @param int $extraTableId	 the ID of the object to be removed
+	 * @param string $extraTableClass the class of the object to be removed
+	 *
+	 * @access public
+	 */
+	public function removeExtras ($extraTableId = null, $extraTableClass = null) {
+		if ($this->_hasExtra && $extraTableId!==null && $extraTableClass!==null)
+		{
+			$classPropertyName = 'tbl_'.$extraTableClass;
+			$keyFieldName = $extraTableClass::getKeyProperty();
+			$propertyArray = &$this->$classPropertyName;
+				
+			if (is_array($propertyArray))
+			{
+				foreach ($propertyArray as $key=>$extraObject)
+				{
+					if ($extraObject->$keyFieldName == $extraTableId)
+					{
+						// remove matched element and reindex the array
+						unset ($propertyArray[$key]);
+						$propertyArray = array_values($propertyArray);
+						// we're done, break out of the loop
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -122,19 +300,20 @@ class ADAUser extends ADAAbstractUser
 		// instantiate a ReflectionClass
 		$refclass = new ReflectionClass($this);
 		// loop through each property
-		foreach ($refclass->getProperties() as $property)
+		foreach ($refclass->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
 		{
 			// if property class name == the reflection class name,
+			// and its name does not start with 'tbl_'
 			// then property is one of the elements we are lookin for
 			if ($property->class == $refclass->name &&
-			$property->name!=='_hasExtra' && $property->name!=='_extraFieldsArray' )  $retArray[] = $property->name;
+			(strpos($property->name,'tbl_')) === false) $retArray[] = $property->name;
 		}
 		return empty($retArray) ? null : $retArray;
 	}
 
 	/**
 	 * extraFieldsArray getter
-	 * 
+	 *
 	 * @return array extraFieldsArray if hasExtra is true, else false
 	 * @access public
 	 */
@@ -142,6 +321,26 @@ class ADAUser extends ADAAbstractUser
 	{
 		if ($this->_hasExtra) return $this->_extraFieldsArray;
 		else return null;
+	}
+
+	public static function getLinkedTables ()
+	{
+		if (property_exists(get_called_class(), '_linkedTables')) return self::$_linkedTables;
+	}
+
+	public static function getTablesPrefix()
+	{
+		if (property_exists(get_called_class(), '_tablesPrefix')) return self::$_tablesPrefix;
+	}
+	
+	public static function getExtraTableName()
+	{
+		if (property_exists(get_called_class(), '_extraTableName')) return self::$_extraTableName;
+	}
+	
+	public static function getExtraTableKeyProperty()
+	{
+		if (property_exists(get_called_class(), '_extraTableKeyProperty')) return self::$_extraTableKeyProperty;
 	}
 
 	/**
@@ -155,16 +354,66 @@ class ADAUser extends ADAAbstractUser
 	}
 	
 	/**
+	 * useAjax getter
+	 *
+	 * @return boolean
+	 * @access public
+	 */
+	public function saveUsingAjax() {
+		return $this->_useAjax;
+	}
+	
+	/**
+	 * useAjax setter
+	 * 
+	 * sets the data savemode to use AJAX calls,
+	 * can set it to false only if forceAjax is not true 
+	 * @param string $mode
+	 */
+	public function useAjax ($mode = true)
+	{
+		if ($this->_canSetAjax) $this->_useAjax = $mode;
+		else $this->_useAjax = true;
+	}
+	
+	public function fillWithArrayData ($dataArr = null)
+	{
+		if (!is_null($dataArr))
+		{
+			$this->setFirstName($dataArr['nome']);
+			$this->setLastName($dataArr['cognome']);
+			$this->setFiscalCode($dataArr['codice_fiscale']);
+			$this->setEmail($dataArr['email']);
+			if (trim($dataArr['password']) != '') {
+				$this->setPassword($dataArr['password']);
+			}
+			$this->setSerialNumber($dataArr['matricola']);
+			$this->setLayout($user_layout);
+			$this->setAddress($dataArr['indirizzo']);
+			$this->setCity($dataArr['citta']);
+			$this->setProvince($dataArr['provincia']);
+			$this->setCountry($dataArr['nazione']);
+			$this->setBirthDate($dataArr['birthdate']);
+			$this->setGender($dataArr['sesso']);
+			$this->setPhoneNumber($dataArr['telefono']);
+			$this->setLanguage($dataArr['lingua']);
+			//        $this->setAvatar($dataArr['avatar']);
+			if (isset($_SESSION['importHelper']['fileNameWithoutPath'])) $this->setAvatar($_SESSION['importHelper']['fileNameWithoutPath']);
+			$this->setCap($dataArr['cap']);	
+		}
+	}
+
+	/**
 	 * getDefaultTester implementation:
 	 * - if it's not a multiprovider environment, return the user selected provider
 	 * - else return parent's method
-	 * 
+	 *
 	 * @see ADAAbstractUser::getDefaultTester()
 	 */
 	public function getDefaultTester() {
-		if(!MULTIPROVIDER) {	
-					
-			$candidate = null;		
+		if(!MULTIPROVIDER) {
+				
+			$candidate = null;
 			/**
 			 * the default tester is the only one in which the user is listed
 			 * that is NOT the public tester. So let's take the list of all
@@ -174,11 +423,11 @@ class ADAUser extends ADAAbstractUser
 			 */
 			$testersArr = $this->getTesters();
 			if (!empty($testersArr))
-			{					
+			{
 				$testersArr = array_values(array_diff ($testersArr, array(ADA_PUBLIC_TESTER)));
 				if (count($testersArr)===1) $candidate = $testersArr[0];
-			}			
-
+			}
+	
 			$tester = DataValidator::validate_testername($candidate,MULTIPROVIDER);
 			if ($tester!==false) return $tester;
 			else return NULL;
@@ -186,5 +435,4 @@ class ADAUser extends ADAAbstractUser
 		else return parent::getDefaultTester();
 	}
 }
-
 ?>
