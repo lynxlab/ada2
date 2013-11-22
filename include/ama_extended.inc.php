@@ -233,20 +233,22 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 		{
 			foreach ($tablesToLoad as $table)
 			{
-				$selQry = "SELECT ". implode(", ", $table::getFields()) .
-				" FROM ".$tablesPrefix.$table." WHERE ".$table::getForeignKeyProperty()."=?".
-				" ORDER BY ".$table::getKeyProperty()." ASC";
-	
-				$extraArr = $this->getAllPrepared($selQry, array($userObj->getId()),AMA_FETCH_ASSOC);
-					
-				foreach ($extraArr as $extraKey=>$extraElement) {
-					foreach ($extraElement as $key=>$val) {
-						if (stripos($key,"date") !==false)
-							$extraArr[$extraKey][$key] = ts2dFN($val);
-					}
+				if (!empty($table) && class_exists($table))
+				{
+					$selQry = "SELECT ". implode(", ", $table::getFields()) .
+					" FROM ".$tablesPrefix.$table." WHERE ".$table::getForeignKeyProperty()."=?".
+					" ORDER BY ".$table::getKeyProperty()." ASC";
+		
+					$extraArr = $this->getAllPrepared($selQry, array($userObj->getId()),AMA_FETCH_ASSOC);
+						
+					foreach ($extraArr as $extraKey=>$extraElement) {
+						foreach ($extraElement as $key=>$val) {
+							if (stripos($key,"date") !==false)
+								$extraArr[$extraKey][$key] = ts2dFN($val);
+						}
+					}						
+					if (!empty($extraArr)) $returnArr[$table] = $extraArr;
 				}
-					
-				if (!empty($extraArr)) $returnArr[$table] = $extraArr;
 			}
 		}
 		return $returnArr;

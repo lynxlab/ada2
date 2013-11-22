@@ -126,17 +126,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 				 * if extraTableName is not in the linked tables array or there's
 				 * no form classes for the extraTableName skip to the next iteration
 				 *
-				 * NOTE: there's no need to check for classes existance here because if they did
-				 * not existed you'd get an error while loggin in.
+				 * NOTE: there's no need to check for classes (data classes, not for ones)
+				 * existance here because if they did not existed you'd get an error while loggin in.
 				 */ 
 				if (!in_array($extraTableName,$linkedTablesInADAUser) ||
-				    !is_file(ROOT_DIR . '/include/Forms/' . $extraTableFormClass . '.inc.php'))
+				    !@include_once (ROOT_DIR . '/include/Forms/' . $extraTableFormClass . '.inc.php') )
 					continue;
-				
-				// include proper form class definition file
-				require_once ROOT_DIR . '/include/Forms/' . $extraTableFormClass . '.inc.php';
-				
-				// if the file is include, but still there's no form class defined
+
+				// if the file is included, but still there's no form class defined
 				// skip to the next iteration
 				if (!class_exists($extraTableFormClass)) continue;
 				

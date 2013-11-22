@@ -75,6 +75,6 @@ abstract class extraTable {
 // include all tables as defined in ADAUser $_linkedTables array
 if (is_array(ADAUser::getLinkedTables())) {
 	foreach (ADAUser::getLinkedTables() as $linkedTable) {
-		include_once ROOT_DIR . '/include/' . ucfirst ($linkedTable) . '.class.inc.php';
+		if (!empty($linkedTable)) @include_once ROOT_DIR . '/include/' . ucfirst ($linkedTable) . '.class.inc.php';
 	}
 }

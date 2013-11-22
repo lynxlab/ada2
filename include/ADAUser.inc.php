@@ -41,16 +41,16 @@ class ADAUser extends ADAAbstractUser
 	 * 
 	 * @var array
 	 */
-	protected static $_linkedTables = array ('');
+	protected static $_linkedTables = array ();
 
 	/**
 	 * table prefix used in the DB.
 	 * eg. if in the linkedTables there is 'moreUserFields'
-	 * the corresponding table in the db must be $prefix.'moreUserFields'
+	 * the corresponding table in the db must be $_tablesPrefix.'moreUserFields'
 	 * 
 	 * * @var string
 	 */
-	protected static $_tablesPrefix = "";
+	protected static $_tablesPrefix = '';
 	
 	/**
 	 * extra table name: the table where are stored
@@ -58,14 +58,14 @@ class ADAUser extends ADAAbstractUser
 	 * 
 	 * @var string
 	 */
-	protected static $_extraTableName = "studente";
+	protected static $_extraTableName = 'studente';
 	
 	/**
 	 * extra table (see above) unique index field name
 	 * 
 	 * @var string
 	 */
-	protected static $_extraTableKeyProperty = "id_utente_studente";
+	protected static $_extraTableKeyProperty = 'id_utente_studente';
 
 	/**
 	 * Public properties.
@@ -325,7 +325,7 @@ class ADAUser extends ADAAbstractUser
 
 	public static function getLinkedTables ()
 	{
-		if (property_exists(get_called_class(), '_linkedTables')) return self::$_linkedTables;
+		if (property_exists(get_called_class(), '_linkedTables') && !empty(self::$_linkedTables)) return self::$_linkedTables;
 	}
 
 	public static function getTablesPrefix()
