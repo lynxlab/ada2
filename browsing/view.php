@@ -66,6 +66,15 @@ if ($userObj instanceof ADAGuest) {
     $self = whoami();
 }
 
+if ($nodeObj->type != ADA_NOTE_TYPE && $nodeObj->type != ADA_PRIVATE_NOTE_TYPE)
+{
+	require_once 'include/DFSNavigationBar.inc.php';
+	$navBar = new DFSNavigationBar($nodeObj, array(
+			'prevId' => $_GET['prevId'],
+			'nextId' => $_GET['nextId'],
+			'userLevel' => $user_level));
+}
+
 // search
 // versione con campo UNICO
 
@@ -522,6 +531,9 @@ switch ($op){
 		array_push ($layout_dataAR['CSS_filename'],ROOT_DIR.'/js/include/jquery/nivo-slider/themes/default/default.css');
 		
 		$optionsAr['onload_func'] = 'initDoc();';
+		
+		$content_dataAr['go_prev'] = $navBar->getHtml('prev'); // can pass href text as second param
+		$content_dataAr['go_next'] = $navBar->getHtml('next'); // can pass href text as second param
 
 		ARE::render($layout_dataAR,$content_dataAr, null,$optionsAr);
 
