@@ -100,7 +100,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 // 			$temp =  $temp1[$lastInsertKey];
 			$temp =  $temp1[$updatedElementKey];
 			$temp->$extraTableKeyProperty = $result;
-			$temp->setSavestate (true);
+			$temp->setSaveState (true);
 			
 // 			ini_set('display_errors', '1'); error_reporting(E_ALL);
 			$myhtml = UserExtraModuleHtmlLib::extraObjectRow($temp);
@@ -119,7 +119,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 else {
-	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>trasnlateFN("Errore nella trasmissione dei dati"));
+	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore nella trasmissione dei dati"));
 }
 
 if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto"));
