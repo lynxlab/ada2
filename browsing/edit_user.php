@@ -180,6 +180,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 					}
 				}
 				// in these cases the form is added here
+				$container->addChild (CDOMElement::create('div','class:clearfix'));
 				$container->addChild (new CText ($form->render()));	
 				// unset the form that's going to be userd in next iteration
 				unset ($form);
