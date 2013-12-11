@@ -7,6 +7,7 @@
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
+ * @author		giorgio <g.consorti@lynxlab.com> 
  * @copyright	Copyright (c) 2009-2010, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
@@ -15,6 +16,7 @@
 /**
  * Base config file
  */
+
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
 /**
@@ -55,28 +57,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $user_layout = '';
         }
-        $userObj->setFirstName($_POST['nome']);
-        $userObj->setLastName($_POST['cognome']);
-        $userObj->setFiscalCode($_POST['codice_fiscale']);
-        $userObj->setEmail($_POST['email']);
-        if (trim($_POST['password']) != '') {
-            $userObj->setPassword($_POST['password']);
-        }
-        $userObj->setSerialNumber($_POST['matricola']);
-        $userObj->setLayout($user_layout);
-        $userObj->setAddress($_POST['indirizzo']);
-        $userObj->setCity($_POST['citta']);
-        $userObj->setProvince($_POST['provincia']);
-        $userObj->setCountry($_POST['nazione']);
-        $userObj->setBirthDate($_POST['birthdate']);
-        $userObj->setGender($_POST['sesso']);
-        $userObj->setPhoneNumber($_POST['telefono']);
-        $userObj->setLanguage($_POST['lingua']);
-//        $userObj->setAvatar($_POST['avatar']);
-        if (isset($_SESSION['importHelper']['fileNameWithoutPath'])) $userObj->setAvatar($_SESSION['importHelper']['fileNameWithoutPath']);
-        $userObj->setCap($_POST['cap']);
         
-        MultiPort::setUser($userObj, array(), true);
+        // set user datas
+        $userObj->fillWithArrayData($_POST);
+
+        // set user extra datas if any
+        if ($userObj->hasExtra()) $userObj->setExtras($_POST);
+        
+        MultiPort::setUser($userObj, array(), true, ADAUser::getExtraTableName() );
 //        $_SESSION['sess_userObj'] = $userObj;
 
         $navigationHistoryObj = $_SESSION['sess_navigation_history'];
@@ -87,24 +75,175 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 } else {
     $allowEditProfile=false;
     $allowEditConfirm=false;
-   
-    $form = new UserProfileForm($languages,$allowEditProfile, $allowEditConfirm, $self.'.php');
     $user_dataAr = $userObj->toArray();
+    
+    // the standard UserProfileForm is always needed.
+    // Let's create it
+    $form = new UserProfileForm($languages,$allowEditProfile, $allowEditConfirm, $self.'.php');
     unset($user_dataAr['password']);
     $user_dataAr['email'] = $user_dataAr['e_mail'];
-//    $user_dataAr['avatarFileHidden']=$user_dataAr['avatarfile'];
     unset($user_dataAr['e_mail']);
-    $form->fillWithArrayData($user_dataAr);
+    $form->fillWithArrayData($user_dataAr);   
+    
+    if (!$userObj->hasExtra()) {
+    	// user has no extra, let's display it
+    	$data = $form->render();
+    } else {
+    	require_once ROOT_DIR .'/include/HtmlLibrary/UserExtraModuleHtmlLib.inc.php';
+    	
+    	// the extra UserExtraForm is needed as well
+    	require_once ROOT_DIR . '/include/Forms/UserExtraForm.inc.php';
+    	$extraForm = new UserExtraForm ($languages);
+    	$extraForm->fillWithArrayData ($user_dataAr);
+    	
+		$tabContents = array ();
+		
+		/**
+		 * @author giorgio 22/nov/2013
+		 * Uncomment and edit the below array to have the needed
+		 * jQuery tabs to be used for user extra data and tables
+		 */
+		
+// 		$tabsArray = array (
+// 				array (translateFN ("Anagrafica"), $form),
+// 				array (translateFN ("Sample Extra 1:1"), $extraForm),
+// 				array (translateFN ("Sample Extra 1:n"), 'oneToManyDataSample'), 
+// 		);
+		
+		$data = "";
+		$linkedTablesInADAUser = !is_null(ADAUser::getLinkedTables()) ? ADAUser::getLinkedTables() : array();
+		for($currTab = 0; $currTab < count ($tabsArray); $currTab ++) {
+			
+			// if is a subclass of FForm the it's a multirow element
+			$doMultiRowTab = !is_subclass_of($tabsArray[$currTab][1], 'FForm');
+			
+			if ($doMultiRowTab === true)
+			{
+				$extraTableName = $tabsArray[$currTab][1];
+				$extraTableFormClass = "User" . ucfirst ($extraTableName) . "Form";
+				
+				/*
+				 * if extraTableName is not in the linked tables array or there's
+				 * no form classes for the extraTableName skip to the next iteration
+				 *
+				 * NOTE: there's no need to check for classes (data classes, not for ones)
+				 * existance here because if they did not existed you'd get an error while loggin in.
+				 */ 
+				if (!in_array($extraTableName,$linkedTablesInADAUser) ||
+				    !@include_once (ROOT_DIR . '/include/Forms/' . $extraTableFormClass . '.inc.php') )
+					continue;
+
+				// if the file is included, but still there's no form class defined
+				// skip to the next iteration
+				if (!class_exists($extraTableFormClass)) continue;
+				
+				// generate the form
+				$form = new $extraTableFormClass ($languages);
+				$form->fillWithArrayData (array (
+						$extraTableName::getForeignKeyProperty() => $userObj->getId () 
+				));
+				
+				// create a div for placing 'new' and 'discard changes button'
+				$divButton = CDOMElement::create ('div', 'class:formButtons');
+				
+					$showButton = CDOMElement::create ('a');
+					$showButton->setAttribute ('href', 'javascript:toggleForm(\'' . $form->getName () . '\', true);');
+					$showButton->setAttribute ('class', 'showFormButton ' . $form->getName ());					
+					$showButton->addChild (new CText (translateFN ('Nuova scheda')));
+					
+					$hideButton = CDOMElement::create ('a');
+					$hideButton->setAttribute ('href', 'javascript:toggleForm(\'' . $form->getName () . '\');');
+					$hideButton->setAttribute ('class', 'hideFormButton ' . $form->getName ());
+					$hideButton->setAttribute ('style', 'display:none');
+					$hideButton->addChild (new CText (translateFN ('Chiudi e scarta modifiche')));
+				
+				$divButton->addChild ($showButton);
+				$divButton->addChild ($hideButton);
+				
+				$objProperty = 'tbl_' . $extraTableName;
+				// create a div to wrap up all the rows of the array tbl_educationTrainig				
+				$container = CDOMElement::create ('div', 'class:extraRowsContainer,id:container_' . $extraTableName);
+				
+				// if have 3 or more rows, add the new and discard buttons on top also
+				if (count ($userObj->$objProperty) >= 3) {
+					$divButton->setAttribute('class', $divButton->getAttribute('class').' top');
+					$container->addChild (new CText ($divButton->getHtml ()));
+					// reset the button class by removing top
+					$divButton->setAttribute('class', str_ireplace(' top', '', $divButton->getAttribute('class')));
+				}
+				
+				if (count ($userObj->$objProperty) > 0) {
+					foreach ($userObj->$objProperty as $num => $aElement) {
+						$keyFieldName = $aElement::getKeyProperty();
+						$keyFieldVal = $aElement->$keyFieldName;						
+						$container->addChild (new CText (UserExtraModuleHtmlLib::extraObjectRow ($aElement)));
+					}
+				}
+				// in these cases the form is added here
+				$container->addChild (CDOMElement::create('div','class:clearfix'));
+				$container->addChild (new CText ($form->render()));	
+				// unset the form that's going to be userd in next iteration
+				unset ($form);
+				$container->addChild (CDOMElement::create('div','class:clearfix'));
+				// add the new and discard buttons after the container
+				$divButton->setAttribute('class', $divButton->getAttribute('class').' bottom');
+				$container->addChild (new CText ($divButton->getHtml ()));
+			} else {
+				/**
+				 * place the form in the tab
+				 */
+				$currentForm = $tabsArray[$currTab][1];
+			}
+
+			// if a tabs container is needed, create one
+			if (!isset ($tabsContainer))
+			{
+				$tabsContainer = CDOMElement::create ('div', 'id:tabs');
+				$tabsUL = CDOMElement::create ('ul');
+				$tabsContainer->addChild ($tabsUL);
+			}
+
+			// add a tab only if there's something to fill it with
+			if (isset($container) || isset ($currentForm))
+			{
+				// create a LI
+				$tabsLI = CDOMElement::create ('li');
+				// add the save icon to the link
+				$tabsLI->addChild (CDOMElement::create ('span', 'class:ui-icon ui-icon-disk,id:tabSaveIcon' . $currTab));
+				// add a link to the div that holds tab content
+				$tabsLI->addChild (BaseHtmlLib::link ('#divTab' . $currTab, $tabsArray [$currTab][0]));
+				$tabsUL->addChild ($tabsLI);
+				$tabContents [$currTab] = CDOMElement::create ('div', 'id:divTab' . $currTab);
+				
+				if (isset ($container)) {
+					// add the container to the current tab
+					$tabContents [$currTab]->addChild ($container);
+				} else if (isset ($currentForm)) {
+					$tabContents [$currTab]->addChild (new CText ($currentForm->render()));
+					unset ($currentForm);				
+				}			
+				$tabsContainer->addChild ($tabContents [$currTab]);
+			}			
+		} // end cycle through all tabs
+		
+		if (isset ($tabsContainer)) { 
+			$data .= $tabsContainer->getHtml ();
+		}
+		else if (isset($form)) {			
+			if (isset($extraForm)) {
+				// if there are extra controls and NO tabs
+				// add the extra controls to the standard form
+				UserExtraForm::addExtraControls($form);
+				$form->fillWithArrayData($user_dataAr);
+			}
+			$data .= $form->render();
+		}		
+		else $data = 'No form to display :(';
+	} 
 }
 
 $label = translateFN('Modifica dati utente');
-
-$divProgressBar = CDOMElement::create('div','id:progressbar');
-$divProgressLabel = CDOMElement::create('div','id:progress-label');			
-$divProgressBar->addChild ($divProgressLabel);			
-
-
-$help = translateFN('Modifica dati utente');
+$help =  $label; // or set it to whatever you like
 
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
@@ -121,7 +260,15 @@ $layout_dataAr['CSS_filename'] = array(
 
 $maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024*1024));
 
-$optionsAr['onload_func'] = 'initDoc('.$maxFileSize.','. $userObj->getId().');';
+/**
+ * do the form have to be submitted with an AJAX call?
+ * defalut answer is true, call this method to set it to false.
+ * 
+ * $userObj->useAjax(false);
+ */
+
+$optionsAr['onload_func']  = 'initDoc('.$maxFileSize.','. $userObj->getId().');';
+$optionsAr['onload_func'] .= 'initUserRegistrationForm('.(int)(isset($tabsContainer)).', '.(int)$userObj->saveUsingAjax().');';
 
 //$optionsAr['onload_func'] = 'initDateField();';
 
@@ -132,7 +279,7 @@ $content_dataAr = array(
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
     'title' => translateFN('Modifica dati utente'),
-    'data' => $form->getHtml(), //.$divProgressBar->getHtml(),
+    'data' => $data,
     'help' => $help
 );
 
