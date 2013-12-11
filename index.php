@@ -376,6 +376,16 @@ $content_dataAr = array(
 				JQUERY_NO_CONFLICT,
 				ROOT_DIR . "/js/main/index.js"
 		);
+/**
+ * @author giorgio 
+ * include the jQuery and uniform css for proper styling
+ */		
+		$layout_dataAr['CSS_filename'] = array (
+				JQUERY_UI_CSS,
+				JQUERY_UNIFORM_CSS
+		);
+			
 		$optionsAr['onload_func'] = 'initDoc();';
+		
 ARE::render($layout_dataAr, $content_dataAr, NULL, (isset($optionsAr) ? $optionsAr : NULL) );
 ?>
