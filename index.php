@@ -163,6 +163,13 @@ if(isset($p_login)) {
       $status = $userObj->getStatus();
 	  if ($status == ADA_STATUS_REGISTERED)
       {
+      	/**
+      	 * @author giorgio 12/dic/2013
+      	 * when a user sucessfully logs in, regenerate her session id.
+      	 * this fixes a quite big problem in the 'history_nodi' table
+      	 */
+      	session_regenerate_id();
+      	
       	$user_default_tester = $userObj->getDefaultTester();
       	
       	if (!MULTIPROVIDER && $userObj->getType()!=AMA_TYPE_ADMIN) 
