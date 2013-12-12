@@ -366,7 +366,7 @@ class MultiPort
    * @param  $testers array
    * @return boolean
    */
-  static public function setUser(ADALoggableUser $userObj, $new_testers = array(), $update_user_data = FALSE) {      
+  static public function setUser(ADALoggableUser $userObj, $new_testers = array(), $update_user_data = FALSE, $extraTableName=false ) {      
     $user_id = $userObj->getId();
     $testers = $userObj->getTesters();
     if(!is_array($testers)) {
@@ -378,6 +378,7 @@ class MultiPort
 
     $common_dh = AMA_Common_DataHandler::instance();
     $user_dataAr = $userObj->toArray();
+    
     if ($update_user_data) {
       $result = $common_dh->set_user($user_id, $user_dataAr);
       if (AMA_Common_DataHandler::isError($result)) {
@@ -386,12 +387,20 @@ class MultiPort
     }
 
     if ($update_user_data) {
+    	
+    	$idFromPublicTester=0;
+    	
       foreach($testers as $tester) {
         $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
         //
         switch($userObj->getType()) {
         case AMA_TYPE_STUDENT:
-          $result = $tester_dh->set_student($user_id,$user_dataAr);
+          /**
+		   * @author giorgio
+		   * if it's an extraTable I need set_student to return me the id of the inserted
+		   * record in the table on DEFAULT that will be used as an id for all other providers
+           */ 
+          $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj, $idFromPublicTester);
           break;
 
         case AMA_TYPE_AUTHOR:
@@ -436,7 +445,11 @@ class MultiPort
       switch($userObj->getType()) {
         case AMA_TYPE_STUDENT:
 
-          $result = $tester_dh->add_student($user_dataAr);
+          $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj);
+          /**
+           * TODO: controllo se ha extra e fare set_student dell'extra (tab. studemte)
+           * e poi il foreach delle altre collegate
+           */
           break;
 
         case AMA_TYPE_AUTHOR:
@@ -478,6 +491,8 @@ class MultiPort
         $userObj->addTester($tester_to_add);
       }
     }
+    
+    if (isset($result)) return $result;
   }
 
 
@@ -619,7 +634,7 @@ class MultiPort
     	if ($userObj->hasExtra())
     	{
     		$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($user_testersAr[0]));
-    		$extraAr = $tester_dh->getExtraData($userObj->getId());
+    		$extraAr = $tester_dh->getExtraData($userObj);
     		if (!AMA_DB::isError($extraAr)) {
     			$userObj->setExtras($extraAr);
     			$return = $userObj;
@@ -1971,6 +1986,44 @@ class MultiPort
 	  $msg_forum_count = MultiPort::count_new_notes($userObj,$courseInstanceId);
 	  	  	  
 	  return ( ($count_new_nodes >0) || ($msg_forum_count>0) );	  
+  }
+  
+  /**
+   * removeUserExtraData
+   * 
+   * Removes a row from the user extra datas.
+   * 
+   * @author giorgio 20/giu/2013
+   * 
+   * @param ADALoggableUser $userObj user for which to delete the row
+   * @param int $extraTableId	row id to be deleted
+   * @param string $extraTableClass class of row to be deleted
+   * 
+   * @return boolean on error | query result
+   * 
+   * @access public
+   */
+  
+  static public function removeUserExtraData (ADALoggableUser $userObj ,$extraTableId=null, $extraTableClass=false )
+  {
+  	if ($extraTableId!==null && $extraTableClass!==false)
+  	{
+  		$user_id = $userObj->getId();
+  		$testers = $userObj->getTesters();
+  		if(!is_array($testers)) {
+  			$testers = array();
+  		}
+  		if ($user_id == 0) {
+  			return FALSE;
+  		}
+  		
+  		foreach($testers as $tester) {
+  			$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+  			$result = $tester_dh->remove_user_extraRow($user_id, $extraTableId, $extraTableClass);
+  		}
+  		return $result;
+  	}
+  	else return false;  
   }
   
 }
