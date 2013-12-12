@@ -354,23 +354,26 @@ else {
                     $currentTester = '';
                     $tester_dh = null;
                     foreach($coursesAr as $courseData) {
-                        $courseId = $courseData['id_corso'];    
-                        $newTesterId = $courseData['id_tester'];
-                        if($newTesterId != $currentTesterId) { // stesso corso su altro tester ?
-                            $testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId); 
-                            if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
-                                $tester = $testerInfoAr[10];
-                                $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester)); 
-                                $currentTesterId = $newTesterId;
-                                $course_dataHa = $tester_dh->get_course($courseId);
-                                if (!AMA_DataHandler::isError($course_dataHa)) {
-                                    $credits =  $course_dataHa['crediti']; 
-                                    // supponiamo che tutti i corsi di un servizio (su tester diversi) abbiano lo stesso numero di crediti
-                                    // quindi prendiamo solo l'ultimo
-                                } else {
-                                    $credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
-                                }    
+                        $courseId = $courseData['id_corso'];
+                        if ($courseId != PUBLIC_COURSE_ID_FOR_NEWS) {
+                            $newTesterId = $courseData['id_tester'];
+                            if($newTesterId != $currentTesterId) { // stesso corso su altro tester ?
+                                $testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId); 
+                                if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
+                                    $tester = $testerInfoAr[10];
+                                    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester)); 
+                                    $currentTesterId = $newTesterId;
+                                    $course_dataHa = $tester_dh->get_course($courseId);
+                                    if (!AMA_DataHandler::isError($course_dataHa)) {
+                                        $credits =  $course_dataHa['crediti']; 
+                                        // supponiamo che tutti i corsi di un servizio (su tester diversi) abbiano lo stesso numero di crediti
+                                        // quindi prendiamo solo l'ultimo
+                                    } else {
+                                        $credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
+                                    }    
+                                }
                             }
+                            
                         }
                     }   
                } else {

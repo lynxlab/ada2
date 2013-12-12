@@ -4100,7 +4100,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
 		$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
 
-        $sql = 'SELECT U.id_utente, U.username, U.tipo, U.nome, U.cognome, U.avatar I.status FROM utente AS U, iscrizioni AS I '
+        $sql = 'SELECT U.id_utente, U.username, U.tipo, U.nome, U.cognome, U.avatar, I.status FROM utente AS U, iscrizioni AS I '
              . ' WHERE I.id_istanza_corso ='.$id_course_instance
              . ' AND I.status IN ('.implode(',',$status_Ar).')'
              . ' AND U.id_utente = I.id_utente_studente';
@@ -4234,7 +4234,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if ( AMA_DB::isError( $db ) ) return $db;
 
         $sql = "SELECT id_nodo, data_visita, data_uscita, session_id
-      FROM history_nodi WHERE id_utente_studente=$id_student AND id_istanza_corso=$id_course_instance";
+      FROM history_nodi WHERE id_utente_studente=$id_student AND id_istanza_corso=$id_course_instance ORDER BY session_id,data_uscita ASC";
 
         $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
         if (AMA_DB::isError($result)) {
