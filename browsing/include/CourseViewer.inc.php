@@ -607,14 +607,15 @@ class CourseViewer
     //vito 12 gennaio 2009
     //$icon = CDOMElement::create('img', "src:img/{$params['node']['icona']}");
     //$list_item->addChild($icon);
-
+      preg_match("/^([0-9]+)_/", $params['node']['id_nodo'], $match);
+      $id_course = $match[1];
       $node_type_family = $params['node']['tipo'][0];
       if ($node_type_family >= ADA_STANDARD_EXERCISE_TYPE AND $node_type_family <= ADA_OPEN_UPLOAD_EXERCISE_TYPE) {
           $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/exercise.php?id_node={$params['node']['id_nodo']}");
       }elseif ($node_type_family == ADA_PERSONAL_EXERCISE_TYPE) {
           $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/exercise_player.php?id_node={$params['node']['id_nodo']}");
       }else {
-         $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}&id_course={$params['node']['id_course']}");
+         $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}&id_course={$id_course}");
       }
 //      $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}");
       $node_element->addChild(new CText($params['node']['nome']));
@@ -656,14 +657,15 @@ class CourseViewer
     //vito 12 gennaio 2009
     //$icon = CDOMElement::create('img', "src:img/{$params['node']['icona']}");
     //$list_item->addChild($icon);
-
+      preg_match("/^([0-9]+)_/", $params['node']['id_nodo'], $match);
+      $id_course = $match[1];
       $node_type_family = $params['node']['tipo'][0];
       if ($node_type_family >= ADA_STANDARD_EXERCISE_TYPE AND $node_type_family <= ADA_OPEN_UPLOAD_EXERCISE_TYPE) {
           $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/exercise.php?id_node={$params['node']['id_nodo']}");
       }elseif ($node_type_family == ADA_PERSONAL_EXERCISE_TYPE) {
           $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/exercise_player.php?id_node={$params['node']['id_nodo']}");
       }else {
-         $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}");
+         $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}&id_course={$id_course}");
       }
       $node_element->addChild(new CText($params['node']['nome']));
       $list_item->addChild($node_element);
@@ -715,6 +717,8 @@ class CourseViewer
     //$list_item->addChild($icon);
 
     if ($external_params['user_level'] >= $params['node']['livello']) {
+      preg_match("/^([0-9]+)_/", $params['node']['id_nodo'], $match);
+      $id_course = $match[1];
 
       $node_type_family = $params['node']['tipo'][0];
       if ($node_type_family >= ADA_STANDARD_EXERCISE_TYPE AND $node_type_family <= ADA_OPEN_UPLOAD_EXERCISE_TYPE) {
@@ -722,7 +726,7 @@ class CourseViewer
       }elseif ($node_type_family == ADA_PERSONAL_EXERCISE_TYPE) {
           $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/exercise_player.php?id_node={$params['node']['id_nodo']}");
       }else {
-         $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}&id_course={$params['node']['id_course']}");
+         $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}&id_course={$id_course}");
       }
 //      $node_element = CDOMElement::create('a', "href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}");
       $node_element->addChild(new CText($params['node']['nome']));
