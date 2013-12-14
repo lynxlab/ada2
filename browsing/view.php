@@ -532,8 +532,10 @@ switch ($op){
 		
 		$optionsAr['onload_func'] = 'initDoc();';
 		
-		$content_dataAr['go_prev'] = $navBar->getHtml('prev'); // can pass href text as second param
-		$content_dataAr['go_next'] = $navBar->getHtml('next'); // can pass href text as second param
+                if (is_object($navBar)) {
+                    $content_dataAr['go_prev'] = $navBar->getHtml('prev'); // can pass href text as second param
+                    $content_dataAr['go_next'] = $navBar->getHtml('next'); // can pass href text as second param
+                }
 
 		ARE::render($layout_dataAR,$content_dataAr, null,$optionsAr);
 
