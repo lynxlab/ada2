@@ -58,7 +58,7 @@ class FileUploader
         }
         $ADA_MIME_TYPE = $GLOBALS['ADA_MIME_TYPE'];
         if ($ADA_MIME_TYPE[$this->_type]['permission'] != ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE) {
-            $this->_errorMessage = 'Mimetype not accepted';
+            $this->_errorMessage = 'Mimetype not accepted: <b>'.$this->_type.'</b>';
             //return ADA_FILE_UPLOAD_ERROR_MIMETYPE;
             return false;
         }
