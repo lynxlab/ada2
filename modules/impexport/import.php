@@ -83,7 +83,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'  &
 	{
 		// if it's an ajax request, echo the html and die
 		sleep (1); // if we're too fast, the jquery switching divs is going to flicker
-		echo $data;
+		echo json_encode(array('html'=>$data));
 		die();
 	}	
 }

@@ -140,6 +140,12 @@ class importHelper
 		$this->_selectedCourseID = (isset ($postDatas['courseID']) && intval($postDatas['courseID'])>0) ? intval($postDatas['courseID']) : null;
 		$this->_selectedNodeID =  (isset ($postDatas['nodeID']) && trim($postDatas['nodeID'])!=='') ? trim($postDatas['nodeID']) : null;
 
+        /**
+         * if the selected node does not contain the course separator character,
+         * assume that the import is done on the node 0 of the course
+         */		
+		if (strpos($this->_selectedNodeID,self::$courseSeparator)===false) $this->_selectedNodeID .= self::$courseSeparator.'0';
+		
 		$this->_recapArray = array();
 		$this->_linksArray = null;
 
@@ -224,8 +230,16 @@ class importHelper
 					*/
 					if (!self::$_DEBUG)
 					{
-						if (is_null($this->_selectedCourseID))
+						if (is_null($this->_selectedCourseID)) {
 							$courseNewID = $this->_add_course($course);
+					 		/**
+					 		 * this is a new course you want, first node
+					 		 * is going to be the root of the course (i.e. zero)
+					 		 * Setting selectedNodeID will make the running code
+					 		 * do the trick!
+					 		 */
+							$this->_selectedNodeID = null;
+						}
 						else
 						{
 							$courseNewID = $this->_selectedCourseID;
@@ -331,7 +345,7 @@ class importHelper
 						$outDir = $destDir.$matches[1];
 					else $outDir = $destDir;
 					// attempts to make outdir
-					mkdir ($outDir, 0777, true);
+					if (!is_dir($outDir)) mkdir ($outDir, 0777, true);
 					if (!copy("zip://".$zip->filename."#".$filename, $outDir."/".$fileinfo['basename'])) {
 						$this->_logMessage(__METHOD__.' Could not copy from zip: source='.$filename. ' dest='.$outDir."/".$fileinfo['basename']);
 					}
@@ -623,7 +637,7 @@ class importHelper
 			// make some adjustments to invoke the test datahandler's test_addNode method
 
 			$this->_logMessage(__METHOD__.' Saving test node. course id='.$courseNewID.
-					' so far '.$count.' nodes have been exported');
+					' so far '.$count.' nodes have been imported');
 
 			$count++;
 			$this->_progressIncrement();
@@ -835,7 +849,8 @@ class importHelper
 					$outArr['resources_ar'] =  $resourcesArr;
 
 					// sets the parent if an exported root node is made child in import
-					if (!isset($outArr['parent_id']) && !is_null ($this->_selectedNodeID))
+					if (is_null($this->_selectedNodeID) && $count==1) $outArr['parent_id'] = null;
+					else if ( (!isset($outArr['parent_id']) || $count==1) && !is_null ($this->_selectedNodeID) )
 						$outArr['parent_id'] = $this->_selectedNodeID;
 
 					// prints out some basic info if in debug mode

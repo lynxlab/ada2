@@ -53,9 +53,11 @@ function requestProgress()
 	var requestPB = progressbar;
 	
 	$j.ajax({
+		cache	: false,
 		type	: 'POST',
 		url		: HTTP_ROOT_DIR+ '/modules/impexport/requestProgress.php',
-		dataType:'json'
+		dataType: 'json',
+		data	: ''
 		})
 		.done   (function( JSONObj ) {
 			if (JSONObj)
@@ -79,11 +81,10 @@ function requestProgress()
 				}
 		} )
 		.fail   (function() { 
-			console.log("cannot get progress status"); 
 		} )
 		.always (function() {
 			// this timer will be cleared when the import has finished
-			repeatTimer = window.setTimeout ( function() { requestProgress(); }, 1000 );
+			repeatTimer = window.setTimeout ( function() { requestProgress(); }, 2000 );
 		} );	
 	
 }
@@ -136,20 +137,27 @@ function goToImportStepThree ()
 		
 		/** make an ajax POST call to the script doing the import **/
 		$j.ajax({
-			type	:	'POST',
+			cache   : false,
+			type	: 'POST',
 			url		: HTTP_ROOT_DIR+ '/modules/impexport/import.php',
 			data	: postData,
-			dataType: 'html',
-			beforeSend : function () { requestProgress(); }
+			dataType: 'json',
+			beforeSend : function () { 
+				// this timer will be cleared when the import has finished
+				repeatTimer = window.setTimeout ( function() { requestProgress(); }, 1000 ); }
 			})
-			.done ( function (html) { 
-				$j('.importFormStep3').effect('drop', function() {
-					$j('.importFormStep3').html(html).effect('slide'); 
-				});
+			.done ( function (JSONObj) { 
+					$j('.importFormStep3').effect('drop', function() {
+						$j('.importFormStep3').html(JSONObj.html).effect('slide'); 
+					});
 				// $j('.importFormStep3').html (html);  
 				})
-			.fail ( function (html) {} )
-			.always (function () {
+			.fail ( function (JSONObj,t ,m) { 
+					$j('.importFormStep3').effect('drop', function() {
+						$j('.importFormStep3').html('Completato, verificare l\'importazione navigando i nodi importati').effect('slide');
+					});
+				})
+			.always (function (JSONObj) {
 				window.clearTimeout (repeatTimer);
 			});
 	}
