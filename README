@@ -26,7 +26,7 @@ HOW TO INSTALL
   The first provider is the public content (no registration needed to browse the contents).
   One common DB and 2 providers DB.
   + ada_common --> DB common.
-  + ada_provider0 --> DB of the provider 0. It provider public content
+  + ada_provider0 --> DB of the provider 0. It provide public content (in the default case MULTIPROVIDER)
   + ada_provider1 --> DB of the provider 1. It contains courses for registered users
 
 3. import ada_common.sql in ada_common
@@ -35,10 +35,14 @@ HOW TO INSTALL
 
 5. import ada_provider1.sql in ada_provider1
 
-6. modify config_path.inc.php writing the correct root path
+6. copy config_path_DEFAULT.inc.php in config_path.inc.php
+
+7. modify config_path.inc.php writing the correct root path
   + define('ROOT_DIR','/var/www/html/ada');
 
-7. modify config/config_install.inc-php
+8. copy config/config_install_DEFAULT.inc.php in config/config_install.inc.php
+
+9. modify config/config_install.inc.php
   + change the * ADA Common database section
   + change the * ADA default provider
   + change the * Default admin mail address
@@ -47,22 +51,41 @@ HOW TO INSTALL
   + optionally change the Default template family (only if you want to use a different layout family)
   + optionally change define('PORTAL_NAME','ADA - e-learning ');
 
-8. modify clients/client0/client_config.inc.php (each provider has own directory. es.: provider 1 has client1)
-  + change the DB access parameter
-  + change the timezone of the provider if you need
+10. modify clients/client0/client_config.inc.php (each provider has own directory. es.: provider 1 has client1)
+    + change the DB access parameter
+    + change the timezone of the provider if you need
 
-9. if you have more providers you have to create more client_config.inc.php
-  es.: 2 providers. You must have clients/client0/client_config.inc.php and clients/client1/client_config.inc.php.
-  in client1/client_config.inc.php the constant name must be CLIENT1_DB_NAME, CLIENT1_DB_USER, CLIENT1_DB_PASS, CLIENT1_DB_HOST, CLIENT1_TIMEZONE
+11. if you have more providers you have to create more client_config.inc.php
+    es.: 2 providers. You must have clients/client0/client_config.inc.php and clients/client1/client_config.inc.php.
+    in client1/client_config.inc.php the constant name must be CLIENT1_DB_NAME, CLIENT1_DB_USER, CLIENT1_DB_PASS, CLIENT1_DB_HOST, CLIENT1_TIMEZONE
 
-10. change the permission of the directory services/media/ the web server must be able to write in it
+12. change the permission of the directory services/media/ the web server must be able to write in it
 
-11. change the permission of the directory upload_file/ the web server must be able to write in it
+13. change the permission of the directory upload_file/ the web server must be able to write in it
 
-12. change the permission of the directory docs/ the web server must be able to write in it
+14. change the permission of the directory docs/ the web server must be able to write in it
 
-13. change the informations of the news editing the file: browsing/news_language (ex.: news_en is the news in english) 
+15. change the informations of the news editing the file: browsing/news_language (ex.: news_en is the news in english) 
     or using edit_news.php after logon as admin
+
+16. configure the widgets loaded in home page
+    copy index_DEFAULT.XML in index.xml
+    see widgets/main/index.xml in order to know how to configure
+
+++++++++++++++++++++
+CUSTOMIZE THE LAYOUT
+customize the layout in the directory templates and css.
+
+    The file layout/layout_family/header.tpl contains the header of all pages. 
+    You can change the logo and the header modifying the file layout/layout_family/header.tpl
+
+    The structure of the directories that contain the layout is:
+      layout/layout_family/css/module_name
+      layout/layout_family/templates/module_name
+      layout/layout_family/img/
+
+      js
+	/module_name/
 
 ++++++++++++++++++++
 LOCALIZATION AND LANGUAGES
@@ -109,20 +132,6 @@ How to add a language.
     or in alternative you can export the content of the table, translate all and reimport the table using a tool like phpmyadmin.
 
 ++++++++++++++++++++
-CUSTOMIZE THE LAYOUT
-customize the layout in the directory templates and css.
-    The directory main contains the image logo of the header
-
-    The structure of the directories that contain the layout is:
-      layout/layout_family/css/module_name
-      layout/layout_family/templates/module_name
-      layout/layout_family/img/
-
-      js
-	/module_name/
-
-
-++++++++++++++++++++
 EXTRA CONFIGURATION
 *********
 Editor filemanager
@@ -145,6 +154,7 @@ Help
 ++++++++++++++++++++
 SYSTEM SETUP
 1. change the news in home page modifing the files docs/news/news_language.txt (es.: english news_en.txt).
+   you can use the 
    You can open it using any text editor. It is possibile to use HTML tag.
 
 2. Create the users of type switcher (coordinator) and Tutors.
