@@ -1,11 +1,17 @@
 CONTENTS OF THIS FILE
 ---------------------
   Requirements
+  
   How to install
+ 
   Localization and languages
+ 
   Customize the layout
+ 
   Extra configuration
+ 
   System setup
+ 
   user preconfigured
 
 ++++++++++++++++++++
