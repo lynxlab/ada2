@@ -34,8 +34,8 @@ $Config['Enabled'] = true ;
 // $Config['UserFilesPath'] = '' ;
 require_once('../../../../../../config_path.inc.php');
 session_start();// start session since we will be needing session parameters
-//$dir = str_replace(substr($_SERVER['DOCUMENT_ROOT'],0,-1),'',ROOT_DIR);
-$dir = str_replace($_SERVER['DOCUMENT_ROOT'],'',ROOT_DIR);
+$dir = str_replace(substr($_SERVER['DOCUMENT_ROOT'],0,-1),'',ROOT_DIR);
+//$dir = str_replace($_SERVER['DOCUMENT_ROOT'],'',ROOT_DIR);
 $Config['UserFilesPath'] = $dir.'/services/media/'.$_SESSION['sess_id_user'].'/';
 
 // Fill the following value it you prefer to specify the absolute path for the
