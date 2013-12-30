@@ -9,4 +9,4 @@
  * @version		0.1
  */
 
-define('DEV_ALLOW_SENDING_EMAILS', false);
+define('DEV_ALLOW_SENDING_EMAILS', true);
