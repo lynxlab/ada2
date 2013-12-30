@@ -8,18 +8,18 @@ CONTENTS OF THIS FILE
   - System setup
   - user preconfigured
 
-++++++++++++++++++++
 REQUIREMENTS
-* Apache 2.2.21>
-* MySql 5.1.6 >
-* Sendmail 8.14.*
-* PHP 5.3.9> compiled with support for per MySql, XML, GD, PDO
-* PEAR::XML_Parser 1.3.x>
-* PEAR 1.9.x> 
-* PEAR::XML_Util 1.2.x>
+--------------
+- Apache 2.2.21>
+- MySql 5.1.6 >
+- Sendmail 8.14.*
+- PHP 5.3.9> compiled with support for per MySql, XML, GD, PDO
+- PEAR::XML_Parser 1.3.x>
+- PEAR 1.9.x> 
+- PEAR::XML_Util 1.2.x>
 
-++++++++++++++++++++
 HOW TO INSTALL
+--------------
 1. copy all files and directory tree in root directory
 
 2. create at least two DB (each courses' provider has his own DB. if you have 2 providers, you need 3 DB.
