@@ -55,26 +55,29 @@ HOW TO INSTALL
   + optionally change the Default template family (only if you want to use a different layout family)
   + optionally change define('PORTAL_NAME','ADA - e-learning ');
 
-10. modify clients/client0/client_config.inc.php (each provider has own directory. es.: provider 1 has client1)
+10. copy the directory clients_DEFAULT in clients
+
+11. modify clients/client0/client_config.inc.php (each provider has own directory. es.: provider 1 has client1)
     + change the DB access parameter
     + change the timezone of the provider if you need
 
-11. if you have more providers you have to create more client_config.inc.php
+12. if you have more providers you have to create more client_config.inc.php
     es.: 2 providers. You must have clients/client0/client_config.inc.php and clients/client1/client_config.inc.php.
     in client1/client_config.inc.php the constant name must be CLIENT1_DB_NAME, CLIENT1_DB_USER, CLIENT1_DB_PASS, CLIENT1_DB_HOST, CLIENT1_TIMEZONE
 
-12. change the permission of the directory services/media/ the web server must be able to write in it
+13. change the permission of the directory services/media/ the web server must be able to write in it
 
-13. change the permission of the directory upload_file/ the web server must be able to write in it
+14. change the permission of the directory upload_file/ the web server must be able to write in it
 
-14. change the permission of the directory docs/ the web server must be able to write in it
+15. change the permission of the directory docs/ the web server must be able to write in it
 
-15. change the informations of the news editing the file: browsing/news_language (ex.: news_en is the news in english) 
+16. change the informations of the news editing the file: browsing/news_language (ex.: news_en is the news in english) 
     or using edit_news.php after logon as admin
 
-16. configure the widgets loaded in home page
+17. configure the widgets loaded in home page
     copy index_DEFAULT.XML in index.xml
     see widgets/main/index.xml in order to know how to configure
+
 
 CUSTOMIZE THE LAYOUT
 --------------
