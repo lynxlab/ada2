@@ -1,12 +1,12 @@
 CONTENTS OF THIS FILE
----------------------
-  Requirements
-  How to install
-  Customize the layout
-  Localization and languages
-  Extra configuration
-  System setup
-  user preconfigured
+==============
+  - Requirements
+  - How to install
+  - Customize the layout
+  - Localization and languages
+  - Extra configuration
+  - System setup
+  - user preconfigured
 
 ++++++++++++++++++++
 REQUIREMENTS
