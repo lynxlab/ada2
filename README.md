@@ -41,6 +41,7 @@ HOW TO INSTALL
 6. copy config_path_DEFAULT.inc.php in config_path.inc.php
 
 7. modify config_path.inc.php writing the correct root path
+   ex. if you have copied the files and directory in /var/www/ada you have to modify it in the follow way:
   + define('ROOT_DIR','/var/www/html/ada');
 
 8. copy config/config_install_DEFAULT.inc.php in config/config_install.inc.php
