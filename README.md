@@ -96,8 +96,7 @@ At the moment ADA is translated in the following languages:
 Each translation is stored in a table contained in the DB common.
 the name of the table is messaggi_language (ex.: english messaggi_en)
 
-*********
-Translation of messages and GUI
+### Translation of messages and GUI ###
   The system translates at real time all the interface (buttons, links, labels) and all the messages that are to be sent to the user (welcome message excluded, see below).
   After logging into ADA as Switcher or Admin, go to this address:
   http://your_domain_of_wisp/switcher/translation.php
@@ -109,59 +108,48 @@ Translation of messages and GUI
   * replace the missing or wrong sentence with the correct one
   * click on "update"
   * Go back
-  ----------------------
-  Note and suggestions.
+
+### Note and suggestions. ###
   In order to have the experience of ADA use and to check the correct translation in context,
   we suggest you to open two different web browsers (NOT two windows of the same browser),
   say A. Firefox
   and B. Google Chrome.
 
-  * In browser "A" you can login as user or pratitioner or switcher and use the ADA platform normally.
-  * In browser "B" you have to login as switcher and go to the translation module
-  * When, navigating in browser "A", you should find a sentence not translated in your language, or with a wrong translation,
-    in browser "B" you can search for that sentence and change its translation
+  - In browser "A" you can login as user or pratitioner or switcher and use the ADA platform normally.
+  - In browser "B" you have to login as switcher and go to the translation module
+  - When, navigating in browser "A", you may find a sentence not translated in your language, or with a wrong translation,
+  - in browser "B" you can search for that sentence and change its translation
   Note that after the translation of each sentence you have to reload the page in the browser "A" in order to see the newly translated sentence
 
-*********
-How to add a language.
-  * You have to add a record to the table "lingue" (which means language in italian) contained in the db common using a tool like phpmyadmin.
+### How to add a language. ###
+  - You have to add a record to the table "lingue" (which means language in italian) contained in the db common using a tool like phpmyadmin.
     ex.: to add french language you have to add a record like this id: 7, name language: français, code: fr, table identifier: fr,
-  * You can copy the table messaggi_en contained in the db common to messaggi_language using a tool like phpmyadmin (ex.: french messaggi_fr).
-  * you can use the translation module (see Translation of messagges and GUI section above)
+  - You can copy the table messaggi_en contained in the db common to messaggi_language using a tool like phpmyadmin (ex.: french messaggi_fr).
+  - you can use the translation module (see Translation of messagges and GUI section above)
     or in alternative you can export the content of the table, translate all and reimport the table using a tool like phpmyadmin.
 
-++++++++++++++++++++
 EXTRA CONFIGURATION
-*********
-Editor filemanager
-    Configure the connector of the filemanager for the editor of the contents.
-    in case the root path of ADA is not the same of the server root, you may need to change the connector configuration:
-    /external/fckeditor/editor/filemanager/connectors/php/config.php
+-----------------
 
-    change: $Config['UserFilesPath'] =
-    change: $Config['UserFilesAbsolutePath']
-
-*********
-Welcome message mail
+### Welcome message mail ###
   You can change the text of the welcome message sended to the user just registered:
   /docs/welcome_language.txt (ex.: /docs/welcome_en.txt english message)
 
-*********
-Help
+### Help ###
   the directory docs contains also the help for the user. You can change the help by editing the single file.
 
-++++++++++++++++++++
 SYSTEM SETUP
+-------------
 1. change the news in home page modifing the files docs/news/news_language.txt (es.: english news_en.txt).
    you can use the 
    You can open it using any text editor. It is possibile to use HTML tag.
 
 2. Create the users of type switcher (coordinator) and Tutors.
    How to do:
-   + log on with the platform Admin,
-   + click on Do menù,
-   + click on add user,
-   + choose the provider to which associate the user.
+   - log on with the platform Admin,
+   - click on Do menù,
+   - click on add user,
+   - choose the provider to which associate the user.
 
 3. Arrangement of courses provided
 
