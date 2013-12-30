@@ -75,7 +75,7 @@ HOW TO INSTALL
     or using edit_news.php after logon as admin
 
 17. configure the widgets loaded in home page
-    copy index_DEFAULT.XML in index.xml
+    copy widgets/main/index_DEFAULT.XML in widgets/main/index.xml
     see widgets/main/index.xml in order to know how to configure
 
 
