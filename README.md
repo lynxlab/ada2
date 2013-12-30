@@ -12,8 +12,7 @@ REQUIREMENTS
 --------------
 - Apache 2.2.21>
 - MySql 5.1.6 >
-- Sendmail 8.14.*
-- PHP 5.3.9> compiled with support for per MySql, XML, GD, PDO
+- PHP 5.3.*> compiled with support for per MySql, XML, GD, PDO
 - PEAR::XML_Parser 1.3.x>
 - PEAR 1.9.x> 
 - PEAR::XML_Util 1.2.x>
@@ -72,27 +71,27 @@ HOW TO INSTALL
     copy index_DEFAULT.XML in index.xml
     see widgets/main/index.xml in order to know how to configure
 
-++++++++++++++++++++
 CUSTOMIZE THE LAYOUT
+--------------
 customize the layout in the directory templates and css.
 
-    The file layout/layout_family/header.tpl contains the header of all pages. 
-    You can change the logo and the header modifying the file layout/layout_family/header.tpl
+The file layout/layout_family/header.tpl contains the header of all pages. 
+You can change the logo and the header modifying the file layout/layout_family/header.tpl
 
-    The structure of the directories that contain the layout is:
-      layout/layout_family/css/module_name
-      layout/layout_family/templates/module_name
-      layout/layout_family/img/
+The structure of the directories that contain the layout is:
+- layout/layout_family/css/module_name
+- layout/layout_family/templates/module_name
+- layout/layout_family/img/
 
-      js
+- js
 	/module_name/
 
-++++++++++++++++++++
 LOCALIZATION AND LANGUAGES
-  At the moment ADA is translated in the following languages:
-  * english
-  * italian
-  * spanish
+--------------
+At the moment ADA is translated in the following languages:
+- english
+- italian
+- spanish
 
 Each translation is stored in a table contained in the DB common.
 the name of the table is messaggi_language (ex.: english messaggi_en)
