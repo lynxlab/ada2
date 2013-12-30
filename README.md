@@ -1,12 +1,16 @@
+ADA
+==========
+ADA stand for __Ambiente Digitale di Apprendimento__. It is a knowledge and e-learning management system that allows you to create, administer and follow courses via the Internet or intranet with ease and flexibility.
+
 CONTENTS OF THIS FILE
-==============
-  - Requirements
-  - How to install
-  - Customize the layout
-  - Localization and languages
-  - Extra configuration
-  - System setup
-  - user preconfigured
+---------------
+- Requirements
+- How to install
+- Customize the layout
+- Localization and languages
+- Extra configuration
+- System setup
+- user preconfigured
 
 REQUIREMENTS
 --------------
@@ -75,8 +79,8 @@ CUSTOMIZE THE LAYOUT
 --------------
 customize the layout in the directory templates and css.
 
-The file layout/layout_family/header.tpl contains the header of all pages. 
-You can change the logo and the header modifying the file layout/layout_family/header.tpl
+**The file layout/layout_family/header.tpl contains the header of all pages. 
+You can change the logo and the header modifying the file layout/layout_family/header.tpl**
 
 The structure of the directories that contain the layout is:
 - layout/layout_family/css/module_name
@@ -140,24 +144,25 @@ EXTRA CONFIGURATION
 
 SYSTEM SETUP
 -------------
-1. change the news in home page modifing the files docs/news/news_language.txt (es.: english news_en.txt).
-   you can use the 
-   You can open it using any text editor. It is possibile to use HTML tag.
+1. **change the news in home page**.
+   You can change the news from inside the platform, logging in with administer user and clicking the voice "edit news" in act (or do) menù
+   You can also modify it, changing the files docs/news/news_language.txt (es.: english news_en.txt)
+   You can open it and change using any text editor. It is possibile to use HTML tag.
 
-2. Create the users of type switcher (coordinator) and Tutors.
+2. **Create the users of type switcher (coordinator) and Tutors.**
    How to do:
    - log on with the platform Admin,
    - click on Do menù,
    - click on add user,
    - choose the provider to which associate the user.
 
-3. Arrangement of courses provided
+3. **Arrangement of courses provided**
 
    How the ADA platform works
    + In the ADA platform are defined the courses delivered (they are saved in DB common)
    + Each provider creates their own courses (they are saved in DB clientX)
    + Each course created by the provider is (automatically) linked to the platform courses (saved in DB common)
-   + Each provider has to create at least one instance of the course (the classroom) in order to allow the student to subscribe the instance
+   + Each provider has to create at least one instance of the course (the classroom) in order to allow the students to subscribe the instance
 
    How to do:
    + log on with the switcher account,
@@ -165,13 +170,16 @@ SYSTEM SETUP
    + click on add a course
    + click on add instance, near the course
 
-++++++++++++++++++++
+### Notes ###
+   Users have to register in the platform in order to participate the courses. (the users that have registered in ADA receive an email to confirm the registration)
+
 predefined USERS are:
-adminAda --> Super Admin
-AutoreAda1 --> author of provider1
-TutorAda1 --> tutor of provider1
-SwitcherAda1 --> Admin of provider1
-studenteAda1 --> Student of provider1
+--------------
+- adminAda --> Super Admin
+- AutoreAda1 --> author of provider1
+- TutorAda1 --> tutor of provider1
+- SwitcherAda1 --> Admin of provider1
+- studenteAda1 --> Student of provider1
 
 passwords are the same of the username
 
