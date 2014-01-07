@@ -146,9 +146,9 @@ EXTRA CONFIGURATION
 ### Help ###
   the directory docs contains also the help for the user. You can change the help by editing the single file.
 
-### public course ###
-You can set one public course for provider 0 (in case MULTIPROVIDER is set to true, otherwise each provider has his own public course defined in clientX.inc.php by the value of the constant ).   
-The default public id course of provider 0 is definied in config/config_install.inc.php by the value of the constant PUBLIC_COURSE_ID_FOR_NEWS
+### Public course ###
+You can set **one public course for provider 0** (in case MULTIPROVIDER is set to true, otherwise each provider has his own public course defined in clientX.inc.php by the value of the constant ).   
+**The default public id course of provider 0 is definied in config/config_install.inc.php by the value of the constant PUBLIC_COURSE_ID_FOR_NEWS**
 
 SYSTEM SETUP
 -------------
@@ -195,10 +195,10 @@ to add a provider, you need to do the following tasks:
 spredefined USERS are:
 --------------
 - adminAda --> Super Admin
-- AutoreAda1 --> author of provider1
-- TutorAda1 --> tutor of provider1
-- SwitcherAda1 --> Admin of provider1
-- studenteAda1 --> Student of provider1
+- autoreAda0 --> author of first provider
+- tutorAda0 --> tutor of first provider 
+- switcherAda0 --> Admin of first provider
+- studenteAda0 --> Student of first provider
 
 passwords are the same of the username
 
