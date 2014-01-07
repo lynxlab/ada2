@@ -10,6 +10,7 @@ CONTENTS OF THIS FILE
 - Localization and languages
 - Extra configuration
 - System setup
+- Add one provider
 - user preconfigured
 
 REQUIREMENTS
@@ -26,17 +27,16 @@ HOW TO INSTALL
 1. copy all files and directory tree in root directory
 
 2. create at least two DB (each courses' provider has his own DB. if you have 2 providers, you need 3 DB.
-  The first provider is the public content (no registration needed to browse the contents).
   One common DB and 2 providers DB.
   + ada_common --> DB common.
-  + ada_provider0 --> DB of the provider 0. It provide public content (in the default case MULTIPROVIDER)
-  + ada_provider1 --> DB of the provider 1. It contains courses for registered users
+  + ada_provider0 --> DB of the provider 0. 
+  + ada_provider1 --> DB of the provider 1. 
 
 3. import ada_common.sql in ada_common
 
 4. import ada_provider0.sql in ada_provider0
 
-5. import ada_provider1.sql in ada_provider1
+5. import ada_provider1.sql in ada_provider1 (if you need one more provider)
 
 6. copy config_path_DEFAULT.inc.php in config_path.inc.php
 
@@ -177,7 +177,15 @@ SYSTEM SETUP
 ### Notes ###
    Users have to register in the platform in order to participate the courses. (the users that have registered in ADA receive an email to confirm the registration)
 
-predefined USERS are:
+Add one provider
+--------------
+to add a provider, you need to do the following tasks:
+- login as admin
+- create a new provider (from menù actions)
+- create a new DB
+- import the sql providern.sql into the new DB
+
+spredefined USERS are:
 --------------
 - adminAda --> Super Admin
 - AutoreAda1 --> author of provider1
