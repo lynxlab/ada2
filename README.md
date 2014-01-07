@@ -36,7 +36,7 @@ HOW TO INSTALL
 
 4. import ada_provider0.sql in ada_provider0
 
-5. import ada_provider1.sql in ada_provider1 (if you need one more provider)
+5. import ada_provider_empty.sql in ada_provider1 (if you need one more provider)
 
 6. copy config_path_DEFAULT.inc.php in config_path.inc.php
 
@@ -146,6 +146,10 @@ EXTRA CONFIGURATION
 ### Help ###
   the directory docs contains also the help for the user. You can change the help by editing the single file.
 
+### public course ###
+You can set one public course for provider 0 (in case MULTIPROVIDER is set to true, otherwise each provider has his own public course defined in clientX.inc.php by the value of the constant ).   
+The default public id course of provider 0 is definied in config/config_install.inc.php by the value of the constant PUBLIC_COURSE_ID_FOR_NEWS
+
 SYSTEM SETUP
 -------------
 1. **change the news in home page**.
@@ -164,8 +168,8 @@ SYSTEM SETUP
 
    How the ADA platform works
    + In the ADA platform are defined the courses delivered (they are saved in DB common)
-   + Each provider creates their own courses (they are saved in DB clientX)
-   + Each course created by the provider is (automatically) linked to the platform courses (saved in DB common)
+   + Each provider creates their own courses (they are saved in DB indicated in the clientX/client_conf.inc.php)
+   + Each course created by the provider is (automatically) linked to the platform courses (saved in DB common).
    + Each provider has to create at least one instance of the course (the classroom) in order to allow the students to subscribe the instance
 
    How to do:
@@ -180,10 +184,13 @@ SYSTEM SETUP
 Add one provider
 --------------
 to add a provider, you need to do the following tasks:
-- login as admin
-- create a new provider (from menù actions)
 - create a new DB
-- import the sql providern.sql into the new DB
+- import the sql ada_provider_empty.sql into the new DB
+- follow the steps 11 and 12 
+- login as admin 
+- create a new provider (from menù actions)
+  take care to write in the field "Puntatore al database" the same name of the directory contained in clients (ex.: client1)
+- create the new coordinator user for the provider just created
 
 spredefined USERS are:
 --------------
