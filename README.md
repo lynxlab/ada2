@@ -147,7 +147,7 @@ EXTRA CONFIGURATION
   the directory docs contains also the help for the user. You can change the help by editing each single file.
 
 ### Public course ###
-You can set **one public course for provider 0** (in case MULTIPROVIDER is set to true, otherwise each provider has his own public course defined in clientX.inc.php by the value of the constant ).   
+You can set **one public course for provider 0** (in case MULTIPROVIDER is set to true, otherwise each provider has his own public course defined in clientX.inc.php by the value of the constant PUBLIC_COURSE_ID_FOR_NEWS).   
 **The default public id course of provider 0 is definied in config/config_install.inc.php by the value of the constant PUBLIC_COURSE_ID_FOR_NEWS**
 
 SYSTEM SETUP
