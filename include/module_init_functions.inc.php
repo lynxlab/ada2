@@ -361,7 +361,8 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
         }
         $sess_courseObj->handleError();
       }
-      else if ($sess_userObj instanceof ADAGuest  && $id_course!=PUBLIC_COURSE_ID_FOR_NEWS) {
+//      else if ($sess_userObj instanceof ADAGuest  && $id_course!=PUBLIC_COURSE_ID_FOR_NEWS) {
+      else if ($sess_userObj instanceof ADAGuest  && !$sess_courseObj->getIsPublic ()) {
       	header('Location: '.$sess_userObj->getHomePage());
       	exit();
       }

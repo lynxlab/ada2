@@ -26,8 +26,14 @@
  */
 class Course extends Course_Old
 {
+    var $publicCourse;
+        
     public function __construct($courseId) {
         parent::__construct($courseId);
+        $this->publicCourse = false;
+        if ($this->id == PUBLIC_COURSE_ID_FOR_NEWS) {
+            $this->publicCourse = true;
+        }
     }
     public function getId() {
         return parent::getId();
@@ -76,5 +82,8 @@ class Course extends Course_Old
     }
     public function isFull() {
         return $this->full == true;
+    }
+    public function getIsPublic() {
+        return $this->publicCourse;
     }
 }
