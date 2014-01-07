@@ -144,7 +144,7 @@ EXTRA CONFIGURATION
   /docs/welcome_language.txt (ex.: /docs/welcome_en.txt english message)
 
 ### Help ###
-  the directory docs contains also the help for the user. You can change the help by editing the single file.
+  the directory docs contains also the help for the user. You can change the help by editing each single file.
 
 ### Public course ###
 You can set **one public course for provider 0** (in case MULTIPROVIDER is set to true, otherwise each provider has his own public course defined in clientX.inc.php by the value of the constant ).   
@@ -192,7 +192,7 @@ to add a provider, you need to do the following tasks:
   take care to write in the field "Puntatore al database" the same name of the directory contained in clients (ex.: client1)
 - create the new coordinator user for the provider just created
 
-spredefined USERS are:
+predefined USERS are:
 --------------
 - adminAda --> Super Admin
 - autoreAda0 --> author of first provider
