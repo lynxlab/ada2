@@ -1,3 +1,1 @@
-<p>
-Se hai bisogno di aiuto, consulta l'<a href="http://ada.lynxlab.com/ada20/help.php">Help</a>
-</p>
+<p>Se hai bisogno di aiuto, consulta il <a href="browsing/view.php?id_node=1_30&amp;id_course=1">manuale</a></p>
