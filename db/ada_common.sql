@@ -1,23 +1,16 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
+-- version 2.11.5
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: Giu 12, 2013 alle 16:15
--- Versione del server: 5.5.31
--- Versione PHP: 5.3.10-1ubuntu3.6
+-- Generato il: 29 Dic, 2013 at 01:28 PM
+-- Versione MySQL: 5.5.33
+-- Versione PHP: 5.4.22
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
--- Database: `ada25_common`
+-- Database: `ada_installazioni_common`
 --
 
 -- --------------------------------------------------------
@@ -55,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `messaggi_en` (
   `id_messaggio` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `testo_messaggio` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_messaggio`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1958 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1996 ;
 
 --
 -- Dump dei dati per la tabella `messaggi_en`
@@ -1980,7 +1973,45 @@ INSERT INTO `messaggi_en` (`id_messaggio`, `testo_messaggio`) VALUES
 (1954, 'Contenuti aggiornati:'),
 (1955, 'Contenuti aggiornati'),
 (1956, 'Confermato'),
-(1957, 'Numero utenti');
+(1957, 'Numero utenti'),
+(1958, 'Loading'),
+(1959, 'Data di nascita'),
+(1960, 'numero di matricola'),
+(1961, 'Seleziona un file immagine per il tuo avatar'),
+(1962, 'cap'),
+(1963, 'Dati residenza'),
+(1964, 'seleziona una lingua'),
+(1965, 'facebook'),
+(1966, 'Ultime news'),
+(1967, 'Chiedi aiuto'),
+(1968, 'Non sono stati trovati corsi'),
+(1969, 'newsletter'),
+(1970, 'Importa corso'),
+(1971, 'Esporta corso'),
+(1972, 'Edit home page contents'),
+(1973, 'edit content in'),
+(1974, 'Modifica dei contenuti'),
+(1975, 'Da qui puoi modificare i contenuti di tipo news che appaiono in home page'),
+(1976, 'Edit news content'),
+(1977, 'Edit info content'),
+(1978, 'Edit help content'),
+(1979, 'Da qui puoi modificare i contenuti di tipo help che appaiono in home page'),
+(1980, 'Non ci sono contenuti del tipo richiesto'),
+(1981, 'Non ci sono corsi monitorati da te al 11/12/2013'),
+(1982, 'Non ci sono corsi di cui sei tutor.'),
+(1983, 'Nuova Newsletter'),
+(1984, 'Errore nella lettura dell''archivio newsletter'),
+(1985, 'Non sono stati trovati utenti'),
+(1986, 'Avanti'),
+(1987, 'Corsista'),
+(1988, 'Esporta report corsista (XLS)'),
+(1989, 'Esporta report corsista (PDF)'),
+(1990, 'Tutti i nodi visitati'),
+(1991, 'Numero di argomenti da mostrare'),
+(1992, 'Gentile utente, ti segnaliamo che il nodo %s  &egrave; stato aggiornato.'),
+(1993, 'Nessun file inviato dagli studenti di questa classe.'),
+(1994, 'Ripeti'),
+(1995, 'Non ci sono corsi monitorati da te al 14/12/2013');
 
 -- --------------------------------------------------------
 
@@ -1992,7 +2023,7 @@ CREATE TABLE IF NOT EXISTS `messaggi_es` (
   `id_messaggio` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `testo_messaggio` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_messaggio`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1958 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1996 ;
 
 --
 -- Dump dei dati per la tabella `messaggi_es`
@@ -3917,7 +3948,45 @@ INSERT INTO `messaggi_es` (`id_messaggio`, `testo_messaggio`) VALUES
 (1954, 'Contenuti aggiornati:'),
 (1955, 'Contenuti aggiornati'),
 (1956, 'Confermato'),
-(1957, 'Numero utenti');
+(1957, 'Numero utenti'),
+(1958, 'Loading'),
+(1959, 'Data di nascita'),
+(1960, 'numero di matricola'),
+(1961, 'Seleziona un file immagine per il tuo avatar'),
+(1962, 'cap'),
+(1963, 'Dati residenza'),
+(1964, 'seleziona una lingua'),
+(1965, 'facebook'),
+(1966, 'Ultime news'),
+(1967, 'Chiedi aiuto'),
+(1968, 'Non sono stati trovati corsi'),
+(1969, 'newsletter'),
+(1970, 'Importa corso'),
+(1971, 'Esporta corso'),
+(1972, 'Edit home page contents'),
+(1973, 'edit content in'),
+(1974, 'Modifica dei contenuti'),
+(1975, 'Da qui puoi modificare i contenuti di tipo news che appaiono in home page'),
+(1976, 'Edit news content'),
+(1977, 'Edit info content'),
+(1978, 'Edit help content'),
+(1979, 'Da qui puoi modificare i contenuti di tipo help che appaiono in home page'),
+(1980, 'Non ci sono contenuti del tipo richiesto'),
+(1981, 'Non ci sono corsi monitorati da te al 11/12/2013'),
+(1982, 'Non ci sono corsi di cui sei tutor.'),
+(1983, 'Nuova Newsletter'),
+(1984, 'Errore nella lettura dell''archivio newsletter'),
+(1985, 'Non sono stati trovati utenti'),
+(1986, 'Avanti'),
+(1987, 'Corsista'),
+(1988, 'Esporta report corsista (XLS)'),
+(1989, 'Esporta report corsista (PDF)'),
+(1990, 'Tutti i nodi visitati'),
+(1991, 'Numero di argomenti da mostrare'),
+(1992, 'Gentile utente, ti segnaliamo che il nodo %s  &egrave; stato aggiornato.'),
+(1993, 'Nessun file inviato dagli studenti di questa classe.'),
+(1994, 'Ripeti'),
+(1995, 'Non ci sono corsi monitorati da te al 14/12/2013');
 
 -- --------------------------------------------------------
 
@@ -3929,7 +3998,7 @@ CREATE TABLE IF NOT EXISTS `messaggi_it` (
   `id_messaggio` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `testo_messaggio` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_messaggio`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1958 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1996 ;
 
 --
 -- Dump dei dati per la tabella `messaggi_it`
@@ -5858,7 +5927,45 @@ INSERT INTO `messaggi_it` (`id_messaggio`, `testo_messaggio`) VALUES
 (1954, 'Contenuti aggiornati:'),
 (1955, 'Contenuti aggiornati'),
 (1956, 'Confermato'),
-(1957, 'Numero utenti');
+(1957, 'Numero utenti'),
+(1958, 'Loading'),
+(1959, 'Data di nascita'),
+(1960, 'numero di matricola'),
+(1961, 'Seleziona un file immagine per il tuo avatar'),
+(1962, 'cap'),
+(1963, 'Dati residenza'),
+(1964, 'seleziona una lingua'),
+(1965, 'facebook'),
+(1966, 'Ultime news'),
+(1967, 'Chiedi aiuto'),
+(1968, 'Non sono stati trovati corsi'),
+(1969, 'newsletter'),
+(1970, 'Importa corso'),
+(1971, 'Esporta corso'),
+(1972, 'Edit home page contents'),
+(1973, 'edit content in'),
+(1974, 'Modifica dei contenuti'),
+(1975, 'Da qui puoi modificare i contenuti di tipo news che appaiono in home page'),
+(1976, 'Edit news content'),
+(1977, 'Edit info content'),
+(1978, 'Edit help content'),
+(1979, 'Da qui puoi modificare i contenuti di tipo help che appaiono in home page'),
+(1980, 'Non ci sono contenuti del tipo richiesto'),
+(1981, 'Non ci sono corsi monitorati da te al 11/12/2013'),
+(1982, 'Non ci sono corsi di cui sei tutor.'),
+(1983, 'Nuova Newsletter'),
+(1984, 'Errore nella lettura dell''archivio newsletter'),
+(1985, 'Non sono stati trovati utenti'),
+(1986, 'Avanti'),
+(1987, 'Corsista'),
+(1988, 'Esporta report corsista (XLS)'),
+(1989, 'Esporta report corsista (PDF)'),
+(1990, 'Tutti i nodi visitati'),
+(1991, 'Numero di argomenti da mostrare'),
+(1992, 'Gentile utente, ti segnaliamo che il nodo %s  &egrave; stato aggiornato.'),
+(1993, 'Nessun file inviato dagli studenti di questa classe.'),
+(1994, 'Ripeti'),
+(1995, 'Non ci sono corsi monitorati da te al 14/12/2013');
 
 -- --------------------------------------------------------
 
@@ -5870,7 +5977,7 @@ CREATE TABLE IF NOT EXISTS `messaggi_sistema` (
   `id_messaggio` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `testo_messaggio` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_messaggio`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1958 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1996 ;
 
 --
 -- Dump dei dati per la tabella `messaggi_sistema`
@@ -7799,7 +7906,45 @@ INSERT INTO `messaggi_sistema` (`id_messaggio`, `testo_messaggio`) VALUES
 (1954, 'Contenuti aggiornati:'),
 (1955, 'Contenuti aggiornati'),
 (1956, 'Confermato'),
-(1957, 'Numero utenti');
+(1957, 'Numero utenti'),
+(1958, 'Loading'),
+(1959, 'Data di nascita'),
+(1960, 'numero di matricola'),
+(1961, 'Seleziona un file immagine per il tuo avatar'),
+(1962, 'cap'),
+(1963, 'Dati residenza'),
+(1964, 'seleziona una lingua'),
+(1965, 'facebook'),
+(1966, 'Ultime news'),
+(1967, 'Chiedi aiuto'),
+(1968, 'Non sono stati trovati corsi'),
+(1969, 'newsletter'),
+(1970, 'Importa corso'),
+(1971, 'Esporta corso'),
+(1972, 'Edit home page contents'),
+(1973, 'edit content in'),
+(1974, 'Modifica dei contenuti'),
+(1975, 'Da qui puoi modificare i contenuti di tipo news che appaiono in home page'),
+(1976, 'Edit news content'),
+(1977, 'Edit info content'),
+(1978, 'Edit help content'),
+(1979, 'Da qui puoi modificare i contenuti di tipo help che appaiono in home page'),
+(1980, 'Non ci sono contenuti del tipo richiesto'),
+(1981, 'Non ci sono corsi monitorati da te al 11/12/2013'),
+(1982, 'Non ci sono corsi di cui sei tutor.'),
+(1983, 'Nuova Newsletter'),
+(1984, 'Errore nella lettura dell''archivio newsletter'),
+(1985, 'Non sono stati trovati utenti'),
+(1986, 'Avanti'),
+(1987, 'Corsista'),
+(1988, 'Esporta report corsista (XLS)'),
+(1989, 'Esporta report corsista (PDF)'),
+(1990, 'Tutti i nodi visitati'),
+(1991, 'Numero di argomenti da mostrare'),
+(1992, 'Gentile utente, ti segnaliamo che il nodo %s  &egrave; stato aggiornato.'),
+(1993, 'Nessun file inviato dagli studenti di questa classe.'),
+(1994, 'Ripeti'),
+(1995, 'Non ci sono corsi monitorati da te al 14/12/2013');
 
 -- --------------------------------------------------------
 
@@ -7817,7 +7962,16 @@ CREATE TABLE IF NOT EXISTS `servizio` (
   `max_incontri` int(11) NOT NULL,
   `durata_max_incontro` int(11) NOT NULL,
   PRIMARY KEY (`id_servizio`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+
+--
+-- Dump dei dati per la tabella `servizio`
+--
+
+INSERT INTO `servizio` (`id_servizio`, `nome`, `descrizione`, `livello`, `durata_servizio`, `min_incontri`, `max_incontri`, `durata_max_incontro`) VALUES
+(1, 'Corso di prova', 'Questo corso ci serve per fare delle prove.', 1, 0, 0, 0, 0),
+(2, 'Principi Neuroanatomia, Neuroimaging, Neuropsicofarmacologia nelle disabilità cognitive', 'Questo Corso e-learning vuole essere un approfondimento alla prima Conferenza d''aula del secondo anno del master ecm psionlus in Neuroscienze per le disabilità cognitive svoltosi il 13 e 14 dicembre 2013', 1, 0, 0, 0, 0),
+(3, 'Tesi master Neuroscienze', 'Questo corso e-learning è pensato per creare un ambiente didattico condiviso e tutorato per la realizzazione dello studio di tesi.', 1, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -7831,7 +7985,16 @@ CREATE TABLE IF NOT EXISTS `servizio_tester` (
   `id_corso` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id_tester`,`id_servizio`),
   KEY `id_corso` (`id_corso`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+
+--
+-- Dump dei dati per la tabella `servizio_tester`
+--
+
+INSERT INTO `servizio_tester` (`id_tester`, `id_servizio`, `id_corso`) VALUES
+(2, 1, 1),
+(2, 2, 2),
+(2, 3, 3);
 
 -- --------------------------------------------------------
 
@@ -7861,7 +8024,7 @@ CREATE TABLE IF NOT EXISTS `tester` (
 
 INSERT INTO `tester` (`id_tester`, `nome`, `ragione_sociale`, `indirizzo`, `provincia`, `citta`, `nazione`, `telefono`, `e_mail`, `responsabile`, `puntatore`, `descrizione`) VALUES
 (1, 'Provider 1', 'ragione sociale', 'Via dei Sabelli, 25', 'Roma', 'rm', 'Italia', '0123456789', 'admin_provider@lynxlab.com', 'responsabile 1', 'client0', ''),
-(2, 'Provider 2', 'ragione sociale', 'Via dei Quintili 175', 'roma', 'rm', 'italia', '0123456789', 'admin_provider@lynxlab.com', 'responsabile 2', 'client1', '');
+(2, 'PSI Onlus', 'ragione sociale', 'Via dei Quintili 175', 'roma', 'rm', 'italia', '0123456789', 'admin_provider@lynxlab.com', 'responsabile 2', 'psionlus', '');
 
 -- --------------------------------------------------------
 
@@ -7877,6 +8040,15 @@ CREATE TABLE IF NOT EXISTS `token` (
   `valido` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`token`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `token`
+--
+
+INSERT INTO `token` (`token`, `id_utente`, `timestamp_richiesta`, `azione`, `valido`) VALUES
+('d3478fbee132a1880cda7c0242c8596f2ff47d4e', 35, 1386782580, 1, 1),
+('b146d2f9b1ec9f4ca1df2240900ad7197e596347', 57, 1387896588, 1, 1),
+('c8b0c2ddd3b9af7e32bf24393a2150a631a62e50', 58, 1387896588, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -7904,20 +8076,48 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `stato` tinyint(3) unsigned NOT NULL,
   `lingua` tinyint(3) unsigned DEFAULT '0',
   `timezone` int(11) DEFAULT '0',
+  `cap` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `matricola` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `avatar` varchar(90) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=34 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=59 ;
 
 --
 -- Dump dei dati per la tabella `utente`
 --
 
-INSERT INTO `utente` (`id_utente`, `nome`, `cognome`, `tipo`, `e_mail`, `username`, `password`, `layout`, `indirizzo`, `citta`, `provincia`, `nazione`, `codice_fiscale`, `birthdate`, `sesso`, `telefono`, `stato`, `lingua`, `timezone`) VALUES
-(1, 'admin', 'ada', '2', 'admin@lynxlab.com', 'adminAda', '28dcaeb4eb65eba987aeeb37d228d4526eb37791', NULL, '', '', '', '', '', 0, '', '0123456789', 0, 0, 0),
-(2, 'nomeAutoreAda1', 'cognomeAutoreAda1', '1', 'autore@lynxlab.com', 'autoreAda1', '078139c99e73077fb7db87e49df8fe43cf7ca1b3', 'silver_gray', 'via o piazza', 'roma', 'RM', 'ZW', 'NULL', 33, 'M', '12341234', 0, NULL, NULL),
-(3, 'nomeTutorAda1', 'cognomeTutorAda1', '4', 'tutor@lynxlab.com', 'tutorAda1', 'e74e0b5df5cf02436a1c33509c42f76eb36bcabf', 'ada_blu', 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 1, 0),
-(4, 'nomeSwitcherAda1', 'cognomeSwitcherAda1', '6', 'coordinator@lynxlab.com', 'switcherAda1', '64baf2b0844f66cd95c50e716f089052f1682572', NULL, 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 2, NULL),
-(5, 'nomeStudenteAda1', 'cognomeStudenteAda1', '3', 'studente@lynxlab.com', 'studenteAda1', '7d4ee672efb7827f7be8f2dffb471353f4b88d3a', '', NULL, NULL, 'RM', 'ZW', 'NULL', 28, 'M', NULL, 0, 1, 0);
+INSERT INTO `utente` (`id_utente`, `nome`, `cognome`, `tipo`, `e_mail`, `username`, `password`, `layout`, `indirizzo`, `citta`, `provincia`, `nazione`, `codice_fiscale`, `birthdate`, `sesso`, `telefono`, `stato`, `lingua`, `timezone`, `cap`, `matricola`, `avatar`) VALUES
+(1, 'admin', 'ada', '2', 'admin@lynxlab.com', 'adminAda', '28dcaeb4eb65eba987aeeb37d228d4526eb37791', NULL, '', '', '', '', '', 0, '', '0123456789', 0, 0, 0, '', '', ''),
+(2, 'nomeAutoreAda1', 'cognomeAutoreAda1', '1', 'autore@lynxlab.com', 'autoreAda1', '078139c99e73077fb7db87e49df8fe43cf7ca1b3', 'ada_blu', 'via o piazza', 'roma', 'RM', 'ZW', 'NULL', 0, 'M', '12341234', 0, 0, NULL, '', '', ''),
+(3, 'nomeTutorAda1', 'cognomeTutorAda1', '4', 'tutor@lynxlab.com', 'tutorAda1', 'e74e0b5df5cf02436a1c33509c42f76eb36bcabf', 'ada_blu', 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 1386716400, 'M', '', 0, 1, 0, '', '', ''),
+(4, 'Segreteria', 'PSI Onlus', '6', 'formazione@psionlus.org', 'switcherAda1', 'daa8967e08061548557412a27ce36b424959ede7', '', '', 'roma', 'roma', 'ZW', 'NULL', 1386630000, 'M', '', 0, 1, NULL, '', '', ''),
+(5, 'nomeStudenteAda1', 'cognomeStudenteAda1', '3', 'studente@lynxlab.com', 'studenteAda1', '7d4ee672efb7827f7be8f2dffb471353f4b88d3a', 'ada_blu', '', '', 'RM', 'ZW', 'NULL', 0, 'M', '', 0, 1, 0, '', '', ''),
+(35, 'Morena', 'Terraschi', '3', 'morenagulp@gmail.com', 'morenagulp@gmail.com', '67b8aefec3664d4e10bbeeef4cf4b5e10a124806', 'ada_blu', '', '', '', 'ZW', NULL, 1386716400, '', '', 0, NULL, NULL, '', '', ''),
+(34, 'Luciano', 'Giacobbe', '4', 'luciano.giacobbe@tiscali.it', 'luciano.giacobbe@tiscali.it', 'acb6a1588eb798d69ddb9356851d37af56b87764', '', NULL, NULL, NULL, NULL, NULL, 0, 'M', NULL, 0, NULL, NULL, '', '', ''),
+(36, 'Marina', 'Raimondi', '3', 'mari.rai@libero.it', 'mari.rai@libero.it', '94ff6b6e31993d8863fe0ebcbe3e4a2b2e62c879', '', '', '', '', '0', NULL, 80344800, 'F', '', 0, NULL, NULL, '', '', ''),
+(37, 'Donatella', 'Lecis', '3', 'lecisd@santalessio.org', 'lecisd@santalessio.org', '05e94b935b831de4518a3ca3906842d4abc99ad9', '', NULL, NULL, NULL, NULL, NULL, 0, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(38, 'Marika', 'Memoli', '3', 'marika1987m@libero.it', 'marika1987m@libero.it', '44a8edaf5b359a81dad1c02a6aace5bd2c9a3652', '', NULL, NULL, NULL, NULL, NULL, 563583600, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(39, 'Enza', 'Lagalla', '3', 'enzalagalla@libero.it', 'enzalagalla@libero.it', '836861c353513c408634550eecbf2b36d4b23182', '', NULL, NULL, NULL, NULL, NULL, 556063200, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(40, 'Stefania', 'Bagarozza', '3', 'stefy.bag@tiscali.it', 'stefy.bag@tiscali.it', '2101d2b79911a4eb86bad6112dbf089c73f20fe4', '', NULL, NULL, NULL, NULL, NULL, 567558000, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(41, 'Carmen', 'Ciano', '3', 'carmen.ciano@tiscali.it', 'carmenlogo2013@gmail.com', '245f1ee6d1a4bdaab348bfaccfffec338754c341', '', '', '', '', '0', NULL, 581896800, 'F', '', 1, NULL, NULL, '', '', ''),
+(42, 'Mara ', 'Fanuzzi', '3', 'fanuzzi@tiscali.it', 'fanuzzi@tiscali.it', '207138a7ef7e9858d0e146f218b249b7a8554aba', '', NULL, NULL, NULL, NULL, NULL, 496533600, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(43, 'Bruna', 'Rubino', '3', 'bruna.rubino@hotmail.it', 'bruna.rubino@hotmail.it', '65dfae6cbb442ec2f1684e6da4864bad7ecfebc2', '', NULL, NULL, NULL, NULL, NULL, 587858400, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(44, 'Giusy', 'Vigna', '3', 'giusy.vigna@tiscali.it', 'giusy.vigna@tiscali.it', 'bacaca498808facda4f72a53c39e6837063598ab', '', NULL, NULL, NULL, NULL, NULL, 575589600, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(45, 'Maria Cristina', 'Riccio', '3', 'cricriet@live.it', 'cricriet@live.it', 'afc875f6872a276fa7e6e7590035caf977c6ee4e', '', '', '', '', '0', NULL, 467938800, 'F', '', 0, NULL, NULL, '', '', ''),
+(46, 'Bruno', 'Attianese', '3', 'rossarancio78@live.it', 'rossarancio78@live.it', '0f954805fc8c691f5aabb17c6d8e5bbe1ab4d971', '', '', '', '', '0', NULL, 261702000, 'M', '', 0, NULL, NULL, '', '', ''),
+(47, 'Rosanna', 'Martino', '3', 'martinorosanna@email.it', 'martinorosanna@email.it', '4b383f0f2fe82daf4e6edcf0910f483ec1b746a6', '', NULL, NULL, NULL, NULL, NULL, 553730400, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(48, 'Silvia', 'Moracci', '3', 'silvia.moracci@libero.it', 'silvia.moracci@libero.it', '37a3b8431d4bfd3fb446b1a5c7cbc90316e09e9c', '', NULL, NULL, NULL, NULL, NULL, 583711200, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(49, 'Vanya', 'Angileri', '3', 'vanya.angileri@libero.it', 'vanya.angileri@libero.it', 'e86ecf4b986faa93a56e76faea95e7514a11921a', '', NULL, NULL, NULL, NULL, NULL, 474591600, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(50, 'Francesca ', 'Mazzi', '3', 'ohfrancy@hotmail.it', 'ohfrancy@hotmail.it', 'a9d1326b4ebcbb023c346dfc8bb559ef9226fb79', '', NULL, NULL, NULL, NULL, NULL, 531356400, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(51, 'Giuseppe', 'Errico', '3', 'giuseppe.errico@inwind.it', 'giuseppe.errico@inwind.it', '4b9da508578a54f16927eab079d7ec817f72423e', '', NULL, NULL, NULL, NULL, NULL, 0, 'M', NULL, 0, NULL, NULL, '', '', ''),
+(52, 'Rosa', 'Viola', '3', 'rosa.viola@alice.it', 'rosa.viola@aliceposta.it', 'ee81826f62157686252c96a15a3774de042ad452', '', '', '', '', '0', NULL, 0, 'F', '', 0, NULL, NULL, '', '', ''),
+(53, 'Flores', 'Arlotti', '3', 'flores.a@libero.it', 'flores.a@libero.it', '426af6056377c96a7a80242a8c91ec9c9a3603e2', '', NULL, NULL, NULL, NULL, NULL, 0, 'M', NULL, 0, NULL, NULL, '', '', ''),
+(54, 'Nadia', 'Paganelli', '3', 'nadia.paganelli@ausl-cesena.emr.it', 'nadia.paganelli@ausl-cesena.emr.it', '155bf6bbc68cea0f01082d42768466103c14370e', '', NULL, NULL, NULL, NULL, NULL, 0, 'F', NULL, 0, NULL, NULL, '', '', ''),
+(55, 'Paulin', 'Kalala Kabeya', '3', 'paulinkalala@orange.fr', 'paulinkalala@orange.fr', '3eace777a53790916523de9350edcc8efb540bbd', '', NULL, NULL, NULL, NULL, NULL, 0, 'M', NULL, 0, NULL, NULL, '', '', ''),
+(56, 'Francesca', 'Nadal', '3', 'francesca_green_eyes@libero.it', 'francesca_green_eyes@libero.it', 'd46a9bb54c5c4b69a7ac9563fec8f61c66dbb599', '', '', '', '', 'IT', NULL, 321836400, 'F', '', 0, NULL, NULL, '', '', ''),
+(57, 'Carmen', 'Ciano', '3', 'carmen.ciano@tiscali.it', 'carmen.ciano@tiscali.it', '245f1ee6d1a4bdaab348bfaccfffec338754c341', 'ada_blu', '', '', '', '0', NULL, 581896800, 'F', '', 0, NULL, NULL, '', '', ''),
+(58, 'Rosa', 'Viola', '3', 'rosa.viola@alice.it', 'rosa.viola@alice.it', 'ee81826f62157686252c96a15a3774de042ad452', 'ada_blu', '', '', '', '0', NULL, 0, 'F', '', 0, NULL, NULL, '', '', '');
 
 -- --------------------------------------------------------
 
@@ -7942,8 +8142,32 @@ INSERT INTO `utente_tester` (`id_utente`, `id_tester`) VALUES
 (3, 2),
 (4, 2),
 (5, 1),
-(5, 2);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+(5, 2),
+(34, 2),
+(35, 1),
+(35, 2),
+(36, 2),
+(37, 2),
+(38, 2),
+(39, 2),
+(40, 2),
+(41, 2),
+(42, 2),
+(43, 2),
+(44, 2),
+(45, 2),
+(46, 2),
+(47, 2),
+(48, 2),
+(49, 2),
+(50, 2),
+(51, 2),
+(52, 2),
+(53, 2),
+(54, 2),
+(55, 2),
+(56, 2),
+(57, 1),
+(57, 2),
+(58, 1),
+(58, 2);
