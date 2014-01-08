@@ -1,0 +1,88 @@
+***********************************************************
+*      ADA module service-complete install How-To:        *
+***********************************************************
+
+PREREQUISITES:
+	- ADA v2.0+ set up and running.
+	
+***********************************************************
+
+INSTALLATION:
+	- Copy the module source directory (service-modules)
+	  into the ADA ROOT_DIR/modules directory.
+	  
+	- The module already contains layouts for the ADA 
+	  standard template families (ada_blu, clear, 
+	  silver_gray, standard). Add your own template family
+	  files in the layout module subdir.
+	  
+	- Run the provided ada_service-complete_module.sql on 
+	  each provider database separately, exluding common.
+	  
+	- Should you need to disable ajax saving capabilities
+	  for the module, change service-complete/js/default.js
+	  at line 19, making it read:  var isAjax = false;
+	  
+	- For course instance integration, pls check that your
+	  ADA distribution 
+	  browsing/include/browsing_functions.inc.php file
+	  contains code following the comment block:
+	  /**
+ 	   * service completeness
+       */
+       around line no. 320.
+
+***********************************************************
+
+CONFIGURATION:
+	- Add or edit the following line to your installation
+	  config/config_modules.inc.php:
+
+	//defines for module service-complete
+	define('MODULES_SERVICECOMPLETE_PATH', MODULES_DIR.
+									  '/service-complete');
+									  
+	if (file_exists(MODULES_SERVICECOMPLETE_PATH.
+											 '/index.php'))
+	{
+		require_once(MODULES_SERVICECOMPLETE_PATH.
+								 '/config/config.inc.php');
+	
+		define('MODULES_SERVICECOMPLETE', true);
+		define('MODULES_SERVICECOMPLETE_HTTP',
+				HTTP_ROOT_DIR.'/modules/service-complete');
+	}
+	else {
+		define('MODULES_SERVICECOMPLETE', false);
+	}
+
+***********************************************************
+
+USAGE:
+	- A complete condition based on time spent on a course
+	  is provided for your convenience.
+	  Should you need to build more conditions, pls create
+	  new classes using completeConditionTime.class.inc.php
+	  as an example.
+	  
+	  For instance the class named CompleteConditionFooBar
+	  must be in the completeConditionFooBar.class.inc.php
+	  file. 
+	  
+	  Fill in the $description and $paramDescription static
+	  vars and implement the
+	  CompleteConditionFooBar::isSatisfied method, only
+	  logical operators AND, OR are supported so you'd
+	  better let it return a boolean.
+	  
+	  Finally, make the system aware of the new class by
+	  adding:
+	  $GLOBALS['completeClasses'][]  = 
+	  							 'completeConditionFooBar';
+      to the module's config.inc.php file.
+      
+      Pls payAttentionTOCapitalization, file name and
+	  string must match, while class names in PhP are
+	  case insensitive as you might be aware.	  							 
+	  
+***********************************************************

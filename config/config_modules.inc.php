@@ -26,5 +26,17 @@
 	else {
 		define('MODULES_NEWSLETTER', false);
 	}
-
+	
+	//defines for module service-complete
+	define('MODULES_SERVICECOMPLETE_PATH', MODULES_DIR.'/service-complete');
+	if (file_exists(MODULES_SERVICECOMPLETE_PATH.'/index.php'))
+	{
+		require_once(MODULES_SERVICECOMPLETE_PATH.'/config/config.inc.php');
+	
+		define('MODULES_SERVICECOMPLETE', true);
+		define('MODULES_SERVICECOMPLETE_HTTP', HTTP_ROOT_DIR.'/modules/service-complete');
+	}
+	else {
+		define('MODULES_SERVICECOMPLETE', false);
+	}
 ?>

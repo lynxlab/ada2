@@ -317,6 +317,42 @@ if ($id_profile == AMA_TYPE_STUDENT && $log_enabled){
   $user_history = $userObj->history;
 }
 
+/**
+ * service completeness
+ */
+if ($id_profile == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
+	if (is_object($courseInstanceObj) && is_object($courseObj) && is_object($userObj))
+	{		
+		if ($user_status!=ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+
+			// need the service-complete module data handler
+			require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
+			$mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+			// load the conditionset for this course
+			$conditionSet = $mydh->get_linked_conditionset_for_course($courseObj->getId());
+			$mydh->disconnect();
+			
+			if ($conditionSet instanceof CompleteConditionSet) {
+				// evaluate the conditionset for this instance ID and course ID
+				$is_course_instance_complete = $conditionSet->evaluateSet(array( $courseInstanceObj->getId(), $userObj->getId() ));
+			} else {
+				$is_course_instance_complete = false;
+			}
+			
+			// if course is complete, save this information to the db
+			if ($is_course_instance_complete) {
+				require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
+				$s = new Subscription($userObj->getId(), $courseInstanceObj->getId());
+				$s->setSubscriptionStatus(ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
+				$subscribedCount = Subscription::updateSubscription($s);
+			}
+		}
+	}
+}
+/**
+ * end service completeness
+ */
+
 
 /**
  * Template Family

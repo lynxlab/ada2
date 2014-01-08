@@ -61,7 +61,7 @@ class CHtml_tags
             case 'CTr':
                 return "<tr $core_attributes $i18n_attributes $event_attributes $alignable_element>\n%children%\n</tr>\n";
             case 'CTd':
-                return "<td $core_attributes $i18n_attributes $event_attributes $alignable_element>\n%children%\n</td>\n";
+                return "<td $core_attributes $i18n_attributes $event_attributes $alignable_element $tablecell_element>\n%children%\n</td>\n";
             case 'CTh':
                 return "<th $core_attributes $i18n_attributes $event_attributes $alignable_element $tablecell_element>\n%children%\n</th>\n";
             case 'CA':
