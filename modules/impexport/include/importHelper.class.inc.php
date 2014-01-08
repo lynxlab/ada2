@@ -627,9 +627,10 @@ class importHelper
 		{
 			if ($name === 'test') continue;
 			else {
-				$outArr[$name] = (string) $value;
+				$temp = (string) $value;
+				if (!empty($temp)) $outArr[$name] = $temp;
+				else $outArr[$name] = null;
 			}
-
 		}
 
 		if (!empty($outArr))
@@ -655,16 +656,16 @@ class importHelper
 					$outArr['id_nodo_riferimento'] = $this->_courseNodeIDMapping[$refNodeID];
 			}
 
-			$outArr['icona'] = str_replace('<root_dir/>', ROOT_DIR, $outArr['icona']);
-			$outArr['icona'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['icona']);
+			$outArr['icona'] = (!is_null($outArr['icona'])) ? str_replace('<root_dir/>', ROOT_DIR, $outArr['icona']) : null;
+			$outArr['icona'] = (!is_null($outArr['icona'])) ? str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['icona'])  : null;
 
-			$outArr['testo'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['testo']);
-			$outArr['testo'] = str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['testo']);
-			$outArr['testo'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['testo']);
+			$outArr['testo'] = (!is_null($outArr['testo'])) ? str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['testo'])  : null;
+			$outArr['testo'] = (!is_null($outArr['testo'])) ? str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['testo']) : null;
+			$outArr['testo'] = (!is_null($outArr['testo'])) ? str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['testo']) : null;
 
-			$outArr['nome'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['nome']);
-			$outArr['nome'] = str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['nome']);
-			$outArr['nome'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['nome']);
+			$outArr['nome'] = (!is_null($outArr['nome'])) ? str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['nome']) : null;
+			$outArr['nome'] = (!is_null($outArr['nome'])) ? str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['nome']) : null;
+			$outArr['nome'] = (!is_null($outArr['nome'])) ? str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['nome']) : null;
 
 			unset ($outArr['data_creazione']);
 			unset ($outArr['versione']);

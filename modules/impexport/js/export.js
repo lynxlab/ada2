@@ -1,4 +1,5 @@
 var tree;
+var exportMedia = false;
 /**
  * Init document
  */
@@ -16,7 +17,11 @@ function goToExportStepTwo() {
 
 	var courseSelect = document.getElementById('course');
 	var courseID = courseSelect.options[courseSelect.selectedIndex].value;
-
+	
+	var mediaCheck = document.getElementsByName('nomedia');
+	
+	for (var index in mediaCheck) if (typeof mediaCheck[index] === 'object') exportMedia = exportMedia || mediaCheck[index].checked ;
+	
 	if (courseID > 0) {
 
 		$j('.exportFormStep1').effect('drop', function() {
@@ -65,5 +70,6 @@ function doExport() {
 	var selCourse = $j('#selCourse').text();
 	var selNode = $j('#selNode').text();
 	
-	self.document.location.href = HTTP_ROOT_DIR + '/modules/impexport/doExport.php?selCourse='+selCourse+'&selNode='+selNode;
+	self.document.location.href = HTTP_ROOT_DIR + '/modules/impexport/doExport.php?selCourse='+selCourse+'&selNode='+selNode+
+		(exportMedia ? '&exportMedia=1' : '');
 }

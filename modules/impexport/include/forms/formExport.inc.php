@@ -29,6 +29,9 @@ class FormSelectExportCourse extends FForm {
 			->setRequired()
 			->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
 		
+		$this->addCheckboxes('nomedia', translateFN('Se si pensa di assegnare il corso importato allo stesso autore di quello esporato, si può evitare di esportare i files multimediali')
+							 , array ('1'=>translateFN('Non esportare i media')), null);
+		
 		$this->setSubmitValue(translateFN('Avanti')."&nbsp;&gt;&gt;");
 		$this->setOnSubmit('return goToExportStepTwo();');
 		

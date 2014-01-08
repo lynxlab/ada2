@@ -45,15 +45,45 @@ class exportHelper
 	 * @var unknown
 	 */
 	private static $_outputFileName = "ADAExport";
+	
+	/**
+	 * Module's own log file to log import progress, and if something goes wrong
+	 * @var string
+	 */
+	private $_logFile;
+	
+	/**
+	 * array of exported ADA nodes id
+	 * @var array
+	 */
+	public $exportedNONTestNodeArray;
+	
+	/**
+	 * holds the exported TEST nodes to be saved as XML
+	 * 
+	 * @var DOMElement
+	 */
+	public $testNodeXMLElement;
 
 	/**
 	 * constructor.
 	 *
 	 * Initialize the $mediaFilesArray
 	 */
-	public function __construct() {
+	public function __construct($exportCourse) {
 		$this->mediaFilesArray = array();
 		$this->mediaFilesPath = substr(MEDIA_PATH_DEFAULT, 1);
+		
+		$this->exportedNONTestNodeArray = array();
+		
+		// make the module's own log dir if it's needed
+		if (!is_dir(MODULES_IMPEXPORT_LOGDIR)) mkdir (MODULES_IMPEXPORT_LOGDIR, 0777, true);
+		
+		/**
+		 * sets the log file name that will be used from now on!
+		 */
+		$this->_logFile = MODULES_IMPEXPORT_LOGDIR . "export-".$exportCourse .
+		"_".date('d-m-Y_His').".log";
 	}
 
 	/**
@@ -72,14 +102,20 @@ class exportHelper
 	 *
 	 * @access public
 	 */
-	public function exportCourseNodeChildren($course_id, $nodeId, $domtree, $dh, $mustRecur = false)
+	public function exportCourseNodeChildren($course_id, $nodeId, &$domtree, &$dh, $mustRecur = false)
 	{
-		static $depth=0;
+		static $count=0;
 		// first export all passed node data
-		$nodeInfo =& $dh->get_node_info($nodeId);
+		$nodeInfo = $dh->get_node_info($nodeId);
 		if (AMA_DB::isError($nodeInfo)) return;
 
 		unset ($nodeInfo['author']);
+		
+		// add the $nodeId to the exported nodes array
+		if (!in_array($nodeId, $this->exportedNONTestNodeArray)) $this->exportedNONTestNodeArray[] = $nodeId;
+		
+		if ($count++ % 2) $this->_logMessage(__METHOD__.' Exporting ADA node_id='.$nodeId.' num. '.($count));
+		
 		/**
 		 * NOTE: Following fields will be modified or omitted and must be calculated when importing:
 		 *
@@ -125,7 +161,7 @@ class exportHelper
 		unset ($nodeInfo);
 			
 		// get the list of the links from the node
-		$nodeLinksArr =& $dh->get_node_links($nodeId);
+		$nodeLinksArr = $dh->get_node_links($nodeId);
 		if (!empty ($nodeLinksArr) && !AMA_DB::isError($nodeLinksArr))
 		{
 			foreach ($nodeLinksArr as &$nodeLinkId)
@@ -206,16 +242,24 @@ class exportHelper
 	 *
 	 * @access public
 	 */
-	public function exportTestNodeChildren ($course_id, $nodeId, $domtree, $dh_test, $XMLElement)
+	public function exportTestNodeChildren ($course_id, $nodeId, &$domtree, &$dh_test, $XMLElement=null)
 	{
+		static $count = 0;
 		$nodeInfo = $dh_test->test_getNode($nodeId);
 		if (!AMA_DB::isError($nodeInfo))
 		{
-			$XMLElement = $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
-
+			if( function_exists('memory_get_usage') ) $mem = memory_get_usage();
+			else $mem = 'N/A';
+			
+			$this->_logMessage(__METHOD__.' Exporting ADA TEST Node num. '.($count++).' nodeId='.$nodeId.' memory_get_usage()='.$mem );
+			
+			
+// 			$XMLElement =& $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
+			$this->testNodeXMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
+			
 			$childrenNodesArr = $dh_test->test_getNodesByParent ($nodeId, null, array('id_istanza'=>0));
 			foreach ($childrenNodesArr as $childNode)
-				self::exportTestNodeChildren($course_id, $childNode['id_nodo'], $domtree, $dh_test, $XMLElement);
+				$this->exportTestNodeChildren($course_id, $childNode['id_nodo'], $domtree, $dh_test);
 		}
 	}
 
@@ -246,7 +290,7 @@ class exportHelper
 	 *
 	 * @access public
 	 */
-	public function buildCDATASection ($domtree, $name, $value)
+	public function buildCDATASection (&$domtree, &$name, &$value)
 	{
 		// creates a CDATA section
 		$XMLCDATAElement = $domtree->createElement($name);
@@ -265,7 +309,7 @@ class exportHelper
 	 *
 	 * @access public
 	 */
-	public function buildExtendedNodeXML ($domtree, $extendedInfo)
+	public function buildExtendedNodeXML (&$domtree, &$extendedInfo)
 	{
 		$XMLNodeExtended = $domtree->createElement("extended");
 		foreach ($extendedInfo as $name=>$value)
@@ -301,7 +345,7 @@ class exportHelper
 	 *
 	 * @access public
 	 */
-	public function buildExternalResourceXML ($domtree, $extResInfo, $course_id)
+	public function buildExternalResourceXML (&$domtree, &$extResInfo, &$course_id)
 	{
 		$XMLNodeExtRes = $domtree->createElement ("resource");
 
@@ -344,7 +388,7 @@ class exportHelper
 	 *
 	 * @access private
 	 */
-	private function buildTestXML ($domtree, $testElement)
+	private function buildTestXML (&$domtree, &$testElement)
 	{
 		$XMLTest = $domtree->createElement('test');
 		foreach ($testElement as $name=>$value)
@@ -383,7 +427,7 @@ class exportHelper
 	 *
 	 * @access public
 	 */
-	public function buildLinkXML ($domtree, $link)
+	public function buildLinkXML (&$domtree, &$link)
 	{
 		$XMLNodeLink = $domtree->createElement("link");
 		foreach ($link as $name=>$value)
@@ -404,7 +448,7 @@ class exportHelper
 	 *
 	 * @access public
 	 */
-	public function buildPosizioneXML ($domtree, $posizione)
+	public function buildPosizioneXML (&$domtree, &$posizione)
 	{
 		$XMLNodePosition = $domtree->createElement("posizione");
 		foreach ($posizione as $name=>$value)
@@ -446,31 +490,52 @@ class exportHelper
 	 *
 	 * @access public
 	 */
-	public function makeZipFile ($XMLFile)
+	public function makeZipFile (&$XMLFile, $exportMedia = true)
 	{
 		$zipFileName = ADA_UPLOAD_PATH.self::$_outputFileName.'_'.
 				$_SESSION['sess_userObj']->username.'_'.date("Ymd").'.zip';
 
 		$zip = new ZipArchive();
-		$zip->open($zipFileName, ZipArchive::OVERWRITE);
+		$zipStatus = $zip->open($zipFileName, ZipArchive::OVERWRITE);
 
 		$zip->addFromString(XML_EXPORT_FILENAME, $XMLFile);
+		
+		$this->_logMessage(__METHOD__.' Beginning zip file creation');
+		if ($zipStatus===true) $this->_logMessage(__METHOD__.' ZIP file: '.$zipFileName. ' was SUCCESFULLY CREATED');
+		else $this->_logMessage(__METHOD__.' ZipArchive::open call returned error code '. $zipStatus . ' check php.net');
 
-		foreach ($this->mediaFilesArray as $course_id=>$mediaFiles)
-		{
-			foreach ($mediaFiles as $mediaFile)
+		if ($exportMedia) {
+			foreach ($this->mediaFilesArray as $course_id=>$mediaFiles)
 			{
-				// build outFileName by removing services/media/<id author>/
-				// from the mediaFile
-				$regExp = '/'.preg_quote($this->mediaFilesPath,'/').'\d+\/(.+)/';
-				if (preg_match($regExp, $mediaFile, $matches)) $outFileName = $matches[1];
-				else $outFileName = $mediaFile;
-
-				if (is_file(ROOT_DIR.'/'.$mediaFile))
-					$zip->addFile(ROOT_DIR.'/'.$mediaFile, $course_id.'/'.$outFileName);
+				foreach ($mediaFiles as $mediaFile)
+				{
+					$this->_logMessage(__METHOD__.' file name deducted from node text is: '.$mediaFile);
+					
+					// build outFileName by removing services/media/<id author>/
+					// from the mediaFile
+					$regExp = '/'.preg_quote($this->mediaFilesPath,'/').'\d+\/(.+)/';
+					if (preg_match($regExp, $mediaFile, $matches)) $outFileName = $matches[1];
+					else $outFileName = $mediaFile;
+					
+					$zipStatus = false;
+					if (is_file(ROOT_DIR.'/'.$mediaFile))
+						$zipStatus = $zip->addFile(ROOT_DIR.'/'.urldecode($mediaFile), $course_id.'/'.urldecode($outFileName));
+					
+					$this->_logMessage(__METHOD__.(($zipStatus) ? ' SUCCESSFULLY ' : ' UNSUCCESSFULLY' ).
+							' zipped '.ROOT_DIR.'/'.urldecode($mediaFile).'==>'.$course_id.'/'.urldecode($outFileName));
+				}
 			}
+		} else {
+			$this->_logMessage(__METHOD__.' media zipping skipped as per passed parameter');
 		}
-		if ($zip->close()) return $zipFileName;
+
+		$this->_logMessage(__METHOD__.' closing zip, hang on...');
+				
+		$closedOk = $zip->close();
+		
+		$this->_logMessage(__METHOD__.' is returning '.(($closedOk) ? $zipFileName : 'null').', form now on it\'s just a matter of sending out headers and zip file');
+		
+		if ($closedOk) return $zipFileName;
 		else return null;
 	}
 
@@ -575,6 +640,22 @@ class exportHelper
 			unset ($regExp);
 		}
 		return $value;
+	}
+	
+	/**
+	 * logs a message in the log file defined in the logFile private property.
+	 *
+	 * @param string $text the message to be logged
+	 *
+	 * @return unknown_type
+	 *
+	 * @access private
+	 */
+	private function _logMessage ($text)
+	{
+		// the file must exists, otherwise logger won't log
+		if (!is_file($this->_logFile)) touch ($this->_logFile);
+		ADAFileLogger::log($text, $this->_logFile);
 	}
 }
 ?>

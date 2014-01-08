@@ -53,7 +53,7 @@ if ($courseID > 0)
 	// need an Import/Export DataHandler
 	$dh =& AMAImpExportDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 	
-	$exportHelper = new exportHelper();
+	$exportHelper = new exportHelper($courseID);
 	
 	$a = $exportHelper->getAllChildrenArray($rootNode, $dh);
 	

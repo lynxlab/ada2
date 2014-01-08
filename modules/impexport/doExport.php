@@ -57,6 +57,7 @@ if (MODULES_TEST) {
 
 $exportCourse = (isset($_GET['selCourse']) && (intval($_GET['selCourse'])>0)) ? intval ($_GET['selCourse']) : 0;
 $exportNode = (isset($_GET['selNode']) && (trim($_GET['selNode'])!=='')) ? trim ($_GET['selNode']) : '';
+$exportMedia = !(isset($_GET['exportMedia']) && (intval($_GET['exportMedia'])>0));
 
 if ($exportCourse>0 && $exportNode!=='') {
 	$nodesToExport =  array( $exportCourse=>array($exportNode) );
@@ -64,7 +65,7 @@ if ($exportCourse>0 && $exportNode!=='') {
 /**
  * exportHelper object to help us in the exporting process...
 */
-$exportHelper = new exportHelper();
+$exportHelper = new exportHelper($exportCourse);
 /**
  * comment to be inserted as first line of XML document
 */
@@ -136,6 +137,10 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 		// is kept for possible future uses!
 		foreach ($XMLNodeChildren as &$XMLNodeChild) $XMLAllNodes->appendChild($XMLNodeChild);
 		unset ($XMLNodeChildren);
+		
+		// at least XMLAllNodes should be always set, anyway...
+		if (isset($XMLAllNodes))   $XMLcourse->appendChild($XMLAllNodes);
+		unset ($XMLAllNodes);
 
 		// tests and surveys are objects related to the course, not to the node
 		// so this is out of the nodes loop
@@ -171,6 +176,8 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 					unset ($XMLSurvey);
 				}
 			}
+			if (isset($XMLAllSurveys)) $XMLcourse->appendChild($XMLAllSurveys);
+			unset ($XMLAllSurveys);
 			// end get surveys
 
 			/**
@@ -178,10 +185,14 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 			 * test_course_survey.id_test and test_nodes.id_nodo !!!
 			 */
 			// get tests
-			$testsArr =& $dh_test->test_getNodes(array('id_corso'=>$course_id,'id_nodo_parent'=>null,'id_nodo_radice'=>null,'id_istanza'=>0));
+			$testsArr =& $dh_test->test_getNodes(array('id_corso'=>$course_id,'id_nodo_parent'=>null,'id_nodo_radice'=>null,
+					'id_nodo_riferimento'=>$exportHelper->exportedNONTestNodeArray,'id_istanza'=>0));
+			
 			if (!empty ($testsArr) && !AMA_DB::isError($testsArr))
 			{
-				$XMLAllTests =& $domtree->createElement('tests');
+				// $XMLAllTests =& $domtree->createElement('tests');
+				$exportHelper->testNodeXMLElement = $domtree->createElement('tests');
+				
 				foreach ($testsArr as &$testElement)
 				{
 					// if this node is in the array of root nodes that MUST
@@ -190,7 +201,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 					if ($array_key!==false) unset ($surveyRootNodes[$array_key]);
 
 					// export the node and all of its kids recursively
-					$exportHelper->exportTestNodeChildren($course_id, $testElement['id_nodo'], $domtree, $dh_test, $XMLAllTests);
+					$exportHelper->exportTestNodeChildren($course_id, $testElement['id_nodo'], $domtree, $dh_test);// $XMLAllTests);
 				}
 			}
 			// end get tests
@@ -209,17 +220,19 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 		} // end if (MODULES_TEST)
 
 		// at least XMLAllNodes should be always set, anyway...
-		if (isset($XMLAllNodes))   $XMLcourse->appendChild($XMLAllNodes);
-		if (isset($XMLAllSurveys)) $XMLcourse->appendChild($XMLAllSurveys);
-		if (isset($XMLAllTests))   $XMLcourse->appendChild($XMLAllTests);
+// 		if (isset($XMLAllNodes))   $XMLcourse->appendChild($XMLAllNodes);
+// 		if (isset($XMLAllSurveys)) $XMLcourse->appendChild($XMLAllSurveys);
+// 		if (isset($XMLAllTests))   $XMLcourse->appendChild($XMLAllTests);
+// 		unset ($XMLAllTests);
+		if (isset($exportHelper->testNodeXMLElement))   $XMLcourse->appendChild($exportHelper->testNodeXMLElement);
 
 		// append current course to the xml root element
 		$xmlRoot->appendChild($XMLcourse);
 
 		// unset all for the next loop iteration
-		unset ($XMLAllNodes);
-		unset ($XMLAllSurveys);
-		unset ($XMLAllTests);
+// 		unset ($XMLAllNodes);
+// 		unset ($XMLAllSurveys);
+// 		unset ($XMLAllTests);
 
 		// to export only test (or nodes or surveys or...) it's enough to say:
 		// $xmlRoot->appendChild($XMLAllTests);
@@ -228,7 +241,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 
 // otuput XML to string
 $XMLfile =   $domtree->saveXML();
-$outZipFile = $exportHelper->makeZipFile($XMLfile);
+$outZipFile = $exportHelper->makeZipFile($XMLfile, $exportMedia);
 
 // echo '<pre>'.htmlentities($XMLfile).'<pre/><hr/>';
 // print_r($exportHelper->mediaFilesArray); die();
