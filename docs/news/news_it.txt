@@ -1,5 +1,5 @@
 <h3>Benvenuti in ADA 2.1 !</h3>
-<p><img align="right" width="446" vspace="5" hspace="2" height="215" src="/adaInstall/services/media/1/e-learn-users-txt.png" alt="" />ADA è una piattaforma di e-learning progettata e mantenuta da <a target="_blank" href="http://www.lynxlab.com">Lynx</a> fin dal 2000.</p>
+<p><img align="right" width="446" vspace="5" hspace="2" height="215" src="/services/media/1/e-learn-users-txt.png" alt="" />ADA è una piattaforma di e-learning progettata e mantenuta da <a target="_blank" href="http://www.lynxlab.com">Lynx</a> fin dal 2000.</p>
 <p>Per fare login come amministratore puoi usare lo username <strong>adminAda</strong> con password <strong>adminAda</strong>.</p>
 <p>Il provider 0 ha alcunni utenti già registrati.</p>
 <p><strong>Coordinatore</strong>:</p>
