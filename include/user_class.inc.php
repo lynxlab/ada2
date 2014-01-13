@@ -67,6 +67,11 @@ abstract class ADAGenericUser {
     */
     protected $homepage;
 
+    /**
+     * path to user's edit profile page
+     */
+    protected $editprofilepage;
+    
     /*
    * getters
     */
@@ -186,13 +191,17 @@ abstract class ADAGenericUser {
     }
 
     public function getSerialNumber() {
-        return $this->setSerialNumber;
+        return $this->SerialNumber;
     }
 
     public function getAvatar() {
-        return $this->avatar;
+        if ($this->avatar != '' && file_exists(ADA_UPLOAD_PATH.$this->id_user.'/'.$this->avatar)) {
+            $imgAvatar = HTTP_UPLOAD_PATH.$this->id_user.'/'.$this->avatar;
+        } else {
+            $imgAvatar = HTTP_UPLOAD_PATH.ADA_DEFAULT_AVATAR; 
+        }        
+        return $imgAvatar;
     }
-    
     
     public function getTesters() {
         if(is_array($this->testers)) {
@@ -213,6 +222,11 @@ abstract class ADAGenericUser {
             return $this->homepage."?message=$msg";
         }
         return $this->homepage;
+    }
+    
+    public function getEditProfilePage()
+    {
+    	return  HTTP_ROOT_DIR . $this->editprofilepage;
     }
 
     /*
@@ -242,7 +256,11 @@ abstract class ADAGenericUser {
 //  }
 
     public function setLayout($layout) {
+        if ($layout == 'none' || $layout == 'null' || $layout == 'NULL') {
+            $this->template_family = '';
+        } else {
         $this->template_family = $layout;
+        }
     }
     public function setAddress($address) {
         $this->indirizzo = $address;
@@ -291,6 +309,14 @@ abstract class ADAGenericUser {
 
     protected function setHomePage($home_page) {
         $this->homepage = $home_page;
+    }
+    
+    protected function setEditProfilePage ($relativeUrl) {
+    	// make it leading slash-agnostic 	
+    	if ($relativeUrl{0}!== DIRECTORY_SEPARATOR) $relativeUrl = DIRECTORY_SEPARATOR .$relativeUrl;
+
+    	if (is_file(ROOT_DIR . $relativeUrl)) $this->editprofilepage = $relativeUrl;
+    	else $this->editprofilepage = '';    	
     }
 
     public function setTesters($testersAr = array()) {
@@ -468,6 +494,7 @@ class ADAGuest extends ADAGenericUser {
         $this->testers = array(ADA_PUBLIC_TESTER);
         	
         $this->setHomePage(HTTP_ROOT_DIR);
+        $this->setEditProfilePage('');
     }
 }
 
@@ -770,7 +797,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
      * @param  $id_course_instance
      * @return array
      */
-    private function _get_last_accessFN($id_course_instance="",$provider_dh) {
+    private function _get_last_accessFN($id_course_instance="",$provider_dh, $return_dateonly=true) {
         // if used by student before entering a course, we must pass the DataHandler
         if ($provider_dh==NULL)   { 
             $provider_dh = $GLOBALS['dh'];
@@ -791,7 +818,8 @@ abstract class ADALoggableUser extends ADAGenericUser {
             /*
             * vito, 10 ottobre 2008: $last_visited_node è Array([0]=>Array([id_nodo], ...))
             */
-            return array($last_visited_node[0]['id_nodo'], ts2dFN($last_visited_node[0]['data_uscita']));
+            $last_visited_time =  ($return_dateonly) ? ts2dFN($last_visited_node[0]['data_uscita']) : $last_visited_node[0]['data_uscita'] ;
+            return array($last_visited_node[0]['id_nodo'], $last_visited_time);
         } else {
             
         }
@@ -851,6 +879,85 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $visit_count = sizeof($history)-1;
         return $visit_count;
     }
+    
+    /**
+     * gets the last files for the user in course isntance shared docs area.
+     *
+     * @param number $id_course_instance isntance id for which to get the files.
+     * @param number $maxFiles max number of  files to return
+     *
+     * @return array if success|null if no file exists or on error
+     */
+    public function get_new_files($id_course_instance, $maxFiles = 3)
+    {
+    	$dh        = $GLOBALS['dh'];
+    	$common_dh = $GLOBALS['common_dh'];
+    	
+    	$retval = null;    
+
+    	$lastAccessArr = $this->_get_last_accessFN($id_course_instance,null,false);    	
+    	$lastAccess = (!is_array($lastAccessArr)) ? time() : intval($lastAccessArr[1]);
+    	
+    	$id_course = $dh->get_course_id_for_course_instance($id_course_instance);
+    	$course_ha = $dh->get_course($id_course);
+    	
+    	if (!AMA_DataHandler::isError($course_ha)){
+    		$author_id = $course_ha['id_autore'];
+	    	//il percorso in cui caricare deve essere dato dal media path del corso, e se non presente da quello di default
+	    	if($course_ha['media_path'] != "") {
+	    		$media_path = $course_ha['media_path']  ;
+	    	}
+	    	else {
+	    		$media_path = MEDIA_PATH_DEFAULT . $author_id ;
+	    	}
+	    	$download_path = ROOT_DIR . $media_path;
+    	}
+    	
+    	if (isset($download_path) && is_dir($download_path))
+    	{
+    		$sortedDir = array();
+    		$handle = opendir($download_path);
+    		
+    		while ($file = readdir($handle))
+    		{
+    			if ($file !='.' && $file != '..')
+    			{  			
+    				$ctime  = filectime($download_path . '/' . $file);
+    				$filesPart = explode('_', $file,6);
+    				// index 0 is the course instance id
+    				$file_id_course = $filesPart[0];
+    				// index 1 is the file sender, get her info
+    				$file_senderArray = $common_dh->get_user_info($filesPart[1]);
+    				/*
+    				 *  add files only if:
+    				 *  + they belong to the passed instance OR
+    				 *  	they've been added to the course by an author
+    				 *  + they've been modified after user last access   
+    				 */ 
+    				if (!AMA_DB::isError($file_senderArray) &&    				
+    					  ($file_id_course == $id_course_instance || 
+    					  ($file_senderArray['tipo'] == AMA_TYPE_AUTHOR && $file_id_course == $id_course)) && 
+    				    $ctime >= $lastAccess)
+    				{
+    					$arrKey = $ctime . '-' . $file;
+    					$sortedDir[$arrKey]['link'] = $file;
+    					$sortedDir[$arrKey]['id_node'] = $id_course . '_' . ADA_DEFAULT_NODE;
+    					$sortedDir[$arrKey]['id_course'] = $id_course;
+    					$sortedDir[$arrKey]['id_course_instance'] = $id_course_instance;    					
+    					$sortedDir[$arrKey]['displaylink'] = $filesPart[count($filesPart)-1];
+    				}
+    			}
+    		}    		
+    		closedir($handle);
+    		
+    		if (!empty($sortedDir))
+    		{
+    			krsort($sortedDir);
+    			$retval = array_slice($sortedDir, 0,$maxFiles);    			
+    		}
+    	}
+    	return $retval;
+    }
 }
 
 /**
@@ -881,6 +988,7 @@ abstract class ADAAbstractUser extends ADALoggableUser {
         parent::__construct($user_dataAr);
 
         $this->setHomePage(HTTP_ROOT_DIR.'/browsing/user.php');
+        $this->setEditProfilePage('browsing/edit_user.php');
         $this->history = NULL;
     }
     
@@ -1169,6 +1277,7 @@ class ADAPractitioner extends ADALoggableUser {
         $this->profilo = $user_dataAr['profilo'];
 
         $this->setHomePage(HTTP_ROOT_DIR.'/tutor/tutor.php');
+        $this->setEditProfilePage('tutor/edit_tutor.php');
     }
     /*
    * getters
@@ -1211,6 +1320,7 @@ class ADASwitcher extends ADALoggableUser {
         parent::__construct($user_dataAr);
 
         $this->setHomePage(HTTP_ROOT_DIR.'/switcher/switcher.php');
+        $this->setEditProfilePage('switcher/edit_switcher.php');
     }
 }
 
@@ -1223,6 +1333,8 @@ class ADAAuthor extends ADALoggableUser {
         parent::__construct($user_dataAr);
 
         $this->setHomePage(HTTP_ROOT_DIR.'/services/author.php');
+        $this->setEditProfilePage('services/edit_author.php');
+        
     }
 }
 
