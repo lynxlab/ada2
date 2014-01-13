@@ -82,7 +82,7 @@ class UserProfileForm extends UserRegistrationForm {
         }
 
         $layoutsAr = array(
-          'none'         => translateFN('seleziona un layout')
+          ''         => translateFN('seleziona un layout')
         );            
         $layoutObj = new UILayout();
         $avalaibleLayoutAr = $layoutObj->getAvailableLayouts();
