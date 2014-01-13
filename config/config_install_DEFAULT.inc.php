@@ -57,6 +57,8 @@ if (MULTIPROVIDER) {
  */
 if (!defined('HTTP_ROOT_DIR')) define('HTTP_ROOT_DIR','http://localhost/ada20'); // *js_import*
 
+define('ADA_DEFAULT_AVATAR','default_avatar.png');
+
 /**
  * portal name string - displayed in window titlebar
 */
