@@ -174,7 +174,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
             * caricando, rinominiamo il nuovo file.
             * es. pippo.txt -> ggmmaa_hhmmss_pippo.txt
             */
-           if ( is_file($destination) and $_POST['overwrite'] == false)
+           if ( is_file($destination) && $_POST['overwrite'] == false)
            {
                $date = date('dmy_His');
                $filename  = $date.'_'.$filename;

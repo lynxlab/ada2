@@ -8607,9 +8607,9 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
                             AMA_SEP . ": undefined type");
         }
 
-        // gets the ids of all the resources having the same names
+        // gets the ids of all the resources having the same names and the same owner
         // as the one that has to be inserted before the insertion
-        $sql = "select id_risorsa_ext from risorsa_esterna where nome_file=$nome_file";
+        $sql = "select id_risorsa_ext from risorsa_esterna where nome_file=$nome_file and id_utente = $id_utente";
         $id = $db->getOne($sql);
         if (AMA_DB::isError($id)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -8666,6 +8666,31 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // if there was at least one reference to $res_id into risorse_nodi
         // return without doing anything
         return 0;
+    }
+    /**
+     * Get external resource info starting from the file name and the Id_node
+     *
+     *
+     * @param $file_name - file name of the resource
+     * @param $id_node - the id of the current node
+     *
+     * @return the array containes the onfo about the resource or null or an error value
+     *
+     */
+    public function get_risorsa_esterna_info_from_filename($filename, $id_node) {
+        $db =& $this->getConnection();
+        if ( AMA_DB::isError( $db ) ) return $db;
+
+        $sqlfilename = $this->sql_prepared($filename);
+        $sql = "select RE.id_risorsa_ext,RE.nome_file,RE.tipo,RE.copyright, RE.id_utente, RE.keywords,RE.titolo, RE.descrizione, RE.pubblicato,RE.lingua, RN.id_nodo from risorsa_esterna as RE, risorse_nodi as RN where RE.nome_file = ? and RE.id_risorsa_ext = RN.id_risorsa_ext and RN.id_nodo = ?";
+        
+        $resourceInfoAr =  $db->getRow($sql,array($filename,$id_node),AMA_FETCH_ASSOC);
+//        $resourceInfoAr =  $db->getRow("select id_risorsa_ext, nome_file, tipo, copyright, id_utente, keywords, titolo, descrizione, pubblicato, lingua from risorsa_esterna where nome_file=$sqlfilename");
+        if (AMA_DB::isError($resourceInfoAr)) {
+            return new AMA_Error(AMA_ERR_GET);
+        }
+
+        return $resourceInfoAr;
     }
 
     /**
