@@ -113,7 +113,8 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
     } elseif ($course_ha['media_path'] != "") {
         $media_path = $course_ha['media_path'];
     } else  {
-        $media_path = MEDIA_PATH_DEFAULT . $author_id ;
+//        $media_path = MEDIA_PATH_DEFAULT . $author_id ;
+        $media_path = MEDIA_PATH_DEFAULT . $user_id ;
     }
     /*
      * fine codice esistente.
