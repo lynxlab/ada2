@@ -100,6 +100,13 @@ var GCAL_HOLIDAYS_FEED = '<?php echo GCAL_HOLIDAYS_FEED; ?>';
 <?php else :?>
 var GCAL_HOLIDAYS_FEED = '';
 <?php endif; ?>
+<?php if(!empty($_SESSION['sess_id_user'])): ?>
+var USER_ID = <?php echo $_SESSION['sess_id_user'];?>;
+<?php else: ?>
+var USER_ID = null;
+<?php endif; ?>
+
+
 
 //media type
 var MEDIA_IMAGE = '<?php echo _IMAGE;?>';
