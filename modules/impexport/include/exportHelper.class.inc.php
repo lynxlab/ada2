@@ -509,7 +509,7 @@ class exportHelper
 			{
 				foreach ($mediaFiles as $mediaFile)
 				{
-					$this->_logMessage(__METHOD__.' file name deducted from node text is: '.$mediaFile);
+					$this->_logMessage(__METHOD__.' file name guessed from node text is: '.$mediaFile);
 					
 					// build outFileName by removing services/media/<id author>/
 					// from the mediaFile
@@ -617,14 +617,14 @@ class exportHelper
 			$value = str_replace(HTTP_ROOT_DIR, '<http_root/>', $value);
 			$value = str_replace (parse_url(HTTP_ROOT_DIR, PHP_URL_PATH),'<http_path/>',$value);
 			
-			$regExp = '/('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/([^\"]+)/';
+			$regExp = '/\/?('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/([^\"]+)/';
 		}
 		else if ($name==='icon')
 		{
 			// substitute ROOT_DIR with a special tag that will
 			// be used to restore ROOT_DIR in the import environment
 			$value = str_replace(ROOT_DIR, '<root_dir/>', $value);
-			$regExp = '/('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/(.+)/';
+			$regExp = '/\/?('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/(.+)/';
 		}
 
 		/**
@@ -633,7 +633,7 @@ class exportHelper
 		if (isset ($regExp))
 		{
 			if (preg_match($regExp, $value, $matches)) {
-				$this->addFileToMediaArray($course_id,$matches[0]);
+				$this->addFileToMediaArray($course_id,$matches[1].$mathces[2].'/'.$matches[3]);
 				$replacement = '<id_autore/>';
 				$value = preg_replace($regExp, "$1".$replacement."/$3", $value);
 			}
