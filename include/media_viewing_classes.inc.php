@@ -19,11 +19,22 @@ class MediaViewer {
     private $media_title;
 
     public function __construct($media_path, $user_data=array(), $VIEWING_PREFERENCES=array(), $title='') {
-		$this->media_path			= $media_path;
-        $this->user_data			= $user_data;
-        $this->viewing_preferences	= $VIEWING_PREFERENCES;
-        $this->media_title			= $title;
+	$this->media_path = $media_path;
+        $this->user_data = $user_data;
+        $this->viewing_preferences = $VIEWING_PREFERENCES;
+        $this->media_title = $title;
+        $this->default_http_media_path = $this->media_path;
     }
+    
+    public function setMediaPath ($media_data=array()) {
+        if (file_exists(ROOT_DIR. MEDIA_PATH_DEFAULT. $media_data['owner'] . '/'. $media_data['value'])) {
+            $this->media_path = HTTP_ROOT_DIR. MEDIA_PATH_DEFAULT. $media_data['owner'].'/';
+        }
+        else {
+            $this->media_path = $this->default_http_media_path;
+        }
+    }
+
     /**
      * function getViewer, used to call the appropriate viewer for the selected media type ($media_data['type'])
      *
@@ -69,7 +80,6 @@ class MediaViewer {
 		
 		/* @var $return string */
 		$return = '';		
-		
         if ($media_type === _IMAGE || $media_type === _MONTESSORI) {
 			$return = ImageViewer::view($this->media_path,$media_value, $this->viewing_preferences[_IMAGE],$media_title,$media_width,$media_height);
 		}

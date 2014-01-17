@@ -113,7 +113,8 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
     } elseif ($course_ha['media_path'] != "") {
         $media_path = $course_ha['media_path'];
     } else  {
-        $media_path = MEDIA_PATH_DEFAULT . $author_id ;
+//        $media_path = MEDIA_PATH_DEFAULT . $author_id ;
+        $media_path = MEDIA_PATH_DEFAULT . $user_id ;
     }
     /*
      * fine codice esistente.
@@ -174,7 +175,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
             * caricando, rinominiamo il nuovo file.
             * es. pippo.txt -> ggmmaa_hhmmss_pippo.txt
             */
-           if ( is_file($destination) and $_POST['overwrite'] == false)
+           if ( is_file($destination) && $_POST['overwrite'] == false)
            {
                $date = date('dmy_His');
                $filename  = $date.'_'.$filename;
