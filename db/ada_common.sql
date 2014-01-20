@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: Gen 20, 2014 alle 11:13
+-- Generato il: Gen 20, 2014 alle 11:26
 -- Versione del server: 5.5.34-0ubuntu0.13.04.1
 -- Versione PHP: 5.4.9-4ubuntu2.4
 
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `messaggi_en` (
   `id_messaggio` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `testo_messaggio` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_messaggio`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1996 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2014 ;
 
 --
 -- Dump dei dati per la tabella `messaggi_en`
@@ -91,7 +91,7 @@ INSERT INTO `messaggi_en` (`id_messaggio`, `testo_messaggio`) VALUES
 (27, 'home'),
 (28, 'communicate'),
 (29, 'tools'),
-(30, 'edit'),
+(30, 'actions'),
 (31, 'Help'),
 (32, 'exit'),
 (33, 'Navigate'),
@@ -2018,7 +2018,25 @@ INSERT INTO `messaggi_en` (`id_messaggio`, `testo_messaggio`) VALUES
 (1992, 'Gentile utente, ti segnaliamo che il nodo %s  &egrave; stato aggiornato.'),
 (1993, 'Nessun file inviato dagli studenti di questa classe.'),
 (1994, 'Ripeti'),
-(1995, 'Non ci sono corsi monitorati da te al 14/12/2013');
+(1995, 'Non ci sono corsi monitorati da te al 14/12/2013'),
+(1996, 'Ci sono dati non salvati in questa scheda. Continuare senza salvarli?'),
+(1997, 'Ci sono dati non salvati in questa scheda.'),
+(1998, 'Attenzione: il campo &egrave; vuoto o contiene una data non valida'),
+(1999, 'Seleziona un file .zip da importare'),
+(2000, 'Importa come nuovo corso'),
+(2001, 'Seleziona l''autore a cui assegnare il corso importato'),
+(2002, 'Seleziona il corso in cui importare'),
+(2003, 'File caricato per l''importazione: '),
+(2004, 'Scegli il nodo del corso che sar&agrave; genitore dei nodi importati.'),
+(2005, 'Caricamento albero del corso'),
+(2006, 'Importa'),
+(2007, 'Importazione dal corso:'),
+(2008, 'Copia files multimediali in corso'),
+(2009, 'Importazione corso'),
+(2010, 'RISULTATI IMPORTAZIONE'),
+(2011, 'IL CORSO &Egrave; STATO CREATO CON id:'),
+(2012, 'oggetti di tipo'),
+(2013, 'aggiunti');
 
 -- --------------------------------------------------------
 
@@ -2030,7 +2048,7 @@ CREATE TABLE IF NOT EXISTS `messaggi_es` (
   `id_messaggio` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `testo_messaggio` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_messaggio`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1996 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2014 ;
 
 --
 -- Dump dei dati per la tabella `messaggi_es`
@@ -3993,7 +4011,25 @@ INSERT INTO `messaggi_es` (`id_messaggio`, `testo_messaggio`) VALUES
 (1992, 'Gentile utente, ti segnaliamo che il nodo %s  &egrave; stato aggiornato.'),
 (1993, 'Nessun file inviato dagli studenti di questa classe.'),
 (1994, 'Ripeti'),
-(1995, 'Non ci sono corsi monitorati da te al 14/12/2013');
+(1995, 'Non ci sono corsi monitorati da te al 14/12/2013'),
+(1996, 'Ci sono dati non salvati in questa scheda. Continuare senza salvarli?'),
+(1997, 'Ci sono dati non salvati in questa scheda.'),
+(1998, 'Attenzione: il campo &egrave; vuoto o contiene una data non valida'),
+(1999, 'Seleziona un file .zip da importare'),
+(2000, 'Importa come nuovo corso'),
+(2001, 'Seleziona l''autore a cui assegnare il corso importato'),
+(2002, 'Seleziona il corso in cui importare'),
+(2003, 'File caricato per l''importazione: '),
+(2004, 'Scegli il nodo del corso che sar&agrave; genitore dei nodi importati.'),
+(2005, 'Caricamento albero del corso'),
+(2006, 'Importa'),
+(2007, 'Importazione dal corso:'),
+(2008, 'Copia files multimediali in corso'),
+(2009, 'Importazione corso'),
+(2010, 'RISULTATI IMPORTAZIONE'),
+(2011, 'IL CORSO &Egrave; STATO CREATO CON id:'),
+(2012, 'oggetti di tipo'),
+(2013, 'aggiunti');
 
 -- --------------------------------------------------------
 
@@ -4005,7 +4041,7 @@ CREATE TABLE IF NOT EXISTS `messaggi_it` (
   `id_messaggio` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `testo_messaggio` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_messaggio`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1996 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2014 ;
 
 --
 -- Dump dei dati per la tabella `messaggi_it`
@@ -5972,7 +6008,25 @@ INSERT INTO `messaggi_it` (`id_messaggio`, `testo_messaggio`) VALUES
 (1992, 'Gentile utente, ti segnaliamo che il nodo %s  &egrave; stato aggiornato.'),
 (1993, 'Nessun file inviato dagli studenti di questa classe.'),
 (1994, 'Ripeti'),
-(1995, 'Non ci sono corsi monitorati da te al 14/12/2013');
+(1995, 'Non ci sono corsi monitorati da te al 14/12/2013'),
+(1996, 'Ci sono dati non salvati in questa scheda. Continuare senza salvarli?'),
+(1997, 'Ci sono dati non salvati in questa scheda.'),
+(1998, 'Attenzione: il campo &egrave; vuoto o contiene una data non valida'),
+(1999, 'Seleziona un file .zip da importare'),
+(2000, 'Importa come nuovo corso'),
+(2001, 'Seleziona l''autore a cui assegnare il corso importato'),
+(2002, 'Seleziona il corso in cui importare'),
+(2003, 'File caricato per l''importazione: '),
+(2004, 'Scegli il nodo del corso che sar&agrave; genitore dei nodi importati.'),
+(2005, 'Caricamento albero del corso'),
+(2006, 'Importa'),
+(2007, 'Importazione dal corso:'),
+(2008, 'Copia files multimediali in corso'),
+(2009, 'Importazione corso'),
+(2010, 'RISULTATI IMPORTAZIONE'),
+(2011, 'IL CORSO &Egrave; STATO CREATO CON id:'),
+(2012, 'oggetti di tipo'),
+(2013, 'aggiunti');
 
 -- --------------------------------------------------------
 
@@ -5984,7 +6038,7 @@ CREATE TABLE IF NOT EXISTS `messaggi_sistema` (
   `id_messaggio` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `testo_messaggio` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_messaggio`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1996 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2014 ;
 
 --
 -- Dump dei dati per la tabella `messaggi_sistema`
@@ -7951,7 +8005,25 @@ INSERT INTO `messaggi_sistema` (`id_messaggio`, `testo_messaggio`) VALUES
 (1992, 'Gentile utente, ti segnaliamo che il nodo %s  &egrave; stato aggiornato.'),
 (1993, 'Nessun file inviato dagli studenti di questa classe.'),
 (1994, 'Ripeti'),
-(1995, 'Non ci sono corsi monitorati da te al 14/12/2013');
+(1995, 'Non ci sono corsi monitorati da te al 14/12/2013'),
+(1996, 'Ci sono dati non salvati in questa scheda. Continuare senza salvarli?'),
+(1997, 'Ci sono dati non salvati in questa scheda.'),
+(1998, 'Attenzione: il campo &egrave; vuoto o contiene una data non valida'),
+(1999, 'Seleziona un file .zip da importare'),
+(2000, 'Importa come nuovo corso'),
+(2001, 'Seleziona l''autore a cui assegnare il corso importato'),
+(2002, 'Seleziona il corso in cui importare'),
+(2003, 'File caricato per l''importazione: '),
+(2004, 'Scegli il nodo del corso che sar&agrave; genitore dei nodi importati.'),
+(2005, 'Caricamento albero del corso'),
+(2006, 'Importa'),
+(2007, 'Importazione dal corso:'),
+(2008, 'Copia files multimediali in corso'),
+(2009, 'Importazione corso'),
+(2010, 'RISULTATI IMPORTAZIONE'),
+(2011, 'IL CORSO &Egrave; STATO CREATO CON id:'),
+(2012, 'oggetti di tipo'),
+(2013, 'aggiunti');
 
 -- --------------------------------------------------------
 
@@ -7969,14 +8041,15 @@ CREATE TABLE IF NOT EXISTS `servizio` (
   `max_incontri` int(11) NOT NULL,
   `durata_max_incontro` int(11) NOT NULL,
   PRIMARY KEY (`id_servizio`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
 --
 -- Dump dei dati per la tabella `servizio`
 --
 
 INSERT INTO `servizio` (`id_servizio`, `nome`, `descrizione`, `livello`, `durata_servizio`, `min_incontri`, `max_incontri`, `durata_max_incontro`) VALUES
-(1, 'Corso di prova', 'Questo corso ci serve per fare delle prove.', 1, 0, 0, 0, 0);
+(1, 'Notizie da ADA', '', 1, 0, 0, 0, 0),
+(2, 'privato', '', 1, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -7990,14 +8063,15 @@ CREATE TABLE IF NOT EXISTS `servizio_tester` (
   `id_corso` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id_tester`,`id_servizio`),
   KEY `id_corso` (`id_corso`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
 --
 -- Dump dei dati per la tabella `servizio_tester`
 --
 
 INSERT INTO `servizio_tester` (`id_tester`, `id_servizio`, `id_corso`) VALUES
-(2, 1, 1);
+(1, 1, 1),
+(1, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -8019,15 +8093,14 @@ CREATE TABLE IF NOT EXISTS `tester` (
   `puntatore` varchar(10) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `descrizione` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_tester`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 --
 -- Dump dei dati per la tabella `tester`
 --
 
 INSERT INTO `tester` (`id_tester`, `nome`, `ragione_sociale`, `indirizzo`, `provincia`, `citta`, `nazione`, `telefono`, `e_mail`, `responsabile`, `puntatore`, `descrizione`) VALUES
-(1, 'Provider 1', 'ragione sociale', 'Via dei Sabelli, 25', 'Roma', 'rm', 'Italia', '0123456789', 'admin_provider@lynxlab.com', 'responsabile 1', 'client0', ''),
-(2, 'Provider 2', 'ragione sociale', 'Via dei Quintili 175', 'roma', 'rm', 'italia', '0123456789', 'admin_provider@lynxlab.com', 'responsabile 2', 'client1', '');
+(1, 'Provider 1', 'ragione sociale', 'Via dei Sabelli, 25', 'Roma', 'rm', 'Italia', '0123456789', 'admin_provider@lynxlab.com', 'responsabile 1', 'client0', '');
 
 -- --------------------------------------------------------
 
@@ -8075,7 +8148,7 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `avatar` varchar(90) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
 --
 -- Dump dei dati per la tabella `utente`
@@ -8083,11 +8156,10 @@ CREATE TABLE IF NOT EXISTS `utente` (
 
 INSERT INTO `utente` (`id_utente`, `nome`, `cognome`, `tipo`, `e_mail`, `username`, `password`, `layout`, `indirizzo`, `citta`, `provincia`, `nazione`, `codice_fiscale`, `birthdate`, `sesso`, `telefono`, `stato`, `lingua`, `timezone`, `cap`, `matricola`, `avatar`) VALUES
 (1, 'admin', 'ada', '2', 'admin@lynxlab.com', 'adminAda', '28dcaeb4eb65eba987aeeb37d228d4526eb37791', NULL, '', '', '', '', '', 0, '', '0123456789', 0, 0, 0, '', '', ''),
-(2, 'nomeAutoreAda1', 'cognomeAutoreAda1', '1', 'autore@lynxlab.com', 'autoreAda1', '078139c99e73077fb7db87e49df8fe43cf7ca1b3', 'ada_blu', 'via o piazza', 'roma', 'RM', 'ZW', 'NULL', 0, 'M', '12341234', 0, 0, NULL, '', '', ''),
-(3, 'nomeTutorAda1', 'cognomeTutorAda1', '4', 'tutor@lynxlab.com', 'tutorAda1', 'e74e0b5df5cf02436a1c33509c42f76eb36bcabf', 'ada_blu', 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 1386716400, 'M', '', 0, 1, 0, '', '', ''),
-(4, 'Segreteria', 'ADA', '6', 'segreteria@lynxlab.com', 'switcherAda1', '64baf2b0844f66cd95c50e716f089052f1682572', '', '', 'roma', 'roma', 'ZW', 'NULL', 1386630000, 'M', '', 0, 1, NULL, '', '', ''),
-(5, 'nomeStudenteAda1', 'cognomeStudenteAda1', '3', 'studente@lynxlab.com', 'studenteAda1', '7d4ee672efb7827f7be8f2dffb471353f4b88d3a', 'ada_blu', '', '', 'RM', 'ZW', 'NULL', 0, 'M', '', 0, 1, 0, '', '', ''),
-(7, 'nomeAutoreAda0', 'cognomeAutoreAda0', '1', 'autore@lynxlab.com', 'autoreAda0', '49dad85d588462d9307f4234ba1b75ca934fdea5', '', 'via o piazza', 'roma', 'RM', 'ZW', 'NULL', 0, 'M', '12341234', 0, 0, NULL, '', '', '');
+(2, 'Switcher', 'Ada 0', '6', 'switcherAda0@lynxlab.com', 'switcherAda0', '079e75c342c92ec665cd32c45488f6ff5bdf8faa', '', '', '', '', '', 'codfis', 0, 'M', '', 0, NULL, NULL, '', '', ''),
+(3, 'Autore', 'Ada 0', '1', 'autoreAda0@lynxlab.com', 'autoreAda0', '49dad85d588462d9307f4234ba1b75ca934fdea5', '', '', '', '', '', '', 0, 'M', '', 0, NULL, NULL, '', '', ''),
+(4, 'Tutor', 'Ada 0', '4', 'tutorAda0@lynxlab.com', 'tutorAda0', '948f343e3f0fc8dae45bf4eac09d6740f82fccc3', '', '', '', '', '', '', 0, 'M', '', 0, NULL, NULL, '', '', ''),
+(5, 'studente', 'Ada0', '3', 'studente@ada0.com', 'studenteAda0', '039647c2f69d0402f72ea21346b2e033b6b317dd', '', '', '', '', '', '', 0, 'M', '', 0, NULL, NULL, '', '', '');
 
 -- --------------------------------------------------------
 
@@ -8108,12 +8180,10 @@ CREATE TABLE IF NOT EXISTS `utente_tester` (
 INSERT INTO `utente_tester` (`id_utente`, `id_tester`) VALUES
 (1, 1),
 (1, 2),
-(2, 2),
-(3, 2),
-(4, 2),
-(5, 1),
-(5, 2),
-(7, 1);
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
