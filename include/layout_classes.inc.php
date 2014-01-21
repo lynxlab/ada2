@@ -311,7 +311,7 @@ class CSS {
 
         if (is_file($CSS_module_dir.$node_type.".css"))
         	$CSS_files[] = $CSS_module_dir.$node_type.".css";
-        else
+        else if (!in_array($CSS_dir.$node_type.".css",$CSS_files))
         	$CSS_files[] = $CSS_dir.$node_type.".css"; //adding specific node type file
 
         if (!empty($node_author_id)) {
@@ -376,7 +376,7 @@ class JS {
         $JS_files[]= $rel_pref."external/lib/js/prototype-1.6.0.1.js";
         $JS_files[]= $rel_pref."external/lib/js/scriptaculous/scriptaculous.js";
         $JS_files[]= $JS_dir."default.js";
-        $JS_files[]= $JS_dir.$node_type.".js";
+        if (!in_array($JS_dir.$node_type.".js",$JS_files)) $JS_files[]= $JS_dir.$node_type.".js";
         if (!empty($node_author_id)) {
             if (!empty($node_course_id)) {
                 $JS_author_file = $rel_pref."courses/media/$node_author_id/js/$node_course_id.js";
