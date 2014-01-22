@@ -468,7 +468,7 @@ function log_this($msg, $level, $filename=NULL){
 // HTM Entities IN and OUT
 
 function get_htmlspecialchars( $given, $quote_style = ENT_QUOTES ){
-  return htmlentities( unhtmlentities(  $given ) , $quote_style  );
+  return htmlentities( unhtmlentities(  $given ) , $quote_style, ADA_CHARSET );
 }
 
 function unhtmlentities ($string)  {

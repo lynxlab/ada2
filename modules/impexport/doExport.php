@@ -72,7 +72,7 @@ $exportHelper = new exportHelper($exportCourse);
 $commentStr = "Exported From ".PORTAL_NAME." v".ADA_VERSION;
 
 // create a dom document with encoding utf8
-$domtree = new DOMDocument('1.0', 'UTF-8');
+$domtree = new DOMDocument('1.0', ADA_CHARSET);
 $domtree->preserveWhiteSpace = false;
 $domtree->formatOutput = true;
 
@@ -243,7 +243,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 $XMLfile =   $domtree->saveXML();
 $outZipFile = $exportHelper->makeZipFile($XMLfile, $exportMedia);
 
-// echo '<pre>'.htmlentities($XMLfile).'<pre/><hr/>';
+// echo '<pre>'.htmlentities($XMLfile, ENT_COMPAT | ENT_HTML401, ADA_CHARSET).'<pre/><hr/>';
 // print_r($exportHelper->mediaFilesArray); die();
 
 if (!is_null($outZipFile))

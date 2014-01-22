@@ -258,7 +258,7 @@ class  Output
 
       case 'source': // debugging purpose only
         $data = $this->content;
-        $source_data = htmlentities($data);
+        $source_data = htmlentities($data, ENT_COMPAT | ENT_HTML401, ADA_CHARSET);
         print $source_data;
         break;
 
@@ -886,7 +886,7 @@ class  Generic_Html extends Output
         $data = $this->htmlheader;
         $data.= $this->htmlbody;
         $data.= $this->htmlfooter;
-        $source_data = htmlentities($data);
+        $source_data = htmlentities($data, ENT_COMPAT | ENT_HTML401, ADA_CHARSET);
         print $source_data;
         break;
       case 'error': // debugging purpose only
@@ -1216,7 +1216,7 @@ class Generic_XML extends Output
         $data = $this->xmlheader;
         $data.= $this->xmlbody;
         $data.= $this->xmlfooter;
-        $source_data = htmlentities($data);
+        $source_data = htmlentities($data, ENT_COMPAT | ENT_HTML401, ADA_CHARSET);
         print $source_data;
         break;
       case 'error': // debugging purpose only

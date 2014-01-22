@@ -1042,7 +1042,7 @@ class getid3_lib
 						$charval += (ord($string{++$i}) & 0x3F);
 					}
 					if (($charval >= 32) && ($charval <= 127)) {
-						$HTMLstring .= htmlentities(chr($charval));
+						$HTMLstring .= htmlentities(chr($charval), ENT_COMPAT | ENT_HTML401, $charset);
 					} else {
 						$HTMLstring .= '&#'.$charval.';';
 					}

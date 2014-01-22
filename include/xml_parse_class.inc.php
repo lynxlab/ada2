@@ -726,7 +726,7 @@ class course_xml_file_process{
 
     // Funzione per la preparazione delle stringhe
     function html_prepare ($stringa){
-       // return addslashes(htmlentities($stringa));
+       // return addslashes(htmlentities($stringa), ENT_COMPAT | ENT_HTML401, ADA_CHARSET);
       /*
        * vito, 26 may 2009
        * if magic_quotes is ON, we need to call addslashes here,

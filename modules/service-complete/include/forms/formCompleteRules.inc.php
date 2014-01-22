@@ -252,7 +252,7 @@ class FormCompleteRules
 			else {
 				$hiddenjQueryDIV = CDOMElement::create('div','id:rowTemplate');
 				$hiddenjQueryDIV->setAttribute('style', 'display:none');
-				$hiddenjQueryDIV->addChild (new CText( htmlentities( str_replace('-1', '#NEWID#', $tr->getHtml()))  ));
+				$hiddenjQueryDIV->addChild (new CText( htmlentities( str_replace('-1', '#NEWID#', $tr->getHtml()), ENT_COMPAT | ENT_HTML401, ADA_CHARSET)  ));
 				$form->addChild($hiddenjQueryDIV);
 			}
     	}

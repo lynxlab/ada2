@@ -54,6 +54,6 @@ class QuestionMultipleClozeFormTest extends QuestionFormTest {
 		else {
 			$defaultValue = null;
 		}
-		$this->addHidden('titolo_dragdrop')->withData(htmlentities($defaultValue));
+		$this->addHidden('titolo_dragdrop')->withData(htmlentities($defaultValue, ENT_COMPAT | ENT_HTML401, ADA_CHARSET));
     }
 }

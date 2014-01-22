@@ -56,7 +56,7 @@ class ArrayToXML {
           ArrayToXML::toXml($value, $key, $node);
         } else {
           // add single node.
-          $value = htmlentities($value);
+          $value = htmlentities($value, ENT_COMPAT | ENT_HTML401, ADA_CHARSET);
           $xml->addChild($key,$value);
         }
       }
