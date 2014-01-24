@@ -1,0 +1,281 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Ada by lynxlab</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Ada</h1>
+        <p>ADA stand for Ambiente Digitale di Apprendimento. It is a knowledge and e-learning management system that allows you to create, administer and follow courses via the Internet or intranet with ease, flexibility and customization </p>
+
+        <p class="view"><a href="https://github.com/lynxlab/ada">View the Project on GitHub <small>lynxlab/ada</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/lynxlab/ada/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/lynxlab/ada/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/lynxlab/ada">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="ada" class="anchor" href="#ada"><span class="octicon octicon-link"></span></a>ADA</h1>
+
+<p>ADA stand for <strong>Ambiente Digitale di Apprendimento</strong>. It is a knowledge and e-learning management system that allows you to create, administer and follow courses via the Internet or intranet with ease and flexibility.</p>
+
+<h2>
+<a name="contents-" class="anchor" href="#contents-"><span class="octicon octicon-link"></span></a>CONTENTS </h2>
+
+<ul>
+<li>Requirements</li>
+<li>How to install</li>
+<li>Customize the layout</li>
+<li>Localization and languages</li>
+<li>Extra configuration</li>
+<li>System setup</li>
+<li>Add one provider</li>
+<li>user preconfigured</li>
+</ul><h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>REQUIREMENTS</h2>
+
+<ul>
+<li>Apache 2.2.21&gt;</li>
+<li>MySql 5.1.6 &gt;</li>
+<li>PHP 5.3.*&gt; compiled with support for per MySql, XML, GD, PDO</li>
+<li>PEAR::XML_Parser 1.3.x&gt;</li>
+<li>PEAR 1.9.x&gt; </li>
+<li>PEAR::XML_Util 1.2.x&gt;</li>
+</ul><h2>
+<a name="how-to-install" class="anchor" href="#how-to-install"><span class="octicon octicon-link"></span></a>HOW TO INSTALL</h2>
+
+<ol>
+<li><p>copy all files and directory tree in root directory</p></li>
+<li>
+<p>create at least two DB (each courses' provider has his own DB. if you have 2 providers, you need 3 DB.
+One common DB and 2 providers DB.</p>
+
+<ul>
+<li>ada_common --&gt; DB common.</li>
+<li>ada_provider0 --&gt; DB of the provider 0. </li>
+<li>ada_provider1 --&gt; DB of the provider 1. </li>
+</ul>
+</li>
+<li><p>import ada_common.sql in ada_common</p></li>
+<li><p>import ada_provider0.sql in ada_provider0</p></li>
+<li><p>import ada_provider_empty.sql in ada_provider1 (if you need one more provider)</p></li>
+<li><p>copy config_path_DEFAULT.inc.php in config_path.inc.php</p></li>
+<li>
+<p>modify config_path.inc.php writing the correct root path
+ex. if you have copied the files and directory in /var/www/ada you have to modify it in the follow way:</p>
+
+<ul>
+<li>define('ROOT_DIR','/var/www/html/ada');</li>
+</ul>
+</li>
+<li><p>copy config/config_install_DEFAULT.inc.php in config/config_install.inc.php</p></li>
+<li>
+<p>modify config/config_install.inc.php</p>
+
+<ul>
+<li>change the * ADA Common database section</li>
+<li>change the * ADA default provider</li>
+<li>change the * Default admin mail address</li>
+<li>change the URL define. Pay attention to not remove the trailing // <em>js_import</em>
+define('HTTP_ROOT_DIR','<a href="http://ada.lynxlab.com'">http://ada.lynxlab.com'</a>);</li>
+<li>optionally change the Default template family (only if you want to use a different layout family)</li>
+<li>optionally change define('PORTAL_NAME','ADA - e-learning ');</li>
+</ul>
+</li>
+<li><p>copy the directory clients_DEFAULT in clients</p></li>
+<li>
+<p>modify clients/client0/client_config.inc.php (each provider has own directory. es.: provider 1 has client1)</p>
+
+<ul>
+<li>change the DB access parameter</li>
+<li>change the timezone of the provider if you need</li>
+</ul>
+</li>
+<li><p>if you have more providers you have to create more client_config.inc.php
+es.: 2 providers. You must have clients/client0/client_config.inc.php and clients/client1/client_config.inc.php.
+in client1/client_config.inc.php the constant name must be CLIENT1_DB_NAME, CLIENT1_DB_USER, CLIENT1_DB_PASS, CLIENT1_DB_HOST, CLIENT1_TIMEZONE</p></li>
+<li><p>change the permission of the directory services/media/ the web server must be able to write in it</p></li>
+<li><p>change the permission of the directory upload_file/ the web server must be able to write in it</p></li>
+<li><p>change the permission of the directory docs/ the web server must be able to write in it</p></li>
+<li><p>change the informations of the news editing the file: browsing/news_language (ex.: news_en is the news in english) 
+or using edit_news.php after logon as admin</p></li>
+<li><p>configure the widgets loaded in home page
+copy widgets/main/index_DEFAULT.XML in widgets/main/index.xml
+see widgets/main/index.xml in order to know how to configure</p></li>
+</ol><h2>
+<a name="customize-the-layout" class="anchor" href="#customize-the-layout"><span class="octicon octicon-link"></span></a>CUSTOMIZE THE LAYOUT</h2>
+
+<p>customize the layout in the directory templates and css.</p>
+
+<p><strong>The file layout/layout_family/header.tpl contains the header of all pages. 
+You can change the logo and the header modifying the file layout/layout_family/header.tpl</strong></p>
+
+<p>The structure of the directories that contain the layout is:</p>
+
+<ul>
+<li>layout/layout_family/css/module_name</li>
+<li>layout/layout_family/templates/module_name</li>
+<li><p>layout/layout_family/img/</p></li>
+<li><p>js
+/module_name/</p></li>
+</ul><h2>
+<a name="localization-and-languages" class="anchor" href="#localization-and-languages"><span class="octicon octicon-link"></span></a>LOCALIZATION AND LANGUAGES</h2>
+
+<p>At the moment ADA is translated in the following languages:</p>
+
+<ul>
+<li>english</li>
+<li>italian</li>
+<li>spanish</li>
+</ul><p>Each translation is stored in a table contained in the DB common.
+the name of the table is messaggi_language (ex.: english messaggi_en)</p>
+
+<h3>
+<a name="translation-of-messages-and-gui" class="anchor" href="#translation-of-messages-and-gui"><span class="octicon octicon-link"></span></a>Translation of messages and GUI</h3>
+
+<p>The system translates at real time all the interface (buttons, links, labels) and all the messages that are to be sent to the user (welcome message excluded, see below).
+  After logging into ADA as Switcher or Admin, go to this address:
+  http://your_domain_of_wisp/switcher/translation.php</p>
+
+<p>You'll see a small form to search the sentences or part of them.</p>
+
+<ul>
+<li>Write in this form the sentence you want to translate (or modify)</li>
+<li>The system will show a list of the sentences similar to the one you wrote in the form, if any.</li>
+<li>click on modify in the line in which you can read the sentence you wish to translate.</li>
+<li>replace the missing or wrong sentence with the correct one</li>
+<li>click on "update"</li>
+<li>Go back</li>
+</ul><h3>
+<a name="note-and-suggestions" class="anchor" href="#note-and-suggestions"><span class="octicon octicon-link"></span></a>Note and suggestions.</h3>
+
+<p>In order to have the experience of ADA use and to check the correct translation in context,
+  we suggest you to open two different web browsers (NOT two windows of the same browser),
+  say A. Firefox
+  and B. Google Chrome.</p>
+
+<ul>
+<li>In browser "A" you can login as user or pratitioner or switcher and use the ADA platform normally.</li>
+<li>In browser "B" you have to login as switcher and go to the translation module</li>
+<li>When, navigating in browser "A", you may find a sentence not translated in your language, or with a wrong translation,</li>
+<li>in browser "B" you can search for that sentence and change its translation
+Note that after the translation of each sentence you have to reload the page in the browser "A" in order to see the newly translated sentence</li>
+</ul><h3>
+<a name="how-to-add-a-language" class="anchor" href="#how-to-add-a-language"><span class="octicon octicon-link"></span></a>How to add a language.</h3>
+
+<ul>
+<li>You have to add a record to the table "lingue" (which means language in italian) contained in the db common using a tool like phpmyadmin.
+ex.: to add french language you have to add a record like this id: 7, name language: français, code: fr, table identifier: fr,</li>
+<li>You can copy the table messaggi_en contained in the db common to messaggi_language using a tool like phpmyadmin (ex.: french messaggi_fr).</li>
+<li>you can use the translation module (see Translation of messagges and GUI section above)
+or in alternative you can export the content of the table, translate all and reimport the table using a tool like phpmyadmin.</li>
+</ul><h2>
+<a name="extra-configuration" class="anchor" href="#extra-configuration"><span class="octicon octicon-link"></span></a>EXTRA CONFIGURATION</h2>
+
+<h3>
+<a name="welcome-message-mail" class="anchor" href="#welcome-message-mail"><span class="octicon octicon-link"></span></a>Welcome message mail</h3>
+
+<p>You can change the text of the welcome message sended to the user just registered:
+  /docs/welcome_language.txt (ex.: /docs/welcome_en.txt english message)</p>
+
+<h3>
+<a name="help" class="anchor" href="#help"><span class="octicon octicon-link"></span></a>Help</h3>
+
+<p>the directory docs contains also the help for the user. You can change the help by editing each single file.</p>
+
+<h3>
+<a name="public-course" class="anchor" href="#public-course"><span class="octicon octicon-link"></span></a>Public course</h3>
+
+<p>You can set <strong>one public course for provider 0</strong> (in case MULTIPROVIDER is set to true, otherwise each provider has his own public course defined in clientX.inc.php by the value of the constant PUBLIC_COURSE_ID_FOR_NEWS).<br><strong>The default public id course of provider 0 is definied in config/config_install.inc.php by the value of the constant PUBLIC_COURSE_ID_FOR_NEWS</strong></p>
+
+<h2>
+<a name="system-setup" class="anchor" href="#system-setup"><span class="octicon octicon-link"></span></a>SYSTEM SETUP</h2>
+
+<ol>
+<li><p><strong>change the news in home page</strong>.
+You can change the news from inside the platform, logging in with administer user and clicking the voice "edit news" in act (or do) menù
+You can also modify it, changing the files docs/news/news_language.txt (es.: english news_en.txt)
+You can open it and change using any text editor. It is possibile to use HTML tag.</p></li>
+<li>
+<p><strong>Create the users of type switcher (coordinator) and Tutors.</strong>
+How to do:</p>
+
+<ul>
+<li>log on with the platform Admin,</li>
+<li>click on Do menù,</li>
+<li>click on add user,</li>
+<li>choose the provider to which associate the user.</li>
+</ul>
+</li>
+<li>
+<p><strong>Arrangement of courses provided</strong></p>
+
+<p>How the ADA platform works</p>
+
+<ul>
+<li>In the ADA platform are defined the courses delivered (they are saved in DB common)</li>
+<li>Each provider creates their own courses (they are saved in DB indicated in the clientX/client_conf.inc.php)</li>
+<li>Each course created by the provider is (automatically) linked to the platform courses (saved in DB common).</li>
+<li>Each provider has to create at least one instance of the course (the classroom) in order to allow the students to subscribe the instance</li>
+</ul>
+<p>How to do:</p>
+
+<ul>
+<li>log on with the switcher account,</li>
+<li>click on Do menù,</li>
+<li>click on add a course</li>
+<li>click on add instance, near the course</li>
+</ul>
+</li>
+</ol><h3>
+<a name="notes" class="anchor" href="#notes"><span class="octicon octicon-link"></span></a>Notes</h3>
+
+<p>Users have to register in the platform in order to participate the courses. (the users that have registered in ADA receive an email to confirm the registration)</p>
+
+<h2>
+<a name="add-one-provider" class="anchor" href="#add-one-provider"><span class="octicon octicon-link"></span></a>Add one provider</h2>
+
+<p>to add a provider, you need to do the following tasks:</p>
+
+<ul>
+<li>create a new DB</li>
+<li>import the sql ada_provider_empty.sql into the new DB</li>
+<li>follow the steps 11 and 12 </li>
+<li>login as admin </li>
+<li>create a new provider (from menù actions)
+take care to write in the field "Puntatore al database" the same name of the directory contained in clients (ex.: client1)</li>
+<li>create the new coordinator user for the provider just created</li>
+</ul><h2>
+<a name="predefined-users-are" class="anchor" href="#predefined-users-are"><span class="octicon octicon-link"></span></a>predefined USERS are:</h2>
+
+<ul>
+<li>adminAda --&gt; Super Admin</li>
+<li>autoreAda0 --&gt; author of first provider</li>
+<li>tutorAda0 --&gt; tutor of first provider </li>
+<li>switcherAda0 --&gt; Admin of first provider</li>
+<li>studenteAda0 --&gt; Student of first provider</li>
+</ul><p>passwords are the same of the username</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/lynxlab">lynxlab</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
