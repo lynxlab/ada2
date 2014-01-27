@@ -320,18 +320,22 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     $sess_id_node = DataValidator::validate_node_id($_SESSION['sess_id_node']);
     
     if($id_node !== FALSE) {
-      $nodeObj = read_node_from_DB($id_node);
-      if (ADA_Error::isError($nodeObj)) {
-        $nodeObj->handleError(); 
-      }
-      $_SESSION['sess_id_node'] = $id_node;
+        $dataHa = $dh->get_node_info($id_node);
+
+        if (AMA_DataHandler::isError($dataHa) || !is_array($dataHa)) {
+          $invalid_node = TRUE;            
+        } else {
+          $_SESSION['sess_id_node'] = $id_node;
+        }
     }
     elseif($sess_id_node !== FALSE) {
-      $nodeObj = read_node_from_DB($sess_id_node);
-      if (ADA_Error::isError($nodeObj)) {
-        $nodeObj->handleError(); 
-      }
-      $_SESSION['sess_id_node'] = $sess_id_node;
+        $dataHa = $dh->get_node_info($sess_id_node);
+
+        if (AMA_DataHandler::isError($dataHa) || !is_array($dataHa)) {
+          $invalid_node = TRUE;            
+        } else {
+          $_SESSION['sess_id_node'] = $sess_id_node;
+        }
     }
     else {
       $invalid_node = TRUE;
@@ -346,52 +350,48 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     $id_course      = DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/);
     $sess_id_course = DataValidator::is_uinteger($_SESSION['sess_id_course']);
     /* extracting the course id from node id, if given */
-    if ($nodeObj instanceof Node){
-      $node_id_courseAr = explode ('_',$nodeObj->id);
-      $node_id_course = $node_id_courseAr[0];   
-      $sess_courseObj = read_course($node_id_course);  
+    if (isset($_SESSION['sess_id_node']) && !$invalid_node) {
+//    if ($nodeObj instanceof Node){
+      $courseIdFromNodeId =  substr($_SESSION['sess_id_node'], 0, strpos($_SESSION['sess_id_node'], '_'));
+      $sess_courseObj = read_course($courseIdFromNodeId);  
       
       if (ADA_Error::isError($sess_courseObj)) {
-       if($sess_userObj instanceof ADAGuest) {
-          /*
-           * Maybe a user not logged in tried to access a non public content.
-           */
-          header('Location: '.$sess_userObj->getHomePage());
-          exit();
-        }
-        $sess_courseObj->handleError();
+          unset($_SESSION['sess_courseObj']);
+          $invalid_course = TRUE;      
       }
-//      else if ($sess_userObj instanceof ADAGuest  && $id_course!=PUBLIC_COURSE_ID_FOR_NEWS) {
       else if ($sess_userObj instanceof ADAGuest  && !$sess_courseObj->getIsPublic ()) {
-      	header('Location: '.$sess_userObj->getHomePage());
-      	exit();
+          unset($_SESSION['sess_courseObj']);
+          $invalid_course = TRUE;
+      } else {
+          $_SESSION['sess_courseObj'] = $sess_courseObj;
+          $_SESSION['sess_id_course'] = $courseIdFromNodeId;          
       }
-      
-      $_SESSION['sess_courseObj'] = $sess_courseObj;
-      $_SESSION['sess_id_course'] = $node_id_course;
     }    
     elseif($id_course !== FALSE) {
       $sess_courseObj = read_course($id_course);
       if (ADA_Error::isError($sess_courseObj)) {
-        if($sess_userObj instanceof ADAGuest) {
-          /*
-           * Maybe a user not logged in tried to access a non public content.
-           */
-          header('Location: '.$sess_userObj->getHomePage());
-          exit();
-        }
-        $sess_courseObj->handleError();
+          unset($_SESSION['sess_courseObj']);
+          $invalid_course = TRUE;
+      } else if ($sess_userObj instanceof ADAGuest  && !$sess_courseObj->getIsPublic ()) {
+          unset($_SESSION['sess_courseObj']);
+          $invalid_course = TRUE;
+      } else {
+          $_SESSION['sess_courseObj'] = $sess_courseObj;
+          $_SESSION['sess_id_course'] = $id_course;
       }
-      $_SESSION['sess_courseObj'] = $sess_courseObj;
-      $_SESSION['sess_id_course'] = $id_course;
     }
     elseif($sess_id_course !== FALSE) {
       $sess_courseObj = read_course($sess_id_course);
       if (ADA_Error::isError($sess_courseObj)) {
-        $sess_courseObj->handleError();
+          unset($_SESSION['sess_courseObj']);
+          $invalid_course = TRUE;
+      } else if ($sess_userObj instanceof ADAGuest  && !$sess_courseObj->getIsPublic ()) {
+          unset($_SESSION['sess_courseObj']);
+          $invalid_course = TRUE;
+      } else {
+          $_SESSION['sess_courseObj'] = $sess_courseObj;
+          $_SESSION['sess_id_course'] = $sess_courseObj->getId();
       }
-      $_SESSION['sess_courseObj'] = $sess_courseObj;
-      $_SESSION['sess_id_course'] = $sess_id_course;
     }
     else {
       unset($_SESSION['sess_courseObj']);
@@ -417,43 +417,50 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
       if($id_course_instance !== FALSE) {
         $course_instanceObj = read_course_instance_from_DB($id_course_instance);
         if (ADA_Error::isError($course_instanceObj)) {
-          $course_instanceObj->handleError();
+          $invalid_course_instance = TRUE;
+        } else {
+            
+            $UserType = $sess_userObj->getType();
+              switch ($sess_userObj->getType()) {
+                  case AMA_TYPE_STUDENT:
+                      $studentLevel = $dh->_get_student_level($sess_id_user, $id_course_instance);
+                      if (AMA_DataHandler::isError($studentLevel)) {
+                          $invalid_course_instance = TRUE;
+                      }
+                      break;
+                  case AMA_TYPE_TUTOR:
+                      $tutorsInstance = $dh->course_instance_tutor_get($id_course_instance,$number=2);
+                      if (AMA_DataHandler::isError($tutorsInstance)) {
+                          $invalid_course_instance = TRUE;
+                      } elseif (!in_array($sess_id_user, $tutorsInstance)) {
+                          $invalid_course_instance = TRUE;
+                      }
+                      break;
+                  default:    
+    //                  $invalid_course_instance = TRUE;
+                      break;
+              }
+              if (!$invalid_course_instance) {
+                    $_SESSION['sess_id_course_instance'] = $id_course_instance;
+                    $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
+              }
         }
-        $UserType = $sess_userObj->getType();
-          switch ($sess_userObj->getType()) {
-              case AMA_TYPE_STUDENT:
-                  $studentLevel = $dh->_get_student_level($sess_id_user, $id_course_instance);
-                  if (AMA_DataHandler::isError($studentLevel)) {
-                      $invalid_course_instance = TRUE;
-                  }
-                  break;
-              case AMA_TYPE_TUTOR:
-                  $tutorsInstance = $dh->course_instance_tutor_get($id_course_instance,$number=2);
-                  if (AMA_DataHandler::isError($tutorsInstance)) {
-                      $invalid_course_instance = TRUE;
-                  } elseif (!in_array($sess_id_user, $tutorsInstance)) {
-                      $invalid_course_instance = TRUE;
-                  }
-                  break;
-              default:    
-//                  $invalid_course_instance = TRUE;
-                  break;
-          }
-          if (!$invalid_course_instance) {
-                $_SESSION['sess_id_course_instance'] = $id_course_instance;
-                $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
-          }
       } //end id_course_istance passed as parameter in the URL and valid
       elseif($sess_id_course_instance !== FALSE) {
         $instanceIdRequired = array();
-        if ($nodeObj instanceof Node) { // required a node
-              $instanceIdRequired[] = $nodeObj->instance; 
+        if (isset($_SESSION['sess_id_node']) && !$invalid_node) {
+//        if ($nodeObj instanceof Node) { // required a node
+              $instanceIdRequired[] = $dataHa['instance']; 
               if ($instanceIdRequired[0] == 0) { // the node is NOT a note 
                     $field_list_ar = array();
-                    $courseIdRequired = $sess_courseObj->id;
-                    $InstanceIdList = $dh->course_instance_get_list($field_list_ar, $courseIdRequired);
-                    if (AMA_DataHandler::isError($InstanceIdList) || count($InstanceIdList) == 0 ) {
-                              $invalid_course_instance = TRUE;
+                    if (isset($_SESSION['sess_id_course']) && !$invalid_course) {
+                        $courseIdRequired = $_SESSION['sess_id_course'];
+                        $InstanceIdList = $dh->course_instance_get_list($field_list_ar, $courseIdRequired);
+                        if (AMA_DataHandler::isError($InstanceIdList) || count($InstanceIdList) == 0 ) {
+                           $invalid_course_instance = TRUE;
+                        }
+                    } else {
+                        $invalid_course_instance = TRUE;                        
                     }
                     $instanceIdRequired = array();
                     foreach ($InstanceIdList as $InstanceId) {
@@ -519,11 +526,11 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
 
   $parm_errorHa = array(
     'session'                => $invalid_session,
-  	'user'                   => $invalid_user,
-  	'user_level'             => $invalid_user_level,
+    'user'                   => $invalid_user,
+    'user_level'             => $invalid_user_level,
     'course'                 => $invalid_course,
     'course_instance'         => $invalid_course_instance,
-  	'node'                   => $invalid_node,
+    'node'                   => $invalid_node,
     'guest_user_not_allowed' => $guest_user_not_allowed
   );
   return $parm_errorHa;
