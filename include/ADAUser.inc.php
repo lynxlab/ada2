@@ -376,33 +376,6 @@ class ADAUser extends ADAAbstractUser
 		else $this->_useAjax = true;
 	}
 	
-	public function fillWithArrayData ($dataArr = null)
-	{
-		if (!is_null($dataArr))
-		{
-			$this->setFirstName($dataArr['nome']);
-			$this->setLastName($dataArr['cognome']);
-			$this->setFiscalCode($dataArr['codice_fiscale']);
-			$this->setEmail($dataArr['email']);
-			if (trim($dataArr['password']) != '') {
-				$this->setPassword($dataArr['password']);
-			}
-			$this->setSerialNumber($dataArr['matricola']);
-			$this->setLayout($user_layout);
-			$this->setAddress($dataArr['indirizzo']);
-			$this->setCity($dataArr['citta']);
-			$this->setProvince($dataArr['provincia']);
-			$this->setCountry($dataArr['nazione']);
-			$this->setBirthDate($dataArr['birthdate']);
-			$this->setGender($dataArr['sesso']);
-			$this->setPhoneNumber($dataArr['telefono']);
-			$this->setLanguage($dataArr['lingua']);
-			//        $this->setAvatar($dataArr['avatar']);
-			if (isset($_SESSION['importHelper']['fileNameWithoutPath'])) $this->setAvatar($_SESSION['importHelper']['fileNameWithoutPath']);
-			$this->setCap($dataArr['cap']);	
-		}
-	}
-
 	/**
 	 * getDefaultTester implementation:
 	 * - if it's not a multiprovider environment, return the user selected provider
