@@ -88,12 +88,12 @@ $user_level = ADA_MAX_USER_LEVEL;
 $user_score = "";
 //  $user_status = ADA_STATUS_VISITOR;
 
+$id_profile   = $userObj->getType();
 $user_type    = $userObj->convertUserTypeFN($id_profile);
 $user_uname   = $userObj->username;
 $user_name    = $userObj->nome;
 $user_surname = $userObj->cognome;
 $user_family  = $userObj->template_family;
-$id_profile   = $userObj->getType();
 $user_mail    = $userObj->email;
 
 
