@@ -61,9 +61,10 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 		 * BUT: if we're saving extra fields, we do not call the parent because we want
 		 * extra fields to be saved by themselves!!
 		 */
-		$retval = false;
-		if (!$extraTableName) $retval = parent::set_student($id_student, $user_dataAr);
-		else
+// 		$retval = false;
+// 		if (!$extraTableName) $retval = parent::set_student($id_student, $user_dataAr);
+		$retval = parent::set_student($id_student, $user_dataAr);
+		if ($extraTableName)
 		{
 			if  ($extraTableName == ADAUser::getExtraTableName())
 			{
