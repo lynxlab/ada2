@@ -410,8 +410,8 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
      * Se ci troviamo nel tester pubblico, allora non dobbiamo leggere un'istanza corso
      * dato che non ce ne sono.
      */
-//      var_dump(array($sess_id_course_instance,$id_course_instance,MultiPort::isUserBrowsingThePublicTester()));
-    if(!MultiPort::isUserBrowsingThePublicTester() && $id_course!=PUBLIC_COURSE_ID_FOR_NEWS) {
+        
+    if(!$invalid_course && !$sess_courseObj->getIsPublic ()) {
       $id_course_instance      = DataValidator::is_uinteger($_REQUEST['id_course_instance']/*$GLOBALS['id_course_instance']*/); // FIXME: qui ci va $_REQUEST['id_course_instance']
       $sess_id_course_instance = DataValidator::is_uinteger($_SESSION['sess_id_course_instance']);      
       if($id_course_instance !== FALSE) {

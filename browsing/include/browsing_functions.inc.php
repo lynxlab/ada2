@@ -194,8 +194,7 @@ if (in_array('course',$thisUserNeededObjAr)){
 }
 
 if (in_array('course_instance',$thisUserNeededObjAr)){
-
-  if(!MultiPort::isUserBrowsingThePublicTester() && $sess_id_course!=PUBLIC_COURSE_ID_FOR_NEWS) {
+  if (!ADA_Error::isError($courseObj) && !$courseObj->getIsPublic ()) {
 
     /**
      *  get Course_Instance object
