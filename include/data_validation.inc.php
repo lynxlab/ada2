@@ -128,7 +128,7 @@ class DataValidator
 //     if ($multiprovider===true)
 //       $pattern = '/^(?:client)[0-9]{1,2}$/';
 //     else
-     $pattern = '/^\w+$/';
+     $pattern = '/^(\w|-)+$/';
       if(preg_match($pattern,$testername)) {
         return $testername;
       }
