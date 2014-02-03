@@ -28,7 +28,7 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('layout', 'user', 'course_instance');
+$variableToClearAR = array('layout', 'user', 'course', 'course_instance');
 
 /**
  * Users (types) allowed to access this module.
