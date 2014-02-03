@@ -28,7 +28,7 @@ require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 /**
  * Clear node and layout variable in $_SESSION
  */
-$variableToClearAR = array('layout', 'user', 'course', 'course_instance');
+$variableToClearAR = array('layout', 'user', 'course_instance');
 
 /**
  * Users (types) allowed to access this module.
@@ -39,7 +39,7 @@ $allowedUsersAr = array(AMA_TYPE_SWITCHER);
  * Get needed objects
  */
 $neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout', 'user', 'course_instance')
+    AMA_TYPE_SWITCHER => array('layout', 'user', 'course', 'course_instance')
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
