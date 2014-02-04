@@ -624,7 +624,7 @@ class exportHelper
 			// substitute ROOT_DIR with a special tag that will
 			// be used to restore ROOT_DIR in the import environment
 			$value = str_replace(ROOT_DIR, '<root_dir/>', $value);
-			$regExp = '/\/?('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/(.+)/';
+			$regExp = '/\/?('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/([^\"]+)/';
 		}
 
 		/**
@@ -632,8 +632,13 @@ class exportHelper
 		 */
 		if (isset ($regExp))
 		{
-			if (preg_match($regExp, $value, $matches)) {
-				$this->addFileToMediaArray($course_id,$matches[1].$mathces[2].'/'.$matches[3]);
+			if (preg_match_all($regExp, $value, $matches)>0) {
+				
+				foreach ($matches[0] as $match) {
+					$this->_logMessage(__METHOD__.' would add to media array: '.$match);
+					$this->addFileToMediaArray($course_id,$match);					
+				}
+				
 				$replacement = '<id_autore/>';
 				$value = preg_replace($regExp, "$1".$replacement."/$3", $value);
 			}
