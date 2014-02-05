@@ -31,7 +31,7 @@ $allowedUsersAr = array(AMA_TYPE_TUTOR);
  * Get needed objects
  */
 $neededObjAr = array(
-  AMA_TYPE_TUTOR => array('layout', 'course_instance')
+  AMA_TYPE_TUTOR => array('layout', 'course', 'course_instance')
 );
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
