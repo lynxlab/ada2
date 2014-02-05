@@ -1308,7 +1308,7 @@ class Student_class {
             $row_count = count($tabled_dataHa);
             for ($row = 1; $row < $row_count; $row++) {
                 $tabled_dataHa[$row]['student'] = '<a href="tutor.php?op=zoom_student&id_student='.$tabled_dataHa[$row]['id_stud'].'&id_course='.$id_course.'&id_instance='.$id_course_instance.'">'. $tabled_dataHa[$row]['student'] .'</a>';
-                $tabled_dataHa[$row]['visits']  = '<a href="tutor_history.php?id_student='.$tabled_dataHa[$row]['id_stud'].'&id_course_instance='.$id_course_instance.'">'. $tabled_dataHa[$row]['visits'] .'</a>';
+                $tabled_dataHa[$row]['visits']  = '<a href="tutor_history.php?id_student='.$tabled_dataHa[$row]['id_stud'].'&id_course='.$id_course.'&id_course_instance='.$id_course_instance.'">'. $tabled_dataHa[$row]['visits'] .'</a>';
                 $tabled_dataHa[$row]['date']    = '<a href="tutor_history_details.php?period=1&id_student='.$tabled_dataHa[$row]['id_stud'].'&id_course='.$id_course.'&id_course_instance='.$id_course_instance.'">'. ts2dFN($tabled_dataHa[$row]['date']) .'</a>';
                 $tabled_dataHa[$row]['score']    = '<a href="tutor_exercise.php?id_student='.$tabled_dataHa[$row]['id_stud'].'&id_course_instance='.$id_course_instance.'">'. $tabled_dataHa[$row]['score'] .'</a>';
                 $tabled_dataHa[$row]['notes_out'] = '<a href="tutor.php?op=student_notes&id_student='.$tabled_dataHa[$row]['id_stud'].'&id_instance='.$id_course_instance.'">'. $tabled_dataHa[$row]['notes_out'] .'</a>';
@@ -1493,7 +1493,7 @@ class Student_class {
 
                         $st_history_count_norm = str_pad($st_history_count,5, "0", STR_PAD_LEFT);
                         $st_history = "<!-- $st_history_count_norm --><a href=" .  $http_root_dir . "/tutor/tutor_history.php?id_student=" . $id_student;
-                        $st_history.= "&id_course_instance=" . $id_instance . ">";
+                        $st_history.= "&id_course=" . $id_course ."&id_course_instance=" . $id_instance . ">";
                         $st_history.=  $st_history_count."</a>";
 
                         $st_history_last_access = $studentObj->get_last_accessFN($id_instance,"T");
