@@ -1127,7 +1127,7 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `provincia` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `nazione` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `codice_fiscale` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `birthdate` int(11) unsigned DEFAULT NULL,
+  `birthdate` int(12) DEFAULT NULL,
   `sesso` enum('F','M') COLLATE utf8_unicode_ci DEFAULT NULL,
   `telefono` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `stato` tinyint(3) unsigned NOT NULL,
