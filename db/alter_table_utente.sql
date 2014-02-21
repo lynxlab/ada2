@@ -3,5 +3,5 @@ ADD  `matricola` VARCHAR( 20 ) NOT NULL ,
 ADD  `avatar` VARCHAR( 90 ) NOT NULL,
 CHANGE  `eta`  `birthdate` INT( 12 ) NULL DEFAULT NULL ;
 
-ALTER TABLE  `utente` ADD  `citta_nascita` VARCHAR( 255 ) NOT NULL ,
-ADD  `provincia_nascita` VARCHAR( 255 ) NOT NULL ;
+ALTER TABLE  `utente` ADD  `birthcity` VARCHAR( 255 ) NOT NULL ,
+ADD  `birthprovince` VARCHAR( 255 ) NOT NULL ;
