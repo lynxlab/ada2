@@ -37,6 +37,8 @@ abstract class ADAGenericUser {
     protected $nazione;
     protected $codice_fiscale;
     protected $birthdate;
+    protected $birthcity;
+    protected $birthprovince;
     protected $sesso;
     protected $stato;
     protected $lingua;
@@ -158,6 +160,14 @@ abstract class ADAGenericUser {
     public function getBirthDate() {
         return $this->birthdate;
     }
+    
+    public function getBirthCity() {
+    	return $this->birthcity;
+    }
+    
+    public function getBirthProvince() {
+    	 return $this->birthprovince;
+    }    
 
     public function getGender() {
         return $this->sesso;
@@ -285,6 +295,14 @@ abstract class ADAGenericUser {
     public function setBirthDate($birthdate) {
         $this->birthdate = $birthdate;
     }
+    
+    public function setBirthCity($birthcity) {
+    	$this->birthcity = $birthcity;
+    }
+    
+    public function setBirthProvince($birthprovince) {
+    	$this->birthprovince = $birthprovince;
+    }
 
     public function setGender($gender) {
         $this->sesso = $gender;
@@ -384,6 +402,8 @@ abstract class ADAGenericUser {
                 'nazione'                => $this->nazione,
                 'codice_fiscale'         => $this->codice_fiscale,
                 'birthdate'              => $this->birthdate,
+        		'birthcity'				 => $this->birthcity,
+        		'birthprovince'			 => $this->birthprovince,
                 'sesso'                  => $this->sesso,
                 'telefono'               => ($this->telefono != 'NULL') ? $this->telefono : '',
                 'stato'                  => $this->stato,
@@ -483,6 +503,8 @@ class ADAGuest extends ADAGenericUser {
         $this->nazione         = NULL;
         $this->codice_fiscale  = NULL;
         $this->birthdate       = NULL;
+        $this->birthcity	   = NULL;
+        $this->birthprovince   = NULL;
         $this->sesso           = NULL;
         $this->telefono               = NULL;
         $this->stato                  = NULL;
@@ -540,6 +562,9 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $this->cap                    = $user_dataHa['cap'];
         $this->SerialNumber           = $user_dataHa['matricola'];
         $this->avatar                 = $user_dataHa['avatar'];
+        
+        $this->birthcity			  = $user_dataHa['birthcity'];
+        $this->birthprovince		  = $user_dataHa['birthprovince'];
 
 
     }
@@ -568,6 +593,9 @@ abstract class ADALoggableUser extends ADAGenericUser {
     		//        $this->setAvatar($dataArr['avatar']);
     		if (isset($_SESSION['uploadHelper']['fileNameWithoutPath'])) $this->setAvatar($_SESSION['uploadHelper']['fileNameWithoutPath']);
     		$this->setCap($dataArr['cap']);
+    		
+    		$this->setBirthCity($dataArr['birthcity']);
+    		$this->setBirthProvince($dataArr['birthprovince']);
     	}
     }    
 

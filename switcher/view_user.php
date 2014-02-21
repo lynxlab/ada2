@@ -60,6 +60,8 @@ else {
             'tipo' => $viewedUserObj->getTypeAsString(),
             'nome e cognome' => $viewedUserObj->getFullName(),
             'data di nascita' => $viewedUserObj->getBirthDate(),
+        	'Comune o stato estero di nascita' => $viewedUserObj->getBirthCity(),
+        	'Provincia di nascita' => $viewedUserObj->getBirthProvince(),
             'genere' => $viewedUserObj->getGender(),
             'email' => $viewedUserObj->getEmail(),
             'telefono' => $viewedUserObj->getPhoneNumber(),

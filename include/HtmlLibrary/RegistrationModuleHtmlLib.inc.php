@@ -46,6 +46,12 @@ class RegistrationModuleHtmlLib
 
     $birthdate = FormElementCreator::addTextInput('birthdate','Data di Nascita',$form_dataAr, $errorsAr);
     $form->addChild($birthdate);
+    
+    $birthcity = FormElementCreator::addTextInput('birthcity','Comune o stato estero di nascita',$form_dataAr, $errorsAr);
+    $form->addChild($birthcity);
+    
+    $birthprovince = FormElementCreator::addTextInput('birthprovince','Provincia di nascita',$form_dataAr, $errorsAr);
+    $form->addChild($birthprovince);
 
     $genderAr = array('0'=>translateFN('Scegli un genere'),'M'=>translateFN('maschio'),'F'=>translateFN('femmina'));
     $gender = FormElementCreator::addSelect('gender','sesso',$genderAr,$form_dataAr,$errorsAr);
