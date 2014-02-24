@@ -211,9 +211,13 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 			if (!empty($surveyRootNodes))
 			{
 				if (!isset($XMLAllTests)) $XMLAllTests = $domtree->createElement('tests');
+				if (!isset($exportHelper->testNodeXMLElement) || is_null($exportHelper->testNodeXMLElement)) {
+				  $exportHelper->testNodeXMLElement = $domtree->createElement('tests');
+				}
+				
 				foreach ($surveyRootNodes as &$rootNode)
 					// export the node and all of its kids recursively
-					$exportHelper->exportTestNodeChildren($course_id, $rootNode, $domtree, $dh_test, $XMLAllTests);
+					$exportHelper->exportTestNodeChildren($course_id, $rootNode, $domtree, $dh_test); //, $XMLAllTests);
 			}
 			// end of exporting nodes that MUST be exported.
 			$dh_test->disconnect();
