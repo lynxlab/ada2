@@ -112,44 +112,52 @@ foreach($twDatas as $k=>$twitterAr) {
 	
 	// makes the hashtags links
 	$curr=0;
-	foreach ($twitterAr->entities->hashtags as $hastag)
-	{
-		$hashText[++$curr] = $hastag->text;
-		$linkHref = str_replace("<HASHTAG>", $hashText[$curr], $baseHashTagLink);	
-		$hashLinks[$curr] ="<a href='".$linkHref."' target='_blank'><s>#</s>".$hashText[$curr]."</a>";
-		$hashText[$curr] = '#'.$hashText[$curr];		
+	if ($twitterAr->entities->hashtags) {
+		foreach ($twitterAr->entities->hashtags as $hastag)
+		{
+			$hashText[++$curr] = $hastag->text;
+			$linkHref = str_replace("<HASHTAG>", $hashText[$curr], $baseHashTagLink);	
+			$hashLinks[$curr] ="<a href='".$linkHref."' target='_blank'><s>#</s>".$hashText[$curr]."</a>";
+			$hashText[$curr] = '#'.$hashText[$curr];		
+		}
 	}	
 	$displayText = str_replace($hashText, $hashLinks, $displayText); 
 	
 	// makes the link address links
 	$curr=0;
 	$urlsObj = $isRetweeded ? $twitterAr->retweeted_status->entities->urls : $twitterAr->entities->urls;
-	foreach ($urlsObj as $url)
-	{
-		$searchURLs[++$curr] = $url->url;		
-		$replaceForBuildURL = array ($searchURLs[$curr], $url->expanded_url, $url->display_url);		
-		$replaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);
-	}	
+	if ($urlsObj) {
+		foreach ($urlsObj as $url)
+		{
+			$searchURLs[++$curr] = $url->url;		
+			$replaceForBuildURL = array ($searchURLs[$curr], $url->expanded_url, $url->display_url);		
+			$replaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);
+		}
+	}
 	$displayText = str_replace($searchURLs, $replaceURLs, $displayText);
 	
 	// makes media links
 	$curr=0;
 	$mediaObj = $isRetweeded ? $twitterAr->retweeted_status->entities->media : $twitterAr->entities->media;
-	foreach ($mediaObj as $aMedia)
-	{
-		$mediaSearchURLs[++$curr] = $aMedia->url;
-		$replaceForBuildURL = array ($mediaSearchURLs[$curr], $aMedia->expanded_url, $aMedia->display_url);
-		$mediaReplaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);		 
+	if ($mediaObj) {
+		foreach ($mediaObj as $aMedia)
+		{
+			$mediaSearchURLs[++$curr] = $aMedia->url;
+			$replaceForBuildURL = array ($mediaSearchURLs[$curr], $aMedia->expanded_url, $aMedia->display_url);
+			$mediaReplaceURLs[$curr] = str_replace($searchForBuildURL, $replaceForBuildURL, $baseLinkHref);		 
+		}
 	}
 	$displayText = str_replace($mediaSearchURLs, $mediaReplaceURLs, $displayText);
 	
 	// makes the username links
 	$curr=0;
-	foreach ($twitterAr->entities->user_mentions as $user)
-	{
-		$searchUser[++$curr] = $user->screen_name;
-		$replaceUser[$curr] = "<a href='".$baseUserLink.$searchUser[$curr]."' target='_blank'><s>@</s>".$searchUser[$curr]."</a>";
-		$searchUser[$curr] = "@".$searchUser[$curr];
+	if ($twitterAr->entities->user_mentions) {
+		foreach ($twitterAr->entities->user_mentions as $user)
+		{
+			$searchUser[++$curr] = $user->screen_name;
+			$replaceUser[$curr] = "<a href='".$baseUserLink.$searchUser[$curr]."' target='_blank'><s>@</s>".$searchUser[$curr]."</a>";
+			$searchUser[$curr] = "@".$searchUser[$curr];
+		}
 	}
 	$displayText = str_replace($searchUser, $replaceUser, $displayText);
 	
