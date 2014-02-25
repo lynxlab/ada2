@@ -278,83 +278,20 @@ if(isset($_GET['message'])) {
   $message->addChild(new CText($_GET['message']));
 }
 
-/*
- *  Load news from public course indicated in PUBLIC_COURSE_ID_FOR_NEWS
+/**
+ *  @author giorgio 25/feb/2014
+ *  
+ *  News from public course indicated in PUBLIC_COURSE_ID_FOR_NEWS
+ *  are loaded in the bottomnews template_field with a widget, pls
+ *  see widgets/main/index.xml file
  */
-if (isset($testerName))
-{
-	$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($testerName));
-	// select nome or empty string (whoever is not null) as title to diplay for the news
-	$newscontent = $tester_dh->find_course_nodes_list(
-			array ( "COALESCE(if(nome='NULL' OR ISNULL(nome ),NULL, nome), '')", "testo" ) ,
-			"1 ORDER BY data_creazione DESC LIMIT ".NEWS_COUNT,
-			PUBLIC_COURSE_ID_FOR_NEWS);
-
-	// watch out: $newscontent is NOT associative
-	$bottomnewscontent = '';
-	$maxLength = 600;
-	if (!AMA_DB::isError($newscontent) && count($newscontent)>0)
-	{
-		foreach ( $newscontent as $num=>$aNews )
-		{
-			$aNewsDIV = CDOMElement::create('div','class:news,id:news-'.($num+1));
-			$aNewsTitle = CDOMElement::create('a', 'class:newstitle,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
-					PUBLIC_COURSE_ID_FOR_NEWS.'&id_node='.$aNews[0]);
-			$aNewsTitle->addChild (new CText($aNews[1]));
-			$aNewsDIV->addChild ($aNewsTitle);
-
-			// @author giorgio 01/ott/2013
-			// remove unwanted div ids: tabs
-			// NOTE: slider MUST be removed BEFORE tabs because tabs can contain slider and not viceversa
-			$removeIds = array ('slider','tabs');
-			
-			$html = new DOMDocument('1.0', 'UTF-8');
-			$html->loadHTML(utf8_decode($aNews[2]));
-
-			foreach ($removeIds as $removeId)
-			{
-				$removeElement = $html->getElementById($removeId);
-				if (!is_null($removeElement)) $removeElement->parentNode->removeChild($removeElement);				
-			}
-			
-			// output in newstext only the <body> of the generated html
-			$newstext = '';
-			foreach ($html->getElementsByTagName('body')->item(0)->childNodes as $child)
-			{
-				$newstext .= $html->saveXML($child);
-			}
-			// strip off html tags
-			$newstext = strip_tags($newstext);
-			// check if content is too long...
-			if (strlen($newstext) > $maxLength)
-			{
-				// cut the content to the first $maxLength characters of words (the $ in the regexp does the trick)
-				$newstext = preg_replace('/\s+?(\S+)?$/', '', substr($newstext, 0, $maxLength+1));
-				$addContinueLink = true;
-			}
-			else $addContinueLink = false;
-
-			$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
-
-			if ($addContinueLink)
-			{
-				$contLink = CDOMElement::create('a', 'class:continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
-						PUBLIC_COURSE_ID_FOR_NEWS.'&id_node='.$aNews[0]);
-				$contLink->addChild (new CText(translateFN('Continua...')));
-				$aNewsDIV->addChild ($contLink);
-			}
-			$bottomnewscontent .= $aNewsDIV->getHtml();
-		}
-	}
-}  else $bottomnewscontent = '';
-
 
 $content_dataAr = array(
 	'form' => $login->getHtml().$forget_link,
 	'newsmsg' => $newsmsg,
 	'helpmsg' => $hlpmsg,
     'infomsg' => $infomsg,
-	'bottomnews' => $bottomnewscontent,
+	// 'bottomnews' => $bottomnewscontent,
 	'status' => $status,
 	'message' => $message->getHtml()
 );
