@@ -106,7 +106,12 @@ if (isset($testerName))
 			$removeIds = array ('slider','tabs');
 				
 			$html = new DOMDocument('1.0', ADA_CHARSET);
-			$html->loadHTML(utf8_decode($aNews[2]));
+			/**
+			 * HTML uses the ISO-8859-1 encoding (ISO Latin Alphabet No. 1) as default per it's specs.
+			 * So add a meta the should do the encoding hint, and output some PHP warings as well that
+			 * are being suppressed with the @
+			 */
+			@$html->loadHTML('<meta http-equiv="content-type" content="text/html; charset='.ADA_CHARSET.'">'.$aNews[2]);
 
 			foreach ($removeIds as $removeId)
 			{
