@@ -84,7 +84,7 @@ if (isset($testerName))
 	// select nome or empty string (whoever is not null) as title to diplay for the news
 	$newscontent = $tester_dh->find_course_nodes_list(
 			array ( "COALESCE(if(nome='NULL' OR ISNULL(nome ),NULL, nome), '')", "testo" ) ,
-			"1 ORDER BY data_creazione DESC LIMIT ".$count,
+			"tipo IN (". ADA_LEAF_TYPE .",". ADA_GROUP_TYPE .") ORDER BY data_creazione DESC LIMIT ".$count,
 			$course_id);
 	
 	// watch out: $newscontent is NOT associative
