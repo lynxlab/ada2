@@ -1,5 +1,5 @@
 # ADA Client ID and Secret Generation (aka APPS)  Module #
-----------------------------------------------
+
 
 This module is used by the swithcer user to get its own appID and secret to be used for _API_ authentication via the _OAuth2_ protocol.
 
