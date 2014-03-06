@@ -87,8 +87,8 @@ class RootFormTest extends FormTest {
 
 		//feedback
 		$options = array(
-			ADA_CORRECT_TEST_INTERACTION => translateFN('Correzioni risposte, punteggio ottenuto e risposta corretta'),
-			ADA_RATING_TEST_INTERACTION => translateFN('Correzioni risposte e punteggio ottenuto'),
+			ADA_CORRECT_TEST_INTERACTION => translateFN('Correzioni risposte e risposta corretta'),
+			ADA_RATING_TEST_INTERACTION => translateFN('Correzioni risposte, punteggio ottenuto e risposta corretta'),
 			ADA_FEEDBACK_TEST_INTERACTION => translateFN('Correzioni risposte'),
 			ADA_BLIND_TEST_INTERACTION => translateFN('Nessun feedback'),
 		);
