@@ -1,9 +1,9 @@
 # ADA Rest Api #
------------
+
 This folder contains all needed files to implement the _ADA Restful api_. It can safely deleted if no api access is needed in your _ADA_ installation.
 
 ## Needed external libraries ##
---------------------------------
+
 ### Oauth2 ###
 Library to implement OAuth2 server
 
@@ -21,11 +21,11 @@ Link                             | Type | Note
 <https://github.com/codeguy/Slim>|Code  |v2.4.2 used
 
 ## How do I use the ADA Api? ##
--------------------------------
+
 In order to use the _ADA API_ you must have an up and running version of _ADA_ platform, updated to its latest version.
 
 ## Techincal Details ##
------------------------
+
 
 ###.htaccess url rewrites ###
 There are two levels of `.htacess` files handling url rewrites, in the following _ADA_ root subdirectories:
@@ -39,16 +39,16 @@ There are two levels of `.htacess` files handling url rewrites, in the following
 
     This file implements the actual _API_ calls redirection using the following rules:
 
-    1. Every url that **does not point to an existing file** and **that does not have an extension** (such as .php) will be redirected to `index.php` without passing the `format`[^!FORMAT] in the _GET_ request, thus using the default that is `json`. Example: 
+    1. Every url that **does not point to an existing file** and **that does not have an extension** (such as .php) will be redirected to `index.php` without passing the `format` in the _GET_ request, thus using the default that is `json`. Example: 
 
-        
+        ```
         api/v1/users is rewritten to: api/v1/index.php
-        
+        ```
 
-    2. Every url that **does not point to an existing file** and **that has an extension** (such as .php) will be redirected to `index.php` passing the `format`[^!FORMAT] in the _GET_ request, thus using the extension guessed output format. Example: 
+    2. Every url that **does not point to an existing file** and **that has an extension** (such as .php) will be redirected to `index.php` passing the `format` in the _GET_ request, thus using the extension guessed output format. Example: 
 
-        
+        ```
         api/v1/users.xml is rewritten to: api/v1/index.php?format=xml
-        
+        ```
 
-[^!FORMAT]: Supported formats are: **json**, **xml** and **php**(outputs a php serialized array). Passing an unsupported format will generate a **400 Bad Request** _HTML_ header.
+###### Supported formats are: **json**, **xml** and **php**(outputs a php serialized array). Passing an unsupported format will generate a **400 Bad Request** _HTML_ header.
