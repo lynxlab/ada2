@@ -27,4 +27,10 @@ $ curl -u TestClient:TestSecret https://ada.lynxlab.com/api/token -d 'grant_type
 $ curl https://ada.lynxlab.com/api/token -d 'grant_type=client_credentials&client_id=TestClient&client_secret=TestSecret'
 ```
 
+Sample response is:
+
+```
+{"access_token":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","expires_in":3600,"token_type":"bearer","scope":null}
+```
+
 This is it for this module, further documentation is in the _ADA API_ folder.

@@ -22,7 +22,11 @@ Link                             | Type | Note
 
 ## How do I use the ADA Api? ##
 
-In order to use the _ADA API_ you must have an up and running version of _ADA_ platform, updated to its latest version.
+In order to use the _ADA API_ you must have an up and running version of _ADA_ platform, updated to its latest version.   
+Then you must have the [apps module](https://github.com/lynxlab/ada/tree/ada-api/modules/apps) installed and use it as an _ADA Switcher_ user to get a **client_id** and **client_secret**.  
+Last, you may use these credentials to obtain an _access_token_ using the provided **OAuth2** endpoint `/token` or, you may want to check the 
+[ADA PHP SDK](https://github.com/lynxlab/ada-php-sdk) for easy _PHP_ development. 
+This is the preferred way and handles all the _access_token_ pains for you.
 
 ## Techincal Details ##
 
