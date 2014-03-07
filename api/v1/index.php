@@ -10,16 +10,12 @@
  * @version		   0.1
  */
 namespace  AdaApi;
-
-ini_set ('display_errors', '1'); error_reporting (E_ALL);
-
 require_once 'bootstrap.php';
+
 $app = new \Slim\Slim ();
 
-$supportedFormats = array ('json','php','xml');
-
 if (isset($_REQUEST['format'])) {
-	if (in_array(trim($_REQUEST['format']),$supportedFormats)) {
+	if (in_array(trim($_REQUEST['format']),AdaApi::$supportedFormats)) {
 		$format = trim($_REQUEST['format']);
 	} else {
 		$format = false;
@@ -53,11 +49,23 @@ $app->add(new FormatSupported($format!==false));
 /**
  * add a middleware class to check if a valid
  * access token has been provided either in 
- * the Authorize HTTP Header or in the POST body
+ * the Authorize HTTP Header or in the METHOD body
+ * 
+ * This object will hold the authorized user ID as well
  */
-$app->add(new OAuth2Auth());
+$oAuth2Obj = new OAuth2Auth();
+$app->add($oAuth2Obj);
 
-$app->map ('/users(.:format)',  function ($id=null) use($app) {
+/**
+ * add a middleware class to remove unwanted query string parameters
+ * that can be passed either as a string or as an array
+ */
+$app->add(new CleanQueryString(array('format','access_token')));
+
+/**
+ * users endpoint route, responds to GET, POST  
+ */
+$app->map ('/users(.:format)',  function ($format=null) use($app) {
 
 	$method = strtolower ($app->request->getMethod ());
 	$usercontroller = new UserController ($app);
@@ -72,6 +80,25 @@ $app->map ('/users(.:format)',  function ($id=null) use($app) {
 	} else
 		$app->notFound ();
 })->via('GET', 'POST');
+
+/**
+ * testers endpoint route, responds to GET
+ */
+$app->map ('/testers(.:format)',  function ($format=null) use($app, $oAuth2Obj) {
+
+	$method = strtolower ($app->request->getMethod ());
+	$testercontroller = new TesterController($app,$oAuth2Obj->getAuthUserID());
+
+	if (method_exists ($testercontroller, $method)) {
+		$testerData = $testercontroller->$method ($app->request->params());
+		if (\AMA_DB::isError($testerData) || empty($testerData)) {
+			$app->halt(500, 'Server Error');
+		} else {
+			$app->render('testers',array('output'=>$testerData,'app'=>$app));
+		}
+	} else
+		$app->notFound ();
+})->via('GET');
 
 $app->run ();
 ?>
