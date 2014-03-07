@@ -10,6 +10,11 @@
  * @version		   0.1
  */
 namespace AdaApi;
+/**
+ * AdaApiInterface, all controllers must implement this
+ * 
+ * @author giorgio
+ */
 interface AdaApiInterface {
 	public function get();
 	public function post();
