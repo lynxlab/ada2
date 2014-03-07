@@ -17,6 +17,8 @@ require_once 'Pdo.php';
 
 class OAuth2_Storage_ADA extends OAuth2_Storage_Pdo
 {
+	private $tmp_userID = null;
+	
 	public function __construct($connection, $config = array()) {
 		
 		$tbl_prefix = 'module_oauth2_';
@@ -33,4 +35,41 @@ class OAuth2_Storage_ADA extends OAuth2_Storage_Pdo
 		), $config);
 	}
 
+	/**
+	 * Overridden to temporarily store the user_id associated with the 
+	 * given $client_id and $client_secret
+	 * Looks like they're only stored in the access_token_table
+	 * when the user authenticates itself, i.e. does a login
+	 * 
+	 * (non-PHPdoc)
+	 * @see OAuth2_Storage_Pdo::checkClientCredentials()
+	 */
+	public function checkClientCredentials($client_id, $client_secret = null)
+    {
+        $stmt = $this->db->prepare(sprintf('SELECT * from %s where client_id = :client_id', $this->config['client_table']));
+        $stmt->execute(compact('client_id'));
+        $result = $stmt->fetch();
+        
+        $this->tmp_userID = $result['user_id'];
+
+        // make this extensible
+        return $result['client_secret'] == $client_secret;
+    }
+
+    /**
+     * Overridden to retrieve and force the insert of the user_id associated with the
+     * given $client_id and $client_secret in the access_token_table
+     *
+     * (non-PHPdoc)
+     * @see OAuth2_Storage_Pdo::checkClientCredentials()
+     */
+    public function setAccessToken($access_token, $client_id, $user_id, $expires, $scope = null)
+    {
+    	if (is_null($user_id) && !is_null($this->tmp_userID))
+    	{
+    		parent::setAccessToken($access_token, $client_id, $this->tmp_userID, $expires, $scope);    		
+    	} else {
+    		parent::setAccessToken($access_token, $client_id, $user_id, $expires, $scope);    		
+    	}
+    }
 }
