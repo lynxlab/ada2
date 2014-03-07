@@ -10,15 +10,54 @@
  * @version		   0.1
  */
 namespace AdaApi;
+
+/**
+ * Abstract ADA API Controller
+ * All Controllers must extend this class and implement the AdaApiInterface
+ * 
+ * @author giorgio
+ *
+ */
 abstract class AbstractController {
-	
+	/**
+	 * ADA common data handler
+	 * 
+	 * @var AMA_Common_DataHandler
+	 */
 	protected $common_dh;
+	
+	/**
+	 * The SLIM application object
+	 * 
+	 * @var Slim
+	 */
 	protected $slimApp = null;
 	
-	public function __construct(\Slim\Slim $app) {
+	/**
+	 * The OAuth2 authorized user id, if any
+	 * 
+	 * @var number
+	 */
+	protected $authUserID = null;
+	
+	/**
+	 * The array of the authorized user's tester
+	 * 
+	 * @var array
+	 */
+	protected $authUserTesters = null;
+	
+	public function __construct(\Slim\Slim $app, $authUserID=0) {
+		// get an instance of the ADA common DataBase
 		$this->common_dh = \AMA_Common_DataHandler::instance();
+		// store the SLIM app object
 		$this->slimApp = $app;
+		// if an authoized user id is passed, store it
+		// and retreive the testers she belongs to
+		if ($authUserID>0) {
+			$this->authUserID = intval($authUserID);
+			$this->authUserTesters = $this->common_dh->get_testers_for_user($this->authUserID);
+		}
 	}
 }
-
 ?>
