@@ -10,6 +10,12 @@
 * @version		  0.1
 */
 namespace AdaApi;
+/**
+ * Middleware that will set the response status to 400
+ * if the requested format parameter is not supported
+ * 
+ * @author giorgio
+ */
 class FormatSupported extends \Slim\Middleware {
 
 	private $isFormatSupported = false;

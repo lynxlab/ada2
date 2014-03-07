@@ -17,17 +17,38 @@ namespace AdaApi;
 require_once realpath (dirname (__FILE__)) . '/../../../config_path.inc.php';
 require_once realpath (dirname (__FILE__)) . '/../../OAuth2/Autoloader.php';
 
-
+/**
+ * Middleware that does the OAuth2 access_token verifications,
+ * will set the response status to 401 if the access_token is
+ * not authorized
+ *  
+ * @author giorgio
+ */
 class OAuth2Auth extends \Slim\Middleware {
 	
-	private $dsn      ;
-	private $username ;
-	private $password ;
+	private $_dsn      ;
+	private $_username ;
+	private $_password ;
+	
+	/**
+	 * user ID associated with token
+	 * @var int
+	 */
+	private $_authUserID = null;
 
 	public function __construct() {
-		$this->dsn      = ADA_COMMON_DB_TYPE.':dbname='.ADA_COMMON_DB_NAME.';host='.ADA_COMMON_DB_HOST;
-		$this->username = ADA_COMMON_DB_USER;
-		$this->password = ADA_COMMON_DB_PASS;
+		$this->_dsn      = ADA_COMMON_DB_TYPE.':dbname='.ADA_COMMON_DB_NAME.';host='.ADA_COMMON_DB_HOST;
+		$this->_username = ADA_COMMON_DB_USER;
+		$this->_password = ADA_COMMON_DB_PASS;
+	}
+	
+	/**
+	 * Gets the userid associated with the access_token
+	 * 
+	 * @return number
+	 */
+	public function getAuthUserID() {
+		return intval($this->_authUserID);
 	}
 	
 	/**
@@ -39,9 +60,9 @@ class OAuth2Auth extends \Slim\Middleware {
 	{
 		\OAuth2_Autoloader::register();
 		$storage = new \OAuth2_Storage_ADA(array(
-				'dsn' => $this->dsn, 
-				'username' => $this->username,
-				'password' => $this->password));
+				'dsn' => $this->_dsn, 
+				'username' => $this->_username,
+				'password' => $this->_password));
 		
 		// Pass a storage object or array of storage objects to the OAuth2 server class
 		$server = new \OAuth2_Server($storage);
@@ -53,13 +74,16 @@ class OAuth2Auth extends \Slim\Middleware {
 		// $server->addGrantType(new OAuth2_GrantType_AuthorizationCode($storage));
 		
 		// Handle a request for an OAuth2.0 Access Token and send the response to the client
-		if (!$server->verifyResourceRequest(\OAuth2_Request::createFromGlobals(),new \OAuth2_Response())) {
+		$request = \OAuth2_Request::createFromGlobals();
+		if (!$server->verifyResourceRequest($request,new \OAuth2_Response())) {
 			// uncomment below to send $server's own response.
 			// we want to use SLIM framework here
 			// $server->getResponse()->send();
 			$this->app->response->setStatus(401);
 			$this->app->response->setBody('access_token is invalid or not authorized');
 		} else {
+			$token = $server->getAccessTokenData($request, new \OAuth2_Response());
+			$this->_authUserID = $token['user_id'];
 			$this->next->call();
 		}
 	}
