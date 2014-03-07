@@ -28,6 +28,8 @@ require_once '../Slim/Slim.php';
 
 class AdaApi  {
 	
+	public static $supportedFormats = array ('json','php','xml');
+	
 	public static function registerAutoloader() {
 		spl_autoload_register (__NAMESPACE__ . "\\AdaApi::autoload");
 	}
