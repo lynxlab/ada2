@@ -36,21 +36,25 @@ class TesterController extends AbstractController implements AdaApiInterface {
 			
 			if (!\AMA_DB::isError($testers)) {
 				// need to map $testers to id and name pairs
-				foreach ($testers as $testername=>$testerid) {
-					if (in_array($testername,$this->authUserTesters))
-						$retArray[] = array ('id'=>$testerid, 'name'=>$testername); 
+				if (is_null($this->authUserID) || !is_array($this->authUserTesters)) {
+					throw new APIException('No Auth User or Testers Found', 400);
+				} else {
+					foreach ($testers as $testername=>$testerid) {
+						if (in_array($testername,$this->authUserTesters))
+							$retArray[] = array ('id'=>$testerid, 'name'=>$testername);
+					}
+					if (isset($retArray) && count($retArray)>0) {
+						return $retArray;
+					} else {
+						throw new APIException('No Tester Found', 404);
+					}
 				}
-				if (isset($retArray) && count($retArray)>0) {
-					return $retArray;
-				}
-				else {
-					$this->slimApp->halt(404, 'No Tester Found');
-				}
+			} else {
+				throw new APIException('No Tester Found', 404);
 			}
-			else {
-				$this->slimApp->halt(404, 'No Tester Found');
-			}
-		} else $this->slimApp->halt(404, 'Wrong parameters');
+		} else {
+			throw new APIException('Wrong Parameters', 400);
+		}
 	}
 	
 	public function post   (array $params = array()) {}
