@@ -10,6 +10,13 @@
  * @version		   0.1
  */
 namespace AdaApi;
+/**
+ * Empty class to define API's own Exception
+ * 
+ * @author giorgio
+ *
+ */
+class APIException extends \Exception {};
 
 /**
  * Abstract ADA API Controller
@@ -54,10 +61,20 @@ abstract class AbstractController {
 		$this->slimApp = $app;
 		// if an authoized user id is passed, store it
 		// and retreive the testers she belongs to
-		if ($authUserID>0) {
+		if (intval($authUserID)>0) {
 			$this->authUserID = intval($authUserID);
-			$this->authUserTesters = $this->common_dh->get_testers_for_user($this->authUserID);
+			$this->authUserTesters = $this->common_dh->get_testers_for_user($this->authUserID);			
 		}
+	}
+	
+	public function handleException (APIException $e) {
+		$this->slimApp->response->status ($e->getCode());
+		$this->slimApp->response->body (json_encode(array(
+				'error_code'=>$e->getCode(),
+				'error_message'=>$e->getMessage())));
+				
+		if (strlen($e->getMessage())>0)
+			$this->slimApp->response->header('X-Status-Reason', $e->getMessage());
 	}
 }
 ?>
