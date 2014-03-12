@@ -47,6 +47,12 @@ $app->notFound (function () use($app) {
 $app->add(new FormatSupported($format!==false));
 
 /**
+ * add a middleware to handle and
+ * convert input content types 
+ */
+$app->add(new \Slim\Middleware\ContentTypes());
+
+/**
  * add a middleware class to check if a valid
  * access token has been provided either in 
  * the Authorize HTTP Header or in the METHOD body
@@ -60,44 +66,42 @@ $app->add($oAuth2Obj);
  * add a middleware class to remove unwanted query string parameters
  * that can be passed either as a string or as an array
  */
-$app->add(new CleanQueryString(array('format','access_token')));
+$app->add(new CleanQueryString(array('format')));
 
 /**
  * users endpoint route, responds to GET, POST  
  */
-$app->map ('/users(.:format)',  function ($format=null) use($app) {
-
-	$method = strtolower ($app->request->getMethod ());
-	$usercontroller = new UserController ($app);
-
-	if (method_exists ($usercontroller, $method)) {
-		$userData = $usercontroller->$method ($app->request->params());
-		if (\AMA_DB::isError($userData) || empty($userData)) {
-			$app->halt(500, 'Server Error');
-		} else {
+$app->map ('/users(.:format)',  function ($format=null) use($app, $oAuth2Obj) {
+	try {
+		$method = strtolower ($app->request->getMethod ());
+		$usercontroller = new UserController ($app,$oAuth2Obj->getAuthUserID());
+		if (method_exists ($usercontroller, $method)) {
+			$userData = $usercontroller->$method ($app->request->params());
 			$app->render('users',array('output'=>$userData,'app'=>$app));
-		}
-	} else
-		$app->notFound ();
+		} else {
+			$app->notFound ();
+		}		
+	} catch (APIException $e) {
+		$usercontroller->handleException ($e);
+	}
 })->via('GET', 'POST');
 
 /**
  * testers endpoint route, responds to GET
  */
 $app->map ('/testers(.:format)',  function ($format=null) use($app, $oAuth2Obj) {
-
-	$method = strtolower ($app->request->getMethod ());
-	$testercontroller = new TesterController($app,$oAuth2Obj->getAuthUserID());
-
-	if (method_exists ($testercontroller, $method)) {
-		$testerData = $testercontroller->$method ($app->request->params());
-		if (\AMA_DB::isError($testerData) || empty($testerData)) {
-			$app->halt(500, 'Server Error');
-		} else {
+	try {
+		$method = strtolower ($app->request->getMethod ());
+		$testercontroller = new TesterController($app,$oAuth2Obj->getAuthUserID());
+		if (method_exists ($testercontroller, $method)) {				
+			$testerData = $testercontroller->$method ($app->request->params());
 			$app->render('testers',array('output'=>$testerData,'app'=>$app));
+		} else {
+			$app->notFound ();
 		}
-	} else
-		$app->notFound ();
+	} catch (APIException $e) {
+		$testercontroller->handleException($e);
+	}
 })->via('GET');
 
 $app->run ();
