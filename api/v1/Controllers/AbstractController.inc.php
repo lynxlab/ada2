@@ -36,7 +36,7 @@ abstract class AbstractController {
 	/**
 	 * The SLIM application object
 	 * 
-	 * @var Slim
+	 * @var \Slim\Slim
 	 */
 	protected $slimApp = null;
 	
@@ -54,7 +54,38 @@ abstract class AbstractController {
 	 */
 	protected $authUserTesters = null;
 	
+	/**
+	 * array to map array keys as returned from ADA
+	 * to keys that the API must reutrn.
+	 * E.g.
+	 * 	If the ADA platform return 'nome', change it to 'name'.
+	 *  likewise, if an API calls sends in 'name' change it to 'nome'.
+	 *  
+	 * @var array
+	 */
+	private static $_keyMappings = array (
+		'id_utente' => 'user_id',
+		'nome' => 'name',
+		'cognome' => 'surname',
+		'indirizzo' => 'address',
+		'citta' => 'city',
+		'provincia' => 'province',
+		'e_mail' => 'email',
+		'nazione' => 'country',
+		'telefono' => 'phone',
+		'lingua' => 'language',
+		'cap' => 'zipcode',
+	);
+	
+	/**
+	 * Constructs a new controller setting the ADA common data handler
+	 * and the array of the testers associated with the authenticated Switcher
+	 * 
+	 * @param \Slim\Slim $app
+	 * @param number $authUserID
+	 */	
 	public function __construct(\Slim\Slim $app, $authUserID=0) {
+		
 		// get an instance of the ADA common DataBase
 		$this->common_dh = \AMA_Common_DataHandler::instance();
 		// store the SLIM app object
@@ -67,7 +98,13 @@ abstract class AbstractController {
 		}
 	}
 	
+	/**
+	 * Default APIException handler
+	 *
+	 * @param APIException $e
+	 */
 	public function handleException (APIException $e) {
+		
 		$this->slimApp->response->status ($e->getCode());
 		$this->slimApp->response->body (json_encode(array(
 				'error_code'=>$e->getCode(),
@@ -76,5 +113,93 @@ abstract class AbstractController {
 		if (strlen($e->getMessage())>0)
 			$this->slimApp->response->header('X-Status-Reason', $e->getMessage());
 	}
+	
+	/**
+	 * Maps the passed (by reference) array from ADA keys to API keys
+	 * 
+	 * @param array $array the array to be mapped
+	 * @param array $moreMappings optional additional own controller key mappings
+	 * @param unknown $moreMappings
+	 */
+	protected function ADAtoAPIArrayMap (&$array, $moreMappings = array()) {
+		
+		self::doArrayMap($array, $moreMappings, TRUE);
+	}
+	
+	/**
+	 * Maps the passed (by reference) array from API keys to ADA keys
+	 *
+	 * @param array $array the array to be mapped
+	 * @param array $moreMappings optional additional own controller key mappings
+	 * @param unknown $moreMappings
+	 */
+	protected function APItoADAArrayMap (&$array, $moreMappings = array()) {
+		
+		self::doArrayMap($array, $moreMappings, FALSE);
+	}
+	
+	/**
+	 * Does the actual array mapping modifing the reference to the passed array 
+	 * 
+	 * @param array $array the array to be mapped
+	 * @param array $moreMappings optional additional own controller key mappings
+	 * @param string $ADAtoAPI true if mapping is ADA=>API, false if API=>ADA
+	 */
+	private static function doArrayMap (&$array, $moreMappings, $ADAtoAPI = TRUE) {
+		
+		foreach (array_keys($array) as $key) {
+			// take a reference to the current element value
+			$value  = &$array[$key];
+			// unset current element
+			unset($array[$key]);
+			// get the translated key
+			$newKey = ($ADAtoAPI) ? self::ADAtoAPIKeyMap($key, $moreMappings) : self::APItoADAKeyMap($key, $moreMappings);
+			// recurse if value is an array itself
+			if (is_array($value)) self::doArrayMap($value, $moreMappings, $ADAtoAPI);
+			// set the new array key
+			$array[$newKey] = $value;
+			// unset value reference
+			unset ($value);
+		}
+	}
+	
+	/**
+	 * Maps an ADA array key to an API array key
+	 * 
+	 * @param string $adakey the key to map
+	 * @param array  $moreMappings optional additional own controller key mappings
+	 * @return string the mapped key or $adakey if not found
+	 */
+	private static function ADAtoAPIKeyMap ($adakey='', $moreMappings = array()) {
+		
+		$workingArray = array_merge(self::$_keyMappings, $moreMappings);
+		
+		if (isset($workingArray[$adakey])) {
+			return $workingArray[$adakey];
+		} else {
+			return $adakey;
+		}
+	}
+	
+	/**
+	 * Maps an API array key to an ADA array key
+	 * 
+	 * @param string $apikey the key to reverse map
+	 * @param array  $moreMappings optional additional own controller key mappings 
+	 * @return string the found key or $apikey if not found
+	 */
+	private static function APItoADAKeyMap ($apikey='',array $moreMappings = array()) {
+		
+		$workingArray = array_merge(self::$_keyMappings, $moreMappings);
+		
+		if (strlen($apikey)>0) {
+			$adakey = array_search($apikey, $workingArray);
+			if ($adakey !== FALSE) {
+				return $adakey;
+			} else {
+				return $apikey;
+			}
+		} else return $apikey;
+	}	
 }
 ?>
