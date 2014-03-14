@@ -1107,7 +1107,14 @@ EOT;
   		return new ADA_Error(NULL,'Widget configuration XML is not valid',__METHOD__,ADA_ERROR_ID_XML_PARSING);
   	
   	}  	
-  	$widgets = $widgetAr['widget'];
+  	
+  	/**
+  	 * @author giorgio 25/feb/2014
+  	 * ArrayToXML::toArray does not return an array of array if there's
+  	 * only one widget in the xml. Let's build an array of array even in this case.
+  	 */
+  	if (!is_array(reset($widgetAr['widget']))) $widgets = array ($widgetAr['widget']);
+  	else $widgets = $widgetAr['widget'];
   	$retArray = array();
   	
   	foreach ( $widgets as $widget ) {

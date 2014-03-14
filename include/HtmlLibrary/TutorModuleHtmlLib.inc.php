@@ -356,6 +356,8 @@ class TutorModuleHtmlLib
     $user_fullname = $tutoredUserObj->nome . ' ' . $tutoredUserObj->cognome;
     $user_country = $tutoredUserObj->getCountry();
     $user_birthdate = $tutoredUserObj->getBirthDate();
+    $user_birthcity = $tutoredUserObj->getBirthCity();
+    $user_birthprovince = $tutoredUserObj->getBirthProvince();    
     $user_gender = $tutoredUserObj->getGender();
     $user_foreign_culture = 'FOREIGN CULTURE';
 
@@ -387,6 +389,10 @@ class TutorModuleHtmlLib
     $hidden_user_gender->setAttribute('value', $user_gender);
     $hidden_user_foreign_culture = CDOMElement::create('hidden', 'id:ud_3, name:ud_3');
     $hidden_user_foreign_culture->setAttribute('value', $user_foreign_culture);
+    $hidden_user_birthcity = CDOMElement::create('hidden', 'id:ud_4, name:ud_4');
+    $hidden_user_birthcity->setAttribute('value', $user_birthcity);
+    $hidden_user_birthprovince = CDOMElement::create('hidden', 'id:ud_5, name:ud_5');
+    $hidden_user_birthprovince->setAttribute('value', $user_birthprovince);
 
     $form->addChild($hidden_id_utente);
     $form->addChild($hidden_id_istanza_corso);
@@ -395,6 +401,8 @@ class TutorModuleHtmlLib
     $form->addChild($hidden_user_country);
     $form->addChild($hidden_service_duration);
     $form->addChild($hidden_user_birthdate);
+    $form->addChild($hidden_user_birthcity);
+    $form->addChild($hidden_user_birthprovince);
     $form->addChild($hidden_user_gender);
     $form->addChild($hidden_user_foreign_culture);
 
@@ -458,11 +466,15 @@ class TutorModuleHtmlLib
     $ud_1_select = BaseHtmlLib::selectElement2('id:ud_1, name:ud_1',$scoresAr, $form_dataAr['ud_1']);
     $ud_2_select = BaseHtmlLib::selectElement2('id:ud_2, name:ud_2',$scoresAr, $form_dataAr['ud_2']);
     $ud_3_select = BaseHtmlLib::selectElement2('id:ud_3, name:ud_3',$scoresAr, $form_dataAr['ud_3']);
+    $ud_4_select = BaseHtmlLib::selectElement2('id:ud_4, name:ud_4',$scoresAr, $form_dataAr['ud_4']);
+    $ud_5_select = BaseHtmlLib::selectElement2('id:ud_5, name:ud_5',$scoresAr, $form_dataAr['ud_5']);
 
 
     $csa_thead = array(EguidanceSession::textLabelForField('ud_title'),''/*translateFN('Select a score')*/);
     $csa_tbody = array(
       array(EguidanceSession::textLabelForField('ud_1'), $ud_1_select), //$user_birthdate),
+      array(EguidanceSession::textLabelForField('ud_4'), $ud_4_select), //$user_birthcity),
+      array(EguidanceSession::textLabelForField('ud_5'), $ud_5_select), //$user_birthprovince),
       array(EguidanceSession::textLabelForField('ud_2'), $ud_2_select), //$user_gender),
       array(EguidanceSession::textLabelForField('ud_3'), $ud_3_select) //$user_foreign_culture),
     );
@@ -626,6 +638,8 @@ class EguidanceSession
     'ud_1'        => 'Data di Nascita',
     'ud_2'        => 'Sesso',
     'ud_3'        => 'Cultura straniera',
+  	'ud_4'		  => 'Comune o stato estero di nascita',
+  	'ud_5'		  => 'Provincia di nascita',
     'ud_comments' => "I vostri commenti sulle caratteristiche critiche dell'utente dal punto di vista socio-anagrafico",
 
 	  'sl_1'        => 'Colloquio informativo - utente nazionale',

@@ -202,7 +202,7 @@ class exportHelper
 		// end get external resources
 
 		// get extended nodes
-		$extendedNode =& $dh->get_extended_node($nodeId);
+$extendedNode =& $dh->get_extended_node($nodeId);
 		if (!empty($extendedNode) && !AMA_DB::isError($extendedNode))
 		{
 			$extendedNode['id_node'] = self::stripOffCourseId($course_id, $extendedNode['id_node']);
@@ -253,10 +253,13 @@ class exportHelper
 			
 			$this->_logMessage(__METHOD__.' Exporting ADA TEST Node num. '.($count++).' nodeId='.$nodeId.' memory_get_usage()='.$mem );
 			
-			
 // 			$XMLElement =& $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
-			$this->testNodeXMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
-			
+			if (is_null($XMLElement)) {
+			  $this->testNodeXMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
+			} else {
+			  $XMLElement =& $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
+			}
+
 			$childrenNodesArr = $dh_test->test_getNodesByParent ($nodeId, null, array('id_istanza'=>0));
 			foreach ($childrenNodesArr as $childNode)
 				$this->exportTestNodeChildren($course_id, $childNode['id_nodo'], $domtree, $dh_test);
@@ -473,13 +476,19 @@ class exportHelper
 	 */
 	private function addFileToMediaArray ($course_id, $filePath)
 	{
-		if (is_file(ROOT_DIR.'/'.$filePath) || is_file ($filePath))
+		// make filePath leading slash agnostic
+		if ($filePath{0}!=='/') $filePath = '/' . $filePath;
+		$filePath = html_entity_decode ($filePath, ENT_COMPAT | ENT_HTML401 , ADA_CHARSET);
+		$this->_logMessage(__METHOD__.'really adding to media array: '.ROOT_DIR.$filePath);
+		if (is_file(ROOT_DIR.$filePath) || is_file ($filePath))
 		{
 			if (!isset($this->mediaFilesArray[$course_id]))
 				$this->mediaFilesArray[$course_id] = array();
 			if (!in_array($filePath, $this->mediaFilesArray[$course_id]))
 				array_push ($this->mediaFilesArray[$course_id], $filePath);
 		}
+		$this->_logMessage(__METHOD__.'size of array IS: '.count($this->mediaFilesArray[$course_id]));
+		
 	}
 
 	/**
@@ -503,7 +512,8 @@ class exportHelper
 		$this->_logMessage(__METHOD__.' Beginning zip file creation');
 		if ($zipStatus===true) $this->_logMessage(__METHOD__.' ZIP file: '.$zipFileName. ' was SUCCESFULLY CREATED');
 		else $this->_logMessage(__METHOD__.' ZipArchive::open call returned error code '. $zipStatus . ' check php.net');
-
+		$this->_logMessage(__METHOD__.' exportMedia is '.(($exportMedia)?'true':'false'));
+		$this->_logMessage(__METHOD__.' mediaFilesArray has '.count($this->mediaFilesArray).' elements');
 		if ($exportMedia) {
 			foreach ($this->mediaFilesArray as $course_id=>$mediaFiles)
 			{
@@ -633,9 +643,9 @@ class exportHelper
 		if (isset ($regExp))
 		{
 			if (preg_match_all($regExp, $value, $matches)>0) {
-				
+			
 				foreach ($matches[0] as $match) {
-					$this->_logMessage(__METHOD__.' would add to media array: '.$match);
+					$this->_logMessage(__METHOD__.' would add to media array of course '. $course_id .': '.$match);
 					$this->addFileToMediaArray($course_id,$match);					
 				}
 				

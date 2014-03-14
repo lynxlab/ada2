@@ -121,6 +121,12 @@ class AdminModuleHtmlLib
 
     $user_birthdate = FormElementCreator::addDateInput('user_birthdate','Data di nascita', $user_dataAr, $errorsAr);
     $form->addChild($user_birthdate);
+    
+    $user_birthcity = FormElementCreator::addTextInput('user_birthcity','Comune o stato estero di nascita', $user_dataAr, $errorsAr);
+    $form->addChild($user_birthcity);
+    
+    $user_birthprovince = FormElementCreator::addTextInput('user_birthprovince','Provincia di nascita', $user_dataAr, $errorsAr);
+    $form->addChild($user_birthprovince);
 
     $sexAr = array(
       'M' => 'M',
@@ -393,6 +399,12 @@ class AdminModuleHtmlLib
 
     $user_birthdate = FormElementCreator::addDateInput('user_birthdate','Data di Nascita', $user_dataAr, $errorsAr);
     $form->addChild($user_birthdate);
+    
+    $user_birthcity = FormElementCreator::addTextInput('user_birthcity','Comune o stato estero di nascita', $user_dataAr, $errorsAr);
+    $form->addChild($user_birthcity);
+    
+    $user_birthprovince = FormElementCreator::addTextInput('user_birthprovince','Provincia di nascita', $user_dataAr, $errorsAr);
+    $form->addChild($user_birthprovince);
 
     $sexAr = array(
       'M' => 'M',

@@ -78,6 +78,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             $editedUserObj->setStatus($_POST['stato']);
             $editedUserObj->setLayout($user_layout);
+            $editedUserObj->setBirthCity($_POST['birthcity']);
+            $editedUserObj->setBirthProvince($_POST['birthprovince']);
             $result = MultiPort::setUser($editedUserObj, array(), true);
         }
 

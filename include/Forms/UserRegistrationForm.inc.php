@@ -41,6 +41,12 @@ class UserRegistrationForm extends FForm
         $this->addTextInput('birthdate', translateFN('Data di nascita'))
         	 ->setRequired()
              ->setValidator(FormValidator::DATE_VALIDATOR);
+        
+        $this->addTextInput('birthcity', translateFN('Comune o stato estero di nascita'))
+        ->setRequired()
+        ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
+        
+        $this->addTextInput('birthprovince', translateFN('Provincia di nascita'));
 
         $this->addTextInput('email', translateFN('Email'))
              ->setRequired()

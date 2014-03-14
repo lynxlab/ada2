@@ -109,6 +109,14 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if(DataValidator::validate_birthdate($_POST['user_birthdate'])=== FALSE) {
     $errorsAr['user_birthdate'] = true;
   }
+  
+  if(DataValidator::validate_not_empty_string($_POST['user_birthcity'])=== FALSE) {
+  	$errorsAr['user_birthcity'] = true;
+  }
+  
+  if(DataValidator::validate_string($_POST['user_birthprovince'])=== FALSE) {
+  	$errorsAr['user_birthprovince'] = true;
+  }
 
   if(DataValidator::validate_string($_POST['user_sex'])=== FALSE) {
     $errorsAr['user_sex'] = true;
@@ -157,9 +165,12 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	  'nazione'   => $_POST['user_country'],
 	  'codice_fiscale' => $_POST['user_fiscal_code'],
       'datanascita'    => $_POST['user_birthdate'],
+      'birthdate'      => $_POST['user_birthdate'],
       'sesso'          => $_POST['user_sex'],
       'telefono'               => $_POST['user_phone'],
 	  'stato'                  => 0,//DataValidator::validate_string($_POST['user_status'])
+	  'birthcity'	   => $_POST['user_birthcity'],
+      'birthprovince'  => $_POST['user_birthprovince']
     );
     
     switch($_POST['user_type']) {

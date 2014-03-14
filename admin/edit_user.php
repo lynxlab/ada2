@@ -111,6 +111,14 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $errorsAr['user_birthdate'] = true;
   }
   
+  if(DataValidator::validate_not_empty_string($_POST['user_birthcity'])=== FALSE) {
+  	$errorsAr['user_birthcity'] = true;
+  }
+  
+  if(DataValidator::validate_string($_POST['user_birthprovince'])=== FALSE) {
+  	$errorsAr['user_birthprovince'] = true;
+  }
+  
   if(DataValidator::validate_string($_POST['user_sex'])=== FALSE) {
     $errorsAr['user_sex'] = true;
   }
@@ -167,6 +175,8 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
    $userToEditObj->setBirthDate($_POST['user_birthdate']);
    $userToEditObj->setGender($_POST['user_sex']);
    $userToEditObj->setPhoneNumber($_POST['user_phone']);
+   $userToEditObj->setBirthCity($_POST['user_birthcity']);
+   $userToEditObj->setBirthProvince($_POST['user_birthprovince']);
 
    if($userToEditObj instanceof ADAPractitioner) {
      $userToEditObj->setProfile($_POST['user_profile']);
@@ -225,7 +235,9 @@ else {
    'user_phone'=> $user_dataAr['telefono'],
    //'user_status'=> $user_dataAr['stato']
     'user_tester' => $tester,
-    'user_profile' => $user_dataAr['profilo']
+    'user_profile' => $user_dataAr['profilo'],
+    'user_birthcity' => $user_dataAr['birthcity'],
+    'user_birthprovince' => $user_dataAr['birthprovince']
     );
     
     
