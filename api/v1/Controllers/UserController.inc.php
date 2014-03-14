@@ -11,9 +11,6 @@
  */
 namespace AdaApi;
 
-require_once ROOT_DIR.'/include/user_classes.inc.php';
-require_once ROOT_DIR.'/include/data_validation.inc.php';
-
 /**
  * User controller for handling /users API endpoint
  *
@@ -43,7 +40,7 @@ class UserController extends AbstractController implements AdaApiInterface {
 	 * (non-PHPdoc)
 	 * @see \AdaApi\AdaApiInterface::get()
 	 */
-	public function get (array $params = array()) {
+	public function get(array $params = array()) {
 		/**
          * Are passed parameters OK?
 		 */
