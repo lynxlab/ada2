@@ -12,6 +12,7 @@
 namespace AdaApi;
 
 require_once ROOT_DIR.'/include/user_classes.inc.php';
+require_once ROOT_DIR.'/include/data_validation.inc.php';
 
 /**
  * User controller for handling /users API endpoint
@@ -43,34 +44,103 @@ class UserController extends AbstractController implements AdaApiInterface {
 	 * @see \AdaApi\AdaApiInterface::get()
 	 */
 	public function get (array $params = array()) {
-		
-		if (!empty($params) && intval($params['id'])>0) {
-			// This GLOBAL is needed by the MultiPort
+		/**
+         * Are passed parameters OK?
+		 */
+		$paramsOK = true;
+				
+		if (!empty($params)) {
+			
+			/**
+			 * This GLOBAL is needed by the MultiPort 
+			 */
 			$GLOBALS['common_dh'] = $this->common_dh;
 			
-			$userObj = null;
 			/**
-			 * check on user type to prevent multiport to
-			 * do its error handling if no user found
+			 * User Object to return
 			 */
-			if (!\AMA_DB::isError($this->common_dh->get_user_type ($params['id']))) {
-				$userObj = \MultiPort::findUser(intval($params['id']));
+			$userObj = null;
+			
+			if (intval($params['id'])>0) {
+				
+				/**
+				 * Check on user type to prevent multiport to
+				 * do its error handling if no user found
+				 */
+				if (!\AMA_DB::isError($this->common_dh->get_user_type ($params['id']))) {
+					$userObj = \MultiPort::findUser(intval($params['id']));
+				}
+			} else if (isset($params['email']) && strlen($params['email'])>0) {
+				
+				/**
+				 * If an email has been passed, validate it
+				 */
+				$searchString = \DataValidator::validate_email($params['email']);				
+			} else if (isset($params['username']) && strlen($params['username'])>0) {
+				
+				/**
+				 * If a username has been passed, validate it
+				 */
+				$searchString = \DataValidator::validate_username($params['username']);
+			} else {
+				
+				/**
+				 * Everything has been tried, passed parameters are not OK
+				 */
+				$paramsOK = false;
 			}
 			
-			if (!is_null($userObj) && !\AMA_DB::isError($userObj)) {
+			/**
+			 * If parameters are ok and userObj is still
+			 * null try to do a search by username
+			 */
+			if ($paramsOK && is_null($userObj) && ($searchString!==false)) {
+				$userObj = \MultiPort::findUserByUsername($searchString);
+			} else if ($searchString === false) {
+				/**
+				 * If either the passed email or username are not validated
+				 * the parameters are not OK
+				 */
+				$paramsOK = false;
+			}
+			
+			if ($paramsOK && !is_null($userObj) && !\AMA_DB::isError($userObj)) {
+				
+				/**
+				 * Build the array to be returned from the object
+				 */
 				$returnArray =  $userObj->toArray();
+				
+				/**
+				 * Unset unwanted keys
+				 */
 				unset ($returnArray['password']); // hide the password, even if it's encrypted
 				unset ($returnArray['tipo']);     // hide the user type as of 13/mar/2014
 				unset ($returnArray['stato']);    // hide the user status as of 13/mar/2014
 				unset ($returnArray['lingua']);   // hide the user language as of 13/mar/2014
+				
+				/**
+				 * Perform the ADA=>API array key mapping
+				 */
 				self::ADAtoAPIArrayMap($returnArray, self::$_userKeyMappings);
-				return $returnArray;
-			} else {
+								
+			} else if ($paramsOK) {
 				throw new APIException('No User Found', 404);
 			}
 		} else {
+			$paramsOK = false;
+		}
+		
+		/**
+		 * Final check: if all OK return the data else throw the exception
+		 */
+		if ($paramsOK && is_array($returnArray)) {
+			return $returnArray;
+		} else if (!$paramsOK) {
 			throw new APIException('Wrong Parameters', 400);
-		} 
+		} else {
+			throw new APIException('Unkonwn error in users get method', 500);
+		}
 	}
 	
 	/**
@@ -89,10 +159,16 @@ class UserController extends AbstractController implements AdaApiInterface {
 		 * Check if header says it's json
 		 */
 		if (strcmp($this->slimApp->request->getContentType(),'application/json')===0) {
-			// SLIM has converted the body to an array alreay
+			
+			/**
+			 *  SLIM has converted the body to an array alreay
+			 */
 			$userArr = $this->slimApp->request->getBody();
 		} else if (!empty($params) && is_array($params)) {
-			// assume we've been passed an array
+			
+			/**
+			 * Assume we've been passed an array 
+			 */
 			$userArr = $params;
 		} else {
 			throw new APIException('Wrong Parameters', 400);
@@ -161,33 +237,45 @@ class UserController extends AbstractController implements AdaApiInterface {
 		$form->fillWithArrayData($userArr);	
 
 		/**
-		 * if form is valid, save the user
+		 * If form is valid, save the user
 		 */
 		if ($form->isValid()) {
+			
 			/**
-			 * The user is associated by default to the public tester.
+			 * Uncomment if the user is to be associated  
+			 * by default to the public tester.
 			 */
-			$regProvider = array (ADA_PUBLIC_TESTER);
+// 			$regProvider = array (ADA_PUBLIC_TESTER);
+			$regProvider = array();
 			
 			/**
 			 * Save the user in the public tester and in
 			 * the authenticated switcher own tester.
 			 * This should be ok for non multiprovider environments.
 			 */
-			if (!MULTIPROVIDER) {
-				foreach ($this->authUserTesters as $tester) {
-					array_push ($regProvider, $tester);
-				}
+// 			if (!MULTIPROVIDER) {
+			foreach ($this->authUserTesters as $tester) {
+				array_push ($regProvider, $tester);
 			}
+// 			}
 			
+			/**
+			 * Actually saves the user
+			 */
 			$id_user = \Multiport::addUser($userObj,$regProvider);
 				
 			if ($id_user < 0) {
-				// an error occoured
+				
+				/**
+				 * an error occoured 
+				 */				
 				$saveResults = array( 'status'=>'FAILURE',
 									  'message'=>'Check if a user exists already having passed email and username');
 			} else {
-				// saved ok
+				
+				/**
+				 * saved ok
+				 */
 				$saveResults = array( 'status'=>'SUCCESS',
 									  'user_id'=>$id_user);
 				/**
@@ -217,7 +305,6 @@ class UserController extends AbstractController implements AdaApiInterface {
 					}
 					
 					$title = PORTAL_NAME.': ' . translateFN('ti chiediamo di confermare la registrazione.');
-					
 					
 					$text = sprintf(translateFN('Gentile %s, ti chiediamo di confermare la registrazione ai %s.'),
 							$userObj->getFullName(), PORTAL_NAME)
@@ -269,11 +356,13 @@ class UserController extends AbstractController implements AdaApiInterface {
 			}
 			return $saveResults;
 		} else {
+			
 			/**
 			 * Try to investigate what the missing fields are
 			 */
 			foreach ($form->getControls() as $control) {
 				if ($control->getIsMissing()) {
+					
 					/**
 					 * Build an array with missing fields as keys
 					 */
@@ -281,23 +370,31 @@ class UserController extends AbstractController implements AdaApiInterface {
 				}
 			}
 			if (isset($missingValues) && sizeof($missingValues)>0) {
+				
 				/**
 				 * Map the missingValues keys to API keys
 				 */
 				self::ADAtoAPIArrayMap($missingValues,self::$_userKeyMappings);
+				
 				/**
 				 * Extract the missingValues keys to build the
 				 * list of missing or invalid value
 				 */
-				$missingValues = implode(', ', array_keys($missingValues));
+				$missingValues = ': '. implode(', ', array_keys($missingValues));
 			} else {
-				$missingValues = 'Unable to build missing fields list';
+				$missingValues = ': Unable to build missing fields list';
 			}
-			throw new APIException('Missing or Invalid User Fields: '.$missingValues, 400);
+			
+			/**
+			 * Throws the exception
+			 */
+			throw new APIException('Missing or Invalid User Fields'.$missingValues, 400);
 		}
 		
-		unset ($_SESSION['sess_userObj']);
-		
+		/**
+		 * The session user object is no longer needed
+		 */		
+		unset ($_SESSION['sess_userObj']);		
 	}
 	
 	public function put    (array $params = array()) {}
