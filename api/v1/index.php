@@ -14,6 +14,16 @@ require_once 'bootstrap.php';
 
 $app = new \Slim\Slim ();
 
+/**
+ * Define here all the endpoints (in the array keys) with the
+ * associated controller classes and methods to respond to
+ */
+$endpoints = array (
+	'users'   =>       array ('controllerclass'=>'UserController',         'methods'=>array('GET','POST')),
+	'testers' =>       array ('controllerclass'=>'TesterController',       'methods'=>array('GET')),
+	'subscriptions' => array ('controllerclass'=>'SubscriptionController', 'methods'=>array('POST')),
+);
+
 if (isset($_REQUEST['format'])) {
 	if (in_array(trim($_REQUEST['format']),AdaApi::$supportedFormats)) {
 		$format = trim($_REQUEST['format']);
@@ -30,6 +40,9 @@ if (isset($_REQUEST['format'])) {
  */
 if ($format!==false) {
 	$viewClassName = __NAMESPACE__.'\\'.ucfirst(strtolower($format)).'View';
+	/**
+	 * Set the app Viewer to the requested output format
+	 */
 	$app->view(new $viewClassName);
 }
 
@@ -69,40 +82,41 @@ $app->add($oAuth2Obj);
 $app->add(new CleanQueryString(array('format')));
 
 /**
- * users endpoint route, responds to GET, POST  
+ * Cycle the endpoints array and map the declared methods
+ * to the corresponding controllerclass.
+ * 
+ * NOTE: the use of the $template parameter in the render call
+ * that is used to set the root node element in XML and
+ * ignored in JSON and PHP-serialized output formats.
  */
-$app->map ('/users(.:format)',  function ($format=null) use($app, $oAuth2Obj) {
-	try {
-		$method = strtolower ($app->request->getMethod ());
-		$usercontroller = new UserController ($app,$oAuth2Obj->getAuthUserID());
-		if (method_exists ($usercontroller, $method)) {
-			$userData = $usercontroller->$method ($app->request->params());
-			$app->render('users',array('output'=>$userData,'app'=>$app));
-		} else {
-			$app->notFound ();
-		}		
-	} catch (APIException $e) {
-		$usercontroller->handleException ($e);
+foreach ($endpoints as $endpoint=>$config) {
+	/**
+	 * Cycle the endpoint config to map proper methods to controllerclass
+	 */
+	foreach ($config['methods'] as $method) {
+		$method = strtolower($method);
+		/**
+		 * Use SLIM object to map method to controller
+		 */
+		$app->$method ('/'.$endpoint.'(.:format)',
+				function ($format=null)
+				use ($app, $oAuth2Obj, $endpoint, $config) {			
+					try {
+						$method = strtolower ($app->request->getMethod ());
+						$controllerClass = __NAMESPACE__.'\\'.$config['controllerclass'];
+						$controller = new $controllerClass ($app,$oAuth2Obj->getAuthUserID());
+						if (method_exists ($controller, $method)) {
+							$data = $controller->$method ($app->request->params());
+							$app->render($endpoint ,array('output'=>$data,'app'=>$app));
+						} else {
+							$app->notFound ();
+						}
+					} catch (APIException $e) {
+						$controller->handleException ($e);
+					}
+				});		
 	}
-})->via('GET', 'POST');
-
-/**
- * testers endpoint route, responds to GET
- */
-$app->map ('/testers(.:format)',  function ($format=null) use($app, $oAuth2Obj) {
-	try {
-		$method = strtolower ($app->request->getMethod ());
-		$testercontroller = new TesterController($app,$oAuth2Obj->getAuthUserID());
-		if (method_exists ($testercontroller, $method)) {				
-			$testerData = $testercontroller->$method ($app->request->params());
-			$app->render('testers',array('output'=>$testerData,'app'=>$app));
-		} else {
-			$app->notFound ();
-		}
-	} catch (APIException $e) {
-		$testercontroller->handleException($e);
-	}
-})->via('GET');
-
+}
+	
 $app->run ();
 ?>
