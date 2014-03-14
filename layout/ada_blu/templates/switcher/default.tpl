@@ -163,6 +163,7 @@
                             <li><a href="list_courses.php"><i18n>Lista corsi</i18n></a></li>
                             <li><a href="add_course.php"><i18n>Aggiungi corso</i18n></a></li>
                             <li><a href="translation.php"><i18n>Traduci messaggi</i18n></a></li>
+                            <li><a href="../modules/apps/"><i18n>Applicazioni</i18n></a></li>
                             <li><a href="../modules/impexport/import.php"><i18n>Importa corso</i18n></a></li>
                             <li><a href="../modules/impexport/export.php"><i18n>Esporta corso</i18n></a></li>
                             <li><a href="../modules/service-complete/index.php"><i18n>Condizioni di completamento</i18n></a></li>
