@@ -444,7 +444,7 @@ class MultiPort
       // we have to use different functions for different user types
       switch($userObj->getType()) {
         case AMA_TYPE_STUDENT:
-
+          $result = $tester_dh->add_student($user_dataAr);
           $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj);
           /**
            * TODO: controllo se ha extra e fare set_student dell'extra (tab. studemte)
