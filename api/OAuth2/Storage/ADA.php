@@ -68,7 +68,7 @@ class OAuth2_Storage_ADA extends OAuth2_Storage_Pdo
     	$passUserId = null;
     	if (is_null($user_id) && !is_null($this->tmp_userID))
     	{
-    		$passUserId = $this->tmp_userID
+    		$passUserId = $this->tmp_userID;
     	} else {
     		$passUserId = $user_id;    		    	
     	}
