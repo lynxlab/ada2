@@ -65,11 +65,13 @@ class OAuth2_Storage_ADA extends OAuth2_Storage_Pdo
      */
     public function setAccessToken($access_token, $client_id, $user_id, $expires, $scope = null)
     {
+    	$passUserId = null;
     	if (is_null($user_id) && !is_null($this->tmp_userID))
     	{
-    		parent::setAccessToken($access_token, $client_id, $this->tmp_userID, $expires, $scope);    		
+    		$passUserId = $this->tmp_userID
     	} else {
-    		parent::setAccessToken($access_token, $client_id, $user_id, $expires, $scope);    		
+    		$passUserId = $user_id;    		    	
     	}
+    	return parent::setAccessToken($access_token, $client_id, $passUserId, $expires, $scope);
     }
 }
