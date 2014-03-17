@@ -53,13 +53,37 @@ $dh = AMAAppsDataHandler::instance();
  * TODO: Your own code here
  */
 
-if (intval($userID)>0)
-{
+/**
+ * Check if passed user is a real swithcer
+ */
+$userArr = $dh->get_user_info(intval($userID));
 
-	$clientArray = $dh->saveClientIDAndSecret(generateConsumerIdAndSecret(),$userID);
+if (!AMA_DB::isError($userArr) && $userArr['tipo']==AMA_TYPE_SWITCHER)
+{	
+	$clientArray = $dh->saveClientIDAndSecret(generateConsumerIdAndSecret(),intval($userArr['id']));
 		
-	if (!$isError) print_r($clientArray);
-	else print_r($isError);
+	if (!AMA_DB::isError($clientArray)) {
+		$output = CDOMElement::create('div','class:appsecret');
+			$span = CDOMElement::create('span','class:clientIDLabel');
+			$span->addChild (new CText('clientID: '));
+		$output->addChild ($span);
+			$span = CDOMElement::create('span','class:clientID');
+			$span->addChild (new CText($clientArray['client_id']));
+		$output->addChild ($span);
+		$output->addChild (new CText(' - '));
+			$span = CDOMElement::create('span','class:clientSecretLabel');
+			$span->addChild (new CText('clientSecret: '));
+		$output->addChild ($span);
+			$span = CDOMElement::create('span','class:clientSecret');
+			$span->addChild (new CText($clientArray['client_secret']));
+		$output->addChild ($span);
+		echo $output->getHtml();
+	}
+	else print_r($clientArray);
 	
-} else echo "userID erorr";
+} else {
+	$output = CDOMElement::create('div','class:appsecreterror');
+	$output->addChild (new CText(translateFN('Passed user does not look like a valid Swithcer')));
+	echo $output->getHtml();
+}
 ?>

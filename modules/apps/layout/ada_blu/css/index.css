@@ -25,3 +25,19 @@
 	background: lightyellow;
 	margin-top: 10px;
 }
+
+.appsecret,
+.appsecreterror {
+	text-align: center;
+}
+
+.appsecreterror {
+	background: red;
+	color: white;
+	padding: 10px;
+	font-weight: bold;
+}
+
+.clientIDLabel, .clientSecretLabel {
+	font-weight: bold;
+}
