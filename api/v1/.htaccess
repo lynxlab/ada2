@@ -6,8 +6,8 @@ RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond $2 !^$
-RewriteRule ^(\w*)\.?(\w*) index.php?format=$2 [END,QSA]
+RewriteRule ^(\w*)\.?(\w*) index.php?format=$2 [L,QSA]
 
 # If above did not match, just pass it all to index
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule . index.php [END,QSA]
+RewriteRule . index.php [L,QSA]
