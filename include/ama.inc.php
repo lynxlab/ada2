@@ -4856,7 +4856,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     }
 
     // vito, 2 apr 2009
-    public function &get_course_instance_for_this_student_and_course_model($id_student, $id_course) {
+    public function &get_course_instance_for_this_student_and_course_model($id_student, $id_course, $getAll = false) {
 
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
@@ -4867,8 +4867,9 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql .= " and isc.id_istanza_corso=ic.id_istanza_corso";
         $sql .= " and isc.id_utente_studente=$id_student ";
 
-
-        $result = $db->getRow($sql);
+        if ($getAll===false) $result = $db->getRow($sql);
+        else $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
+        
         if (AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
         }
@@ -4877,13 +4878,15 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             return new AMA_Error(AMA_ERR_NOT_FOUND);
         }
 
-        $ret_ha['istanza_id'] = $result[0];
-        $ret_ha['istanza_ha']['data_inizio'] = $result[1];
-        $ret_ha['istanza_ha']['durata'] = $result[2];
-        $ret_ha['istanza_ha']['data_inizio_previsto'] = $result[3];
-        $ret_ha['livello'] = $result[4];
-        $ret_ha['tipo'] = $result[5];
-        return $ret_ha;
+        if ($getAll===false) {
+	        $ret_ha['istanza_id'] = $result[0];
+	        $ret_ha['istanza_ha']['data_inizio'] = $result[1];
+	        $ret_ha['istanza_ha']['durata'] = $result[2];
+	        $ret_ha['istanza_ha']['data_inizio_previsto'] = $result[3];
+	        $ret_ha['livello'] = $result[4];
+	        $ret_ha['tipo'] = $result[5];
+	        return $ret_ha;
+        } else return $result;
     }
 
     /**
@@ -9831,13 +9834,14 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @access public
      *
      * @param $id_tutor pass a single/array tutor id or use "false" to retrieve all tutors
+     * @param $id_course if passed as int, select only instances of the passed course id
      *
      *
      * @return a nested array containing the list, or an AMA_Error object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array('tutor id'=>array('course_instance', 'course_instance', 'course_instance'));
      */
-    public function &get_tutors_assigned_course_instance($id_tutor = false) {
+    public function &get_tutors_assigned_course_instance($id_tutor = false, $id_course = false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
@@ -9857,6 +9861,14 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 		else if ($id_tutor)
 		{
 			$sql .= " WHERE id_utente_tutor = ".$id_tutor;
+		}
+		
+		if (is_numeric($id_course) && intval($id_course)>0) {
+			
+			if (stristr($sql,'where')!==false) $sql .= ' AND ';
+			else $sql .= ' WHERE ';
+			
+			$sql .= 'c.`id_corso`='.intval($id_course);			
 		}
 
         $tutors_ar =  $db->getAll($sql, null, AMA_FETCH_ASSOC);
@@ -10345,7 +10357,7 @@ public function get_updates_nodes($userObj, $pointer)
     				 */
     				
     				$sql = 'SELECT id_nodo, ID_ISTANZA, nome from nodo where data_creazione >= '. $last_time_visited_class .
-    				' AND id_nodo LIKE \''.$instance[id_corso].'_%\' AND livello <=' . $studentlevel . 
+    				' AND id_nodo LIKE \''.$instance['id_corso'].'\_%\' AND livello <=' . $studentlevel . 
     				' AND tipo IN (' . implode (", ", $nodeTypesArray) .') ORDER BY data_creazione
     						 DESC LIMIT '. $maxNodes;
     				

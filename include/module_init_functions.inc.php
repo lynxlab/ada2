@@ -116,15 +116,35 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
   }
 
   if($parm_errorHa['course']) {
-    // FIXME: passare messaggio di errore
-    $errObj = new ADA_Error(
-      NULL,
-      NULL,
-      NULL,
-      ADA_ERROR_ID_SERVICE_REQUIRED_BUT_NOT_FOUND,
-      ADA_ERROR_SEVERITY_FATAL,
-      $redirectTo
-    );
+  	/**
+  	 * If parameter_controlFN has put an array in the 'course' key
+  	 * this means that the user is asking for a node that belongs to
+  	 * a course for which the user is subscribed to more than one instance.
+  	 * 
+  	 *  The list of the insance id is passed in the 'course key as an
+  	 *  array and must be passed to the browsing/select_instance script
+  	 *  that is responsible for asking the user to select an instance. 
+  	 */
+  	if (is_array($parm_errorHa['course'])) {  		
+  		$errObj = new ADA_Error(
+  		  NULL,
+  		  NULL,
+  		  NULL,
+          ADA_ERROR_ID_CINST_REQUIRED_BUT_NOT_FOUND,
+          ADA_ERROR_SEVERITY_FATAL,
+          'browsing/select_instance.php?node='.$parm_errorHa['node'].'&instances='.urlencode(implode(',',$parm_errorHa['course']))
+  		);
+  	} else {
+	    // FIXME: passare messaggio di errore
+	    $errObj = new ADA_Error(
+	      NULL,
+	      NULL,
+	      NULL,
+	      ADA_ERROR_ID_SERVICE_REQUIRED_BUT_NOT_FOUND,
+	      ADA_ERROR_SEVERITY_FATAL,
+	      $redirectTo
+	    );
+  	}
   }
 
   if($parm_errorHa['course_instance']) {
@@ -269,6 +289,11 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   else if($id_profile == AMA_TYPE_STUDENT){
     $id_course      = DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/);
     $sess_id_course = DataValidator::is_uinteger($_SESSION['sess_id_course']);
+    
+    if ($id_course === FALSE && $sess_id_course === FALSE && DataValidator::validate_node_id($_REQUEST['id_node'])) {
+    	$id_course = substr($_REQUEST['id_node'], 0, strpos($_REQUEST['id_node'], '_'));
+    }
+    
     if($id_course !== FALSE && $id_course !== $sess_id_course) {
 
       $tester_infoAr = $common_dh->get_tester_info_from_id_course($id_course);
@@ -402,6 +427,87 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     unset($_SESSION['sess_courseObj']);
   }
 
+  /**
+   * If in a valid NON PUBLIC course and user is student or tutor
+   * and
+   *  $_SESSION['sess_id_course'] (that is the course_id the user is going into)
+   * 	IS NOT EQUAL TO
+   *  $sess_id_course (that is the course_id the user is coming form)
+   *  
+   *  The user has clicked a cross course link, and is handled by unsetting the
+   *  $_SESSION['sess_id_course_instance'] and looking for a course instance
+   *  to which the user is subscribed.
+   *  
+   */  
+  if ( $invalid_course === FALSE && $invalid_node === FALSE && 
+  	   isset ($sess_courseObj) && !$sess_courseObj->getIsPublic () &&
+  	   in_array($sess_userObj->getType(), array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR)) &&
+  	   is_numeric($sess_id_course) &&
+  	   intval($_SESSION['sess_id_course']) !== intval($sess_id_course) ) {
+  	
+  	/**
+  	 * unset sess_id_course_instance
+  	 */
+  	unset ($_SESSION['sess_id_course_instance']);
+  	
+  	/**
+  	 * Try to find an instance of target course where used is subscribed
+  	 */
+  	$getAll = true;
+  	
+  	/**
+  	 * Need to get instance the user is allowed to browse, based on user type
+  	 */
+  	switch ($sess_userObj->getType()) {
+  		case AMA_TYPE_STUDENT:
+  			$instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
+  			break;
+  		case AMA_TYPE_TUTOR:
+  			$tutorInstances = $dh->get_tutors_assigned_course_instance($sess_userObj->getId(),$_SESSION['sess_id_course']);
+  			if (!AMA_DB::isError($tutorInstances)) {  				
+  				/**
+  				 * the returned array is array[id_tutor]=>array[key]=>array['id_istanza_corso']
+  				 * and needs to be converted to reflect the structre returned in student case
+  				 */
+  				foreach($tutorInstances[$sess_userObj->getId()] as $tutorInstance) {
+  					$instances[]['id_istanza_corso'] = $tutorInstance['id_istanza_corso'];
+  				}
+  			} else $instances = null;
+  			break;
+  	}
+  	
+  	if (!AMA_DB::isError($instances) && count($instances)>0) {
+  		if (count($instances)==1) {
+  			/**
+  			 * User is subscribed to one instance only, good!
+  			 * Set the $target_course_instance var and proceed
+  			 */
+  			$target_course_instance = $instances[0]['id_istanza_corso'];
+  		} else if (count($instances)>1) {
+  			/**
+  			 * If there's more than one instance, must build an array of
+  			 * found instances to ask the user to select one.
+  			 * 
+  			 * This array is returned in the 'course' key of the returned
+  			 * array and so $invalid_course must be populated accordingly.
+  			 * 
+  			 * The node that was requested is returned in the 'node' key of
+  			 * the returned array and so $invalid_node must be populated. 
+  			 */
+  			foreach ($instances as $instance) {
+  				$invalid_course[] = $instance['id_istanza_corso'];
+  				$invalid_node = $_SESSION['sess_id_node'];
+  			}
+  		}  	
+  	} else {
+  		/**
+  		 * Mark the course as invalid, and unset session var
+  		 */
+  		$invalid_course = TRUE;
+  		unset ($_SESSION['sess_id_course']);
+  	}
+  }
+  
   /*
    * Course_instance object
    */
@@ -412,7 +518,13 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
      */
         
     if(!$invalid_course && !$sess_courseObj->getIsPublic ()) {
-      $id_course_instance      = DataValidator::is_uinteger($_REQUEST['id_course_instance']/*$GLOBALS['id_course_instance']*/); // FIXME: qui ci va $_REQUEST['id_course_instance']
+
+      if (isset($target_course_instance)) {
+      	$id_course_instance = DataValidator::is_uinteger($target_course_instance);
+      } else {
+      	$id_course_instance = DataValidator::is_uinteger($_REQUEST['id_course_instance']/*$GLOBALS['id_course_instance']*/); // FIXME: qui ci va $_REQUEST['id_course_instance']
+      }
+      
       $sess_id_course_instance = DataValidator::is_uinteger($_SESSION['sess_id_course_instance']);      
       if($id_course_instance !== FALSE) {
         $course_instanceObj = read_course_instance_from_DB($id_course_instance);
@@ -529,7 +641,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     'user'                   => $invalid_user,
     'user_level'             => $invalid_user_level,
     'course'                 => $invalid_course,
-    'course_instance'         => $invalid_course_instance,
+    'course_instance'        => $invalid_course_instance,
     'node'                   => $invalid_node,
     'guest_user_not_allowed' => $guest_user_not_allowed
   );
