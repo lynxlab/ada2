@@ -30,7 +30,13 @@ class UserExtraForm extends FForm
         }
         $this->setName('extraDataForm');
         $this->setSubmitValue(translateFN('Salva'));
-
+        /**
+         * Following value to be set with a call
+         * to fillWithArrayData made by the code
+         * who's actually using this form
+         */
+        $this->addHidden('id_utente')->withData(0);
+        
         self::addExtraControls($this);        
     }
     
