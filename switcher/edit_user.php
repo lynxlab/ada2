@@ -44,108 +44,117 @@ include_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
  */
 require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+/**
+ * Check if the switcher is editing a student profile
+ */
+$isEditingAStudent = (DataValidator::is_uinteger($_GET['usertype']) === AMA_TYPE_STUDENT);
 
+if (!$isEditingAStudent) {
 	/**
-	 * @author giorgio 29/mag/2013
-	 * 
-	 * added parameters to force allowEditConfirm
+	 * Code to execute when the switcher is not editing a student
 	 */
-    $form = new UserProfileForm(array(), false, true);
-    $form->fillWithPostData();
-
-    if ($form->isValid()) {
-        if(isset($_POST['layout']) && $_POST['layout'] != 'none') {
-            $user_layout = $_POST['layout'];
-        } else {
-            $user_layout = '';
-        }
-        $userId = DataValidator::is_uinteger($_POST['id_utente']);
-        if($userId > 0) {
-            $editedUserObj = MultiPort::findUser($userId);
-            $editedUserObj->setFirstName($_POST['nome']);
-            $editedUserObj->setLastName($_POST['cognome']);
-            $editedUserObj->setBirthDate($_POST['birthdate']);
-            $editedUserObj->setGender($_POST['sesso']);
-            $editedUserObj->setEmail($_POST['email']);
-            $editedUserObj->setPhoneNumber($_POST['telefono']);
-            $editedUserObj->setAddress($_POST['indirizzo']);
-            $editedUserObj->setCity($_POST['citta']);
-            $editedUserObj->setProvince($_POST['provincia']);
-            $editedUserObj->setCountry($_POST['nazione']);
-            if (trim($_POST['password']) != '') {
-                $editedUserObj->setPassword($_POST['password']);
-            }
-            $editedUserObj->setStatus($_POST['stato']);
-            $editedUserObj->setLayout($user_layout);
-            $editedUserObj->setBirthCity($_POST['birthcity']);
-            $editedUserObj->setBirthProvince($_POST['birthprovince']);
-            $result = MultiPort::setUser($editedUserObj, array(), true);
-        }
-
-        if(!AMA_DataHandler::isError($result)) {
-            header('Location: view_user.php?id_user=' . $editedUserObj->getId());
-            exit();
-        }
-
-
-
-
-//        if($result > 0) {
-//          if($userObj instanceof ADAAuthor) {
-//              AdminUtils::performCreateAuthorAdditionalSteps($userObj->getId());
-//          }
-//
-//          $message = translateFN('Utente aggiunto con successo');
-//          header('Location: ' . $userObj->getHomePage($message));
-//          exit();
-//        } else {
-//            $form = new CText(translateFN('Si sono verificati dei problemi durante la creazione del nuovo utente'));
-//        }
-
-    } else {
-        $form = new CText(translateFN('I dati inseriti nel form non sono validi'));
-    }
+	if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+	
+		/**
+		 * @author giorgio 29/mag/2013
+		 * 
+		 * added parameters to force allowEditConfirm
+		 */
+	    $form = new UserProfileForm(array(), false, true);
+	    $form->fillWithPostData();
+	
+	    if ($form->isValid()) {
+	        if(isset($_POST['layout']) && $_POST['layout'] != 'none') {
+	            $user_layout = $_POST['layout'];
+	        } else {
+	            $user_layout = '';
+	        }
+	        $userId = DataValidator::is_uinteger($_POST['id_utente']);
+	        if($userId > 0) {
+	            $editedUserObj = MultiPort::findUser($userId);
+	            $editedUserObj->fillWithArrayData($_POST);
+	            $result = MultiPort::setUser($editedUserObj, array(), true);
+	        }
+	
+	        if(!AMA_DataHandler::isError($result)) {
+	            header('Location: view_user.php?id_user=' . $editedUserObj->getId());
+	            exit();
+	        }
+	
+	
+	
+	
+	//        if($result > 0) {
+	//          if($userObj instanceof ADAAuthor) {
+	//              AdminUtils::performCreateAuthorAdditionalSteps($userObj->getId());
+	//          }
+	//
+	//          $message = translateFN('Utente aggiunto con successo');
+	//          header('Location: ' . $userObj->getHomePage($message));
+	//          exit();
+	//        } else {
+	//            $form = new CText(translateFN('Si sono verificati dei problemi durante la creazione del nuovo utente'));
+	//        }
+	
+	    } else {
+	        $form = new CText(translateFN('I dati inseriti nel form non sono validi'));
+	    }
+	} else {
+	    $userId = DataValidator::is_uinteger($_GET['id_user']);
+	    if($userId === false) {
+	        $data = new CText('Utente non trovato');
+	    }
+	    else {
+	        $editedUserObj = MultiPort::findUser($userId);
+	        $formData = $editedUserObj->toArray();
+	        $formData['email'] = $formData['e_mail'];
+	        unset($formData['e_mail']);
+	        /**
+	         * @author giorgio 29/mag/2013
+	         *
+	         * added parameters to force allowEditConfirm
+	         */
+	        $data = new UserProfileForm(array(), false, true);
+	        $data->fillWithArrayData($formData);
+	    }    
+	}
+	
+	$label = translateFN('Modifica utente');
+	$help = translateFN('Da qui il provider admin può modificare il profilo di un utente esistente');
+	
+	$layout_dataAr['JS_filename'] = array(
+			JQUERY,
+			JQUERY_MASKEDINPUT,
+			JQUERY_NO_CONFLICT
+	);
+	
+	$optionsAr['onload_func'] = 'initDateField();';
+	
+	$content_dataAr = array(
+	    'user_name' => $user_name,
+	    'user_type' => $user_type,
+	    'status' => $status,
+	    'label' => $label,
+	    'help' => $help,
+	    'data' => $data->getHtml(),
+	    'module' => $module,
+	    'messages' => $user_messages->getHtml()
+	);
 } else {
-    $userId = DataValidator::is_uinteger($_GET['id_user']);
-    if($userId === false) {
-        $data = new CText('Utente non trovato');
-    }
-    else {
-        $editedUserObj = MultiPort::findUser($userId);
-        $formData = $editedUserObj->toArray();
-        $formData['email'] = $formData['e_mail'];
-        unset($formData['e_mail']);
-        /**
-         * @author giorgio 29/mag/2013
-         *
-         * added parameters to force allowEditConfirm
-         */
-        $data = new UserProfileForm(array(), false, true);
-        $data->fillWithArrayData($formData);
-    }    
-}
-
-$label = translateFN('Modifica utente');
-$help = translateFN('Da qui il provider admin può modificare il profilo di un utente esistente');
-
-$layout_dataAr['JS_filename'] = array(
-		JQUERY,
-		JQUERY_MASKEDINPUT,
-		JQUERY_NO_CONFLICT
-);
-
-$optionsAr['onload_func'] = 'initDateField();';
-
-$content_dataAr = array(
-    'user_name' => $user_name,
-    'user_type' => $user_type,
-    'status' => $status,
-    'label' => $label,
-    'help' => $help,
-    'data' => $data->getHtml(),
-    'module' => $module,
-    'messages' => $user_messages->getHtml()
-);
+	/**
+	 * If the switcher is editing a student, use browsing/edit_user.php
+	 */
+	include realpath(dirname(__FILE__)).'/../browsing/edit_user.php';
+	
+	$label = translateFN('Modifica utente');
+	$help = translateFN('Da qui il provider admin può modificare il profilo di un utente esistente');
+	
+	if (!is_null($editUserObj)) {
+		$label .= ': '.$editUserObj->getUserName().' ('.$editUserObj->getFullName().')';
+	}
+	
+	$content_dataAr['label'] = $label;
+	$content_dataAr['help'] = $help;
+} 
 
 ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr);

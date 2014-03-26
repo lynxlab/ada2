@@ -12,6 +12,10 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link
  * @version		0.1
+ * 
+ * WARNING:		THIS FILE IS INCLUDED IN /switcher/edit_user.php FOR THE SWITHCER
+ * 				TO EDIT A USER PROFILE.
+ * 				PAY ATTENTION TO SWITHCER ROLE WHEN EDITING THE FILE
  */
 /**
  * Base config file
@@ -26,14 +30,15 @@ $variableToClearAR = array('node', 'layout', 'course', 'course_instance');
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_AUTHOR);
+$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER);
 
 /**
  * Performs basic controls before entering this module
  */
 $neededObjAr = array(
     AMA_TYPE_STUDENT => array('layout'),
-    AMA_TYPE_AUTHOR => array('layout')
+    AMA_TYPE_AUTHOR => array('layout'),
+	AMA_TYPE_SWITCHER => array('layout')
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
@@ -47,7 +52,27 @@ require_once ROOT_DIR . '/include/FileUploader.inc.php';
 require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 $languages = Translator::getLanguagesIdAndName();
 
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+/**
+ * Set the $editUserObj depending on logged user type
+ */
+$editUserObj = null;
+
+switch($userObj->getType()) {
+	case AMA_TYPE_STUDENT:
+	case AMA_TYPE_AUTHOR:
+		$editUserObj = clone $userObj;
+		break;
+	case AMA_TYPE_SWITCHER:
+		$userId = DataValidator::is_uinteger($_GET['id_user']);
+		if ($userId !== false) {
+			$editUserObj = MultiPort::findUser($userId);
+		} else {
+			$data = new CText(translateFN('Utente non trovato'));
+		}	
+		break;
+}
+
+if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form = new UserProfileForm($languages);
     $form->fillWithPostData();
 
@@ -59,23 +84,23 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         // set user datas
-        $userObj->fillWithArrayData($_POST);
+        $editUserObj->fillWithArrayData($_POST);
 
         // set user extra datas if any
-        if ($userObj->hasExtra()) $userObj->setExtras($_POST);
+        if ($editUserObj->hasExtra()) $editUserObj->setExtras($_POST);
         
-        MultiPort::setUser($userObj, array(), true, ADAUser::getExtraTableName() );
-//        $_SESSION['sess_userObj'] = $userObj;
+        MultiPort::setUser($editUserObj, array(), true, ADAUser::getExtraTableName() );
+//        $_SESSION['sess_userObj'] = $editUserObj;
 
         $navigationHistoryObj = $_SESSION['sess_navigation_history'];
         $location = $navigationHistoryObj->lastModule();
         header('Location: ' . $location);
         exit();
     }
-} else {
+} else if (!is_null($editUserObj)) {
     $allowEditProfile=false;
     $allowEditConfirm=false;
-    $user_dataAr = $userObj->toArray();
+    $user_dataAr = $editUserObj->toArray();
     
     // the standard UserProfileForm is always needed.
     // Let's create it
@@ -85,7 +110,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     unset($user_dataAr['e_mail']);
     $form->fillWithArrayData($user_dataAr);   
     
-    if (!$userObj->hasExtra()) {
+    if (!$editUserObj->hasExtra()) {
     	// user has no extra, let's display it
     	$data = $form->render();
     } else {
@@ -140,7 +165,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 				// generate the form
 				$form = new $extraTableFormClass ($languages);
 				$form->fillWithArrayData (array (
-						$extraTableName::getForeignKeyProperty() => $userObj->getId () 
+						$extraTableName::getForeignKeyProperty() => $editUserObj->getId () 
 				));
 				
 				// create a div for placing 'new' and 'discard changes button'
@@ -165,15 +190,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 				$container = CDOMElement::create ('div', 'class:extraRowsContainer,id:container_' . $extraTableName);
 				
 				// if have 3 or more rows, add the new and discard buttons on top also
-				if (count ($userObj->$objProperty) >= 3) {
+				if (count ($editUserObj->$objProperty) >= 3) {
 					$divButton->setAttribute('class', $divButton->getAttribute('class').' top');
 					$container->addChild (new CText ($divButton->getHtml ()));
 					// reset the button class by removing top
 					$divButton->setAttribute('class', str_ireplace(' top', '', $divButton->getAttribute('class')));
 				}
 				
-				if (count ($userObj->$objProperty) > 0) {
-					foreach ($userObj->$objProperty as $num => $aElement) {
+				if (count ($editUserObj->$objProperty) > 0) {
+					foreach ($editUserObj->$objProperty as $num => $aElement) {
 						$keyFieldName = $aElement::getKeyProperty();
 						$keyFieldVal = $aElement->$keyFieldName;						
 						$container->addChild (new CText (UserExtraModuleHtmlLib::extraObjectRow ($aElement)));
@@ -264,11 +289,12 @@ $maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024*1024));
  * do the form have to be submitted with an AJAX call?
  * defalut answer is true, call this method to set it to false.
  * 
- * $userObj->useAjax(false);
+ * $editUserObj->useAjax(false);
  */
-
-$optionsAr['onload_func']  = 'initDoc('.$maxFileSize.','. $userObj->getId().');';
-$optionsAr['onload_func'] .= 'initUserRegistrationForm('.(int)(isset($tabsContainer)).', '.(int)$userObj->saveUsingAjax().');';
+if (!is_null($editUserObj)) {
+	$optionsAr['onload_func']  = 'initDoc('.$maxFileSize.','. $editUserObj->getId().');';
+	$optionsAr['onload_func'] .= 'initUserRegistrationForm('.(int)(isset($tabsContainer)).', '.(int)$editUserObj->saveUsingAjax().');';
+} else $optionsAr = null;
 
 //$optionsAr['onload_func'] = 'initDateField();';
 
@@ -283,4 +309,9 @@ $content_dataAr = array(
     'help' => $help
 );
 
-ARE::render($layout_dataAr, $content_dataAr,NULL, $optionsAr);
+/**
+ * If it's a switcher the renderer is called by switcher/edit_user.php
+ */
+if ($userObj->getType() != AMA_TYPE_SWITCHER) {
+	ARE::render($layout_dataAr, $content_dataAr,NULL, $optionsAr);
+}

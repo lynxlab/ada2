@@ -111,7 +111,15 @@ abstract class FForm
     public function toArray() {
         $formAsArray = array();
         foreach($this->_controls as $control) {
-            $formAsArray[$control->getId()] = $control->getData();
+            if (!$control instanceof FCFieldset) {
+                $formAsArray[$control->getId()] = $control->getData();
+                
+            } elseif ($control instanceof FCFieldset) {
+                foreach($control->getControls() as $field) {
+                    $formAsArray[$field->getId()] = $field->getData();
+                }
+            }
+                
         }
         return $formAsArray;
     }

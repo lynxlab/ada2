@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+
+#com_tools {
+	display: none;
+}
+
+#help > div > span.help {
+	display: block;
+	margin:0;
+	text-align: center;
+}
