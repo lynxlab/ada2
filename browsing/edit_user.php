@@ -105,7 +105,10 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     }
 } else if (!is_null($editUserObj)) {
     $allowEditProfile=false;
-    $allowEditConfirm=false;
+    /**
+	 * If the user is a switcher, can edit confirmation state of student
+     */
+    $allowEditConfirm= ($userObj->getType()==AMA_TYPE_SWITCHER);
     $user_dataAr = $editUserObj->toArray();
     
     // the standard UserProfileForm is always needed.

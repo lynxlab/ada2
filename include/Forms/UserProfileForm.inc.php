@@ -31,7 +31,7 @@ class UserProfileForm extends UserRegistrationForm {
          * The swithcer does not use this form to edit her own
          * profile, therefore the avatar upload must be disabled
          */
-        if ($_SESSION['sess_userObj']->getType()!=AMA_TYPE_SWITCHER) {
+        if ($_SESSION['sess_userObj']->getType()!=AMA_TYPE_SWITCHER || !$allowEditConfirm) {
 			$this->addFileInput('avatarfile', translateFN ('Seleziona un file immagine per il tuo avatar'));
         	$this->addTextInput('avatar',NULL);
         }
