@@ -90,7 +90,13 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
         if ($editUserObj->hasExtra()) $editUserObj->setExtras($_POST);
         
         MultiPort::setUser($editUserObj, array(), true, ADAUser::getExtraTableName() );
-//        $_SESSION['sess_userObj'] = $editUserObj;
+        /**
+         * Set the session user to the saved one if it's not
+         * a switcher, that is not saving its own profile
+         */
+        if ($_SESSION['sess_userObj']->getType() != AMA_TYPE_SWITCHER) {
+        	$_SESSION['sess_userObj'] = $editUserObj;
+        }
 
         $navigationHistoryObj = $_SESSION['sess_navigation_history'];
         $location = $navigationHistoryObj->lastModule();
