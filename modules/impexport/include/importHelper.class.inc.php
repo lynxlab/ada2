@@ -134,6 +134,7 @@ class importHelper
 	{
 		// 		$this->_importFile = $postDatas['importFileName'];
 		$this->_importFile = basename ( $_SESSION['importHelper']['filename']);
+		if (strlen($this->_importFile)<=0) $this->_importFile = $postDatas['importFileName'];
 		$this->_assignedAuthorID = $postDatas['author'];
 		$this->_selectedTester = $_SESSION['sess_selected_tester'];
 
@@ -661,11 +662,11 @@ class importHelper
 
 			$outArr['testo'] = (!is_null($outArr['testo'])) ? str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['testo'])  : null;
 			$outArr['testo'] = (!is_null($outArr['testo'])) ? str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['testo']) : null;
-			$outArr['testo'] = (!is_null($outArr['testo'])) ? str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['testo']) : null;
+			$outArr['testo'] = (!is_null($outArr['testo'])) ? str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH).'/', $outArr['testo']) : null;
 
 			$outArr['nome'] = (!is_null($outArr['nome'])) ? str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['nome']) : null;
 			$outArr['nome'] = (!is_null($outArr['nome'])) ? str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['nome']) : null;
-			$outArr['nome'] = (!is_null($outArr['nome'])) ? str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['nome']) : null;
+			$outArr['nome'] = (!is_null($outArr['nome'])) ? str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH).'/', $outArr['nome']) : null;
 
 			unset ($outArr['data_creazione']);
 			unset ($outArr['versione']);
@@ -1088,22 +1089,40 @@ class importHelper
 			$this->_logMessage(__METHOD__." Candidates for updating: \n".print_r($nodesToUpdate, true));
 			$this->_logMessage(__METHOD__." This is the replacement TEST ids array \n".print_r($this->_testNodeIDMapping,true));
 
+			$delimiter = '#';
+			$regExp = '/'.preg_quote('id_test=','/').'(\d+)'.'/';
+			
+			$search = array();
+			$replace = array();
+			
+			foreach ($this->_testNodeIDMapping as $oldID=>$newID) {
+				$search[] = 'id_test='.$oldID.$delimiter;
+				$replace[] = 'id_test='.$newID;
+			}			
+			
 			foreach ($nodesToUpdate as $arrElem)
 			{
 				foreach ($arrElem as $nodeID)
 				{
 					$this->_logMessage(__METHOD__.' UPDATING NODE id='.$nodeID);
-					$nodeInfo = $this->_dh->get_node_info($nodeID);
-
-					foreach ($this->_testNodeIDMapping as $key=>$val)
-					{
-						$checkVal = preg_replace('/'.$key.'/', $val, $nodeInfo['text']);
-						if ($checkVal != $nodeInfo['text']) {
-							$nodeInfo['text']=$checkVal; break;
-						}
-					}
+					$nodeInfo = $this->_dh->get_node_info($nodeID);	
+					/**
+					 * First put a delimiter just after the linked id_test to prevent
+					 * this situation:
+					 * 	id_test=2 ..blablabla... id_test=24
+					 * without an end delimiter, how can you subsitute id_test=2
+					 * BUT NOT id_test=24 ???
+					 * 
+					 * NOTE: This is done in the 3rd argument of str_ireplace
+					 */
+															
+					$nodeInfo['text'] = str_ireplace(
+							$search, 
+							$replace,
+							preg_replace($regExp, 'id_test=$1'.$delimiter, $nodeInfo['text']));
+					
+					$this->_dh->set_node_text($nodeID, $nodeInfo['text']);
 				}
-				$this->_dh->set_node_text($nodeID, $nodeInfo['text']);
 			}
 		} else {
 			$this->_logMessage(__METHOD__. ' Error in retreiving nodes to be updated: '.$nodesToUpdate->getMessage());

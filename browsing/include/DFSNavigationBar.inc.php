@@ -54,7 +54,7 @@ class DFSNavigationBar
          * BUT, I'll pass the computed $this->_nextNode to give a callBack point
          * to be used when user is in the last topic of the test.
          */
-         if (MODULES_TEST && strpos($n->type,ADA_ICON_GENERIC) == 0) {                 
+         if (MODULES_TEST && strpos($n->type,ADA_PERSONAL_EXERCISE_TYPE) == 0) {                 
 		$test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 		$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$n->id));
 
