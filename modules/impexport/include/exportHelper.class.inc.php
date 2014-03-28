@@ -650,15 +650,10 @@ class exportHelper
 				}
 				
 				$replacement = '<id_autore/>';
-				$value = preg_replace($regExp, "$1".$replacement."/$3", $value);
+				$value = preg_replace($regExp, "/$1".$replacement."/$3", $value);
 			}
 			unset ($regExp);
 		}
-		/**
-		 * Last check: if Substituted filename does not 
-		 * start with a '/' prepend the slash to the returned string
-		 */
-		if ($value{0}!=='/') $value = '/'.$value;
 		
 		return $value;
 	}
