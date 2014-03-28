@@ -264,8 +264,8 @@ abstract class NodeTest
 	 * @param $data id node
      * @return the relative nodes structure or an AMA_Error object
 	 */
-	public static function readTest($id_nodo) {
-		$dh = $GLOBALS['dh'];
+	public static function readTest($id_nodo, $dh=null) {
+		if (is_null($dh)) $dh = $GLOBALS['dh'];
 
 		//check if $id_nodo param is an integer and retrieve rows from database
 		if (intval($id_nodo)>0) {
