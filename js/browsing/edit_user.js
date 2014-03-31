@@ -93,6 +93,7 @@ function initUserRegistrationForm( hasTabs, useAjax )
 	                	if (theForm.css('display')!='none') { toggleForm ( theForm.attr('name'), false); }
 	                }
 	                // else resetFormWithHidden (theForm);
+	                setSaveIconVisibility(theId, 'hidden');
 					
 				}
 			}
@@ -427,12 +428,15 @@ function scrollTo ( jqueryObj )
  */
 function deleteExtra ( extraTableName, extraID )
 {
+	if ($j('#studente_id_utente_studente').length > 0) id_utente = parseInt ($j('#studente_id_utente_studente').val());
+	else id_utente = 0;
+	
 	if (confirm ("Questo cancellera' l'elemento selezionato"))
 	{
 		$j.ajax({
 			type	:	'POST',
 			url		:	HTTP_ROOT_DIR+ '/browsing/ajax/delete_multiRow.php',
-			data	:	{ id: extraID, extraTableName: extraTableName },
+			data	:	{ id: extraID, extraTableName: extraTableName, id_utente: id_utente },
 			dataType:	'json'
 		})
 		.done  (function (JSONObj) {

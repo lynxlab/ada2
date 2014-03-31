@@ -43,7 +43,7 @@ include_once 'include/switcher_functions.inc.php';
  */
 
 $type = DataValidator::validate_not_empty_string($_GET['list']);
-$fieldsAr = array('nome','cognome','username');
+$fieldsAr = array('nome','cognome','username','tipo');
 switch($type) {
     case 'authors':
         $usersAr = $dh->get_authors_list($fieldsAr);
@@ -155,7 +155,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
 			$nome_link = $user[1].' '.$user[2];
 		}
 
-        $edit_link = BaseHtmlLib::link("edit_user.php?id_user=$userId", $edit_img->getHtml());
+        $edit_link = BaseHtmlLib::link("edit_user.php?id_user=$userId&usertype=".$user[4], $edit_img->getHtml());
         $view_link = BaseHtmlLib::link("view_user.php?id_user=$userId", $view_img->getHtml());
         $delete_link = BaseHtmlLib::link("delete_user.php?id_user=$userId",
                 translateFN('Delete user'));

@@ -202,7 +202,7 @@ class exportHelper
 		// end get external resources
 
 		// get extended nodes
-$extendedNode =& $dh->get_extended_node($nodeId);
+        $extendedNode =& $dh->get_extended_node($nodeId);
 		if (!empty($extendedNode) && !AMA_DB::isError($extendedNode))
 		{
 			$extendedNode['id_node'] = self::stripOffCourseId($course_id, $extendedNode['id_node']);
@@ -650,10 +650,11 @@ $extendedNode =& $dh->get_extended_node($nodeId);
 				}
 				
 				$replacement = '<id_autore/>';
-				$value = preg_replace($regExp, "$1".$replacement."/$3", $value);
+				$value = preg_replace($regExp, "/$1".$replacement."/$3", $value);
 			}
 			unset ($regExp);
 		}
+		
 		return $value;
 	}
 	
