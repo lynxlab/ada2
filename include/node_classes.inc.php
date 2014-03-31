@@ -883,7 +883,9 @@ function filter_nodeFN($user_level,$user_history,$id_profile='3',$querystring=''
   $htmldataHa['exercises'] = $this->get_exercisesFN($user_level);
   $htmldataHa['notes'] = $this->get_notesFN($user_level,$id_profile);
   $htmldataHa['private_notes'] = $this->get_private_notesFN($user_level,$id_profile);
-  $htmldataHa['extended_node'] = $this->get_extended_nodeFN($user_level,$id_profile);
+  $htmldataHa['extended_node'] ='';
+  if (SHOW_NODE_EXTENDED_FIELDS)  
+      $htmldataHa['extended_node'] = $this->get_extended_nodeFN($user_level,$id_profile);
 
   if ($this->type == ADA_LEAF_TYPE || $this->type == ADA_GROUP_TYPE || $this->type == ADA_NOTE_TYPE || $this->type == ADA_PRIVATE_NOTE_TYPE) {
       if (SEARCH_WORD_IN_NODE)
