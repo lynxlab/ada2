@@ -873,9 +873,17 @@ function filter_nodeFN($user_level,$user_history,$id_profile='3',$querystring=''
    -
 
    */
+    
+    
 
   if (!isset($id_profile))
     $id_profile = AMA_TYPE_STUDENT;
+  
+    if ($this->type == ADA_LEAF_TYPE || $this->type == ADA_GROUP_TYPE || $this->type == ADA_NOTE_TYPE || $this->type == ADA_PRIVATE_NOTE_TYPE) {
+      if (SEARCH_WORD_IN_NODE)
+          $this->text = $this->search_text_in_glosary($this->text);
+  }
+  
   $htmldataHa['text'] = $this->get_textFN($user_level,$querystring);
   $htmldataHa['media'] = $this->get_mediaFN($user_level);
   $htmldataHa['user_media']= $this->get_user_mediaFN($user_level);
@@ -886,11 +894,13 @@ function filter_nodeFN($user_level,$user_history,$id_profile='3',$querystring=''
   $htmldataHa['extended_node'] ='';
   if (SHOW_NODE_EXTENDED_FIELDS)  
       $htmldataHa['extended_node'] = $this->get_extended_nodeFN($user_level,$id_profile);
-
+/*
   if ($this->type == ADA_LEAF_TYPE || $this->type == ADA_GROUP_TYPE || $this->type == ADA_NOTE_TYPE || $this->type == ADA_PRIVATE_NOTE_TYPE) {
       if (SEARCH_WORD_IN_NODE)
           $htmldataHa['text'] = $this->search_text_in_glosary($htmldataHa['text']);
   }
+ * 
+ */
 
   return $htmldataHa;
 
