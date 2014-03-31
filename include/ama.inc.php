@@ -4819,7 +4819,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     public function get_course_instances_active_for_this_student($id_student) {
         $currentTime = time();
         $sql = 'SELECT C.id_corso, C.titolo, IC.id_istanza_corso, IC.self_instruction,'
-             . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status'
+             . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status, C.crediti'
              . ' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
              . ' WHERE I.id_utente_studente=?'
              . ' AND IC.id_istanza_corso = I.id_istanza_corso'
