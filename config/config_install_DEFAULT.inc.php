@@ -180,6 +180,11 @@ define('SERVER_TIMEZONE', 'Europe/Rome');
 define('SEARCH_WORD_IN_NODE',1);
 
 /*
+ * if true the system show the node the node extended fields glossary
+ */
+define('SHOW_NODE_EXTENDED_FIELDS',1);
+
+/*
  * after login, if true the system redirect the user to the course instance he is subscribed to
  */
 
