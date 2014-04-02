@@ -516,6 +516,13 @@ abstract class NodeTest
 	 * @return string
 	 */
 	protected function replaceInternalLinkMedia($text) {
-		return Node::parseInternalLinkMedia($text,$this->livello, null, null, null);
+		/**
+		 * call parseInternalLinkMedia passing -1 as level
+		 * to tell it's been called from a test node
+		 *
+		 * Actual test admission check on user level is
+		 * done by RootTest::checkStudentLevel method
+		 */		
+		return Node::parseInternalLinkMedia($text,-1, null, null, null);
 	}
 }

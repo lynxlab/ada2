@@ -873,9 +873,17 @@ function filter_nodeFN($user_level,$user_history,$id_profile='3',$querystring=''
    -
 
    */
+    
+    
 
   if (!isset($id_profile))
     $id_profile = AMA_TYPE_STUDENT;
+  
+    if ($this->type == ADA_LEAF_TYPE || $this->type == ADA_GROUP_TYPE || $this->type == ADA_NOTE_TYPE || $this->type == ADA_PRIVATE_NOTE_TYPE) {
+      if (SEARCH_WORD_IN_NODE)
+          $this->text = $this->search_text_in_glosary($this->text);
+  }
+  
   $htmldataHa['text'] = $this->get_textFN($user_level,$querystring);
   $htmldataHa['media'] = $this->get_mediaFN($user_level);
   $htmldataHa['user_media']= $this->get_user_mediaFN($user_level);
@@ -883,12 +891,16 @@ function filter_nodeFN($user_level,$user_history,$id_profile='3',$querystring=''
   $htmldataHa['exercises'] = $this->get_exercisesFN($user_level);
   $htmldataHa['notes'] = $this->get_notesFN($user_level,$id_profile);
   $htmldataHa['private_notes'] = $this->get_private_notesFN($user_level,$id_profile);
-  $htmldataHa['extended_node'] = $this->get_extended_nodeFN($user_level,$id_profile);
-
+  $htmldataHa['extended_node'] ='';
+  if (SHOW_NODE_EXTENDED_FIELDS)  
+      $htmldataHa['extended_node'] = $this->get_extended_nodeFN($user_level,$id_profile);
+/*
   if ($this->type == ADA_LEAF_TYPE || $this->type == ADA_GROUP_TYPE || $this->type == ADA_NOTE_TYPE || $this->type == ADA_PRIVATE_NOTE_TYPE) {
       if (SEARCH_WORD_IN_NODE)
           $htmldataHa['text'] = $this->search_text_in_glosary($htmldataHa['text']);
   }
+ * 
+ */
 
   return $htmldataHa;
 
@@ -974,7 +986,11 @@ function search_text_in_glosary($text) {
 		$http_root_dir = HTTP_ROOT_DIR;
 		$sess_id_course = $_SESSION['sess_id_course'];
 
-		$level_filter   = 1;
+		/**
+		 * if node_level <0 we've been called from a test node and no level
+		 * check is needed here, but must be done by the test itself
+		 */
+		$level_filter   = ($node_level>=0);
 		$link_filter    = 1;
 		$extlink_filter = 1;
 		$media_filter   = 1;
