@@ -976,7 +976,11 @@ function search_text_in_glosary($text) {
 		$http_root_dir = HTTP_ROOT_DIR;
 		$sess_id_course = $_SESSION['sess_id_course'];
 
-		$level_filter   = 1;
+		/**
+		 * if node_level <0 we've been called from a test node and no level
+		 * check is needed here, but must be done by the test itself
+		 */
+		$level_filter   = ($node_level>=0);
 		$link_filter    = 1;
 		$extlink_filter = 1;
 		$media_filter   = 1;
