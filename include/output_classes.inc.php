@@ -23,6 +23,15 @@ class ARE
 {
   public static function render($layout_dataAr = array(), $content_dataAr = array(), $renderer=NULL, $options=array()) {
 
+  	/**
+  	 * @author giorgio 03/apr/2014
+  	 * 
+  	 * If query string wants a pdf, let's obey by setting the $renderer
+  	 */
+  	if (isset($_GET['pdfExport']) && intval($_GET['pdfExport'])===1) {
+  		$renderer = ARE_PDF_RENDER;
+  	}
+  	
     switch($renderer) {
         case ARE_PRINT_RENDER:
           
@@ -133,6 +142,7 @@ class ARE
         
 
       case ARE_HTML_RENDER:
+      case ARE_PDF_RENDER:
       default:
         $layoutObj = read_layout_from_DB($id_profile,
           $layout_dataAr['family'],
@@ -212,7 +222,7 @@ class ARE
         $html_renderer->resetImgSrcFN($imgpath,$template_family);
         $html_renderer->apply_styleFN();
 
-        $html_renderer->outputFN('page');
+        $html_renderer->outputFN(($renderer == ARE_PDF_RENDER) ? 'pdf' : 'page');
         break;
     }
   }
@@ -739,21 +749,28 @@ class  Generic_Html extends Output
       } else {
         $template_family = "default";
       }
-    } else {
-      $template_family = "default";
-    } 
-
+    }/* else {
+    	$template_family = "default";
+	}*/
+    
+    /**
+     * @author giorgio 04/apr/2014
+     * 
+     * removed the above else to have $template_family
+     * not pointing to 'default' that does not exists
+     * anymore, and it will point to ADA_TEMPLATE_FAMILY
+     */ 
 
     if (empty($stylesheetpath)){
       if (!isset($this->module_dir)){
-        $stylesheetpath = "$template_family/css/main/";
+        $stylesheetpath = ROOT_DIR. "/layout/$template_family/css/main/";
       } else {
         $module_dir = $this->module_dir;
         if ($module_dir == "main") {
-            $stylesheetpath = "../$template_family/css/main/";
+            $stylesheetpath = ROOT_DIR. "/layout/../$template_family/css/main/";
         }
         else {
-            $stylesheetpath = "$template_family/css/$module_dir/";
+            $stylesheetpath = ROOT_DIR . "/layout/$template_family/css/$module_dir/";
         }
       }
     }
@@ -780,32 +797,62 @@ class  Generic_Html extends Output
         
         /* steve 31/03/09
          *
-         * add alternate CSS for non standard browsers, namely IE 6 */
+         * add alternate CSS for non standard browsers, namely IE 6 to 9 and...*/
 
-        $cond_com_begin = "\n<!--[if IE 6]>\n";
-        $cond_com_end = "<![endif]-->\n";
+        for($ie_version=6; $ie_version<=9; $ie_version++) {
+        
+	        $cond_com_begin = "\n<!--[if IE ".$ie_version."]>\n";
+	        $cond_com_end = "<![endif]-->\n";
 
-        //  if there is the extension we strip it off
-        if (strstr($stylesheet,'.css')){
-          $stylesheet_name = substr($stylesheet,0,-4);
-          $ie6_stylesheet =  $stylesheet_name."_ie6";
-        } else {
-          $ie6_stylesheet =  $stylesheet."_ie6";
-        }
-        $ie6_stylesheet =  $ie6_stylesheet.".css";
-        // path
-        if (!stristr($ie6_stylesheet,'css/'))
-        $ie6_stylesheet =  $stylesheetpath.$ie6_stylesheet; // if there is no path, we add it
+	        //  if there is the extension we strip it off
+	        if (strstr($stylesheet,'.css')){
+	          $stylesheet_name = substr($stylesheet,0,-4);
+	          $ie_stylesheet =  $stylesheet_name."_ie".$ie_version;
+	        } else {
+	          $ie_stylesheet =  $stylesheet."_ie".$ie_version;
+	        }
+	        $ie_stylesheet =  $ie_stylesheet.".css";
+	        // path
+	        if (!stristr($ie_stylesheet,'css/'))
+	        $ie_stylesheet =  $stylesheetpath.$ie_stylesheet; // if there is no path, we add it
 
-        if (file_exists($ie6_stylesheet)){
-            $ie6_stylesheet = str_replace($root_dir,$http_root_dir,$ie6_stylesheet);
-          $html_css_code .= $cond_com_begin."<link rel=\"stylesheet\" href=\"$ie6_stylesheet\" type=\"text/css\" media=\"screen\">\n".$cond_com_end;
+	        if (file_exists($ie_stylesheet)){
+	            $ie_stylesheet = str_replace($root_dir,$http_root_dir,$ie_stylesheet);
+	          	$html_css_code .= $cond_com_begin."<link rel=\"stylesheet\" href=\"$ie_stylesheet\" type=\"text/css\" media=\"screen\">\n".$cond_com_end;
+	        }
         }
         /* end mod	*/
 
       }
     }
-
+	
+    /**
+     * @author giorgio 03/apr/2014
+     * Look for a print.css that will be used for print media
+     * and will be one for each module_dir (i.e. browsing/print.css, switcher/print.css)
+     * plus a global print.css that must be put at css root level
+     */
+    $lookFor = 'print.css';
+    /**
+     * Look for the print.css file in :
+     * 
+     * 	$stylesheetpath . '../' that is css root
+     *  $stylesheetpath . ''  that is module's own dir
+     *  
+     * This way module's own print.css will be the
+     * last loaded one and can overwrite properly 
+     */
+    foreach (array ('../','') as $subdir) {
+    	$fileName = $stylesheetpath . $subdir . $lookFor;
+    	if (file_exists($fileName)) {
+    		$fileName = str_replace($root_dir,$http_root_dir,$fileName);
+    		$html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName\" type=\"text/css\" media=\"print\">\n";
+    	}
+    }
+    /**
+     * end @author giorgio 03/apr/2014
+     */
+    
     $this->htmlheader = str_replace('<!-- Stile -->',$html_css_code,$this->htmlheader);
   }
 
@@ -900,6 +947,34 @@ class  Generic_Html extends Output
         $fp = fopen ($this->full_static_filename, "w"); 
         $result = fwrite($fp,$data);
         fclose($fp);
+        break;
+      case 'pdf':   	
+      	$data = $this->htmlheader;
+      	$data.= $this->htmlbody;
+      	$data.= $this->htmlfooter;
+      	require_once ROOT_DIR . '/include/dompdf/dompdf_config.inc.php';
+      	$dompdf_options = array(      			      			      	
+      			// Rendering
+      			"default_media_type"       => 'print',
+      			"default_paper_size"       => 'a4',
+      	
+      			// Features
+      			"enable_unicode"           => DOMPDF_UNICODE_ENABLED,
+      			"enable_php"               => DOMPDF_ENABLE_PHP,
+      			"enable_remote"            => true,
+      			"enable_css_float"         => true,
+      			"enable_javascript"        => true,
+      			"enable_html5_parser"      => DOMPDF_ENABLE_HTML5PARSER,
+      			"enable_font_subsetting"   => DOMPDF_ENABLE_FONTSUBSETTING
+      	);
+      	$dompdf = new DOMPDF();
+      	$dompdf->set_options($dompdf_options);
+      	$dompdf->set_paper('a4','landscape');
+      	$dompdf->load_html($data);      	
+      	$dompdf->render();
+      	
+      	$dompdf->stream("ada.pdf", array('Attachment'=>0));
+      	die();
         break;
     }
   }
