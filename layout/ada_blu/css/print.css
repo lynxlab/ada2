@@ -1,0 +1,23 @@
+.media.sound,
+.media.pronounce,
+.media.video,
+.media.labiale,
+.media.lis,
+.media.finger-spelling,
+.meida.doc,
+#mainmenu,
+#com_toolscontent,
+#menuright,
+#rightpanel,
+#footer img {
+	display:none;	
+}
+
+
+.content_small {
+	margin-right:0;
+}
+
+#container {
+	padding-top:0px;
+}
