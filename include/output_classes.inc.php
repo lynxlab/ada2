@@ -741,7 +741,7 @@ class  Generic_Html extends Output
       }
     } else {
       $template_family = "default";
-    }
+    } 
 
 
     if (empty($stylesheetpath)){
@@ -770,7 +770,7 @@ class  Generic_Html extends Output
 			if (!stristr($stylesheet,'css/'))
 			$stylesheet =  $stylesheetpath.$stylesheet; // if there is no path, we add it
 		}
-
+		
         if (file_exists($stylesheet)){
           // this is for standard browsers
           $stylesheet = str_replace($root_dir,$http_root_dir,$stylesheet);
