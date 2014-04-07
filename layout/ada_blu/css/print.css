@@ -1,3 +1,7 @@
+@import url("page.css");
+@import url("exercises.css");
+@import url("form.css");
+
 .media.sound,
 .media.pronounce,
 .media.video,
@@ -9,10 +13,16 @@
 #com_toolscontent,
 #menuright,
 #rightpanel,
-#footer img {
-	display:none;	
+#footer img,
+#index_in_text,
+#exercises_in_text
+	{
+	display: none;
 }
 
+* {
+	font-family: sans-serif;
+}
 
 .content_small {
 	margin-right:0;
