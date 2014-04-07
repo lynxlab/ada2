@@ -727,6 +727,27 @@ class MultiPort
           $errObj = new ADA_Error($user_testersAr,'An error occurred while retrieving user testers in MultiPort::finduser');
         }
         $userObj->setTesters($user_testersAr);
+        /**
+         * get student extra data
+         */
+        if (!is_null($userObj) && $userObj instanceof ADAUser)
+        {
+            /**
+             * @author giorgio 06/giu/2013
+             *
+             * load extra fields from DB, if we have some in this customization (i.e. User->hasExtra is true)
+             * Note that this MUST be done after user testers have been set.
+             *
+             */
+            if ($userObj->hasExtra())
+            {
+                    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($user_testersAr[0]));
+                    $extraAr = $tester_dh->getExtraData($userObj);
+                    if (!AMA_DB::isError($extraAr)) {
+                            $userObj->setExtras($extraAr);
+                    }
+            }    	    	
+        }
         return $userObj;
         break;
 
