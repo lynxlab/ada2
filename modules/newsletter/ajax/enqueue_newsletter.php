@@ -38,12 +38,12 @@ require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 
 require_once ROOT_DIR.'/include/logger_class.inc.php';
+require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
 
 // MODULE's OWN IMPORTS
 require_once MODULES_NEWSLETTER_PATH.'/config/config.inc.php';
 require_once MODULES_NEWSLETTER_PATH.'/include/AMANewsletterDataHandler.inc.php';
 require_once MODULES_NEWSLETTER_PATH.'/include/functions.inc.php';
-require_once MODULES_NEWSLETTER_PATH.'/include/phpMailer/class.phpmailer.php';
 
 // should something have gone wrong, hopefully this gets called!
 function shutDown($dh, $history_id)
