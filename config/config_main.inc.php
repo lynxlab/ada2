@@ -300,6 +300,15 @@ define('ADA_EXERCISE_MODIFIED_ITEM',1);
 define('ADA_EXERCISE_DELETED_ITEM', 2);
 
 /*
+ * ARE constants
+ */
+define ('ARE_PRINT_RENDER',1);
+define ('ARE_XML_RENDER',  2);
+define ('ARE_FILE_RENDER', 3);
+define ('ARE_HTML_RENDER', 4);
+define ('ARE_PDF_RENDER',  5);
+
+/*
  * Other constants
  */
 define('NO_LOG',	0);  // no log  at all

@@ -154,7 +154,7 @@ switch ($op){
     $tokenObj = TokenManager::createTokenForPasswordChange($userObj);
     if($tokenObj == false) {
       $message = translateFN('An error occurred while performing your request. Please try again later.');
-      header('Location:'.HTTP_ROOT_DIR."/index.php?message=$message");
+      header('Location:'.HTTP_ROOT_DIR."/browsing/forget.php?message=$message");
       exit();
     }
     $token    = $tokenObj->getTokenString();
@@ -193,8 +193,7 @@ switch ($op){
     }
     //	} else {
     $message = translateFN("A message has been sent to  you with informations on how to change your password.");
-    $home = HTTP_ROOT_DIR."/index.php"; // $userObj->getHomepage();
-    $redirect_to = "$home?message=$message";
+    $redirect_to = HTTP_ROOT_DIR . "/browsing/forget.php?message=$message";
     header('Location:'.$redirect_to);
     exit();
     //	}
@@ -211,7 +210,7 @@ switch ($op){
 
     $tokenObj = TokenFinder::findTokenForPasswordChange($userid, $token);
     if($tokenObj == false) {
-      $error_page = HTTP_ROOT_DIR."/index.php";
+      $error_page = HTTP_ROOT_DIR."/browsing/forget.php";
       $errObj = new ADA_Error($userType,translateFN('It was impossible to confirm the password change: token not valid'),
       NULL,NULL,NULL,
       $error_page.'?message='.urlencode(translateFN('It was impossible to confirm the password change: token not valid')));
@@ -221,7 +220,7 @@ switch ($op){
     $userObj = MultiPort::findUser($userid);
     $userStatus = $userObj->getStatus();
     if (AMA_DataHandler::isError($userObj)){
-      $error_page = HTTP_ROOT_DIR."/index.php";
+      $error_page = HTTP_ROOT_DIR."/browsing/forget.php";
       $errObj = new ADA_Error($userType,translateFN('It was impossible to confirm the password change: user unknown'),
       NULL,NULL,NULL,$error_page.'?message='.urlencode(translateFN('It was impossible to confirm the password change: user unknown')));
       exit();
@@ -249,7 +248,7 @@ switch ($op){
 
         if (AMA_DataHandler::isError($resPass)){
           $msg = $result->getMessage();
-          $error_page = HTTP_ROOT_DIR."/index.php";
+          $error_page = HTTP_ROOT_DIR."/browsing/forget.php";
           $errObj = new ADA_Error($requestInfo,translateFN('It was impossible to confirm the password change'),
           NULL,NULL,NULL,$error_page.'?message='.urlencode(translateFN('It was impossible to confirm the password change')));
           exit();
@@ -270,7 +269,7 @@ switch ($op){
               break;
             case ADA_STATUS_REMOVED:
             default:
-              $error_page = HTTP_ROOT_DIR."/index.php";
+              $error_page = HTTP_ROOT_DIR."/browsing/forget.php";
               $errObj = new ADA_Error($requestInfo,translateFN('It was impossible to confirm the password change: user unknown'),
               NULL,NULL,NULL,$error_page.'?message='.urlencode(translateFN('It was impossible to confirm the password change: user unknown')));
               exit();
@@ -284,7 +283,7 @@ switch ($op){
           $tokenObj->markAsUsed();
           TokenManager::updateToken($tokenObj);
 
-          header('Location: '.HTTP_ROOT_DIR."/index.php?message=$message");
+          header('Location: '.HTTP_ROOT_DIR."/browsing/forget.php?message=$message");
           exit();
         }
       }
@@ -304,7 +303,7 @@ switch ($op){
       /*
        * Invalid data in input
        */
-      $error_page = HTTP_ROOT_DIR."/index.php";
+      $error_page = HTTP_ROOT_DIR."/browsing/forget.php";
       $errObj = new ADA_Error($requestInfo,translateFN('It was impossible to confirm the password change'),
       NULL,NULL,NULL,
       $error_page.'?message='.urlencode(translateFN('It was impossible to confirm the password change')));
@@ -316,7 +315,7 @@ switch ($op){
       /*
        * There isn't a token corresponding to input data, do not proceed.
        */
-      $error_page = HTTP_ROOT_DIR."/index.php";
+      $error_page = HTTP_ROOT_DIR."/browsing/forget.php";
       $errObj = new ADA_Error($requestInfo,translateFN('It was impossible to confirm the password change'),
       NULL,NULL,NULL,
       $error_page.'?message='.urlencode(translateFN('It was impossible to confirm the password change')));
@@ -325,7 +324,7 @@ switch ($op){
 
     $userObj = MultiPort::findUser($userid);
     if (AMA_DataHandler::isError($userObj)){
-      $error_page = HTTP_ROOT_DIR."/index.php";
+      $error_page = HTTP_ROOT_DIR."/browsing/forget.php";
       $errObj = new ADA_Error($userType,translateFN('It was impossible to confirm the password change: user unknown'),
       NULL,NULL,NULL,$error_page.'?message='.urlencode(translateFN('It was impossible to confirm the password change: user unknown')));
       exit();
@@ -379,6 +378,11 @@ switch ($op){
     break;
 
 } // end switch
+
+if (isset($message) && strlen($message)>0) {
+	$help = $message;
+	unset($message);
+}
 
 $content_dataAr = array(
   'title'     => $title,

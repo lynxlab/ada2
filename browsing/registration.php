@@ -35,6 +35,9 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 require_once ROOT_DIR.'/include/Forms/UserRegistrationForm.inc.php';
 include_once ROOT_DIR.'/include/token_classes.inc.php';
+
+require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
+
 $self =  whoami();
 /**
  * Negotiate login page language
@@ -85,8 +88,8 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $id_user = Multiport::addUser($userObj,$regProvider);
         if($id_user < 0) {
             $message = translateFN('Impossibile procedere. Un utente con questi dati esiste?')
-                     . ' ' . $id_user;
-            header('Location:'.HTTP_ROOT_DIR.'/index.php?message='.$message);
+                     . ' ' . urlencode($userObj->getEmail());
+            header('Location:'.HTTP_ROOT_DIR.'/browsing/registration.php?message='.$message);
             exit();
         }
         /**
@@ -96,38 +99,57 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $tokenObj = TokenManager::createTokenForUserRegistration($userObj);
         if($tokenObj == false) {
             $message = translateFN('An error occurred while performing your request. Pleaser try again later.');
-            header('Location:'.HTTP_ROOT_DIR."/index.php?message=$message");
+            header('Location:'.HTTP_ROOT_DIR."/browsing/registration.php?message=$message");
             exit();
         }
         $token = $tokenObj->getTokenString();
 
         $admtypeAr = array(AMA_TYPE_ADMIN);
-        $admList = $common_dh-> get_users_by_type($admtypeAr);
-        if (!AMA_DataHandler::isError($admList)){
+        $extended_data = TRUE;
+        $admList = $dh->get_users_by_type($admTypeAr, $extended_data);
+        if (!AMA_DataHandler::isError($admList) && array_key_exists('username',$admList[0]) && $admList[0]['username'] != '' && $admList[0]['username'] != null){
             $adm_uname = $admList[0]['username'];
+            $adm_email = $admList[0]['e_mail'];
         } else {
             $adm_uname = ADA_ADMIN_MAIL_ADDRESS;
+            $adm_email = ADA_ADMIN_MAIL_ADDRESS;
         }
 
         $title = PORTAL_NAME.': ' . translateFN('ti chiediamo di confermare la registrazione.');
-
-
-        $text = sprintf(translateFN('Gentile %s, ti chiediamo di confermare la registrazione ai %s.'),
-                    $userObj->getFullName(), PORTAL_NAME)
-              . PHP_EOL . PHP_EOL
-              . translateFN('Il tuo nome utente è il seguente:')
-              . ' ' . $userObj->getUserName()
-              . PHP_EOL . PHP_EOL
-              . sprintf(translateFN('Puoi confermare la tua registrazione ai %s seguendo questo link:'),
-                        PORTAL_NAME)
-              . PHP_EOL
-              . ' ' . HTTP_ROOT_DIR."/browsing/confirm.php?uid=$id_user&tok=$token"
-              . PHP_EOL . PHP_EOL
-              . translateFN('La segreteria dei Corsi ICoN di Lingua italiana');
-
+        
+        $confirm_link_html = CDOMElement::create('a', 'href:'.HTTP_ROOT_DIR."/browsing/confirm.php?uid=$id_user&tok=$token");
+        $confirm_link_html->addChild(new CText(translateFN('conferma registrazione')));
+        $confirm_link_html_rendered .= $confirm_link_html->getHtml();
+        
+        $PLAINText = sprintf(translateFN('Gentile %s, ti chiediamo di confermare la registrazione ai %s.'),
+        		$userObj->getFullName(), PORTAL_NAME)
+        		. PHP_EOL . PHP_EOL
+        		. translateFN('Il tuo nome utente è il seguente:')
+        		. ' ' . $userObj->getUserName()
+        		. PHP_EOL . PHP_EOL
+        		. sprintf(translateFN('Puoi confermare la tua registrazione a %s seguendo questo link:'),
+        				PORTAL_NAME)
+        		. PHP_EOL
+        		. ' ' . HTTP_ROOT_DIR."/browsing/confirm.php?uid=$id_user&tok=$token"
+        		. PHP_EOL . PHP_EOL
+        		. translateFN('La segreteria di') . ' '. PORTAL_NAME;
+        
+        $HTMLText = sprintf(translateFN('Gentile %s, ti chiediamo di confermare la registrazione ai %s.'),
+        		$userObj->getFullName(), PORTAL_NAME)
+        		. '<BR />' . '<BR />'
+        		. translateFN('Il tuo nome utente è il seguente:')
+        		. ' ' . $userObj->getUserName()
+        		. '<BR />' . '<BR />'
+        		. sprintf(translateFN('Puoi confermare la tua registrazione ai %s seguendo questo link:'),
+        				PORTAL_NAME)
+        		. '<BR />'
+        		. $confirm_link_html_rendered
+        		. '<BR />' . '<BR />'
+        		. translateFN('La segreteria di') . ' '. PORTAL_NAME;
+        
         $message_ha = array(
             'titolo' => $title,
-            'testo' => $text,
+            'testo' => $PLAINText,
             'destinatari' => array($userObj->getUserName()),
             'data_ora' => 'now',
             'tipo' => ADA_MSG_SIMPLE,
@@ -142,11 +164,29 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         /**
          * Send the message an email message
+         * via PHPMailer
          */
+        $phpmailer = new PHPMailer();
+        $phpmailer->CharSet = 'UTF-8';
+        $phpmailer->IsSendmail();
+        $phpmailer->SetFrom($adm_email);
+        $phpmailer->AddReplyTo($adm_email);			
+        $phpmailer->IsHTML(true);			
+        $phpmailer->Subject = $title;
+
+        $phpmailer->AddAddress($userObj->getEmail(),  $userObj->getFullName());
+        $phpmailer->Body = $HTMLText;
+        $phpmailer->AltBody = $PLAINText;
+        $phpmailer->Send();
+
+        /**
+         * Send the message an email message
+         * via ADA spool
         $message_ha['tipo'] = ADA_MSG_MAIL;
         $result = $mh->send_message($message_ha);
         if(AMA_DataHandler::isError($result)) {
         }
+         */
 
         /*
          * Redirect the user to the "registration succeeded" page.
@@ -188,6 +228,10 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
      * Display the registration form.
      */
     $help = translateFN('Da questa pagina puoi effettuare la registrazione ad ADA');
+    if (isset($message) && strlen($message)>0) {
+    	$help = $message;
+    	unset($message);
+    }
     $form = new UserRegistrationForm();
     $data = $form->render();
 }
