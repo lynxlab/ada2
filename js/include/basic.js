@@ -5,16 +5,20 @@
  */
 function newWindow(nomefile,x,y)
 {
-        prop = ('width='+x+',height='+y+', toolbar=no, location=no, status=no, menubar=no, scrollbars=yes, resizable=no ');
-        win2=window.open(nomefile,'Immagine',prop);
+        openNewWindow(nomefile,x,y,'Immagine',false,false);
 }
 
 function openMessenger(nomefile,x,y)
 {
-        prop = ('width='+x+',height='+y+', toolbar=no, location=no, status=no, menubar=no, scrollbars=yes, resizable=yes ');
-        win2=window.open(nomefile,'Messaggeria',prop);
+        openNewWindow(nomefile,x,y,'Messaggeria',true,true);
 }
 
+function openNewWindow(nomefile,x,y,title,resizable,forceFocus) {
+
+	prop = ('width='+x+',height='+y+', toolbar=no, location=no, status=no, menubar=no, scrollbars=yes, resizable='+((resizable) ? 'yes' : 'no'));
+    win2=window.open(nomefile,title,prop);
+    if (forceFocus) win2.focus();
+}
 
 function window_scroll(howmuch)
 {
