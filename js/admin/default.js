@@ -1,34 +1,7 @@
 // vito, 28 nov 2008
 document.write("<script type='text/javascript' src='../js/include/menu_functions.js'></script>");
 document.write("<script type='text/javascript' src='../js/include/tablekit/tablekit.js'></script>");
-
-function newWindow(nomefile,x,y)
-{
-        prop = ('width='+x+',height='+y+', toolbar=no, location=no, status=no, menubar=no, scrollbars=yes, resizable=no ');
-        win2=window.open(nomefile,'Immagine',prop);
-}
-
-function openMessenger(nomefile,x,y)
-{
-        prop = ('width='+x+',height='+y+', toolbar=no, location=no, status=no, menubar=no, scrollbars=yes, resizable=yes ');
-        win2=window.open(nomefile,'Messaggeria',prop);
-}
-
-
-function window_scroll(howmuch)
-{
-	window.scroll(0,howmuch);
-}
-
-function parentLoc(nomefile)
-{
-        win1=window.opener;
-        win1.location = nomefile;
-}
-
-function initDateField() {
-	$j("#user_birthdate").mask("99/99/9999");
-}
+document.write("<script type='text/javascript' src='../js/include/basic.js'></script>");
 
 // vito, 21 luglio 2008
 function toggleVisibilityByClassName(container_div, item_class)
