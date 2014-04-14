@@ -35,6 +35,7 @@ $Config['Enabled'] = true ;
 require_once('../../../../../../config_path.inc.php');
 session_start();// start session since we will be needing session parameters
 $URL = parse_url(HTTP_ROOT_DIR,  PHP_URL_HOST);
+if (strlen(parse_url(HTTP_ROOT_DIR,  PHP_URL_PATH)) > 1) $URL .= parse_url(HTTP_ROOT_DIR,  PHP_URL_PATH);
 if ($_SERVER['SERVER_NAME'] != $URL) {
     $dir = str_replace(substr($_SERVER['DOCUMENT_ROOT'],0,-1),'',ROOT_DIR);
 } else {
