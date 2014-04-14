@@ -36,15 +36,26 @@ $neededObjAr = array(
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+//$self = whoami();
 include_once 'include/browsing_functions.inc.php';
+
+$self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+   $self='defaultSelfInstruction';
+}
+else
+{
+    $self = whoami();
+}
+
 
 $debug = 0; 
 $mylog_mode = 0; // default: only one file for user
 //$log_extension = ".txt";	
 $log_extension = ".htm";	
 
-$self =  whoami();  // = mylog
+//$self =  whoami();  // = mylog
 
 //$classi_dichiarate = get_declared_classes();
 //mydebug(__LINE__,__FILE__,$classi_dichiarate);
@@ -240,6 +251,29 @@ $banner = include ("$root_dir/include/banner.inc.php");
 
 $chat_link = "<a href=\"$http_root_dir/comunica/ada_chat.php\" target=_blank>".translateFN("chat")."</a>";
 //
+/*
+ * Edit profile
+ */
+
+$edit_profile=$userObj->getEditProfilePage();
+
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
+}
+else
+{
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+}
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
+
+
+/*
+ * link corsi
+ */
+$corsi=CDOMElement::create('a','href:../info.php');
+$corsi->addChild(new CText(translateFN('Corsi')));
 
 
 /* 3.
@@ -265,6 +299,13 @@ HTML page building
          $body_onload = "includeFCKeditor('log_today');";
          $options = array('onload_func' => $body_onload);
 
+          if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) 
+     {        
+     
+        $layout_dataAR['JS_filename'] = array(
+        ROOT_DIR.'/js/browsing/mylog.js');   //for defaultSelfInstruction.tpl
+     }
+
 $node_data = array(
                    'banner'=>$banner,
                    'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
@@ -280,7 +321,10 @@ $node_data = array(
                    'bookmarks'=>$user_bookmarks,
                    'profilo'=>$profilo,
                    'myforum'=>$my_forum,
-                   'title'=>$node_title
+                   'title'=>$node_title,
+                   'edit_profile'=> $edit_profile_link->getHtml(),
+                   'corsi'=>$corsi->getHtml()
+                   //'agisci' =>$agisci->getHtml()
                    //'mylog'=>$mylog,
                   );
 
@@ -302,7 +346,7 @@ $node_data = array(
                    }
 
 
-ARE::render($layout_dataAr,$node_data, NULL, $options);
+ARE::render($layout_dataAR,$node_data, NULL, $options);
 
 /* Versione XML:
 

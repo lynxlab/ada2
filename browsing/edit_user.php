@@ -42,7 +42,7 @@ $neededObjAr = array(
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
-$self = whoami();
+//$self = whoami();
 include_once 'include/browsing_functions.inc.php';
 require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
@@ -50,6 +50,7 @@ require_once ROOT_DIR . '/include/FileUploader.inc.php';
  * YOUR CODE HERE
  */
 require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
+$self = whoami();
 $languages = Translator::getLanguagesIdAndName();
 
 /**
@@ -113,6 +114,10 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     
     // the standard UserProfileForm is always needed.
     // Let's create it
+    if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+    {
+        $self = whoami(); //allowing to build action form
+    }
     $form = new UserProfileForm($languages,$allowEditProfile, $allowEditConfirm, $self.'.php');
     unset($user_dataAr['password']);
     $user_dataAr['email'] = $user_dataAr['e_mail'];
@@ -122,7 +127,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     if (!$editUserObj->hasExtra()) {
     	// user has no extra, let's display it
     	$data = $form->render();
-    } else {
+       } else {
     	require_once ROOT_DIR .'/include/HtmlLibrary/UserExtraModuleHtmlLib.inc.php';
     	
     	// the extra UserExtraForm is needed as well
@@ -150,12 +155,12 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 			
 			// if is a subclass of FForm the it's a multirow element
 			$doMultiRowTab = !is_subclass_of($tabsArray[$currTab][1], 'FForm');
-			
+				
 			if ($doMultiRowTab === true)
 			{
 				$extraTableName = $tabsArray[$currTab][1];
 				$extraTableFormClass = "User" . ucfirst ($extraTableName) . "Form";
-				
+			
 				/*
 				 * if extraTableName is not in the linked tables array or there's
 				 * no form classes for the extraTableName skip to the next iteration
@@ -271,6 +276,7 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 				$form->fillWithArrayData($user_dataAr);
 			}
 			$data .= $form->render();
+                        
 		}		
 		else $data = 'No form to display :(';
 	} 
@@ -291,8 +297,73 @@ $layout_dataAr['CSS_filename'] = array(
 		JQUERY_UI_CSS,
 		ROOT_DIR.'/js/include/jquery/pekeUpload/pekeUpload.css'
 );
-
+$self_instruction=$_GET['self_instruction'];   //if a course instance is self_instruction
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+    $self='editUserSelfInstruction';
+}
+else
+{
+    $self = whoami();
+}
 $maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024*1024));
+$edit_profile=$userObj->getEditProfilePage();
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {
+	$layout_dataAr['CSS_filename'][]=  ROOT_DIR.'/layout/'.$template_family.'/css/browsing/edit_user.css';
+	$layout_dataAr['JS_filename'][]=  ROOT_DIR.'/js/browsing/edit_user.js';
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
+} else {
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+}
+
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
+/*
+ * Home Page
+ */
+
+
+
+/*
+ * link corsi
+ */
+$corsi=CDOMElement::create('a','href:../info.php');
+$corsi->addChild(new CText(translateFN('Corsi')));
+$corsi=$corsi->getHtml();
+
+
+
+$navigation_history = $_SESSION['sess_navigation_history'];
+$last_visited_node  = $navigation_history->lastModule();
+
+
+/*
+ * link Naviga
+ */
+$naviga=CDOMElement::create('a','#');
+$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
+$naviga->addChild(new CText(translateFN('Naviga')));
+$naviga=$naviga->getHtml();
+
+/*
+ * Go back link
+ */
+$navigation_history = $_SESSION['sess_navigation_history'];
+$last_visited_node  = $navigation_history->lastModule();
+$go_back_link = CDOMElement::create('a', 'href:'.$last_visited_node);
+//$go_back_link ->setAttribute('class', 'positionNaviga');
+$go_back_link->addChild(new CText(translateFN('Naviga')));
+$go_back_link=$go_back_link->getHtml();
+
+if(!strstr($last_visited_node,'main_index.php'))
+{
+    $naviga='';
+}
+ else 
+{
+    $corsi='';
+    $naviga=$go_back_link;
+}
 
 /**
  * do the form have to be submitted with an AJAX call?
@@ -315,7 +386,10 @@ $content_dataAr = array(
     'status' => $status,
     'title' => translateFN('Modifica dati utente'),
     'data' => $data,
-    'help' => $help
+    'help' => $help,
+    'corsi'=>$corsi,
+    'edit_profile'=> $edit_profile_link->getHtml(),
+    'naviga'=>$naviga
 );
 
 /**
