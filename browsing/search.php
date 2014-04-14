@@ -33,7 +33,7 @@ $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_T
  */
 $neededObjAr = array(
   AMA_TYPE_VISITOR      => array('layout'),
-  AMA_TYPE_STUDENT         => array('layout'),
+  AMA_TYPE_STUDENT => array('layout','course', 'course_instance'),
   AMA_TYPE_TUTOR => array('layout'),
   AMA_TYPE_AUTHOR       => array('layout')
 );
@@ -52,13 +52,22 @@ require_once ROOT_DIR.'/include/HTML_element_classes.inc.php';
  $self = 'guest_view'; FIXME: we have to create a guest_search template
 }
 else { */
-  $self = whoami();
+  //$self = whoami();
 /*} */
 
 // questa versione permette di cercare anche SOLO per nome o per keyword (titolo)
 // se è passato il testo, lo cerca ovunque (O nel nome O nelle keywords O nel testo)
 // versione con campo unico
   
+    $self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+    $self='searchSelfInstruction';
+}
+else
+{
+    $self = whoami();
+}
   
 if (isset($_REQUEST['submit'])) {
   $out_fields_ar = array('nome','titolo','testo','tipo');
@@ -278,6 +287,21 @@ costruzione della pagina HTML
 */
 
 
+
+/*
+ * link Naviga
+ */
+$naviga=CDOMElement::create('a','#');
+$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
+$naviga->addChild(new CText(translateFN('Naviga')));
+
+//$search_word=CDOMElement::create('label','');
+//$search_word->setAttribute('class', 'search_word');
+//$search_word->addChild(new CText(translateFN('Cerca')));
+$search_word='';
+
+
+
 $content_dataAr = array(
   'form'=>$search_form,
   'results'=>$search_results,
@@ -296,6 +320,8 @@ $content_dataAr = array(
   'messages'=>$user_messages->getHtml(),
   'agenda'=>$user_agenda->getHtml(),
   'events'=>$user_events->getHtml(),
+  'naviga'=>$naviga->getHtml(),
+  'search_word' =>'',
   'chat_users'=>$online_users
 );
 

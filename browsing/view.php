@@ -60,9 +60,16 @@ if ($cacheObj->getCachedData){
  *
  */
 
+$self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
+    
 if ($userObj instanceof ADAGuest) {
     $self = 'guest_view';
-} else {
+}
+ elseif($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {                    
+    $self='viewSelfInstruction';
+    // $self='tutorSelfInstruction';
+}
+else {
     $self = whoami();
 }
 
@@ -326,6 +333,13 @@ switch($id_profile) {
 	   break;
 
 }
+/*  gli studenti dei corsi in autoistruzione non devono poter inviare media etc etc
+		 *  TODO: va riportata la modifica fatta per ADA Icon
+		 * */
+		if ($id_profile == AMA_TYPE_STUDENT && $courseInstanceObj->getSelfInstruction()){
+		  $mod_enabled = FALSE;
+		  $com_enabled = FALSE;
+		} 
 
 		//show course istance name if isn't empty - valerio
 		if (!empty($courseInstanceObj->title)) {
@@ -339,6 +353,24 @@ foreach ($keyAr as $keyword){
 }
 
 $linked_node_keywords = implode(',',$linksAr);                
+
+/*
+ * Edit profile
+ */
+
+$edit_profile=$userObj->getEditProfilePage();
+
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
+}
+else
+{
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+}
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
+
 /**
  * content_data
  * @var array
@@ -375,7 +407,8 @@ $content_dataAr = array(
 	'go_print' => $go_print,
 	'go_download' => $go_download,
 	'video_chat' => $video_chat,
-	'chat' => $chat
+	'chat' => $chat,
+        'edit_profile'=> $edit_profile_link->getHtml()
 		//        'messages' => $user_messages,
 		//        'agenda' => $user_agenda
 );
@@ -511,7 +544,10 @@ switch ($op){
 				JQUERY_NO_CONFLICT,
 				ROOT_DIR. '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js'
 		);		
-
+              if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {                    
+                //$self='viewSelfInstruction';
+                $layout_dataAR['JS_filename'][] = ROOT_DIR.'/js/browsing/view.js';
+              }
 		/**
 		 * if the jqueru-ui theme directory is there in the template family,
 		 * do not include the default jquery-ui theme but use the one imported

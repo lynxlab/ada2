@@ -43,7 +43,15 @@ require_once(MODULES_TEST_PATH.'/include/init.inc.php');
 //needed to promote AMADataHandler to AMATestDataHandler. $sess_selected_tester is already present in session
 $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
+$self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+    $self='tutorSelfInstruction';
+}
+else
+{
 $self = 'tutor';
+}
 
 if (!is_a($course_instanceObj,'Course_instance')) {
 	$course_instanceObj = read_course_instance_from_DB($_GET['id_course_instance']);
@@ -65,6 +73,30 @@ $go_back_link = CDOMElement::create('a', 'href:'.$last_visited_node);
 $go_back_link->addChild(new CText(translateFN('Indietro')));
 
 /*
+ * Edit profile
+ */
+
+$edit_profile=$userObj->getEditProfilePage();
+
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
+}
+else
+{
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+}
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
+/*
+ * link Naviga
+ 
+$naviga=CDOMElement::create('a','#');
+$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
+$naviga->setAttribute('class', 'positionNaviga');
+$naviga->addChild(new CText(translateFN('Naviga')));
+*/
+/*
  * Output
  */
 $content_dataAr = array(
@@ -81,6 +113,8 @@ $content_dataAr = array(
     'title' => $title,
     'author' => $author,
     'node_level' => 'livello nodo',
+    'edit_profile'=> $edit_profile_link->getHtml(),
+    'naviga'=>$go_back_link->getHtml()
     //'course_title' => '<a href="'.HTTP_ROOT_DIR.'/tutor/tutor.php">'.translateFN('Modulo Tutor').'</a> > ',
     //'media' => 'media',
 );
@@ -146,8 +180,23 @@ $layout_dataAr['JS_filename'] = array(
 	MODULES_TEST_PATH.'/js/dragdrop.js',
 	ROOT_DIR.'/js/browsing/virtual_keyboard.js',
 );
+
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) 
+     {        
+     
+    $layout_dataAr['JS_filename'][]=
+        ROOT_DIR.'/modules/test/js/tutor.js';   //for tutorSelfInstruction.tpl
+     }
+     
 $layout_dataAr['CSS_filename'] = array(
 	JQUERY_UI_CSS
 );
+
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) 
+     {        
+     
+    $layout_dataAr['CSS_filename'][] = 
+        ROOT_DIR.'/modules/test/layout/ada_blu/css/tutor.css';   //for tutorSelfInstruction.tpl
+     }
 
 ARE::render($layout_dataAr, $content_dataAr);
