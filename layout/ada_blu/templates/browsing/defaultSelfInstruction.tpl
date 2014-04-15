@@ -93,10 +93,10 @@
                     <div id="contentcontent">
                     <div class="first">
                     </div>
-                    
+                    <div id="IndexSelfInstruction">
                    <template_field class="template_field" name="title">title</template_field>
                     <template_field class="template_field" name="index">index</template_field>
-                    
+                    </div>
                 </div>
                 <div id="bottomcont">
                 </div>
