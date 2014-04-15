@@ -444,7 +444,7 @@ class AdminModuleHtmlLib
     $tester_province = FormElementCreator::addTextInput('tester_province','Provincia',$tester_dataAr, $errorsAr);
     $form->addChild($tester_province);
 
-    $tester_city = FormElementCreator::addTextInput('tester_city','Citt&agrave;',$tester_dataAr, $errorsAr);
+    $tester_city = FormElementCreator::addTextInput('tester_city','Citt&agrave',$tester_dataAr, $errorsAr);
     $form->addChild($tester_city);
 
     $tester_country = FormElementCreator::addTextInput('tester_country','Nazione',$tester_dataAr, $errorsAr);
