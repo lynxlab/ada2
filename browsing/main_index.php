@@ -1,4 +1,4 @@
-edit<?php
+<?php
 /**
  * MAIN INDEX.
  *
