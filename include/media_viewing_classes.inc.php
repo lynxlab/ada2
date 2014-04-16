@@ -472,7 +472,7 @@ class InternalLinkViewer {
             $name = $nodeObj->name;
 
             if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT && $linked_node_level > $user_level ) {
-                $exploded_link = '<img src="img/_linkdis.png" border="0" alt="'.$name.'" />';
+                $exploded_link = '<img src="img/_linkdis.png" border="0" alt="'.$name.'" /><span class="link_unreachable">'.$name.'</span>';
             }
             else {
 				$exploded_link = '<a href="'.HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$id_node.'"><img src="img/_linka.png" border="0" alt="'.$name.'">'.$name.'</a>';
