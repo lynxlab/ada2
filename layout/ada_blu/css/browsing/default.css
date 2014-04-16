@@ -471,3 +471,10 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
     font-weight: bold;
 	}
 
+/*for self_instruction*/
+ 
+#IndexSelfInstruction
+{
+    margin-top: -200px;
+  
+}

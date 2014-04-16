@@ -1683,8 +1683,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
                 $tester_dataAr['tester_name'],
                 $tester_dataAr['tester_rs'],
                 $tester_dataAr['tester_address'],
-                $tester_dataAr['tester_province'],
                 $tester_dataAr['tester_city'],
+                $tester_dataAr['tester_province'],
                 $tester_dataAr['tester_country'],
                 $tester_dataAr['tester_phone'],
                 $tester_dataAr['tester_email'],
@@ -8220,9 +8220,9 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
           GROUP BY id_nodo) AS visite ON (N.id_nodo=visite.id_nodo)
           WHERE N.id_nodo LIKE '".$id_course."\_%' AND N2.id_nodo LIKE '".$id_course."\_%'
                        AND N.tipo NOT IN (". ADA_NOTE_TYPE .",". ADA_PRIVATE_NOTE_TYPE .") AND N.tipo NOT IN (". ADA_LEAF_WORD_TYPE .",". ADA_GROUP_WORD_TYPE .")
-                       AND N2.tipo in (". ADA_LEAF_TYPE .",". ADA_GROUP_TYPE .")
-                       AND N.livello <= $user_level
-           ORDER BY " . $ORDER;
+                       AND N2.tipo in (". ADA_LEAF_TYPE .",". ADA_GROUP_TYPE .")";
+//                        AND N.livello <= $user_level
+           $sql.="ORDER BY " . $ORDER;
 
                 break;
 
