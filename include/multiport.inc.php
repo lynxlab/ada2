@@ -1350,6 +1350,8 @@ class MultiPort
     $fields_list_Ar = array('id_mittente', 'data_ora', 'titolo', 'priorita', 'read_timestamp','flags','utente.username','utente.nome','utente.cognome',);
     $sort_field     = ' data_ora desc';
 
+    include_once ROOT_DIR.'/comunica/include/MessageHandler.inc.php';
+
     //if($sess_selected_tester === NULL || $sess_selected_tester === ADA_PUBLIC_TESTER) {
     if(self::isUserBrowsingThePublicTester()) {
     // Sono nel tester pubblico, che poi è il caso di user.php, ma anche ...
@@ -1426,9 +1428,7 @@ class MultiPort
    * @param  $userObj
    * @return unknown_type
    */
-  // MARK: restituire $result_Ar, rimuovere tutto lo switch($display_mode)
-  // e il passaggio del parametro display_mode
-  static public function getUserMessages(ADAGenericUser $userObj, $display_mode=1) {
+  static public function getUserMessages(ADAGenericUser $userObj, $unread=false) {
 
     include_once ROOT_DIR.'/include/HtmlLibrary/BaseHtmlLib.inc.php';
 
@@ -1437,7 +1437,7 @@ class MultiPort
       return array();
     }
 
-    $result_Ar = self::get_messages($userObj, ADA_MSG_SIMPLE);
+    $result_Ar = self::get_messages($userObj, ADA_MSG_SIMPLE, array(), $unread);
 
     return $result_Ar;
   }

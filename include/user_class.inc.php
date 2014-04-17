@@ -238,6 +238,16 @@ abstract class ADAGenericUser {
     {
     	return  HTTP_ROOT_DIR . $this->editprofilepage;
     }
+    
+    public function getUnreadMessagesCount() {
+    	$msg_simple_count = 0;
+    	// passing true means get unread message
+    	$msg_simpleAr =  MultiPort::getUserMessages($this, true);
+    	foreach ($msg_simpleAr as $msg_simple_provider) {
+    		$msg_simple_count += count($msg_simple_provider);
+    	}
+    	return intval($msg_simple_count);    	
+    }
 
     /*
    * setters

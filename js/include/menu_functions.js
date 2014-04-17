@@ -6,6 +6,12 @@ var NAVIGATION_PANEL_IDENTIFIER      = 'menuright';
 var NODE_TEXT_CONTAINER_IDENTIFIER   = 'content_view';
 var MAIN_INDEX_CONTAINER_IDENTIFIER   = 'contentcontent';
 var EFFECT_BLIND_DURATION_IN_SECONDS = 0.3;
+
+/**
+ * display the unread messages badge if it's needed
+ */
+setUnreadMessagesBadge();
+
 /*
  * Per mostrare e nascondere elementi
  */
@@ -215,4 +221,48 @@ function dropDownMenuHide(element, direction) {
 	else {
 		$(element).hide();
 	}
+}
+
+function setUnreadMessagesBadge () {
+	document.observe('dom:loaded', function() {
+		// do something only if there is the 'comunica' menu item
+		if ($('com')!=undefined) {
+			new Ajax.Request( HTTP_ROOT_DIR+ '/comunica/ajax/getUnreadMessagesCount.php', {
+				method: 'get',
+				onComplete: function(transport) {
+					var json = transport.responseText.evalJSON(true);
+					var value = parseInt (json.value);
+					if (!isNaN(value) && value>0) {
+						var msgCounter = new Element('span',{
+							id:'newMsgCount'
+						});
+						msgCounter.style.display = 'none';
+						msgCounter.update("<span class='arrow'></span>"+value);
+						$('com').insert(msgCounter);
+						$('com').style.paddingRight = '10px';
+						Effect.Appear('newMsgCount',{ duration: 0.5 });						
+					}
+				}
+			});
+//			PLEASE FIND BELOW A MOCK-UP CODE TO BE USED WITH jQuery/NOCONFLICT
+//			$j.ajax({
+//				type	: 'GET',
+//				url		: HTTP_ROOT_DIR+ '/comunica/ajax/getUnreadMessagesCount.php',
+//				dataType:'json'
+//				})
+//				.done   (function( JSONObj ) {
+//					if (JSONObj)
+//						{
+//							console.log (JSONObj);
+//						}
+//				});
+			// decrease some padding for nice rendering
+//			$j('#com').css('padding-right','10px');
+			// generate the new message counter to the 'comunica' menu iten
+//			var msgCounter = $j('<span>').attr('id','newMsgCount').html("<span class='arrow'></span>"+messageCount).hide();
+			// show the counter with effect
+//			$j('#com').append(msgCounter);
+//			msgCounter.fadeIn();
+		}		
+	});
 }

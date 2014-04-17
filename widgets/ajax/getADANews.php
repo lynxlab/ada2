@@ -40,19 +40,22 @@ $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_T
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
+	
+	extract ($_GET);
+	if (!isset($widgetMode)) $widgetMode = ADA_WIDGET_ASYNC_MODE;
+	
 	/**
 	 * checks and inits to be done if this has been called in async mode
 	 * (i.e. with a get request)
 	 */
 	if(isset($_SERVER['HTTP_REFERER'])){
-		if(preg_match("#^".HTTP_ROOT_DIR."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1){
+		if($widgetMode!=ADA_WIDGET_SYNC_MODE && 
+			preg_match("#^".HTTP_ROOT_DIR."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1){
 			die ('Only local execution allowed.');
 		}
 	}
-	extract ($_GET);
+	
 }
-
-$widgetMode = ADA_WIDGET_SYNC_MODE;
 
 /**
  * Your code starts here
