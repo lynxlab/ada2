@@ -226,11 +226,11 @@ class AdminModuleHtmlLib
       translateFN('id del corso')
     );
     $table = BaseHtmlLib::tableElement('',$thead,$services_on_this_testerAr);
-    $link = CDOMElement::create('a','href:manage_tester_services.php?id_tester='.$id_tester);
-    $link->addChild(new CText(translateFN('Associa/disassocia un servizio')));
+    //$link = CDOMElement::create('a','href:manage_tester_services.php?id_tester='.$id_tester);
+    //$link->addChild(new CText(translateFN('Associa/disassocia un servizio')));
 
     $div->addChild($table);
-    $div->addChild($link);
+    //$div->addChild($link);
     return $div;
   }
 
