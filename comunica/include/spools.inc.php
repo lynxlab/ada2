@@ -628,15 +628,17 @@ class Spool extends Abstract_AMA_DataHandler
 
     //prepare fields list
     if($fields_list != "") {
-      $fields = "id_messaggio, ".implode(",", $fields_list);
+      // prepend every element of $field_list with an 'M.' string
+      array_map(function($val) { return "M.".$val; } , $fields_list);
+      $fields = "M.id_messaggio, ".implode(",", $fields_list);
     }
     else {
-      $fields = "id_messaggio";
+      $fields = "M.id_messaggio";
     }
     // logger("fields_list: $fields", 4);
 
     // set where clause
-    $basic_clause = "id_mittente='$user_id' and tipo='$type' ";
+    $basic_clause = "M.id_mittente='$user_id' and M.tipo='$type' ";
     if ($clause == "") {
       $clause = $basic_clause;
     }
@@ -648,8 +650,15 @@ class Spool extends Abstract_AMA_DataHandler
       $ordering = "order by $ordering";
     }
 
-    $sql = "select $fields from messaggi ".
-               " where $clause $ordering";
+    // giorgio, new query to get recipient id, name and last name
+    $sql ="SELECT $fields , DM.id_utente AS id_destinatatrio, ".
+    	  "U.nome AS nome_destinatario, U.cognome AS cognome_destinatario ".
+    	  "FROM  `messaggi` M,  `destinatari_messaggi` DM,  `utente` U ".
+          "WHERE $clause AND M.id_messaggio = DM.id_messaggio ".
+          "AND DM.id_utente = U.id_utente $ordering";
+
+//     $sql = "select $fields from messaggi ".
+//                " where $clause $ordering";
     // logger("performing query: $sql", 4);
 
     //   if ($fields_list != ""){
@@ -661,7 +670,7 @@ class Spool extends Abstract_AMA_DataHandler
 
     // linear array
     if($fields_list != "") {
-      $res_ar = $db->getAssoc($sql);
+      $res_ar = $db->getAll($sql,NULL,AMA_FETCH_ASSOC);
     }
     else {
       $res_ar = $db->getCol($sql);

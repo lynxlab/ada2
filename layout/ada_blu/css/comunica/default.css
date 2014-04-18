@@ -207,3 +207,10 @@ td.input {}
 .sortable A:hover {background:#8ED; color:#f50;}
 th.sortcol:hover {background:#96e1dd; color:#f50;}
 /*.sortable_th:hover {background:#ffc; color:#f50;}*/
+
+div.footerleft {
+	display: none;
+}
+#content {
+	border: none;
+}
