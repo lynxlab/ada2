@@ -698,7 +698,7 @@ class CommunicationModuleHtmlLib
          * If this is a list of simple messages, then deleting is allowed.
          * Otherwise it is disabled.
          */
-        $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id] value:$msg_id");
+        $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id],value:$msg_id");
         $action_link = CDOMElement::create('a', "href:list_messages.php?del_msg_id=$msg_id");
 
         $messages_Ar[] = array(/*$addressee_username, */ $data_msg, $subject_link, $delete, $action_link);
@@ -724,6 +724,7 @@ class CommunicationModuleHtmlLib
         // trasform message content into variable names
         $sender_id      = $message_Ar[0];
         $date_time      = $message_Ar[1];
+        $read_timestamp = $message_Ar[4];
         /*
          * Check if the subject has an internal identifier and remove it.
          */
@@ -746,10 +747,10 @@ class CommunicationModuleHtmlLib
          * If this is a list of simple messages, then deleting is allowed.
          * Otherwise it is disabled.
          */
-        $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id] value:$msg_id");
+        $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id],value:$msg_id");
         $action_link = CDOMElement::create('a', "href:$list_module?del_msg_id=$msg_id");
         $action_link->addChild($del_img);
-        $read   = CDOMElement::create('checkbox', "name:form[read][$msg_id] value:$msg_id");
+        $read   = CDOMElement::create('checkbox', "name:form[read][$msg_id],value:$msg_id");
         if($read_timestamp != 0) {
           $read->setAttribute('checked','checked');
         }
@@ -1031,7 +1032,7 @@ class CommunicationModuleHtmlLib
          * Otherwise it is disabled.
          */
         if($message_type == ADA_MSG_SIMPLE) {
-          $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id] value:$msg_id");
+          $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id],value:$msg_id");
           $action_link = CDOMElement::create('a', "href:$list_module?del_msg_id=$msg_id");
           $action_link->addChild($del_img);
         }
@@ -1052,7 +1053,7 @@ class CommunicationModuleHtmlLib
            */
 
         }
-        $read   = CDOMElement::create('checkbox', "name:form[read][$msg_id] value:$msg_id");
+        $read   = CDOMElement::create('checkbox', "name:form[read][$msg_id],value:$msg_id");
         if($read_timestamp != 0) {
           $read->setAttribute('checked','checked');
         }
