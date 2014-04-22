@@ -105,7 +105,7 @@ UL#menu_std LI A {text-transform: lowercase; color:#fff; font-weight:bold; text-
 /* SEND MESSAGES
 ----------------------------------------------- */
 .edit {float:left; }
-.menur {float:left; margin:0 0 00px 20px; }
+.menur {float:left; margin:0 0 00px 20px; width: 40%; }
 #bottomcont {height:1px; color:#fff; clear:both;}
 TEXTAREA {width:400px;}
 
@@ -178,8 +178,9 @@ input#oggetto {width: 400px; }
 td.name { font-weight: bold;}
 td.input {}
  
-#addressbook_div select { width: 200px; }
+#addressbook_div select { width: 100%; }
 #addressbook_div a { text-transform: uppercase;	}
+#addressbook_div a:hover { cursor: pointer; }
 #addressbook_div a.selected { font-weight: bold; }
 
 .hidden_element { display: none; visibility: hidden;  }
@@ -213,4 +214,7 @@ div.footerleft {
 }
 #content {
 	border: none;
+}
+.menur p {
+	text-align: left;
 }
