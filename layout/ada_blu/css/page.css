@@ -473,3 +473,9 @@ width: 700px;
     top: 7px;
     width: 0;   
 } 
+/**
+ * Remove underline from RSS widget header
+ */
+a.RSSheader {
+	text-decoration: none;
+}
