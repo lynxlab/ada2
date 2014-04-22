@@ -10991,7 +10991,7 @@ public function get_updates_nodes($userObj, $pointer)
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $sql = "SELECT U.tipo, U.username, U.name, U.cognome, U.avatar FROM utente AS U, iscrizioni AS I, tutor_studenti AS T
+        $sql = "SELECT U.tipo, U.username, U.nome, U.cognome, U.avatar FROM utente AS U, iscrizioni AS I, tutor_studenti AS T
     		 WHERE I.id_utente_studente=$id_student AND T.id_istanza_corso = I.id_istanza_corso
     		 AND U.id_utente = T.id_utente_tutor";
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
