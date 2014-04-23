@@ -239,8 +239,8 @@ function setUnreadMessagesBadge () {
 						msgCounter.style.display = 'none';
 						msgCounter.update("<span class='arrow'></span>"+value);
 						$('com').insert(msgCounter);
-						$('com').style.paddingRight = '10px';
-						Effect.Appear('newMsgCount',{ duration: 0.5 });						
+						$('com').style.paddingRight = '0';
+						Effect.Appear('newMsgCount',{ duration: 0.4 });						
 					}
 				}
 			});

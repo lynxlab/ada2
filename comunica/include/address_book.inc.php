@@ -5,6 +5,9 @@ class ADAAddressBook
     $user_type = $userObj->getType();
     $common_dh = $GLOBALS['common_dh'];
     $dh = $GLOBALS['dh'];
+    
+    // this tells get_users_by_type method to get nome, cognome....
+    $retrieve_extended_data = true;
 
     if(!is_array($user_types_Ar[$user_type]) || empty($user_types_Ar[$user_type])) {
       return FALSE;
@@ -19,7 +22,7 @@ class ADAAddressBook
          * tester
          */
         // FIXME: differisce dagli altri casi !!!
-        $users[] = $common_dh->get_users_by_type($user_types_Ar[AMA_TYPE_ADMIN]);
+        $users[] = $common_dh->get_users_by_type($user_types_Ar[AMA_TYPE_ADMIN], $retrieve_extended_data);
         if(AMA_Common_DataHandler::isError($users)) {
           // Gestione errore
         }
@@ -34,14 +37,14 @@ class ADAAddressBook
         $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
         $tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
         $tester_name = $tester_info_Ar[1];
-//        $users[$tester_name] = $tester_dh->get_users_by_type($user_types_Ar[AMA_TYPE_SWITCHER]);
+//        $users[$tester_name] = $tester_dh->get_users_by_type($user_types_Ar[AMA_TYPE_SWITCHER],$retrieve_extended_data);
 //        if(AMA_Common_DataHandler::isError($users)) {
 //          // Gestione errore
 //        }
         /*
          * Ottiene tutti i practitioner presenti sul tester
          */
-        $practitioners_Ar = $tester_dh->get_users_by_type(array(AMA_TYPE_TUTOR));
+        $practitioners_Ar = $tester_dh->get_users_by_type(array(AMA_TYPE_TUTOR), $retrieve_extended_data);
         if(AMA_DataHandler::isError($practitioners_Ar) || !is_array($practitioners_Ar)) {
           $practitioners_Ar = array();
         }
@@ -72,7 +75,7 @@ class ADAAddressBook
 
 //        $users[$tester_name] = $tester_dh->get_list_of_tutored_users($userObj->id_user);
         $students_Ar = $tester_dh->get_list_of_tutored_unique_users($userObj->id_user);
-//        $users[$tester_name] = $tester_dh->get_users_by_type($user_types_Ar[AMA_TYPE_TUTOR]);
+//        $users[$tester_name] = $tester_dh->get_users_by_type($user_types_Ar[AMA_TYPE_TUTOR], $retrieve_extended_data);
         if(AMA_DataHandler::isError($students_Ar) || !is_array($students_Ar)) {
           $students_Ar = array();
         }
@@ -81,7 +84,7 @@ class ADAAddressBook
          * TUTORS
          */
 
-        $tutors_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_TUTOR));
+        $tutors_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_TUTOR), $retrieve_extended_data);
         if(AMA_DataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
           $tutors_Ar = array();
         }
@@ -90,7 +93,7 @@ class ADAAddressBook
          * SWITCHERS
          */
 
-        $switchers_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER));
+        $switchers_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER), $retrieve_extended_data);
         if(AMA_DataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
           $switchers_Ar = array();
         }        
@@ -125,7 +128,7 @@ class ADAAddressBook
               }
               $tutors_Ar = array_unique($tutors_Ar);
 
-              $switcher_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER));
+              $switcher_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER), $retrieve_extended_data);
               if(AMA_DataHandler::isError($switcher_Ar) || !is_array($switcher_Ar)) {
                $switcher_Ar = array();
               }
@@ -171,7 +174,7 @@ class ADAAddressBook
            * GET SWITCHER OF TESTER
            */
 
-          $switcher_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER));
+          $switcher_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER), $retrieve_extended_data);
           if(AMA_DataHandler::isError($switcher_Ar) || !is_array($switcher_Ar)) {
            $switcher_Ar = array();
           }
@@ -229,7 +232,9 @@ class ADAAddressBook
         foreach($user_data_Ar as $user) {
           if($user['tipo'] == AMA_TYPE_SWITCHER) {
             $option = CDOMElement::create('option','value:'.$user['username']);
-            $option->addChild(new CText($user['username']));
+            if (isset($user['cognome']) || isset($user['nome'])) $displayname = $user['cognome'].' '.$user['nome'];
+            else $displayname = $user['username']; 
+            $option->addChild(new CText($displayname));
             $optgroup->addChild($option);
           }
         }
@@ -256,7 +261,9 @@ class ADAAddressBook
        foreach($user_data_Ar as $user) {
           if($user['tipo'] == AMA_TYPE_TUTOR) {
             $option = CDOMElement::create('option','value:'.$user['username']);
-            $option->addChild(new CText($user['username']));
+            if (isset($user['cognome']) || isset($user['nome'])) $displayname = $user['cognome'].' '.$user['nome'];
+            else $displayname = $user['username']; 
+            $option->addChild(new CText($displayname));
             $optgroup->addChild($option);
           }
         }
@@ -283,7 +290,9 @@ class ADAAddressBook
         foreach($user_data_Ar as $user) {
           if($user['tipo'] == AMA_TYPE_STUDENT) {
             $option = CDOMElement::create('option','value:'.$user['username']);
-            $option->addChild(new CText($user['username']));
+            if (isset($user['cognome']) || isset($user['nome'])) $displayname = $user['cognome'].' '.$user['nome'];
+            else $displayname = $user['username']; 
+            $option->addChild(new CText($displayname));
             $optgroup->addChild($option);
           }
         }

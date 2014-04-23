@@ -50,6 +50,12 @@ function add_addressee(select) {
   if(addressee == null) {
       return;
   }
+  /**
+   * Read the selected element HTML before deselectiong
+   */
+  var optionsList = $(select).getElementsByTagName('option');
+  var options = $A(optionsList);
+  var checkBoxHTML = options[$(select).selectedIndex].innerHTML;
   /*
    * Deselect the selected element
    */
@@ -75,7 +81,7 @@ function add_addressee(select) {
       'onclick':"remove_addressee('"+addressee+"')"});
 
   $(div).insert(checkbox);
-  $(div).insert(addressee);
+  $(div).insert(checkBoxHTML);
 
   $(ADDRESSEES_SELECT).insert(div);
 }

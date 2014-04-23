@@ -181,6 +181,7 @@ if(isset($_GET['messages']) && $_GET['messages'] == 'sent') {
   $link = CDOMElement::create('a', 'href:list_messages.php?messages=received');
   $link->addChild(new CText(translateFN('Messaggi ricevuti')));
   $menu_02->addChild($link);
+  $displayedMsgs = 'sent';
 
 }
 else {
@@ -193,6 +194,7 @@ else {
   $link = CDOMElement::create('a', 'href:list_messages.php?messages=sent');
   $link->addChild(new CText(translateFN('Messaggi inviati')));
   $menu_02->addChild($link);
+  $displayedMsgs = 'received';
 }
 
 $node_title = ""; // empty
@@ -222,7 +224,7 @@ $content_dataAr = array(
   'go_back'      => $go_back,
   'user_name'    => $user_name,
   'user_type'    => $user_type,
-  'messages'     => $messages->getHtml(),
+  'messages'     => $messages->getHtml().'<br/>',
   'status'       => $status,
   'chat_users'   => $online_users,
   'label'        => $label,
@@ -231,4 +233,28 @@ $content_dataAr = array(
   'menu_03'      => $menu_03
 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+/**
+ * @author giorgio 18/apr/2014 12:55:21
+ * 
+ * added jquery, datatables and initDoc function call
+ */
+$layout_dataAr['JS_filename'] = array(
+		JQUERY,
+		JQUERY_UI,
+		JQUERY_DATATABLE,
+		JQUERY_DATATABLE_DATE,
+		JQUERY_NO_CONFLICT
+);
+
+$layout_dataAr['CSS_filename'] = array(
+		JQUERY_UI_CSS,
+		JQUERY_DATATABLE_CSS
+);
+
+if (isset($options_Ar) && is_array($options_Ar) && isset($options_Ar['onload_func'])) {	
+	$options_Ar['onload_func'] = 'initDoc(\''.$displayedMsgs.'\'); '.$options_Ar['onload_func'];
+} else {
+	$options_Ar['onload_func'] = 'initDoc(\''.$displayedMsgs.'\');';
+}
+
+ARE::render($layout_dataAr, $content_dataAr, NULL, $options_Ar);

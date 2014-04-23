@@ -68,3 +68,4 @@ define('DATE_CONTROL',FALSE);
 define('OPENMEETINGS_VERSION','1');
 
 ?>
+ 

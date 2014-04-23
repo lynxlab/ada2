@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+.dataTables_wrapper {
+	height: 335px;
+}
+.dataTables_filter label {
+	width: auto;
+}
+
+.first {
+	margin:0;
+	padding:0;
+}
+
+body {
+	margin:0;
+	padding:0;
+}

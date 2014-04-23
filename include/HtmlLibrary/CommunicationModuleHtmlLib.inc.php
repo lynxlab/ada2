@@ -672,24 +672,24 @@ class CommunicationModuleHtmlLib
       $tester_TimeZone = MultiPort::getTesterTimeZone($tester);
 	  $offset = get_timezone_offset($tester_TimeZone,SERVER_TIMEZONE);
 
-      foreach($message_dataAr as $message_id => $message_Ar) {
+      foreach($message_dataAr as $message_Ar) {
 
         // trasform message content into variable names
-        $sender_id      = $message_Ar[0];
-        $date_time      = $message_Ar[1];
+        $sender_id      = $message_Ar['id_mittente'];
+        $date_time      = $message_Ar['data_ora'];
         /*
          * Check if the subject has an internal identifier and remove it.
          */
-        $subject        = ADAEventProposal::removeEventToken($message_Ar[2]);
-        $priority       = $message_Ar[3];
+        $subject        = ADAEventProposal::removeEventToken($message_Ar['titolo']);
+        $priority       = $message_Ar['priorita'];
 
         $date_time_zone = $date_time + $offset;
- 		$zone 			= translateFN("Time zone:") . " " . $tester_TimeZone;
-        $data_msg        = AMA_DataHandler::ts_to_date($date_time_zone, "%d/%m/%Y - %H:%M:%S") ." " . $zone;
+ 		// $zone 			= translateFN("Time zone:") . " " . $tester_TimeZone;
+        $data_msg        = AMA_DataHandler::ts_to_date($date_time_zone, "%d/%m/%Y %H:%M:%S"); // ." " . $zone;
 
-        //$addressee_username = $appointment_Ar[6];
+        $addressee_username = $message_Ar['nome_destinatario'].' '.$message_Ar['cognome_destinatario'];
 
-        $msg_id = $tester_id.'_'.$message_id;
+        $msg_id = $tester_id.'_'.$message_Ar['id_messaggio'];
         $url = HTTP_ROOT_DIR.'/comunica/read_message.php?msg_id='.$msg_id;
         $subject_link = CDOMElement::create('a',"href:$url");
         $subject_link->addChild(new CText($subject));
@@ -698,10 +698,10 @@ class CommunicationModuleHtmlLib
          * If this is a list of simple messages, then deleting is allowed.
          * Otherwise it is disabled.
          */
-        $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id] value:$msg_id");
+        $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id],value:$msg_id");
         $action_link = CDOMElement::create('a', "href:list_messages.php?del_msg_id=$msg_id");
 
-        $messages_Ar[] = array(/*$addressee_username, */ $data_msg, $subject_link, $delete, $action_link);
+        $messages_Ar[] = array($addressee_username, $data_msg, $subject_link);//, $delete, $action_link);
       }
     }
     return $messages_Ar;
@@ -724,6 +724,7 @@ class CommunicationModuleHtmlLib
         // trasform message content into variable names
         $sender_id      = $message_Ar[0];
         $date_time      = $message_Ar[1];
+        $read_timestamp = $message_Ar[4];
         /*
          * Check if the subject has an internal identifier and remove it.
          */
@@ -731,8 +732,8 @@ class CommunicationModuleHtmlLib
         $priority       = $message_Ar[3];
 
         $date_time_zone = $date_time + $offset;
- 		$zone 			= translateFN("Time zone:") . " " . $tester_TimeZone;
-        $data_msg        = AMA_DataHandler::ts_to_date($date_time_zone, "%d/%m/%Y - %H:%M:%S") ." " . $zone;
+ 		// $zone 			= translateFN("Time zone:") . " " . $tester_TimeZone;
+        $data_msg        = AMA_DataHandler::ts_to_date($date_time_zone, "%d/%m/%Y %H:%M:%S"); // ." " . $zone;
 
         $sender_username = $message_Ar[6];
         $sender_name_surname = $message_Ar[7]." ".$message_Ar[8];
@@ -746,10 +747,10 @@ class CommunicationModuleHtmlLib
          * If this is a list of simple messages, then deleting is allowed.
          * Otherwise it is disabled.
          */
-        $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id] value:$msg_id");
+        $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id],value:$msg_id");
         $action_link = CDOMElement::create('a', "href:$list_module?del_msg_id=$msg_id");
         $action_link->addChild($del_img);
-        $read   = CDOMElement::create('checkbox', "name:form[read][$msg_id] value:$msg_id");
+        $read   = CDOMElement::create('checkbox', "name:form[read][$msg_id],value:$msg_id");
         if($read_timestamp != 0) {
           $read->setAttribute('checked','checked');
         }
@@ -770,11 +771,11 @@ class CommunicationModuleHtmlLib
     //return self::display_ada_messages_as_form($data_Ar, $testers_dataAr, true);
 
     $header_dataAr = array(
-    	//array('text' => 'Destinatario'),
-    	array('text' => 'Data ed ora', 'action' => 'list_messages.php?sort_field=data_ora'),
-    	array('text' => 'Oggetto', 'action'=> 'list_messages.php?sort_field=titolo'),
-    	array('text' => 'Cancella'),
-        array('text' => '')
+    	array('text' => 'Destinatario'),
+    	array('text' => 'Data'),// 'action' => 'list_messages.php?sort_field=data_ora'),
+    	array('text' => 'Oggetto'),// 'action'=> 'list_messages.php?sort_field=titolo'),
+    	// array('text' => 'Cancella'),
+        // array('text' => '')
     );
     $thead_dataAr = self::getMessagesFormHeader($header_dataAr);
 
@@ -785,12 +786,16 @@ class CommunicationModuleHtmlLib
       $table = BaseHtmlLib::tableElement('',$thead_dataAr, $messages_Ar);
       $form = CDOMElement::create('form',"name:form, method:post, action:$module");
       $form->addChild($table);
-      $div = CDOMElement::create('div','id:buttons');
-      $submit = CDOMElement::create('submit','name:btn_commit value:'.translateFN('Salva'));
-      $reset = CDOMElement::create('reset','name:btn_reset value:'.translateFN('Ripristina'));
-      $div->addChild($submit);
-      $div->addChild($reset);
-      $form->addChild($div);
+      /**
+       * @author giorgio 22/apr/2014
+       * buttons are no longer needed, unless the delete checkbox is not working
+       */
+//       $div = CDOMElement::create('div','id:buttons,class:clearfix');
+//       $submit = CDOMElement::create('submit','name:btn_commit value:'.translateFN('Salva'));
+//       $reset = CDOMElement::create('reset','name:btn_reset value:'.translateFN('Ripristina'));
+//       $div->addChild($submit);
+//       $div->addChild($reset);
+//       $form->addChild($div);
       return $form;
     }
   }
@@ -800,10 +805,11 @@ class CommunicationModuleHtmlLib
       return new CText(translateFN('Non sono presenti messaggi'));
     }
 
+    // text is translated in getMessagesFormHeader method
     $header_dataAr = array(
-    	array('text' => 'Autore', 'action' => 'list_messages.php?sort_field=id_mittente'),
-    	array('text' => 'Data', 'action' => 'list_messages.php?sort_field=data_ora'),
-    	array('text' => 'Oggetto', 'action'=> 'list_messages.php?sort_field=titolo'),
+    	array('text' => 'Mittente'),// 'action' => 'list_messages.php?sort_field=id_mittente'),
+    	array('text' => 'Data'),// 'action' => 'list_messages.php?sort_field=data_ora'),
+    	array('text' => 'Oggetto'),// 'action'=> 'list_messages.php?sort_field=titolo'),
     	array('text' => 'Priorit&agrave;'),
     	array('text' => 'Cancella'),
     	array('text' => 'Letto'),
@@ -817,9 +823,9 @@ class CommunicationModuleHtmlLib
       $table = BaseHtmlLib::tableElement('',$thead_dataAr, $messages_Ar);
       $form = CDOMElement::create('form',"name:form, method:post, action:$module");
       $form->addChild($table);
-      $div = CDOMElement::create('div','id:buttons');
-      $submit = CDOMElement::create('submit','name:btn_commit value:'.translateFN('Salva'));
-      $reset = CDOMElement::create('reset','name:btn_reset value:'.translateFN('Ripristina'));
+      $div = CDOMElement::create('div','id:buttons,class:clearfix');
+      $submit = CDOMElement::create('submit','name:btn_commit,value:'.translateFN('Salva'));
+      $reset = CDOMElement::create('reset','name:btn_reset,value:'.translateFN('Ripristina'));
       $div->addChild($submit);
       $div->addChild($reset);
       $form->addChild($div);
@@ -1031,7 +1037,7 @@ class CommunicationModuleHtmlLib
          * Otherwise it is disabled.
          */
         if($message_type == ADA_MSG_SIMPLE) {
-          $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id] value:$msg_id");
+          $delete = CDOMElement::create('checkbox',"name:form[del][$msg_id],value:$msg_id");
           $action_link = CDOMElement::create('a', "href:$list_module?del_msg_id=$msg_id");
           $action_link->addChild($del_img);
         }
@@ -1052,7 +1058,7 @@ class CommunicationModuleHtmlLib
            */
 
         }
-        $read   = CDOMElement::create('checkbox', "name:form[read][$msg_id] value:$msg_id");
+        $read   = CDOMElement::create('checkbox', "name:form[read][$msg_id],value:$msg_id");
         if($read_timestamp != 0) {
           $read->setAttribute('checked','checked');
         }

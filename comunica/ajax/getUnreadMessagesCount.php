@@ -35,6 +35,7 @@ $neededObjAr = array ();
 /**
  * Performs basic controls before entering this module
  */
+$trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
 if (isset ( $_SERVER ['REQUEST_METHOD'] ) && $_SERVER ['REQUEST_METHOD'] == 'GET') {
