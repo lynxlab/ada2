@@ -14,10 +14,10 @@
  * @name OPENMEETINGS DATA SERVER 
  */
 
-define('OPENMEETINGS_HOST',  'URL');
+define('OPENMEETINGS_HOST',  'conference.lynxlab.com');
 define('OPENMEETINGS_PORT',  ':5080');
-define('OPENMEETINGS_ADMIN',  'user');
-define('OPENMEETINGS_PASSWD',  '');
+define('OPENMEETINGS_ADMIN',  'admin');
+define('OPENMEETINGS_PASSWD',  'lynxl4b');
 define('OPENMEETINGS_DIR',  'openmeetings');
 
 
