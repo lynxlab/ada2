@@ -165,7 +165,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
          *
          * if we're listing students, let's add the stato field as well
          */
-        if ($type!='authors' && $type!='tutors')  $isConfirmed = ($user[4] == ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No");
+        if ($type!='authors' && $type!='tutors')  $isConfirmed = ($user[5] == ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No");
         
         $tmpArray = array($userId, $nome_link, $user[3], $actions);
         
