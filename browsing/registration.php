@@ -104,7 +104,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         $token = $tokenObj->getTokenString();
 
-        $admtypeAr = array(AMA_TYPE_ADMIN);
+        $admTypeAr = array(AMA_TYPE_ADMIN);
         $extended_data = TRUE;
         $admList = $dh->get_users_by_type($admTypeAr, $extended_data);
         if (!AMA_DataHandler::isError($admList) && array_key_exists('username',$admList[0]) && $admList[0]['username'] != '' && $admList[0]['username'] != null){
