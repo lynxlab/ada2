@@ -202,9 +202,20 @@ class ARE
         $meta_refresh_url  = isset($options['meta_refresh_url'])  ? $options['meta_refresh_url'] : '';
         $onload_func       = isset($options['onload_func'])       ? $options['onload_func'] : '';
 
-        $html_renderer = new HTML($layout_template, $layout_CSS, $user_name, $course_title,
-                                  $node_title, $meta_keywords, $author, $meta_refresh_time,
-                                  $meta_refresh_url,$onload_func, $layoutObj);
+        if ($renderer == ARE_PDF_RENDER) {
+        	
+        	$orientation   = isset($options['orientation'])       ? $options['orientation'] : '';
+        	$outputfile    = isset($options['outputfile'])        ? $options['outputfile'] : '';
+        	
+        	// must be called $html_renderer for below code, but it's not :)
+        	$html_renderer = new PDF($layout_template, $layout_CSS, $user_name, $course_title,
+        			$node_title, $meta_keywords, $author, $meta_refresh_time,
+        			$meta_refresh_url,$onload_func, $layoutObj, $outputfile, $orientation);        	
+        } else {
+        	$html_renderer = new HTML($layout_template, $layout_CSS, $user_name, $course_title,
+        			$node_title, $meta_keywords, $author, $meta_refresh_time,
+        			$meta_refresh_url,$onload_func, $layoutObj);
+        }
         
         /**
          * @author giorgio 25/set/2013
@@ -969,11 +980,11 @@ class  Generic_Html extends Output
       	);
       	$dompdf = new DOMPDF();
       	$dompdf->set_options($dompdf_options);
-      	$dompdf->set_paper('a4','landscape');
+      	$dompdf->set_paper('a4',$this->orientation);
       	$dompdf->load_html($data);      	
       	$dompdf->render();
       	
-      	$dompdf->stream("ada.pdf", array('Attachment'=>0));
+      	$dompdf->stream($this->outputfile.'.pdf', array('Attachment'=>0));
       	die();
         break;
     }
@@ -1207,6 +1218,26 @@ EOT;
   }  
 
 } //end class HTML
+
+/**
+ * Classe generica di output PDF
+ * 
+ * @author giorgio
+ *
+ */
+class PDF extends HTML {
+	var $outputfile;
+	var $orientation;
+	
+	public function __construct($template,$CSS_filename,$user_name,$course_title,$node_title="",$meta_keywords="",$author="",$meta_refresh_time="",
+			    $meta_refresh_url="",$onload_func="",$layoutObj=NULL,$outputfile="ada",$orientation="landscape")
+	{
+		$this->outputfile = $outputfile;
+		$this->orientation = $orientation;
+		
+		parent::__construct($template,$CSS_filename,$user_name,$course_title,$node_title,$meta_keywords,$author,$meta_refresh_time,$meta_refresh_url,$onload_func,$layoutObj);
+	}
+} //end class PDF
 
 /**
  *
