@@ -111,9 +111,8 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            }
 	             *
 	             */
-	            if ($subscription_status != ADA_STATUS_SUBSCRIBED && $subscription_status != ADA_STATUS_VISITOR) {
-	               $access_link = BaseHtmlLib::link("#",
-	                        translateFN('Abilitazione in corso...'));
+	            if ($subscription_status != ADA_STATUS_SUBSCRIBED && $subscription_status != ADA_STATUS_VISITOR && $subscription_status!= ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+	               $access_link = BaseHtmlLib::link("#", translateFN('Abilitazione in corso...'));
 	            } elseif ($isStarted && !$isEnded) {
 	            		            	
 					$access_link = CDOMElement::create('div');
@@ -179,8 +178,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	
 	            $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 	            $isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
-	            $access_link = BaseHtmlLib::link("#",
-	                        translateFN('Attendi apertura corso'));
+	            $access_link = BaseHtmlLib::link("#", translateFN('Attendi apertura corso'));
 	            /*
 	            if ($isStarted && !$isEnded) {
 	                $access_link = BaseHtmlLib::link("view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId",
@@ -192,10 +190,9 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            }
 	             *
 	             */
-	            if ($subscription_status != ADA_STATUS_SUBSCRIBED && $subscription_status != ADA_STATUS_VISITOR) {
-	               $access_link = BaseHtmlLib::link("#",
-	                        translateFN('Abilitazione in corso...'));
-	            } elseif ($isStarted && !$isEnded) {
+	            if ($subscription_status != ADA_STATUS_SUBSCRIBED && $subscription_status != ADA_STATUS_VISITOR && $subscription_status!= ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+	               $access_link = BaseHtmlLib::link("#", translateFN('Abilitazione in corso...'));
+	            } else if ($isStarted && !$isEnded) {
 	            	/*
 	            	 * @author giorgio 24/apr/2013
 	            	 * 
@@ -217,8 +214,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 					 }          	
 	            }
 	            if ($isEnded) {
-	                $access_link = BaseHtmlLib::link("#",
-	                        translateFN('Corso terminato'));
+	                $access_link = BaseHtmlLib::link("#", translateFN('Corso terminato'));
 	            }
 	
 	
