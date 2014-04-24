@@ -87,20 +87,13 @@
            
             <!-- / menudestra  -->
             <!--glossario-->
-             <div id="content">
-                <!--<div id="contentcontent" class="contentcontent_default content_small">-->
-                
-                    <div id="contentcontent">
-                    <div class="first">
-                    </div>
-                    <div id="IndexSelfInstruction">
-                   <template_field class="template_field" name="title">title</template_field>
+     
+             <div id="content_selfInstruction">    
+                <div id="IndexSelfInstruction">
+                    <template_field class="template_field" name="title">title</template_field>
                     <template_field class="template_field" name="index">index</template_field>
-                    </div>
                 </div>
-                <div id="bottomcont">
-                </div>
-            </div>
+             </div>
         </div>
         
    

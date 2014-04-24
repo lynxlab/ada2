@@ -478,3 +478,7 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
     margin-top: -200px;
   
 }
+#content_selfInstruction
+{
+  min-height: 200px;  
+}
