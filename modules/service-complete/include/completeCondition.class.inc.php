@@ -24,7 +24,7 @@ abstract class CompleteCondition
 	 *
 	 * @var int
 	 */
-	private $_param;
+	protected $_param;
 	
 	/**
 	 * CompleteCondition constructor.
