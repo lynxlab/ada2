@@ -461,10 +461,10 @@ switch ($op) {
                     /*
                  * Prepare the text of the message
                     */
-                    $node_title = $note_data['name'];
+                    $node_title = $content_dataAr['name'];
 
-                    $message_text  = sprintf(translateFN("Gentile utente, ti segnaliamo che il nodo %s  &egrave; stato aggiornato."), $node_title);
-                    $node_url = $http_root_dir.'/browsing/view.php?id_course='.$id_course.'&id_course_instance='.$id_course_instance.'&id_node='.$id_node;
+                    $message_text  = sprintf(translateFN("Gentile utente, ti segnaliamo che il nodo %s è stato aggiornato."), $node_title);
+                    $node_url = $http_root_dir.'/browsing/view.php?id_course='.$sess_id_course.'&id_course_instance='.$id_course_instance.'&id_node='.$content_dataAr['id'];
 
                     $link_to_node = CDOMElement::create('a',"href:$node_url");
                     $link_to_node->addChild(new CText($node_title));
