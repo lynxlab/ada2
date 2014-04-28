@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
+-- version 4.0.6deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: Giu 12, 2013 alle 16:15
--- Versione del server: 5.5.31
--- Versione PHP: 5.3.10-1ubuntu3.6
+-- Generato il: Apr 28, 2014 alle 09:06
+-- Versione del server: 5.5.35-0ubuntu0.13.10.2
+-- Versione PHP: 5.5.3-1ubuntu2.3
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `ada25_provider1`
+-- Database: `ada_provider1`
 --
 
 -- --------------------------------------------------------
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `banner` (
   `date_from` int(11) DEFAULT NULL,
   `date_to` int(11) DEFAULT NULL,
   KEY `id_banner` (`id_banner`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `bookmark` (
   `ordering` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_bookmark`),
   KEY `bookmark_date` (`data`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `chatroom` (
   `msg_benvenuto` text COLLATE utf8_unicode_ci NOT NULL,
   `max_utenti` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_chatroom`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `clienti` (
   `address` varchar(80) COLLATE utf8_unicode_ci DEFAULT NULL,
   `notes` text COLLATE utf8_unicode_ci,
   UNIQUE KEY `clienti_id` (`id_client`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `history_esercizi` (
   `RIPETIBILE` smallint(1) NOT NULL DEFAULT '0',
   `ALLEGATO` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   PRIMARY KEY (`ID_HISTORY_EX`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `history_nodi` (
   `installation_path` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `access_from` smallint(5) unsigned DEFAULT '0',
   PRIMARY KEY (`id_history`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `istanza_corso` (
   `duration_subscription` int(3) NOT NULL,
   `open_subscription` tinyint(1) NOT NULL,
   PRIMARY KEY (`id_istanza_corso`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -272,7 +272,7 @@ CREATE TABLE IF NOT EXISTS `link` (
   `significato` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `azione` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`id_link`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -298,7 +298,7 @@ CREATE TABLE IF NOT EXISTS `log_classi` (
   `indice_att` int(10) unsigned NOT NULL DEFAULT '0',
   `level` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_log`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS `messaggi` (
   `testo` text COLLATE utf8_unicode_ci,
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_messaggio`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -343,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `modello_corso` (
   `id_servizio` int(10) NOT NULL,
   PRIMARY KEY (`id_corso`),
   UNIQUE KEY `modello_corso_nome` (`nome`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -379,7 +379,7 @@ CREATE TABLE IF NOT EXISTS `module_test_history_answer` (
   `allegato` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `data` int(10) NOT NULL,
   PRIMARY KEY (`id_answer`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -403,7 +403,7 @@ CREATE TABLE IF NOT EXISTS `module_test_history_test` (
   `tempo_scaduto` tinyint(1) NOT NULL DEFAULT '0',
   `domande` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_history_test`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -439,7 +439,7 @@ CREATE TABLE IF NOT EXISTS `module_test_nodes` (
   `durata` int(10) DEFAULT NULL,
   `titolo_dragdrop` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_nodo`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -492,7 +492,7 @@ CREATE TABLE IF NOT EXISTS `openmeetings_room` (
   PRIMARY KEY (`id`),
   KEY `id_room` (`id_room`),
   KEY `id_istanza_corso` (`id_istanza_corso`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -508,7 +508,7 @@ CREATE TABLE IF NOT EXISTS `posizione` (
   `y1` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_posizione`),
   UNIQUE KEY `posizione_coords` (`x0`,`y0`,`x1`,`y1`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -528,7 +528,7 @@ CREATE TABLE IF NOT EXISTS `risorsa_esterna` (
   `pubblicato` tinyint(1) NOT NULL,
   `lingua` tinyint(3) NOT NULL,
   PRIMARY KEY (`id_risorsa_ext`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -592,7 +592,7 @@ CREATE TABLE IF NOT EXISTS `sessione_eguidance` (
   `m_comments` text COLLATE utf8_unicode_ci,
   `other_comments` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -670,20 +670,25 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `stato` tinyint(3) unsigned NOT NULL,
   `lingua` tinyint(3) DEFAULT '0',
   `timezone` int(11) DEFAULT '0',
+  `cap` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `matricola` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `avatar` varchar(90) COLLATE utf8_unicode_ci NOT NULL,
+  `birthcity` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `birthprovince` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `utente`
 --
 
-INSERT INTO `utente` (`id_utente`, `nome`, `cognome`, `tipo`, `e_mail`, `username`, `password`, `layout`, `indirizzo`, `citta`, `provincia`, `nazione`, `codice_fiscale`, `birthdate`, `sesso`, `telefono`, `stato`, `lingua`, `timezone`) VALUES
-(1, 'admin', 'ada', '2', 'admin@lynxlab.com', 'adminAda', '28dcaeb4eb65eba987aeeb37d228d4526eb37791', NULL, '', '', '', '', '', 0, '', '0123456789', 0, 0, 0),
-(2, 'nomeAutoreAda1', 'cognomeAutoreAda1', '1', 'autore@lynxlab.com', 'autoreAda1', '078139c99e73077fb7db87e49df8fe43cf7ca1b3', 'silver_gray', 'via o piazza', 'roma', 'RM', 'ZW', 'NULL', 33, 'M', '12341234', 0, NULL, NULL),
-(3, 'nomeTutorAda1', 'cognomeTutorAda1', '4', 'tutor@lynxlab.com', 'tutorAda1', 'e74e0b5df5cf02436a1c33509c42f76eb36bcabf', 'ada_blu', 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 1, 0),
-(4, 'nomeSwitcherAda1', 'cognomeSwitcherAda1', '6', 'coordinator@lynxlab.com', 'switcherAda1', '64baf2b0844f66cd95c50e716f089052f1682572', NULL, 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 2, NULL),
-(5, 'nomeStudenteAda1', 'cognomeStudenteAda1', '3', 'studente@lynxlab.com', 'studenteAda1', '7d4ee672efb7827f7be8f2dffb471353f4b88d3a', '', NULL, NULL, 'RM', 'ZW', 'NULL', 28, 'M', NULL, 0, 1, 0);
+INSERT INTO `utente` (`id_utente`, `nome`, `cognome`, `tipo`, `e_mail`, `username`, `password`, `layout`, `indirizzo`, `citta`, `provincia`, `nazione`, `codice_fiscale`, `birthdate`, `sesso`, `telefono`, `stato`, `lingua`, `timezone`, `cap`, `matricola`, `avatar`, `birthcity`, `birthprovince`) VALUES
+(1, 'admin', 'ada', '2', 'admin@lynxlab.com', 'adminAda', '28dcaeb4eb65eba987aeeb37d228d4526eb37791', NULL, '', '', '', '', '', 0, '', '0123456789', 0, 0, 0, '', '', '', '', NULL),
+(2, 'nomeAutoreAda1', 'cognomeAutoreAda1', '1', 'autore@lynxlab.com', 'autoreAda1', '078139c99e73077fb7db87e49df8fe43cf7ca1b3', 'silver_gray', 'via o piazza', 'roma', 'RM', 'ZW', 'NULL', 33, 'M', '12341234', 0, NULL, NULL, '', '', '', '', NULL),
+(3, 'nomeTutorAda1', 'cognomeTutorAda1', '4', 'tutor@lynxlab.com', 'tutorAda1', 'e74e0b5df5cf02436a1c33509c42f76eb36bcabf', 'ada_blu', 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 1, 0, '', '', '', '', NULL),
+(4, 'nomeSwitcherAda1', 'cognomeSwitcherAda1', '6', 'coordinator@lynxlab.com', 'switcherAda1', '64baf2b0844f66cd95c50e716f089052f1682572', NULL, 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 2, NULL, '', '', '', '', NULL),
+(5, 'nomeStudenteAda1', 'cognomeStudenteAda1', '3', 'studente@lynxlab.com', 'studenteAda1', '7d4ee672efb7827f7be8f2dffb471353f4b88d3a', '', NULL, NULL, 'RM', 'ZW', 'NULL', 28, 'M', NULL, 0, 1, 0, '', '', '', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -751,7 +756,7 @@ CREATE TABLE IF NOT EXISTS `utente_messaggio_log` (
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`tempo`,`id_mittente`,`testo`),
   UNIQUE KEY `utente_messaggio_log_id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
