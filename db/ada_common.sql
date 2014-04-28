@@ -8072,8 +8072,8 @@ CREATE TABLE IF NOT EXISTS `servizio` (
 --
 
 INSERT INTO `servizio` (`id_servizio`, `nome`, `descrizione`, `livello`, `durata_servizio`, `min_incontri`, `max_incontri`, `durata_max_incontro`) VALUES
-(1, 'Manuale  ADA', '', 1, 0, 0, 0, 0),
-(2, 'privato', '', 1, 0, 0, 0, 0);
+(1, 'Manuale  ADA', '', 1, 0, 0, 0, 0);
+
 
 -- --------------------------------------------------------
 
@@ -8094,8 +8094,8 @@ CREATE TABLE IF NOT EXISTS `servizio_tester` (
 --
 
 INSERT INTO `servizio_tester` (`id_tester`, `id_servizio`, `id_corso`) VALUES
-(1, 1, 1),
-(1, 2, 2);
+(1, 1, 1);
+
 
 -- --------------------------------------------------------
 
