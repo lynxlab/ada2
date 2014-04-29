@@ -592,7 +592,7 @@ abstract class RootTest extends NodeTest
 			$out->addChild($timer);
 
 			$out->addChild(new CText('<script type="text/javascript" language="javascript">
-				testTimer('.$start.','.$stop.');
+				testTimer('.$start.','.$stop.',\''.translateFN('Tempo Scaduto. Il modulo sarà inviato automaticamente').'.\');
 			</script>'));
 		}
 
