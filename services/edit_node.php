@@ -464,24 +464,34 @@ switch ($op) {
                     $node_title = $content_dataAr['name'];
 
                     $base_text1 = translateFN("Gentile utente, ti segnaliamo che il nodo %s è stato aggiornato.");
-                    $base_text2 = sprintf(translateFN("Please visit %s to see the new contents."), HTTP_ROOT_DIR."/browsing/user.php");
+                    $base_text2 = translateFN("Please visit %s to see the new contents.");
                     $footer_text = "\n"
                  				 . "\n"
                  				 . '-----'
                  				 . "\n"
                  				 . translateFN('This message has been sent to you by ADA. For additional information please visit the following address: ')
-                 				 . "\n"
-                 				 . HTTP_ROOT_DIR;
+                 				 . "\n";
+                    
                     $node_url = $http_root_dir.'/browsing/view.php?id_course='.$sess_id_course.'&id_course_instance='.$id_course_instance.'&id_node='.$content_dataAr['id'];
                      
                     $message_text  = sprintf($base_text1, $node_title);                    
-                    $message_text .= "\n".$node_url."\n\n".$base_text2.$footer_text;
+                    $message_text .= "\n".$node_url."\n\n";
+                    $message_text .= sprintf($base_text2, HTTP_ROOT_DIR."/browsing/user.php");
+                    $message_text .= $footer_text.HTTP_ROOT_DIR;
 
                     $link_to_node = CDOMElement::create('a',"href:$node_url");
                     $link_to_node->addChild(new CText($node_title));
                     
+                    $link_to_home = CDOMElement::create('a',"href:".HTTP_ROOT_DIR."/browsing/user.php");
+                    $link_to_home->addChild(new CText(translateFN('your home page')));
+                    
+                    $link_to_footer = CDOMElement::create('a',"href:".HTTP_ROOT_DIR);
+                    $link_to_footer->addChild(new CText(HTTP_ROOT_DIR));
+                    
                     $message_html = sprintf($base_text1, $link_to_node->getHtml());
-                    $message_html .= "<br/><br/>".$base_text2.nl2br($footer_text);
+                    $message_html .= "<br/><br/>";
+                    $message_html .= sprintf($base_text2, $link_to_home->getHtml());
+                    $message_html .= nl2br($footer_text).$link_to_footer->getHtml();
 
                     if  ( $notification_interval == ADA_NOTIFICATION_REALTIME ){
                     	
