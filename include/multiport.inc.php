@@ -217,15 +217,72 @@ class MultiPort
    */
   static public function addUser(ADALoggableUser $userObj, $testers = array()) {
 
-    $common_dh = AMA_Common_DataHandler::instance();
-    $user_id = $userObj->getId();
+
+  	/**
+     * true if must check user existance in
+     * the common provider utente DB table
+  	 */
+  	$checkUserExistsInCommonDB = true;
+
+  	/**
+  	 * @author giorgio 05/mag/2014 12:45:30
+  	 *
+  	 * if not in a multiprovider environment,
+  	 * check if the user to add exists in the selected provider
+  	 *
+  	 */
+  	if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider'])>0) {
+  		
+  		$tester_dh = AMA_Tester_DataHandler::instance(self::getDSN($GLOBALS['user_provider']));
+  		if (!is_null($tester_dh)) {
+  			/**
+             * check if a user with the passed username
+             * already exists in the selected provider
+  			 */
+  			$user_id = $tester_dh->find_students_list(null, 'username =\''.$userObj->getUserName().'\'');
+//   			var_dump($user_id); 
+//   			var_dump(count($user_id)); die();
+  			if (AMA_DB::isError($user_id)) {
+  				return ADA_ADD_USER_ERROR;
+  			} else {
+  				if (count($user_id)>0) {
+  					return ADA_ADD_USER_ERROR_USER_EXISTS_TESTER;
+  				} else {
+  					/**
+  					 * set $user_id=0 to resume normal operation 
+  					 */
+  					$user_id = 0;
+  					/**
+                     * don't check if user exists in common DB
+  					 */
+  					$checkUserExistsInCommonDB = false;
+  					/**
+  					 * $tester_dh is needed when actually
+  					 * adding the user to tester, let's unset it
+  					 */
+  					unset ($tester_dh);
+  				} // if (count($user_id)>0)
+  			} // if (AMA_DB::isError($user_id)) 
+  		} else {
+  			return ADA_ADD_USER_ERROR_TESTER;
+  		} // if (!is_null($tester_dh))
+  	} else {  		
+  		$user_id = $userObj->getId();
+  		/**
+         * set $tester_dh to null for future check
+  		 */
+  		$tester_dh = null;
+  	} // if (!MULTIPROVIDER &&.....)
+
+  	$common_dh = AMA_Common_DataHandler::instance();
+  	
     if ($user_id == 0){
       /* If the user isn't in common DB yet
        * add this user to ADA main database
        */
       $user_dataAr = $userObj->toArray();
       unset($user_dataAr['id_utente']);
-      $user_id = $common_dh->add_user($user_dataAr);
+      $user_id = $common_dh->add_user($user_dataAr, $checkUserExistsInCommonDB);
       /*
        * add_user restituisce o AMA_ERR_UNIQUE_KEY nel caso
        * sia già presente un utente con lo stesso username (email)
