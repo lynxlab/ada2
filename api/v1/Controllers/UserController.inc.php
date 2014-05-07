@@ -238,23 +238,21 @@ class UserController extends AbstractController implements AdaApiInterface {
 		 */
 		if ($form->isValid()) {
 			
-			/**
-			 * Uncomment if the user is to be associated  
-			 * by default to the public tester.
-			 */
-// 			$regProvider = array (ADA_PUBLIC_TESTER);
 			$regProvider = array();
 			
 			/**
-			 * Save the user in the public tester and in
+			 * Save the user in the public tester (only if 
+			 * this is a multiprovider environment) and in
 			 * the authenticated switcher own tester.
 			 * This should be ok for non multiprovider environments.
 			 */
-// 			if (!MULTIPROVIDER) {
 			foreach ($this->authUserTesters as $tester) {
 				array_push ($regProvider, $tester);
 			}
-// 			}
+			
+			if (MULTIPROVIDER) {
+				array_unshift($regProvider, ADA_PUBLIC_TESTER);
+			}
 			
 			/**
 			 * Actually saves the user
@@ -329,8 +327,10 @@ class UserController extends AbstractController implements AdaApiInterface {
 					/**
 					 * Send the message as an internal message,
 					 * don't care if an error occours here
+					 * 
+					 * Commented on 07/mag/2014 15:56:46
 					*/
-					$result = $mh->send_message($message_ha);
+					// $result = $mh->send_message($message_ha);
 					
 					/**
 					 * Send the message as an email message
