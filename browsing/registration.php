@@ -52,10 +52,6 @@ $supported_languages = Translator::getSupportedLanguages();
 
 if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     /*
-     * The user is associated by default to the public tester.
-     */
-    $tester = ADA_PUBLIC_TESTER;
-    /*
      * Validate the user submitted data and proceed to the user registration.
      */
     $form = new UserRegistrationForm();
@@ -75,14 +71,14 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		 * giorgio 19/ago/2013
 		 * 
 		 * if it's not multiprovider, must register the user
-		 * both in the public and in the selected tester
+		 * in the selected tester only.
+		 * if it is multiprovider, must register the user
+		 * in the public tester only.
          */
-        
-        $regProvider = array ($tester);
-        
-        if (!MULTIPROVIDER && isset ($GLOBALS['user_provider']))
-        {
-        	array_push ($regProvider, $GLOBALS['user_provider']);
+        if (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) {
+        	$regProvider = array ($GLOBALS['user_provider']);
+        } else {
+        	$regProvider = array (ADA_PUBLIC_TESTER);
         }
         
         $id_user = Multiport::addUser($userObj,$regProvider);
