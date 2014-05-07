@@ -5509,7 +5509,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             return new AMA_Error(AMA_ERR_GET);
         }
 		else {
-			if ($result == 0 || is_null($result)) {
+			if (is_null($result)) {
 				$result = ADA_MAX_USER_LEVEL;
 			}
 		}
