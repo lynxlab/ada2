@@ -8173,8 +8173,7 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `avatar` varchar(90) COLLATE utf8_unicode_ci NOT NULL,
   `birthcity` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `birthprovince` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id_utente`),
-  UNIQUE KEY `username` (`username`)
+  PRIMARY KEY (`id_utente`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --

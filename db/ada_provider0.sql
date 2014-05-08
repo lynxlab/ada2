@@ -283,7 +283,8 @@ CREATE TABLE IF NOT EXISTS `link` (
   `stile` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `significato` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `azione` tinyint(3) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id_link`)
+  PRIMARY KEY (`id_link`),
+  UNIQUE KEY `unique-link` (`id_nodo`,`id_nodo_to`) COMMENT 'prevents link duplication'
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --

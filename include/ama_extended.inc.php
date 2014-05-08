@@ -186,7 +186,19 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 					if (AMA_DB::isError($result)) {
 						$retval = $result;
 					}
-					else $retval = $nextID;
+					else {
+						if (is_null($nextID) || intval($nextID)===0) {
+							/**
+							 * If could not geta nextID from the ADA_PUBLIC_TESTER
+							 * read it as the lastInsertID and set it as the $idFromPublicTester
+							 */
+							$nextID = $this->getConnection()->lastInsertID();
+							if (is_null($idFromPublicTester) || intval($idFromPublicTester)===0) {
+								$idFromPublicTester = $nextID;
+							}
+						}
+						$retval = $nextID;
+					}
 				}
 			}
 		}

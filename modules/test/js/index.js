@@ -85,14 +85,14 @@ function Timer(startTime, stopTime, displayFunction, ringFunction)
 
 var timer = null;
 
-function testTimer(startTime,stopTime) {
+function testTimer(startTime,stopTime,message) {
 	timer = new Timer(startTime,stopTime,
 		function (value) {
 			$$('.absoluteTimer')[0].setStyle({display: 'block'});
 			$$('.absoluteTimer')[0].innerHTML = value;
 		},
 		function () {
-			alert('Tempo Scaduto. Il modulo sarà inviato automaticamente.');
+			alert(message);
 			$('testForm').submit();
 		}
 	);

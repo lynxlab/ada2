@@ -463,26 +463,88 @@ switch ($op) {
                     */
                     $node_title = $content_dataAr['name'];
 
-                    $message_text  = sprintf(translateFN("Gentile utente, ti segnaliamo che il nodo %s è stato aggiornato."), $node_title);
+                    $base_text1 = translateFN("Gentile utente, ti segnaliamo che il nodo %s è stato aggiornato.");
+                    $base_text2 = translateFN("Please visit %s to see the new contents.");
+                    $footer_text = "\n"
+                 				 . "\n"
+                 				 . '-----'
+                 				 . "\n"
+                 				 . translateFN('This message has been sent to you by ADA. For additional information please visit the following address: ')
+                 				 . "\n";
+                    
                     $node_url = $http_root_dir.'/browsing/view.php?id_course='.$sess_id_course.'&id_course_instance='.$id_course_instance.'&id_node='.$content_dataAr['id'];
+                     
+                    $message_text  = sprintf($base_text1, $node_title);                    
+                    $message_text .= "\n".$node_url."\n\n";
+                    $message_text .= sprintf($base_text2, HTTP_ROOT_DIR."/browsing/user.php");
+                    $message_text .= $footer_text.HTTP_ROOT_DIR;
 
                     $link_to_node = CDOMElement::create('a',"href:$node_url");
                     $link_to_node->addChild(new CText($node_title));
-
-                    $message_text .= $link_to_node->getHtml();
+                    
+                    $link_to_home = CDOMElement::create('a',"href:".HTTP_ROOT_DIR."/browsing/user.php");
+                    $link_to_home->addChild(new CText(translateFN('your home page')));
+                    
+                    $link_to_footer = CDOMElement::create('a',"href:".HTTP_ROOT_DIR);
+                    $link_to_footer->addChild(new CText(HTTP_ROOT_DIR));
+                    
+                    $message_html = sprintf($base_text1, $link_to_node->getHtml());
+                    $message_html .= "<br/><br/>";
+                    $message_html .= sprintf($base_text2, $link_to_home->getHtml());
+                    $message_html .= nl2br($footer_text).$link_to_footer->getHtml();
 
                     if  ( $notification_interval == ADA_NOTIFICATION_REALTIME ){
+                    	
+                    	// require phpmailer
+                    	require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
+                    	require_once ROOT_DIR.'/include/data_validation.inc.php';
+                    	
+                    	/**
+                    	 * Send the message an email message
+                    	 * via PHPMailer
+                    	 */
+                    	$phpmailer = new PHPMailer();
+                    	$phpmailer->CharSet = 'UTF-8';
+                    	$phpmailer->IsSendmail();
+                    	$phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);
+                    	$phpmailer->IsHTML(true);
+                    	$phpmailer->Priority = 2;
+                    	$phpmailer->Subject = PORTAL_NAME.' - '.translateFN("Aggiornamento dei contenuti del corso");
+                    	
+                    	$phpmailer->AddAddress(ADA_NOREPLY_MAIL_ADDRESS);
+                    	foreach ($students_Ar as $destinatario) {
+                    		/**
+                    		 * TODO: should check if $user_preferred_notification_channel
+                    		 *       for current iteration user is ADA_MSG_MAIL. As of
+                    		 *       29/apr/2014 this feature is not supported and every student
+                    		 *       shall receive the notification by email only.
+                    		 */
+                    		if (DataValidator::validate_email($destinatario)) {
+                    			$phpmailer->AddBCC($destinatario);
+                    		}
+                    		
+                    	}
+                    	
+                    	$phpmailer->Body = $message_html;
+                    	$phpmailer->AltBody = $message_text;
+                    	if (!$phpmailer->Send()) {
+                    		$result = new AMA_Error(AMA_ERR_SEND_MSG);
+                    	} else {
+                    		$result = true;
+                    	}
+                    	
                           //$message_handler = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
-                          $message_handler = MessageHandler::instance();
-                          $message_ha['destinatari'] =  $destinatari ; 
-                          $message_ha['data_ora']    = "now";
-                          $message_ha['tipo']        = $user_preferred_notification_channel;
-                          $message_ha['mittente']    = $sender; // author??
-                          $message_ha['testo']       = $message_text;
-                          $message_ha['titolo']      = translateFN("Aggiornamento dei contenuti del corso");
-                          $message_ha['priorita']    = 2;
                           
-                          $result = $message_handler->send_message($message_ha);
+//                           $message_handler = MessageHandler::instance();
+//                           $message_ha['destinatari'] =  $destinatari ; 
+//                           $message_ha['data_ora']    = "now";
+//                           $message_ha['tipo']        = $user_preferred_notification_channel;
+//                           $message_ha['mittente']    = $sender; // author??
+//                           $message_ha['testo']       = $message_text;
+//                           $message_ha['titolo']      = translateFN("Aggiornamento dei contenuti del corso");
+//                           $message_ha['priorita']    = 2;
+                          
+//                           $result = $message_handler->send_message($message_ha);
                           
                           if (AMA_DataHandler::isError($result)) {
                               $errObj = new ADA_Error($result, translateFN("Errore nell'invio del messaggio di notifica dell'aggiornamento."));

@@ -100,9 +100,19 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     );
                     $subscriberObj->setPassword(time());
 
-                    $provider_to_subscribeAr = array(ADA_PUBLIC_TESTER);
-                    if (ADA_PUBLIC_TESTER != $sess_selected_tester) {
-                        array_push($provider_to_subscribeAr, $sess_selected_tester);
+                    /**
+                     * @author giorgio 06/mag/2014 11:25:21
+                     * 
+                     * If it's not a multiprovider environment,
+                     * user must be subscribed to switcher's own
+                     * provider only.
+                     * User must be subscribed to the ADA_PUBLIC_TESTER
+                     * only in a multiprovider environment.
+                     */
+                    
+                    $provider_to_subscribeAr = array ($sess_selected_tester);
+                    if (MULTIPROVIDER) {
+                    	array_unshift($provider_to_subscribeAr, ADA_PUBLIC_TESTER);
                     }
                     $result = MultiPort::addUser($subscriberObj, $provider_to_subscribeAr);
                     if($result > 0) {

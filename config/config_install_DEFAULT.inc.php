@@ -153,6 +153,11 @@ define('AVATAR_MAX_HEIGHT', "500");
 define('ADA_ADMIN_MAIL_ADDRESS','graffio@lynxlab.com');
 
 /**
+ * Default noreply mail address
+ */
+define('ADA_NOREPLY_MAIL_ADDRESS','noreply@lynxlab.com');
+
+/**
  * ADA version
  */
 define('ADA_VERSION','2.1alpha0');

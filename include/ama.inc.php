@@ -921,9 +921,25 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
      */
     public function check_identity($username, $password) {
 
-        $sql = 'SELECT id_utente, tipo, nome, cognome FROM utente WHERE username=? AND password=?';
+    	$sql = 'SELECT U.id_utente, U.tipo, U.nome, U.cognome FROM utente U ';
+    	$sql_params = array($username, sha1($password));
+    	
+    	/**
+    	 * @author giorgio 05/mag/2014 16:32:07
+    	 *
+    	 * if not in a multiprovider environment, must
+    	 * match the user in the selected provider
+    	 */    	
+    	if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider'])>0) {
+    		$testerAr = $this->get_tester_info_from_pointer($GLOBALS['user_provider']);
+    		$sql .= ',utente_tester UT WHERE '.
+    				'U.id_utente = UT.id_utente AND U.username=? AND U.password=? AND UT.id_tester=?';
+    		array_push($sql_params, $testerAr[0]);
+    	} else {
+    		$sql .= 'WHERE U.username=? AND U.password=?';
+    	}
 
-        $resultHa = $this->getRowPrepared($sql, array($username, sha1($password)), AMA_FETCH_ASSOC);
+        $resultHa = $this->getRowPrepared($sql, $sql_params, AMA_FETCH_ASSOC);
 
         if(!is_array($resultHa) || empty($resultHa)) {
             return new AMA_Error(AMA_ERR_NOT_FOUND);
@@ -936,19 +952,21 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
      * @param $user_dataAr
      * @return unknown_type
      */
-    public function add_user($user_dataAr=array()) {
+    public function add_user($user_dataAr=array(), $mustcheck=true) {
 
         /*
-     * Before inserting a row, check if a user with this username already exists
-        */
-        $user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
-        $user_id = $this->getOnePrepared($user_id_sql,array($user_dataAr['username']));
-        if (AMA_DB::isError($user_id)) {
-            return $user_id;
-        }
-        elseif ($user_id) {
-            return new AMA_Error(AMA_ERR_UNIQUE_KEY);
-        }
+         * Before inserting a row, check if a user with this username already exists
+         */
+    	if ($mustcheck) {
+	        $user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
+	        $user_id = $this->getOnePrepared($user_id_sql,array($user_dataAr['username']));
+	        if (AMA_DB::isError($user_id)) {
+	            return $user_id;
+	        }
+	        elseif ($user_id) {
+	            return new AMA_Error(AMA_ERR_UNIQUE_KEY);
+	        }
+    	}
 
         $add_user_sql = 'INSERT INTO utente(nome,cognome,tipo,e_mail,username,password,layout,
                                indirizzo,citta,provincia,nazione,codice_fiscale,birthdate,sesso,
@@ -996,9 +1014,18 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
             return $result;
         }
         /*
-     * Return the user id of the inserted user
-        */
-        $user_id = $this->find_user_from_username($user_dataAr['username']);
+         * Return the user id of the inserted user
+         */
+        if (!MULTIPROVIDER) {
+        	/**
+             * If it's not multiprovider there's no other way
+             * of getting the ID but a call to lastInsertID
+        	 */
+        	$user_id = $this->getConnection()->lastInsertID();
+        } else {
+        	$user_id = $this->find_user_from_username($user_dataAr['username']);
+        }
+        
         /*
     $user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
     $user_id = $this->getOnePrepared($user_id_sql, $user_dataAr['username']);
@@ -1009,26 +1036,61 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         return $user_id;
 
     }
-
-
-    public function find_user_from_username($username) {
-        /*
+    
+    /**
      * Return the user id of the user with username = $username
-        */
-        $user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
-        $user_id = $this->getOnePrepared($user_id_sql, $username);
+     * 
+     * @param string $username
+     * @return AMA_Error|number
+     */
+    public function find_user_from_username($username) {
+        /**
+         * @author giorgio 05/mag/2014 15:44:34
+         * 
+         * if not in a multiprovider environment, must
+         * match the user in the selected provider
+         *  
+         */
+        if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider'])>0) {
+        	$testerAr = $this->get_tester_info_from_pointer($GLOBALS['user_provider']);
+        	$user_id_sql = 'SELECT U.id_utente FROM utente U, utente_tester UT WHERE '.
+        			       'U.id_utente = UT.id_utente AND id_tester=? AND username=?';
+        	$sql_params = array ($username, $testerAr[0]);
+        } else {
+        	$user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
+        	$sql_params = $username;
+        }
+        $user_id = $this->getOnePrepared($user_id_sql, $sql_params);
         if (AMA_DB::isError($user_id) || $user_id == null) {
             return new AMA_Error(AMA_ERR_GET);
         }
 
         return $user_id;
     }
-    public function find_user_from_email($email) {
-        /*
+    
+    /**
      * Return the user id of the user with email = $e_mail
-        */
-        $user_id_sql = 'SELECT id_utente FROM utente WHERE e_mail=?';
-        $user_id = $this->getOnePrepared($user_id_sql, $email);
+     * 
+     * @param string $email
+     * @return AMA_Error|number
+     */
+    public function find_user_from_email($email) {
+    	/**
+         * @author giorgio 05/mag/2014 16:29:39
+         * 
+         * if not in a multiprovider environment, must
+         * match the user in the selected provider
+    	 */
+    	if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider'])>0) {
+    		$testerAr = $this->get_tester_info_from_pointer($GLOBALS['user_provider']);
+    		$user_id_sql = 'SELECT U.id_utente FROM utente U, utente_tester UT WHERE '.
+    				'U.id_utente = UT.id_utente AND id_tester=? AND e_mail=?';
+    		$sql_params = array ($email, $testerAr[0]);
+    	} else {
+    		$user_id_sql = 'SELECT id_utente FROM utente WHERE e_mail=?';
+    		$sql_params = $email;        
+    	}
+    	$user_id = $this->getOnePrepared($user_id_sql, $sql_params);
         if (AMA_DB::isError($user_id) || $user_id == null) {
             return new AMA_Error(AMA_ERR_GET);
         }
@@ -5447,7 +5509,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             return new AMA_Error(AMA_ERR_GET);
         }
 		else {
-			if ($result == 0 || is_null($result)) {
+			if (is_null($result)) {
 				$result = ADA_MAX_USER_LEVEL;
 			}
 		}
