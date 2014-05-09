@@ -95,7 +95,8 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             'email' => trim($userDataAr[2]),
                             'tipo' => AMA_TYPE_STUDENT,
                             'username' => trim($userDataAr[2]),
-                            'stato' => ADA_STATUS_PRESUBSCRIBED
+                            'stato' => ADA_STATUS_PRESUBSCRIBED,
+                        	'birthcity' => ''
                         )
                     );
                     $subscriberObj->setPassword(time());
