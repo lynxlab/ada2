@@ -207,7 +207,7 @@ class ImageViewer {
      * @param  mixed  $ImageViewingPreferences
      * @return string
      */
-    public function view( $http_file_path, $file_name, $ImageViewingPreferences = IMG_VIEWING_MODE, $imageTitle = null,$width = null,$height = null) {
+    public static function view( $http_file_path, $file_name, $ImageViewingPreferences = IMG_VIEWING_MODE, $imageTitle = null,$width = null,$height = null) {
 		if (!is_null($width)) {
 			$width = ' width="'.$width.'"';
 		}
@@ -228,7 +228,7 @@ class ImageViewer {
         return $exploded_img;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $ImageViewingPreferences = IMG_VIEWING_MODE, $imageTitle = null) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $ImageViewingPreferences = IMG_VIEWING_MODE, $imageTitle = null) {
 
 		$size = getimagesize($path_to_file);
 		$x = $size[0];
@@ -272,8 +272,14 @@ class AudioPlayer {
      * @param  mixed  $AudioPlayingPreferences
      * @return string
      */
-    public function view( $http_file_path, $file_name, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
-        $http_root_dir = $GLOBALS['http_root_dir'];
+    public static function view( $http_file_path, $file_name, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
+    	$http_root_dir = $GLOBALS['http_root_dir'];    	
+    	
+    	require_once ROOT_DIR.'/include/getid3/getid3.php';
+    	$getID3 = new getID3();
+    	$toAnalyze = ( !empty($http_file_path) ? $http_file_path : ROOT_DIR).$file_name;
+    	$fileInfo = $getID3->analyze(urldecode(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze)));
+
         if ($audioTitle == NULL || !isset($audioTitle)) {
             $audioTitle = $file_name;
         }
@@ -285,22 +291,29 @@ class AudioPlayer {
             case 1:
             case 2:
             default:
-                $url = $http_root_dir. "/external/mediaplayer/1pixelout/1pixelout.swf";
-                $exploded_audio = '
+            	
+            	if ($fileInfo['fileformat']=='mp3') // use jplayer if mp3
+            	{
+            		require_once ROOT_DIR . '/include/HtmlLibrary/MediaViewingHtmlLib.inc.php';
+            		$exploded_audio = MediaViewingHtmlLib::jplayerMp3Viewer($http_file_path.$file_name, $audioTitle);
+            	} else {
+					$url = $http_root_dir. "/external/mediaplayer/1pixelout/1pixelout.swf";
+					$exploded_audio = '
 					<object type="application/x-shockwave-flash" data="'.$url.'" width="290" height="24" >
-					  <param name="movie" value="'.$url.'" />
-					  <param name="wmode" value="transparent" />
-					  <param name="menu" value="false" />
-					  <param name="quality" value="high" />
-					  <param name="FlashVars" value="soundFile='.$http_file_path.$file_name.'" />
-					  <embed src="'.$url.'" flashvars="soundFile='.$http_file_path.$file_name.'" width="290" height="24" />
+						<param name="movie" value="'.$url.'" />
+						<param name="wmode" value="transparent" />
+						<param name="menu" value="false" />
+						<param name="quality" value="high" />
+						<param name="FlashVars" value="soundFile='.$http_file_path.$file_name.'" />
+						<embed src="'.$url.'" flashvars="soundFile='.$http_file_path.$file_name.'" width="290" height="24" />
 					</object>';
+            	}
 			break;
         }
         return $exploded_audio;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
         if ($audioTitle == NULL || !isset($audioTitle)) {
                 $imageTitle = $file_name;
         }
@@ -323,7 +336,7 @@ class VideoPlayer {
      * @param  mixed  $VideoPlayingPreferences
      * @return string
      */
-    public function view( $http_file_path, $file_name, $VideoPlayingPreferences = VIDEO_PLAYING_MODE, $videoTitle = null, $width = null,$height = null) {
+    public static function view( $http_file_path, $file_name, $VideoPlayingPreferences = VIDEO_PLAYING_MODE, $videoTitle = null, $width = null,$height = null) {
     	
     	require_once ROOT_DIR.'/include/getid3/getid3.php';
 
@@ -382,16 +395,24 @@ class VideoPlayer {
                             $file_name = Media::getPathForFile($file_name);
                         }
                         
-                        if (!$_SESSION['mobile-detect']->isMobile()) $playerAttr = ' data-engine="flash" ';
-                        else $playerAttr = '';
+                        /**
+                         * old code to be used for flowplayer
+                         */
+                        // if (!$_SESSION['mobile-detect']->isMobile()) $playerAttr = ' data-engine="flash" ';
+                        // else $playerAttr = '';
                         
-                        if ($extension=='mp4')
+                        if ($fileInfo['fileformat']=='mp4')
                         {
-                        	$exploded_video = '<div class="ADAflowplayer color-light no-background" style="width:'.$width.'px; height:'.$height.'px;"'.
-                        						$playerAttr.'data-swf="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/flowplayer.swf" data-embed="false">
-                        			<video>
-                        				<source src="'.$http_file_path.$file_name.'" type="video/mp4" />
-                        			</video></div>';                        
+                        	/**
+                        	 * old code to be used for flowplayer
+                        	 */
+                        	// $exploded_video = '<div class="ADAflowplayer color-light no-background" style="width:'.$width.'px; height:'.$height.'px;"'.
+                        	// 		$playerAttr.'data-swf="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/flowplayer.swf" data-embed="false">
+                        	//		<video>
+                        	//			<source src="'.$http_file_path.$file_name.'" type="video/mp4" />
+                        	//		</video></div>';
+                        	require_once ROOT_DIR . '/include/HtmlLibrary/MediaViewingHtmlLib.inc.php';
+                        	$exploded_video = MediaViewingHtmlLib::jplayerMp4Viewer($http_file_path. $file_name, $file_name, $width, $height);                       
                         }
                         else {                        
 						$exploded_video = '
@@ -421,7 +442,7 @@ class VideoPlayer {
         return $exploded_video;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $VideoPlayingPreferences=VIDEO_PLAYING_MODE, $videoTitle = null, $media_type ) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $VideoPlayingPreferences=VIDEO_PLAYING_MODE, $videoTitle = null, $media_type ) {
         switch ($media_type) {
             case _VIDEO:
                 $label = translateFN('video');
@@ -461,7 +482,7 @@ class InternalLinkViewer {
      * @param  int    $user_level
      * @return string
      */
-    public function view( $http_file_path, $media_value, $InternalLinkViewingPreferences = 0, $user_level, $id_course ) {
+    public static function view( $http_file_path, $media_value, $InternalLinkViewingPreferences = 0, $user_level, $id_course ) {
         $id_node = $id_course .'_'.$media_value;
 
         $nodeObj =& new Node($id_node, 0);
@@ -484,7 +505,7 @@ class InternalLinkViewer {
         return $exploded_link;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $InternalLinkViewingPreferences ) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $InternalLinkViewingPreferences ) {
         //return '<a href="'.$http_file_path.$real_file_name.'">'.$file_name.'</a>';
         return '';
     }
@@ -503,7 +524,7 @@ class ExternalLinkViewer {
      * @param  mixed  $ExternalLinkViewingPreferences
      * @return string
      */
-    public function view( $http_file_path, $media_value, $ExternalLinkViewingPreferences ) {
+    public static function view( $http_file_path, $media_value, $ExternalLinkViewingPreferences ) {
         switch ( $ExternalLinkViewingPreferences ) {
             case 0:
             case 1:
@@ -543,7 +564,7 @@ class ExternalLinkViewer {
         return $exploded_ext_link;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name,$path_to_file, $ExternalLinkViewingPreferences ) {
+    public static function link( $http_file_path, $file_name, $real_file_name,$path_to_file, $ExternalLinkViewingPreferences ) {
         //return '<a href="'.$http_file_path.$real_file_name.'">'.$file_name.'</a>';
         return '';
     }
@@ -562,7 +583,7 @@ class DocumentViewer {
      * @param  mixed  $DocumentViewingPreferences
      * @return string
      */
-    public function view( $http_file_path, $media_value, $DocumentViewingPreferences = DOC_VIEWING_MODE) {
+    public static function view( $http_file_path, $media_value, $DocumentViewingPreferences = DOC_VIEWING_MODE) {
         switch ( $DocumentViewingPreferences ) {
             case 0:
             case 1:
@@ -574,7 +595,7 @@ class DocumentViewer {
         return $exploded_document;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file,$DocumentViewingPreferences ) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file,$DocumentViewingPreferences ) {
         $complete_file_name = $file_name;
         if (strlen($file_name) > 15) {
             preg_match('/\.[^.]*$/', $complete_file_name, $ext);

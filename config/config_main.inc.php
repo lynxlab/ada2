@@ -337,3 +337,5 @@ define('JQUERY_DATATABLE_CSS',	ROOT_DIR.'/js/include/jquery/dataTables/jquery.da
 define('JQUERY_NO_CONFLICT',	ROOT_DIR.'/js/include/jquery.noConflict.js');
 define('JQUERY_NIVOSLIDER',		ROOT_DIR.'/js/include/jquery/nivo-slider/jquery.nivo.slider.pack.js');
 define('JQUERY_NIVOSLIDER_CSS', ROOT_DIR.'/js/include/jquery/nivo-slider/nivo-slider.css');
+define('JQUERY_JPLAYER',		ROOT_DIR.'/js/include/jquery/jplayer/jquery.jplayer.min.js');
+define('JQUERY_JPLAYER_CSS',	ROOT_DIR.'/js/include/jquery/jplayer/skin/blue.monday/jplayer.blue.monday.css');

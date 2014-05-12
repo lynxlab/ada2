@@ -482,3 +482,34 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 {
   min-height: 200px;  
 }
+
+/**
+ * jPlayer customizations, rules must be
+ * made stronger than the jplayer skin
+ */
+#contentcontent div.media.sound ul.jp-controls {
+	padding: 5px 20px 0 20px;
+} 
+#contentcontent div.media.sound div.jp-progress {
+	top: 17px;
+}
+#contentcontent div.media.sound div.jp-volume-bar {
+	top: 22px;
+}
+#contentcontent div.media.sound div.jp-time-holder {
+	left: 112px;
+	width: 180px;
+    top: 32px;
+}
+#contentcontent div.media.video div.jp-details {
+	display: none;
+}
+#contentcontent div.media.sound div.jp-interface {
+	height: 50px;
+}
+
+#contentcontent div.media.video a.jp-video-play-icon {
+	margin: 0 auto;
+	left:0;
+	top: 40px;
+}
