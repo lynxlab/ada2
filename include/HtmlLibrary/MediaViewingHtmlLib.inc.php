@@ -20,15 +20,13 @@ class MediaViewingHtmlLib {
 	
 	private function jplayerCommonJS($format, $divID, $url, $title=null, $width=null, $height=null) {
 		$jplayerCode = '<script type="text/javascript">
-					//<![CDATA[
-    					var jplayerNoConflict = {
-    						jQuery: $j
-						};
-    
-    					var windowWidth = $j(window).width() + "px";
-      					var windowHeight = $j(window).height() + "px";
-    
+						var jplayerNoConflict;
+				
 						$j(document).ready(function(){
+				    		jplayerNoConflict = {
+    							jQuery: $j
+							};
+				
 							$j("#jquery_jplayer_'.$divID.'").jPlayer({
 								ready: function () {
 									$j(this).jPlayer("setMedia", {';
@@ -38,19 +36,15 @@ class MediaViewingHtmlLib {
 		$jplayerCode .= $format.': "'.$url.'"
 									});
 								},
-								play: function() { // To avoid multiple jPlayers playing together.
+								play: function() {
 									$j(this).jPlayer("pauseOthers");
 								},
 				    			size: {
                          			width: "'.$width.'px",
                          			height: "'.$height.'px"
-                    			},
-//                        			sizeFull: {
-//                 					width: windowWidth,
-//                 					height: windowHeight
-//             					},
-    							solution: "flash, html",
-    							noConflict: "jplayerNoConflict.jQuery",
+                    			},';
+		if ($format=='m4v') $jplayerCode .= 'solution: "flash, html",';
+		$jplayerCode .='		noConflict: "jplayerNoConflict.jQuery",
 								swfPath: "'.HTTP_ROOT_DIR.'/js/include/jquery/jplayer",
 								supplied: "'.$format.'",
 								cssSelectorAncestor: "#jp_container_'.$divID.'",
@@ -61,7 +55,6 @@ class MediaViewingHtmlLib {
 								toggleDuration: true
 							});
 						});
-					//]]>
 					</script>';
 		
 		return $jplayerCode;
