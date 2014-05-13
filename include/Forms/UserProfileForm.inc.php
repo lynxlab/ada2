@@ -102,7 +102,8 @@ class UserProfileForm extends UserRegistrationForm {
 
         if(is_array($languages) && count($languages) > 0) {
             $languagesAr[0]=translateFN('seleziona una lingua');            
-            $languages = array_merge($languagesAr,$languages);
+            $languages = array_replace($languagesAr,$languages);
+//            $languages = array_merge($languagesAr,$languages);
             $this->addSelect(
                 'lingua',
                  translateFN('Lingua'),
