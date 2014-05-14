@@ -487,29 +487,86 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  * jPlayer customizations, rules must be
  * made stronger than the jplayer skin
  */
+/**
+ * Sound section
+ */
+#contentcontent div.media.sound div.jp-audio {
+	width: 320px;
+}
 #contentcontent div.media.sound ul.jp-controls {
-	padding: 5px 20px 0 20px;
-} 
+	width: 96%;
+	margin: 0 auto;
+	padding :0;
+}
 #contentcontent div.media.sound div.jp-progress {
-	top: 17px;
+	width: 95%;
+	position: relative;
+	left: 5px;
+	top: 12px;
 }
 #contentcontent div.media.sound div.jp-volume-bar {
-	top: 22px;
+	width:90%;
+	position:relative;
+	left:5%;
+	top:18px;
+}
+#contentcontent div.media.sound div.jp-duration {
+	width:30%;
+}
+#contentcontent div.media.sound div.jp-audio a.jp-stop {
+	margin-left:5%;
+}
+#contentcontent div.media.sound div.jp-audio a.jp-mute,
+#contentcontent div.media.sound div.jp-audio a.jp-unmute {
+	margin:12px 0 0 25%;
+}
+#contentcontent div.media.sound div.jp-audio a.jp-volume-max {
+	position: relative;
+	margin: 0 auto;
+	top: 12px;
 }
 #contentcontent div.media.sound div.jp-time-holder {
-	left: 112px;
-	width: 180px;
-    top: 32px;
+	width: 95%;
+	position: relative;
+	left:5px;
+	top:12px;
+}
+#contentcontent div.media.sound div.jp-interface {
+	margin-top: 5px;
+	height: 45px;
+}
+#contentcontent div.media.sound div.jp-details {
+	display: none;
+}
+/**
+ * Video section
+ */
+#outer-video-play-icon  { display: table; }
+#middle-video-play-icon { display: table-cell; vertical-align: middle; }
+
+#contentcontent div.media.video ul.jp-controls {
+	margin-left: 40%;
 }
 #contentcontent div.media.video div.jp-details {
 	display: none;
 }
-#contentcontent div.media.sound div.jp-interface {
-	height: 50px;
+#contentcontent div.media.video div.jp-video ul.jp-toggles {
+	width: 10%;
 }
-
 #contentcontent div.media.video a.jp-video-play-icon {
-	margin: 0 auto;
-	left:0;
-	top: 40px;
+	margin: 0 auto; left:0; top:0;
+}
+#contentcontent div.media.video div.jp-video div.jp-controls-holder {
+	width: 100%;
+}
+#contentcontent div.media.video div.jp-video a.jp-mute,
+#contentcontent div.media.video div.jp-video a.jp-unmute {
+	left: 3%;	
+}
+#contentcontent div.media.video div.jp-video a.jp-volume-max {
+	left: 28%;	
+}
+#contentcontent div.media.video div.jp-video div.jp-volume-bar {
+	left: 8%;
+	width: 18%;	
 }

@@ -30,9 +30,12 @@ class MediaViewingHtmlLib {
 							$j("#jquery_jplayer_'.$divID.'").jPlayer({
 								ready: function () {
 									$j(this).jPlayer("setMedia", {';
-		if (isset($title) && strlen ($title)>0) {
-			$jplayerCode .= 'title: "'.$title.'",';
-		}
+		if (isset($title) && strlen ($title)>0)  $jplayerCode .= 'title: "'.$title.'",';
+		/**
+		 * format is checked against string 'never' to never display a poster
+		 * the following line is here just in case you need to enable a poster
+		 */
+		if ($format=='never') $jplayerCode .= 'poster: "http://www.localada.com/layout/ada_blu/img/header-logo.png",';
 		$jplayerCode .= $format.': "'.$url.'"
 									});
 								},
@@ -66,12 +69,32 @@ class MediaViewingHtmlLib {
 		
 		$jplayerCode = self::jplayerCommonJS('m4v', $divID, $url, $title, $width, $height);
 		
-		$jplayerCode .= '<div id="jp_container_'.$divID.'" class="jp-video">
+		$styleHeightWidth = '';
+		$styleMarginTop = '';
+		
+		if (!is_null($width) || !is_null($height)) {
+			$styleHeightWidth .= ' style="';
+			if (!is_null($width)) $styleHeightWidth .= 'width:'.$width.'px; ';
+			// 70px is the needed room for the interface
+			if (!is_null($height)) {
+				$styleHeightWidth .= 'height:'.($height+70).'px; ';
+				$styleMarginTop .= $styleHeightWidth .'height:'.$height.'px; margin-top:-'.$height.'px;"';
+			}
+			$styleHeightWidth .= '"';
+		}
+		
+		
+		
+		$jplayerCode .= '<div id="jp_container_'.$divID.'" class="jp-video"';
+		$jplayerCode .= $styleHeightWidth;
+		$jplayerCode .= '>
 			<div class="jp-type-single">
 				<div id="jquery_jplayer_'.$divID.'" class="jp-jplayer"></div>
 				<div class="jp-gui">
-					<div class="jp-video-play">
-						<a href="javascript:;" class="jp-video-play-icon" tabindex="1">play</a>
+					<div id="outer-video-play-icon" class="jp-video-play"'.$styleMarginTop.'>
+  						<div id="middle-video-play-icon">
+							<a href="javascript:;" class="jp-video-play-icon" tabindex="1">play</a>
+  						</div>
 					</div>
 					<div class="jp-interface">
 						<div class="jp-progress">
@@ -88,11 +111,9 @@ class MediaViewingHtmlLib {
 								<li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
 								<li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
 								<li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
+								<li><div class="jp-volume-bar"><div class="jp-volume-bar-value"></div></div></li>
 								<li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
 							</ul>
-							<div class="jp-volume-bar">
-								<div class="jp-volume-bar-value"></div>
-							</div>
 							<ul class="jp-toggles">
 								<li><a href="javascript:;" class="jp-full-screen" tabindex="1" title="full screen">full screen</a></li>
 								<li><a href="javascript:;" class="jp-restore-screen" tabindex="1" title="restore screen">restore screen</a></li>
@@ -129,22 +150,15 @@ class MediaViewingHtmlLib {
 						<li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
 						<li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
 						<li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
+						<li style="width:50%;">
+							<div class="jp-progress"><div class="jp-seek-bar"><div class="jp-play-bar"></div></div></div>
+							<div class="jp-time-holder"><div class="jp-current-time"></div><div class="jp-duration"></div></div>
+						</li>				
 						<li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
 						<li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
-						<li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
+						<li style="width:12%;"><div class="jp-volume-bar"><div class="jp-volume-bar-value"></div></div></li>
+						<li style="width:18px;"><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
 					</ul>
-					<div class="jp-progress">
-						<div class="jp-seek-bar">
-							<div class="jp-play-bar"></div>
-						</div>
-					</div>
-					<div class="jp-volume-bar">
-						<div class="jp-volume-bar-value"></div>
-					</div>
-					<div class="jp-time-holder">
-						<div class="jp-current-time"></div>
-						<div class="jp-duration"></div>
-					</div>
 				</div>
 				<div class="jp-details">
 					<ul>
