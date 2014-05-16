@@ -145,7 +145,13 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             'tipo' => ADA_MSG_MAIL,
                             'mittente' => $adm_uname
                         );
-                        $mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
+                        
+                        if (MULTIPROVIDER) {
+                        	$mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
+                        } else {
+                        	$mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
+                        }
+                        
                         /**
                          * Send the message as an internal message
                          */
@@ -195,7 +201,12 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         'tipo' => ADA_MSG_MAIL,
                         'mittente' => $adm_uname
                     );
-                    $mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
+                    
+                    if (MULTIPROVIDER) {
+                        	$mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
+                        } else {
+                        	$mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
+                        }
                     /**
                      * Send the message an email message
                      */
