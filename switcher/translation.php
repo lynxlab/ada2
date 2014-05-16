@@ -100,8 +100,11 @@ function error_messageFN($error_message,$container_id=null) {
   $span_message->addChild(new CText($error_message));
 
   $span_goback = CDOMElement::create('span','id:goback_link');
-  
-  $navigation_history = unserialize($_SESSION['sess_navigation_history']);
+  if ($_SESSION['sess_navigation_history'] instanceof  NavigationHistory) {
+  	$navigation_history = $_SESSION['sess_navigation_history'];
+  } else {
+  	$navigation_history = unserialize($_SESSION['sess_navigation_history']);
+  }
   $previous_page = $navigation_history->previousPage();
   $a = CDOMElement::create('a', "href: $previous_page");
   $a->addChild(new CText(translateFN("Torna alla pagina precedente")));
