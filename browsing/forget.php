@@ -100,7 +100,7 @@ switch ($op){
 //        $user_id = $common_dh->find_user_from_email($username);
 //        if(AMA_Common_DataHandler::isError($user_id)) {
           $message = translateFN("Username is not valid");
-          $redirect_to = "forget.php?message=$message";
+          $redirect_to = HTTP_ROOT_DIR . "/browsing/forget.php?message=$message";
           header('Location:'.$redirect_to);
           exit();
 //        }
@@ -109,10 +109,12 @@ switch ($op){
       if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)){
         // user is recognized as loggable
         $userStatus = $userObj->getStatus();
+        /*
         if ($userStatus == ADA_STATUS_REGISTERED)  // FIXME: practitioner and others?
         {
           // user is a ADAuser with status set to 0 OR
           // user is admin, author or switcher whose status is by default = 0
+            
           $_SESSION['sess_user_language'] = $p_selected_language;
           $_SESSION['sess_id_user'] = $userObj->getId();
           $_SESSION['sess_id_user_type'] = $userObj->getType();
@@ -125,17 +127,19 @@ switch ($op){
             $_SESSION['sess_selected_tester'] = $user_default_tester;
           }
         }
+         * 
+         */
       } else {
         // Utente non esistente o non loggable
         $message = translateFN("Username is not valid");
-        $redirect_to = "forget.php?message=$message";
+        $redirect_to = HTTP_ROOT_DIR. "/browsing/forget.php?message=$message";
         header('Location:'.$redirect_to);
         exit();
       }
     } else {
       // vuoto
       $message = translateFN("Username cannot be empty");
-      $redirect_to = "forget.php?message=$message";
+      $redirect_to = HTTP_ROOT_DIR."/browsing/forget.php?message=$message";
       header('Location:'.$redirect_to);
       exit();
     }
@@ -165,7 +169,7 @@ switch ($op){
     $testo.=translateFN(" requested to change his/her password in ADA");
     $link = HTTP_ROOT_DIR."/browsing/forget.php?uid=$user_id&tok=$token";
 
-    $testo.=translateFN(" To confirm this request, please follow this link:");
+    $testo.= PHP_EOL . PHP_EOL. translateFN(" To confirm this request, please follow this link:");
     $testo.= " ".$link;
 
     // $mh = MessageHandler::instance(MultiPort::getDSN($tester)); /* FIXME */
@@ -237,7 +241,7 @@ switch ($op){
       if(DataValidator::validate_password($password, $passwordcheck) === FALSE) {
         $errors = TRUE;
         $message .= translateFN('Le password digitate non corrispondo o contengono caratteri non validi.').'<br />';
-        header("Location: forget.php?message=$message&uid=$userid&tok=$token");
+        header("Location: ".HTTP_ROOT_DIR ."/browsing/forget.php?message=$message&uid=$userid&tok=$token");
         exit();
       }
       else {

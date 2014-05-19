@@ -1055,7 +1055,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         	$testerAr = $this->get_tester_info_from_pointer($GLOBALS['user_provider']);
         	$user_id_sql = 'SELECT U.id_utente FROM utente U, utente_tester UT WHERE '.
         			       'U.id_utente = UT.id_utente AND id_tester=? AND username=?';
-        	$sql_params = array ($username, $testerAr[0]);
+        	$sql_params = array ($testerAr[0], $username);
         } else {
         	$user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
         	$sql_params = $username;

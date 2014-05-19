@@ -95,7 +95,8 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             'email' => trim($userDataAr[2]),
                             'tipo' => AMA_TYPE_STUDENT,
                             'username' => trim($userDataAr[2]),
-                            'stato' => ADA_STATUS_PRESUBSCRIBED
+                            'stato' => ADA_STATUS_PRESUBSCRIBED,
+                        	'birthcity' => ''
                         )
                     );
                     $subscriberObj->setPassword(time());
@@ -144,7 +145,13 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             'tipo' => ADA_MSG_MAIL,
                             'mittente' => $adm_uname
                         );
-                        $mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
+                        
+                        if (MULTIPROVIDER) {
+                        	$mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
+                        } else {
+                        	$mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
+                        }
+                        
                         /**
                          * Send the message as an internal message
                          */
@@ -194,7 +201,12 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         'tipo' => ADA_MSG_MAIL,
                         'mittente' => $adm_uname
                     );
-                    $mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
+                    
+                    if (MULTIPROVIDER) {
+                        	$mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
+                        } else {
+                        	$mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
+                        }
                     /**
                      * Send the message an email message
                      */

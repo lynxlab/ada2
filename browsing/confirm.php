@@ -112,7 +112,8 @@ switch ($op){
     if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)) {
         $status = $userObj->getStatus();
         if ($status == ADA_STATUS_REGISTERED) {
-            $_SESSION['sess_user_language'] = $p_selected_language;
+        	// language has already been negotiated
+            // $_SESSION['sess_user_language'] = $p_selected_language;
             $_SESSION['sess_id_user'] = $userObj->getId();
             $GLOBALS['sess_id_user'] = $userObj->getId();
             $_SESSION['sess_id_user_type'] = $userObj->getType();
