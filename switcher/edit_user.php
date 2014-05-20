@@ -62,7 +62,13 @@ if (!$isEditingAStudent) {
 		 */
 	    $form = new UserProfileForm(array(), false, true);
 	    $form->fillWithPostData();
-	
+	    $password = trim($_POST['password']);
+	    $passwordcheck = trim($_POST['passwordcheck']);
+	    if(DataValidator::validate_password_modified($password, $passwordcheck) === FALSE) {
+	    	$message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
+	    	header("Location: edit_user.php?message=$message&id_user=".$_POST['id_utente']);
+	    	exit();
+	    }	
 	    if ($form->isValid()) {
 	        if(isset($_POST['layout']) && $_POST['layout'] != 'none') {
 	            $user_layout = $_POST['layout'];
@@ -121,6 +127,9 @@ if (!$isEditingAStudent) {
 	
 	$label = translateFN('Modifica utente');
 	$help = translateFN('Da qui il provider admin può modificare il profilo di un utente esistente');
+	if (!is_null($editedUserObj)) {
+		$label .= ': '.$editedUserObj->getUserName().' ('.$editedUserObj->getFullName().')';
+	}
 	
 	$layout_dataAr['JS_filename'] = array(
 			JQUERY,
@@ -130,6 +139,15 @@ if (!$isEditingAStudent) {
 	
 	$optionsAr['onload_func'] = 'initDateField();';
 	
+	/*
+	 * Display error message  if the password is incorrect
+	 */
+	if(isset($_GET['message']))
+	{
+		$help= $_GET['message'];
+	
+	}
+		
 	$content_dataAr = array(
 	    'user_name' => $user_name,
 	    'user_type' => $user_type,

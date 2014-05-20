@@ -1,5 +1,6 @@
 @import url("../page.css");
 @import url("../exercises.css");
+@import url("../form.css");
 
 #back A {
     background: url(../../img/back.png) no-repeat center left; 

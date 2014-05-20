@@ -22,14 +22,30 @@ class UserProfileForm extends UserRegistrationForm {
     public function  __construct($languages=array(),$allowEditProfile=false,$allowEditConfirm=false,$action=null) {
         parent::__construct();
         $this->addHidden('id_utente')->withData(0);
+        
+        /*
+         *  @author:Sara  20/05/2014
+         *  Workaround to remove the Google-Chrome autocomplete functionality.
+         */
+        $j='return remove_false_element()';
+        $this->setOnSubmit($j);
+        $false_username = FormControl::create(FormControl::INPUT_TEXT, 'false_username', '');  
+        $false_password = FormControl::create(FormControl::INPUT_PASSWORD, 'false_password', '');
+        $false_elements_fieldset = FormControl::create(FormControl::FIELDSET, 'false_elements_fieldset','');
+        $false_elements_fieldset->setHidden();
+        $false_elements_fieldset->withData(array($false_username,$false_password));
+        $this->addControl($false_elements_fieldset);
+        
+        
+        
         $this->addPasswordInput('password', translateFN('Password'));
              //->setValidator(FormValidator::PASSWORD_VALIDATOR);
 
         $this->addPasswordInput('passwordcheck', translateFN('Conferma la password'));
         
         /**
-         * The swithcer does not use this form to edit her own
-         * profile, therefore the avatar upload must be disabled
+         * If the swithcer does not use this form to edit her own
+         * profile, the avatar upload must be disabled
          */
         if ($_SESSION['sess_userObj']->getType()!=AMA_TYPE_SWITCHER || !$allowEditConfirm) {
 			$this->addFileInput('avatarfile', translateFN ('Seleziona un file immagine per il tuo avatar'));

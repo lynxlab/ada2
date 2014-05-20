@@ -85,6 +85,7 @@ $JS_i18n = array(
 //main vars
 var HTTP_ROOT_DIR='<?php echo HTTP_ROOT_DIR;?>';
 var HTTP_UPLOAD_PATH='<?php echo HTTP_UPLOAD_PATH;?>';
+var ADA_DEFAULT_AVATAR='<?php echo ADA_DEFAULT_AVATAR; ?>';
 <?php if (!empty($_SESSION['sess_template_family'])): ?>
 var ADA_TEMPLATE_FAMILY = '<?php echo $_SESSION['sess_template_family'];?>';
 <?php else: ?>

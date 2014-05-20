@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+
+div.fform { width: 80%; }
+div.fform form label { width: 50%; }
+div.fform form li { border-bottom: 1px dotted lightgray; padding: 15px 0 15px 0; }
+div.fform form input[type=text],
+div.fform form input[type=password],
+div.fform form select { width: 45%; border: 1px dotted gray; padding: 5px; }
+div.fform form fieldset fieldset { border: 1px dotted grey; margin-bottom: 10px; }
+div.fform form fieldset fieldset label { margin-left:0; width: 45%; display: inline-block; }
