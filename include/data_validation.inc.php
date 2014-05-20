@@ -186,6 +186,26 @@ class DataValidator
     }
     return false;
   }
+  
+    public static function validate_password_modified($password, $passwordcheck) {
+    if(isset($password) && !empty($password) && isset($passwordcheck)
+       && !empty($passwordcheck) && $password == $passwordcheck
+    ) {
+      $pattern = '/^[A-Za-z0-9_\.]{8,40}$/';
+      if (preg_match($pattern, $password)) {
+        return $password;
+      }
+    }
+    if(isset($password) && !empty($password) && !isset($passwordcheck))
+    {
+       return false; 
+    }
+    if((isset($password) && empty($password)) && ( isset($passwordcheck) && empty($passwordcheck)))
+    {
+      return true;  
+    }
+    return false;
+  }
 
   public static function validate_phone($phone) {
     if(!isset($phone)) {
