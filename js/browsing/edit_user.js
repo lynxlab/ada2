@@ -507,3 +507,19 @@ window.onbeforeunload = function(){
 /**
  * Down to here it's all about tabbed form handling and saving
  */
+
+
+/*
+ * @author:Sara
+ * Workaround to remove the Google-Chrome autocomplete functionality.
+ * this function remove the false_password, and false_username fields from Dom 
+ * return  true
+ */
+function remove_false_element()
+{
+    var username=$j('#false_username');
+    var password=$j('#false_password');
+    if(username.length>0) username.remove();
+    if(password.length>0) password.remove();
+    return true;
+}
