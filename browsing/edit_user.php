@@ -79,10 +79,10 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     $password = trim($_POST['password']);
     $passwordcheck = trim($_POST['passwordcheck']);
     if(DataValidator::validate_password_modified($password, $passwordcheck) === FALSE) {
-    $message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
-    header("Location: edit_user.php?message=$message");
-    exit();
-  }
+	    $message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
+	    header("Location: edit_user.php?message=$message");
+	    exit();
+  	}
     if ($form->isValid()) {
         if(isset($_POST['layout']) && $_POST['layout'] != 'none') {
             $user_layout = $_POST['layout'];

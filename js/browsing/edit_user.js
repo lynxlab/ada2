@@ -1,4 +1,12 @@
 /**
+ * global var to tell FForm.inc.php if jQuery uniform has been applied already
+ * and to tell the submit handler the timestamp of the last request, to prevent
+ * incidental and buggy uniform plugin double form submissions
+ */
+var appliedUniform = false;
+var lastSubmit = -1;
+
+/**
  * Initializations
  * 
  * @param maxSize the max uploadable file size 
@@ -14,10 +22,12 @@ function initDoc(maxSize,userId) {
          */
         if ($j('#avatar').val() != '') {
             var avatarValue = $j('#avatar').val();
+            var avatarImgUserId = userId + '/';
         } else {
-            var avatarValue = '../owl.png';
+            var avatarValue = ADA_DEFAULT_AVATAR;
+            var avatarImgUserId = '';
         }
-        var imgSrcAvatar = $j('<img>').attr('src',HTTP_UPLOAD_PATH+userId+'/'+avatarValue).attr('id','imgAvatar');
+        var imgSrcAvatar = $j('<img>').attr('src',HTTP_UPLOAD_PATH+avatarImgUserId+avatarValue).attr('id','imgAvatar');
         $j('#l_avatarfile').append($j('<div></div>').attr('id', 'avatar_preview'));
          $j('#avatar_preview').append(imgSrcAvatar);
         
@@ -177,7 +187,14 @@ function initUserRegistrationForm( hasTabs, useAjax )
 	if (useAjax) {
 	$j('form').submit(
 			function (e) {
+				e.stopPropagation();
 				e.preventDefault();
+				
+				if (lastSubmit+500 >  e.timeStamp) {
+					return;
+				} else {
+					lastSubmit = e.timeStamp;
+				}
 				
 				var theId = -1;
 				var theForm = $j(this);

@@ -47,26 +47,15 @@ $languages = Translator::getLanguagesIdAndName();
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form = new UserProfileForm($languages, true);
     $form->fillWithPostData();
-
+    $password = trim($_POST['password']);
+    $passwordcheck = trim($_POST['passwordcheck']);
+    if(DataValidator::validate_password_modified($password, $passwordcheck) === FALSE) {
+    	$message = translateFN('Le password digitate non corrispondono o contengono caratteri non validi.');
+    	header("Location: edit_tutor.php?message=$message");
+    	exit();
+    }
     if ($form->isValid()) {
-        $userObj->setFirstName($_POST['nome']);
-        $userObj->setLastName($_POST['cognome']);
-        $userObj->setEmail($_POST['email']);
-        if (trim($_POST['password']) != '') {
-            $userObj->setPassword($_POST['password']);
-        }
-        $userObj->setLayout($_POST['layout']);
-        $userObj->setAddress($_POST['indirizzo']);
-        $userObj->setCity($_POST['citta']);
-        $userObj->setProvince($_POST['provincia']);
-        $userObj->setCountry($_POST['nazione']);
-        $userObj->setBirthDate($_POST['birthdate']);
-        $userObj->setGender($_POST['sesso']);
-        $userObj->setPhoneNumber($_POST['telefono']);
-        $userObj->setProfile($_POST['profilo']);
-        $userObj->setLanguage($_POST['lingua']);
-        $userObj->setBirthCity($_POST['birthcity']);
-        $userObj->setBirthProvince($_POST['birthprovince']);        
+		$userObj->fillWithArrayData($_POST);
         MultiPort::setUser($userObj, array(), true);
 
         $navigationHistoryObj = $_SESSION['sess_navigation_history'];
@@ -90,10 +79,30 @@ $help = translateFN('Modifica dati utente');
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_MASKEDINPUT,
-		JQUERY_NO_CONFLICT
+		JQUERY_NO_CONFLICT,
+		ROOT_DIR.'/js/include/jquery/pekeUpload/pekeUpload.js'		
 );
 
-$optionsAr['onload_func'] = 'initDateField();';
+$layout_dataAr['CSS_filename'] = array(
+		JQUERY_UI_CSS,
+		ROOT_DIR.'/js/include/jquery/pekeUpload/pekeUpload.css'
+);
+
+$maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024*1024));
+
+$optionsAr['onload_func'] = 'initDoc('.$maxFileSize.','. $userObj->getId().');';
+
+// $optionsAr['onload_func'] = 'initDateField();';
+
+/*
+ * Display error message  if the password is incorrect
+ */
+if(isset($_GET['message']))
+{
+	$help= $_GET['message'];
+
+}
+
 
 $content_dataAr = array(
     'user_name' => $user_name,

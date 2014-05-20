@@ -1365,6 +1365,14 @@ class ADAPractitioner extends ADALoggableUser {
     public function setProfile($profile) {
         $this->profilo = $profile;
     }
+    
+    public function fillWithArrayData($user_dataAr) {
+    	
+    	parent::fillWithArrayData($user_dataAr);
+    	
+    	$this->tariffa = $user_dataAr['tariffa'];
+    	$this->profilo = $user_dataAr['profilo'];
+    }
 
     public function toArray() {
         $user_dataAr = parent::toArray();
