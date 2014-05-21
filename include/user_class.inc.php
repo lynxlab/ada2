@@ -603,7 +603,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
     		//        $this->setAvatar($dataArr['avatar']);
     		if (isset($_SESSION['uploadHelper']['fileNameWithoutPath'])) $this->setAvatar($_SESSION['uploadHelper']['fileNameWithoutPath']);
     		$this->setCap($dataArr['cap']);
-    		
+    		if (isset($dataArr['stato'])) $this->setStatus($dataArr['stato']);
     		$this->setBirthCity($dataArr['birthcity']);
     		$this->setBirthProvince($dataArr['birthprovince']);
     	}
