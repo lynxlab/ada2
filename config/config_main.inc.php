@@ -151,6 +151,7 @@ define('ADA_MSG_AGENDA',   'A');
 define('ADA_MSG_CHAT',     'C');
 define('ADA_MSG_PRV_CHAT', 'P');
 define('ADA_MSG_MAIL',     'M');
+define('ADA_MSG_MAIL_ONLY','O'); // only e-mail, no associated internal message
 
 /*
  * Message flags

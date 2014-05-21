@@ -154,7 +154,7 @@ class MessageHandler
     // handle the mail case in a different way
     // we want to use SimpleSpool even if user selected e-mail type
 
-    if ($type == ADA_MSG_MAIL){
+    if ($type == ADA_MSG_MAIL || $type == ADA_MSG_MAIL_ONLY){
       // delegate sending the e-mail to the mailer
       $mailer = new Mailer();
       $res = $mailer->send_mail($message_ha, $sender_email, $recipients_emails_ar);
@@ -163,8 +163,12 @@ class MessageHandler
         //  return $res; ???
          return new AMA_Error(AMA_ERR_SEND_MSG);
       }
-      // continue...
-      $spool = new SimpleSpool($sender_id, $this->dsn);
+      if ($type == ADA_MSG_MAIL_ONLY) {
+      	return $res;
+      } else {
+	    // continue...
+	    $spool = new SimpleSpool($sender_id, $this->dsn);
+      }
     }// end e-mail case
     else{
       switch ($type){
