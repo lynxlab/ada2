@@ -163,14 +163,14 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
          * via PHPMailer
          */
         $phpmailer = new PHPMailer();
-        $phpmailer->CharSet = 'UTF-8';
+        $phpmailer->CharSet = ADA_CHARSET;
         $phpmailer->IsSendmail();
         $phpmailer->SetFrom($adm_email);
         $phpmailer->AddReplyTo($adm_email);			
         $phpmailer->IsHTML(true);			
         $phpmailer->Subject = $title;
-
         $phpmailer->AddAddress($userObj->getEmail(),  $userObj->getFullName());
+        $phpmailer->AddBCC($adm_email);
         $phpmailer->Body = $HTMLText;
         $phpmailer->AltBody = $PLAINText;
         $phpmailer->Send();
