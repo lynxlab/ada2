@@ -15,13 +15,17 @@
  *
  * @param string $message - the message to be translated
  * @param string $language_from
- * @param string $language_to
+ * @param string $language_to 2 char string
  * @return string the translated message, if a translation was found, the original message otherwise
  */
-function translateFN($message, $language_from='italiano', $language_to='english') {
+function translateFN($message, $language_from=null, $language_to=null) {
 
-    $sess_userObj = $_SESSION['sess_userObj'];
-    $languageId = $sess_userObj->getLanguage();
+	if (is_null($language_to)) {
+		$sess_userObj = $_SESSION['sess_userObj'];
+		$languageId = $sess_userObj->getLanguage();
+	} else {
+		$languageId = $language_to;
+	}
 
     if($languageId != 0) {
     $languageInfo = Translator::getLanguageInfoForLanguageId($languageId);
