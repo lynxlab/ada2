@@ -238,6 +238,11 @@ class UserController extends AbstractController implements AdaApiInterface {
 		 */
 		if ($form->isValid()) {
 			
+			/**
+			 * Uncomment if the user is to be associated  
+			 * by default to the public tester.
+			 */
+// 			$regProvider = array (ADA_PUBLIC_TESTER);
 			$regProvider = array();
 			
 			/**
@@ -291,23 +296,29 @@ class UserController extends AbstractController implements AdaApiInterface {
 					
 					$token = $tokenObj->getTokenString();
 					
-					$admtypeAr = array(AMA_TYPE_ADMIN);
-					$admList = $this->common_dh-> get_users_by_type($admtypeAr);
-					if (!\AMA_DataHandler::isError($admList)){
+					$admTypeAr = array(AMA_TYPE_ADMIN);
+					$extended_data = TRUE;
+					$admList = $this->common_dh->get_users_by_type($admTypeAr, $extended_data);
+					if (!\AMA_DataHandler::isError($admList) && array_key_exists('username',$admList[0]) && $admList[0]['username'] != '' && $admList[0]['username'] != null){
 						$adm_uname = $admList[0]['username'];
+						$adm_email = $admList[0]['e_mail'];
 					} else {
 						$adm_uname = ADA_ADMIN_MAIL_ADDRESS;
+						$adm_email = ADA_ADMIN_MAIL_ADDRESS;
 					}
 					
-					$title = PORTAL_NAME.': ' . translateFN('ti chiediamo di confermare la registrazione.');
+					$switcherObj = \Multiport::findUser($this->authUserID);
+					$emailLang = $switcherObj->getLanguage();
+						
+					$title = PORTAL_NAME.': ' . translateFN('ti chiediamo di confermare la registrazione.',null,$emailLang);
 					
-					$text = sprintf(translateFN('Gentile %s, ti chiediamo di confermare la registrazione ai %s.'),
+					$text = sprintf(translateFN('Gentile %s, ti chiediamo di confermare la registrazione ai %s.',null,$emailLang),
 							$userObj->getFullName(), PORTAL_NAME)
 							. PHP_EOL . PHP_EOL
-							. translateFN('Il tuo nome utente è il seguente:')
+							. translateFN('Il tuo nome utente è il seguente:',null,$emailLang)
 							. ' ' . $userObj->getUserName()
 							. PHP_EOL . PHP_EOL
-							. sprintf(translateFN('Puoi confermare la tua registrazione ai %s seguendo questo link:'),
+							. sprintf(translateFN('Puoi confermare la tua registrazione ai %s seguendo questo link:',null,$emailLang),
 									PORTAL_NAME)
 									. PHP_EOL
 									. ' ' . HTTP_ROOT_DIR."/browsing/confirm.php?uid=$id_user&tok=$token"
