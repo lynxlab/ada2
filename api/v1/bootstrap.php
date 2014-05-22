@@ -63,4 +63,19 @@ $GLOBALS['ADA_ERROR_POLICY'][ADA_ERROR_PHASE_DEVELOP][ADA_ERROR_SEVERITY_NORMAL]
 $GLOBALS['ADA_ERROR_POLICY'][ADA_ERROR_PHASE_DEVELOP][ADA_ERROR_SEVERITY_LIGHT]  = ADA_ERROR_LOG_TO_FILE;
 $GLOBALS['ADA_ERROR_POLICY'][ADA_ERROR_PHASE_DEVELOP][ADA_ERROR_SEVERITY_NONE]   = ADA_ERROR_LOG_TO_FILE;
 
+/**
+ * Set the globals of the user_provider guessed from 3rd level domain
+ */
+if (!MULTIPROVIDER) {
+
+	list($client) = explode ('.',preg_replace('/(http[s]?:\/\/)/', '', $_SERVER['SERVER_NAME']));
+
+	if (isset($client) && !empty ($client) && is_dir(ROOT_DIR.'/clients/'.$client))
+	{
+		// $_SESSION['sess_user_provider'] = $client;
+		$GLOBALS['user_provider'] = $client;
+		// other session vars per provider may go here...
+	}
+	else unset ($GLOBALS['user_provider']);
+}
 ?>
