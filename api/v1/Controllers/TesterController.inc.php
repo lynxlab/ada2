@@ -36,11 +36,11 @@ class TesterController extends AbstractController implements AdaApiInterface {
 			
 			if (!\AMA_DB::isError($testers)) {
 				// need to map $testers to id and name pairs
-				if (is_null($this->authUserID) || !is_array($this->authUserTesters)) {
+				if (!MULTIPROVIDER && (is_null($this->authUserID) || !is_array($this->authUserTesters))) {
 					throw new APIException('No Auth User or Testers Found', 400);
 				} else {
 					foreach ($testers as $testername=>$testerid) {
-						if (in_array($testername,$this->authUserTesters))
+						if (MULTIPROVIDER || in_array($testername,$this->authUserTesters))
 							$retArray[] = array ('id'=>$testerid, 'name'=>$testername);
 					}
 					if (isset($retArray) && count($retArray)>0) {
