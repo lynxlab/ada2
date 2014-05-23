@@ -41,8 +41,15 @@ $endpoints = array (
  * that will bypass the OAuth2 authentication
  */
 $publicEndpoints = array (
-	'info', 'testers'
+	'info'
 );
+
+/**
+ * Define extra public endpoints only if MULTIPROIVDER
+ */
+if (MULTIPROVIDER) {
+	$publicEndpoints = array_merge($publicEndpoints,array ('testers'));
+}
 
 /**
  * Update supported formats if needed
