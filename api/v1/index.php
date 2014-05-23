@@ -1,6 +1,6 @@
 <?php
 /**
- * test.php
+ * index.php
  *
  * @package        API
  * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
@@ -12,7 +12,18 @@
 namespace  AdaApi;
 require_once 'bootstrap.php';
 
+/**
+ * define which API version we're implementing
+ */
+define('ADA_API_VERSION', 'v1');
+
 $app = new \Slim\Slim ();
+
+/**
+ * Get resource URI
+ */
+list ($resourceUri) = explode('.', $app->request->getResourceUri());
+$resourceUri = ltrim($resourceUri,'/');
 
 /**
  * Define here all the endpoints (in the array keys) with the
@@ -22,7 +33,23 @@ $endpoints = array (
 	'users'   =>       array ('controllerclass'=>'UserController',         'methods'=>array('GET','POST')),
 	'testers' =>       array ('controllerclass'=>'TesterController',       'methods'=>array('GET')),
 	'subscriptions' => array ('controllerclass'=>'SubscriptionController', 'methods'=>array('POST')),
+	'info'    =>       array ('controllerclass'=>'InfoController',         'methods'=>array('GET'), 'extraformats'=>array('rss1','rss2','atom')),
 );
+
+/**
+ * Define an array of public endpoints, 
+ * that will bypass the OAuth2 authentication
+ */
+$publicEndpoints = array (
+	'info', 'testers'
+);
+
+/**
+ * Update supported formats if needed
+ */
+if (isset($endpoints[$resourceUri]['extraformats'])) {
+	AdaApi::$supportedFormats = array_merge(AdaApi::$supportedFormats, $endpoints[$resourceUri]['extraformats']);
+}
 
 if (isset($_REQUEST['format'])) {
 	if (in_array(trim($_REQUEST['format']),AdaApi::$supportedFormats)) {
@@ -66,6 +93,7 @@ $app->add(new FormatSupported($format!==false));
 $app->add(new \Slim\Middleware\ContentTypes());
 
 /**
+ * If the endpoint is not in the publicEndpoints array,
  * add a middleware class to check if a valid
  * access token has been provided either in 
  * the Authorize HTTP Header or in the METHOD body
@@ -73,7 +101,9 @@ $app->add(new \Slim\Middleware\ContentTypes());
  * This object will hold the authorized user ID as well
  */
 $oAuth2Obj = new OAuth2Auth();
-$app->add($oAuth2Obj);
+if (!in_array(ltrim($resourceUri,'/'), $publicEndpoints)) {
+	$app->add($oAuth2Obj);
+}
 
 /**
  * add a middleware class to remove unwanted query string parameters
