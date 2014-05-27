@@ -30,8 +30,8 @@ $allowedUsersAr = array(AMA_TYPE_TUTOR, AMA_TYPE_STUDENT);
  * Performs basic controls before entering this module
  */
 $neededObjAr = array(
-  AMA_TYPE_TUTOR => array('layout','node','course'),
-  AMA_TYPE_STUDENT => array('layout','node','course')
+  AMA_TYPE_TUTOR => array('layout','node','course','course_instance'),
+  AMA_TYPE_STUDENT => array('layout','node','course','course_instance')
 );
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
@@ -40,6 +40,9 @@ $self =  whoami();
 
 include_once 'include/browsing_functions.inc.php';
 include_once ROOT_DIR.'/include/upload_funcs.inc.php';
+include_once ROOT_DIR.'/include/Course.inc.php';
+
+
 
 /*
  * YOUR CODE HERE
@@ -60,17 +63,18 @@ $id_course_instance = $_SESSION['sess_id_course_instance'];
 
 // ******************************************************
 // get user object
-$userObj = read_user_from_DB($sess_id_user);
+$userObj = $_SESSION['sess_userObj'];
 if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
                $id_profile = $userObj->tipo;
                $user_name =  $userObj->username;
                $user_name_name = $userObj->nome;
                $user_type = $userObj->convertUserTypeFN($id_profile);
                $user_family = $userObj->template_family;
-		if ($id_profile==AMA_TYPE_STUDENT) {
+               $userHomePage =   $userObj->getHomePage();
+               if ($id_profile==AMA_TYPE_STUDENT) {
 	               $user_history = $userObj->history;
 	               $user_level = $userObj->get_student_level($sess_id_user,$sess_id_course_instance);
-		}
+               }
 }  else {
                $errObj = new ADA_error(translateFN("Utente non trovato"),translateFN("Impossibile proseguire."));
 }
@@ -81,16 +85,18 @@ $help = translateFN("Da qui lo studente può scaricare i file allegati ai nodi")
 
 $banner = include ("$root_dir/include/banner.inc.php");
 
-    $course_ha = $dh->get_course($id_course);
-    if (AMA_DataHandler::isError($course_ha)){
-      $msg = $course_ha->getMessage();
-      header("Location: " . $http_root_dir . "/browsing/student.php?status=$msg");
+// ******************************************************
+// get course object
+    $courseObj = $_SESSION['sess_courseObj'];
+    if ( $courseObj instanceof Course) {
+        $author_id = $courseObj->id_autore;
+    } else {
+      header("Location: " . $userHomePage);
     }
-
-    $author_id = $course_ha['id_autore'];
+            
     //il percorso in cui caricare deve essere dato dal media path del corso, e se non presente da quello di default
-    if($course_ha['media_path'] != "") {
-      $media_path = $course_ha['media_path']  ;
+    if($courseObj->media_path != "") {
+      $media_path = $courseObj->media_path;
     }
     else {
       $media_path = MEDIA_PATH_DEFAULT . $author_id ;
@@ -173,65 +179,70 @@ if (isset($_GET['file'])){
 	         $stop = count($filenameAr)-1;
 	         $course_instance = $filenameAr[0];
 	         $id_sender  = $filenameAr[1];
-		 if (is_numeric($id_sender)) {
-		         $id_node =  $filenameAr[2]."_".$filenameAr[3];
-		         $filename = '';
-		         for ($k = 5; $k<=$stop;$k++){
-		              $filename .=  $filenameAr[$k];
-		              if ($k<$stop)
-       		          	$filename .= "_";
-	          	 }
-                        $sender_array = $common_dh->get_user_info($id_sender);
-                        if(!AMA_Common_DataHandler::isError($sender_array)) {
-                            $id_profile = $sender_array['tipo'];
-                            switch ($id_profile){
-                                case   AMA_TYPE_STUDENT:
-                                case   AMA_TYPE_AUTHOR:
-                                case   AMA_TYPE_TUTOR:
-                                      $user_name_sender =  $sender_array['username'];
-                                      $user_surname_sender =  $sender_array['cognome'];
-                                      $user_name_sender = $sender_array['nome'];
-                                      $user_name_complete_sender = $user_name_sender .' ' . $user_surname_sender;
-                                        break;
-                                default:
-                                    // errore
-                                   $sender_error = 1;
-                            }
-         		}
+                 if ($course_instance == $sess_id_course_instance) {
+                     if (is_numeric($id_sender)) {
+                             $id_node =  $filenameAr[2]."_".$filenameAr[3];
+                             $filename = '';
+                             for ($k = 5; $k<=$stop;$k++){
+                                  $filename .=  $filenameAr[$k];
+                                  if ($k<$stop)
+                                    $filename .= "_";
+                             }
+                            $sender_array = $common_dh->get_user_info($id_sender);
+                            if(!AMA_Common_DataHandler::isError($sender_array)) {
+                                $id_profile = $sender_array['tipo'];
+                                switch ($id_profile){
+                                    case   AMA_TYPE_STUDENT:
+                                    case   AMA_TYPE_AUTHOR:
+                                    case   AMA_TYPE_TUTOR:
+                                          $user_name_sender =  $sender_array['username'];
+                                          $user_surname_sender =  $sender_array['cognome'];
+                                          $user_name_sender = $sender_array['nome'];
+                                          $user_name_complete_sender = $user_name_sender .' ' . $user_surname_sender;
+                                          
+                                          /**
+                                           * @todo verificare a cosa serve $fid_node. Apparentemente non usato
+                                           */
+                                          if (!isset($fid_node) OR ($fid_node == $id_node)) {
+                                                $out_fields_ar = array('nome');
+                                                $clause = "ID_NODO = '$id_node'";
+                                                $nodes = $dh->_find_nodes_list($out_fields_ar, $clause);
+                                                if(!AMA_DB::isError($nodes)) {
+                                                    foreach ($nodes as $single_node) {
+                                                        $id_node = $single_node[0];
+                                                        $node_name = $single_node[1];
+                                                    }
+                                                }
+                                                $tr = CDOMElement::create('tr','id:row'.$i);
+                                                $tbody->addChild($tr);
 
-	        	if ((!$sender_error) AND ($course_instance == $sess_id_course_instance)){
-                            if (!isset($fid_node) OR ($fid_node == $id_node)) {
-                                $out_fields_ar = array('nome');
-                                $clause = "ID_NODO = '$id_node'";
-                                $nodes = $dh->_find_nodes_list($out_fields_ar, $clause);
-                                if(!AMA_DB::isError($nodes)) {
-                                    foreach ($nodes as $single_node) {
-                                        $id_node = $single_node[0];
-                                        $node_name = $single_node[1];
-                                    }
+                                                $td = CDOMElement::create('td');
+                                                $td->addChild(new CText('<a href="download.php?file='.$complete_file_name.'" target=_blank>'.$filename.'</a> '));
+                                                $tr->addChild($td);
+
+                                                $td = CDOMElement::create('td');
+                                                $td->addChild(new CText($user_name_complete_sender));
+                                                $tr->addChild($td);
+
+                                                $td = CDOMElement::create('td');
+                                                $td->addChild(new CText($data));
+                                                $tr->addChild($td);
+
+                                                $td = CDOMElement::create('td');
+                                                $td->addChild(new CText('<a href=../browsing/view.php?id_node='.$id_node.'>'.$node_name.'</a>'));
+                                                $tr->addChild($td);
+
+                                            }
+                                            
+                                            break;
+                                    default:
+                                        // errore
+                                       $sender_error = 1;
                                 }
-				$tr = CDOMElement::create('tr','id:row'.$i);
-				$tbody->addChild($tr);
-
-                                $td = CDOMElement::create('td');
-                                $td->addChild(new CText('<a href="download.php?file='.$complete_file_name.'" target=_blank>'.$filename.'</a> '));
-                                $tr->addChild($td);
-                                
-                                $td = CDOMElement::create('td');
-                                $td->addChild(new CText($user_name_complete_sender));
-                                $tr->addChild($td);
-
-                                $td = CDOMElement::create('td');
-                                $td->addChild(new CText($data));
-                                $tr->addChild($td);
-
-                                $td = CDOMElement::create('td');
-                                $td->addChild(new CText('<a href=../browsing/view.php?id_node='.$id_node.'>'.$node_name.'</a>'));
-                                $tr->addChild($td);
-                                
-                            }   
-                        }
-		}
+                            }
+                     }     
+                     
+                 }
            } // end foreach
            $html = $table->getHtml();
         } 
@@ -261,15 +272,21 @@ $node_data = array(
   */
 
 $layout_dataAr['JS_filename'] = array(
-		JQUERY,
-		JQUERY_DATATABLE,
-		JQUERY_NO_CONFLICT
+		ROOT_DIR.'/js/include/jquery/jquery-1.9.1.min.js',
+		ROOT_DIR.'/js/include/jquery/dataTables/jquery.dataTables.min.js',
+		ROOT_DIR.'/js/include/jquery.noConflict.js',
+		ROOT_DIR.'/js/browsing/download.js'
 	);
 $layout_dataAr['CSS_filename']= array(
-		JQUERY_DATATABLE_CSS
+		ROOT_DIR.'/js/include/jquery/dataTables/jquery.dataTables.css'
 	);
   $render = null;
   $options['onload_func'] = 'dataTablesExec()';
-  ARE::render($layout_dataAr, $node_data, $render, $options);
 
-?>
+  $imgAvatar = $userObj->getAvatar();
+  $avatar = CDOMElement::create('img','src:'.$imgAvatar);
+  $avatar->setAttribute('class', 'img_user_avatar');
+  
+  $node_data['user_modprofilelink'] = $userObj->getEditProfilePage();
+  $node_data['user_avatar'] = $avatar->getHtml();
+  ARE::render($layout_dataAr, $node_data, $render, $options);
