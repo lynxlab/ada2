@@ -380,6 +380,16 @@ $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.spreadsheetml.temp
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.presentationml.presentation"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.presentationml.template"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.presentationml.slideshow"]['permission'] = _GO;
+// odt, ods, odp etc...
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.text"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.database"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.spreadsheet"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.presentation"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.graphics"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.chart"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.formula"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.image"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.text-master"]['permission'] = _GO;
 
 $ADA_MIME_TYPE["application/octet-stream"]['permission'] = _STOP;
 
@@ -435,6 +445,16 @@ $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.spreadsheetml.temp
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.presentationml.presentation"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.presentationml.template"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/vnd.openxmlformats-officedocument.presentationml.slideshow"]['type'] = _DOC;
+// odt, ods, odp etc...
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.text"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.database"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.spreadsheet"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.presentation"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.graphics"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.chart"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.formula"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.image"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/vnd.oasis.opendocument.text-master"]['type'] = _DOC;
 
 $ADA_MIME_TYPE["application/octet-stream"]['type'] = _EXE;
 
