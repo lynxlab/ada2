@@ -136,12 +136,12 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
          * controllo che sia stato inviato un file e che non si siano verificati errori
          * durante l'upload.
          */
-
-        if ( !($empty_filename = empty($filename)) && !$file_upload_error
-             && $file_type !== false
-             && ( $accepted_mimetype = ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE))
-             && ( $accepted_filesize = ($file_size < ADA_FILE_UPLOAD_MAX_FILESIZE))
-        )
+    	$empty_filename = empty($filename);
+    	$accepted_mimetype = ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
+    	$accepted_filesize = ($file_size < ADA_FILE_UPLOAD_MAX_FILESIZE);
+    	
+        if ( !$empty_filename && !$file_upload_error && $file_type !== false
+             && $accepted_mimetype && $accepted_filesize )
         {
             /*
              * qui spostamento del file
@@ -308,6 +308,10 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
     if ( !is_dir($upload_path) || !is_writable($upload_path) ) {
       // restituire un messaggio di errore e saltare la parte di scrittura del file
       $error_code = ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH;
+      $error_message = translateFN('Upload del file non riuscito.');
+      $error_message .= ' '.translateFN('Il percorso di destinazione non è scrivibile.');
+      $form = UserModuleHtmlLib::uploadForm('upload.php', $sess_id_user, $id_course, $id_course_instance, $id_node, $error_message);
+      $form = $form->getHtml();
     }
     else {
       // cartella di upload presente e scrivibile
@@ -315,10 +319,12 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
        * controllo che sia stato inviato un file e che non si siano verificati errori
        * durante l'upload.
        */
-
-      if ( !($empty_filename = empty($filename)) && !$file_upload_error
-           && ( $accepted_mimetype = ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE))
-           && ( $accepted_filesize = ($file_size < ADA_FILE_UPLOAD_MAX_FILESIZE))){
+	  $empty_filename = empty($filename);
+	  $accepted_mimetype = ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
+	  $accepted_filesize = ($file_size < ADA_FILE_UPLOAD_MAX_FILESIZE);
+	  
+      if ( !$empty_filename && !$file_upload_error &&
+            $accepted_mimetype && $accepted_filesize ){
         /*
          * qui spostamento del file
          */
@@ -376,8 +382,37 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
           // redirige l'utente alla pagina da cui è arrivato all'upload.
           $navigation_history = $_SESSION['sess_navigation_history'];
           $last_visited_node  = $navigation_history->lastModule();
-          header("Location: $last_visited_node");
-          exit();
+          /**
+           * Must ask user what she wants to do.
+           * This is done with a modal dialog, jQuery is needed
+           */
+
+          $layout_dataAr['JS_filename'] = array(
+					JQUERY,
+					JQUERY_UI,
+					JQUERY_NO_CONFLICT
+		  );
+			
+		  $layout_dataAr['CSS_filename'] = array(
+					JQUERY_UI_CSS
+		  );
+			
+		  $askOptions['title'] = translateFN('File caricato con successo');
+	      $askOptions['message']  = translateFN('Cosa vuoi fare ora?');
+		  $askOptions['buttons'][] = array ('label' => translateFN ('Torna al Corso'),
+											'action'=>HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$id_node, 
+											'icon'=>'ui-icon-arrowrefresh-1-w');
+		  $askOptions['buttons'][] = array ('label' => translateFN ('Carica un altro file'),
+											'action'=>$_SERVER['PHP_SELF'] ,
+											'icon'=>'ui-icon-circle-arrow-n');
+		  $askOptions['buttons'][] = array ('label' => translateFN('Vai all\'elenco dei file'),
+											'action'=>HTTP_ROOT_DIR.'/browsing/download.php',
+											'icon'=>'ui-icon-folder-open');
+			
+		  $optionsAr['onload_func']  = "askActionToUser('".rawurlencode(json_encode($askOptions))."');";          
+          
+          // header("Location: $last_visited_node");
+          // exit();
         }
       }
       else {
@@ -387,7 +422,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
           $error_message .= translateFN('La dimensione del file supera quella massima consentita.');
         }
         else if(!$accepted_mimetype) {
-          $error_message .= translateFN('Il tipo di file inviato non &egrave; tra quelli accettati dalla piattaforma.');
+          $error_message .= translateFN('Il tipo di file inviato non &egrave; tra quelli accettati dalla piattaforma.').' '.$file_type;
         }
 
         $form = UserModuleHtmlLib::uploadForm('upload.php', $sess_id_user, $id_course, $id_course_instance, $id_node, $error_message);
@@ -442,7 +477,9 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
   HTML page building
   */
 
-  ARE::render($layout_dataAr, $content_dataAr);
+
+
+  ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr);
 }
 /*
  * L'autore e l'amministratore non possono utilizzare il modulo collabora,
