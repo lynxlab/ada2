@@ -56,8 +56,13 @@ class ArrayToXML {
           ArrayToXML::toXml($value, $key, $node);
         } else {
           // add single node.
-          $value = htmlentities($value, ENT_COMPAT | ENT_HTML401, ADA_CHARSET);
-          $xml->addChild($key,$value);
+          // $value = htmlentities($value, ENT_COMPAT | ENT_XHTML, ADA_CHARSET);
+          $new_child = $xml->addChild($key);
+          if ($new_child !== NULL) {
+                $node = dom_import_simplexml($new_child);
+                $no   = $node->ownerDocument;
+                $node->appendChild($no->createCDATASection($value));
+          }        	
         }
       }
     }
