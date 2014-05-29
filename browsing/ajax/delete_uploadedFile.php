@@ -13,6 +13,12 @@
  * Base config file
  */
 require_once realpath(dirname(__FILE__)) . '/../../config_path.inc.php';
+
+/**
+ * Do not track this in navigation history
+ */
+$trackPageToNavigationHistory = false;
+
 /**
  * Clear node and layout variable in $_SESSION
  */
