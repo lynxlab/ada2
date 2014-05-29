@@ -185,6 +185,7 @@ if (isset($_GET['file'])){
 	         $stop = count($filenameAr)-1;
 	         $course_instance = $filenameAr[0];
 	         $id_sender  = $filenameAr[1];
+	         $id_course = $filenameAr[2];
                  if ($course_instance == $sess_id_course_instance  && $id_course == $sess_id_course) {
                      if (is_numeric($id_sender)) {
                              $id_node =  $filenameAr[2]."_".$filenameAr[3];
