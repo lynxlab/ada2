@@ -167,6 +167,12 @@ if (isset($_GET['file'])){
             $thHead = CDOMElement::create('th','class: node');
             $thHead->addChild(new CText(translateFN('nodo')));
             $trHead->addChild($thHead);
+                        
+            if ($userObj->getType()==AMA_TYPE_TUTOR) {
+            	$thHead = CDOMElement::create('th','class: node');
+            	$thHead->addChild(new CText(translateFN('azioni')));
+            	$trHead->addChild($thHead);            	
+            }                        
 
             $thead->addChild($trHead);
             
@@ -179,7 +185,7 @@ if (isset($_GET['file'])){
 	         $stop = count($filenameAr)-1;
 	         $course_instance = $filenameAr[0];
 	         $id_sender  = $filenameAr[1];
-                 if ($course_instance == $sess_id_course_instance) {
+                 if ($course_instance == $sess_id_course_instance  && $id_course == $sess_id_course) {
                      if (is_numeric($id_sender)) {
                              $id_node =  $filenameAr[2]."_".$filenameAr[3];
                              $filename = '';
@@ -231,6 +237,16 @@ if (isset($_GET['file'])){
                                                 $td = CDOMElement::create('td');
                                                 $td->addChild(new CText('<a href=../browsing/view.php?id_node='.$id_node.'>'.$node_name.'</a>'));
                                                 $tr->addChild($td);
+                                                
+                                                if ($userObj->getType()==AMA_TYPE_TUTOR) {
+                                                	$td = CDOMElement::create('td');
+	                                                	$buttonDel = CDOMElement::create('button','class:deleteButton');
+	                                                	$buttonDel->setAttribute('style', 'height: 1.5em');
+	                                                	$buttonDel->setAttribute('onclick','javascript:deleteFile(\''.rawurlencode(translateFN('Confermi la cancellazione del file').' '.$filename.' ?').'\',\''.rawurlencode($complete_file_name).'\',\'row'.$i.'\');');
+	                                                	$buttonDel->setAttribute('title',translateFN('Clicca per cancellare il file'));
+                                                	$td->addChild($buttonDel);
+                                                	$tr->addChild($td);
+                                                }                                                                                                
 
                                             }
                                             
@@ -271,17 +287,18 @@ $node_data = array(
   HTML page building
   */
 
-$layout_dataAr['JS_filename'] = array(
-		ROOT_DIR.'/js/include/jquery/jquery-1.9.1.min.js',
-		ROOT_DIR.'/js/include/jquery/dataTables/jquery.dataTables.min.js',
-		ROOT_DIR.'/js/include/jquery.noConflict.js',
-		ROOT_DIR.'/js/browsing/download.js'
+$layout_dataAr['JS_filename'] = array(		
+		JQUERY,
+		JQUERY_DATATABLE,
+		JQUERY_UI,
+		JQUERY_NO_CONFLICT
 	);
 $layout_dataAr['CSS_filename']= array(
-		ROOT_DIR.'/js/include/jquery/dataTables/jquery.dataTables.css'
+		JQUERY_UI_CSS,
+		JQUERY_DATATABLE_CSS,
 	);
   $render = null;
-  $options['onload_func'] = 'dataTablesExec()';
+  $options['onload_func'] = 'initDoc()';
 
   $imgAvatar = $userObj->getAvatar();
   $avatar = CDOMElement::create('img','src:'.$imgAvatar);
