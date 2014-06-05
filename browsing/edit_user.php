@@ -30,7 +30,7 @@ $variableToClearAR = array('node', 'layout', 'course', 'course_instance');
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER);
+$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR);
 
 /**
  * Performs basic controls before entering this module
@@ -38,7 +38,8 @@ $allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER);
 $neededObjAr = array(
     AMA_TYPE_STUDENT => array('layout'),
     AMA_TYPE_AUTHOR => array('layout'),
-	AMA_TYPE_SWITCHER => array('layout')
+    AMA_TYPE_SWITCHER => array('layout'),
+    AMA_TYPE_TUTOR => array('layout')
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
@@ -61,6 +62,7 @@ $editUserObj = null;
 switch($userObj->getType()) {
 	case AMA_TYPE_STUDENT:
 	case AMA_TYPE_AUTHOR:
+        case AMA_TYPE_TUTOR:
 		$editUserObj = clone $userObj;
 		break;
 	case AMA_TYPE_SWITCHER:
@@ -117,7 +119,20 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
      */
     $allowEditConfirm= ($userObj->getType()==AMA_TYPE_SWITCHER);
     $user_dataAr = $editUserObj->toArray();
+    if($userObj->getType()==AMA_TYPE_AUTHOR || $userObj->getType()==AMA_TYPE_TUTOR)
+    {
+        if(isset($_GET['saveData']))
+        {
+            header('Location: ' .$userObj->getEditProfilePage().'?saveData' );
+            exit();
+        }
+        else
+        {
+            header('Location: ' .$userObj->getEditProfilePage() );
+            exit();
+        }
     
+    }
     // the standard UserProfileForm is always needed.
     // Let's create it
     if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
