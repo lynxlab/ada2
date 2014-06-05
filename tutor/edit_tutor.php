@@ -60,7 +60,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $navigationHistoryObj = $_SESSION['sess_navigation_history'];
         $location = $navigationHistoryObj->lastModule();
-        header('Location: ' . $location);
+        header('Location: ' . $location.'?saveData');
         exit();
     }
 } else {
@@ -73,8 +73,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 $label = translateFN('Modifica dati utente');
-
-$help = translateFN('Modifica dati utente');
+if(isset($_GET['saveData']))
+{
+    $help = translateFN('Dati salvati');  
+}
+else
+{
+    $help = translateFN('Modifica dati utente');
+}
 
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
