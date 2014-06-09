@@ -30,8 +30,8 @@ $allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_
 $neededObjAr = array(
 		AMA_TYPE_STUDENT => array('layout'),
 		AMA_TYPE_SWITCHER => array('layout'),
-                AMA_TYPE_AUTHOR =>array('layout'),
-                AMA_TYPE_TUTOR =>array('layout'),
+                AMA_TYPE_AUTHOR => array('layout'),
+		AMA_TYPE_TUTOR => array('layout')
 );
 
 /**

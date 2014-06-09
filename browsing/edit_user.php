@@ -121,17 +121,8 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     $user_dataAr = $editUserObj->toArray();
     if($userObj->getType()==AMA_TYPE_AUTHOR || $userObj->getType()==AMA_TYPE_TUTOR)
     {
-        if(isset($_GET['saveData']))
-        {
-            header('Location: ' .$userObj->getEditProfilePage().'?saveData' );
-            exit();
-        }
-        else
-        {
-            header('Location: ' .$userObj->getEditProfilePage() );
-            exit();
-        }
-    
+        header('Location: ' .$userObj->getEditProfilePage() );
+        exit();
     }
     // the standard UserProfileForm is always needed.
     // Let's create it

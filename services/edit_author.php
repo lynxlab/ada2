@@ -57,11 +57,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($form->isValid()) {
         $userObj->fillWithArrayData($_POST);
         MultiPort::setUser($userObj, array(), true);
-
-        $navigationHistoryObj = $_SESSION['sess_navigation_history'];
+        $help = translateFN('Dati salvati');
+        /*$navigationHistoryObj = $_SESSION['sess_navigation_history'];
         $location = $navigationHistoryObj->lastModule();
-        header('Location: ' . $location.'?saveData');
-        exit();
+        header('Location: ' . $location);
+        exit();*/
     }
 } else {
     $form = new UserProfileForm($languages);
@@ -70,17 +70,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_dataAr['email'] = $user_dataAr['e_mail'];
     unset($user_dataAr['e_mail']);
     $form->fillWithArrayData($user_dataAr);
+    $help = translateFN('Modifica dati utente');
 }
 
 $label = translateFN('Modifica dati utente');
-if(isset($_GET['saveData']))
-{
-    $help = translateFN('Dati salvati');  
-}
-else
-{
-    $help = translateFN('Modifica dati utente');
-}
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
