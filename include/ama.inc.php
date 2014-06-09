@@ -7305,6 +7305,9 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         // check that the author is not an administrator
         $user_ha = $this->_get_user_info($node_ha['id_node_author']);
+        if (AMA_DB::isError($user_ha)) {
+            return $user_ha;
+        }
         $type = $user_ha['tipo'];
 
         ADALogger::log_db("looking for user type ... got $type");
@@ -11575,7 +11578,7 @@ public function get_updates_nodes($userObj, $pointer)
                 $clause .= ' and ';
 
             $node_id_prep = $this->sql_prepared($node_id);
-            $clause .= "id_nodo = $node_id_prep";
+            $clause .= "n.id_nodo = $node_id_prep";
         }
 
         // if ($clause)

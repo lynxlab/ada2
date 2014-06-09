@@ -21,7 +21,10 @@
 // Banner functions.
 //
 
-
+/**
+ * FIXME: the banner has to be managed 
+ * at the moment no script use it
+ * 
 $bannerObj = New Banner();
 
 if (($bannerObj->impressionControl) && ($bannerObj->moduleControl)){
@@ -30,6 +33,8 @@ if (($bannerObj->impressionControl) && ($bannerObj->moduleControl)){
 } else {
 	return NULL;
 }
+ * 
+ */
 
 /////////////////////////////////
 
