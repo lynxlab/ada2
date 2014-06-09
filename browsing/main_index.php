@@ -56,8 +56,9 @@ include_once 'include/cache_manager.inc.php';
 include_once CORE_LIBRARY_PATH.'/includes.inc.php';
 include_once ROOT_DIR.'/include/bookmark_class.inc.php';
 
-
-$self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
+if ($courseInstanceObj instanceof Course_instance) {
+    $self_instruction = $courseInstanceObj->getSelfInstruction();
+}
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
     $self='defaultSelfInstruction';
