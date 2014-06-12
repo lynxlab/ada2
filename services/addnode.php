@@ -127,10 +127,10 @@ if ( $op == 'add_node' ) {
     /*
      * determina l'id del nodo da inserire
      */
-    $last_node = get_max_idFN($id_course);
-    $tempAr = explode ("_", $last_node);
-    $new_id =$tempAr[1] + 1;
-    $new_node = $id_course . "_" . $new_id;
+//    $last_node = get_max_idFN($id_course);
+//    $tempAr = explode ("_", $last_node);
+//    $new_id =$tempAr[1] + 1;
+    $new_node = $id_course . "_" . '999999999';// $new_id;
 
     $node_to_edit = array(
                 'id'             => $new_node,
@@ -169,10 +169,10 @@ if ( $op == 'add_node' ) {
     /*
      * determina l'id del nodo da inserire
      */
-    $last_node = get_max_idFN($id_course);
-    $tempAr = explode ("_", $last_node);
-    $new_id =$tempAr[1] + 1;
-    $new_node = $id_course . "_" . $new_id;
+//    $last_node = get_max_idFN($id_course);
+//    $tempAr = explode ("_", $last_node);
+//    $new_id =$tempAr[1] + 1;
+    $new_node = $id_course . "_" . '999999999';// $new_id;
 
     $node_to_edit = array(
                 'id'             => $new_node,

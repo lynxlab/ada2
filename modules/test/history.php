@@ -43,7 +43,9 @@ require_once(MODULES_TEST_PATH.'/include/init.inc.php');
 //needed to promote AMADataHandler to AMATestDataHandler. $sess_selected_tester is already present in session
 $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
+if ($courseInstanceObj instanceof Course_instance) {
+    $self_instruction = $courseInstanceObj->getSelfInstruction();
+}
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
     $self='tutorSelfInstruction';

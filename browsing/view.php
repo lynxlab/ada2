@@ -59,10 +59,10 @@ if ($cacheObj->getCachedData){
 /** DYNAMIC mode
  *
  */
-
-$self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
-    
-if ($userObj instanceof ADAGuest) {
+if ($courseInstanceObj instanceof Course_instance) {
+    $self_instruction = $courseInstanceObj->getSelfInstruction();
+}
+if ($userObj instanceof ADAGuest  || $courseObj->getIsPublic()) {
     $self = 'guest_view';
 }
  elseif($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {                    
@@ -213,7 +213,7 @@ else {
 	} else {
 		$accessed_from = ADA_GENERIC_ACCESS;
 	}
-	if (!isset($sess_id_course_instance)) {
+	if (!isset($sess_id_course_instance)  || $courseObj->getIsPublic() ) {
 		$dh->add_node_history($sess_id_user, 0, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
 	} else {
 		$dh->add_node_history($sess_id_user, $sess_id_course_instance, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
@@ -336,7 +336,7 @@ switch($id_profile) {
 /*  gli studenti dei corsi in autoistruzione non devono poter inviare media etc etc
 		 *  TODO: va riportata la modifica fatta per ADA Icon
 		 * */
-		if ($id_profile == AMA_TYPE_STUDENT && $courseInstanceObj->getSelfInstruction()){
+		if ($id_profile == AMA_TYPE_STUDENT && $courseInstanceObj instanceof Course_instance && $courseInstanceObj->getSelfInstruction()){
 		  $mod_enabled = FALSE;
 		  $com_enabled = FALSE;
 		} 
