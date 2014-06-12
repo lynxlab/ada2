@@ -39,7 +39,9 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
 
 include_once 'include/browsing_functions.inc.php';
 
-$self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
+if ($courseInstanceObj instanceof Course_instance) {
+    $self_instruction = $courseInstanceObj->getSelfInstruction();
+}
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
     $self='defaultSelfInstruction';

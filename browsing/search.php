@@ -58,8 +58,10 @@ else { */
 // questa versione permette di cercare anche SOLO per nome o per keyword (titolo)
 // se è passato il testo, lo cerca ovunque (O nel nome O nelle keywords O nel testo)
 // versione con campo unico
-  
-    $self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
+
+if ($courseInstanceObj instanceof Course_instance) {
+    $self_instruction = $courseInstanceObj->getSelfInstruction();
+}
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
     $self='searchSelfInstruction';

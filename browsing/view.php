@@ -59,9 +59,9 @@ if ($cacheObj->getCachedData){
 /** DYNAMIC mode
  *
  */
-
-$self_instruction=$courseInstanceObj->self_instruction;  //if a course instance is self_instruction
-    
+if ($courseInstanceObj instanceof Course_instance) {
+    $self_instruction = $courseInstanceObj->getSelfInstruction();
+}
 if ($userObj instanceof ADAGuest  || $courseObj->getIsPublic()) {
     $self = 'guest_view';
 }
