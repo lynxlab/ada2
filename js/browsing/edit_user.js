@@ -189,7 +189,14 @@ function initUserRegistrationForm( hasTabs, useAjax )
 			function (e) {
 				e.stopPropagation();
 				e.preventDefault();
-				
+				/**
+				 * event timestamp is not valorized correctlry in firefox
+				 * due to a bug opened since 2004, see:
+				 * 
+				 * http://api.jquery.com/event.timeStamp/
+				 */
+				e.timeStamp = (new Date).getTime();
+
 				if (lastSubmit+500 >  e.timeStamp) {
 					return;
 				} else {
