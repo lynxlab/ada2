@@ -62,7 +62,7 @@ if ($cacheObj->getCachedData){
 if ($courseInstanceObj instanceof Course_instance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }
-if ($userObj instanceof ADAGuest  || $courseObj->getIsPublic()) {
+if ($userObj instanceof ADAGuest  || ($courseObj->getIsPublic() && $userObj->getType()!=AMA_TYPE_AUTHOR)) {
     $self = 'guest_view';
 }
  elseif($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {                    
