@@ -182,7 +182,7 @@ define('SERVER_TIMEZONE', 'Europe/Rome');
 /*
  * if true the system search in the text node the word in the glossary
  */
-define('SEARCH_WORD_IN_NODE',1);
+define('SEARCH_WORD_IN_NODE',0);
 
 /*
  * if true the system show the node the node extended fields glossary
