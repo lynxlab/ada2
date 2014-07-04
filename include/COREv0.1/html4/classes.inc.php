@@ -585,6 +585,38 @@ class CSpan extends CElement
     }
 }
 
+class CH1 extends CElement
+{
+	public function __construct()
+	{
+		parent::__construct();
+	}
+}
+
+class CH2 extends CElement
+{
+	public function __construct()
+	{
+		parent::__construct();
+	}
+}
+
+class CH3 extends CElement
+{
+	public function __construct()
+	{
+		parent::__construct();
+	}
+}
+
+class CH4 extends CElement
+{
+	public function __construct()
+	{
+		parent::__construct();
+	}
+}
+
 
 class CDiv extends CElement
 {

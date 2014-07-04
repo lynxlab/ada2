@@ -44,6 +44,14 @@ class CHtml_tags
                 return "<fieldset $core_attributes $i18n_attributes $event_attributes>\n%children%\n</fieldset>\n";
             case 'CSpan':
                 return "<span $core_attributes $i18n_attributes $event_attributes>\n%children%\n</span>\n";
+            case 'CH1':
+                return "<h1 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h1>\n";
+            case 'CH2':
+               	return "<h2 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h2>\n";
+            case 'CH3':
+               	return "<h3 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h3>\n";
+            case 'CH4':
+            	return "<h4 $core_attributes $i18n_attributes $event_attributes>\n%children%\n</h4>\n";
             case 'CDiv':
                 return "<div $core_attributes $i18n_attributes $event_attributes>\n%children%\n</div>\n";
             case 'COptgroup':
