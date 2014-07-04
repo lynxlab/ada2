@@ -49,7 +49,8 @@ class QuestionStandardTest extends QuestionTest
 		if (!empty($this->_children)) {
 			$_children = $this->_children;
 			if ($this->searchParent('RootTest')->shuffle_answers) {
-				shuffle($this->_children);
+				// giorgio 04/lug/2014 bugfix: was shuffle($this->_children);
+				shuffle($_children);
 			}
 
 			while (!empty($_children)) {
