@@ -110,7 +110,7 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
-    'course_title' => translateFN('Modifica dati utente'),
+    'path' => translateFN('Modifica dati utente'),
     'data' => $form->getHtml(),
     'help' => $help
 );
