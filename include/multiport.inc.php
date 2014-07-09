@@ -524,13 +524,18 @@ class MultiPort
           						$storedID = $user_dataAr[$tableName][$i][$tableName::getKeyProperty()];
           						$user_dataAr[$tableName][$i][$tableName::getKeyProperty()] = 0;
           						$user_dataAr[$tableName][$i]['_isSaved'] = 0;
-          					}
           					$result = $tester_dh->set_student($user_id,$user_dataAr, $tableName, $userObj, $storedID);
-		          		}
-		          	}
-		        }
-          	}
-          }          
+                                                        if(!AMA_DB::isError($result))
+                                                        {
+                                                            $user_dataAr[$tableName][$i]['_isSaved'] = 1;
+                                                        }
+                                                 }   
+          					//$result = $tester_dh->set_student($user_id,$user_dataAr, $tableName, $userObj, $storedID);
+                                          }
+                                   }
+                          }          
+                 }
+           }          
           break;
 
         case AMA_TYPE_AUTHOR:
