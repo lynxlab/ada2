@@ -191,7 +191,7 @@ $content_dataAr = array(
 		'messages' => $user_messages->getHtml(),
 		'agenda' => $user_agenda->getHtml(),
 		'status' => $status,
-		'title' => translateFN('Newsletter'),
+		'label' => translateFN('Newsletter'),
 		'data' => $data,
 );
 
