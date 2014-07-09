@@ -588,8 +588,8 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
     $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
     
-    $user_type=$user_type.' livello '.$user_level;
-    $user_level='';
+    $user_type=$user_type;
+    //$user_level='';
     $layout_dataAr['JS_filename']=array(ROOT_DIR.'/js/include/menu_functions.js'); 
     
 }
