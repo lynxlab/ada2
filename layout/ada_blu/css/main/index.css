@@ -45,6 +45,12 @@ html,body {
 	font-size: 150%;
 	font-weight: bold;
 }
+#submenu_question_mark {
+    position: absolute;
+    left: 490px;
+    top: 135px;
+    padding: 0;
+}
 
 #newscont .news .continuelink {
 	position: absolute;

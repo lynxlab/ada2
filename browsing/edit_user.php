@@ -396,19 +396,36 @@ if (!is_null($editUserObj)) {
 if(isset($_GET['message']))
 {
    $help= $_GET['message'];
-   
 }
+   
+if(isset($_SESSION['sess_id_course_instance']))
+{
+    $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+}
+ else {
+     $last_access=$userObj->get_last_accessFN(null,"UT",null);
+     $last_access=AMA_DataHandler::ts_to_date($last_access);
+     $user_level=translateFN('Nd');
+ }
+ if($last_access=='' || is_null($last_access)){
+    $last_access='-';
+}
+
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
-    'title' => translateFN('Modifica dati utente'),
+    'course_title' => translateFN('Modifica profilo'),
     'data' => $data,
+    //'last_visit' => $userObj->get_last_accessFN(),
+    'last_visit' => $last_access,
     'help' => $help,
     'corsi'=>$corsi,
-    'edit_profile'=> $edit_profile_link->getHtml(),
+    'user_level'=>$user_level,
+    //'edit_profile'=> $edit_profile_link->getHtml(),
     'naviga'=>$naviga
 );
 

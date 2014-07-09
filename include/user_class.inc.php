@@ -837,8 +837,15 @@ abstract class ADALoggableUser extends ADAGenericUser {
 			$dh = $GLOBALS['dh'];
 		}
         // called by browsing/student.php
-        $last_accessAr = $this->_get_last_accessFN($id_course_instance,$dh);
-   
+        
+        if($type=="UT")
+        {
+            $last_accessAr = $this->_get_last_accessFN($id_course_instance,$dh,false);
+        }
+        else
+        {
+            $last_accessAr = $this->_get_last_accessFN($id_course_instance,$dh);
+        }
         if (is_array($last_accessAr))
             switch ($type) {
                 case  "N":
@@ -883,10 +890,63 @@ abstract class ADALoggableUser extends ADAGenericUser {
             /*
             * vito, 10 ottobre 2008: $last_visited_node è Array([0]=>Array([id_nodo], ...))
             */
-            $last_visited_time =  ($return_dateonly) ? ts2dFN($last_visited_node[0]['data_uscita']) : $last_visited_node[0]['data_uscita'] ;
-            return array($last_visited_node[0]['id_nodo'], $last_visited_time);
-        } else {
             
+            $last_visited_time =  ($return_dateonly) ? AMA_DataHandler::ts_to_date($last_visited_node[0]['data_uscita']) : $last_visited_node[0]['data_uscita'] ;
+            
+            return array($last_visited_node[0]['id_nodo'], $last_visited_time);
+         } else {
+            /*
+             * Sara, 2/07/2014
+             * return the last access between all instances course 
+             */
+            $serviceProviders=$this->getTesters();
+            if(!empty($serviceProviders) && is_array($serviceProviders))
+            {
+                $i=0;
+                foreach ($serviceProviders as $Provider) {
+                    $provider_dh = AMA_DataHandler::instance(MultiPort::getDSN($Provider));
+                    $courseInstances_provider = $provider_dh->get_course_instances_for_this_student($this->getId());
+                    if(AMA_DataHandler::isError($courseInstances_provider))
+                    {
+                        $courseInstances_provider=new ADA_Error($courseInstances_provider);        
+                    }
+                    else
+                    {
+                        $istance_testerAr[$i]=array('istances'=>$courseInstances_provider,'provider'=>$Provider);
+                    }
+                    $i++;
+                 }
+              }
+                if(!empty($istance_testerAr))
+                {
+                    $Max=0;
+                    $id_nodo=null;
+                    foreach($istance_testerAr as $istanceTs) 
+                    {
+                        $courseInstancesAr=$istanceTs['istances'];
+                        $pointer=$istanceTs['provider'];
+                        $tester=AMA_DataHandler::instance(MultiPort::getDSN($pointer));
+                        foreach($courseInstancesAr as $courseInstance)
+                        {
+                            $id_instance=$courseInstance['id_istanza_corso'];
+                            $last_access=$tester->get_last_visited_nodes($id_user,$id_instance,10);
+                            $last_accessAr= array($last_access[0]['id_nodo'], $last_access[0]['data_uscita']); 
+                            
+                            if($last_accessAr[1]>$Max)
+                            {
+                                $id_nodo=$last_accessAr[0];
+                                $Max=$last_accessAr[1];
+                            }
+                        }
+                     } 
+                       $Last_accessAr=array(0=>$id_nodo,1=>$Max);
+                       return $Last_accessAr;
+                }
+                else
+                {
+                    return "-";
+                }
+
         }
     }
 

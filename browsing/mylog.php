@@ -277,6 +277,21 @@ $edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
 $corsi=CDOMElement::create('a','href:../info.php');
 $corsi->addChild(new CText(translateFN('Corsi')));
 
+/*
+ * Last access link
+ */
+
+if(isset($_SESSION['sess_id_course_instance'])){
+    $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  else {
+    $last_access=$userObj->get_last_accessFN(null,"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+ if($last_access=='' || is_null($last_access)){
+    $last_access='-';
+}
 
 /* 3.
 HTML page building
@@ -316,15 +331,17 @@ $node_data = array(
                    'user_name'=>$user_name,
                    'user_type'=>$user_type,
                    'user_level'=>$user_level,
-                   'last_visit'=>$last_access_date,
+                   //'last_visit'=>$last_access_date,
+                   'last_visit'=>$last_access,
                    'data'=>$log_data,
 		   'menu'=>$menu,
 		   'help'=>$help,
                    'bookmarks'=>$user_bookmarks,
+                   'status'=>$status,
                    'profilo'=>$profilo,
                    'myforum'=>$my_forum,
                    'title'=>$node_title,
-                   'edit_profile'=> $edit_profile_link->getHtml(),
+                   'edit_user'=> $edit_profile_link->getHtml(),
                    'corsi'=>$corsi->getHtml()
                    //'agisci' =>$agisci->getHtml()
                    //'mylog'=>$mylog,

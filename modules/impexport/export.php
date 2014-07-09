@@ -131,7 +131,7 @@ $content_dataAr = array(
 		'messages' => $user_messages->getHtml(),
 		'agenda' => $user_agenda->getHtml(),
 		'status' => $status,
-		'title' => translateFN('Esportazione corso'),
+		'label' => translateFN('Esportazione corso'),
 		'data' => $data,
 );
 

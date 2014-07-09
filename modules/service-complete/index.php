@@ -166,7 +166,7 @@ $content_dataAr = array(
 		'messages' => $user_messages->getHtml(),
 		'agenda' => $user_agenda->getHtml(),
 		'status' => $status,
-		'title' => translateFN('Regole di completamento'),
+		'label' => translateFN('Regole di completamento'),
 		'data' => $data,
 );
 

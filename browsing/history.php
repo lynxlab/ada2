@@ -179,7 +179,21 @@ else
 }
 $edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
 
+/*
+ * Last access link
+ */
 
+if(isset($_SESSION['sess_id_course_instance'])){
+    $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  else {
+    $last_access=$userObj->get_last_accessFN(null,"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+if($last_access=='' || is_null($last_access)){
+    $last_access='-';
+}
 
 /*
  * link corsi
@@ -194,13 +208,15 @@ $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'user_level' => $user_level,
+    'last_visit' => $last_access,
+    'status'=>$status,
     'path' => $node_path,
     'menu' => $menu,
     'data' => $history,
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'chat_users' => $online_users,
-    'edit_profile'=> $edit_profile_link->getHtml(),
+    'edit_user'=> $edit_profile_link->getHtml(),
     'corsi'=>$corsi->getHtml()
     //'agisci' =>$agisci->getHtml()
 );

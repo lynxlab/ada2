@@ -443,7 +443,7 @@ Curabitur mollis egestas leo. Sed fermentum quam urna, in cursus metus posuere e
                             </li>
                             <li>-->
                            <li>
-                              <template_field class="template_field" name="edit_profile">edit_profile</template_field>
+                              <template_field class="template_field" name="edit_user">edit_user</template_field>
                             </li>
                             <template_field class="template_field" name="add_bookmark">add_bookmark</template_field>
                             </li>

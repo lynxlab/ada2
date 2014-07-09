@@ -237,7 +237,17 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 } else {
     $data = new CText('');
 }
+$edit_profile=$userObj->getEditProfilePage();
+$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
 
+$last_access=$userObj->get_last_accessFN(null,"UT",null);
+$last_access=AMA_DataHandler::ts_to_date($last_access);
+
+if($last_access=='' || is_null($last_access))
+{
+    $last_access='-';
+}
 /*
  * Output
  */
@@ -249,15 +259,19 @@ if (!$displayWhatsNew)
 	    'banner' => $banner,
 	    'today' => $ymdhms,
 	    'user_name' => $user_name,
+            'user_level'=>translateFN("Nd"),
+            'status'=>$status,
 	    'user_type' => $user_type,
-	    'last_visit' => $userObj->get_last_accessFN(),
+	    'last_visit' => $last_access,
 	    'message' => $message,
+            'help'=>$help,
 	//    'iscritto' => $sub_course_data,
 	//    'iscrivibili' => $to_sub_course_data,
 	    'course_title' => translateFN("Home dell'utente"),
 	//    'corsi' => $corsi,
 	//    'profilo' => $profilo,
 	    'data' => $data->getHtml(),
+            'edit_user'=>$edit_profile_link->getHtml(),
 	    'messages' => $user_messages->getHtml(),
 	    'agenda' => $user_agenda->getHtml(),
 	    'events' => $user_events->getHtml(),
@@ -417,7 +431,8 @@ else {
 	$content_dataAr['today'] = $ymdhms;
 	$content_dataAr['user_name'] = $user_name;
 	$content_dataAr['user_type'] = $user_type;
-	$content_dataAr['last_visit'] = $userObj->get_last_accessFN();
+	//$content_dataAr['last_visit'] = $userObj->get_last_accessFN();
+        $content_dataAr['last_visit'] = $last_access;
 	$content_dataAr['message'] = $message;
 	$content_dataAr['course_title'] = translateFN("Home dell'utente"). " &gt; ".translateFN("Novità");
 	$content_dataAr['submenu_actions'] =  $submenu_actions;

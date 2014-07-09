@@ -503,10 +503,39 @@ class MultiPort
         case AMA_TYPE_STUDENT:
           $result = $tester_dh->add_student($user_dataAr);
           $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj);
-          /**
-           * TODO: controllo se ha extra e fare set_student dell'extra (tab. studemte)
-           * e poi il foreach delle altre collegate
-           */
+          
+          if ($userObj->hasExtra()) {
+          	
+          	if (method_exists('ADAUser','getExtraTableName')) {
+          		$tableName = ADAUser::getExtraTableName();
+          		if (strlen($tableName)>0) {
+          			$tester_dh->set_student($user_id,$user_dataAr, $tableName, $userObj);
+          		}
+          	}
+          	
+          	if (method_exists('ADAUser','getLinkedTables')) {
+          		$linkedTables = ADAUser::getLinkedTables();
+          		if (is_array($linkedTables) && count($linkedTables)>0) {
+          			
+          			foreach ($linkedTables as $tableName) {
+          				// force the record to be saved in the provider we're adding the user
+          				if (isset($user_dataAr[$tableName]) && is_array($user_dataAr[$tableName])) {
+          					foreach ($user_dataAr[$tableName] as $i=>$notused) {
+          						$storedID = $user_dataAr[$tableName][$i][$tableName::getKeyProperty()];
+          						$user_dataAr[$tableName][$i][$tableName::getKeyProperty()] = 0;
+          						$user_dataAr[$tableName][$i]['_isSaved'] = 0;
+          					$result = $tester_dh->set_student($user_id,$user_dataAr, $tableName, $userObj, $storedID);
+                                                        if(!AMA_DB::isError($result))
+                                                        {
+                                                            $user_dataAr[$tableName][$i]['_isSaved'] = 1;
+                                                        }
+                                                 }   
+          					//$result = $tester_dh->set_student($user_id,$user_dataAr, $tableName, $userObj, $storedID);
+                                          }
+                                   }
+                          }          
+                 }
+           }          
           break;
 
         case AMA_TYPE_AUTHOR:

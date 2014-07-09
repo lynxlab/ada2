@@ -360,6 +360,11 @@ switch ($op) {
 
 }
 $status = translateFN('translation mode');
+
+$edit_profile=$userObj->getEditProfilePage();
+$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
 $content_dataAr = array(
   'banner' => $banner,
   'eportal' => $eportal,
@@ -368,6 +373,7 @@ $content_dataAr = array(
   'user_type' => $user_type,
   'messages'  => $user_messages->getHtml(),
   'agenda'    => $user_agenda->getHtml(),
+  'edit_switcher'=>$edit_profile_link->getHtml(),
   'status'    => $status,
   'banner'    => $banner,
   'help'      => $help,

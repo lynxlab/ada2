@@ -113,6 +113,7 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
+    'label'=>$label,
     'title' => translateFN('Modifica dati utente'),
     'data' => $form->getHtml(),
     'help' => $help,

@@ -222,6 +222,10 @@ else {
     }
 }
 $help = translateFN('Da qui il provider admin può gestire le iscrizioni alla classe selezionata');
+
+$edit_profile=$userObj->getEditProfilePage();
+$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
 /*
  * OUTPUT
  */
@@ -235,6 +239,7 @@ $content_dataAr = array(
     'user_type'=> $user_type,
     'menu' => $menu,
     'help' => $help,
+    'edit_switcher'=>$edit_profile_link->getHtml(),
     'data' => $actions->getHtml() . $data->getHtml() . $tooltips,
     'messages' => $user_messages->getHtml(),
     'agenda '=> $user_agenda->getHtml()

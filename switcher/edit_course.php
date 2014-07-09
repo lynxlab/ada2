@@ -154,12 +154,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 $label = translateFN('Modifica dei dati del corso');
 $help = translateFN('Da qui il provider admin può modificare un corso esistente');
 
+$edit_profile=$userObj->getEditProfilePage();
+$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
+    'edit_switcher'=>$edit_profile_link->getHtml(),
     'data' => $form->getHtml(),
     'module' => $module,
     'messages' => $user_messages->getHtml()

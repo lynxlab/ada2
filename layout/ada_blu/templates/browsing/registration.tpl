@@ -84,6 +84,11 @@
                         <i18n>home</i18n>
                     </a>
                 </li>
+                <li id="ancora_menuright">
+                    <a href="../info.php">
+                        <i18n>corsi</i18n>
+                    </a>
+                </li>
 
                 <li id="question_mark" class="unselectedquestion_mark" onclick="toggleElementVisibility('submenu_question_mark','up'); return false;">
                     <a>
@@ -99,12 +104,7 @@
                     <div id="_question_markcontent">
                         <ul>
                             <li>
-                                <a href="../help.php" target="_blank">
-                                    <i18n>help</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../info.php">
+                                <a href="../help.php">
                                     <i18n>informazioni</i18n>
                                 </a>
                             </li>

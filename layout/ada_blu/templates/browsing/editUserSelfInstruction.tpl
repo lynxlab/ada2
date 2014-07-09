@@ -46,8 +46,10 @@
                     <template_field class="template_field" name="last_visit">last_visit</template_field>
                 </span>
                                 
-                 
+                 <i18n>livello</i18n>: 
+                 <span>
                     <template_field class="template_field" name="user_level">user_level</template_field>
+                 </span>
                 
             </div>
             <!-- / dati utente -->
@@ -204,7 +206,7 @@
                             </li>-->
                             
                             <li>
-                              <template_field class="template_field" name="edit_profile">edit_profile</template_field>
+                              <template_field class="template_field" name="edit_user">edit_user</template_field>
                             </li>
                             <template_field class="template_field" name="submenu_actions">submenu_actions</template_field>
                         </ul>

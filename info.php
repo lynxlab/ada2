@@ -56,7 +56,7 @@ if($op !== false && $op == 'course_info') {
 
         $coursesAr = $common_dh->get_courses_for_service($serviceId);
 
-        $thead_data = array(translateFN('data inizio previsto'), translateFN('data fine'),translateFN('crediti'), translateFN('azioni'));
+        $thead_data = array(translateFN('edizione'),translateFN('data inizio previsto'), translateFN('data fine'),translateFN('crediti'), translateFN('azioni'));
         //$thead_data = array(translateFN('nome'), translateFN('data inizio previsto'), translateFN('durata'), translateFN('data fine'), translateFN('tutor'), translateFN('azioni'));
         $tbody_data = array();
 
@@ -91,31 +91,74 @@ if($op !== false && $op == 'course_info') {
                     }
                 }
 
+                $courseId = $courseData['id_corso'];
+                $timestamp = time();
               //ISTANZE CORSO NON INIZIATE
                 $instancesAr = $tester_dh->course_instance_subscribeable_get_list(
                         array('data_inizio_previsto', 'durata', 'data_fine', 'title'),
                         $courseId);
                 
+                $CourseIstanceIscription=$tester_dh->course_users_instance_get($courseId);
+                $id_node=$courseId.'_0';
+                
                 if(is_array($instancesAr) && count($instancesAr) > 0) {
                     foreach($instancesAr as $instance) {
                         $instanceId = $instance[0];
-                        $duration = sprintf("%d giorni", $instance[2]);
-                        $scheduled = AMA_DataHandler::ts_to_date($instance[1]);
-                        $end_date =  AMA_DataHandler::ts_to_date($instance[3]);
-                        $nome_instanza = $instance[4];
-                        $currenTime = time();
-                        $timestamp_end_data=$instance[3];
-                        if($currenTime > $timestamp_end_data)
+                $flagSubscribe_link=false;     
+                $isEnded = ($instance[3] > 0 && $instance[3] < time()) ? true : false;
+                   if($isEnded)
                         {
                              $subscribe_link = BaseHtmlLib::link(
-                                "info.php?op=course_info&id=$serviceId",translateFN('Istanza chiusa'));
+                                   "#",
+                                   translateFN('corso terminato'));
+                       $flagSubscribe_link=true;
                         }
                         else
                         {
-                             $subscribe_link = BaseHtmlLib::link(
-                                "info.php?op=subscribe&provider=$currentTesterId&course=$courseId&instance=$instanceId",
-                                translateFN('Iscriviti'));
-                        }
+                            foreach($CourseIstanceIscription  as $courseIstance)
+                           {
+
+                              $id_istanza=$courseIstance['id_istanza_corso'];
+
+                              if($id_istanza==$instanceId)
+                              {
+                                $id_utente=$courseIstance['id_utente'];
+                                   if($id_utente==$userObj->getId())
+                                       {
+                                           $statusUr=$courseIstance['status'];
+                                           if($statusUr==ADA_STATUS_SUBSCRIBED || $statusUr==ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED)
+                                           {
+                                               if($userObj->tipo==AMA_TYPE_VISITOR)
+                                               {
+                                                   $subscribe_link = BaseHtmlLib::link("info.php",
+                                                   translateFN('Già iscritto'));
+                                                   $flagSubscribe_link=true;
+                                               }
+                                               if($userObj->tipo==AMA_TYPE_STUDENT)
+                                               {
+                                                   $subscribe_link = BaseHtmlLib::link("browsing/view.php?id_node=$id_node&id_course=$courseId&id_course_instance=$id_istanza",translateFN('Accedi'));
+                                                   $flagSubscribe_link=true;
+                                               }
+                                           }
+                                           else {
+                                           $subscribe_link = BaseHtmlLib::link(
+                                               "info.php?op=subscribe&provider=$currentTesterId&course=$courseId&instance=$instanceId",
+                                               translateFN('iscriviti'));
+                                               $flagSubscribe_link=true;
+                                           }
+                                       } 
+                                   }
+                           }
+                           if(!$flagSubscribe_link)
+                            {
+                              $subscribe_link = BaseHtmlLib::link(
+                              "info.php?op=subscribe&provider=$currentTesterId&course=$courseId&instance=$instanceId",
+                              translateFN('iscriviti')); 
+                            }
+
+                           }     
+                            
+                    
                         /*
                          * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
                          * per ogni istanza corso (qualcosa che vada a sostituire course_instance_get_list solo in questo caso.
@@ -132,7 +175,10 @@ if($op !== false && $op == 'course_info') {
                              $tutorFullName = translateFN('Ancora non assegnato');
                          }
 
-                        
+                        $duration = sprintf("%d giorni", $instance[2]);
+                        $scheduled = AMA_DataHandler::ts_to_date($instance[1]);
+                        $end_date =  AMA_DataHandler::ts_to_date($instance[3]);
+                        $nome_instanza = $instance[4];
                         $course_infoAr = $tester_dh->get_course_info_for_course_instance($instanceId);
                         /*
                          * The first element of the array come from concat_ws
@@ -162,6 +208,7 @@ if($op !== false && $op == 'course_info') {
                          * 
                          */
                         $tbody_data[] = array(
+                            $nome_instanza,
                             $scheduled ,
                            // $duration, why?
                             $end_date,
