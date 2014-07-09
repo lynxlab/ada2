@@ -115,7 +115,7 @@ $content_dataAr = array(
     'title' => $title,
     'author' => $author,
     'node_level' => 'livello nodo',
-    'edit_profile'=> $edit_profile_link->getHtml(),
+    'edit_user'=> $edit_profile_link->getHtml(),
     'naviga'=>$go_back_link->getHtml()
     //'course_title' => '<a href="'.HTTP_ROOT_DIR.'/tutor/tutor.php">'.translateFN('Modulo Tutor').'</a> > ',
     //'media' => 'media',

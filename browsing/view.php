@@ -408,7 +408,7 @@ $content_dataAr = array(
 	'go_download' => $go_download,
 	'video_chat' => $video_chat,
 	'chat' => $chat,
-        'edit_profile'=> $edit_profile_link->getHtml()
+        'edit_user'=> $edit_profile_link->getHtml()
 		//        'messages' => $user_messages,
 		//        'agenda' => $user_agenda
 );

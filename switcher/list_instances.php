@@ -137,12 +137,17 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
 $label = translateFN('Lista istanze del corso'). ' '.$course_title;
 $help = translateFN('Da qui il provider admin può vedere la lista delle istanze del corso selezionato');
 
+$edit_profile=$userObj->getEditProfilePage();
+$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
+    'edit_switcher'=>$edit_profile_link->getHtml(),
     'data' => $data->getHtml(),
     'module' => $module,
     'messages' => $user_messages->getHtml()

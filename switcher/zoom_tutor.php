@@ -78,6 +78,10 @@ $banner = include ROOT_DIR.'/include/banner.inc.php';
 
 $status = translateFN('Caratteristiche del practitioner');
 
+$edit_profile=$userObj->getEditProfilePage();
+$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
 // preparazione output HTML e print dell' output
 $title = translateFN('ADA - dati epractitioner');
 
@@ -88,6 +92,7 @@ $content_dataAr = array(
   'help'      => $help,
   'status'    => $status,
   'user_name' => $user_name,
+  'edit_switcher'=>$edit_profile_link->getHtml(),
   'user_type' => $user_type,
   'messages'  => $user_messages->getHtml(),
   'agenda'    => $user_agenda->getHtml()

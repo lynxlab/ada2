@@ -108,6 +108,10 @@ else {
 $label = translateFN('Cancellazione di un corso');
 $help = translateFN('Da qui il provider admin può cancellare un corso esistente');
 
+$edit_profile=$userObj->getEditProfilePage();
+$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
@@ -115,6 +119,7 @@ $content_dataAr = array(
     'label' => $label,
     'help' => $help,
     'data' => $data->getHtml(),
+    'edit_switcher'=>$edit_profile_link->getHtml(),
     'module' => $module,
     'messages' => $user_messages->getHtml()
 );

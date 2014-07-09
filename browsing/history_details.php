@@ -208,8 +208,23 @@ if ($char_num > 24) $char_num = 24;
 $tmp = substr(trim($course_title), 0, $char_num);
 $stanza = urlencode(trim($tmp) . "_" . $sess_id_course_instance);
 $chat_link = "<a href=\"$http_root_dir/chat/chat/index.php3?L=italian&Ver=H&U=" . $user_name . "&PWD_Hash=d41de&R=$stanza&T=2&D=5&N=20&Reload=NNResize&frameset=fol\" target=_blank>".translateFN("chat")."</a>";
-//
 
+/*
+ * Last access link
+ */
+
+if(isset($_SESSION['sess_id_course_instance'])){
+    $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  else {
+    $last_access=$userObj->get_last_accessFN(null,"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+ if($last_access=='' || is_null($last_access)){
+    $last_access='-';
+  }
+  
 
 /* 3.
 HTML page building
@@ -227,9 +242,11 @@ $node_data = array(
                    'menu'=>$menu,
                    'user_name'=>$user_name,
                    'user_type'=>$user_type,
+                   'status'=>$status,
                    'level'=>$user_level,
                    'path'=>$node_path,
                    'history'=>$history,
+                   'last_visit' => $last_access,
                    'messages'=>$user_messages,
                    'agenda'=>$user_agenda,
                    'chat_users'=>$online_users

@@ -267,6 +267,22 @@ if (isset($_GET['file'])){
   $navigation_history  = $_SESSION['sess_navigation_history'];
   $last_visited_module = $navigation_history->lastModule();
 
+/*
+ * Last access link
+ */
+  if(isset($_SESSION['sess_id_course_instance'])){
+        $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
+        $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  else {
+        $last_access=$userObj->get_last_accessFN(null,"UT",null);
+        $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  
+  $edit_profile=$userObj->getEditProfilePage();
+  $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+  $edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
 $node_data = array(
                'banner'=>$banner,
 //               'data'=>$lista,
@@ -274,12 +290,16 @@ $node_data = array(
                'status'=>$status,
                'user_name'=>$user_name_name,
                'user_type'=>$user_type,
+               'status'=>$status,
+               'user_level'=>$user_level,
                'messages'=>$user_messages->getHtml(),
                'agenda'=>$user_agenda->getHtml(),
+               'edit_user'=> $edit_profile_link->getHtml(),
                'title'=>$node_title,
                'course_title'=>$course_title,
                'path'=>$nodeObj->findPathFN(),
                'help'=>$help,
+               'last_visit' => $last_access,
                'back'=>$last_visited_module
 );
 
