@@ -45,6 +45,10 @@
                 <span>
                     <template_field class="template_field" name="last_visit">last_visit</template_field>
                 </span>
+                <i18n>livello</i18n>:
+                  <span>
+                    <template_field class="template_field" name="user_level">user_level</template_field>
+                 </span>
             </div>
             <!-- / dati utente -->
             <!-- label -->
@@ -205,9 +209,7 @@
                     <div id="_actionscontent">
                         <ul>
                             <li>
-                                <a href="edit_user.php">
-                                    <i18n>Modifica il tuo profilo</i18n>
-                                </a>
+                                <template_field class="template_field" name="edit_user">edit_user</template_field>
                             </li>
                             <template_field class="template_field" name="submenu_actions">submenu_actions</template_field>
                         </ul>

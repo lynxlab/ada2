@@ -98,7 +98,7 @@
                 </li>
                 <li id="question_mark" class="unselectedquestion_mark">
                     <a href="help.php" target="_blank">
-                        <i18n>aiuto</i18n>
+                        <i18n>help</i18n>
                     </a>
                 </li>
                 <li id="esc">

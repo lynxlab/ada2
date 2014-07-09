@@ -167,7 +167,7 @@
                         <ul>
                             <li>
                                 <a href="edit_user.php" alt="edit profile">
-                                    <i18n>cambia profilo</i18n>
+                                    <i18n>Modifica il tuo profilo</i18n>
                                 </a>
                             </li>
                             <li>

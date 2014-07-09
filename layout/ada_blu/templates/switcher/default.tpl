@@ -152,9 +152,7 @@
                     <div id="_actionscontent">
                         <ul>
                             <li>
-                                <a href="edit_switcher.php" alt="edit profile">
-                                    <i18n>cambia profilo</i18n>
-                                </a>
+                               <template_field class="template_field" name="edit_switcher">edit_switcher</template_field>
                             </li>
                             <li><a href="list_users.php?list=authors"><i18n>Lista autori</i18n></a></li>
                             <li><a href="list_users.php?list=tutors"><i18n>Lista tutor</i18n></a></li>
