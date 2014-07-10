@@ -117,7 +117,8 @@ class Subscription
             $result = $dh->course_instance_student_subscribe(
                     $s->getClassRoomId(),
                     $s->getSubscriberId(),
-                    $s->getSubscriptionStatus()
+                    $s->getSubscriptionStatus(),
+            		$s->getStartStudentLevel()
             );
         }
         if(AMA_DataHandler::isError($result)) {
@@ -209,6 +210,9 @@ class Subscription
     }
     public function setSubscriptionStatus($status) {
         $this->_subscriptionStatus = $status;
+    }
+    public function setStartStudentLevel($startStudentLevel) {
+    	$this->_startStudentLevel = $startStudentLevel;
     }
 
     public function subscriptionStatusAsString() {
