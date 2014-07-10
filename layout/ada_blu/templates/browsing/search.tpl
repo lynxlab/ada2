@@ -154,85 +154,16 @@
             <!-- / notifiche eventi -->
             <!-- tendina -->
             <div id="dropdownmenu">
-                <!-- comunica -->
-                <div id="submenu_com" class="sottomenu sottomenu_off">
-                    <div id="_comcontent">
-                        <ul>
-                            <li>
-                                <a href="#" onclick='openMessenger("../comunica/list_messages.php",800,600);'>
-                                    <i18n>messaggeria</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="main_index.php?op=forum">
-                                    <i18n>forum</i18n>
-                                </a>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="ajax_chat_link">ajax_chat_link</template_field>
-                            </li>
-                            <li>
-                                <a href="../user/index.php?module=download.php">
-                                    <i18n>collabora</i18n>
-                                </a>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="mychat">mychat</template_field>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div> <!-- / comunica -->
-                <!-- strumenti -->
-                <div id="submenu_tools" class="sottomenu sottomenu_off">
-                    <div id="_toolscontent">
-                        <ul>
-                            <li>
-                                <a href="#" onclick='openMessenger("../comunica/list_events.php",800,600);'>
-                                    <i18n>agenda</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../user/index.php?module=mylog.php">
-                                    <i18n>diario</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="history.php">
-                                    <i18n>cronologia</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="lemming.php">
-                                    <i18n>lessico</i18n>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div><!-- /strumenti -->
-                <! -- azioni -->
-                <div id="submenu_actions" class="sottomenu sottomenu_off">
-                    <div id="_actionscontent">
-                        <ul>
-                            <li>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div> <!-- / azioni -->
+           
                 <!-- puntoint -->
                 <div id="submenu_question_mark" class="sottomenu  sottomenu_off">
                     <div id="_question_markcontent">
                         <ul>
                             <li>
-                            <template_field class="template_field" name="help">help</template_field>
+                            <!--template_field class="template_field" name="help">help</template_field-->
                             </li>
                             <li>
-                                <a href="../info.php">
+                                <a href="../help.php" target="_blank">
                                     <i18n>informazioni</i18n>
                                 </a>
                             </li>
