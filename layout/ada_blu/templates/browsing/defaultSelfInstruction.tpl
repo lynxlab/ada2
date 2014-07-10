@@ -150,11 +150,11 @@
               
              
 
-               <!--<li id="actions" class="unselectedactions" onClick="toggleElementVisibility('submenu_actions','up')">
+               <li id="actions" class="unselectedactions" onClick="toggleElementVisibility('submenu_actions','up')">
                     <a>
                         <i18n>agisci</i18n>
                     </a>
-                </li>-->
+                </li>
                
                <li id="actions" class="unselectedactions" onClick="toggleElementVisibility('submenu_actions','up')">
                  <template_field class="template_field" name="agisci">agisci</template_field>
