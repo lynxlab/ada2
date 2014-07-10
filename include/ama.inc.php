@@ -4752,13 +4752,16 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @param $id_course_instance
      * @param $student
      * @param $status
+     * @param $user_level if null than this field is not updated
      * @return unknown_type
      */
     public function course_instance_student_subscribe($id_course_instance, $student,$status=2, $user_level=1) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-        $sql = "update iscrizioni set status=$status, livello=$user_level where id_istanza_corso=$id_course_instance and id_utente_studente=$student ";
+        $sql = "update iscrizioni set status=$status";
+        if (!is_null($user_level)) $sql.=", livello=$user_level";
+        $sql.=" where id_istanza_corso=$id_course_instance and id_utente_studente=$student";
         //vito, 2 feb 2009
         //$res = $this->executeCritical( $sql );
         $res = $db->query($sql);

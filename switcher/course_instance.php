@@ -101,6 +101,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 */
                     $s = new Subscription($userId, $instanceId);
                     $s->setSubscriptionStatus($userStatus);
+                    $s->setStartStudentLevel(null); // null means no level update
                     $subscribedCount = Subscription::updateSubscription($s);
 /*
                 }
