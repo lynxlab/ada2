@@ -506,7 +506,7 @@ Curabitur mollis egestas leo. Sed fermentum quam urna, in cursus metus posuere e
                     <div id="_question_markcontent">
                         <ul>
                             <li>
-                            <template_field class="template_field" name="help">help</template_field>
+                            <!--template_field class="template_field" name="help">help</template_field-->
                             </li>
                             <li>
                                 <a href="../help.php" target="_blank">

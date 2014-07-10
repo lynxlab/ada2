@@ -114,9 +114,9 @@
                 </li>
                 <li>
                 
-               <li id="com" class="unselectedcom" onClick="toggleElementVisibility('submenu_com','up')"> <a>
+               <!--li id="com" class="unselectedcom" onClick="toggleElementVisibility('submenu_com','up')"> <a>
                         <i18n></i18n>
-                    </a> </li>
+                    </a> </li-->
                 <li id="tools" class="unselectedtools" onClick="toggleElementVisibility('submenu_tools','up')"> <a>
                         <i18n></i18n>
                     </a> </li>
@@ -137,6 +137,8 @@
                         <i18n>Help</i18n>
                     </a>
                 </li>
+                
+                
                 <li id="esc"> <a href="../../index.php">
                         <i18n>esci</i18n>
                     </a> </li>
@@ -145,7 +147,7 @@
             <!-- tendina -->
             <div id="dropdownmenu">
                 <!-- comunica -->
-                <div id="submenu_com" class="sottomenu sottomenu_off">
+                <!--div id="submenu_com" class="sottomenu sottomenu_off">
                     <div id="_comcontent">
                         <ul>
                             <li><a href="#" onclick='openMessenger("../../comunica/list_messages.php",800,600);'>
@@ -160,7 +162,7 @@
                         </ul>
                     </div>
                     <div class="bottomsubmenu"> </div>
-                </div>
+                </div-->
                 <!-- / comunica -->
                 <!-- strumenti -->
                 <div id="submenu_tools" class="sottomenu sottomenu_off">
