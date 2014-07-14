@@ -9,14 +9,6 @@
 /* BROWSING STYLE */
 
 
-
-
-
-
-
-
-
-
 #banner {
     position: absolute;
     top: 8px;
@@ -107,8 +99,21 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 .search_results {
     margin-right: 210px;
 }
-
-
+.search_formAdvanced
+{
+    width: 400px; background-color: #ECECEA;  padding: 10px 50px 10px 0px;
+}
+.table_result{
+    margin-right: -180px;
+    margin-left: 500px;
+    margin-top:  -280px;
+    
+}
+#table_result_wrapper
+{
+    width: 600px;
+    //margin-top: 50px;
+}
 #next_node a {
 	line-height: 50px;
 	padding-left: 30px;
@@ -470,7 +475,49 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 	text-align: left;
     font-weight: bold;
 	}
+        
+/*for advanced search*/
 
+#advanced_searchLink
+{
+    margin-top: 0px;
+}
+#div_advancedSearch_form
+{
+    display: none;
+    height: 830px;
+    margin-top: 15px;
+}
+#div_menuSearch
+{
+    margin-top: -100px;
+}
+#label_result
+{
+    margin-left: 490px;
+    margin-top: -10px;
+}
+#div_Result{
+    margin-top: 100px;
+}
+#result_AdvancedSearch
+{
+    width: 520px;
+    height: 0px;
+    margin-left: 500px;
+    margin-top: -540px;
+    
+}
+#results{
+    width: 520px;
+    height: 0px;
+    margin-top: 10px; 
+}
+#labelAdvanced_search
+{
+    display:none;
+}
+        
 /*for self_instruction*/
  
 #IndexSelfInstruction

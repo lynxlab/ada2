@@ -191,6 +191,10 @@ a:visited {text-decoration: none; }
     margin-bottom: 5px;
     background-color: #EFEDED;
 }
+#contentSearch {
+    min-height: 300px;
+    margin-bottom: 200px;
+}
 /*
  * Navigation panel
  */
