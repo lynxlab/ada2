@@ -34,7 +34,14 @@ abstract class CBaseElement extends CBase
 
     public function setAttribute($attribute_name, $attribute_value)
     {
-        if (property_exists($this, $attribute_name))
+    	/**
+    	 * @author giorgio 16/ott/2013
+    	 * 
+    	 * Check if passed $attribute_name is a valid html data attribute name by this definition:
+    	 * The data attribute name must be at least one character long and must be prefixed with 'data-'.
+    	 * It should not contain any uppercase letters. 
+    	 */
+        if (property_exists($this, $attribute_name) || (preg_match('/data\-[a-z0-9]{1}[a-z0-9\-]*/', $attribute_name) === 1))
         {
             $this->$attribute_name = $attribute_value;
             return TRUE;
@@ -366,7 +373,21 @@ abstract class CEmptyElement extends CBaseAttributesElement
 					$this->$text = 'true';
 				}
 
-                if (is_null($this->$text))
+				if ($text == 'datas')
+				{
+					/**
+					 * must load here all the public properties
+					 * of the class whose name starts by 'data-'
+					 */
+					$str_attribute = '';
+					$ref = new ReflectionObject($this);
+					foreach ($ref->getProperties(ReflectionProperty::IS_PUBLIC) as $num=>$refValue)
+					{
+						$str_attribute .= ' '.$refValue->name.'="'.$this->{$refValue->name}.'"';
+					}
+					$attribute[$match] = $str_attribute;
+				}
+                else if (is_null($this->$text))
                 {
                     $attribute[$match] = " ";
                 }
