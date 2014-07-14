@@ -8,7 +8,7 @@ class CHtml_tags
 {
     public function getTagForHtmlElement($element_class)
     {
-        $core_attributes  = "%id% %class% %style% %title%";
+        $core_attributes  = "%id% %class% %style% %title% %datas%";
         $i18n_attributes  = "%lang% %dir%";
         $event_attributes = "%onclick% %ondblclick% %onmousedown% %onmouseup% %onmouseover% %onmousemove% %onomuseout% %onkeypress% %onkeydown% %onkeyup%";
 
