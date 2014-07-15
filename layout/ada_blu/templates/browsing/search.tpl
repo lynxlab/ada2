@@ -41,8 +41,18 @@
                         <div class="bottomleft">
                             <div class="bottomright">
                                 <div class="contentlabel">
-                                    <h1><i18n>cerca</i18n></h1>
-                                </div>
+                                    <!--h1><i18n>cerca</i18n></h1-->
+                                    <h1>
+                                        <div id="labelSimple_search">
+                                            <template_field class="template_field" name="labelSimple_search">labelSimple_search</template_field>
+                                        </div>
+                                    </h1>   
+                                    <h1>
+                                        <div id="labelAdvanced_search">
+                                            <template_field class="template_field" name="labelAdvanced_search">labelAdvanced_search</template_field>
+                                        </div>
+                                    </h1>
+                                    </div>
                             </div>
                         </div>
                     </div>
@@ -50,26 +60,55 @@
             </div><!-- /label -->
             </div>
             <!-- contenuto -->
-            <div id="content">
+            <div id="contentSearch">
                 <div id="contentcontent" class="contentcontent_default">
+                    <div id="div_advancedSearch_form">
+                        <div class="search_formAdvanced">
+                            <template_field class="template_field" name="advancedSearch_form">advancedSearch_form</template_field>
+                        </div>
+                        <div id="div_menuAdvanced">
+                            <template_field class="template_field" name="menuAdvanced_search">menuAdvanced_search</template_field>
+                                <span>
+                                    <template_field class="template_field" name="simpleSearchLink">simpleSearchLink</template_field>
+                                </span>
+                                    <div id="result_AdvancedSearch">
+                                        <i18n>Risultati:</i18n>
+                                            <div id="results">
+                                                <template_field class="template_field" name="result_AdvancedSearch">result_AdvancedSearch</template_field>
+                                            </div>
+                                    </div>
+                      </div>
+                  </div>
+                <div id="div_form">
                     <div class="first">
                         <div class="search">
-                            <i18n>Cerca per: </i18n>
-                            <span>
+                            <div id="label_result">
+                                    <i18n>Risultati:</i18n>
+                            </div> 
+                            <!--i18n>Ricerca semplice </i18n-->
                                 <template_field class="template_field" name="form">form</template_field>
-                            </span>
                         </div>
+                        </div>
+                 </div>
                         <div class="search_results">
+                    <div id="div_menu">
                             <template_field class="template_field" name="menu">menu</template_field>
-                            <div>
-                                <i18n>Risultati: </i18n>
+                    </div>
+                    <div id="advanced_searchLink">
                                 <span>
+                        <template_field class="template_field" name="advanced_searchLink">advanced_searchLink</template_field>
+                    </span>
+                </div>
+                <div class="table_result">
+                    <div id="div_Result">
+                        <span>
                                     <template_field class="template_field" name="results">results</template_field>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
+             </div>
                 <div id="bottomcont">
                 </div>
             </div> <!--  / contenuto -->
@@ -180,6 +219,8 @@
             </div> <!-- /tendina-->
         </div> <!-- / MENU A TENDINA -->
         <!-- PIEDE -->
+        <div class="clearfix"></div>
+            
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div> <!-- / piede -->
