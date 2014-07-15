@@ -21,7 +21,7 @@ require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
  * Clear node and layout variable in $_SESSION
  */
 
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = array('node', 'layout', 'course', 'course_instance','user');
 
 /**
  * Users (types) allowed to access this module.
@@ -32,10 +32,10 @@ $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_T
  * Get needed objects
  */
 $neededObjAr = array(
-  AMA_TYPE_VISITOR      => array('node','layout'),
-  AMA_TYPE_STUDENT         => array('node','layout'),
-  AMA_TYPE_TUTOR => array('node','layout'),
-  AMA_TYPE_AUTHOR       => array('node','layout')
+  AMA_TYPE_VISITOR      => array('node','layout','course', 'course_instance'),
+  AMA_TYPE_STUDENT         => array('node','layout','course', 'course_instance'),
+  AMA_TYPE_TUTOR => array('node','layout','course', 'course_instance'),
+  AMA_TYPE_AUTHOR       => array('node','layout','course', 'course_instance')
 );
 
 /**
@@ -49,8 +49,17 @@ require_once ROOT_DIR.'/include/HTML_element_classes.inc.php';
 
 require_once ROOT_DIR.'/include/Forms/AdvancedSearchForm.inc.php';
 
-
-$self = whoami();
+if ($courseInstanceObj instanceof Course_instance) {
+    $self_instruction = $courseInstanceObj->getSelfInstruction();
+}
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+    $self='searchSelfInstruction';
+}
+else
+{
+    $self = whoami();
+}
 
 if(isset($_REQUEST['submit']))
 {
@@ -360,6 +369,10 @@ $layout_dataAr['CSS_filename'] = array (
                 JQUERY_UNIFORM_CSS,
                 JQUERY_DATATABLE_CSS
 );
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+    array_push ($layout_dataAr['JS_filename'],ROOT_DIR.'/js/browsing/search.js');
+}
 
 $options['onload_func'] = 'dataTablesExec()';
 //"\$j('input, a.button, button').uniform();"
