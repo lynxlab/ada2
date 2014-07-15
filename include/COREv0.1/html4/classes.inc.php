@@ -323,7 +323,21 @@ abstract class CElement extends CBaseAttributesElement
 					$this->$attr = 'true';
 				}
 
-                if (is_null($this->$attr))
+				if ($attr == 'datas')
+				{
+					/**
+					 * must load here all the public properties
+					 * of the class whose name starts by 'data-'
+					 */
+					$str_attribute = '';
+					$ref = new ReflectionObject($this);
+					foreach ($ref->getProperties(ReflectionProperty::IS_PUBLIC) as $num=>$refValue)
+					{
+						$str_attribute .= ' '.$refValue->name.'="'.$this->{$refValue->name}.'"';
+					}
+					$attribute[$match] = $str_attribute;
+				}
+                else if (is_null($this->$attr))
                 {
                     $attribute[$match] = " ";
                 }
