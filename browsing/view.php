@@ -77,9 +77,21 @@ if ($nodeObj->type != ADA_NOTE_TYPE && $nodeObj->type != ADA_PRIVATE_NOTE_TYPE)
 {
 	require_once 'include/DFSNavigationBar.inc.php';
 	$navBar = new DFSNavigationBar($nodeObj, array(
-			'prevId' => $_GET['prevId'],
+			'prevId' => $_GET['prevId'], 
 			'nextId' => $_GET['nextId'],
 			'userLevel' => $user_level));
+}
+
+if (MODULES_TEST && strpos($nodeObj->type,ADA_PERSONAL_EXERCISE_TYPE) == 0 && ADA_REDIRECT_TO_TEST && $_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {
+        $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$nodeObj->id));
+        if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
+                $node = array_shift($res);
+                /*Remove the last item to NavigationHistory to increase the value of back button correctly*/ 
+                $_SESSION['sess_navigation_history']->removeLastItem();
+                header('Location: '.MODULES_TEST_HTTP.'/index.php?id_test='.$node['id_nodo']);
+                exit();
+        }
 }
 
 // search
@@ -237,12 +249,15 @@ if (!empty($next_node_id)){
 	if ($user_level>= $next_node_level){
 		// exercise test
 		$next_node_type =  $nextNodeAr['type'];
+                
 		if (Node::isNodeExercise($next_node_type)){
 			$next_node_link = "<a href=exercise.php?id_node=$next_node_id>" . translateFN("Continua...") . "</a>";
+                       
 		}
 		else {
 			$next_node_link = "<a href=view.php?id_node=$next_node_id>" . translateFN("Continua...") . "</a>";
 		}
+                
 	}
 }
 // E-portal
