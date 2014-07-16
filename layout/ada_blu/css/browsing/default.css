@@ -104,9 +104,9 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
     width: 400px; background-color: #ECECEA;  padding: 10px 50px 10px 0px;
 }
 .table_result{
-    margin-right: -180px;
+    //margin-right: -180px;
     margin-left: 500px;
-    margin-top:  -280px;
+    margin-top:  -310px;
     
 }
 #table_result_wrapper
@@ -478,6 +478,14 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
         
 /*for advanced search*/
 
+#div_menuAdvanced
+{
+    width: 450px;
+}
+#div_menu
+{
+    width: 450px;
+}
 #advanced_searchLink
 {
     margin-top: 0px;
@@ -488,22 +496,21 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
     height: 830px;
     margin-top: 15px;
 }
+#div_simpleSearch_form
+{
+   margin-top: 15px;
+}
 #div_menuSearch
 {
-    margin-top: -100px;
-}
-#label_result
-{
-    margin-left: 490px;
-    margin-top: -10px;
+    //margin-top: -100px;
 }
 #div_Result{
     margin-top: 100px;
 }
 #result_AdvancedSearch
 {
-    width: 520px;
-    height: 0px;
+   // width: 520px;
+    //height: 0px;
     margin-left: 500px;
     margin-top: -540px;
     

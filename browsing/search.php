@@ -194,9 +194,8 @@ if (!is_null($submit)) {
        );
         $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
         $results=$result_table->getHtml();
-
-       
-      }
+        $results='Risultati: '.$results;
+     }
       else {
     $results=translateFN("Non &egrave; stato trovato nessun nodo.");
   }

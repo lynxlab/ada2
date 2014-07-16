@@ -68,38 +68,27 @@
                         </div>
                         <div id="div_menuAdvanced">
                             <template_field class="template_field" name="menuAdvanced_search">menuAdvanced_search</template_field>
+                        </div>        
                                 <span>
                                     <template_field class="template_field" name="simpleSearchLink">simpleSearchLink</template_field>
                                 </span>
                                     <div id="result_AdvancedSearch">
-                                        <i18n>Risultati:</i18n>
                                             <div id="results">
                                                 <template_field class="template_field" name="result_AdvancedSearch">result_AdvancedSearch</template_field>
                                             </div>
                                     </div>
                       </div>
-                  </div>
-                <div id="div_form">
-                    <div class="first">
+                  <div id="div_simpleSearch_form">
                         <div class="search">
-                            <div id="label_result">
-                                    <i18n>Risultati:</i18n>
-                            </div> 
-                            <!--i18n>Ricerca semplice </i18n-->
+                            <!--Ricerca semplice -->
                                 <template_field class="template_field" name="form">form</template_field>
-                            </span>
                         </div>
-                        </div>
-                 </div>
-                        <div class="search_results">
                     <div id="div_menu">
                             <template_field class="template_field" name="menu">menu</template_field>
                     </div>
-                    <div id="advanced_searchLink">
                                 <span>
                         <template_field class="template_field" name="advanced_searchLink">advanced_searchLink</template_field>
                     </span>
-                </div>
                 <div class="table_result">
                     <div id="div_Result">
                         <span>
