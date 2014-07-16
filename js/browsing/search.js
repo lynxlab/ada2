@@ -5,10 +5,10 @@ function initDoc()
     
     if(showElement==1)
     {
-        $j("#div_advancedSearch_form").animate({"height": "toggle"}, { duration: 500 });
-        $j("#div_simpleSearch_form").animate({"height": "toggle"}, { duration: 500 });
-        $j("#labelSimple_search").css("display","none");
-        $j("#labelAdvanced_search").css("display","block");
+        $j("#div_simpleSearch").animate({"height": "toggle"}, { duration: 0 });
+        $j("#div_advancedSearch").animate({"height": "toggle"}, { duration: 0 });
+        $j("#span_simpleSearch").toggle();
+        $j("#span_advancedSearch").toggle();
         $j('#s_AdvancedForm').val("0");
      }
   
@@ -24,18 +24,18 @@ function dataTablesExec() {
 
 function advancedSearch()
 {
-   $j("#div_advancedSearch_form").animate({"height": "toggle"}, { duration: 500 });
-   $j("#div_simpleSearch_form").animate({"height": "toggle"}, { duration: 500 });
-   $j("#labelSimple_search").css("display","none");
-   $j("#labelAdvanced_search").css("display","block");
+   $j("#div_advancedSearch").animate({"height": "toggle"}, { duration: 500 });
+   $j("#div_simpleSearch").animate({"height": "toggle"}, { duration: 500 });
+   $j("#span_simpleSearch").toggle();
+   $j("#span_advancedSearch").toggle();
     
 }
 function simpleSearch()
 {
-    $j("#div_advancedSearch_form").animate({"height": "toggle"}, { duration: 500 });
-    $j("#div_simpleSearch_form").animate({"height": "toggle"}, { duration: 500 });
-    $j("#labelSimple_search").css("display","block");
-    $j("#labelAdvanced_search").css("display","none");
+    $j("#div_advancedSearch").animate({"height": "toggle"}, { duration: 500 });
+    $j("#div_simpleSearch").animate({"height": "toggle"}, { duration: 500 });
+    $j("#span_advancedSearch").toggle();
+    $j("#span_simpleSearch").toggle();
 }
 
 function disableForm()

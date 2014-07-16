@@ -201,19 +201,18 @@ if (!is_null($submit)) {
   }
 }  // end Submit
 
-$menu .= "<p>".translateFN("Scrivi la o le parole che vuoi cercare, poi clicca su Cerca. Il sistema restituir&agrave;");
-$menu .= "<br>".translateFN(" una lista con i nodi che contengono TUTTE le parole inserite.");
-$menu .= "<br>".translateFN(" Le parole vengono trovate anche all'interno di altre parole e senza");
-$menu .= "<br>".translateFN("distinzioni tra maiuscole e minuscole.")."</p>";
+$menu .= "<p>".translateFN("Scrivi la o le parole che vuoi cercare, poi clicca su Cerca. ");
+$menu .= "<br>".translateFN("Il sistema restituir&agrave; una lista con i nodi che contengono TUTTE le parole inserite.");
+$menu .= "<br>".translateFN("Le parole vengono trovate anche all'interno di altre parole e senza distinzioni tra maiuscole e minuscole.")."</p>";;
 
 /*menù advanced search*/
 
-$menuAdvanced_search .= "<p>".translateFN("Scrivi la o le parole che vuoi cercare, poi clicca su Cerca. In questo caso puoi");
-$menuAdvanced_search .= "<br>".translateFN(" effettuare la ricerca su più campi contemporaneamente. Il sistema proverà a");
-$menuAdvanced_search .= "<br>".translateFN(" restituituire una lista dei nodi contenenti tutte le parole indicate; se ciò");
-$menuAdvanced_search .= "<br>".translateFN(" non è possibile restituirà la lista dei nodi che ne contengono almeno una.");
-$menuAdvanced_search .= "<br>".translateFN(" Le parole vengono trovate anche all'interno di altre parole e senza");
-$menuAdvanced_search .= "<br>".translateFN("distinzioni tra maiuscole e minuscole.")."</p>";
+$menuAdvanced_search .= "<p>".translateFN("Scrivi la o le parole che vuoi cercare, poi clicca su Cerca.");
+$menuAdvanced_search .= "<br>".translateFN("Puoi effettuare la ricerca su più campi contemporaneamente. ");
+$menuAdvanced_search .= "<br>".translateFN("Il sistema proverà a restituituire una lista dei nodi contenenti tutte le parole indicate; ");
+$menuAdvanced_search .= translateFN("se ciò non è possibile restituirà la lista dei nodi che ne contengono almeno una.");
+$menuAdvanced_search .= "<br>".translateFN("Le parole vengono trovate anche all'interno di altre parole e senza distinzioni tra maiuscole e minuscole.")."</p>";
+
 // $menu .= "<br>".translateFN("Se vuoi cercare tra i media collegati (immagini, suoni, siti) usa la ")."<a href=search_media.php>".translateFN("Ricerca sui Media")."</a></p>";
 // $menu .= "<br>".translateFN("Se non sai esattamente cosa cercare, prova a consultare il ")."<a href=lemming.php>".translateFN("Lessico")."</a></p>";
 
@@ -312,8 +311,12 @@ $imgAvatar = $userObj->getAvatar();
 $avatar = CDOMElement::create('img','src:'.$imgAvatar);
 $avatar->setAttribute('class', 'img_user_avatar');
 
-$labelSimple_search=  translateFN('Ricerca semplice');
-$labelAdvanced_search=translateFN('Ricerca avanzata');
+$spanSimple_search = CDOMElement::create('span','id:span_simpleSearch');
+$spanSimple_search->addChild(new CText("<strong>".translateFN('Ricerca semplice')."</strong>"));
+
+$spanAdvanced_search = CDOMElement::create('span','id:span_advancedSearch');
+$spanAdvanced_search->setAttribute('style', 'display:none');
+$spanAdvanced_search->addChild(new CText("<strong>".translateFN('Ricerca avanzata')."</strong>"));
 
 if(isset($_GET['s_AdvancedForm']))
 {
@@ -324,10 +327,8 @@ $content_dataAr = array(
   'form'=>$search_form,
   'advancedSearch_form'=>$advancedSearch_form,
   'menuAdvanced_search'=>$menuAdvanced_search,
-  'labelSimple_search'=>$labelSimple_search,
-  'labelAdvanced_search'=>$labelAdvanced_search,
-  //'results'=>$search_results,
   'results'=>$results,
+  'help'=>$spanSimple_search->getHtml().$spanAdvanced_search->getHtml(),
   'result_AdvancedSearch'=>$result_AdvancedSearch,
   'simpleSearchLink'=>$Simple_searchLink,
   'advanced_searchLink'=>$advanced_searchLink,
@@ -339,7 +340,7 @@ $content_dataAr = array(
   'user_type'=>$user_type,
   'level'=>$user_level,
   'index'=>$node_index,
-  'title'=>$node_title,
+  //'title'=>$node_title,
   'author'=>$node_author,
   'text'=>$data['text'],
   'link'=>$data['link'],
@@ -348,7 +349,7 @@ $content_dataAr = array(
   'events'=>$user_events->getHtml(),
   'chat_users'=>$online_users,
   'user_avatar'=>$avatar->getHtml(),
-  'user_modprofilelink' => $userObj->getEditProfilePage(),		
+  'user_modprofilelink' => $userObj->getEditProfilePage(),
 );
 
 /**
