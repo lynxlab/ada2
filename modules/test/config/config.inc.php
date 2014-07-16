@@ -94,8 +94,10 @@ define('ADA_OPEN_TEST_ANSWER',					1); //show an extra blank answer that user ne
 define('ADA_CASE_SENSITIVE_TEST',				0); //correct the answer with case sensitive function
 define('ADA_CASE_INSENSITIVE_TEST',				1); //correct the answer with case insensitive function
 
-require_once(MODULES_TEST_PATH.'/include/AMATestDataHandler.inc.php');
+//if true the system allows the redirect to modules/test/index.php
+define('ADA_REDIRECT_TO_TEST',TRUE);
 
+require_once(MODULES_TEST_PATH.'/include/AMATestDataHandler.inc.php');
 require_once(MODULES_TEST_PATH.'/include/nodeTest.class.inc.php');
 require_once(MODULES_TEST_PATH.'/include/root.class.inc.php');
 require_once(MODULES_TEST_PATH.'/include/forms/formTest.inc.php');
