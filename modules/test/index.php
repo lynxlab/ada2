@@ -36,6 +36,13 @@ $neededObjAr = array(
 /**
  * Performs basic controls before entering this module
  */
+
+/*if isset $_GET['unload'] means that the system is closing test, so there is no need to save 
+  the page in NavigationHistory  */
+if (isset($_GET['unload']))
+{
+    $trackPageToNavigationHistory=false;
+}
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 

@@ -5,12 +5,10 @@ function initDoc()
     
     if(showElement==1)
     {
-        $j("#div_advancedSearch_form").css("display","block");
-        $j("#div_form").css("display","none");
-        $j("#div_menu").css("display","none");
-        $j("#advanced_searchLink").css("display","none");
-        $j("#labelSimple_search").css("display","none");
-        $j("#labelAdvanced_search").css("display","block");
+        $j("#div_simpleSearch").animate({"height": "toggle"}, { duration: 0 });
+        $j("#div_advancedSearch").animate({"height": "toggle"}, { duration: 0 });
+        $j("#span_simpleSearch").toggle();
+        $j("#span_advancedSearch").toggle();
         $j('#s_AdvancedForm').val("0");
      }
   
@@ -26,32 +24,18 @@ function dataTablesExec() {
 
 function advancedSearch()
 {
-    $j("#div_form").animate({"height": "toggle"}, { duration: 500 });
-    $j("#div_form").css("display","none");
-    $j("#div_menu").css("display","none");
-    $j("#div_Result").animate({"height": "toggle"}, { duration: 600 });
-    $j("#div_Result").css("margin-top","120px");
-    $j("#div_advancedSearch_form").animate({"height": "toggle"}, { duration: 400 });
-    $j("#advanced_searchLink").css("display","none");
-    $j("#labelSimple_search").css("display","none");
-    $j("#labelAdvanced_search").css("display","block");
-    
-    //$j("#div_menuAdvanced").css("display","block");
+   $j("#div_advancedSearch").animate({"height": "toggle"}, { duration: 500 });
+   $j("#div_simpleSearch").animate({"height": "toggle"}, { duration: 500 });
+   $j("#span_simpleSearch").toggle();
+   $j("#span_advancedSearch").toggle();
     
 }
 function simpleSearch()
 {
-    $j("#div_advancedSearch_form").animate({"height": "toggle"}, { duration: 400 });
-    $j("#div_Result").animate({"height": "toggle"}, { duration: 400 });
-    $j("#div_menu").css("display","block");
-    $j("#div_form").animate({"height": "toggle"}, { duration: 400 });
-    //$j("#div_menuAdvanced").css("display","block");
-    $j("#advanced_searchLink").css("display","block");
-    $j("#div_Result").css("margin-top","90px");
-    $j("#labelSimple_search").css("display","block");
-    $j("#labelAdvanced_search").css("display","none");
-    
-    //$j("#advanced_searchLink").css("margin-top","90px");
+    $j("#div_advancedSearch").animate({"height": "toggle"}, { duration: 500 });
+    $j("#div_simpleSearch").animate({"height": "toggle"}, { duration: 500 });
+    $j("#span_advancedSearch").toggle();
+    $j("#span_simpleSearch").toggle();
 }
 
 function disableForm()

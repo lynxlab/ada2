@@ -80,7 +80,12 @@ class NavigationHistory
     $this->arguments_for_item[$this->free_ptr % $this->items_max_size] = $arguments;
     $this->free_ptr++;
   }
-
+    public function removeLastItem()
+    {
+        $this->free_ptr--;
+        $this->items[($this->free_ptr) % $this->items_max_size]=null;
+        $this->arguments_for_item[($this->free_ptr) % $this->items_max_size]=null;
+    }
   /**
    * function previousItem, returns the last added page (free_ptr - 2, not the last added page)
    *
