@@ -115,7 +115,7 @@ $menu_02.= ">" . translateFN('Elenco studenti') . '</a>';
 if (!isset($menu_03)) {
     $menu_03 = '';
 }
-if (!isset($tatus)) {
+if (!isset($status)) {
     $status = '';
 }
 
