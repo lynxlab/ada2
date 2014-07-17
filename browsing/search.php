@@ -318,6 +318,19 @@ $spanAdvanced_search = CDOMElement::create('span','id:span_advancedSearch');
 $spanAdvanced_search->setAttribute('style', 'display:none');
 $spanAdvanced_search->addChild(new CText("<strong>".translateFN('Ricerca avanzata')."</strong>"));
 
+if(isset($_SESSION['sess_id_course_instance']))
+{
+    $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+}
+ else {
+    $last_access=$userObj->get_last_accessFN(null,"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+ }
+ if($last_access=='' || is_null($last_access)){
+    $last_access='-';
+}
+
 if(isset($_GET['s_AdvancedForm']))
 {
     $result_AdvancedSearch=$results;
@@ -338,7 +351,9 @@ $content_dataAr = array(
   'course_title'=>translateFN(' Ricerca '),
   'user_name'=>$user_name,
   'user_type'=>$user_type,
-  'level'=>$user_level,
+  'user_level'=>$user_level,
+  'status' => $status,
+  'last_visit' => $last_access,
   'index'=>$node_index,
   //'title'=>$node_title,
   'author'=>$node_author,
