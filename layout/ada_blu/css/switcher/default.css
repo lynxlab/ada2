@@ -98,3 +98,39 @@ td.default_th a:hover {
 .tooltip li {
 	text-align:left;
 }
+
+/* style for translation module*/
+.translationResults
+{
+    display:none;
+    width: 60%;
+    margin-left: 20%;
+}
+
+#torna 
+{
+    background: url(../../img/back.png) no-repeat scroll left; 
+    background-position: 0px;
+    display:none;
+    padding: 0 0, 0, 40px;
+}
+#torna a
+{
+    margin-left: 40px;
+}
+.ColumnStyle_first 
+{ 
+    width: 3%;
+    height: 5%;
+}
+.ColumnStyle_second 
+{ 
+    width: 94%;
+    height: 5%;
+}
+.ColumnStyle_third 
+{ 
+    width: 3%;
+    height: 5%;
+}
+
