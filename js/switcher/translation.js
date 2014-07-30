@@ -10,11 +10,7 @@ function initDoc()
 }
 function showDataTable()
 {
-    //$j("#translationData").effect("clip");
-    /*$j('.translationData').effect('drop', function() {
-		$j('.translationResults').effect('slide');
-	});*/
-   $j.ajax({
+  $j.ajax({
         type	: 'POST',
         url	: HTTP_ROOT_DIR+ '/switcher/ajax/get_Translation.php',
         data	: $j('form[name="translatorForm"]').serialize(),
@@ -27,7 +23,6 @@ function showDataTable()
             
             $j('.translationResults').html(content); 
             createDataTable();
-            
             $j('.translationData').effect('drop', function() {
                     $j('.translationResults').effect('slide');
             });
@@ -46,18 +41,28 @@ function createDataTable()
         "aoColumnDefs": [
             {
                "aTargets": [ 0 ], 
-               "sClass": "ColumnStyle_first", 
+               "sClass": "first_Column", 
             },
             {
                "aTargets": [ 1 ], 
-               "sClass": "ColumnStyle_second", 
+               "sClass": "second_Column", 
             },
             {
                "aTargets": [ 2 ], 
-               "sClass": "ColumnStyle_third", 
+               "sClass": "third_Column", 
             },
             {
                "aTargets": [ 3 ],    
+               "sClass": "details", 
+               "bVisible":false
+            },
+            {
+               "aTargets": [ 4 ],    
+               "sClass": "details", 
+               "bVisible":false
+            },
+            {
+               "aTargets": [ 5 ],    
                "sClass": "details", 
                "bVisible":false
             }
@@ -96,12 +101,43 @@ function createDataTable()
      
     return sOut;
 }
-  
+ initButton();
+ 
+ function initButton()
+{
+    /*
+     * actions button
+     */
+	
+    var button=$j('.third_Column').button({
+            icons : {
+                    primary : 'ui-icon-pencil'
+            },
+            text : false
+    });
+    button.attr('class','buttonTranslate');
+    button.click(function ()
+    {
+       var nTr = $j(this).parents('tr')[0];  
+       var aData = oTable.fnGetData( nTr );
+       $j('.translationResults').animate({'marginLeft':'2%'});
+       $j('.translationResults').animate({'width':'40%'},"slow");
+       $j('.EditTranslation').effect('slide');
+       $j('.EditTranslation').animate({'marginLeft':'40%'});
+       /*$j.ajax({
+       type	: 'POST',
+       url	: HTTP_ROOT_DIR+ '/switcher/ajax/save_Translation.php',
+       data	: $j(aData).serialize(),
+       dataType :'json',
+       async	: false
+       })  */ 
+
+    });
+}
     
     
 } );
 
 }
-
 
 

@@ -73,15 +73,18 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                   null,
                   translateFN('Testo'),
                   translateFN('Azioni'),
-                  translateFN('TestoCompleto')
-                  
+                  translateFN('TestoCompleto'),
+                  translateFN('CodLingua'),
+                  translateFN('Id')
              );
             $total_results = array();
             $imgDetails='<img src='.HTTP_ROOT_DIR.'/layout/ada_blu/img/details_open.png >';
             foreach ($result as $row){
                 $testoCompleto=$row['testo_messaggio'];
                 $testoRidotto=  substr($row['testo_messaggio'], 0, 20);
-                $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto.'...',translateFN('Azioni')=>null,translateFN('TestoCompleto')=>$testoCompleto);
+                $id_message=$row['id_messaggio'];
+                $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto.'...',translateFN('Azioni')=>null,translateFN('TestoCompleto')=>$testoCompleto,
+                translateFN('CodLingua') =>$language_code,translateFN('Id') =>$id_message);
                 array_push ($total_results,$temp_results);
             }
             

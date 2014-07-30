@@ -71,13 +71,18 @@
                         <div class="translationResults">
                             <template_field class="template_field" name="results">results</template_field>
                        </div>
+                       <div class="EditTranslation">
+                            <template_field class="template_field" name="dataEditTranslation">dataEditTranslation</template_field>
+                       </div>
                        <div class="clearfix"></div>
                     </div>
                 </div>
+                 
 
                 <div id="bottomcont">
                 </div>
             </div>
+            
             <!--  / contenuto -->
 
             <!-- com_tools -->

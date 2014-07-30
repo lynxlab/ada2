@@ -49,6 +49,7 @@ $self =  "translation";
 require_once ROOT_DIR.'/include/HtmlLibrary/AdminModuleHtmlLib.inc.php';
 require_once ROOT_DIR.'/include/HtmlLibrary/UserModuleHtmlLib.inc.php';
 require_once ROOT_DIR.'/include/Forms/TranslationForm.inc.php';
+require_once ROOT_DIR.'/include/Forms/EditTranslationForm.inc.php';
 /**
  * 
  * if usertype is switcher assume as client the first element of the testers array
@@ -97,8 +98,9 @@ else
         $languageName[$language['codice_lingua']]=$language['nome_lingua'];
     }
     $form=new TranslationForm($languageName);
-    
     $data=$form->getHtml();
+    $EditTranslFr=new EditTranslationForm();
+    $dataEdtTslFr=$EditTranslFr->getHtml();
     
 }
 $status = translateFN('translation mode');
@@ -120,7 +122,8 @@ $content_dataAr = array(
   'banner'    => $banner,
   'help'      => $help,
 //  'dati'      => $table->getHtml(),
-  'data'      => $data
+  'data'      => $data,
+  'dataEditTranslation' => $dataEdtTslFr,
 
 );
 

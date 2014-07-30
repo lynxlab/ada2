@@ -118,19 +118,35 @@ td.default_th a:hover {
 {
     margin-left: 40px;
 }
-.ColumnStyle_first 
-{ 
-    width: 3%;
-    height: 5%;
-}
-.ColumnStyle_second 
-{ 
-    width: 94%;
-    height: 5%;
-}
-.ColumnStyle_third 
-{ 
-    width: 3%;
-    height: 5%;
-}
 
+.first_Column 
+{ 
+    width: 3%;
+    height: 5%;
+}
+.second_Column 
+{ 
+    //width: 96%;
+    height: 5%;
+}
+.third_Column 
+{ 
+    width: 3%;
+    height: 5%;
+}
+.buttonTranslate
+{
+    height: 1.5em;
+   
+}
+.buttonTranslate:hover {
+	
+    background: transparent;
+    border-color: transparent;
+}
+.EditTranslation
+{
+    display:none;
+    margin-left: 30%;
+    margin-top:-330px;
+}
