@@ -19,14 +19,21 @@ function initDataTable()
         })   
        .done   (function( JSONObj )
        {
-            var content=JSONObj.html;
-            
-            $j('.translationResults').html(content); 
-            createDataTable();
+           if(JSONObj.status=="OK")
+           {
+                var content=JSONObj.html;
+                $j('.translationResults').html(content); 
+                createDataTable();
+            }
+            else
+            {
+                var content=JSONObj.html;
+                $j('.translationResults').html(content); 
+                $j('#table_result').dataTable({"bJQueryUI": true});
+            }
             $j('.translationData').effect('drop', function() {
                     $j('.translationResults').effect('slide');
             });
-            
             $j('#torna').toggle();
             $j('#home').css('display','none');
             $j('#question_mark').css('display','none');
@@ -41,6 +48,9 @@ function createDataTable()
 {
  $j(document).ready(function() {
    oTable= $j('#table_result').dataTable( {
+        "bJQueryUI": true,
+     
+        
         "aoColumnDefs": [
             {
                "aTargets": [ 0 ], 
@@ -102,10 +112,10 @@ function createDataTable()
     var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
     sOut += '<tr><td>'+aData[3]+'</td></tr>';
     sOut += '</table>';
-     
     return sOut;
 }
  initButton();
+ initToolTips();
  
 function initButton()
 {
@@ -119,7 +129,8 @@ function initButton()
             },
             text : false
     });
-    button.attr('class','buttonTranslate');
+    button.attr('class','buttonTranslate tooltip');
+    button.attr('title','Clicca per aggiornare la traduzione');
     button.click(function ()
     {
        SelectRow = $j(this).parents('tr')[0];  
@@ -143,16 +154,34 @@ function initButton()
             $j('form[name="EditranslatorForm"]').append('<input type="hidden" id="id_record" name="id_record" value="'+aData[5]+'" />');  
             $j('form[name="EditranslatorForm"]').append('<input type="hidden" id="cod_lang" name="cod_lang" value="'+aData[4]+'"/>'); 
        } 
-       //var form=$j('form[name="EditranslatorForm"]');
-       //console.log(form.html());
+       
 
     });
  }
-    
+ function  initToolTips()
+ {
+    $j('.tooltip').tooltip({
+
+        show : {
+                effect : "slideDown",
+                delay : 300,
+                duration : 100
+        },
+        hide : {
+                effect : "slideUp",
+                delay : 100,
+                duration : 100
+        },
+        position : {
+                my : "center bottom-5",
+                at : "center top"
+        }
+    });
+      
+ }
     
  });
 }
-var aData;
 function saveTranslation()
 {
     $j.ajax({
@@ -166,7 +195,7 @@ function saveTranslation()
        {
             if(JSONObj.status=='OK')
             {
-                showHideDiv('ciao' ,JSONObj.msg);	
+                showHideDiv(JSONObj.title,JSONObj.msg);	
                 $j('input[type="hidden"][id="id_record"]').remove();
                 $j('input[type="hidden"][id="cod_lang"]').remove();
                 var message=JSONObj.text;

@@ -53,25 +53,25 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $common_dh = $GLOBALS['common_dh'];
         if(is_null($message) || $message=="")
         {
-            $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessun input sottomesso"));
+            $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessun input sottomesso"),"title"=>  translateFN('Notifica'));
         }
         else
         {
             $result = $common_dh->update_message_translation_for_language_code($id_message,$message,$cod_lang);
             if (AMA_DataHandler::isError($result)) 
             {
-                $retArray=array("status"=>"ERROR","msg"=>  translateFN("Attenzione: si &egrave; verificato un errore nell\'aggiornamento della traduzione."));
+                $retArray=array("status"=>"ERROR","msg"=>  translateFN("Attenzione: si &egrave; verificato un errore nell\'aggiornamento della traduzione."),"title"=>  translateFN('Notifica'));
             }
             else
             {
-                $retArray=array("status"=>"OK","msg"=>  translateFN("Traduzione salvata con successo"),"text"=>$message);
+                $retArray=array("status"=>"OK","msg"=>  translateFN("Traduzione salvata con successo"),"text"=>$message,"title"=>  translateFN('Notifica'));
             }
         }
     }
      
     else
     {
-        $retArray=array("status"=>"ERROR","msg"=>  translateFN("Dati inseriti non validi"));
+        $retArray=array("status"=>"ERROR","msg"=>  translateFN("Dati inseriti non validi"),"title"=>  translateFN('Notifica'));
     }
     echo json_encode($retArray);
 }

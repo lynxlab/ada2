@@ -111,14 +111,17 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_UNIFORM,
                 JQUERY_DATATABLE,
 		JQUERY_NO_CONFLICT,
-                JQUERY_MASKEDINPUT
+                JQUERY_MASKEDINPUT,
+                
                 );
 
 $layout_dataAr['CSS_filename'] = array (
 		JQUERY_UI_CSS,
                 JQUERY_UNIFORM_CSS,
-                JQUERY_DATATABLE_CSS
-);
+                JQUERY_DATATABLE_CSS,
+                ROOT_DIR.'/layout/ada_blu/css/switcher/tooltips.css',
+                
+    );
 
 ARE::render($layout_dataAr,$content_dataAr,NULL, array('onload_func' => "initDoc();"));
 ?>

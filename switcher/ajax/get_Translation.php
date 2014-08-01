@@ -51,9 +51,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $search_text=$_POST['t_name'];
         $language_code=$_POST['selectLanguage'];
         $common_dh = $GLOBALS['common_dh'];
+        $thead_data = array(null);
         if(is_null($search_text) || $search_text=="")
         {
-            $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessun input sottomesso"),"html"=>null);
+            $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
+            $result=$result_table->getHtml();
+            $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessun input sottomesso"),"html"=>$result);
         }
         else
         {
