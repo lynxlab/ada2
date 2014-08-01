@@ -17,7 +17,7 @@ class TranslationForm extends FForm
         $this->addTextInput('t_name',translateFN('Cerca nella traduzione'));
         $this->addSelect('selectLanguage', translateFN('Selezionare una lingua '),$language , 1);
         $this->setMethod('POST');
-        $j='return showDataTable();';
+        $j='return initDataTable();';
         $this->setOnSubmit($j);
    }
 }

@@ -60,22 +60,27 @@
 
             <!-- contenuto -->
             <div id="content">
-                <div id="contentcontent">
+                <div id="contentcontent" >
                     <div class="first">
                         <!--div id="help">
                             <template_field class="template_field" name="help">help</template_field>
                         </div-->
+                      </div>
                         <div class="translationData">
                             <template_field class="template_field" name="data">data</template_field>
+                        
                         </div>
+                         <div class="EditTranslation">
+                            <template_field class="template_field" name="dataEditTranslation">dataEditTranslation</template_field>
+                       </div>
+                    
                         <div class="translationResults">
                             <template_field class="template_field" name="results">results</template_field>
                        </div>
-                       <div class="EditTranslation">
-                            <template_field class="template_field" name="dataEditTranslation">dataEditTranslation</template_field>
-                       </div>
+                      
+                           
                        <div class="clearfix"></div>
-                    </div>
+                   
                 </div>
                  
 
@@ -98,7 +103,7 @@
             <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
-
+  
         <!-- menu a tendina -->
         <div id="mainmenu">
             <ul id="menu">

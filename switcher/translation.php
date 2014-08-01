@@ -65,44 +65,19 @@ require_once ROOT_DIR.'/include/Forms/EditTranslationForm.inc.php';
             $languages[0] = array('nome_lingua' => $tester_default_language, 'codice_lingua' => $tester_default_language);
         }
     }
-   
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $search_text=$_POST['t_name'];
-    $language_code=$_POST['selectLanguage'];
-    $common_dh = $GLOBALS['common_dh'];
-    $result = $common_dh->find_translation_for_message($search_text, $language_code, ADA_SYSTEM_MESSAGES_SHOW_SEARCH_RESULT_NUM);
-    if (AMA_DataHandler::isError($result)) {
-      new ADA_Error($result, translateFN('Errore nella ricerca dei messaggi'));
-    }
-    
-    if ($result == NULL) {
-      $page_content = new CText(translateFN("No sentences found"));
-    }
-    else {
-        $thead_data = array(
-              translateFN('Testo'),
-              translateFN('Azioni')
-         );
-        //$temp_results = array(translateFN('Testo') => $html_for_result,translateFN('Azioni') =>$res_course_title);
-        $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $result);
-        $results=$result_table->getHtml();
-    }
-    
-}
-else
+
+
+$languageName=array();
+
+foreach($languages as $language)
 {
-    $languageName=array();
-    
-    foreach($languages as $language)
-    {
-        $languageName[$language['codice_lingua']]=$language['nome_lingua'];
-    }
-    $form=new TranslationForm($languageName);
-    $data=$form->getHtml();
-    $EditTranslFr=new EditTranslationForm();
-    $dataEdtTslFr=$EditTranslFr->getHtml();
-    
+    $languageName[$language['codice_lingua']]=$language['nome_lingua'];
 }
+$form=new TranslationForm($languageName);
+$data=$form->getHtml();
+$EditTranslFr=new EditTranslationForm();
+$dataEdtTslFr=$EditTranslFr->getHtml();
+   
 $status = translateFN('translation mode');
 $edit_profile=$userObj->getEditProfilePage();
 $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);

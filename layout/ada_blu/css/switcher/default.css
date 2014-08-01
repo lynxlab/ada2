@@ -119,17 +119,17 @@ td.default_th a:hover {
     margin-left: 40px;
 }
 
-.first_Column 
+.icon_Column 
 { 
     width: 3%;
     height: 5%;
 }
-.second_Column 
+.text_Column 
 { 
     //width: 96%;
     height: 5%;
 }
-.third_Column 
+.action_Column 
 { 
     width: 3%;
     height: 5%;
@@ -137,7 +137,6 @@ td.default_th a:hover {
 .buttonTranslate
 {
     height: 1.5em;
-   
 }
 .buttonTranslate:hover {
 	
@@ -146,7 +145,13 @@ td.default_th a:hover {
 }
 .EditTranslation
 {
+    float:right;
     display:none;
-    margin-left: 30%;
-    margin-top:-330px;
+    width:150px;
+   
+}
+
+.translationResults
+{
+   float:left;
 }

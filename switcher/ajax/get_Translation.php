@@ -53,45 +53,46 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $common_dh = $GLOBALS['common_dh'];
         if(is_null($search_text) || $search_text=="")
         {
-            $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessun input inserito"),"html"=>null);
+            $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessun input sottomesso"),"html"=>null);
         }
         else
         {
             $result = $common_dh->find_translation_for_message($search_text, $language_code, ADA_SYSTEM_MESSAGES_SHOW_SEARCH_RESULT_NUM);
-        }
-        if (AMA_DataHandler::isError($result)) {
-          new ADA_Error($result, translateFN('Errore nella ricerca dei messaggi'));
-          $retArray=array("status"=>"ERROR","msg"=>  translateFN("Errore nella ricerca dei messaggi"),"html"=>null);
-        }
 
-        if ($result == NULL) {
-          $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessuna frase trovata"),"html"=>null);
-        }
-
-        else {
-            $thead_data = array(
-                  null,
-                  translateFN('Testo'),
-                  translateFN('Azioni'),
-                  translateFN('TestoCompleto'),
-                  translateFN('CodLingua'),
-                  translateFN('Id')
-             );
-            $total_results = array();
-            $imgDetails='<img src='.HTTP_ROOT_DIR.'/layout/ada_blu/img/details_open.png >';
-            foreach ($result as $row){
-                $testoCompleto=$row['testo_messaggio'];
-                $testoRidotto=  substr($row['testo_messaggio'], 0, 20);
-                $id_message=$row['id_messaggio'];
-                $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto.'...',translateFN('Azioni')=>null,translateFN('TestoCompleto')=>$testoCompleto,
-                translateFN('CodLingua') =>$language_code,translateFN('Id') =>$id_message);
-                array_push ($total_results,$temp_results);
+            if (AMA_DataHandler::isError($result)) {
+              $retArray=array("status"=>"ERROR","msg"=>  translateFN("Errore nella ricerca dei messaggi"),"html"=>null);
             }
-            
-            $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
-            $result=$result_table->getHtml();
-            $retArray=array("status"=>"OK","msg"=>  translateFN("Ricerca eseguita con successo"),"html"=>$result);
-        }
+
+            else if ($result == NULL) {
+              $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessuna frase trovata"),"html"=>null);
+            }
+
+            else {
+                $thead_data = array(
+                      null,
+                      translateFN('Testo'),
+                      translateFN('Azioni'),
+                      translateFN('TestoCompleto'),
+                      translateFN('CodLingua'),
+                      translateFN('Id')
+                );
+                $total_results = array();
+                $imgDetails='<img src='.HTTP_ROOT_DIR.'/layout/ada_blu/img/details_open.png >';
+                
+                foreach ($result as $row){
+                    $testoCompleto=$row['testo_messaggio'];
+                    $testoRidotto=  substr($row['testo_messaggio'], 0, 20);
+                    $id_message=$row['id_messaggio'];
+                    $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto.'...',translateFN('Azioni')=>null,translateFN('TestoCompleto')=>$testoCompleto,
+                    translateFN('CodLingua') =>$language_code,translateFN('Id') =>$id_message);
+                    array_push ($total_results,$temp_results);
+                }
+
+                $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
+                $result=$result_table->getHtml();
+                $retArray=array("status"=>"OK","msg"=>  translateFN("Ricerca eseguita con successo"),"html"=>$result);
+            }
+      }
     }
     else
     {

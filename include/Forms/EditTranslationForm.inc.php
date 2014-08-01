@@ -20,5 +20,7 @@ class EditTranslationForm extends FForm
         
         $this->setName('EditranslatorForm');
         $this->addTextarea('TranslationTextArea', translateFN('Modifica traduzione'));
+        $j='return saveTranslation()';
+        $this->setOnSubmit($j);
    }
 }
