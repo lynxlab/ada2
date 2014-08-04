@@ -51,9 +51,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $search_text=$_POST['t_name'];
         $language_code=$_POST['selectLanguage'];
         $common_dh = $GLOBALS['common_dh'];
-        $thead_data = array(null);
+        $thead_data = array(translateFN("Errore"));
         if(is_null($search_text) || $search_text=="")
         {
+            $total_results=array();
+            $msgEr=translateFN("Nessun input sottomesso");
+            $temp_results=array(translateFN("")=>$msgEr);
+            array_push($total_results,$temp_results);
             $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
             $result=$result_table->getHtml();
             $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessun input sottomesso"),"html"=>$result);
@@ -80,13 +84,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                       translateFN('Id')
                 );
                 $total_results = array();
-                $imgDetails='<img src='.HTTP_ROOT_DIR.'/layout/ada_blu/img/details_open.png >';
-                
+                $imgDetails='<img class="imgEx tooltip" src='.HTTP_ROOT_DIR.'/layout/ada_blu/img/details_open.png >';
                 foreach ($result as $row){
                     $testoCompleto=$row['testo_messaggio'];
                     $testoRidotto=  substr($row['testo_messaggio'], 0, 20);
+                    if(strlen($testoCompleto)>20)
+                    {
+                      $testoRidotto=$testoRidotto.'...';
+                    }
                     $id_message=$row['id_messaggio'];
-                    $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto.'...',translateFN('Azioni')=>null,translateFN('TestoCompleto')=>$testoCompleto,
+                    $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto,translateFN('Azioni')=>null,translateFN('TestoCompleto')=>'<p>'.$testoCompleto.'</p>',
                     translateFN('CodLingua') =>$language_code,translateFN('Id') =>$id_message);
                     array_push ($total_results,$temp_results);
                 }
