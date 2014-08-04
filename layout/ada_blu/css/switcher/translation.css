@@ -9,8 +9,9 @@ and open the template in the editor.
 */
 
 
-
 /* style for translation module*/
+
+
 .translationResults
 {
     display:none;
@@ -47,21 +48,9 @@ and open the template in the editor.
 }
 .details td
 {
-    background: transparent;
-    border: 1px  #BCD6D7;
-    margin: 5px 5px 10px;
-    padding: 10px;
+    border: 1px;
 }
 
-.details td p
-{
-    margin-left: 35px;
-}
-.details td a:link
-{
-  // background: transparent; 
-   
-}
 .buttonTranslate
 {
     height: 1.5em;
@@ -76,7 +65,6 @@ and open the template in the editor.
     float:right;
     display:none;
     width:150px;
-   
 }
 
 .translationResults

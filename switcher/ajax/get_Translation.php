@@ -67,11 +67,23 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $result = $common_dh->find_translation_for_message($search_text, $language_code, ADA_SYSTEM_MESSAGES_SHOW_SEARCH_RESULT_NUM);
 
             if (AMA_DataHandler::isError($result)) {
-              $retArray=array("status"=>"ERROR","msg"=>  translateFN("Errore nella ricerca dei messaggi"),"html"=>null);
+                $total_results=array();
+                $msgEr=translateFN("Errore nella ricerca dei messaggi");
+                $temp_results=array(translateFN("")=>$msgEr);
+                array_push($total_results,$temp_results);
+                $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
+                $result=$result_table->getHtml();
+                $retArray=array("status"=>"ERROR","msg"=>  translateFN("Errore nella ricerca dei messaggi"),"html"=>$result);
             }
 
             else if ($result == NULL) {
-              $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessuna frase trovata"),"html"=>null);
+                $total_results=array();
+                $msgEr=translateFN("Nessuna frase trovata");
+                $temp_results=array(translateFN("")=>$msgEr);
+                array_push($total_results,$temp_results);
+                $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
+                $result=$result_table->getHtml();
+                $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessuna frase trovata"),"html"=>$result);
             }
 
             else {
@@ -84,7 +96,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                       translateFN('Id')
                 );
                 $total_results = array();
-                $imgDetails='<img class="imgEx tooltip" src='.HTTP_ROOT_DIR.'/layout/ada_blu/img/details_open.png >';
+                //$imgDetails='<img class="imgEx tooltip" src='.HTTP_ROOT_DIR.'/layout/ada_blu/img/details_open.png >';
+                $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/ada_blu/img/details_open.png');
+                $imgDetails->setAttribute('class', 'imgDetls tooltip');
+                $imgDetails->setAttribute('title', translateFN('espande/riduce il testo'));
                 foreach ($result as $row){
                     $testoCompleto=$row['testo_messaggio'];
                     $testoRidotto=  substr($row['testo_messaggio'], 0, 20);
@@ -93,7 +108,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                       $testoRidotto=$testoRidotto.'...';
                     }
                     $id_message=$row['id_messaggio'];
-                    $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto,translateFN('Azioni')=>null,translateFN('TestoCompleto')=>'<p>'.$testoCompleto.'</p>',
+                    $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto,translateFN('Azioni')=>null,translateFN('TestoCompleto')=>$testoCompleto,
                     translateFN('CodLingua') =>$language_code,translateFN('Id') =>$id_message);
                     array_push ($total_results,$temp_results);
                 }

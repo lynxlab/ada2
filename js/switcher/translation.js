@@ -39,6 +39,9 @@ function initDataTable()
             $j('#home').css('display','none');
             $j('#question_mark').css('display','none');
       })
+      .fail   (function() { 
+            console.log("ajax call has failed"); 
+       } )
    return false;
 }
 
@@ -209,7 +212,14 @@ function saveTranslation()
                 oTable.fnUpdate(JSONObj.text,oTable.fnGetPosition(SelectRow),3);
                 $j('#TranslationTextArea').val('');
              }
+             else
+             {
+                showHideDiv(JSONObj.title,JSONObj.msg);	 
+             }
        })
+       .fail   (function() { 
+		console.log("ajax call has failed"); 
+	} )
       return false;
 }
 function showHideDiv ( title, message )
