@@ -2492,7 +2492,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
                 $sql_prepared_text = $this->sql_prepared("%$token%");
                 $sql_for_where .= "AND testo_messaggio LIKE $sql_prepared_text ";
             }
-            $sql_for_where .= " LIMIT $limit_results_number_to";
+            if($limit_results_number_to!=null || $limit_results_number_to!="")
+            {
+                $sql_for_where .= " LIMIT $limit_results_number_to";
+            }
         }
 
         $table_name = $this->get_translation_table_name_for_language_code($language_code);
