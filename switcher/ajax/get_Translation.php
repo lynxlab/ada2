@@ -109,7 +109,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                       $testoRidotto=$testoRidotto.'...';
                     }
                     $id_message=$row['id_messaggio'];
-                    $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto,translateFN('Azioni')=>null,translateFN('TestoCompleto')=>$testoCompleto,
+                    $newButton = CDOMElement::create('button');
+                    $newButton->setAttribute('class', 'buttonTranslate tooltip');
+                    $newButton->addChild (new CText(translateFN('Clicca per aggiornare la traduzione')));
+                    $temp_results = array(null=>$imgDetails,translateFN('Testo') => $testoRidotto,translateFN('Azioni')=>$newButton,translateFN('TestoCompleto')=>$testoCompleto,
                     translateFN('CodLingua') =>$language_code,translateFN('Id') =>$id_message);
                     array_push ($total_results,$temp_results);
                 }
