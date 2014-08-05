@@ -1,4 +1,4 @@
-.ui-tooltip {
+body .ui-tooltip {
     background: #BCD6D7;
     border: 2px solid white;
     zoom: 1;
@@ -6,7 +6,7 @@
     opacity: 0.9;
   }
   
-  .ui-tooltip {
+body .ui-tooltip {
     padding: 3px 10px;
     color: black;
     border-radius: 20px;

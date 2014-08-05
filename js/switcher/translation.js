@@ -99,13 +99,13 @@ function createDataTable()
         if ( oTable.fnIsOpen(nTr) )
         {
             /* This row is already open - close it */
-            this.src = HTTP_ROOT_DIR+"/layout/ada_blu/img/details_open.png";
+            this.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_open.png";
             oTable.fnClose( nTr );
         }
         else
         {
             /* Open this row */
-            this.src = HTTP_ROOT_DIR+"/layout/ada_blu/img/details_close.png";
+            this.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_close.png";
             oTable.fnOpen( nTr, fnFormatDetails(nTr), 'details' );
         }
    });
@@ -208,6 +208,7 @@ function saveTranslation()
                 {
                     substr=substr+'...';
                 }
+                /*update datatable*/ 
                 oTable.fnUpdate(substr,oTable.fnGetPosition(SelectRow),1);
                 oTable.fnUpdate(JSONObj.text,oTable.fnGetPosition(SelectRow),3);
                 $j('#TranslationTextArea').val('');
