@@ -203,8 +203,8 @@ function saveTranslation()
                 $j('input[type="hidden"][id="id_record"]').remove();
                 $j('input[type="hidden"][id="cod_lang"]').remove();
                 var message=JSONObj.text;
-                var substr=message.substring(0,20);
-                if(message.length>20)
+                var substr=message.substring(0,30);
+                if(message.length>30)
                 {
                     substr=substr+'...';
                 }

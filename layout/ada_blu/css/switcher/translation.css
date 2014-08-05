@@ -34,17 +34,17 @@ and open the template in the editor.
 .icon_Column 
 { 
     width: 3%;
-    height: 5%;
+    //height: 10px;
 }
 .text_Column 
 { 
-    height: 5%;
+    //height: 10px;
 }
  
 .action_Column 
 { 
     width: 3%;
-    height: 5%;
+    //height: 10px;
 }
 .details td
 {

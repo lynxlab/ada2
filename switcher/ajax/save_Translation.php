@@ -47,7 +47,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->fillWithPostData();
     if ($form->isValid())
     {
-        $message=$_POST['TranslationTextArea'];
+        $message=trim($_POST['TranslationTextArea']);
         $id_message=$_POST['id_record'];
         $cod_lang=$_POST['cod_lang'];
         $common_dh = $GLOBALS['common_dh'];

@@ -64,8 +64,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         else
         {
-            $result = $common_dh->find_translation_for_message($search_text, $language_code, ADA_SYSTEM_MESSAGES_SHOW_SEARCH_RESULT_NUM);
-
+            //$result = $common_dh->find_translation_for_message($search_text, $language_code, ADA_SYSTEM_MESSAGES_SHOW_SEARCH_RESULT_NUM);
+             $result = $common_dh->find_translation_for_message($search_text, $language_code,null);
+            
             if (AMA_DataHandler::isError($result)) {
                 $total_results=array();
                 $msgEr=translateFN("Errore nella ricerca dei messaggi");
@@ -102,8 +103,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $imgDetails->setAttribute('title', translateFN('espande/riduce il testo'));
                 foreach ($result as $row){
                     $testoCompleto=$row['testo_messaggio'];
-                    $testoRidotto=  substr($row['testo_messaggio'], 0, 20);
-                    if(strlen($testoCompleto)>20)
+                    $testoRidotto=  substr($row['testo_messaggio'], 0, 30);
+                    if(strlen($testoCompleto)>30)
                     {
                       $testoRidotto=$testoRidotto.'...';
                     }
