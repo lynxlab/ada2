@@ -50,11 +50,13 @@ and open the template in the editor.
     border: 1px;
 }
 
-.buttonTranslate
+button.buttonTranslate 
 {
-    height: 1.5em;
+    //height: 1.5em;
+    background: transparent; 
+    border-color: transparent;
 }
-.buttonTranslate:hover {
+button.buttonTranslate:hover {
     background: transparent;
     border-color: transparent;
 }

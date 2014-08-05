@@ -127,14 +127,13 @@ function initButton()
     * actions button
     */
 	
-    var button=$j('.action_Column').button({
+    var button=$j('.buttonTranslate').button({
             icons : {
                     primary : 'ui-icon-pencil'
             },
             text : false
     });
-    button.attr('class','buttonTranslate tooltip');
-    button.attr('title','Clicca per aggiornare la traduzione');
+    
     button.click(function ()
     {
        SelectRow = $j(this).parents('tr')[0];  
