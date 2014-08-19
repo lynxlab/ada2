@@ -136,6 +136,9 @@ class CDOMElement
            case 'iframe':
                 $element = new CIFrame();
                 break;
+           case 'i':
+                $element = new CI();
+               	break;                
            case 'h1':
            		$element = new CH1();
            		break;
