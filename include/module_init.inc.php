@@ -61,6 +61,12 @@ require_once ROOT_DIR . '/include/MobileDetect/Mobile_Detect.php';
 extract($_GET,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
 extract($_POST,EXTR_OVERWRITE,ADA_GP_VARIABLES_PREFIX);
 
+/**
+ * Graffio 19/08/2014
+ * set the variable $GLOBALS['simpleCleaned'] in order to NOT clean the messagges
+ * $GLOBALS['simpleCleaned'] = true means that the clean function is already been executed
+ */
+$GLOBALS['simpleCleaned'] = true;
 
 /**
  *	Validates $_SESSION data
