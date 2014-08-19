@@ -156,38 +156,60 @@ class ARE
         $layout_template = $layoutObj->template;
         $layout_CSS      = $layoutObj->CSS_filename;
 
+        /**
+         * @author giorgio 19/ago/2014
+         * 
+         * fix javascript inclusion as follows:
+         * - if the PhP has not included JQUERY, include it as first element
+         * - if the PhP has not included SEMANTICUI_JS, include it just after JQUERY
+         * - if the PhP has not included JQUERY_NO_CONFLICT include it as last element
+         * 
+         * This way, any PhP can include what it needs and in the right order of inclusion
+         */
 		if (!empty($layout_dataAr['JS_filename']) && is_array($layout_dataAr['JS_filename'])) {
-			/**
-             * @author giorgio 25/set/2013
-             * jquery and jquery-noconflict inclusion if there's at least one widget
-             * and if inclusion has not been requested by the file that's being rendered already
-			 */
-			if (!is_null($layoutObj->WIDGET_filename)) {
-				if (!in_array(JQUERY, $layout_dataAr['JS_filename'])) array_push($layout_dataAr['JS_filename'], JQUERY);
-				if (!in_array(JQUERY_NO_CONFLICT, $layout_dataAr['JS_filename'])) array_push($layout_dataAr['JS_filename'], JQUERY_NO_CONFLICT);
+			
+			// if jquery is not included in the script itself, add it at first position
+			if (!in_array(JQUERY, $layout_dataAr['JS_filename'])) $layout_dataAr['JS_filename'] = array_merge(array(JQUERY),$layout_dataAr['JS_filename']);
+			
+			// if semantic ui is not included in the script itself, add it just after JQUERY
+			if (!in_array(SEMANTICUI_JS, $layout_dataAr['JS_filename'])) {
+				// find the key for JQUERY
+				$key = array_search(JQUERY, $layout_dataAr['JS_filename']);
+				// add SEMANTIC after JQUERY slicing the original array
+				$layout_dataAr['JS_filename'] = array_merge(
+						array_slice($layout_dataAr['JS_filename'], 0, $key+1),
+						array(SEMANTICUI_JS),
+						array_slice($layout_dataAr['JS_filename'], $key+1)
+				);
 			}
+			
+			// if jquery noconflict is not included in the script itself, add it at last position
+			if (!in_array(JQUERY_NO_CONFLICT, $layout_dataAr['JS_filename'])) array_push($layout_dataAr['JS_filename'], JQUERY_NO_CONFLICT);
+			
 			$tmp = explode(';',$layoutObj->JS_filename);
 			$tmp = array_merge($tmp,$layout_dataAr['JS_filename']);
 			//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
 			$layoutObj->JS_filename = implode(';',$tmp);
 		} else {
-			/**
-			 * @author giorgio 25/set/2013 
-			 * jquery and jquery-noconflict inclusion if there's at least one widget
-			 */
-			if (!is_null($layoutObj->WIDGET_filename))
-			{ 
-				// see above, inclusion is made already imploded
-				$layoutObj->JS_filename .= ';'.JQUERY.';'.JQUERY_NO_CONFLICT;
-			}
+			// add jquery, semantic and jquery noconflict
+			$layoutObj->JS_filename .= ';'.JQUERY.';'.SEMANTICUI_JS.';'.JQUERY_NO_CONFLICT;
 		}
 
 		if (!empty($layout_dataAr['CSS_filename']) && is_array($layout_dataAr['CSS_filename'])) {
 			$tmp = explode(';',$layoutObj->CSS_filename);
 			$tmp = array_merge($tmp,$layout_dataAr['CSS_filename']);
+
+			/**
+			 * @author giorgio 06/ago/2014
+			 * add semantic css last
+			 */
+			if (defined('SEMANTICUI_CSS')) $tmp[] = SEMANTICUI_CSS;
+			
 			//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
 			$layoutObj->CSS_filename = implode(';',$tmp);
 			$layout_CSS = implode(';',$tmp);
+		} else {
+			$layout_CSS .= ';'.SEMANTICUI_CSS;
 		}
 
         /*
