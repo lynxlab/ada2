@@ -21,7 +21,7 @@
  */
 class ARE
 {
-  public static function render($layout_dataAr = array(), $content_dataAr = array(), $renderer=NULL, $options=array()) {
+  public static function render($layout_dataAr = array(), $content_dataAr = array(), $renderer=NULL, $options=array(), $menuoptions=array()) {
 
   	/**
   	 * @author giorgio 03/apr/2014
@@ -64,7 +64,7 @@ class ARE
         $meta_refresh_time = isset($options['meta_refresh_time']) ? $options['meta_refresh_time'] : '';
         $meta_refresh_url  = isset($options['meta_refresh_url'])  ? $options['meta_refresh_url'] : '';
         $onload_func       = isset($options['onload_func'])       ? $options['onload_func'] : '';
-        $static_dir        = isset($options['static_dir'])         ? $options['static_dir'] : ROOT_DIR.'services/media/cache/';
+        $static_dir        = isset($options['static_dir'])        ? $options['static_dir'] : ROOT_DIR.'services/media/cache/';
 
         $html_renderer = new HTML($layout_template, $layout_CSS, $user_name, $course_title,
                                   $node_title, $meta_keywords, $author, null,
@@ -195,22 +195,20 @@ class ARE
 			$layoutObj->JS_filename .= ';'.JQUERY.';'.SEMANTICUI_JS.';'.JQUERY_NO_CONFLICT;
 		}
 
-		if (!empty($layout_dataAr['CSS_filename']) && is_array($layout_dataAr['CSS_filename'])) {
-			$tmp = explode(';',$layoutObj->CSS_filename);
+		$tmp = explode(';',$layoutObj->CSS_filename);
+				
+		if (!empty($layout_dataAr['CSS_filename']) && is_array($layout_dataAr['CSS_filename'])) {			
 			$tmp = array_merge($tmp,$layout_dataAr['CSS_filename']);
-
-			/**
-			 * @author giorgio 06/ago/2014
-			 * add semantic css last
-			 */
-			if (defined('SEMANTICUI_CSS')) $tmp[] = SEMANTICUI_CSS;
-			
-			//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
-			$layoutObj->CSS_filename = implode(';',$tmp);
-			$layout_CSS = implode(';',$tmp);
-		} else {
-			$layout_CSS .= ';'.SEMANTICUI_CSS;
 		}
+		/**
+		 * @author giorgio 06/ago/2014
+		 * add semantic css last
+		 */
+		if (defined('SEMANTICUI_CSS')) $tmp[] = SEMANTICUI_CSS;
+			
+		//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
+		$layoutObj->CSS_filename = implode(';',$tmp);
+		$layout_CSS = implode(';',$tmp);
 
         /*
          * optional arguments for HTML constructor
@@ -249,6 +247,25 @@ class ARE
         	if (!ADA_Error::isError($widgets_dataAr))
         		$content_dataAr = array_merge ($content_dataAr, $widgets_dataAr);		
         }                
+        /**
+         * @author giorgio 19/ago/2014
+         * 
+         * make menu here
+         */
+        require_once ROOT_DIR.'/include/menu_class.inc.php';
+        	
+        $menu = new Menu($layoutObj->module_dir,
+        		basename(($_SERVER['SCRIPT_FILENAME'])),
+        		$_SESSION['sess_userObj']->getType(),
+        		$menuoptions);
+
+        /**
+         * adamenu must be the first key of $content_dataAr
+         * for the template_field substitution to work inside the menu
+         */
+        $content_dataAr = array ('adamenu'=>$menu->getHtml()) + $content_dataAr;        
+        $content_dataAr['isVertical'] = ($menu->isVertical()) ? ' vertical' : '';
+
         $html_renderer->fillin_templateFN($content_dataAr);
 
         $imgpath = (dirname($layout_template));
@@ -415,28 +432,6 @@ class  Generic_Html extends Output
       $tpl = $this->include_microtemplates();
     }
     // $tpl = $this->include_microtemplates_tree();
-    /*
-    * traduzione dei template
-    * vito, 15 ottobre 2008: parse del template per tradurre il testo contenuto nella lingua dell'utente
-    */
-    // ottiene tutto il testo marcato per la traduzione
-    $matches=array();
-    preg_match_all('/<i18n>(.*)<\/i18n>/', $tpl, $matches);
-    // costruisce l'array contenente il testo tradotto
-    $pattern = array();
-    $translated_text = array();
-    foreach( $matches[1] as $match => $text )
-    {
-      $quoted_text = preg_quote($text,'/');
-      $pattern[$match] = "/<i18n>$quoted_text<\/i18n>/";
-      $translated_text[$match] = translateFN($text);
-    }
-    // sostituisce nel template il testo tradotto al testo originale
-    $tpl = preg_replace( $pattern, $translated_text, $tpl);
-
-    /*
-     * fine della traduzione
-     */
 
     foreach ($dataHa as $field=>$data){
 
@@ -465,6 +460,29 @@ class  Generic_Html extends Output
     // removing extra template fields that don't match
     $ereg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",$this->replace_field_code);
     $tpl = eregi_replace($ereg,"<!-- template_field_removed -->",$tpl);
+    
+    /*
+     * traduzione dei template
+     * vito, 15 ottobre 2008: parse del template per tradurre il testo contenuto nella lingua dell'utente
+     */
+    // ottiene tutto il testo marcato per la traduzione
+    $matches=array();
+    preg_match_all('/<i18n>(.*)<\/i18n>/', $tpl, $matches);
+    // costruisce l'array contenente il testo tradotto
+    $pattern = array();
+    $translated_text = array();
+    foreach( $matches[1] as $match => $text )
+    {
+    	$quoted_text = preg_quote($text,'/');
+    	$pattern[$match] = "/<i18n>$quoted_text<\/i18n>/";
+    	$translated_text[$match] = translateFN($text);
+    }
+    // sostituisce nel template il testo tradotto al testo originale
+    $tpl = preg_replace( $pattern, $translated_text, $tpl);
+    /*
+     * fine della traduzione
+     */
+    
     $this->htmlbody = $tpl;
 
   }
