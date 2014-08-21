@@ -202,4 +202,15 @@ $layout_dataAr['CSS_filename'] = array(
 	ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css'
 );
 
+/**
+ * added here to test new menu
+ */
+if ($id_profile == AMA_TYPE_AUTHOR) {
+	$content_dataAr['edit_test'] = 'mode='.$mode.'&action=mod&id_test='.$test->id_nodo;
+	$content_dataAr['delete_test'] = 'mode='.$mode.'&action=del&id_test='.$test->id_nodo;
+}
+$content_dataAr['go_back'] = $last_visited_node;
+$content_dataAr['what'] = $what;
+
+
 ARE::render($layout_dataAr, $content_dataAr);
