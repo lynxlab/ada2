@@ -12,6 +12,40 @@ var EFFECT_BLIND_DURATION_IN_SECONDS = 0.3;
  */
 setUnreadMessagesBadge();
 
+document.observe('dom:loaded', function() {
+	/**
+	 * sets the dropdown menu to appear on hover
+	 * and the menuitem onclick handler for proper css class switching
+	 * 
+	 * WARNING: I'm using $j inside a function called by prototype
+	 * document observer. One day all shall be handled by jQuery... 
+	 * This is not going to harm anybody, but you've been warned
+	 */	
+	var	menuItem = $j('.menu a.item, .menu .link.item');
+	var dropdown = $j('.menu .dropdown');
+
+	dropdown.dropdown({
+	  on: 'hover'
+	});		
+
+	menuItem.on('click', function() {	  
+	    if(!$j(this).hasClass('dropdown')) {
+	          $j(this).toggleClass('active').closest('.ui.menu')
+	          .find('.item').not($j(this)).removeClass('active');
+	    }
+	});
+	
+	if ($j('a.item.userpopup').length > 0) {
+		$j('#status_bar').hide();
+		$j('a.item.userpopup').popup({
+		    position: 'bottom left',
+		    offset: '150',
+		    html: $j('#status_bar').html(),
+		    on: 'click'
+		  });
+	}
+});
+
 /*
  * Per mostrare e nascondere elementi
  */
@@ -226,21 +260,32 @@ function dropDownMenuHide(element, direction) {
 function setUnreadMessagesBadge () {
 	document.observe('dom:loaded', function() {
 		// do something only if there is the 'comunica' menu item
-		if ($('com')!=undefined) {
+		/**
+		 * @author giorgio 21/ago/2014
+		 * FIXME:
+		 * when all templates menu are turned into semantic-ui
+		 * it is safe to remove all the $('com') related stuff
+		 */
+		if ($('com')!=undefined || $('unreadmsgbadge')!=undefined) {
 			new Ajax.Request( HTTP_ROOT_DIR+ '/comunica/ajax/getUnreadMessagesCount.php', {
 				method: 'get',
 				onComplete: function(transport) {
 					var json = transport.responseText.evalJSON(true);
 					var value = parseInt (json.value);
 					if (!isNaN(value) && value>0) {
-						var msgCounter = new Element('span',{
-							id:'newMsgCount'
-						});
-						msgCounter.style.display = 'none';
-						msgCounter.update("<span class='arrow'></span>"+value);
-						$('com').insert(msgCounter);
-						$('com').style.paddingRight = '0';
-						Effect.Appear('newMsgCount',{ duration: 0.4 });						
+						if ($('com')!=undefined) {
+							var msgCounter = new Element('span',{
+								id:'newMsgCount'
+							});
+							msgCounter.style.display = 'none';
+							msgCounter.update("<span class='arrow'></span>"+value);
+							$('com').insert(msgCounter);
+							$('com').style.paddingRight = '0';
+							Effect.Appear('newMsgCount',{ duration: 0.4 });
+						} else if($('unreadmsgbadge')!=undefined) { // update span id
+							$('msglabel').show();
+							$('unreadmsgbadge').update(value);
+						}
 					}
 				}
 			});
