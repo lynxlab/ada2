@@ -1,6 +1,7 @@
 /* IMPOSTAZIONI GENERALI
 ----------------------------------------------- */
-
+@CHARSET "UTF-8";
+@import "adamenu.css";
 
 html, body { font-family: Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:5px; color:#000; font-size: small;
 			 background: #fff; }
@@ -482,4 +483,19 @@ width: 700px;
  */
 a.RSSheader {
 	text-decoration: none;
+}
+
+/**
+ * @author giorgio 20/ago/2014
+ * style fix for better menu display
+ */
+html, body {
+    padding:0;
+}
+#header {
+    margin-bottom: 10px;
+}
+
+#container {
+    padding-top:0;
 }
