@@ -1,0 +1,32 @@
+@CHARSET "UTF-8";
+.ui.menu.ada { 
+	font-family: "Helvetica Neue", "Helvetica", Arial;
+	border-radius:0;
+	border-bottom: 2px solid #009F98;
+	/* background-color: #1C68AD; */
+	
+}
+.ui.menu.ada i.icon {
+	opacity: 0.9;
+	/* do not remove this float, it overwrites some 
+	   css class in ada layout system for the icons only */ 
+	float: initial;
+}
+
+.ui.menu.ada  a.item,
+.ui.menu.ada .dropdown.item,
+.ui.menu.ada .dropdown.item a.item {
+	text-transform: capitalize;
+}
+
+.ui.menu.ada .dropdown.item a.item:hover {
+	background-color: #F5F5F5;
+}
+
+.ui.menu.ada div.ui.search.input,
+.ui.menu.ada i.search.link.icon { background-color: transparent;  }
+.ui.menu.ada i.search.link.icon { margin-right: 10px; margin-top: 2px; }
+
+#topmenur, #bottommenur { display:none;  }
+div#menuright { opacity: 0.95; width: 350px; padding-top: 25px; position: fixed; }
+.menuright_view.sidebar { background-color: #1665ad;  }
