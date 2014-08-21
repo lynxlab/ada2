@@ -564,7 +564,7 @@ switch ($op){
                 $layout_dataAR['JS_filename'][] = ROOT_DIR.'/js/browsing/view.js';
               }
 		/**
-		 * if the jqueru-ui theme directory is there in the template family,
+		 * if the jquery-ui theme directory is there in the template family,
 		 * do not include the default jquery-ui theme but use the one imported
 		 * in the .css file instead
 		*/
@@ -588,7 +588,18 @@ switch ($op){
                     $content_dataAr['go_next'] = $navBar->getHtml('next'); // can pass href text as second param
                 }
 
-		ARE::render($layout_dataAR,$content_dataAr, null,$optionsAr);
+        $menuOptions['self_instruction'] = $self_instruction;
+        $menuOptions['id_course'] = $sess_id_course;
+        $menuOptions['id_course_instance'] = $sess_id_course_instance;
+        $menuOptions['id_node'] = $sess_id_node;
+        $menuOptions['id_parent'] = $sess_id_node;
+        
+        /**
+         * this is modified here to test parameters passing on new menu
+         */
+        $content_dataAr['test_history'] = 'op=test&id_course_instance='.$sess_id_course_instance.'&id_course='.$sess_id_course;
+        
+		ARE::render($layout_dataAR,$content_dataAr, null,$optionsAr,$menuOptions);
 
 }
 
