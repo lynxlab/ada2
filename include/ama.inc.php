@@ -11863,6 +11863,118 @@ public function get_updates_nodes($userObj, $pointer)
       $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
       return $result;
     }
+    
+    /**
+     * gets a menu from the provider database, if not found tries the common
+     * if still a menu is not found for the given script, module and user_type try the default
+     * 
+     * @param string $module (module for the menu. e.g. browsing, comunica, modules/test)
+     * @param string $script (script for the menu, derived from the URL)
+     * @param string $user_type AMA_USER_TYPE
+     * @param number $self_instruction non zero if course is in self instruction mode
+     * @param boolean $get_all set it to true to get also disabled elements. Defaults to false 
+     * 
+     * @return mixed
+     * 
+     * @access public
+     */   
+    public function get_menu($module, $script, $user_type, $self_instruction=0, $get_all=false) {
+    	
+    	$default_module = 'main';    // module name to be used as a default value
+    	$default_script = 'default'; // script name to be used as a default value
+    	$menu_found = false;
+    	$retVal = array();
+    	
+    	$sql = 'SELECT tree_id, isVertical FROM menu_page WHERE module=? AND script=? AND user_type=? AND self_instruction=?';
+    	
+    	$common_dh = AMA_Common_DataHandler::instance();
+    	
+    	/**
+    	 * Rules used to look for a menu:
+    	 * - try passed module/script  in current provider, and if nothing is found
+    	 * - try passed module/script  in common  provider, and if nothing is found
+    	 * - try passed module/default in current provider, and if nothing is found
+    	 * - try passed module/default in common  provider, and if nothing is found
+    	 * - try main/default          in current provider, and if nothing is found
+    	 * - try main/default          in common  provider, and if nothing is found
+    	 * - give up.
+    	 */
+    	
+    	foreach (array($module,$default_module) as $nummodule=>$currentModule) {
+    		foreach (array($script,$default_script) as $numscript=>$currentScript) {
+    			// skip main module/passed script as per above rules
+    			if ($nummodule==1 && $numscript==0) continue;
+    			$params = array ($currentModule, $currentScript, $user_type, $self_instruction);
+    			foreach (array($this,$common_dh) as &$dbToUse) {
+    				$result = $dbToUse->getRowPrepared($sql, $params, AMA_FETCH_ASSOC);
+    				if (!AMA_DB::isError($result) && $result!==false && count($result)>0) {
+    					$menu_found = true;
+    					break;
+    				}     				
+    			}
+    			if ($menu_found) break;    			
+    		}
+    		if ($menu_found) break;
+    	}
 
+    	// if no menu has been found return false right away!
+    	if (!$menu_found) return false;
+    	
+    	$retVal['tree_id'] = $result['tree_id'];
+    	$retVal['isVertical'] = $result['isVertical'];
 
+    	// get all the first level items, first left and then right side
+    	foreach (array(0=>'left',1=>'right') as $sideIndex=>$sideString) {
+
+	    	$sql = 'SELECT MI.*, MT.extraClass AS menuExtraClass FROM `menu_items` AS MI JOIN `menu_tree` AS MT ON '.
+	      		   'MI.item_id=MT.item_id WHERE MT.tree_id=? AND MT.parent_id=0 AND MI.groupRight=?';
+	    	if (!$get_all) $sql .= ' AND MI.enabled>0';
+	    	$sql .= ' ORDER BY MI.order ASC';
+	    	
+	    	$res = $dbToUse->getAllPrepared($sql,array($retVal['tree_id'],$sideIndex),AMA_FETCH_ASSOC);
+	    	
+	    	if (!AMA_DB::isError($res) && count($res)>0) {
+	    		
+	    		foreach ($res as $count=>$element) {
+	    			$res[$count]['children'] = $this->get_menu_children_recursive($retVal['tree_id'],$element['item_id'],$dbToUse,$get_all);
+	    		}
+	    		$retVal[$sideString] = $res;
+	    	} else {
+	    		$retVal[$sideString] = null;
+	    	}
+    	}
+    	return $retVal;    	    	
+    }
+    
+    /**
+     * @author giorgio 19/ago/2014
+     * 
+     * recursively gets all the children of a given menu item
+     * 
+     * @param number $tree_id the id of the menu tree to load
+     * @param number $parent_id the id of the parent to get children for
+     * @param AMA_DataHandler $dbToUse the data handler to be used, either Common or Tester
+     * @param boolean $get_all set it to true to get also disabled elements.
+     * 
+     * @return array of found children or null if no children found
+     * 
+     * @access private
+     */
+    private function get_menu_children_recursive($tree_id=0,$parent_id,$dbToUse,$get_all) {
+    	
+    	$sql = 'SELECT MI.*, MT.extraClass AS menuExtraClass FROM `menu_items` AS MI JOIN `menu_tree` AS MT ON '.
+    			'MI.item_id=MT.item_id WHERE MT.tree_id=? AND MT.parent_id=?';
+    	if (!$get_all) $sql .= ' AND MI.enabled>0';
+    	$sql .= ' ORDER BY MI.order ASC';
+    	
+    	$res = $dbToUse->getAllPrepared($sql,array($tree_id,$parent_id),AMA_FETCH_ASSOC);
+    	
+    	if (AMA_DB::isError($res) || count($res)<=0 || $res===false) return null;
+    	else {
+    		foreach ($res as $count=>$element) {
+    			$res[$count]['children'] = $this->get_menu_children_recursive($tree_id, $element['item_id'], $dbToUse, $get_all);
+    		}    		
+    		return $res;
+    	}
+    }
 }
