@@ -11885,7 +11885,7 @@ public function get_updates_nodes($userObj, $pointer)
     	$menu_found = false;
     	$retVal = array();
     	
-    	$sql = 'SELECT tree_id, isVertical FROM menu_page WHERE module=? AND script=? AND user_type=? AND self_instruction=?';
+    	$sql = 'SELECT tree_id, isVertical, linked_tree_id FROM menu_page WHERE module=? AND script=? AND user_type=? AND self_instruction=?';
     	
     	$common_dh = AMA_Common_DataHandler::instance();
     	
@@ -11922,6 +11922,9 @@ public function get_updates_nodes($userObj, $pointer)
     	
     	$retVal['tree_id'] = $result['tree_id'];
     	$retVal['isVertical'] = $result['isVertical'];
+    	
+    	// if is a linked tree, set the actual tree_id to the linked one
+    	if (!is_null($result['linked_tree_id'])) $retVal['tree_id'] = $result['linked_tree_id'];
 
     	// get all the first level items, first left and then right side
     	foreach (array(0=>'left',1=>'right') as $sideIndex=>$sideString) {
