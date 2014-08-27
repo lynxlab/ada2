@@ -11993,14 +11993,13 @@ public function get_updates_nodes($userObj, $pointer)
     		}
     		if ($menu_found) break;
     	}
-
-    	// if no menu has been found return false right away!
+        // if no menu has been found return false right away!
     	if ($menu_found===true) {
     		$retVal['tree_id'] = $menuCandidate['tree_id'];
     		$retVal['isVertical'] = $menuCandidate['isVertical'];
     		$retVal['dbToUse'] = $dbToUse;
     		// if is a linked tree, set the actual tree_id to the linked one
-    		if (!is_null($result['linked_tree_id'])) $retVal['tree_id'] = $menuCandidate['linked_tree_id'];
+    		if (!is_null($menuCandidate['linked_tree_id'])) $retVal['tree_id'] = $menuCandidate['linked_tree_id'];
     	} else $retVal = false;
 
     	return $retVal;    	    	
