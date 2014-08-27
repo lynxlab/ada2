@@ -70,13 +70,21 @@ class Menu
     	// get the menu from the database
     	$dh = $GLOBALS['dh'];
     	$getAllMenuItems = false;
-    	$res = $dh->get_menu($module, $script, $user_type, $self_instruction, $getAllMenuItems);
+    	
+    	// get tree_id, isVertical and db where menu is stored
+    	$res = $dh->get_menutree_id($module, $script, $user_type, $self_instruction);
 
     	if (!AMA_DB::isError($res) && count($res)>0 && $res!==false) {
-	    	$this->_tree_id = $res['tree_id'];
-	    	$this->_isVertical = $res['isVertical'];
-	    	$this->_leftItemsArray = $res['left'];
-	    	$this->_rightItemsArray = $res['right'];
+    		// set found object properties
+    		$this->_tree_id = $res['tree_id'];
+    		$this->_isVertical = $res['isVertical'];
+    		    		
+    		// get menu items
+    		$resItems = $dh->get_menu_children($this->_tree_id, $res['dbToUse'], $getAllMenuItems);
+    		if (!AMA_DB::isError($resItems) && count($resItems)>0) {
+    			$this->_leftItemsArray  = isset($resItems['left'])  ? $resItems['left']  : null;
+    			$this->_rightItemsArray = isset($resItems['right']) ? $resItems['right'] : null;
+    		}
     	}
     }
     
@@ -116,6 +124,15 @@ class Menu
      */
     public function isVertical() {
     	return $this->_isVertical>0;
+    }
+    
+    /**
+     * tree id getter
+     * 
+     * @return number
+     */
+    public function getId() {
+    	return $this->_tree_id;
     }
     
     /**

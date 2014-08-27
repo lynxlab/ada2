@@ -222,6 +222,18 @@ class ARE
         $meta_refresh_url  = isset($options['meta_refresh_url'])  ? $options['meta_refresh_url'] : '';
         $onload_func       = isset($options['onload_func'])       ? $options['onload_func'] : '';
 
+        /**
+         * @author giorgio 19/ago/2014
+         *
+         * make menu here
+         */
+        require_once ROOT_DIR.'/include/menu_class.inc.php';
+        // menu property created 'on-the-fly' 
+        $layoutObj->menu = new Menu($layoutObj->module_dir,
+        		basename(($_SERVER['SCRIPT_FILENAME'])),
+        		$_SESSION['sess_userObj']->getType(),
+        		$menuoptions);
+        
         if ($renderer == ARE_PDF_RENDER) {
         	
         	$orientation   = isset($options['orientation'])       ? $options['orientation'] : '';
@@ -247,24 +259,13 @@ class ARE
         	if (!ADA_Error::isError($widgets_dataAr))
         		$content_dataAr = array_merge ($content_dataAr, $widgets_dataAr);		
         }                
-        /**
-         * @author giorgio 19/ago/2014
-         * 
-         * make menu here
-         */
-        require_once ROOT_DIR.'/include/menu_class.inc.php';
-        	
-        $menu = new Menu($layoutObj->module_dir,
-        		basename(($_SERVER['SCRIPT_FILENAME'])),
-        		$_SESSION['sess_userObj']->getType(),
-        		$menuoptions);
 
         /**
          * adamenu must be the first key of $content_dataAr
          * for the template_field substitution to work inside the menu
          */
-        $content_dataAr = array ('adamenu'=>$menu->getHtml()) + $content_dataAr;        
-        $content_dataAr['isVertical'] = ($menu->isVertical()) ? ' vertical' : '';
+        $content_dataAr = array ('adamenu'=>$layoutObj->menu->getHtml()) + $content_dataAr;        
+        $content_dataAr['isVertical'] = ($layoutObj->menu->isVertical()) ? ' vertical' : '';
 
         $html_renderer->fillin_templateFN($content_dataAr);
 
@@ -1179,6 +1180,7 @@ EOT;
         <meta name=\"family\" content=\"$family_name\">
         <meta name=\"module\" content=\"$module_dir\">
         <meta name=\"widgets\" content=\"$widget_filename\">
+        <meta name=\"menu\" content=\"".$layoutObj->menu->getId()."\">
         <meta name=\"class\" content=\"HTML\">
         <meta name=\"outputClasses\" content=\"NEW\">
         <meta name=\"description\" content=\"$description\">
