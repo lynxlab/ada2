@@ -10,31 +10,45 @@
 <div id="header">
 		 <template_field class="microtemplate_field" name="header_com">header_com</template_field>
 </div> 
+<!-- menu -->
+    <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+<!-- / menu --> 
 <!-- contenitore -->
 <div id="container">
 <!--dati utente-->
-<div id="user_data" class="user_data_default">
-	<i18n>utente: </i18n>
-	<span>
-		<template_field class="template_field" name="user_name">user_name</template_field>
-	</span>
-	<i18n>tipo: </i18n>
-	<span>
-		<template_field class="template_field" name="user_type">user_type</template_field>
-	</span>
+<div id="status_bar">
+    <div id="user_data" class="user_data_default">
+        <i18n>utente: </i18n>
+        <span>
+            <template_field class="template_field" name="user_name">user_name</template_field>
+        </span>
+        <i18n>tipo: </i18n>
+        <span>
+            <template_field class="template_field" name="user_type">user_type</template_field>
+        </span>
         <i18n>Ora: </i18n>
         <template_field class="template_field" name="timezone">timezone</template_field>
         <span id="js_clock">
             <template_field class="template_field" name="time">time</template_field>
         </span>
 
-	<div class="status">
-		<i18n>status: </i18n>
-		<span>
-			<template_field class="template_field" name="status">status</template_field>
-		</span>
+        <div class="status">
+        <i18n>status: </i18n>
+        <span>
+            <template_field class="template_field" name="status">status</template_field>
+        </span>
         </div>
-</div> <!-- / dati utente -->
+                        <i18n>ultimo accesso: </i18n>
+        <span>
+            <template_field class="template_field" name="last_visit">last_visit</template_field>
+        </span>
+        <i18n>livello</i18n>:
+          <span>
+            <template_field class="template_field" name="user_level">user_level</template_field>
+         </span>
+    </div>
+</div>
+<!-- / dati utente -->
 <!-- label -->
 <div id="label">
 	<div class="topleft">
@@ -119,18 +133,7 @@
 </div> <!--  / contenuto -->
 </div> <!-- / contenitore -->
 
-<!-- MENU -->
-<div id="mainmenucom">
-<ul id="menu">
-		<li id="selfclose">
-				<a href="#" onClick="closeMeAndReloadParent();"><i18n>chiudi</i18n></a>
-		</li>
-		<li id="list">
-				<a href="list_events.php">
-    		 <i18n>appuntamenti</i18n>
-    	  </a>
-		</li>
-</ul> <!-- / menu -->
+
 <!-- PERCORSO -->
 <div id="journey">
 	<i18n>dove sei: </i18n>

@@ -136,9 +136,6 @@ if (!ADA_Error::isError($nodeObj) AND isset($courseObj->id)) {
 	$node_path = $nodeObj->findPathFN();
 }
 
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
 
 /*
  * Last access link
@@ -167,7 +164,7 @@ $content_dataAr = array(
     'user_type'=>$user_type,
     'student'=>$student_name,
     'level'=>$student_level,
-    'edit_user'=> $edit_profile_link->getHtml(),
+    'edit_profile'=> $userObj->getEditProfilePage(),
     'data'=>$history,
     'user_level'=>$user_level,
     'last_visit' => $last_access,

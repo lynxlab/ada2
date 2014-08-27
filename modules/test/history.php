@@ -74,30 +74,8 @@ $last_visited_node  = $navigation_history->lastModule();
 $go_back_link = CDOMElement::create('a', 'href:'.$last_visited_node);
 $go_back_link->addChild(new CText(translateFN('Indietro')));
 
-/*
- * Edit profile
- */
 
-$edit_profile=$userObj->getEditProfilePage();
 
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
-}
-else
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-}
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
-/*
- * link Naviga
- 
-$naviga=CDOMElement::create('a','#');
-$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
-$naviga->setAttribute('class', 'positionNaviga');
-$naviga->addChild(new CText(translateFN('Naviga')));
-*/
 /*
  * Output
  */
@@ -115,7 +93,7 @@ $content_dataAr = array(
     'title' => $title,
     'author' => $author,
     'node_level' => 'livello nodo',
-    'edit_user'=> $edit_profile_link->getHtml(),
+    'edit_profile'=> $userObj->getEditProfilePage(),
     'naviga'=>$go_back_link->getHtml()
     //'course_title' => '<a href="'.HTTP_ROOT_DIR.'/tutor/tutor.php">'.translateFN('Modulo Tutor').'</a> > ',
     //'media' => 'media',

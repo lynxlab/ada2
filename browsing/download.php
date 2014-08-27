@@ -279,10 +279,6 @@ if (isset($_GET['file'])){
         $last_access=AMA_DataHandler::ts_to_date($last_access);
   }
   
-  $edit_profile=$userObj->getEditProfilePage();
-  $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-  $edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
 $node_data = array(
                'banner'=>$banner,
 //               'data'=>$lista,
@@ -294,7 +290,7 @@ $node_data = array(
                'user_level'=>$user_level,
                'messages'=>$user_messages->getHtml(),
                'agenda'=>$user_agenda->getHtml(),
-               'edit_user'=> $edit_profile_link->getHtml(),
+               'edit_profile'=> $userObj->getEditProfilePage(),
                'title'=>$node_title,
                'course_title'=>$course_title,
                'path'=>$nodeObj->findPathFN(),

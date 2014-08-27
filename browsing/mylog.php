@@ -254,30 +254,6 @@ $banner = include ("$root_dir/include/banner.inc.php");
 $chat_link = "<a href=\"$http_root_dir/comunica/ada_chat.php\" target=_blank>".translateFN("chat")."</a>";
 //
 /*
- * Edit profile
- */
-
-$edit_profile=$userObj->getEditProfilePage();
-
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
-}
-else
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-}
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
-
-
-/*
- * link corsi
- */
-$corsi=CDOMElement::create('a','href:../info.php');
-$corsi->addChild(new CText(translateFN('Corsi')));
-
-/*
  * Last access link
  */
 
@@ -341,10 +317,7 @@ $node_data = array(
                    'profilo'=>$profilo,
                    'myforum'=>$my_forum,
                    'title'=>$node_title,
-                   'edit_user'=> $edit_profile_link->getHtml(),
-                   'corsi'=>$corsi->getHtml()
-                   //'agisci' =>$agisci->getHtml()
-                   //'mylog'=>$mylog,
+                   'edit_profile'=> $userObj->getEditProfilePage()
                   );
 
                    if ($com_enabled){

@@ -514,6 +514,7 @@ $content_dataAr = array(
   'data' => $list_chatrooms_table,
   'chat_users' => $online_users,
   'chatrooms'=>$chatrooms_link,
+  'edit_profile'=> $userObj->getEditProfilePage(),
   'menu_01' => $menu_01,
   'menu_02' => $menu_02,
   'menu_03' => $menu_03

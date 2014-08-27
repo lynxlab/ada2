@@ -176,11 +176,6 @@ if(isset($_GET['messages']) && $_GET['messages'] == 'sent') {
   $dataAr   = MultiPort::getUserSentMessages($userObj);
   $messages = CommunicationModuleHtmlLib::getSentMessagesAsForm($dataAr, $testers_dataAr);
   $label   = translateFN('Messaggi inviati');
-
-  $menu_02 = CDOMElement::create('li', 'class:received');
-  $link = CDOMElement::create('a', 'href:list_messages.php?messages=received');
-  $link->addChild(new CText(translateFN('Messaggi ricevuti')));
-  $menu_02->addChild($link);
   $displayedMsgs = 'sent';
 
 }
@@ -188,17 +183,11 @@ else {
   $dataAr   = MultiPort::getUserMessages($userObj);
 
   $messages = CommunicationModuleHtmlLib::getReceivedMessagesAsForm($dataAr, $testers_dataAr);
-  $label   = translateFN('Messaggi ricevuti');
-
-  $menu_02 = CDOMElement::create('li', 'class:sent');
-  $link = CDOMElement::create('a', 'href:list_messages.php?messages=sent');
-  $link->addChild(new CText(translateFN('Messaggi inviati')));
-  $menu_02->addChild($link);
+  $label   = translateFN('Messaggi ricevuti'); 
   $displayedMsgs = 'received';
 }
 
 $node_title = ""; // empty
-$menu_01 = "<a href=\"send_message.php\">" . translateFN("Scrivi") . "</a>";
 $menu_03 = "";
 
 // FIXME: verificare se ha senso in ADA
@@ -217,6 +206,23 @@ if (!isset($chat_link)) {
   $chat_link = "";
 }
 
+/*
+* Last access link
+*/
+
+if(isset($_SESSION['sess_id_course_instance'])){
+        $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
+        $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  else {
+        $last_access=$userObj->get_last_accessFN(null,"UT",null);
+        $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  
+ if($last_access=='' || is_null($last_access)){
+    $last_access='-';
+}
+
 $content_dataAr = array(
   'chat_link'    => $chat_link,
   'banner'       => $banner,
@@ -224,13 +230,12 @@ $content_dataAr = array(
   'go_back'      => $go_back,
   'user_name'    => $user_name,
   'user_type'    => $user_type,
+  'user_level'   => $user_level,
   'messages'     => $messages->getHtml().'<br/>',
   'status'       => $status,
   'chat_users'   => $online_users,
   'label'        => $label,
-  'menu_01'      => $menu_01,
-  'menu_02'      => $menu_02->getHtml(),
-  'menu_03'      => $menu_03
+  'last_visit' => $last_access
 );
 
 /**

@@ -319,7 +319,6 @@ else
     $self = whoami();
 }
 $maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024*1024));
-$edit_profile=$userObj->getEditProfilePage();
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {
 	$layout_dataAr['CSS_filename'][]=  ROOT_DIR.'/layout/'.$template_family.'/css/browsing/edit_user.css';
 	$layout_dataAr['JS_filename'][]=  ROOT_DIR.'/js/browsing/edit_user.js';
@@ -327,35 +326,9 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {
 } else {
     $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
 }
-
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
-/*
- * Home Page
- */
-
-
-
-/*
- * link corsi
- */
-$corsi=CDOMElement::create('a','href:../info.php');
-$corsi->addChild(new CText(translateFN('Corsi')));
-$corsi=$corsi->getHtml();
-
-
-
 $navigation_history = $_SESSION['sess_navigation_history'];
 $last_visited_node  = $navigation_history->lastModule();
 
-
-/*
- * link Naviga
- */
-$naviga=CDOMElement::create('a','#');
-$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
-$naviga->addChild(new CText(translateFN('Naviga')));
-$naviga=$naviga->getHtml();
 
 /*
  * Go back link
@@ -423,7 +396,6 @@ $content_dataAr = array(
     //'last_visit' => $userObj->get_last_accessFN(),
     'last_visit' => $last_access,
     'help' => $help,
-    'corsi'=>$corsi,
     'user_level'=>$user_level,
     //'edit_profile'=> $edit_profile_link->getHtml(),
     'naviga'=>$naviga
