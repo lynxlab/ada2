@@ -11915,7 +11915,7 @@ public function get_updates_nodes($userObj, $pointer)
     			// skip main module/passed script as per above rules
     			if ($nummodule==1 && $numscript==0) continue;
     			$params = array ($currentModule, $currentScript.'%', $user_type, $self_instruction);
-    			foreach (array($this,$common_dh) as &$dbToUse) {
+    			foreach (array($this,$common_dh) as $dbToUse) {
     				$candidates = $dbToUse->getAllPrepared($sql, $params, AMA_FETCH_ASSOC);
     				if (!AMA_DB::isError($candidates) && $candidates!==false && count($candidates)>0) {
     					$bestScore = 0;
