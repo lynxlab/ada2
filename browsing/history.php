@@ -164,22 +164,6 @@ if ($userObj instanceof ADALoggableUser) {
 }
 
 /*
- * Edit profile
- */
-
-$edit_profile=$userObj->getEditProfilePage();
-
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
-}
-else
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-}
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
-/*
  * Last access link
  */
 
@@ -195,11 +179,6 @@ if($last_access=='' || is_null($last_access)){
     $last_access='-';
 }
 
-/*
- * link corsi
- */
-$corsi=CDOMElement::create('a','href:../info.php');
-$corsi->addChild(new CText(translateFN('Corsi')));
 $banner = include ROOT_DIR . '/include/banner.inc.php';
 $content_dataAr = array(
     'chat_link' => $chat_link,
@@ -216,10 +195,8 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'chat_users' => $online_users,
-    'edit_user'=> $edit_profile_link->getHtml(),
-    'corsi'=>$corsi->getHtml()
-    //'agisci' =>$agisci->getHtml()
-);
+    'edit_profile'=> $userObj->getEditProfilePage()
+ );
 /**
  * Sends data to the rendering engine
  */

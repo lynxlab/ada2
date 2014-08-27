@@ -177,9 +177,7 @@ else {
 $dataAr         = MultiPort::getUserAgenda($userObj);
 $testers_dataAr = MultiPort::getTestersPointersAndIds();
 $messages       = CommunicationModuleHtmlLib::getAgendaAsForm($dataAr, $testers_dataAr);
-
 $node_title = ""; // empty
-$menu_01 = "<a href=\"send_event.php\">" . translateFN("Nuovo") . "</A>";
 $menu_02 = "";
 $menu_03 = "";
 
@@ -190,16 +188,34 @@ else {
   $course_title = '<a href="../browsing/main_index.php">'.$course_title.'</a>';
 }
 
+/*
+* Last access link
+*/
+
+if(isset($_SESSION['sess_id_course_instance'])){
+        $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
+        $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  else {
+        $last_access=$userObj->get_last_accessFN(null,"UT",null);
+        $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  
+ if($last_access=='' || is_null($last_access)){
+    $last_access='-';
+}
+
 $content_dataAr = array(
   'banner'       => $banner,
   'course_title' => $course_title,
   'go_back'      => $go_back,
   'user_name'    => $user_name,
   'user_type'    => $user_type,
+  'user_level'   => $user_level,
+  'last_visit' => $last_access,
   'messages'     => $messages->getHtml(),
   'status'       => $status,
   'chat_users'   => $online_users,
-  'menu_01'      => $menu_01,
   'menu_02'      => $menu_02,
   'menu_03'      => $menu_03
 );

@@ -373,19 +373,6 @@ $linked_node_keywords = implode(',',$linksAr);
  * Edit profile
  */
 
-$edit_profile=$userObj->getEditProfilePage();
-
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
-}
-else
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-}
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
-
 /**
  * content_data
  * @var array
@@ -423,7 +410,7 @@ $content_dataAr = array(
 	'go_download' => $go_download,
 	'video_chat' => $video_chat,
 	'chat' => $chat,
-        'edit_user'=> $edit_profile_link->getHtml()
+        'edit_profile'=> $userObj->getEditProfilePage()
 		//        'messages' => $user_messages,
 		//        'agenda' => $user_agenda
 );
