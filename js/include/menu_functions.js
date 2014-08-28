@@ -21,7 +21,7 @@ document.observe('dom:loaded', function() {
 	 * document observer. One day all shall be handled by jQuery... 
 	 * This is not going to harm anybody, but you've been warned
 	 */	
-	var	menuItem = $j('.menu a.item, .menu .link.item');
+	var menuItem = $j('.menu a.item, .menu .link.item');
 	var dropdown = $j('.menu .dropdown');
 
 	dropdown.dropdown({
@@ -44,6 +44,21 @@ document.observe('dom:loaded', function() {
 		    on: 'click'
 		  });
 	}
+        
+        // if there's the searchbox, make it work
+        if($j('#searchmenutext').length>0) {
+          // perform search either on search icon click...
+		$j('.search.link.icon').on('click',function(){
+			var text = $j(this).siblings('input[type="text"]').val().trim();
+			if (text.length>0) {
+				document.location.href='search.php?s_UnicNode_text='+text+'&l_search=l_search&submit=cerca';
+			}
+		});
+		// ...or on searchmenutext enter key press
+		$j('#searchmenutext').on('keyup', function(event){
+			if(event.which == 13) $j(this).siblings('.search.link.icon').click();
+		});  
+        }    	
 });
 
 /*
