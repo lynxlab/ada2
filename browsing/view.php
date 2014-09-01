@@ -369,10 +369,6 @@ foreach ($keyAr as $keyword){
 
 $linked_node_keywords = implode(',',$linksAr);                
 
-/*
- * Edit profile
- */
-
 /**
  * content_data
  * @var array
