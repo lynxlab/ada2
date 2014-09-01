@@ -178,5 +178,5 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
     $layout_dataAr['CSS_filename'][] = 
         ROOT_DIR.'/modules/test/layout/ada_blu/css/tutor.css';   //for tutorSelfInstruction.tpl
      }
-
-ARE::render($layout_dataAr, $content_dataAr);
+$menuOptions['self_instruction'] = $self_instruction;
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);

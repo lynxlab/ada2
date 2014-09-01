@@ -405,5 +405,6 @@ $content_dataAr = array(
  * If it's a switcher the renderer is called by switcher/edit_user.php
  */
 if ($userObj->getType() != AMA_TYPE_SWITCHER) {
-	ARE::render($layout_dataAr, $content_dataAr,NULL, $optionsAr);
+        $menuOptions['self_instruction'] = $self_instruction;
+	ARE::render($layout_dataAr, $content_dataAr,NULL, $optionsAr,$menuOptions);
 }

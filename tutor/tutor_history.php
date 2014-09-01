@@ -31,7 +31,7 @@ $allowedUsersAr = array(AMA_TYPE_TUTOR);
  * Get needed objects
  */
 $neededObjAr = array(
-  AMA_TYPE_TUTOR => array('layout', 'course', 'course_instance')
+  AMA_TYPE_TUTOR => array('layout', 'course','course_instance')
 );
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
@@ -416,4 +416,8 @@ $content_dataAr = array(
         'agenda'=>$user_agenda->getHtml()
 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+$menuOptions['id_course_instance'] = $id_course_instance;
+$menuOptions['id_instance'] = $id_course_instance;
+$menuOptions['id_student'] =$id_student;
+
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);

@@ -337,8 +337,8 @@ $node_data = array(
                        $node_data['chat_users']="";
                    }
 
-
-ARE::render($layout_dataAR,$node_data, NULL, $options);
+$menuOptions['self_instruction'] = $self_instruction;
+ARE::render($layout_dataAR,$node_data, NULL, $options,$menuOptions);
 
 /* Versione XML:
 

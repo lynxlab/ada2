@@ -717,6 +717,7 @@ array(
                 'status'=> $status,
                 'user_name'=> $user_name,
                 'user_type'=> $user_type,
+                'edit_profile'=>$userObj->getEditProfilePage(),
                 'help' =>$help,
                 'star'=>$star,
                 'id_chatroom'=>$id_chatroom,

@@ -197,7 +197,8 @@ $content_dataAr = array(
     'chat_users' => $online_users,
     'edit_profile'=> $userObj->getEditProfilePage()
  );
+$menuOptions['self_instruction'] = $self_instruction;
 /**
  * Sends data to the rendering engine
  */
-ARE::render($layout_dataAr, $content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
