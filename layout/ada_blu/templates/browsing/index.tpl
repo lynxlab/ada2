@@ -90,7 +90,7 @@
             <!-- /com_tools -->
             <!--menudestra-->
             
-            <div id="menuright" class="sottomenu_on menuright_default">
+            <div id="menuright" class="menuright_view ui wide right sidebar">
             <div id="topmenur">
             </div>
             <div id="menurightcontent">

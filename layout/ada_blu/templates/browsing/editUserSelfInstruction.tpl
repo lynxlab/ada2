@@ -10,6 +10,9 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu --> 
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -126,122 +129,9 @@
        
          
          <!--/search-->
-         
-         
-         
-         
-         
-         
+
         <!-- / contenitore -->
 
-        <!-- MENU A TENDINA -->
-        <div id="mainmenu">
-            <ul id="menu">
-                <li id="home">
-                    <a href="user.php">
-                        <i18n>home</i18n>
-                    </a>
-                </li>
-              
-             
-
-               <!--<li id="actions" class="unselectedactions" onClick="toggleElementVisibility('submenu_actions','up')">
-                    <a>
-                        <i18n>agisci</i18n>
-                    </a>
-                </li>-->
-               
-               <li id="actions" class="unselectedactions" onClick="toggleElementVisibility('submenu_actions','up')">
-                 <template_field class="template_field" name="agisci">agisci</template_field>
-               </li>
-               
-              <!-- <li id="ancora_menuright">
-                    <a href="../info.php">
-                        <i18n>corsi</i18n>
-                    </a>
-                </li>-->
-
-              <!-- <li id="ancora_menuright" onclick="toggleElementVisibility('menuright', 'right');">
-				<a>
-					 <i18n>Naviga</i18n>
-		 		</a>
-		</li>-->
-              <li id="ancora_menuright">
-                <template_field class="template_field" name="naviga">naviga</template_field>
-              </li>
-              
-               <li id="ancora_menuright">
-                <template_field class="template_field" name="corsi">corsi</template_field>
-              </li>
-              
-              
-                <li id="question_mark" class="unselectedquestion_mark" onClick="toggleElementVisibility('submenu_question_mark','up'); return false;">
-                    <a>
-                        <i18n>Help</i18n>
-                    </a>
-                </li>
-                <li id="esc">
-                    <a href="../index.php">
-                        <i18n>esci</i18n>
-                    </a>
-                </li>
-            </ul>
-            <!-- / menu -->
-
-            <!-- notifiche eventi -->
-            <template_field class="template_field" name="events">events</template_field>
-            <!-- / notifiche eventi -->
-            <!-- tendina -->
-            <div id="dropdownmenu">
-
-
-                <!-- azioni -->
-                <div id="submenu_actions" class="sottomenu sottomenu_off">
-                    <div id="_actionscontent">
-                        <ul>
-                            <!--<li>
-                                <a href="edit_user.php">
-                                    <i18n>Modifica il tuo profilo</i18n>
-                                </a>
-                            </li>-->
-                            
-                            <li>
-                              <template_field class="template_field" name="edit_user">edit_user</template_field>
-                            </li>
-                            <template_field class="template_field" name="submenu_actions">submenu_actions</template_field>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-                <!-- / azioni -->
-                <!-- puntoint -->
-                <div id="submenu_question_mark" class="sottomenu  sottomenu_off">
-                    <div id="_question_markcontent">
-                        <ul>
-                            <li>
-                            <!--template_field class="template_field" name="help">help</template_field-->
-                            </li>
-                            <li>
-                                <a href="../help.php" target="_blank">
-                                    <i18n>informazioni</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../credits.php">
-                                    <i18n>credits</i18n>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-                <!-- / puntoint -->
-            </div>
-            <!-- /tendina-->
-        </div>
-        <!-- / MENU A TENDINA -->
         <!-- PIEDE -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>

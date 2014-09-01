@@ -6,18 +6,14 @@
     <body>
         <a name="top">
         </a>
-        <div id="mainmenu">
-            <ul id="menu">
-                <li id="selfclose">
-                    <a href="#" onclick="closeMeAndReloadParent();"><i18n>chiudi</i18n></a>
-                </li>
-            </ul> <!-- / menu -->
-
-        </div> <!-- / MAINMENU -->
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
-        </div> <!-- / testata -->
+        </div> 
+        <!-- / testata -->
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->

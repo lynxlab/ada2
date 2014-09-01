@@ -210,7 +210,7 @@ Curabitur mollis egestas leo. Sed fermentum quam urna, in cursus metus posuere e
             </div>-->
             <!-- /com_tools -->
             <!-- menudestra -->
-            <div id="menuright" class="sottomenu_off menuright_view"> 
+            <div id="menuright" class="menuright_view ui wide right sidebar">
                 <div id="topmenur">
                 </div>
                 <div id="menurightcontent">

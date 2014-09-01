@@ -10,9 +10,9 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
-		<!-- menu -->
-		    <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-		<!-- / menu -->         
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu -->         
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->

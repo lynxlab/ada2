@@ -10,6 +10,9 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu --> 
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -101,152 +104,7 @@
             <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
-        <!-- MENU A TENDINA -->
-        <div id="mainmenu">
-            <ul id="menu">
-                  
-               
-                <li id="home"> <a href="../../tutor/tutor.php">
-                        <i18n>home</i18n>
-                    </a> </li>
-                <li>
-                 <template_field class="template_field" name="home_page">home_page</template_field>
-                </li>
-                <li>
-                
-               <!--li id="com" class="unselectedcom" onClick="toggleElementVisibility('submenu_com','up')"> <a>
-                        <i18n></i18n>
-                    </a> </li-->
-                <li id="tools" class="unselectedtools" onClick="toggleElementVisibility('submenu_tools','up')"> <a>
-                        <i18n></i18n>
-                    </a> </li>
-                <li id="actions" class="unselectedactions" onClick="toggleElementVisibility('submenu_actions','up')">
-                    <a>
-                        <i18n>agisci</i18n>
-                    </a>
-                </li>
-                <li id="ancora_menuright" onClick="toggleElementVisibility('menuright', 'right');">
-                    <a>
-                        <i18n>Naviga</i18n>
-                    </a>
-                </li>
-               
-              
-                <li id="question_mark" class="unselectedquestion_mark" onClick="toggleElementVisibility('submenu_question_mark','up'); return false;">
-                    <a>
-                        <i18n>Help</i18n>
-                    </a>
-                </li>
-                
-                
-                <li id="esc"> <a href="../../index.php">
-                        <i18n>esci</i18n>
-                    </a> </li>
-            </ul>
-            <!-- / menu -->
-            <!-- tendina -->
-            <div id="dropdownmenu">
-                <!-- comunica -->
-                <!--div id="submenu_com" class="sottomenu sottomenu_off">
-                    <div id="_comcontent">
-                        <ul>
-                            <li><a href="#" onclick='openMessenger("../../comunica/list_messages.php",800,600);'>
-                                    <i18n>messaggeria</i18n>
-                                </a>
-                            </li>
-                            <li><a href="../../comunica/list_chatrooms.php">
-                                    <i18n>chatrooms</i18n>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu"> </div>
-                </div-->
-                <!-- / comunica -->
-                <!-- strumenti -->
-                <div id="submenu_tools" class="sottomenu sottomenu_off">
-                    <div id="_toolscontent">
-                        <ul>
-                            <li> <a href="#" onclick='openMessenger("../../comunica/list_events.php",800,600);'>
-                                    <i18n>agenda</i18n>
-                                </a> </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu"> </div>
-                </div>
-                <!-- / strumenti -->
-                <!-- azioni -->
-                <div id="submenu_actions" class="sottomenu sottomenu_off">
-                    <div id="_actionscontent">
-                        <ul>
-                           <!-- <li>
-                                <a href="../../tutor/edit_user.php" alt="edit profile">
-                                    <i18n>cambia profilo</i18n>
-                                </a>
-                            </li>-->
-                           <li>
-                              <template_field class="template_field" name="edit_user">edit_user</template_field>
-                            </li>
-                            <li>
-                              <template_field class="template_field" name="class_student">class_student</template_field>
-                            </li>
-                            <li>
-                              <template_field class="template_field" name="menu_01">menu_01</template_field>
-                            </li>
-                            <li>
-                              <template_field class="template_field" name="menu_02">menu_02</template_field>
-                            </li>
-                            <li>
-                              <template_field class="template_field" name="menu_03">menu_03</template_field>
-                            </li>
-                            <li>
-                              <template_field class="template_field" name="menu_04">menu_04</template_field>
-                            </li>
-                            <li>
-                              <template_field class="template_field" name="menu_05">menu_05</template_field>
-                            </li>
-                            <li>
-                              <template_field class="template_field" name="menu_06">menu_06</template_field>
-                            </li>
-                            <li>
-                              <template_field class="template_field" name="menu_07">menu_07</template_field>
-                            </li>
-                            <li>
-                              <template_field class="template_field" name="menu_08">menu_08</template_field>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu"> </div>
-                </div>
-                <!-- / azioni -->
-               <!-- puntoint -->
-                <div id="submenu_question_mark" class="sottomenu  sottomenu_off">
-                    <div id="_question_markcontent">
-                        <ul>
-                            <li>
-                                <a href="../../help.php" target="_blank">
-                                    <i18n>informazioni</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../../credits.php">
-                                    <i18n>credits</i18n>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-            </div>
-            <!--/tendina -->
-
-            <!-- notifiche eventi -->
-            <template_field class="template_field" name="events">events</template_field>
-            <!-- / notifiche eventi -->
-        </div>
-        <!-- / MENU A TENDINA -->
+      
         <!-- PIEDE -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
