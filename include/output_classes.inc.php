@@ -1179,8 +1179,9 @@ EOT;
         <meta name=\"template\" content=\"$template_name\">
         <meta name=\"family\" content=\"$family_name\">
         <meta name=\"module\" content=\"$module_dir\">
-        <meta name=\"widgets\" content=\"$widget_filename\">
-        <meta name=\"menu\" content=\"".$layoutObj->menu->getId()."\">
+        <meta name=\"widgets\" content=\"$widget_filename\">";
+        if (isset($layoutObj->menu)) $this->htmlheader .= "<meta name=\"menu\" content=\"".$layoutObj->menu->getId()."\">";
+        $this->htmlheader .= "
         <meta name=\"class\" content=\"HTML\">
         <meta name=\"outputClasses\" content=\"NEW\">
         <meta name=\"description\" content=\"$description\">
