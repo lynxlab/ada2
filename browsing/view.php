@@ -325,20 +325,31 @@ switch($id_profile) {
 		$add_private_note = "<a href=\"$http_root_dir/services/addnode.php?id_parent=$sess_id_node&id_course=$sess_id_course&id_course_instance=$sess_id_course_instance&type=PRIVATE_NOTE\">" .
 		translateFN('aggiungi nota personale') . '</a>';
 
-		if($node_author_id == $userObj->getId()) {
-			$edit_note = "<a href=\"". $http_root_dir . "/services/edit_node.php?op=edit&id_node=" . $sess_id_node ."&id_course=" . $sess_id_course . "&id_course_instance=" . $sess_id_course_instance ."&type=".$node_type."\">"
-					   . translateFN('modifica nota') . "</a>";
-			$delete_note = "<a href=\"". $http_root_dir . "/services/edit_node.php?op=delete&id_node=" . $sess_id_node ."&id_course=" . $sess_id_course ."&id_course_instance=" . $sess_id_course_instance."&type=".$node_type."\">"
-						 . translateFN('elimina nota') . "</a>";
-			$publish_note.= "<a href=\"". $http_root_dir . "/services/edit_node.php?".
-				"op=publish".
-				"&id_node=" . $sess_id_node .
-				"&id_course=" . $sess_id_course .
-				"&id_course_instance=" . $sess_id_course_instance.
-				"&type=".$node_type."\">"  .
-				translateFN("pubblica nota") . "</a>";
-
+		if ($nodeObj->type == ADA_PRIVATE_NOTE_TYPE || $nodeObj->type == ADA_NOTE_TYPE) {
+			// if it's a note
+			if (($node_author_id == $userObj->getId() && $id_profile==AMA_TYPE_STUDENT) ||
+			     $id_profile==AMA_TYPE_TUTOR) {
+			     	$edit_note = "<a href=\"". $http_root_dir . "/services/edit_node.php?op=edit&id_node=" . $sess_id_node ."&id_course=" . $sess_id_course . "&id_course_instance=" . $sess_id_course_instance ."&type=".$node_type."\">"
+			     			. translateFN('modifica nota') . "</a>";
+			     	$delete_note = "<a href=\"". $http_root_dir . "/services/edit_node.php?op=delete&id_node=" . $sess_id_node ."&id_course=" . $sess_id_course ."&id_course_instance=" . $sess_id_course_instance."&type=".$node_type."\">"
+			     			. translateFN('elimina nota') . "</a>";
+			     	/**
+			     	 * student can promote only PRIVATE_NOTE to NOTE
+			     	 * tutor can do everything
+			     	 */
+			     	if (($nodeObj->type == ADA_PRIVATE_NOTE_TYPE && $id_profile==AMA_TYPE_STUDENT) ||
+			     			($id_profile==AMA_TYPE_TUTOR)) {
+			     				$publish_note.= "<a href=\"". $http_root_dir . "/services/edit_node.php?".
+			     						"op=publish".
+			     						"&id_node=" . $sess_id_node .
+			     						"&id_course=" . $sess_id_course .
+			     						"&id_course_instance=" . $sess_id_course_instance.
+			     						"&type=".$node_type."\">"  .
+			     						translateFN("pubblica nota") . "</a>";
+			     			}
+			     }
 		}
+
 		break;
    default:
 	   $add_note = '';
