@@ -17,6 +17,9 @@
  */
 class Menu
 {
+	const ALWAYS_ENABLED = '%ALWAYS%';
+	const NEVER_ENABLED = '%NEVER%';
+	
 	/**
 	 * tree id of the menu
 	 * 
@@ -146,30 +149,33 @@ class Menu
      * @access private
      */
     private function buildAll($container, $item, $firstLevel) {
-    	if (is_null($item['children']) || !isset($item['children']) || count($item['children'])<=0) {
-    		/**
-    		 * item has no children, so it's not a dropdown
-    		 * it can be either a special or an href
-    		 */
-    		if (intval($item['specialItem'])>0 && !is_null($item['extraHTML'])) {
-    			/**
-    			 * item is a special
-    			 */
-    			$DOMitem = $this->buildSpecialItem($item);
-    		} else {
-    			/**
-    			 * item is an href
-    			 */
-    			$DOMitem = $this->buildHREFItem($item);
-    		}
-    	} else {
-    		/**
-    		 * item has children, it's a dropdown
-    		 */
-    		$DOMitem = $this->buildDropDownItem($item, $firstLevel);
+    	// do something only if item is enabled
+    	if ($this->_isEnabled($item)) {
+	    	if (is_null($item['children']) || !isset($item['children']) || count($item['children'])<=0) {
+	    		/**
+	    		 * item has no children, so it's not a dropdown
+	    		 * it can be either a special or an href
+	    		 */
+	    		if (intval($item['specialItem'])>0 && !is_null($item['extraHTML'])) {
+	    			/**
+	    			 * item is a special
+	    			 */
+	    			$DOMitem = $this->buildSpecialItem($item);
+	    		} else {
+	    			/**
+	    			 * item is an href
+	    			 */
+	    			$DOMitem = $this->buildHREFItem($item);
+	    		}
+	    	} else {
+	    		/**
+	    		 * item has children, it's a dropdown
+	    		 */
+	    		$DOMitem = $this->buildDropDownItem($item, $firstLevel);
+	    	}
+	    	
+	    	if (isset($DOMitem)) $container->addChild($DOMitem);
     	}
-    	
-    	if (isset($DOMitem)) $container->addChild($DOMitem);
     }
     
     /**
@@ -420,6 +426,26 @@ class Menu
     }
     
     /**
+     * check if a menu item is enabled by looking at the enabledON field:
+     * - if it's always enabled, return true
+     * - if it's never  enabled, return false
+     * - else checks if the constant enclosed in the percent signs is defined and true
+     * 
+     * @param array $item array item to check
+     * 
+     * @return boolean true if menu is enabled
+     * 
+     * @access private
+     */
+    private function _isEnabled($item) {
+    	if ($item['enabledON']===self::ALWAYS_ENABLED) return true;
+    	else if ($item['enabledON']===self::NEVER_ENABLED) return false;
+    	else {
+    		return !empty($this->constSubstitute($item['enabledON']));
+    	}
+    }
+    
+    /**
      * substitues the constants found in the DB with actual ADA CONSTANTS value
      * e.g.
      * 	%HTTP_ROOT_DIR%/browsing => http://ada.lynxlab.com/browsing
@@ -434,8 +460,8 @@ class Menu
     	$matches = preg_match_all($regExp, $string, $matchArr);
     	if ($matches>0 && $matches!==false) {
     		foreach ($matchArr[0] as $matchCount => $matchValue) {
-    			if (defined($matchArr[1][$matchCount])) {
-    				$search[] = $matchValue;
+    			$search[] = $matchValue;
+    			if (defined($matchArr[1][$matchCount])) {    				
     				$replace[] = constant($matchArr[1][$matchCount]);
     			}
     		}

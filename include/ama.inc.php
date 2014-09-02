@@ -12025,7 +12025,7 @@ public function get_updates_nodes($userObj, $pointer)
 
     		$sql = 'SELECT MI.*, MT.extraClass AS menuExtraClass FROM `menu_items` AS MI JOIN `menu_tree` AS MT ON '.
     			   'MI.item_id=MT.item_id WHERE MT.tree_id=? AND MT.parent_id=0 AND MI.groupRight=?';
-    		if (!$get_all) $sql .= ' AND MI.enabled>0';
+    		if (!$get_all) $sql .= ' AND MI.enabledON!="'.Menu::NEVER_ENABLED.'"';
     		$sql .= ' ORDER BY MI.order ASC';
 	    	
     		$res = $dbToUse->getAllPrepared($sql,array($tree_id,$sideIndex),AMA_FETCH_ASSOC);
@@ -12061,7 +12061,7 @@ public function get_updates_nodes($userObj, $pointer)
     	
     	$sql = 'SELECT MI.*, MT.extraClass AS menuExtraClass FROM `menu_items` AS MI JOIN `menu_tree` AS MT ON '.
     			'MI.item_id=MT.item_id WHERE MT.tree_id=? AND MT.parent_id=?';
-    	if (!$get_all) $sql .= ' AND MI.enabled>0';
+    	if (!$get_all) $sql .= ' AND MI.enabledON!="'.Menu::NEVER_ENABLED.'"';
     	$sql .= ' ORDER BY MI.order ASC';
     	
     	$res = $dbToUse->getAllPrepared($sql,array($tree_id,$parent_id),AMA_FETCH_ASSOC);
