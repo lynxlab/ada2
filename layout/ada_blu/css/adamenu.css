@@ -96,7 +96,8 @@ div.right.sidebar .accordion .content.field>a {
  }
 div.right.sidebar .accordion .content.field table tbody td { vertical-align: middle; }
 div.right.sidebar .accordion .content.field table.default_table tbody td div { padding: 0 0 0 30px; } 
-div.right.sidebar .accordion .content.field table tbody td a { 
+div.right.sidebar .accordion .content.field table tbody td a {
+	background: transparent;
     line-height: 50px; 
     /* recuperate from .item .menu a rule */
     display:inline; margin-left: 0px; } 
