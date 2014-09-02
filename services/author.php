@@ -158,6 +158,7 @@ $content_dataAr = array(
   'user_type'    => $user_type,
   'help'         => $help,
   'form'         => $total_course_data,
+  'edit_profile'=> $userObj->getEditProfilePage(),
   'agenda'       => $user_agenda->getHtml(),
   'messages'     => $user_messages->getHtml()
 );
