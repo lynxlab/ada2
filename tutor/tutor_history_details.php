@@ -273,9 +273,16 @@ $content_dataAr = array(
     'menu_02' => $menu_02,
     'menu_03' => $menu_03,
     'menu_04' => $menu_04,
-	'menu_05' => $menu_05,		
+	'menu_05' => $menu_05,	
+    'status'=>$status,
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml()
 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+$menuOptions['id_instance'] = $id_course_instance;
+$menuOptions['id_course_instance'] = $id_course_instance;
+$menuOptions['id_student'] =$id_student;
+$menuOptions['id_course']=$id_course;
+$menuOptions['period'] =$period;
+
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);

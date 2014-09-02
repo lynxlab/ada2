@@ -184,6 +184,7 @@ if($userObj instanceof ADAPractitioner) {
 else {
   // pass 0 to close the chat window
   $exit_chat->setAttribute('onclick','exitChat(0,0);');
+  $onclick = 'exitChat(0,0);';
 }
 
 /*
@@ -209,6 +210,7 @@ $content_dataAr = array(
   'user_name' => $user_name,
   'user_type' => $user_type,
   'user_level'   => $user_level,
+  'onclick'=>$onclick,
   'last_visit' => $last_access,
   'status' => translateFN('Chatroom')
 );

@@ -134,7 +134,7 @@ switch ($op) {
             $chat_link = "<a href=\"$http_root_dir/comunica/chat.php\" target=_blank>".translateFN('chat di classe') .'</a>';
 
             $data = $courses_student;
-
+            /*TOGLIERE*/
             $menu_01 = "<a href=\"tutor.php?op=student&id_instance=$sess_id_course_instance&id_course=$sess_id_course&mode=update\">" . translateFN("aggiorna report") . "</a>";
             $menu_02 = "<a href=\"" . $http_root_dir . "/browsing/main_index.php?id_course_instance=$id_instance&id_course=$id_course&order=struct&hide_visits=0&expand=10\">" . translateFN("indice del corso") . "</a>";
             $menu_03 = "<a href=\"" . $http_root_dir . "/browsing/main_index.php?op=forum&id_course_instance=$id_instance&id_course=$id_course&order=struct&hide_visits=0&expand=10\">" . translateFN("indice del forum") . "</a>";
@@ -427,6 +427,7 @@ $content_dataAr = array(
     'banner' => $banner,
     'user_name' => $user_name,
     'user_type' => $user_type,
+    'edit_profile'=>$userObj->getEditProfilePage(),
     'level' => $user_level,
     'messages'=> $user_messages->getHtml(),
 //        'events'=>$user_events->getHtml(),
@@ -446,4 +447,9 @@ $content_dataAr = array(
     'menu_08' => ""
 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+$menuOptions['id_course'] = $id_course;
+$menuOptions['id_instance'] = $id_instance;
+$menuOptions['id_course_instance'] = $id_instance;
+$menuOptions['id_student'] =$id_student;
+
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);

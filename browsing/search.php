@@ -390,8 +390,9 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 }
 
 $options['onload_func'] = 'dataTablesExec()';
+$menuOptions['self_instruction'] = $self_instruction;
 //"\$j('input, a.button, button').uniform();"
-ARE::render($layout_dataAr,$content_dataAr, NULL, array('onload_func' => "initDoc();") );
+ARE::render($layout_dataAr,$content_dataAr, NULL, array('onload_func' => "initDoc();"),$menuOptions);
 
 
 ?>

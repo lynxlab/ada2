@@ -200,7 +200,7 @@ $menu_02.= ">" . translateFN('Elenco studenti') . '</a>';
 if (!isset($menu_03)) {
     $menu_03 = '';
 }
-if (!isset($tatus)) {
+if (!isset($status)) {
     $status = '';
 }
 
@@ -242,9 +242,12 @@ $content_dataAr = array(
     'agenda'=>$user_agenda->getHtml()
 );
 
+$menuOptions['id_instance'] = $id_course_instance;
+$menuOptions['id_student'] =$id_student;
+
 if(!isset($optionsAr)) {
-    ARE::render($layout_dataAr, $content_dataAr);
+    ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
 } else {
 //    print_r($optionsAr);
-    ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
+    ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr,$menuOptions);
 }

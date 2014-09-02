@@ -468,7 +468,8 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
     'keywords'	   => $node_keywords,
     'course_title' => $course_title,
     'path'         => $node_path,
-    'back'         => $last_visited_module
+    'back'         => $last_visited_module,
+    'go_back'      => $last_visited_module
     //'node_medias'  => $node_medias,
     //'node_links'   => $media_links
   );

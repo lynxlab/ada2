@@ -49,10 +49,6 @@
             <template_field class="template_field" name="status">status</template_field>
         </span>
         </div>
-                        <i18n>ultimo accesso: </i18n>
-        <span>
-            <template_field class="template_field" name="last_visit">last_visit</template_field>
-        </span>
         <i18n>livello</i18n>:
           <span>
             <template_field class="template_field" name="user_level">user_level</template_field>

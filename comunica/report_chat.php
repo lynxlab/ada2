@@ -140,7 +140,7 @@ switch ($op){
                 $tabled_chat_dataHa = $tObj->getTable();
                 $menu_03 =  "<a href=" . $http_root_dir . "/comunica/report_chat.php?id_instance=$sess_id_course_instance&id_course=$sess_id_course&op=export&days=$days>" . translateFN("esporta testo") . "</a>";
                 $menu_06 = "<a href=" . $http_root_dir . "/comunica/report_chat.php?id_chatroom=$sess_id_course_instance&id_course=$sess_id_course&op=exportTable&days=$days>" . translateFN("esporta foglio") . "</a>";
-
+                $menuOptions['id_chatroom'] = $sess_id_course_instance;
             }
             else {
             }
@@ -191,6 +191,7 @@ switch ($op){
                     
                     $menu_03 =  "<a href=" . $http_root_dir . "/comunica/report_chat.php?id_chatroom=$id_chatroom&op=export&days=$days>" . translateFN("esporta testo") . "</a>";
                     $menu_06 = "<a href=" . $http_root_dir . "/comunica/report_chat.php?id_chatroom=$id_chatroom&op=exportTable&days=$days>" . translateFN("esporta foglio") . "</a>";
+                    $menuOptions['id_chatroom'] = $id_chatroom;
             } else {
                     $tabled_chat_dataHa = translateFN("Nessuna chat disponibile.");
                     $menu_03 =  translateFN("esporta testo");
@@ -349,5 +350,6 @@ $help = translateFN("Questa &egrave; il report della chat di classe");
                  //'menu_07'=>$menu_07,
                  //'menu_08'=>$menu_08
                 );
+  
 
-ARE::render($layout_dataAr, $content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);

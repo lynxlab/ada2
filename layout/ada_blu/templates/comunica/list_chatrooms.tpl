@@ -35,12 +35,7 @@
                 <span>
                     <template_field class="template_field" name="user_type">user_type</template_field>
                 </span>
-                <div class="status">
-                    <i18n>status: </i18n>
-                    <span>
-                        <template_field class="template_field" name="status">status</template_field>
-                    </span>
-                </div>
+               
             </div>
             <!-- / dati utente -->
             <!-- label -->

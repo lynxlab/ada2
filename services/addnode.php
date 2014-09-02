@@ -323,6 +323,7 @@ else if ( $op == 'preview' )
       'save_link'  => NodeEditingViewer::getSaveLink('addnode.php?op=save')
   );
 }
+
 /*
  * Salvataggio dei contenuti del nodo
  */

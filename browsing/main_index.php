@@ -578,12 +578,6 @@ if (!empty($courseInstanceObj->title)) {
 	$course_title .= ' - '.$courseInstanceObj->title;
 }
 
-/*
- * Edit profile
- */
-
-$edit_profile=$userObj->getEditProfilePage();
-
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
     $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
@@ -593,11 +587,6 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
     $layout_dataAr['JS_filename']=array(ROOT_DIR.'/js/include/menu_functions.js'); 
     
 }
-else
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-}
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
 
 /*
 * Last access link
@@ -615,15 +604,6 @@ if(isset($_SESSION['sess_id_course_instance'])){
  if($last_access=='' || is_null($last_access)){
     $last_access='-';
 }
-
-/*
- * link Naviga
- */
-$naviga=CDOMElement::create('a','#');
-$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
-$naviga->addChild(new CText(translateFN('Naviga')));
-
-
 
 $content_dataAr = array(
   'chat_link'    => $chat_link,
@@ -643,10 +623,9 @@ $content_dataAr = array(
   'agenda'       => $user_agenda->getHtml(),
   'events'		 => $user_events->getHtml(),
   'chat_users'   => $online_users,
-  'go_map'		 => $go_map,
-  'edit_user'=> $edit_profile_link->getHtml(),
-  'naviga'=>$naviga->getHtml()
-);
+  'go_map'		 => $go_map
+  
+ );
 
 ARE::render($layout_dataAr, $content_dataAr);
 
