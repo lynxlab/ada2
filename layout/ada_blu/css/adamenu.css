@@ -15,7 +15,8 @@
 
 .ui.menu.ada  a.item,
 .ui.menu.ada .dropdown.item,
-.ui.menu.ada .dropdown.item a.item {
+.ui.menu.ada .dropdown.item a.item,
+.ui.mobile.ada.menu  .dropdown {
 	text-transform: capitalize;
 }
 
@@ -25,8 +26,104 @@
 
 .ui.menu.ada div.ui.search.input,
 .ui.menu.ada i.search.link.icon { background-color: transparent;  }
-.ui.menu.ada i.search.link.icon { margin-right: 10px; margin-top: 2px; }
+.ui.menu.ada i.search.link.icon { margin-right: 0.5em; opacity: 0.5; }
 
+.ui.menu.ada div.item.searchItem > div.search.input {
+	width: 100%;
+}
+
+@media only screen and (max-width : 1220px) {
+    .ui.menu.ada .searchItem { width: 9em; }
+    .ui.menu.ada .searchItem input[type="text"] { width: 9em; float:right; }
+}
+
+@media only screen and (max-width : 1135px) {
+    .ui.menu.ada .userpopup { width: 7em;
+                              white-space: nowrap;
+                              overflow: hidden;
+                              text-overflow: ellipsis;
+    }
+}
+
+/**
+ * mobile only styles
+ */
+.ui.vertical.ada.mobile.menu .item>i.icon { float: none; }
+.ui.vertical.ada.mobile.menu .ui.item { padding-left:1.8em; }
+.ui.vertical.ada.mobile.menu .userpopup { width: 100%; }
+.ui.vertical.ada.mobile.menu .searchItem { width: 95%; }
+.ui.vertical.ada.mobile.menu .searchItem input[type="text"] { width: 100%; float:none; }
+.ui.vertical.ada.mobile.menu i.search.link.icon { margin-right: 1em; margin-top: 0.8em; }
+.ada.mobile.row.menubutton { padding-top: 0; }
+.ada.mobile.row.menubutton .menubutton-container { padding: 0 10px 0 10px; }
+
+
+/**
+ * menuright styles
+ */
 #topmenur, #bottommenur { display:none;  }
-div#menuright { opacity: 0.95; width: 350px; padding-top: 25px; position: fixed; }
-.menuright_view.sidebar { background-color: #1665ad;  }
+div#menuright { position: fixed; }
+.menuright_view.sidebar { 
+    -webkit-box-shadow: -5px 0px 5px 0px rgba(50, 50, 50, 0.15);
+    -moz-box-shadow:    -5px 0px 5px 0px rgba(50, 50, 50, 0.15);
+    box-shadow:         -5px 0px 5px 0px rgba(50, 50, 50, 0.15); 
+    background-color: #fff; 
+    }
+
+/**
+ * menuright with accordion
+ */
+ 
+div.right.sidebar .close.icon { background-image: none; padding:0; }
+div.right.sidebar .accordion .content.field #show_index { padding: 10px; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul { padding:0; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul { padding-left:20px; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li a { line-height: 30px; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span.ADA_LEAF_TYPE { background-position-x: -3px; }
+div.right.sidebar .accordion .loader-wrapper { text-align: center; }
+div.right.sidebar .accordion .icon { float: right; }
+div.right.sidebar .accordion .title,
+div.right.sidebar .accordion .content { text-transform: capitalize; }
+div.right.sidebar .attached.accordion.segment,
+div.right.sidebar .accordion .content { padding: 0; }
+div.right.sidebar .accordion .noitem,
+div.right.sidebar .accordion .content.field>a { 
+    display: block;    
+    margin-left:47px;
+    line-height: 50px;
+    text-decoration: none;
+    background: transparent;
+ }
+div.right.sidebar .accordion .content.field table tbody td { vertical-align: middle; }
+div.right.sidebar .accordion .content.field table.default_table tbody td div { padding: 0 0 0 30px; } 
+div.right.sidebar .accordion .content.field table tbody td a { 
+    line-height: 50px; 
+    /* recuperate from .item .menu a rule */
+    display:inline; margin-left: 0px; } 
+
+div.right.sidebar .accordion .content.field table.table_link_table { width:100%; } 
+div.right.sidebar .accordion .content.field table.table_link_table tbody td img { display: inline; vertical-align: middle; } 
+ 
+ /**
+  * end accordion
+  */ 
+
+div.right.sidebar #menurightcontent .item .menu  .noitem,
+div.right.sidebar #menurightcontent .item .menu a { 
+    display: block;    
+    margin-left:52px;
+    line-height: 30px;
+ }
+div.right.sidebar #menurightcontent .item .menu table.table_link_table { margin-left: 10px; } 
+div.right.sidebar #menurightcontent .item .menu table.table_link_table tbody td img { float: left; }
+div.right.sidebar #menurightcontent .item .menu table tbody td a { 
+	line-height: 30px; 
+    /* recuperate from .item .menu a rule */
+    display:inline; margin-left: 0px; }
+div.right.sidebar #menurightcontent .item a { text-decoration: none; background: transparent; }
+div.right.sidebar #menurightcontent .item { text-transform: capitalize; }
+div.right.sidebar #menurightcontent .icon { opacity: 1; }
+div.right.sidebar #menurightcontent { background: white; padding: 0px 15px 15px 15px; }
+div.right.sidebar #menurightcontent a.closepanel.item { color: #CC181E; }
+div.right.sidebar #menurightcontent span.index.item,
+div.right.sidebar #menurightcontent span.index.item a { color: #4CB164; }

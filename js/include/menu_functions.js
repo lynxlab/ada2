@@ -12,6 +12,15 @@ var EFFECT_BLIND_DURATION_IN_SECONDS = 0.3;
  */
 setUnreadMessagesBadge();
 
+/**
+ * hides the sidebar (aka menuright) from an
+ * href onclick event generated inside the sidebar
+ */
+function hideSideBarFromSideBar() {
+	$j('#menuright').sidebar('hide');
+	$j('a.item.active').removeClass('active');
+}
+
 document.observe('dom:loaded', function() {
 	/**
 	 * sets the dropdown menu to appear on hover
@@ -21,13 +30,31 @@ document.observe('dom:loaded', function() {
 	 * document observer. One day all shall be handled by jQuery... 
 	 * This is not going to harm anybody, but you've been warned
 	 */	
-	var menuItem = $j('.menu a.item, .menu .link.item');
-	var dropdown = $j('.menu .dropdown');
+	
+	/**
+	 * Copy the .computer.menu HTML code, make the
+	 * needed changes and use it as a .mobile.menu
+	 */
+	if ($j('.ui.mobile.ada.menu').length>0) {
+		var menuHTML = $j('.ui.computer.ada.menu').clone();	
+		var rightMenu = $j(menuHTML).find('.right.menu');
+		if (rightMenu.length >0) {
+			rightMenu.remove();
+			$j(menuHTML).find('div').first().append(rightMenu.html());
+		}	
+	    $j(menuHTML).find('.ui.dropdown.item').toggleClass('item').toggleClass('fluid')
+	    .wrap('<div class="ui item"></div>');
+	    $j('.ui.mobile.ada.menu').html(menuHTML.html());
+	    
+		// mobile dropdown on click
+		$j('.mobile.menu .dropdown').dropdown({ on: 'click' });
+	}
 
-	dropdown.dropdown({
-	  on: 'hover'
-	});		
+	// computer dropdown on hover
+	$j('.computer.menu .dropdown').dropdown({ on: 'hover' });
 
+	// enable menu items (non dropdown) active class
+	var menuItem = $j('.menu a.item, .menu .link.item').not('.closepanel');
 	menuItem.on('click', function() {	  
 	    if(!$j(this).hasClass('dropdown')) {
 	          $j(this).toggleClass('active').closest('.ui.menu')
@@ -35,19 +62,22 @@ document.observe('dom:loaded', function() {
 	    }
 	});
 	
-	if ($j('a.item.userpopup').length > 0) {
+	// enable userpopup, if found
+	if ($j('a.item.userpopup').length>0) {
 		$j('#status_bar').hide();
 		$j('a.item.userpopup').popup({
-		    position: 'bottom left',
-		    offset: '150',
+		    position: 'bottom center',
 		    html: $j('#status_bar').html(),
-		    on: 'click'
+		    on: 'click',
+		    onHide: function() {
+	    		$j('a.item.active').removeClass('active');
+		    }
 		  });
 	}
         
-        // if there's the searchbox, make it work
-        if($j('#searchmenutext').length>0) {
-          // perform search either on search icon click...
+    // if there's the searchbox, make it work
+    if($j('.item.searchItem input[type="text"]').length>0) {
+      // perform search either on search icon click...
 		$j('.search.link.icon').on('click',function(){
 			var text = $j(this).siblings('input[type="text"]').val().trim();
 			if (text.length>0) {
@@ -55,10 +85,23 @@ document.observe('dom:loaded', function() {
 			}
 		});
 		// ...or on searchmenutext enter key press
-		$j('#searchmenutext').on('keyup', function(event){
+		$j('.item.searchItem input[type="text"]').on('keyup', function(event){
 			if(event.which == 13) $j(this).siblings('.search.link.icon').click();
 		});  
-        }    	
+    }
+    
+    // init and set resize for mobile sidebar if needed
+    if ($j('#mobilesidebar').length>0) {
+        $j('#mobilesidebar').sidebar();
+        $j(window).resize(function() {
+        	var w = $j(window).width();
+        	if (w>768 && $j('#mobilesidebar').sidebar('is open')) {
+        		$j('#mobilesidebar').sidebar('toggle');
+        	}
+        });    	
+    }
+    
+    $j('.ui.accordion').accordion();
 });
 
 /*
@@ -325,4 +368,22 @@ function setUnreadMessagesBadge () {
 //			msgCounter.fadeIn();
 		}		
 	});
+}
+
+var index_loaded=false;
+function showIndex() {
+    if(!index_loaded) {
+	    $j.ajax({
+		type	: 'GET',
+		url     : HTTP_ROOT_DIR + '/browsing/ajax/index_menu.php',
+        dataType:'html',
+		async	: true,
+        success: function(data) {
+        		$j('#show_index').slideUp(function(){
+        			$j('#show_index').html(data).slideDown();
+        		});
+            	index_loaded=true;
+        	}
+	    });
+    }
 }
