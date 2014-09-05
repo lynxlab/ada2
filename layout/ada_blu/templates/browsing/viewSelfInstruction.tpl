@@ -13,7 +13,10 @@
         <!-- / testata -->
         <!-- menu -->
             <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-        <!-- / menu -->          
+        <!-- / menu -->  
+        <!-- help -->
+            <template_field class="template_field" name="help">help</template_field>  
+        <!-- / help --> 
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->

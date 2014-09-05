@@ -395,7 +395,7 @@ $content_dataAr = array(
 	'user_level' => $user_level,
 	'user_score' => $user_score,
 	'status' => $status,
-	'node_level' => $node_level,
+        'node_level' => $node_level,
 	'visited' => $visited,
 	'path' => $node_path,
 	'title' => $node_title,
@@ -581,7 +581,16 @@ switch ($op){
                     $content_dataAr['go_prev'] = $navBar->getHtml('prev'); // can pass href text as second param
                     $content_dataAr['go_next'] = $navBar->getHtml('next'); // can pass href text as second param
                 }
-
+        
+        if(isset($msg))
+        {
+            $help=CDOMElement::create('label');
+            $help->addChild(new CText(translateFN(ltrim($msg))));
+            $divhelp=CDOMElement::create('div');
+            $divhelp->setAttribute('id', 'help');
+            $divhelp->addChild($help);
+            $content_dataAr['help']=$divhelp->getHtml();
+        }
         $menuOptions['self_instruction'] = $self_instruction;
         $menuOptions['id_course'] = $sess_id_course;
         $menuOptions['id_course_instance'] = $sess_id_course_instance;
