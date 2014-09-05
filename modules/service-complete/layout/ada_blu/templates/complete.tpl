@@ -8,15 +8,19 @@
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
-        </div> <!-- / testata -->
-
+        </div> 
+        <!-- / testata -->
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu --> 
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
             <div id="journey">
                 <i18n>dove sei: </i18n>
                 <span>
-                    <template_field class="template_field" name="course_title">course_title</template_field>
+                    <!--template_field class="template_field" name="course_title">course_title</template_field-->
+                    <template_field class="template_field" name="label">label</template_field>
                 </span>
             </div>
             <div id="user_wrap">
@@ -39,7 +43,7 @@
                     </div>
                     <!-- / dati utente -->
                     <!-- label -->
-                    <div id="label">
+                    <!--div id="label">
                         <div class="topleft">
                             <div class="topright">
                                 <div class="bottomleft">
@@ -87,34 +91,6 @@
             <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
-
-        <!-- menu a tendina -->
-        <div id="mainmenu">
-            <ul id="menu">
-                <li id="home">
-                    <a href="../../browsing/user.php">
-                        <i18n>home</i18n>
-                    </a>
-                </li>
-                <li id="question_mark" class="unselectedquestion_mark">
-                    <a href="../../help.php" target="_blank">
-                        <i18n>aiuto</i18n>
-                    </a>
-                </li>
-                <li id="esc">
-                    <a href="../../index.php">
-                        <i18n>esci</i18n>
-                    </a>
-                </li>
-            </ul>
-            <!-- tendina -->
-            <div id="dropdownmenu">
-            </div>
-            <!--/tendina -->
-
-        </div>
-        <!-- / menu a tendina -->
-
         <!-- piede -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>

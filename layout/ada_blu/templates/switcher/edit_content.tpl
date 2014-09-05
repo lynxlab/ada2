@@ -8,8 +8,11 @@
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
-        </div> <!-- / testata -->
-
+        </div> 
+        <!-- / testata -->
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu --> 
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -89,7 +92,7 @@
         <!-- / contenitore -->
 
         <!-- menu a tendina -->
-        <div id="mainmenu">
+        <!--div id="mainmenu">
             <ul id="menu">
                 <li id="home">
                     <a href="../switcher/switcher.php">
