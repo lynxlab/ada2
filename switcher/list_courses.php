@@ -95,10 +95,6 @@ if(!MULTIPROVIDER)
    $li_edit_home_page->addChild($Edit_home_page);
    $Li_edit_home_page=$li_edit_home_page->getHtml();
 }
-
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
    
 $content_dataAr = array(
     'user_name' => $user_name,
@@ -109,7 +105,7 @@ $content_dataAr = array(
     'data' => $data->getHtml(),
     'module' => $module,
     'edit_home_page'=>$Li_edit_home_page,
-    'edit_switcher'=>$edit_profile_link->getHtml(),
+    'edit_profile'=>$userObj->getEditProfilePage(),
     'ajax_chat_link' => $chatrooms_link,
     'messages' => $user_messages->getHtml()
 );

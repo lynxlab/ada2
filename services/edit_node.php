@@ -318,7 +318,8 @@ switch ($op) {
                 'keywords'   => $content_dataAr['title'],
                 'date'       => $content_dataAr['creation_date'],
                 'edit_link'  => NodeEditingViewer::getEditLink('edit_node.php?op=edit'),
-                'save_link'  => NodeEditingViewer::getSaveLink('edit_node.php?op=save')
+                'edit_link'  => 'edit_node.php?op=edit',
+                'save_link'=>  'edit_node.php?op=save'
         );
         break;
 
