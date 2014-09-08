@@ -24,7 +24,7 @@ $variableToClearAR = array('layout','user','course');
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR);
+$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR,AMA_TYPE_SWITCHER);
 
 /**
  * Get needed objects

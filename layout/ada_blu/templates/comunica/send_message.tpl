@@ -12,6 +12,15 @@
 <!-- menu -->
     <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
 <!-- / menu --> 
+<!-- PERCORSO -->
+<div id="journey">
+<i18n>dove sei:</i18n>
+    <span>
+           <i18n>messaggeria</i18n>
+    </span>
+</div> 
+<!-- / percorso -->
+</div> 
 <!-- contenitore -->
 <div id="container">
 
@@ -135,15 +144,6 @@
 </div> <!--  / contenuto -->
 </div> <!-- / contenitore -->
 
-
-<!-- PERCORSO -->
-<div id="journey">
-		 <i18n>dove sei:</i18n>
-		 <span>
-		 	<i18n>messaggeria</i18n>
-		 </span>
-	</div> <!-- / percorso -->
-</div> <!-- / MENU -->
 
 <!-- PIEDE -->
 <div id="footer">

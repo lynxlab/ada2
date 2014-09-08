@@ -149,6 +149,6 @@ $content_dataAr = array(
   'menu_04'        => $menu_04,
   'status'		   => $status
 );
-
-ARE::render($layout_dataAr, $content_dataAr);
+$menuOptions['del_msg_id'] = $msg_id;
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
 ?>

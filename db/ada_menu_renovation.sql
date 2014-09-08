@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: Set 08, 2014 alle 08:15
+-- Generato il: Set 08, 2014 alle 11:17
 -- Versione del server: 5.5.37-0ubuntu0.13.10.1
 -- Versione PHP: 5.5.3-1ubuntu2.6
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `menu_page` (
   `linked_tree_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`tree_id`),
   UNIQUE KEY `module` (`module`,`script`,`user_type`,`self_instruction`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=139 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=145 ;
 
 --
 -- Dump dei dati per la tabella `menu_page`
@@ -90,7 +90,7 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 (47, 'browsing', 'search.php', 4, 0, 0, 28),
 (48, 'comunica', 'chat.php', 4, 0, 0, 24),
 (49, 'browsing', 'default', 4, 0, 0, 10),
-(50, 'services', 'upload.php', 4, 0, 0, 25),
+(50, 'services', 'upload.php', 4, 0, 0, 77),
 (51, 'services', 'default', 4, 0, 0, 82),
 (52, 'services', 'addnode.php?op=preview', 4, 0, 0, 84),
 (53, 'tutor', 'tutor.php?op=student&mode=update', 4, 0, 0, NULL),
@@ -133,6 +133,7 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 (95, 'comunica', 'send_message.php', 6, 0, 0, 14),
 (96, 'comunica', 'list_events.php', 6, 0, 0, 16),
 (97, 'comunica', 'send_event.php', 6, 0, 0, 17),
+(139, 'comunica', 'read_message.php', 4, 0, 0, NULL),
 (99, 'comunica', 'list_messages.php?messages=sent', 6, 0, 0, 21),
 (100, 'comunica', 'chat.php', 6, 0, 0, 24),
 (101, 'comunica', 'create_chat.php', 6, 0, 0, 41),
@@ -169,14 +170,17 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 (134, 'browsing', 'external_link.php?file=gpl.txt', 5, 0, 0, 29),
 (135, 'browsing', 'view.php', 5, 0, 0, NULL),
 (136, 'browsing', 'external_link.php?file=guest_it.html', 5, 0, 0, 29),
-(138, 'main', 'index.php', 5, 0, 0, NULL);
+(140, 'comunica', 'read_message.php', 3, 0, 0, 139),
+(138, 'main', 'index.php', 5, 0, 0, NULL),
+(141, 'comunica', 'read_message.php', 6, 0, 0, 139),
+(142, 'comunica', 'read_event.php', 3, 0, 0, NULL),
+(143, 'comunica', 'read_event.php', 4, 0, 0, 142),
+(144, 'comunica', 'read_event.php', 6, 0, 0, 142);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
-
---
 
 -- --------------------------------------------------------
 
@@ -200,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `menu_items` (
   `order` int(3) unsigned NOT NULL DEFAULT '0',
   `enabledON` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%',
   PRIMARY KEY (`item_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=130 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=133 ;
 
 --
 -- Dump dei dati per la tabella `menu_items`
@@ -316,13 +320,14 @@ INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, 
 (126, 'authors list', NULL, 'basic users', NULL, '', '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=1', 'id_tester', NULL, 0, 0, 15, '%ALWAYS%'),
 (127, 'tutors list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=4', 'id_tester', NULL, 0, 0, 20, '%ALWAYS%'),
 (128, 'students list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=3', 'id_tester', NULL, 0, 0, 25, '%ALWAYS%'),
-(129, 'all users list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php', 'id_tester', NULL, 0, 0, 30, '%ALWAYS%');
+(129, 'all users list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php', 'id_tester', NULL, 0, 0, 30, '%ALWAYS%'),
+(130, 'rispondi', NULL, 'forward mail', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'send_message.php?op=replay', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(131, 'rispondi a tutti', NULL, 'forward mail', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'send_message.php?op=replay_all', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
+(132, 'cancella', NULL, 'trash', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'read_message.php', 'del_msg_id', NULL, 0, 0, 20, '%ALWAYS%');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
 
 -- --------------------------------------------------------
 
@@ -879,7 +884,16 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 (138, 16, 17, ''),
 (138, 16, 18, ''),
 (138, 0, 15, ''),
-(138, 0, 14, '');
+(138, 0, 14, ''),
+(139, 0, 45, ''),
+(139, 0, 22, ''),
+(139, 0, 42, ''),
+(139, 22, 43, ''),
+(139, 22, 130, ''),
+(139, 22, 131, ''),
+(139, 22, 132, ''),
+(142, 0, 42, ''),
+(142, 0, 47, '');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
