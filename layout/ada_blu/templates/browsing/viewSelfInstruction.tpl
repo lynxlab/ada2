@@ -213,91 +213,63 @@ Curabitur mollis egestas leo. Sed fermentum quam urna, in cursus metus posuere e
             </div>-->
             <!-- /com_tools -->
             <!-- menudestra -->
+                  <!-- <div id="menuright" class="sottomenu_off menuright_view "> -->
             <div id="menuright" class="menuright_view ui wide right sidebar">
-                <div id="topmenur">
-                </div>
+              <h3 class="ui teal block dividing center aligned  header"><i class="globe icon"></i><i18n>Naviga</i18n></h3>
                 <div id="menurightcontent">
-                    <ul>
-                        <li class="close">
-                            <a href="#" onClick="toggleElementVisibility('menuright', 'right');">
-                                <i18n>chiudi</i18n>
-                            </a>
-                        </li>
-                        <!--li class="_menu">
-                                <template_field class="template_field_disabled" name="main_index">main_index</template_field>
-                        </li-->
-                        <li class="_menu">
-                                <template_field class="template_field" name="main_index_text">main_index_text</template_field>
-                        </li>
-                        <li class="_menu">
-							<template_field class="template_field" name="search_form">search_form</template_field>
-                        </li>
-                        <!--<li class="_menu">
-							<template_field class="template_field" name="go_map">go_map</template_field>
-                        </li>-->
-                    </ul>
-                    <ul id="attachment">
-                        <li class="_name">
-                        <i18n>approfondimenti</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="index">index</template_field>
-                            </li>
-                        </ul>
-                        <li class="_name">
-                        <i18n>collegamenti</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="link">link</template_field>
-                            </li>
-                        </ul>
-                        <!--<li class="_name">
-                        <i18n>esercizi</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="exercises">exercises</template_field>
-                            </li>
-                        </ul>-->
-                  <li class="_name">
-                        <i18n>risorse</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="media">media</template_field>
-                            </li>
-                        </ul>
-                        <!-- li class="_name">
-                        <i18n>media di classe</i18n>
-                        </li -->
-                        <!-- ul>
-                            <li>
-                            <template_field class="template_field_disabled" name="user_media">user_media</template_field>
-                            </li>
-                        </ul -->
-                        <!-- "li class="_name">
-                        <i18n>note di classe</i18n>
-                        </li -->
-                        <!-- ul>
-                            <li>
-                            <template_field class="template_field_disabled" name="notes">notes</template_field>
-                            </li>
-                        </ul -->
-                        <!-- li class="_name">
-                        <i18n>note personali</i18n>
-                        </li -->
-                        <!-- ul>
-                            <li>
-                            <template_field class="template_field_disabled" name="personal">personal</template_field>
-                            </li>
-                        </ul -->
-                    </ul>
+                  <div class="ui right labeled icon mini fluid top attached button"  onclick="javascript: hideSideBarFromSideBar();">
+                    <i class="close icon"></i><i18n>Chiudi</i18n>
+                  </div>
+                  <!-- accordion -->
+                  <div class="ui attached segment accordion">
+                  
+			       <div class="title" onClick="showIndex();">
+			         <i class="icon dropdown"></i>
+			         <i18n>indice</i18n><i class="sitemap icon" style="float:right;"></i>
+			       </div>
+			       <div class="content field">
+			         <div id="show_index">
+			             <div class="loader-wrapper">
+			                 <div class="ui active inline mini text loader">
+			                     <i18n>Caricamento</i18n>...
+			                  </div>
+			             </div>
+                     </div>
+			       </div>
+                     <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>approfondimenti</i18n><i class="pin icon"></i>
+                   </div>
+                   <div class="content field">
+                     <template_field class="template_field" name="index">index</template_field>
+                   </div>
+                   
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>collegamenti</i18n><i class="url icon"></i>
+                   </div>
+                   <div class="content field">
+                       <template_field class="template_field" name="link">link</template_field>
+                   </div>
+                   
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>esercizi</i18n><i class="text file outline icon"></i>
+                   </div>
+                   <div class="content field">
+                     <template_field class="template_field" name="exercises">exercises</template_field>
+                   </div>
+                   
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>risorse</i18n><i class="browser icon"></i>
+                   </div>
+                   <div class="content field">
+                     <template_field class="template_field" name="media">media</template_field>
+                   </div>
+                  </div>
+                  <!-- /accordion -->  
                 </div>
-                <div id="bottommenur">
-                </div>
-            </div>
             <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
