@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: Set 05, 2014 alle 15:26
+-- Generato il: Set 08, 2014 alle 08:15
 -- Versione del server: 5.5.37-0ubuntu0.13.10.1
 -- Versione PHP: 5.5.3-1ubuntu2.6
 
@@ -133,7 +133,6 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 (95, 'comunica', 'send_message.php', 6, 0, 0, 14),
 (96, 'comunica', 'list_events.php', 6, 0, 0, 16),
 (97, 'comunica', 'send_event.php', 6, 0, 0, 17),
-(98, 'comunica', 'list_messages.php?messages=sent', 0, 0, 0, 21),
 (99, 'comunica', 'list_messages.php?messages=sent', 6, 0, 0, 21),
 (100, 'comunica', 'chat.php', 6, 0, 0, 24),
 (101, 'comunica', 'create_chat.php', 6, 0, 0, 41),
@@ -170,13 +169,14 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 (134, 'browsing', 'external_link.php?file=gpl.txt', 5, 0, 0, 29),
 (135, 'browsing', 'view.php', 5, 0, 0, NULL),
 (136, 'browsing', 'external_link.php?file=guest_it.html', 5, 0, 0, 29),
-(137, 'main', 'index.php', 0, 0, 0, NULL),
 (138, 'main', 'index.php', 5, 0, 0, NULL);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
+
+--
 
 -- --------------------------------------------------------
 
