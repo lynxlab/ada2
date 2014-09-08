@@ -463,7 +463,12 @@ class Menu
     	if ($item['enabledON']===self::ALWAYS_ENABLED) return true;
     	else if ($item['enabledON']===self::NEVER_ENABLED) return false;
     	else {
-    		return !empty($this->constSubstitute($item['enabledON']));
+    		/**
+    		 * must put into a var because of a limitation with PHP<5.5
+    		 * see Note at http://php.net/manual/en/function.empty.php
+    		 */
+    		$const = $this->constSubstitute($item['enabledON']);
+    		return !empty($const);
     	}
     }
     
