@@ -63,7 +63,7 @@ document.observe('dom:loaded', function() {
 	});
 	
 	// enable userpopup, if found
-	if ($j('a.item.userpopup').length>0) {
+	if ($j('a.item.userpopup').length>0 && $j('#status_bar').length>0) {
 		$j('#status_bar').hide();
 		$j('a.item.userpopup').popup({
 		    position: 'bottom center',
