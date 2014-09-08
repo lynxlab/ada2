@@ -26,6 +26,7 @@
 
 .ui.menu.ada div.ui.search.input,
 .ui.menu.ada i.search.link.icon { background-color: transparent;  }
+.ui.menu.ada i.question.icon { background-color: transparent;  }
 .ui.menu.ada i.search.link.icon { margin-right: 0.5em; opacity: 0.5; }
 
 .ui.menu.ada div.item.searchItem > div.search.input {
