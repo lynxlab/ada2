@@ -1180,8 +1180,15 @@ EOT;
         <meta name=\"family\" content=\"$family_name\">
         <meta name=\"module\" content=\"$module_dir\">
         <meta name=\"widgets\" content=\"$widget_filename\">";
-        if (isset($layoutObj->menu)) $this->htmlheader .= "
-        <meta name=\"menu\" content=\"".$layoutObj->menu->getId()."\">";
+        if (isset($layoutObj->menu)) { 
+        	$this->htmlheader .= "
+        <meta name=\"menu\" content=\"".$layoutObj->menu->getId()."\"";
+        	if (!is_null($layoutObj->menu->getLinkedFromId())) {
+        		$this->htmlheader .= " linked-from=\"".$layoutObj->menu->getLinkedFromId()."\"";
+        	}
+        	$this->htmlheader .= ">";
+        }
+        
         $this->htmlheader .= "
         <meta name=\"class\" content=\"HTML\">
         <meta name=\"outputClasses\" content=\"NEW\">

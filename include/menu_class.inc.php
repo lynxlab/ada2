@@ -28,6 +28,14 @@ class Menu
 	private $_tree_id;
 	
 	/**
+	 * tree id that originally linked this menu
+	 * null if this was not a linked menu
+	 * 
+	 * @var number
+	 */
+	private $_linked_from = null;
+	
+	/**
 	 * nonzero if menu is vertical
 	 * 
 	 * @var number
@@ -81,7 +89,8 @@ class Menu
     		// set found object properties
     		$this->_tree_id = $res['tree_id'];
     		$this->_isVertical = $res['isVertical'];
-    		    		
+    		if (isset($res['linked_from'])) $this->_linked_from = $res['linked_from'];
+
     		// get menu items
     		$resItems = $dh->get_menu_children($this->_tree_id, $res['dbToUse'], $getAllMenuItems);
     		if (!AMA_DB::isError($resItems) && count($resItems)>0) {
@@ -133,9 +142,22 @@ class Menu
      * tree id getter
      * 
      * @return number
+     * 
+     * @access public
      */
     public function getId() {
     	return $this->_tree_id;
+    }
+    
+    /**
+     * linked from getter
+     * 
+     * @return number
+     * 
+     * @access public
+     */
+    public function getLinkedFromId() {
+    	return $this->_linked_from;
     }
     
     /**

@@ -11939,7 +11939,7 @@ public function get_updates_nodes($userObj, $pointer)
     							/**
     							 * if menu candidate has no query string, it's the menu
     							 * only if it's the only candidate or the url had no query string
-    							 */    							
+    							 */
     							if (count($candidates)===1 || count($queryStringArr)===0) {
     								$menu_found = true;
     							} else {
@@ -11985,11 +11985,11 @@ public function get_updates_nodes($userObj, $pointer)
     					if (!$menu_found && isset($bestMatch)) {
     						$menu_found = true;
     						$menuCandidate = $bestMatch;
-    					}    					
-    					if ($menu_found) break;    					
-    				}     				
+    					}
+    					if ($menu_found) break;
+    				}
     			}
-    			if ($menu_found) break;    			
+    			if ($menu_found) break;
     		}
     		if ($menu_found) break;
     	}
@@ -11999,10 +11999,13 @@ public function get_updates_nodes($userObj, $pointer)
     		$retVal['isVertical'] = $menuCandidate['isVertical'];
     		$retVal['dbToUse'] = $dbToUse;
     		// if is a linked tree, set the actual tree_id to the linked one
-    		if (!is_null($menuCandidate['linked_tree_id'])) $retVal['tree_id'] = $menuCandidate['linked_tree_id'];
+    		if (!is_null($menuCandidate['linked_tree_id'])) {
+    			$retVal['tree_id'] = $menuCandidate['linked_tree_id'];
+    			$retVal['linked_from'] = $menuCandidate['tree_id'];
+    		}
     	} else $retVal = false;
 
-    	return $retVal;    	    	
+    	return $retVal;
     }
     
     /**
