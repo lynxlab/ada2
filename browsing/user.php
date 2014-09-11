@@ -271,7 +271,6 @@ if (!$displayWhatsNew)
 	    'messages' => $user_messages->getHtml(),
 	    'agenda' => $user_agenda->getHtml(),
 	    'events' => $user_events->getHtml(),
-	    'submenu_actions' => $submenu_actions,
 	    'status' => $status
 	);
 }
@@ -431,7 +430,6 @@ else {
         $content_dataAr['last_visit'] = $last_access;
 	$content_dataAr['message'] = $message;
 	$content_dataAr['course_title'] = translateFN("Home dell'utente"). " &gt; ".translateFN("Novità");
-	$content_dataAr['submenu_actions'] =  $submenu_actions;
 	$content_dataAr['status'] = $status;
 }
 

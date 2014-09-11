@@ -75,10 +75,6 @@ switch ($op) {
         }
         $viewer  = ExerciseViewerFactory::create($exercise->getExerciseFamily());
         $history = $viewer->getExerciseHtml($exercise);
-
-        $menu_03 = "<a href=" .  $http_root_dir . "/tutor/tutor_exercise.php?op=list&id_student=" . $id_student;
-        $menu_03 .= "&id_instance=" . $id_course_instance .">";
-        $menu_03 .= translateFN('Elenco esercizi') . "</a>";
         $status = translateFN('Esercizio dello studente');
         break;
     case 'list':
@@ -105,16 +101,6 @@ $banner = include ("$root_dir/include/banner.inc.php");
 // e ci aggiunge l'id dell'istanza corso
 $help = translateFN("Da qui il tutor del corso può vedere e correggere gli esercizi degli studenti. Può anche inviare un commento e/o decidere di far ripetere l'esercizio allo studente.");
 
-$menu_01 = "<a href=" .  HTTP_ROOT_DIR . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
-$menu_01 .= "&id_instance=" . $id_course_instance .">";
-$menu_01 .= translateFN('Scheda corsista') . '</a>';
-
-$menu_02 = " <a href=" .  HTTP_ROOT_DIR . "/tutor/tutor.php?op=student&id_instance=" . $id_course_instance;
-$menu_02.= ">" . translateFN('Elenco studenti') . '</a>';
-
-if (!isset($menu_03)) {
-    $menu_03 = '';
-}
 if (!isset($status)) {
     $status = '';
 }
@@ -153,11 +139,10 @@ if($last_access=='' || is_null($last_access)){
    $last_access='-';
 }
 
-$back_link= "<a href='".$_SERVER['HTTP_REFERER']."' class='backLink' title='".translateFN("Torna")."'>".translateFN("Torna")."</a>";
+
 $content_dataAr = array(
     'banner'=>$banner,
     'course_title'=>translateFN('Storico Esercizi').' > <a href="main_index.php">'.$course_title.'</a>',
-    'back_link'=>$back_link,
     'path'=>$node_path,
     'class'=>$class . ' ' . translateFN('iniziata il') . ' ' . $start_date,
     'user_name'=>$user_name,
@@ -168,10 +153,6 @@ $content_dataAr = array(
     'data'=>$history,
     'user_level'=>$user_level,
     'last_visit' => $last_access,
-    'menu_01'=>$menu_01,
-    'menu_02'=>$menu_02,
-    'menu_03'=>$menu_03,
-    'menu_04'=>'',//$chat_link,
     'help'=>$help,
     'status'=>$status,
     'messages'=>$user_messages->getHtml(),

@@ -425,14 +425,7 @@ $user_agenda = "";
 
 $online_users_listing_mode = 2;
 $online_users = ADALoggableUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
-
-// CHAT, BANNER etc
 $banner = include (ROOT_DIR."/include/banner.inc.php");
-$chat_link = "<a href='../comunica/adaChat.php' target='_blank'>".translateFN("chat")."</a>";
-
-$go_map = "<a href = \" map.php?id_node=$sess_id_node\">" . translateFN("mappa") . "</a>";
-$go_print = "<a href=\" view.php?id_node=" . $sess_id_node . "&op=print\" target=\"_blank\">" . translateFN("stampa") . "</A>";
-
 /* 8.
 costruzione della pagina HTML
 */
@@ -443,7 +436,6 @@ $content_dataAr = array(
   'results'=>$search_results,
   'simpleSearch'=>$Simple_searchLink,
   'menu'=>$menu,
-  'chat_link'=>$chat_link,
   'banner'=> $banner,
   'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
   'user_name'=>$user_name,

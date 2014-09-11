@@ -267,29 +267,8 @@ $eportal = PORTAL_NAME;
 // $banner = include_once("../include/banner.inc.php"); TO BE COMPLETED
 $banner = "";
 
-// printable version
-// @author giorgio 23/apr/2013
-$go_print = "<a href=\"print.php?id_node=" . $sess_id_node . "\" target=\"_blank\">"  . translateFN("stampa") . "</a>";
-
-
-// Links to other modules
-if ($id_profile == AMA_TYPE_TUTOR || $id_profile == AMA_TYPE_STUDENT) {
-	/*
-	 * Ci sono anche altri controlli da fare, tipo quelli che stanno nella
-	 * videochat
-	 */
-	$video_chat = '<a href="' . HTTP_ROOT_DIR . '/comunica/videochat.php" target="_blank">' . translateFN('video conference') . '</a>';
-	$chat = '<a href="' . HTTP_ROOT_DIR . '/comunica/chat.php" target="_blank">' . translateFN('chat') . '</a>';
-	$go_download = '<a href="' . HTTP_ROOT_DIR . '/browsing/download.php">' . translateFN('file sharing') . '</a>';
-	$send_media = '<a href="' . HTTP_ROOT_DIR . '/services/upload.php">' . translateFN('invia un file') . '</a>';
-}
-
-
 if ($id_profile == AMA_TYPE_AUTHOR) {
-	$add_node = "<a href=\"$http_root_dir/services/addnode.php?id_parent=$sess_id_node&id_course=$sess_id_course&type=LEAF\">" .
-			translateFN('aggiungi nodo') . "</a>";
-	$add_word = "<a href=\"$http_root_dir/services/addnode.php?id_parent=$sess_id_node&id_course=$sess_id_course&type=WORD\">" .
-			translateFN('aggiungi termine') . "</a>";
+	
 	$edit_node = "<a href=\"$http_root_dir/services/edit_node.php?op=edit&id_node=$sess_id_node&id_course=$sess_id_course&type=$node_type\">" .
 			translateFN('modifica nodo') . "</a>";
 
@@ -298,11 +277,6 @@ if ($id_profile == AMA_TYPE_AUTHOR) {
 
 	$add_exercise = "<a href=\"$http_root_dir/services/add_exercise.php?id_node=$sess_id_node\">" .
 			translateFN('aggiungi esercizio') . "</a>";
-
-	if (MODULES_TEST) {
-		$add_test = '<a href="'.MODULES_TEST_HTTP.'/edit_test.php?mode=test&action=add&id_node='.$sess_id_node.'">'.translateFN('aggiungi test').'</a>';
-		$add_survey = '<a href="'.MODULES_TEST_HTTP.'/edit_test.php?mode=survey&action=add&id_node='.$sess_id_node.'">'.translateFN('aggiungi sondaggio').'</a>';
-	}
 
 	$mod_enabled = TRUE;
 }
@@ -412,12 +386,7 @@ $content_dataAr = array(
 	'index' => $node_index,
 	'go_map' => $go_map,
 	'go_next' => $next_node_link,
-	//'go_XML'=>$go_XML,
-	'go_print' => $go_print,
-	'go_download' => $go_download,
-	'video_chat' => $video_chat,
-	'chat' => $chat,
-        'edit_profile'=> $userObj->getEditProfilePage()
+	'edit_profile'=> $userObj->getEditProfilePage()
 		//        'messages' => $user_messages,
 		//        'agenda' => $user_agenda
 );
@@ -446,11 +415,6 @@ if ($node_type == ADA_GROUP_WORD_TYPE OR $node_type == ADA_LEAF_WORD_TYPE) {
 	* */
 }
 
-if ($log_enabled)
-	$content_dataAr['go_history'] = $go_history;
-else
-	$content_dataAr['go_history'] = translateFN("cronologia");
-
 if ($reg_enabled) {
 	$content_dataAr['add_bookmark'] = $add_bookmark;
 } else {
@@ -462,25 +426,19 @@ $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
 $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
 
 if ($mod_enabled) {
-	$content_dataAr['add_node'] = $add_node;
-	$content_dataAr['add_word'] = $add_word;
+	
 	$content_dataAr['edit_node'] = $edit_node;
 	$content_dataAr['delete_node'] = $delete_node;
-	$content_dataAr['send_media'] = $send_media;
 	$content_dataAr['add_exercise'] = $add_exercise;
-	$content_dataAr['add_test'] = $add_test;
-	$content_dataAr['add_survey'] = $add_survey;
 	$content_dataAr['add_note'] = $add_note;
 	$content_dataAr['add_private_note'] = $add_private_note;
 	$content_dataAr['edit_note'] = $edit_note;
 	$content_dataAr['delete_note'] = $delete_note;
 	$content_dataAr['publish_note'] = $publish_note;
 } else {
-	$content_dataAr['add_node'] = '';
-	$content_dataAr['add_word'] = '';
+	
 	$content_dataAr['edit_node'] = '';
 	$content_dataAr['delete_node'] = '';
-	$content_dataAr['send_media'] = '';
 	$content_dataAr['add_note'] = '';
 	$content_dataAr['add_private_note'] = '';
 	$content_dataAr['edit_note'] = '';
@@ -491,7 +449,6 @@ if ($com_enabled) {
 	$online_users_listing_mode = 2;
 	$online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance,$online_users_listing_mode);
 
-	$content_dataAr['ajax_chat_link'] = $ajax_chat_link;
 	$content_dataAr['messages'] = $user_messages->getHtml();
 	$content_dataAr['agenda'] = $user_agenda->getHtml();
 	$content_dataAr['events'] = $user_events->getHtml();
@@ -505,10 +462,6 @@ if ($com_enabled) {
 if ($id_profile == AMA_TYPE_STUDENT)
 {
 	$content_dataAr['exercise_history'] = '<a href="exercise_history.php?id_course_instance='.$sess_id_course_instance.'">'.translateFN('storico esercizi').'</a>';
-	if (MODULES_TEST) {
-		$content_dataAr['test_history'] = '<a href="'.MODULES_TEST_HTTP.'/history.php?op=test&id_course_instance='.$sess_id_course_instance.'&id_course='.$sess_id_course.'">'.translateFN('Storico Test').'</a>';
-		$content_dataAr['survey_history'] = '<a href="'.MODULES_TEST_HTTP.'/history.php?op=survey&id_course_instance='.$sess_id_course_instance.'&id_course='.$sess_id_course.'">'.translateFN('Storico Sondaggi').'</a>';
-	}
 }
 
 

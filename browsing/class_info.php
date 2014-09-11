@@ -100,10 +100,6 @@ if(!AMA_DataHandler::isError($courseInstances)) {
         $data = translateFN('Non sei iscritto a nessuna classe');
 }
 
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
 /*
  * Last access link
  */
@@ -144,7 +140,6 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'events' => $user_events->getHtml(),
-    'submenu_actions' => $submenu_actions,
     'status' => $status
 );
 
