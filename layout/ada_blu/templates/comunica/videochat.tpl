@@ -10,6 +10,9 @@
 <div id="header">
 		 <template_field class="microtemplate_field" name="header_com">header_com</template_field>
 </div> 
+<!-- menu -->
+    <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+<!-- / menu --> 
 <!-- contenitore -->
 <div id="container">
 <!--dati utente-->
@@ -54,24 +57,6 @@
 </div>
 </div> <!--  / contenuto -->
 </div> <!-- / contenitore -->
-
-<!-- MENU -->
-<div id="mainmenucom">
-<ul id="menu">
-		<li id="selfclose">
-				<template_field class="template_field" name="menu_01">menu_01</template_field>
-				<!--a href="javascript:self.close()"!>
-				<!--a href="close_videochat.php"-->
-				<!--i18n></i18n-->
-				<!--/a-->
-		</li>
-<!--		<li id="list">
-				<a href="list_events.php">
-    		 <i18n>appuntamenti</i18n>
-    	  </a>
-    	 </li>
-		-->
-</ul> <!-- / menu -->
 <!-- PERCORSO -->
 <div id="journey">
 	<i18n>dove sei: </i18n>
