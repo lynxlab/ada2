@@ -178,8 +178,6 @@ $dataAr         = MultiPort::getUserAgenda($userObj);
 $testers_dataAr = MultiPort::getTestersPointersAndIds();
 $messages       = CommunicationModuleHtmlLib::getAgendaAsForm($dataAr, $testers_dataAr);
 $node_title = ""; // empty
-$menu_02 = "";
-$menu_03 = "";
 
 if (!isset($course_title)) {
   $course_title = "";
@@ -215,9 +213,7 @@ $content_dataAr = array(
   'last_visit' => $last_access,
   'messages'     => $messages->getHtml(),
   'status'       => $status,
-  'chat_users'   => $online_users,
-  'menu_02'      => $menu_02,
-  'menu_03'      => $menu_03
+  'chat_users'   => $online_users
 );
 
 ARE::render($layout_dataAr, $content_dataAr);

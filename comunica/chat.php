@@ -183,8 +183,8 @@ if($userObj instanceof ADAPractitioner) {
 }
 else {
   // pass 0 to close the chat window
-  $exit_chat->setAttribute('onclick','exitChat(0,0);');
   $onclick = 'exitChat(0,0);';
+  $exit_chat->setAttribute('onclick',$onclick);
 }
 
 /*
@@ -205,14 +205,14 @@ if(isset($_SESSION['sess_id_course_instance'])){
 }
 
 $content_dataAr = array(
-  'chat'      => $chat->getHtml(),
-  'exit_chat' => $exit_chat->getHtml(),
-  'user_name' => $user_name,
-  'user_type' => $user_type,
-  'user_level'   => $user_level,
-  'onclick'=>$onclick,
+  'chat'       => $chat->getHtml(),
+  'exit_chat'  => $exit_chat->getHtml(),
+  'user_name'  => $user_name,
+  'user_type'  => $user_type,
+  'user_level' => $user_level,
+  'onclick'    => $onclick,
   'last_visit' => $last_access,
-  'status' => translateFN('Chatroom')
+  'status'     => translateFN('Chatroom')
 );
 
 

@@ -217,8 +217,6 @@ if (!isset($destinatari)) {
 if (!isset($course_title)) {
   $course_title = "";
 }
-// if javascript enabled !!!!
-$go_back = "<a href=\"javascript:self.close()\">".translateFN("chiudi")."<a>";
 //
 if ((empty($err_msg)) or (!isset($err_msg))){
   $err_msg = translateFN('Inserimento appuntamento');
@@ -267,7 +265,6 @@ $content_dataAr = array(
   'user_level'   => $user_level,  
   'titolo'         => $titolo,
   'testo'          => trim($testo),
-  'go_back'        => $go_back,
   'destinatari'    => trim($destinatari),
   //'student_button' => $student_button,
   //'tutor_button'   => $tutor_button,

@@ -365,8 +365,7 @@ array(
 	          // message display
 	          $err_msg = translateFN("<b>La chatroom e' stata creata con successo!</b>");
 	          // construct link for edit the chat if needed
-	          $menu_02 = "<a href=" . $http_root_dir . "/comunica/edit_chat.php?$session_id_par"."&id_chatroom=$id_chatroom>" . translateFN("modifica chatroom") . "</a>";
-
+	          
 	          $form_data = array(
 	          array(
 		                          'label'=>'Titolo *',
@@ -710,8 +709,6 @@ array(
 	  // ******************************************************
 	  //  END OF FORM CONSTRUCTION
 	  // ******************************************************
-
-        $menu_01 = "<a href=" . $http_root_dir . "/comunica/list_chatrooms.php>" . translateFN("lista chatrooms") . "</a>";
 	  // array with data to be createed to the browser
 	  $data =  array( 'banner'=> $banner,
                 'status'=> $status,
@@ -724,10 +721,8 @@ array(
                 'chatroom_link'=>$chatroom_link,
                 'data'=>$form,
                 'create_chat'=>$form,
-                'error'=> $err_msg,
-                'menu_01' => $menu_01,
-                'menu_02' => $menu_02
-	  );
+                'error'=> $err_msg
+          );
 
         ARE::render($layout_dataAr, $data);
 	  //end create_chat_message

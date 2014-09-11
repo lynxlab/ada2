@@ -170,9 +170,6 @@ switch ($id_profile) {
         $list_chatrooms_table = $table_room->getHtml();
 
 
-        //link for the creation of a chatroom
-        $menu_02 = "<a href=" . HTTP_ROOT_DIR . "/comunica/create_chat.php>" . translateFN('crea chatroom') . "</a>";
-
         break;
     case AMA_TYPE_TUTOR: // TUTOR
         // get the pubblic chatroom
@@ -307,9 +304,6 @@ switch ($id_profile) {
          );
         $table_room = BaseHtmlLib::tableElement('class:sortable', $thead_data, $tbody_data);
         $list_chatrooms_table = $table_room->getHtml();
-
-        //link to create chatroom
-        $menu_02 = "<a href=" . $http_root_dir . "/comunica/create_chat.php>" . translateFN("crea chatroom") . "</a>";
 
         break;
 
@@ -501,8 +495,7 @@ switch ($id_profile) {
 
 
 $banner = include ROOT_DIR . '/include/banner.inc.php';
-$chatrooms_link = '<a href="'.HTTP_ROOT_DIR . '/comunica/list_chatrooms.php">'. translateFN('Lista chatrooms')
-                    . '</a>';
+
 $content_dataAr = array(
   'banner' => $banner,
   'user_name' => $user_name,
@@ -513,11 +506,7 @@ $content_dataAr = array(
   'help' => $help,
   'data' => $list_chatrooms_table,
   'chat_users' => $online_users,
-  //'chatrooms'=>$chatrooms_link,
-  'edit_profile'=> $userObj->getEditProfilePage(),
-  'menu_01' => $menu_01,
-  'menu_02' => $menu_02,
-  'menu_03' => $menu_03
+  'edit_profile'=> $userObj->getEditProfilePage()
 );
 
 ARE::render($layout_dataAr, $content_dataAr);

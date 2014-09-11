@@ -202,10 +202,6 @@ if (!isset($status)) {
   $status = "";
 }
 
-if (!isset($chat_link)) {
-  $chat_link = "";
-}
-
 /*
 * Last access link
 */
@@ -224,10 +220,8 @@ if(isset($_SESSION['sess_id_course_instance'])){
 }
 
 $content_dataAr = array(
-  'chat_link'    => $chat_link,
   'banner'       => $banner,
   'course_title' => $course_title,
-  'go_back'      => $go_back,
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'user_level'   => $user_level,

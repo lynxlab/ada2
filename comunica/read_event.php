@@ -142,15 +142,7 @@ $message_text = ADAEvent::parseMessageText($msg_ha);
 if ((empty($status)) or (!isset($status))) {
   $status = translateFN("Lettura appuntamento");
 }
-
-//$go_back = "<a href=\"javascript:self.close()\">".translateFN("chiudi")."</a>";
-$go_back = "<a href=\"#\" onclick=\"closeMeAndReloadParent();\">".translateFN("chiudi")."</a>";
-$go_map = "<a href = \" map.php?id_node=$sess_id_node\">" . translateFN("Vai alla mappa") . "</a>";
-$go_print = "<a href=\" view.php?id_node=" . $sess_id_node . "&op=print\">"  . translateFN("Stampa") . "</a>";
 $node_title = ""; // empty
-//$menu_01 = "<a href=\"send_event.php\">" . translateFN("Nuovo") . "</a>";
-//$menu_02 = "<a href=\"read_event.php?del_msg_id=" . $msg_id . "\">" . translateFN("Cancella") . "</a>";
-$menu_03 = ""; //"<a href=\"send_event.php?op=replay_all\">" . translateFN("Rispondi a tutti") . "</A>";
 
 $content_dataAr = array(
   'course_title'   => '<a href="../browsing/main_index.php">'.$course_title.'</a>',
@@ -158,16 +150,11 @@ $content_dataAr = array(
   'user_name'      => $user_name,
   'user_type'      => $user_type,
   'level'          => $user_level,
-  'go_back'        => $go_back,
-  'go_print'       => $go_print,  // OR ELSE AN ARRAY OF PLACEHOLDERS?
   'mittente'       => $mittente,
   'Data_messaggio' => $Data_messaggio,
   'oggetto'        => $oggetto,
   'destinatario'   => $destinatario,
-  'message_text'   => $message_text,
- // 'menu_01'        => $menu_01,
- // 'menu_02'        => $menu_02,
-  'menu_03'        => $menu_03
+  'message_text'   => $message_text
 );
 
 ARE::render($layout_dataAr, $content_dataAr);
