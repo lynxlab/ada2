@@ -9,17 +9,20 @@
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div> <!-- / testata -->
-<!-- menu -->
-    <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-<!-- / menu -->       
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu --> 
+        <div id="help">
+            <template_field class="template_field" name="help">help</template_field>
+        </div>
         <!-- contenitore -->
         <div id="container">
             <!-- contenuto -->
             <div id="content">
                 <div id="contentcontent" class="contentcontent_default">
-                    <div id="help">
-                        <!--template_field class="template_field" name="help">help</template_field-->
-                    </div>
+                    <!--div id="help">
+                        <template_field class="template_field" name="help">help</template_field>
+                    </div-->
                     <div id="data">
                         <template_field class="template_field" name="data">data</template_field>
                     </div>                    

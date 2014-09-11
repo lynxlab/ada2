@@ -173,7 +173,7 @@
 			             </div>
                      </div>
 			       </div>
-  
+ 
                    <div class="active title">
                      <i class="icon dropdown"></i>
                      <i18n>azioni</i18n> <i class="edit sign icon"></i> 
@@ -192,6 +192,7 @@
                      <!--
                        <template_field class="template_field_disabled" name="go_XML">go_XML</template_field> 
                      -->
+                      <template_field class="template_field" name="go_map">go_map</template_field>
                    </div>
                       
                    <div class="title">

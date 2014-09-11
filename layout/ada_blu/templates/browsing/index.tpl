@@ -89,29 +89,7 @@
             </div>
             <!-- /com_tools -->
             <!--menudestra-->
-            
-            <div id="menuright" class="menuright_view ui wide right sidebar">
-            <div id="topmenur">
-            </div>
-            <div id="menurightcontent">
-              		 <ul>
-              		 	<li class="close">
-              		 		 <a href="#" onclick="toggleElementVisibility('menuright', 'right');">
-					  <i18n>chiudi</i18n>
-              		 		</a>
-              			</li>
-				<li class="_menu">
-				  <template_field class="template_field" name="search_form">search_form</template_field>
-				</li>
-				<!--li class="_menu">
-				  <template_field class="template_field" name="go_map">go_map</template_field>
-				</li-->
-              		 </ul>
-            </div>
-            <div id="bottommenur">
-            </div>
-            </div>
-
+         
             <!--menudestra-->
         </div>
         <!--contenitore-->
