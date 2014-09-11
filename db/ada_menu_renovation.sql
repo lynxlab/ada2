@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: Set 08, 2014 alle 11:17
+-- Generato il: Set 10, 2014 alle 16:10
 -- Versione del server: 5.5.37-0ubuntu0.13.10.1
 -- Versione PHP: 5.5.3-1ubuntu2.6
 
@@ -181,7 +181,6 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
-
 -- --------------------------------------------------------
 
 --
@@ -234,14 +233,14 @@ INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, 
 (28, 'diario', NULL, 'empty calendar', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'mylog.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
 (29, 'cronologia', NULL, 'time basic', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'history.php', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
 (30, 'storico esercizi', NULL, 'chart basic', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'exercise_history.php', 'id_course_instance', NULL, 0, 0, 20, '%ALWAYS%'),
-(31, 'storico test', NULL, 'bar chart', NULL, NULL, '%MODULES_TEST_HTTP%', 'history.php', '<template_field class="template_field" name="test_history">test_history</template_field>', NULL, 0, 0, 25, '%ALWAYS%'),
-(32, 'storico sondaggi', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'history.php?op=survey', 'id_course, id_course_instance', NULL, 0, 0, 30, '%ALWAYS%'),
+(31, 'storico test', NULL, 'bar chart', NULL, NULL, '%MODULES_TEST_HTTP%', 'history.php', '<template_field class="template_field" name="test_history">test_history</template_field>', NULL, 0, 0, 25, '%MODULES_TEST%'),
+(32, 'storico sondaggi', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'history.php?op=survey', 'id_course, id_course_instance', NULL, 0, 0, 30, '%MODULES_TEST%'),
 (33, 'stampa', NULL, 'print', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/browsing', 'print.php', 'id_node', NULL, 0, 0, 35, '%ALWAYS%'),
 (34, 'invia un file', NULL, 'upload disk', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'upload.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
 (102, 'lista tutor', NULL, 'basic users', '', NULL, '%HTTP_ROOT_DIR%/switcher', 'list_users.php?list=tutors', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
 (37, 'indietro', NULL, 'circle left', 'large', NULL, NULL, '<template_field class="template_field" name="go_back">go_back</template_field>', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(38, 'modifica <template_field class="template_field" name="what">what</template_field>', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php', '<template_field class="template_field" name="edit_test">edit_test</template_field>', NULL, 0, 0, 5, '%ALWAYS%'),
-(39, 'cancella <template_field class="template_field" name="what">what</template_field>', NULL, 'trash', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php', '<template_field class="template_field" name="delete_test">delete_test</template_field>', NULL, 0, 0, 10, '%ALWAYS%'),
+(38, 'modifica <template_field class="template_field" name="what">what</template_field>', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php', '<template_field class="template_field" name="edit_test">edit_test</template_field>', NULL, 0, 0, 5, '%MODULES_TEST%'),
+(39, 'cancella <template_field class="template_field" name="what">what</template_field>', NULL, 'trash', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php', '<template_field class="template_field" name="delete_test">delete_test</template_field>', NULL, 0, 0, 10, '%MODULES_TEST%'),
 (40, 'aggiorna report', NULL, 'refresh', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=student&mode=update', 'id_instance, id_course', NULL, 0, 0, 5, '%ALWAYS%'),
 (41, 'indice del corso', NULL, 'info letter', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'main_index.php?order=struct&hide_visits=0&expand=10', 'id_course_instance,id_course', NULL, 0, 0, 10, '%ALWAYS%'),
 (61, 'indice del forum', NULL, 'basic community', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'main_index.php?op=forum&order=struct&hide_visits=0&expand=10', 'id_course_instance,id_course', NULL, 0, 0, 15, '%ALWAYS%'),
@@ -288,12 +287,12 @@ INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, 
 (84, 'esporta report corsista (XLS)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?op=export', 'id_student,id_course_instance,id_course,period', NULL, 0, 0, 10, '%ALWAYS%'),
 (85, 'esporta report corsista (PDF)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?op=export&type=pdf', 'id_student,id_course_instance,id_course,period', NULL, 0, 0, 15, '%ALWAYS%'),
 (86, 'riepilogo cronologia', NULL, 'basic book', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php', 'id_course_instance,id_student', NULL, 0, 0, 40, '%ALWAYS%'),
-(100, 'aggiungi sondaggio', NULL, 'basic chart', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php?mode=survey&action=add', 'id_node', NULL, 0, 0, 25, '%ALWAYS%'),
-(99, 'aggiungi test', NULL, 'question', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php?mode=test&action=add', 'id_node', NULL, 0, 0, 20, '%ALWAYS%'),
+(100, 'aggiungi sondaggio', NULL, 'basic chart', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php?mode=survey&action=add', 'id_node', NULL, 0, 0, 25, '%MODULES_TEST%'),
+(99, 'aggiungi test', NULL, 'question', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php?mode=test&action=add', 'id_node', NULL, 0, 0, 20, '%MODULES_TEST%'),
 (97, 'aggiungi termine', NULL, 'basic asterisk', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=WORD', 'id_parent,id_course', NULL, 0, 0, 10, '%ALWAYS%'),
 (98, 'aggiungi esercizio', NULL, 'basic edit', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'add_exercise.php?', 'id_node', NULL, 0, 0, 10, '%ALWAYS%'),
 (95, 'report', NULL, 'basic docs', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'author_report.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(96, 'aggiungi nodo', NULL, 'basic doc', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=LEAF', 'id_parent,id_course', NULL, 0, 0, 0, '%ALWAYS%'),
+(96, 'aggiungi nodo', NULL, 'basic doc', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=leaf', 'id_parent,id_course', NULL, 0, 0, 0, '%ALWAYS%'),
 (113, 'torna', '\r\n<a id="torna" href="translation.php" class="item"><i class="circle left icon large"></i>\r\n<span  class="menulabel">Indietro</span>\r\n</a>\r\n \r\n\r\n', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 0, '%ALWAYS%'),
 (103, 'lista studenti', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'list_users.php?list=students', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
 (104, 'aggiungi utente', NULL, 'basic add user', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'add_user.php', NULL, NULL, 0, 0, 20, '%ALWAYS%'),
