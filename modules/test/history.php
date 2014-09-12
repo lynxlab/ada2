@@ -67,16 +67,6 @@ $title = $return['title'];
 $path = $return['path'];
 
 /*
- * Go back link
- */
-$navigation_history = $_SESSION['sess_navigation_history'];
-$last_visited_node  = $navigation_history->lastModule();
-$go_back_link = CDOMElement::create('a', 'href:'.$last_visited_node);
-$go_back_link->addChild(new CText(translateFN('Indietro')));
-
-
-
-/*
  * Output
  */
 $content_dataAr = array(
@@ -89,24 +79,16 @@ $content_dataAr = array(
     'icon' => $icon,
     //'navigation_bar' => $navBar->getHtml(),
     'text' =>  $text,
-    'go_back' => $go_back_link->getHtml(),
     'title' => $title,
     'author' => $author,
     'node_level' => 'livello nodo',
-    'edit_profile'=> $userObj->getEditProfilePage(),
-    'naviga'=>$go_back_link->getHtml()
+    'edit_profile'=> $userObj->getEditProfilePage()
     //'course_title' => '<a href="'.HTTP_ROOT_DIR.'/tutor/tutor.php">'.translateFN('Modulo Tutor').'</a> > ',
     //'media' => 'media',
 );
 
 $content_dataAr['notes'] = $other_node_data['notes'];
 $content_dataAr['personal'] = $other_node_data['private_notes'];
-
-
-if ($log_enabled)
-    $content_dataAr['go_history'] = $go_history;
-else
-    $content_dataAr['go_history'] = translateFN("cronologia");
 
 if ($reg_enabled) {
     $content_dataAr['add_bookmark'] = $add_bookmark;

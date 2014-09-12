@@ -56,20 +56,9 @@ $form_return = $management->run();
 if (!AMATestDataHandler::isError($question) && !empty($question)) {
 	$get_topic = (isset($_GET['topic'])?'&topic='.$_GET['topic']:'');
 
-	$edit_question_link = CDOMElement::create('a');
-	$edit_question_link->setAttribute('href', MODULES_TEST_HTTP.'/edit_question.php?action=mod&id_question='.$question['id_nodo'].$get_topic);
-	$edit_question_link->addChild(new CText(sprintf(translateFN('Modifica %s'),translateFN('domanda'))));
-	$edit_question_link = $edit_question_link->getHtml();
-
-	$delete_question_link = CDOMElement::create('a');
-	$delete_question_link->setAttribute('href', MODULES_TEST_HTTP.'/edit_question.php?action=del&id_question='.$question['id_nodo'].$get_topic);
-	$delete_question_link->addChild(new CText(sprintf(translateFN('Cancella %s'),translateFN('domanda'))));
-	$delete_question_link = $delete_question_link->getHtml();
-
-	$back_link = CDOMElement::create('a');
-	$back_link->setAttribute('href', MODULES_TEST_HTTP.'/index.php?id_test='.$question['id_nodo_radice'].$get_topic.'#liQuestion'.$question['id_nodo']);
-	$back_link->addChild(new CText(translateFN('Indietro')));
-	$back_link = $back_link->getHtml();
+        /*template fields for new menu*/
+        $edit_question='action=mod&id_question='.$question['id_nodo'].$get_topic;
+        $delete_question='action=del&id_question='.$question['id_nodo'].$get_topic;
 }
 
 // per la visualizzazione del contenuto della pagina
@@ -78,7 +67,7 @@ $banner = include ($root_dir.'/include/banner.inc.php');
 $content_dataAr = array(
         'head'=>$head_form,
         'banner'=>$banner,
-		'path'=>$form_return['path'],
+        'path'=>$form_return['path'],
         'form'=>$form_return['html'],
         'status'=>$form_return['status'],
         'user_name'=>$user_name,
@@ -88,9 +77,8 @@ $content_dataAr = array(
         'title'=>$node_title,
         'course_title'=>$course_title,
         'back'=>$back,
-		'edit_question'=> $edit_question_link,
-		'delete_question'=> $delete_question_link,
-		'back_link'=> $back_link,
+        'edit_question'=> $edit_question,
+        'delete_question'=> $delete_question
 );
 
 $content_dataAr['notes'] = $other_node_data['notes'];
