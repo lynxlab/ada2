@@ -238,8 +238,6 @@ switch($op) {
 //$dataHa['go_back'].= "<BR><a href=\"$http_root_dir/browsing/exercise.php?id_node=$id_next_exercise\">".translateFN("Prossimo esercizio")."</a>";
 
 $content_dataAr = array(
-
-        'chat_link'=>$chat_link,
         'banner'=> $banner,
         'status'=>$status,
         'course_title'=>$course_title,
@@ -255,7 +253,6 @@ $content_dataAr = array(
         'title'=>$node_title,
         'form'=>$dataHa['exercise'],
         'media'=>$dataHa['media'],
-        'go_back'=>$dataHa['go_back'],
 //                   'edit_exercise'=>$edit_exercise_html,
         'messages'=>$user_messages->getHtml(),
         'agenda'=>$user_agenda->getHtml(),

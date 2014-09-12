@@ -317,7 +317,6 @@ switch ($op) {
                 'node_level' => $content_dataAr['level'],
                 'keywords'   => $content_dataAr['title'],
                 'date'       => $content_dataAr['creation_date'],
-                'edit_link'  => NodeEditingViewer::getEditLink('edit_node.php?op=edit'),
                 'edit_link'  => 'edit_node.php?op=edit',
                 'save_link'=>  'edit_node.php?op=save'
         );
