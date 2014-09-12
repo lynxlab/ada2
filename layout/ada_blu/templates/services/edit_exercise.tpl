@@ -11,6 +11,9 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu -->  
         <!-- contenitore -->
         <div id="container">
              <!-- PERCORSO -->
@@ -85,18 +88,6 @@
         </div>
         <!-- / contenitore -->
 
-        <!-- MENU A TENDINA -->
-        <div id="mainmenu">
-            <ul id="menu">
-                <li id="back">
-                    <a href="javascript: history.go(-1)">
-                        <i18n>Torna</i18n>
-                    </a>
-                </li>
-            </ul> <!-- / menu -->
-
-        </div>
-        <!-- / MENU A TENDINA -->
         <!-- PIEDE -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
