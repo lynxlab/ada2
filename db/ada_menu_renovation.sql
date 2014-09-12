@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: Set 10, 2014 alle 16:10
+-- Generato il: Set 12, 2014 alle 15:53
 -- Versione del server: 5.5.37-0ubuntu0.13.10.1
 -- Versione PHP: 5.5.3-1ubuntu2.6
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `menu_page` (
   `linked_tree_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`tree_id`),
   UNIQUE KEY `module` (`module`,`script`,`user_type`,`self_instruction`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=145 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=148 ;
 
 --
 -- Dump dei dati per la tabella `menu_page`
@@ -175,7 +175,10 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 (141, 'comunica', 'read_message.php', 6, 0, 0, 139),
 (142, 'comunica', 'read_event.php', 3, 0, 0, NULL),
 (143, 'comunica', 'read_event.php', 4, 0, 0, 142),
-(144, 'comunica', 'read_event.php', 6, 0, 0, 142);
+(144, 'comunica', 'read_event.php', 6, 0, 0, 142),
+(145, 'modules/test', 'edit_answers.php', 1, 0, 0, NULL),
+(146, 'browsing', 'exercise.php', 1, 0, 0, NULL),
+(147, 'services', 'edit_exercise.php?op=edit', 1, 0, 0, 77);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
@@ -203,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `menu_items` (
   `order` int(3) unsigned NOT NULL DEFAULT '0',
   `enabledON` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%',
   PRIMARY KEY (`item_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=133 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=137 ;
 
 --
 -- Dump dei dati per la tabella `menu_items`
@@ -227,7 +230,7 @@ INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, 
 (22, 'agisci', NULL, 'pencil', 'large', NULL, NULL, NULL, NULL, NULL, 0, 0, 15, '%ALWAYS%'),
 (23, 'modifica profilo', NULL, 'user', NULL, NULL, NULL, '<template_field class="template_field" name="edit_profile">edit_profile</template_field>', 'self_instruction', NULL, 0, 0, 0, '%ALWAYS%'),
 (24, '<template_field class="template_field" name="user_name">user_name</template_field>', NULL, 'user', 'large', NULL, NULL, NULL, NULL, 'userpopup', 1, 0, 495, '%ALWAYS%'),
-(25, 'chat', NULL, 'chat', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/comunica', 'chat.php', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
+(25, 'chat', NULL, 'chat', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/comunica', 'chat.php', 'id_room,id_course', NULL, 0, 0, 15, '%ALWAYS%'),
 (26, 'video conference', NULL, 'facetime video', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/comunica', 'videochat.php', NULL, NULL, 0, 0, 20, '%ALWAYS%'),
 (27, 'collabora', NULL, 'share', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'download.php', NULL, NULL, 0, 0, 25, '%ALWAYS%'),
 (28, 'diario', NULL, 'empty calendar', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'mylog.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
@@ -292,7 +295,7 @@ INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, 
 (97, 'aggiungi termine', NULL, 'basic asterisk', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=WORD', 'id_parent,id_course', NULL, 0, 0, 10, '%ALWAYS%'),
 (98, 'aggiungi esercizio', NULL, 'basic edit', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'add_exercise.php?', 'id_node', NULL, 0, 0, 10, '%ALWAYS%'),
 (95, 'report', NULL, 'basic docs', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'author_report.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(96, 'aggiungi nodo', NULL, 'basic doc', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=leaf', 'id_parent,id_course', NULL, 0, 0, 0, '%ALWAYS%'),
+(96, 'aggiungi nodo', NULL, 'basic doc', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=LEAF', 'id_parent,id_course', NULL, 0, 0, 0, '%ALWAYS%'),
 (113, 'torna', '\r\n<a id="torna" href="translation.php" class="item"><i class="circle left icon large"></i>\r\n<span  class="menulabel">Indietro</span>\r\n</a>\r\n \r\n\r\n', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 0, '%ALWAYS%'),
 (103, 'lista studenti', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'list_users.php?list=students', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
 (104, 'aggiungi utente', NULL, 'basic add user', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'add_user.php', NULL, NULL, 0, 0, 20, '%ALWAYS%'),
@@ -322,7 +325,11 @@ INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, 
 (129, 'all users list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php', 'id_tester', NULL, 0, 0, 30, '%ALWAYS%'),
 (130, 'rispondi', NULL, 'forward mail', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'send_message.php?op=replay', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
 (131, 'rispondi a tutti', NULL, 'forward mail', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'send_message.php?op=replay_all', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(132, 'cancella', NULL, 'trash', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'read_message.php', 'del_msg_id', NULL, 0, 0, 20, '%ALWAYS%');
+(132, 'cancella', NULL, 'trash', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'read_message.php', 'del_msg_id', NULL, 0, 0, 20, '%ALWAYS%'),
+(133, 'modifica domanda', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_question.php', '<template_field class="template_field" name="edit_question">edit_question</template_field>', NULL, 0, 0, 0, '%MODULES_TEST%'),
+(134, 'cancella domanda', NULL, 'trash', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_question.php', '<template_field class="template_field" name="delete_question">delete_question</template_field>', NULL, 0, 0, 0, '%MODULES_TEST%'),
+(135, 'elimina esercizio', NULL, 'trash', NULL, '{"onclick":"<template_field class=\\"template_field\\" name=\\"onclick\\">onclick</template_field>"}', '%HTTP_ROOT_DIR%/browsing', 'exercise.php', 'id_node', NULL, 0, 0, 10, '%ALWAYS%'),
+(136, 'Modifica esercizio', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'edit_exercise.php?op=edit', NULL, NULL, 0, 0, 5, '%ALWAYS%');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
@@ -892,7 +899,17 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 (139, 22, 131, ''),
 (139, 22, 132, ''),
 (142, 0, 42, ''),
-(142, 0, 47, '');
+(142, 0, 47, ''),
+(145, 0, 56, ''),
+(145, 0, 9, ''),
+(145, 0, 22, ''),
+(145, 22, 133, ''),
+(145, 22, 134, ''),
+(146, 0, 56, ''),
+(146, 0, 22, ''),
+(146, 22, 135, ''),
+(146, 0, 9, ''),
+(146, 22, 136, '');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
