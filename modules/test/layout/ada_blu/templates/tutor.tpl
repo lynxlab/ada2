@@ -90,20 +90,8 @@
     <!-- MENU A TENDINA -->
         
         <!-- menudestra -->
-            <div id="menuright" class="sottomenu_off menuright_default">
-                <div id="topmenur"> </div>
-                <div id="menurightcontent">
-                    <ul>
-                        <li class="close"> <a href="#" onClick="toggleElementVisibility('menuright', 'right');">
-                                </i18n>
-                                chiudi
-                                </i18n>
-                            </a> </li>
-                    </ul>
-                </div>
-                <div id="bottommenur"> </div>
-            </div>
-            <!-- / menudestra  -->
+          
+        <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
         

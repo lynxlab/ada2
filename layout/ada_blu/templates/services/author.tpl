@@ -85,26 +85,7 @@
             <!-- /com_tools -->
 
             <!-- menudestra -->
-            <div id="menuright" class="menuright_view ui wide right sidebar">
-                <div id="topmenur">
-                </div>
-                <div id="menurightcontent">
-                    <ul>
-                        <li class="close">
-                            <a href="#" onClick="toggleElementVisibility('menuright', 'right');">
-                                </i18n>chiudi</i18n>
-                            </a>
-                        </li>
-                        <li class="_menu">
-                            <a href="author_report.php">
-                                </i18n>report</i18n>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div id="bottommenur">
-                </div>
-            </div>
+       
             <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
