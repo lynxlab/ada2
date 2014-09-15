@@ -371,24 +371,6 @@ $home = "<a href=\"tutor.php\">".translateFN("home")."</a>";
 $bookmark = "<a href=\"../browsing/bookmarks.php\">".translateFN("bookmarks")."</a>";
 $chat_link = "<a href=\"$http_root_dir/comunica/ada_chat.php\" target=_blank>".translateFN("chat")."</a>";
 
-$menu_01 = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
-$menu_01 .= "&id_instance=" . $id_course_instance .">";
-$menu_01 .= translateFN("Scheda corsista") . "</a>";
-$menu_02 .= "<a href=" .  $http_root_dir . "/tutor/tutor_history.php?mode=score&id_student=" . $id_student;
-$menu_02 .= "&id_course_instance=" . $id_course_instance .">";
-$menu_02 .= translateFN("Punteggio") . "</a>";
-$menu_03 .= "<a href=" .  $http_root_dir . "/tutor/tutor_history.php?mode=writings&id_student=" . $id_student;
-$menu_03 .= "&id_course_instance=" . $id_course_instance .">";
-$menu_03 .= translateFN("Interazione") . "</a>";
-$menu_04 .= "<a href=" .  $http_root_dir . "/tutor/tutor_history.php?mode=summary&id_student=" . $id_student;
-$menu_04 .= "&id_course_instance=" . $id_course_instance .">";
-$menu_04 .= translateFN("Indice attivit&agrave;") . "</a>";
-$menu_05 .= "<a href=" .  $http_root_dir . "/tutor/tutor_history.php?op=export&id_student=" . $id_student;
-$menu_05 .= "&id_course_instance=" . $id_course_instance .">";
-$menu_05 .= translateFN("Esporta report corsista") . "";
-$menu_06 = " <a href=" .  $http_root_dir . "/tutor/tutor.php?op=student&id_instance=" . $id_course_instance;
-$menu_06.= ">" . translateFN("Elenco studenti") . "</a>";
-
 $menu_07 = menu_detailsFN($id_student,$id_course_instance,$id_course);
 
 $content_dataAr = array(
@@ -404,12 +386,6 @@ $content_dataAr = array(
         'student'=>$student_name,
         'chat_link'=>$chat_link,
         'history'=>$history,
-        'menu_01'=>$menu_01,
-        'menu_02'=>$menu_02,
-        'menu_03'=>$menu_03,
-        'menu_04'=>$menu_04,
-        'menu_05'=>$menu_05,
-        'menu_06'=>$menu_06,
         'menu_07'=>$menu_07,
         'menu_08'=>$menu_08,
         'messages'=>$user_messages->getHtml(),

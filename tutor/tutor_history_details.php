@@ -246,21 +246,6 @@ switch ($op) {
 
 $banner = include ROOT_DIR . '/include/banner.inc.php';
 
-$menu_01 = BaseHtmlLib::link(HTTP_ROOT_DIR."/tutor/tutor.php?op=zoom_student&id_student=$id_student&id_instance=$id_course_instance"
-         , translateFN('Scheda corsista'))->getHtml();
-
-$menu_02 = BaseHtmlLib::link(HTTP_ROOT_DIR."/tutor/tutor_history_details.php?op=export&period=$period&id_student=$id_student&id_course_instance=$id_course_instance&id_course=$id_course"
-         , translateFN('Esporta report corsista (XLS)'))->getHtml();
-
-$menu_03 = BaseHtmlLib::link(HTTP_ROOT_DIR."/tutor/tutor_history_details.php?op=export&period=$period&id_student=$id_student&id_course_instance=$id_course_instance&id_course=$id_course&type=pdf"
-		, translateFN('Esporta report corsista (PDF)'))->getHtml();
-
-$menu_04 = BaseHtmlLib::link(HTTP_ROOT_DIR."/tutor/tutor.php?op=student&id_instance=$id_course_instance"
-         , translateFN('Elenco studenti'))->getHtml();
-
-$menu_05 = BaseHtmlLib::link(HTTP_ROOT_DIR."/tutor/tutor_history.php?id_course_instance=$id_course_instance&id_student=$id_student"
-         , translateFN('Riepilogo cronologia'))->getHtml();
-
 $content_dataAr = array(
     'course_title' => $course_title,
     'user_name' => $user_name,
@@ -269,11 +254,6 @@ $content_dataAr = array(
     'level' => $user_level,
     'data' => menu_detailsFN($id_student, $id_course_instance, $id_course)
            . $history,
-    'menu_01' => $menu_01,
-    'menu_02' => $menu_02,
-    'menu_03' => $menu_03,
-    'menu_04' => $menu_04,
-	'menu_05' => $menu_05,	
     'status'=>$status,
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml()

@@ -134,14 +134,7 @@ switch ($op) {
             $chat_link = "<a href=\"$http_root_dir/comunica/chat.php\" target=_blank>".translateFN('chat di classe') .'</a>';
 
             $data = $courses_student;
-            /*TOGLIERE*/
-            $menu_01 = "<a href=\"tutor.php?op=student&id_instance=$sess_id_course_instance&id_course=$sess_id_course&mode=update\">" . translateFN("aggiorna report") . "</a>";
-            $menu_02 = "<a href=\"" . $http_root_dir . "/browsing/main_index.php?id_course_instance=$id_instance&id_course=$id_course&order=struct&hide_visits=0&expand=10\">" . translateFN("indice del corso") . "</a>";
-            $menu_03 = "<a href=\"" . $http_root_dir . "/browsing/main_index.php?op=forum&id_course_instance=$id_instance&id_course=$id_course&order=struct&hide_visits=0&expand=10\">" . translateFN("indice del forum") . "</a>";
-            $menu_04 = "<a href=\"$http_root_dir/comunica/report_chat.php?id_instance=$id_instance&id_course=$id_course&op=index\">report della chat</a>";
-            $menu_05 = "<a href=" . $http_root_dir . "/tutor/tutor.php?id_instance=$id_instance&id_course=$id_course&op=export&type=xls>" . translateFN("esporta report") . " (XLS)</a>";
-            $menu_06 = "<a href=" . $http_root_dir . "/tutor/tutor.php?id_instance=$id_instance&id_course=$id_course&op=export&type=pdf>" . translateFN("esporta report") . " (PDF)</a>";
-            $status = translateFN("elenco degli studenti");
+            
             $help = translateFN("Da qui il Tutor può consultare il report della classe; il report può essere ordinato in base a una qualsiasi delle colonne.");
             $help .= '<br />' . translateFN("Cliccando sui dati si accede al dettaglio.")
                   . '<br />';
@@ -236,23 +229,8 @@ switch ($op) {
             $added_notesHa = $tObj->getTable();
             $data = $added_notesHa;
             $status = translateFN('note aggiunte dallo studente');
-            $menu_01 = " <a href=" .  $http_root_dir . "/tutor/tutor.php?op=student&id_instance=" . $id_instance;
-            $menu_01 .= ">" . translateFN("Elenco studenti") . "</a>";
-            $menu_02 = "<a href=" . $http_root_dir . "/tutor/tutor_history.php?id_course_instance=" . $id_instance;
-            $menu_02 .= "&id_student=" . $id_student . ">" . translateFN("Cronologia") . "</a>";
-            $menu_03 = "<a href=" . $http_root_dir . "/tutor/tutor_exercise.php?id_student=" . $id_student;
-            $menu_03 .= "&id_course_instance=" . $id_instance .">";
-            $menu_03 .= translateFN("Esercizi") . "</a>";
-            $menu_04 = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
-            $menu_04 .= "&id_instance=" . $id_instance .">";
-            $menu_04 .= translateFN("Scheda corsista") . "</a>";
-            $menu_05 = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=student_notes_export&id_student=" . $id_student;
-            $menu_05 .= "&id_instance=" . $id_instance .">";
-            $menu_05 .= translateFN("Esporta note corsista") . "</a>";
-
-//            $data['chat_users']=$online_users;
-
-
+         
+//           $data['chat_users']=$online_users;
             $help = translateFN('Da qui il Tutor può leggere le note aggiunte nel forum da questo studente.');
         }
         break;
@@ -280,25 +258,6 @@ switch ($op) {
         $data = get_student_dataFN($id_student, $id_instance);
 
 //        $student_activity_index = get_student_indexattFN($id_instance,$id_course,$id_student);
-
-        $menu_01 = " <a href=" .  HTTP_ROOT_DIR
-                 . "/tutor/tutor.php?op=student&id_instance=" . $id_instance
-                 . '>' . translateFN('Elenco studenti') . '</a>';
-
-        $menu_02 = "<a href=" . HTTP_ROOT_DIR
-                 . "/tutor/tutor_history.php?id_course_instance=" . $id_instance
-                 . "&id_student=" . $id_student . ">"
-                 . translateFN('Cronologia completa') . '</a>';
-
-        $menu_03 = "<a href=" . HTTP_ROOT_DIR
-                 . "/tutor/tutor_exercise.php?id_student=" . $id_student
-                 . "&id_course_instance=" . $id_instance . '>'
-                 . translateFN('Esercizi') . '</a>';
-
-        $menu_04 = " <a href=" .  HTTP_ROOT_DIR
-                 . "/tutor/tutor.php?op=student_notes&id_student=" . $id_student
-                 ."&id_instance=". $id_instance .">"
-                 . translateFN('Note') . '</a>';
 
         $status = translateFN('caratteristiche dello studente');
 
@@ -418,11 +377,9 @@ if (!empty($course_title))
 	$course_title = ' > <a href="'.HTTP_ROOT_DIR.'/browsing/main_index.php">'.$course_title.'</a>';
 }
 
-$back_link= "<a href='".$_SERVER['HTTP_REFERER']."' class='backLink' title='".translateFN("Torna")."'>".translateFN("Torna")."</a>";
 
 $content_dataAr = array(
     'course_title'=>translateFN('Modulo tutor').$course_title,
-    'back_link'=>$back_link,
     'path'=>$node_path,
     'banner' => $banner,
     'user_name' => $user_name,
@@ -437,15 +394,7 @@ $content_dataAr = array(
     'status' => $status,
     'chat_users' => $online_users,
     'chat_link' => $chat_link,
-    'menu_01' => $menu_01,
-    'menu_02' => $menu_02,
-    'menu_03' => $menu_03,
-    'menu_04' => $menu_04,
-    'menu_05' => $menu_05,
-    'menu_06' => (isset ($menu_06)) ? $menu_06 : "",
-    'menu_07' => "",
-    'menu_08' => ""
-);
+ );
 
 $menuOptions['id_course'] = $id_course;
 $menuOptions['id_instance'] = $id_instance;

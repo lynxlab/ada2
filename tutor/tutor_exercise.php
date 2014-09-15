@@ -190,13 +190,6 @@ $banner = include ("$root_dir/include/banner.inc.php");
 // e ci aggiunge l'id dell'istanza corso
 $help = translateFN("Da qui il tutor del corso può vedere e correggere gli esercizi degli studenti. Può anche inviare un commento e/o decidere di far ripetere l'esercizio allo studente.");
 
-$menu_01 = "<a href=" .  HTTP_ROOT_DIR . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
-$menu_01 .= "&id_instance=" . $id_course_instance .">";
-$menu_01 .= translateFN('Scheda corsista') . '</a>';
-
-$menu_02 = " <a href=" .  HTTP_ROOT_DIR . "/tutor/tutor.php?op=student&id_instance=" . $id_course_instance;
-$menu_02.= ">" . translateFN('Elenco studenti') . '</a>';
-
 if (!isset($menu_03)) {
     $menu_03 = '';
 }
@@ -220,11 +213,9 @@ if (!ADA_Error::isError($nodeObj) AND isset($courseObj->id)) {
 	$_SESSION['sess_id_course'] = $courseObj->id;
 	$node_path = $nodeObj->findPathFN();
 }
-$back_link= "<a href='".$_SERVER['HTTP_REFERER']."' class='backLink' title='".translateFN("Torna")."'>".translateFN("Torna")."</a>";
 $content_dataAr = array(
     'banner'=>$banner,
     'course_title'=>translateFN('Modulo tutor').' > <a href="'.HTTP_ROOT_DIR.'/browsing/main_index.php">'.$course_title.'</a>',
-    'back_link'=>$back_link,
     'path'=>$node_path,
     'class'=>$class . ' ' . translateFN('iniziata il') . ' ' . $start_date,
     'user_name'=>$user_name,
@@ -232,8 +223,6 @@ $content_dataAr = array(
     'student'=>$student_name,
     'level'=>$student_level,
     'data'=>$history,
-    'menu_01'=>$menu_01,
-    'menu_02'=>$menu_02,
     'menu_03'=>$menu_03,
     'menu_04'=>'',//$chat_link,
     'help'=>$help,
