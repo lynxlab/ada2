@@ -15,9 +15,12 @@
  *
  * @author giorgio
  */
+
+define(NON_MULTIPROVIDER_MENU,!MULTIPROVIDER);
+
 class Menu
 {
-	const ALWAYS_ENABLED = '%ALWAYS%';
+        const ALWAYS_ENABLED = '%ALWAYS%';
 	const NEVER_ENABLED = '%NEVER%';
 	
 	/**
