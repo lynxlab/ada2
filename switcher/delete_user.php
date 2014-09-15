@@ -75,10 +75,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 $label = translateFN('Cancellazione utente');
 $help = translateFN('Da qui il provider admin può disabilitare un utente esistente');
 
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
@@ -86,7 +82,6 @@ $content_dataAr = array(
     'label' => $label,
     'help' => $help,
     'data' => $data->getHtml(),
-    'edit_switcher'=>$edit_profile_link->getHtml(),
     'module' => $module,
     'messages' => $user_messages->getHtml()
 );

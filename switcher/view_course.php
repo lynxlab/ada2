@@ -70,16 +70,12 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
 $label = translateFN('Visualizzazione dei dati del corso');
 $help = translateFN('Da qui il provider admin può visualizzare i dati di un corso esistente');
 
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
-    'edit_switcher'=>$edit_profile_link->getHtml(),
+    'edit_profile'=>$userObj->getEditProfilePage(),
     'help' => $help,
     'data' => $data->getHtml(),
     'module' => $module,

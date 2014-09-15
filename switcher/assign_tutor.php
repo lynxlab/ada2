@@ -186,10 +186,6 @@ $status = translateFN('Assegnazione tutor');
 
 $banner = include ROOT_DIR . '/include/banner.inc.php';
 
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
 $content_dataAr = array(
     'data' => $data->getHtml() . $tooltips,
     'menu' => $menu,
@@ -198,7 +194,6 @@ $content_dataAr = array(
     'status' => $status,
     'user_name' => $user_name,
     'user_type' => $user_type,
-    'edit_switcher'=>$edit_profile_link->getHtml(),
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml()
 );

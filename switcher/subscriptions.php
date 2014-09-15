@@ -300,10 +300,6 @@ $help = translateFN('Da qui il provider admin può iscrivere una lista di studen
 $help .= '<BR />';
 $help .= translateFN('Il file deve avere estensione txt e deve contenere in ogni riga i seguenti dati: nome, cognome, email');
 
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
 /*
  * OUTPUT
  */
@@ -316,7 +312,6 @@ $content_dataAr = array(
     'user_name'=> $user_name,
     'user_type'=> $user_type,
     'menu' => $menu,
-    'edit_switcher'=>$edit_profile_link->getHtml(),
     'help' => $help,
     'data' => $data->getHtml(),
     'messages' => $user_messages->getHtml(),
