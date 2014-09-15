@@ -19,7 +19,8 @@
             <div id="journey">
                 <i18n>dove sei: </i18n>
                 <span>
-                    <template_field class="template_field" name="course_title">course_title</template_field>
+                    <!--template_field class="template_field" name="course_title">course_title</template_field-->
+                    <template_field class="template_field" name="label">label</template_field>
                 </span>
             </div>
             <div id="user_wrap">
@@ -49,7 +50,7 @@
                                     <div class="bottomright">
                                         <div class="contentlabel">
                                             <h1>
-                                                <template_field class="template_field" name="label">label</template_field>
+                                                <!--template_field class="template_field" name="label">label</template_field-->
                                             </h1>
                                         </div>
                                     </div>
@@ -90,111 +91,6 @@
             <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
-
-        <!-- menu a tendina -->
-        <!--div id="mainmenu">
-            <ul id="menu">
-                <li id="home">
-                    <a href="../switcher/switcher.php">
-                        <i18n>home</i18n>
-                    </a>
-                </li>
-                <li id="com" class="unselectedcom" onClick="toggleElementVisibility('submenu_com','up')">
-                    <a>
-                        <i18n>comunica</i18n>
-                    </a>
-                </li>
-                <li id="actions" class="unselectedactions" onClick="toggleElementVisibility('submenu_actions','up')">
-                    <a>
-                        <i18n>agisci</i18n>
-                    </a>
-                </li>
-                <li id="question_mark" class="unselectedquestion_mark">
-                    <a href="../help.php" target="_blank">
-                        <i18n>aiuto</i18n>
-                    </a>
-                </li>
-                <li id="esc">
-                    <a href="../index.php">
-                        <i18n>esci</i18n>
-                    </a>
-                </li>
-            </ul>
-            <!-- / menu -->
-            <!-- tendina -->
-            <div id="dropdownmenu">
-                <!-- comunica -->
-                <div id="submenu_com" class="sottomenu sottomenu_off">
-                    <div id="_comcontent">
-                        <ul>
-                            <li>
-                                <a href="#" onclick='openMessenger("../comunica/list_messages.php",800,600);'>
-                                    <i18n>messaggeria</i18n>
-                                </a>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="ajax_chat_link">ajax_chat_link</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="mychat">mychat</template_field>
-                            </li>
-                            <li>
-                            	<a href="../modules/newsletter">
-                                	    <i18n>newsletter</i18n>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-                <!-- / comunica -->
-
-                <!-- azioni -->
-                <div id="submenu_actions" class="sottomenu sottomenu_off">
-                    <div id="_actionscontent">
-                        <ul>
-<li><a href="../admin/edit_content.php?type=news"><i18n>Edit news content</i18n></a></li>
-<li><a href="../admin/edit_content.php?type=info"><i18n>Edit info content</i18n></a></li>
-<li><a href="../admin/edit_content.php?type=help"><i18n>Edit help content</i18n></a></li>
-                            <!--li>
-                            <template_field class="template_field" name="class_student">class_student</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="menu_01">menu_01</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="menu_02">menu_02</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="menu_03">menu_03</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="menu_04">menu_04</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="menu_05">menu_05</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="menu_06">menu_06</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="menu_07">menu_07</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="menu_08">menu_08</template_field>
-                            </li-->
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-                <!-- / azioni -->
-            </div>
-            <!--/tendina -->
-
-        </div>
-        <!-- / menu a tendina -->
 
         <!-- piede -->
         <div id="footer">

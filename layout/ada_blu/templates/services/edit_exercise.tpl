@@ -20,7 +20,8 @@
             <div id="journey">
                 <i18n>dove sei: </i18n>
                 <span>
-                    <template_field class="template_field" name="course_title">course_title</template_field>
+                    <!--template_field class="template_field" name="course_title">course_title</template_field-->
+                    <i18n>modifica esercizio</i18n>
                 </span>
             </div>
             <!-- / percorso -->
@@ -50,9 +51,9 @@
                         <div class="bottomleft">
                             <div class="bottomright">
                                 <div class="contentlabel">
-                                    <h1 class="<template_field class="template_field" name="icon">icon</template_field>">
+                                    <!--h1 class="<template_field class="template_field" name="icon">icon</template_field>">
                                         <i18n>modifica esercizio</i18n>
-                                    </h1>
+                                    </h1-->
                                 </div>
                             </div>
                         </div>

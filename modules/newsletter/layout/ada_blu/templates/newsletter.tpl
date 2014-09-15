@@ -19,7 +19,8 @@
             <div id="journey">
                 <i18n>dove sei: </i18n>
                 <span>
-                    <template_field class="template_field" name="course_title">course_title</template_field>
+                    <!--template_field class="template_field" name="course_title">course_title</template_field-->
+                    <template_field class="template_field" name="label">label</template_field>
                 </span>
             </div>
             <div id="user_wrap">
@@ -49,7 +50,7 @@
                                     <div class="bottomright">
                                         <div class="contentlabel">
                                             <h1>
-                                                <template_field class="template_field" name="label">label</template_field>
+                                                <!--template_field class="template_field" name="label">label</template_field-->
                                             </h1>
                                         </div>
                                     </div>
