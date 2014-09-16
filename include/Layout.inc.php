@@ -40,7 +40,7 @@ class UILayout
     {
 
         $handle = opendir($this->_pathToLayoutDir);
-        while (false !== ($layout = readdir($handle))) {
+        while ($handle && (false !== ($layout = readdir($handle)))) {
             if ($this->isLayoutInstalled($layout)) {
                 $this->_availableLayouts[$layout] = $layout;
             }

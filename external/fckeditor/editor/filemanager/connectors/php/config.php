@@ -39,7 +39,8 @@ if (strlen(parse_url(HTTP_ROOT_DIR,  PHP_URL_PATH)) > 1) $URL .= parse_url(HTTP_
 if ($_SERVER['SERVER_NAME'] != $URL) {
     $dir = str_replace(substr($_SERVER['DOCUMENT_ROOT'],0,-1),'',ROOT_DIR);
 } else {
-    $dir = str_replace($_SERVER['DOCUMENT_ROOT'],'',ROOT_DIR);
+    //$dir = str_replace($_SERVER['DOCUMENT_ROOT'],'',ROOT_DIR);
+    $dir = '';
 }
 $Config['UserFilesPath'] = $dir.'/services/media/'.$_SESSION['sess_id_user'].'/';
 
