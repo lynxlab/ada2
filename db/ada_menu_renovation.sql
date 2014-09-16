@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Set 15, 2014 alle 18:11
+-- Generation Time: Set 16, 2014 alle 11:52
 -- Versione del server: 5.5.38-cll-lve
 -- PHP Version: 5.4.29
 
@@ -16,9 +16,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
---
--- Database: `ada_menuTest_common`
---
 
 -- --------------------------------------------------------
 
@@ -34,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `menu_page` (
   `self_instruction` int(1) NOT NULL DEFAULT '0' COMMENT 'nonzero if course is in self instruction mode',
   `isVertical` int(1) NOT NULL DEFAULT '0' COMMENT 'nonzero if it''s a vertical menu',
   `linked_tree_id` int(11) DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=149 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=152 ;
 
 --
 -- Dump dei dati per la tabella `menu_page`
@@ -177,7 +174,10 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 (145, 'modules/test', 'edit_answers.php', 1, 0, 0, NULL),
 (146, 'browsing', 'exercise.php', 1, 0, 0, NULL),
 (147, 'services', 'edit_exercise.php?op=edit', 1, 0, 0, 77),
-(148, 'switcher', 'edit_content.php', 6, 0, 0, NULL);
+(148, 'switcher', 'edit_content.php', 6, 0, 0, NULL),
+(149, 'browsing', 'view.php', 4, 1, 0, 45),
+(150, 'browsing', 'default', 4, 1, 0, 10),
+(151, 'browsing', 'search.php', 4, 1, 0, 28);
 
 --
 -- Indexes for dumped tables
@@ -197,7 +197,7 @@ ALTER TABLE `menu_page`
 -- AUTO_INCREMENT for table `menu_page`
 --
 ALTER TABLE `menu_page`
-MODIFY `tree_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id of the menu tree for the given module, script, user_type and self instruction',AUTO_INCREMENT=149;
+MODIFY `tree_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id of the menu tree for the given module, script, user_type and self instruction',AUTO_INCREMENT=152;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
