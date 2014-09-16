@@ -47,11 +47,29 @@ document.observe('dom:loaded', function() {
 	    $j('.ui.mobile.ada.menu').html(menuHTML.html());
 	    
 		// mobile dropdown on click
-		$j('.mobile.menu .dropdown').dropdown({ on: 'click' });
+    	/**
+    	 * @author giorgio 16/set/2014
+    	 * commented line to have a non-js working
+    	 * dropdown as a workaround to some bug causing
+    	 * firefox crash on xp and vista.
+    	 * Should you wish to revert to a js dropdown,
+    	 * remove the simple class from menu_functions.inc.php
+    	 * and uncomment the following line
+    	 */
+		// $j('.mobile.menu .dropdown').dropdown({ on: 'click' });
 	}
 
 	// computer dropdown on hover
-	$j('.computer.menu .dropdown').dropdown({ on: 'hover' });
+	/**
+	 * @author giorgio 16/set/2014
+	 * commented line to have a non-js working
+	 * dropdown as a workaround to some bug causing
+	 * firefox crash on xp and vista.
+	 * Should you wish to revert to a js dropdown,
+	 * remove the simple class from menu_functions.inc.php
+	 * and uncomment the following line
+	 */
+	// $j('.computer.menu .dropdown').dropdown({ on: 'hover' });
 
 	// enable menu items (non dropdown) active class
 	var menuItem = $j('.menu a.item, .menu .link.item').not('.closepanel');

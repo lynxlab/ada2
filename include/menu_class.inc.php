@@ -20,7 +20,7 @@ define(NON_MULTIPROVIDER_MENU,!MULTIPROVIDER);
 
 class Menu
 {
-        const ALWAYS_ENABLED = '%ALWAYS%';
+	const ALWAYS_ENABLED = '%ALWAYS%';
 	const NEVER_ENABLED = '%NEVER%';
 	
 	/**
@@ -314,8 +314,17 @@ class Menu
     private function buildDropDownItem($item, $firstLevel) {
     	$DOMitem = CDOMElement::create('div');
     	
-    	// set class attribute    	
-    	$baseClass = 'ui item'.($firstLevel ? ' dropdown ' : '');    	
+    	// set class attribute
+    	/**
+    	 * @author giorgio 16/set/2014
+    	 * simple class added to have a non-js working
+    	 * dropdown as a workaround to some bug causing
+    	 * firefox crash on xp and vista.
+    	 * Should you wish to revert to a js dropdown,
+    	 * remove the simple class and uncomment
+    	 * menu_functions.js dropdown methods call
+    	 */
+    	$baseClass = 'ui item'.($firstLevel ? ' simple dropdown ' : '');    	
     	$DOMitem->setAttribute('class', trim($baseClass.$item['extraClass']));
     	
     	$this->buildCommon($DOMitem, $item);
