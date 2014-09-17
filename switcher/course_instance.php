@@ -129,8 +129,11 @@ else {
         $courseId = $courseObj->getId();
         $instanceId = $courseInstanceObj->getId();
         $presubscriptions = Subscription::findPresubscriptionsToClassRoom($instanceId);
+       
         $subscriptions = Subscription::findSubscriptionsToClassRoom($instanceId);
-
+        var_dump($presubscriptions);
+        var_dump('°°°°°°°°°°°°°');
+        var_dump($subscriptions);die();
         $subscribe_users_link = BaseHtmlLib::link(
                 "subscriptions.php?id_course=$courseId&id_course_instance=$instanceId",
                 translateFN('Upload file'));
@@ -217,8 +220,44 @@ else {
 			}
 			//end
 
-
+            $arrayUsers=array();
+            $arrayUsers= array_merge($arrayUsers,$presubscriptions);
+            $arrayUsers= array_merge($arrayUsers,$subscriptions);
+            //var_dump($arrayUsers);die();
+            
+                  
+            $select=CDOMElement::create('select', 'id:select_status');  
+            
+            $option_el1 = CDOMElement::create('option');
+            $option_el1->setAttribute('value', 'Preiscritto');
+            $option_el1->addChild(new CText(translateFN("Preiscritto")));
+            
+            $option_el2 = CDOMElement::create('option');
+            $option_el2->setAttribute('value', 'iscritto');
+            $option_el2->addChild(new CText(translateFN("iscritto")));
+            
+            $option_el3 = CDOMElement::create('option');
+            $option_el3->setAttribute('value', 'sottoscritto');
+            $option_el3->addChild(new CText(translateFN("sottoscritto")));
+            $option_el3->setAttribute('selected','selected');//così setti il valore della select che vuoi che compaia
+            
+            $select->addChild($option_el1);
+            $select->addChild($option_el2);
+            $select->addChild($option_el3);
+           
+            $select->setAttribute('onchange', 'saveStatus(this)');
+            
+            
+            $data = array(
+              array('nome'=>'ciao','cognome'=>$select->getHtml()),
+              array('nome'=>'sara','cognome'=>$select->getHtml()),
+              array('nome'=>'valerio','cognome'=>$select->getHtml()),
+              );
+            $table=new Table();
+            $table->initTable('0','center','1','1','90%','','','','','1','0','','default','course_instance_Table');
+            $table->setTable($data);
             $data = new CourseInstanceSubscriptionsForm($presubscriptions, $subscriptions, $instanceId);
+
         }
     }
 }
@@ -230,7 +269,9 @@ $edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
 /*
  * OUTPUT
  */
-$optionsAr = array('onload_func' => "PAGER.showPage('subscribed');");
+//$optionsAr = array('onload_func' => "PAGER.showPage('subscribed');");
+$optionsAr = array('onload_func' => "initDoc();");
+
 $content_dataAr = array(
     'banner'=> $banner,
     'path' => $path,
@@ -242,8 +283,19 @@ $content_dataAr = array(
     'help' => $help,
     'edit_switcher'=>$edit_profile_link->getHtml(),
     'data' => $actions->getHtml() . $data->getHtml() . $tooltips,
+    'table'=>$table->getTable(),
     'messages' => $user_messages->getHtml(),
     'agenda '=> $user_agenda->getHtml()
 );
+$layout_dataAr['JS_filename'] = array(
+		JQUERY,
+		JQUERY_UI,
+		JQUERY_DATATABLE,
+                JQUERY_NO_CONFLICT
+		);
+
+$layout_dataAr['CSS_filename'] = array (
+		JQUERY_DATATABLE_CSS
+                );
 
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

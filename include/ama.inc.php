@@ -4231,7 +4231,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-        $sql = 'SELECT U.id_utente, U.nome, U.cognome, I.status FROM utente AS U, iscrizioni AS I '
+        $sql = 'SELECT U.id_utente, U.nome, U.cognome, I.status,I.data_iscrizione FROM utente AS U, iscrizioni AS I '
              . ' WHERE I.id_istanza_corso ='.$id_course_instance
              . ' AND I.status = '.ADA_STATUS_PRESUBSCRIBED
              . ' AND U.id_utente = I.id_utente_studente';
