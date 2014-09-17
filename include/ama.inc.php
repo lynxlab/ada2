@@ -4424,10 +4424,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if ($id) {
             return new AMA_Error(AMA_ERR_UNIQUE_KEY);
         }
-
+        $data_iscrizione = time();
         // insert a row into table iscrizioni
-        $sql1 =  "insert into iscrizioni (id_utente_studente, id_istanza_corso, livello, status)";
-        $sql1 .= " values ($id_studente, $id_istanza_corso, $livello, 1);";
+        $sql1 =  "insert into iscrizioni (id_utente_studente, id_istanza_corso, livello, status,data_iscrizione)";
+        $sql1 .= " values ($id_studente, $id_istanza_corso, $livello, 1,$data_iscrizione);";
         $res = $db->query($sql1);
         // FIXME: usare executeCritical?
         if (AMA_DB::isError($res)) {// || $db->affectedRows()==0)
