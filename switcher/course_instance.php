@@ -44,7 +44,8 @@ $neededObjAr = array(
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  whoami();  // = tutor!
-
+//ini_set('display_errors','1');
+//error_reporting(E_ALL);
 require_once 'include/switcher_functions.inc.php';
 require_once 'include/Subscription.inc.php';
 require_once ROOT_DIR . '/include/Forms/CourseInstanceSubscriptionsForm.inc.php';
@@ -221,36 +222,82 @@ else {
             $arrayUsers=array();
             $arrayUsers= array_merge($arrayUsers,$presubscriptions);
             $arrayUsers= array_merge($arrayUsers,$subscriptions);
-            //var_dump($arrayUsers);die();
             
-                  
-            $select=CDOMElement::create('select', 'id:select_status');  
+            $data=array();
+            foreach($arrayUsers as $user)
+            {
             
-            $option_el1 = CDOMElement::create('option');
-            $option_el1->setAttribute('value', 'Preiscritto');
-            $option_el1->addChild(new CText(translateFN("Preiscritto")));
-            
-            $option_el2 = CDOMElement::create('option');
-            $option_el2->setAttribute('value', 'iscritto');
-            $option_el2->addChild(new CText(translateFN("iscritto")));
-            
-            $option_el3 = CDOMElement::create('option');
-            $option_el3->setAttribute('value', 'sottoscritto');
-            $option_el3->addChild(new CText(translateFN("sottoscritto")));
-            $option_el3->setAttribute('selected','selected');//così setti il valore della select che vuoi che compaia
-            
-            $select->addChild($option_el1);
-            $select->addChild($option_el2);
-            $select->addChild($option_el3);
-           
-            $select->setAttribute('onchange', 'saveStatus(this)');
-            
-            
-            $data = array(
-              array('nome'=>'ciao','cognome'=>$select->getHtml()),
-              array('nome'=>'sara','cognome'=>$select->getHtml()),
-              array('nome'=>'valerio','cognome'=>$select->getHtml()),
-              );
+                $name = $user->getSubscriberFullname();
+                
+                $select=CDOMElement::create('select', 'id:select_status');  
+
+                $option_Presubscribed = CDOMElement::create('option');
+                $option_Presubscribed->setAttribute('value', ADA_STATUS_PRESUBSCRIBED);
+                $option_Presubscribed->addChild(new CText(translateFN("Preiscritto")));
+
+                $option_Subscribed = CDOMElement::create('option');
+                $option_Subscribed->setAttribute('value', ADA_STATUS_SUBSCRIBED);
+                $option_Subscribed->addChild(new CText(translateFN("Iscritto")));
+
+                $option_Removed = CDOMElement::create('option');
+                $option_Removed->setAttribute('value', ADA_STATUS_REMOVED);
+                $option_Removed->addChild(new CText(translateFN("Rimosso")));
+                
+                $option_Visitor = CDOMElement::create('option');
+                $option_Visitor->setAttribute('value', ADA_STATUS_VISITOR);
+                $option_Visitor->addChild(new CText(translateFN("In visita")));
+                
+                $option_Completed = CDOMElement::create('option');
+                $option_Completed->setAttribute('value', ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
+                $option_Completed->addChild(new CText(translateFN("Completato")));
+                
+                switch ($user->getSubscriptionStatus()){
+                    
+                    case ADA_STATUS_PRESUBSCRIBED:
+                        $option_Presubscribed->setAttribute('selected','selected');
+                        break;
+                    case ADA_STATUS_SUBSCRIBED:
+                        $option_Subscribed->setAttribute('selected','selected');
+                        break;
+                    case ADA_STATUS_REMOVED:
+                        $option_Removed->setAttribute('selected','selected');
+                        break;
+                    case ADA_STATUS_VISITOR:
+                        $option_Visitor->setAttribute('selected','selected');
+                        break;
+                    case ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED:
+                        $option_Completed->setAttribute('selected','selected');
+                        break;
+                }
+               
+                $select->addChild($option_Presubscribed);
+                $select->addChild($option_Subscribed);
+                $select->addChild($option_Removed);
+                $select->addChild($option_Visitor);
+                $select->addChild($option_Completed);
+
+                $select->setAttribute('onchange', 'saveStatus(this)');
+                $livello = $dh->_get_student_level($user->getSubscriberId(),$instanceId);
+                
+                if(is_int($user->getSubscriptionDate())) //if getSubscriptionDate() return an int means that it is setted in Subscription costructor to time()
+                {
+                    $data_iscrizione='-';
+                }
+                else
+                {
+                    $data_iscrizione = ts2dFN($user->getSubscriptionDate());
+                }
+                if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
+                {
+                    $code = $user->getSubscriptionCode();
+                    $userArray = array(translateFN('nome')=>$name,translateFN('status')=>$select->getHtml(),translateFN('data_iscrizione')=>$data_iscrizione,translateFN('livello')=>$livello,translateFN('Codice iscrizione')=>$code);
+                }
+                else
+                {
+                    $userArray = array(translateFN('nome')=>$name,translateFN('status')=>$select->getHtml(),translateFN('data_iscrizione')=>$data_iscrizione,translateFN('livello')=>$livello);
+                }
+                array_push($data,$userArray); 
+            }
             $table=new Table();
             $table->initTable('0','center','1','1','90%','','','','','1','0','','default','course_instance_Table');
             $table->setTable($data);
