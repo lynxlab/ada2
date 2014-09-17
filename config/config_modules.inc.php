@@ -39,10 +39,10 @@
 	else {
 		define('MODULES_SERVICECOMPLETE', false);
 	}
-        
-        //defines for module impexport
-        define ('MODULES_IMPEXPORT_PATH', MODULES_DIR.'/impexport');
-        if (file_exists(MODULES_IMPEXPORT_PATH.'/import.php'))
+	
+	//defines for module impexport
+	define ('MODULES_IMPEXPORT_PATH', MODULES_DIR.'/impexport');
+	if (file_exists(MODULES_IMPEXPORT_PATH.'/import.php'))
 	{
 		require_once(MODULES_IMPEXPORT_PATH.'/config/config.inc.php');
 	
@@ -52,5 +52,17 @@
 	else {
 		define('MODULES_IMPEXPORT', false);
 	}
-   
+	
+	//defines for module classroom
+	define ('MODULES_CLASSROOM_PATH', MODULES_DIR.'/classroom');
+	if (file_exists(MODULES_CLASSROOM_PATH.'/index.php'))
+	{
+		require_once(MODULES_CLASSROOM_PATH.'/config/config.inc.php');
+	
+		define('MODULES_CLASSROOM', true);
+		define('MODULES_CLASSROOM_HTTP', HTTP_ROOT_DIR.'/modules/classroom');
+	}
+	else {
+		define('MODULES_CLASSROOM', false);
+	}
 ?>
