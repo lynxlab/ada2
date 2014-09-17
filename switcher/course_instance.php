@@ -131,9 +131,7 @@ else {
         $presubscriptions = Subscription::findPresubscriptionsToClassRoom($instanceId);
        
         $subscriptions = Subscription::findSubscriptionsToClassRoom($instanceId);
-        var_dump($presubscriptions);
-        var_dump('°°°°°°°°°°°°°');
-        var_dump($subscriptions);die();
+        
         $subscribe_users_link = BaseHtmlLib::link(
                 "subscriptions.php?id_course=$courseId&id_course_instance=$instanceId",
                 translateFN('Upload file'));

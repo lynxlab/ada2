@@ -33,7 +33,7 @@ class Subscription
     static public function findPresubscriptionsToClassRoom($classRoomId) {
         $dh = $GLOBALS['dh'];
         $result = $dh->get_presubscribed_students_for_course_instance($classRoomId);
-        var_dump($result);die();
+       
         if(AMA_DataHandler::isError($result)) {
             return array();
         } else {
