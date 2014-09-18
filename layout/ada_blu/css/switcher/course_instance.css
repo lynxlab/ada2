@@ -1,0 +1,44 @@
+@import url("tooltips.css");
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 18-set-2014, 12.55.36
+    Author     : sara
+*/
+.table_result
+{
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 30px;
+}
+
+#course_instance_Table caption {
+    display:none;
+}
+#course_instance_Table tbody td
+{
+    height:3px;
+}
+.tooltip {
+   background: transparent;
+   border-color: transparent;
+   cursor: default;
+  
+ }
+
+.fg-toolbar.ui-widget-header {
+    background: repeat-x scroll 50% 50% #BCD6D7;
+    border: 2px solid #A3A99A;
+    color: #585857;
+    font-weight: bold;
+}
+.myClass{
+    background: #BCD6D7;
+    border: 2px solid white;
+    zoom: 1;
+    filter: alpha(opacity=90);
+    opacity: 0.9;
+}

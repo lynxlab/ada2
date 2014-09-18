@@ -6,7 +6,7 @@
 		define('MODULES_CODEMAN_HTTP', HTTP_ROOT_DIR.'/modules/code_man');
 	}
 	else {
-		define('MODULES_CODEMAN', false);
+		define('MODULES_CODEMAN', true);
 	}
 	//defines for modules test
 	define('MODULES_TEST_PATH', MODULES_DIR.'/test');

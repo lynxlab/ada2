@@ -185,13 +185,13 @@ else {
                     $student_subscribed_course_instance[$k]=$v;
                 }
             }
-
+//var_dump($student_subscribed_course_instance);die();
 			//fifth: create tooltips (html + javascript)
-			$tooltips = '';
+			/*$tooltips = '';
 			foreach($student_subscribed_course_instance as $k=>$v) {
 				$link = CDOMElement::create('a');
 				$link->setAttribute('id','tooltip'.$k);
-				$link->setAttribute('href','javascript:void(0);');
+				$link->setAttribute('href','#');
 				if (isset($presubscriptions[$k])) {
 					$nome = $presubscriptions[$k]->getSubscriberFullname();
 					$link->addChild(new CText($nome));
@@ -216,18 +216,41 @@ else {
 				$tooltips.=$tip->getHtml();
 				$js = '<script type="text/javascript">new Tooltip("tooltip'.$k.'", "tooltipContent'.$k.'", {className: "tooltip", offset: {x:-15, y:0}, hook: {target:"leftMid", tip:"rightMid"}});</script>';
 				$tooltips.=$js;
-			}
+			}*/
 			//end
-
+            //var_dump($student_subscribed_course_instance);die();
             $arrayUsers=array();
             $arrayUsers= array_merge($arrayUsers,$presubscriptions);
             $arrayUsers= array_merge($arrayUsers,$subscriptions);
-            
+           // var_dump($arrayUsers);die();
             $data=array();
             foreach($arrayUsers as $user)
             {
             
                 $name = $user->getSubscriberFullname();
+                
+                /* add tooltip */
+                $UserInstances = array();
+                $UserInstances = $student_subscribed_course_instance[$user->getSubscriberId()];
+                
+                if(!empty($UserInstances))
+                {
+                    $title = 'Studente iscritto ai seguenti corsi :'.'<br>';
+
+                    foreach($UserInstances as $UserInstance)
+                    {
+                        $title = $title.''.$UserInstance['titolo'].' - '.$UserInstance['title'].'<br>';
+                    }
+                }
+                
+                $span_label = CDOMElement::create('span','id:user');
+                $span_label->setAttribute('title', $title);
+                $span_label->setAttribute('class', 'UserName tooltip');
+                $span_label->addChild(new CText($name));
+                
+                $title = '';
+                
+                /* select user status */
                 
                 $select=CDOMElement::create('select', 'id:select_status');  
 
@@ -277,6 +300,7 @@ else {
                 $select->addChild($option_Completed);
 
                 $select->setAttribute('onchange', 'saveStatus(this)');
+                
                 $livello = $dh->_get_student_level($user->getSubscriberId(),$instanceId);
                 
                 if(is_int($user->getSubscriptionDate())) //if getSubscriptionDate() return an int means that it is setted in Subscription costructor to time()
@@ -287,19 +311,37 @@ else {
                 {
                     $data_iscrizione = ts2dFN($user->getSubscriptionDate());
                 }
+                $userArray = array(translateFN('nome')=>$span_label->getHtml(),translateFN('status')=>$select->getHtml(),translateFN('data_iscrizione')=>$data_iscrizione,translateFN('livello')=>$livello);
+                
                 if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
                 {
                     $code = $user->getSubscriptionCode();
-                    $userArray = array(translateFN('nome')=>$name,translateFN('status')=>$select->getHtml(),translateFN('data_iscrizione')=>$data_iscrizione,translateFN('livello')=>$livello,translateFN('Codice iscrizione')=>$code);
+                    $userArray[translateFN('Codice iscrizione')] = $code;
                 }
-                else
+                
+                if(defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE))
                 {
-                    $userArray = array(translateFN('nome')=>$name,translateFN('status')=>$select->getHtml(),translateFN('data_iscrizione')=>$data_iscrizione,translateFN('livello')=>$livello);
+                   $UserObj = Multiport::findUser($user->getSubscriberId(),$instanceId);
+                   $certificate = $UserObj->Check_Requirements_Certificate($user->getSubscriberId());
+                   if($certificate)
+                   {
+                       $imgDoc = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/document.png');
+                       $imgDoc->setAttribute('class', 'imgDoc tooltip');
+                       $imgDoc->setAttribute('title', translateFN('stampa certificato'));
+                   }
+                   else {
+                       $imgDoc = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/document.png');
+                       $imgDoc->setAttribute('class', 'imgDoc tooltip');
+                       $imgDoc->setAttribute('title', translateFN('certificato non disponibile'));
+                   }
+                   $userArray[translateFN('Certificato')] = $imgDoc->getHtml();
                 }
+                
+               
                 array_push($data,$userArray); 
             }
             $table=new Table();
-            $table->initTable('0','center','1','1','90%','','','','','1','0','','default','course_instance_Table');
+            $table->initTable('0','center','1','1','10%','','','','','1','0','','default','course_instance_Table');
             $table->setTable($data);
             $data = new CourseInstanceSubscriptionsForm($presubscriptions, $subscriptions, $instanceId);
 
@@ -332,6 +374,10 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml(),
     'agenda '=> $user_agenda->getHtml()
 );
+$layout_dataAr['CSS_filename'] = array (
+                JQUERY_UI_CSS,
+		JQUERY_DATATABLE_CSS
+                );
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
@@ -339,8 +385,6 @@ $layout_dataAr['JS_filename'] = array(
                 JQUERY_NO_CONFLICT
 		);
 
-$layout_dataAr['CSS_filename'] = array (
-		JQUERY_DATATABLE_CSS
-                );
+
 
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

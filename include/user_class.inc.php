@@ -1385,6 +1385,27 @@ abstract class ADAAbstractUser extends ADALoggableUser {
 		}
 		return $res;
 	} //end history_ex_done_FN
+        
+        
+        
+       /*
+        * this function fix user certificate. 
+        *       
+        * @return boolean
+        */
+        
+        public function Check_Requirements_Certificate($id)
+        {
+            if(($id%2)==0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            //return 'da implementare';
+        }
 }
 
 /**
