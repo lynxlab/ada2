@@ -15,7 +15,39 @@ function createDataTable()
         "oLanguage": 
          {
             "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-         }
+         },
+         "aoColumnDefs": [
+            {
+               "aTargets": [ 0 ], 
+                "bVisible":false,
+            },
+            {
+               "aTargets": [ 1 ], 
+               "sClass": "Name_Column", 
+            },
+            {
+               "aTargets": [ 2 ], 
+               "sClass": "Status_Column", 
+            },
+            {
+               "aTargets": [ 3 ], 
+               "sClass": "Date_Column", 
+            },
+            {
+               "aTargets": [ 4 ],    
+               "sClass": "Levell_Column", 
+            },
+            {
+               "aTargets": [ 5 ],    
+               "sClass": "Code_Column", 
+            },
+            {
+               "aTargets": [ 6 ],    
+               "sClass": "Certificate_Column", 
+            }
+           
+         
+        ],
         
     });
 }

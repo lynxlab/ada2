@@ -10,17 +10,42 @@ and open the template in the editor.
 */
 .table_result
 {
-    width: 60%;
+    width: 70%;
     margin-left: 20%;
     margin-top: 30px;
 }
-
+.Name_Column{
+    width: 35%;
+    height:40%;
+}
+.Status_Column{
+    width: 15%;
+    height:40%;
+}
+.Date_Column{
+    width: 2%;
+    text-align: center;
+    height:40%;
+}
+.Levell_Column{
+    width: 1%;
+    text-align: center;
+    height:40%;
+}
+.Code_Column{
+    width: 20%;
+    height:40%;
+}
+.Certificate_Column{
+    width: 5%;
+    height:40%;
+}
 #course_instance_Table caption {
     display:none;
 }
 #course_instance_Table tbody td
 {
-    height:3px;
+    //height:3px;
 }
 .tooltip {
    background: transparent;
@@ -34,11 +59,4 @@ and open the template in the editor.
     border: 2px solid #A3A99A;
     color: #585857;
     font-weight: bold;
-}
-.myClass{
-    background: #BCD6D7;
-    border: 2px solid white;
-    zoom: 1;
-    filter: alpha(opacity=90);
-    opacity: 0.9;
 }
