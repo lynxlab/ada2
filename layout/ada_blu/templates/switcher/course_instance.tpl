@@ -68,6 +68,8 @@
                         <div class='table_result'>
                             <!--template_field class="template_field" name="data">data</template_field-->
                             <template_field class="template_field" name="table">table</template_field>
+                            <template_field class="template_field" name="buttonSubscription">buttonSubscription</template_field>
+                            <template_field class="template_field" name="buttonSubscriptions">buttonSubscriptions</template_field>
                             <div class="clearfix"></div>
                         </div>   
                         

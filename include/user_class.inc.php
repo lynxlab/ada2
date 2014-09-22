@@ -1398,11 +1398,11 @@ abstract class ADAAbstractUser extends ADALoggableUser {
         {
             if(($id%2)==0)
             {
-                return true;
+                return false;
             }
             else
             {
-                return false;
+                return true;
             }
             //return 'da implementare';
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * save_registration.php - save user personal data in the DB
+ * save_traslation.php - save traslation data in the DB
  *
  * @package
  * @author		sara <sara@lynxlab.com>
