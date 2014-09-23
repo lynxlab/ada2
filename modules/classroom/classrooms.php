@@ -141,11 +141,9 @@ if (!AMA_DB::isError($classroomsList)) {
 				$labels[5]=>$linksHtml);		
 	}
 	
-	$classroomsTable = new Table();
-	$classroomsTable->initTable('0','center','1','1','90%','','','','','1','0','','default','completeClassroomsList');
-	$classroomsTable->setTable($classroomsData,translateFN('Elenco delle aule'),translateFN('Elenco delle alue'));
+	$classroomsTable = BaseHtmlLib::tableElement('id:completeClassroomsList',$labels,$classroomsData,'',translateFN('Elenco delle alue'));
+	$classroomsIndexDIV->addChild($classroomsTable);
 	
-	$classroomsIndexDIV->addChild(new CText($classroomsTable->getTable()));
 	// if there are more than 10 rows, repeat the add new button below the table
 	if ($i>10) {
 		$bottomButton = clone $newButton;

@@ -121,11 +121,9 @@ if (!AMA_DB::isError($venuesList)) {
 				$labels[4]=>$linksHtml);
 	}
 	
-	$venuesTable = new Table();
-	$venuesTable->initTable('0','center','1','1','90%','','','','','1','0','','default','completeVenuesList');
-	$venuesTable->setTable($venuesData,translateFN('Elenco dei luoghi'),translateFN('Elenco dei luoghi'));
-
-	$venuesIndexDIV->addChild(new CText($venuesTable->getTable()));
+	$venuesTable = BaseHtmlLib::tableElement('id:completeVenuesList',$labels,$venuesData,'',translateFN('Elenco dei luoghi'));
+	$venuesIndexDIV->addChild($venuesTable);
+	
 	// if there are more than 10 rows, repeat the add new button below the table
 	if ($i>10) {
 		$bottomButton = clone $newButton;
