@@ -54,7 +54,7 @@ $venuesIndexDIV = CDOMElement::create('div','id:venuesindex');
 $newButton = CDOMElement::create('button');
 $newButton->setAttribute('class', 'newButton top');
 $newButton->setAttribute('title', translateFN('Clicca per creare una nuovo luogo'));
-$newButton->setAttribute('onclick', 'javascript:self.document.location.href=\''.MODULES_CLASSROOM_HTTP.'/edit_venue.php\'');
+$newButton->setAttribute('onclick', 'javascript:editVenue(null);');
 $newButton->addChild (new CText(translateFN('Nuovo Luogo')));
 $venuesIndexDIV->addChild($newButton);
 
@@ -76,7 +76,7 @@ if (!AMA_DB::isError($venuesList)) {
 				case 0:
 					$type = 'edit';
 					$title = translateFN('Modifica luogo');
-					$link = 'self.document.location.href=\'edit_venue.php?id_venue='.$venueAr['id_venue'].'\';';
+					$link = 'editVenue('.$venueAr['id_venue'].');';
 					break;
 				case 1:
 					$type = 'delete';

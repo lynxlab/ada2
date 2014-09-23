@@ -14,7 +14,7 @@ ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
 */
-require_once (realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
+require_once (realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
 
 /**
  * Clear node and layout variable in $_SESSION
@@ -36,7 +36,6 @@ $neededObjAr = array(
  * Performs basic controls before entering this module
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 
 // MODULE's OWN IMPORTS
 require_once MODULES_CLASSROOM_PATH .'/config/config.inc.php';
@@ -46,6 +45,8 @@ $self = 'venues';
 
 $GLOBALS['dh'] = AMAClassroomDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
+$retArray = array('status'=>'ERROR');
+
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	/**
 	 * it's a POST, save the passed venue data
@@ -54,14 +55,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	$venuesManager = new venuesManagement($_POST);
 	// try to save it
 	$res = $GLOBALS['dh']->classroom_saveVenue($venuesManager->toArray());
-	
+
 	if (AMA_DB::isError($res)) {
-		// if it's an error display the form with the error message
-		$data = $venuesManager->run(MODULES_CLASSROOM_EDIT_VENUE);
-		$data['help'] = $res->getMessage();
+		// if it's an error display the error message
+		$retArray['status'] = "ERROR";
+		$retArray['msg'] = $res->getMessage();
 	} else {
-		// redirect to venues page
-		redirect(MODULES_CLASSROOM_HTTP.'/venues.php');
+		// redirect to classrooms page
+		$retArray['status'] = "OK";
+		$retArray['msg'] = translateFN('Luogo salvato');
 	}	
 } else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
 			isset($_GET['id_venue']) && intval(trim($_GET['id_venue']))>0) {
@@ -74,11 +76,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	if (AMA_DB::isError($res)) {
 		// if it's an error display the error message without the form
-		$data['help'] = $res->getMessage();
+		$retArray['status'] = "ERROR";
+		$retArray['msg'] = $res->getMessage();
 	} else {
 		// display the form with loaded data
 		$venuesManager = new venuesManagement($res);
 		$data = $venuesManager->run(MODULES_CLASSROOM_EDIT_VENUE);
+		
+		$retArray['status'] = "OK";
+		$retArray['html'] = $data['htmlObj']->getHtml();
+		$retArray['dialogTitle'] = translateFN('Modifica Luogo');
 	}
 } else {
 	/**
@@ -86,16 +93,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	 */
 	$venuesManager = new venuesManagement();
 	$data = $venuesManager->run(MODULES_CLASSROOM_EDIT_VENUE);
+	
+	$retArray['status'] = "OK";
+	$retArray['html'] = $data['htmlObj']->getHtml();
+	$retArray['dialogTitle'] = translateFN('Nuovo Luogo');	
 }
 
-$content_dataAr = array(
-		'user_name' => $user_name,
-		'user_type' => $user_type,
-		'status' => $status,
-		'help'  =>  $data['help'],
-		'title' =>  $data['title'],
-		'data'  =>  (!is_null($data['htmlObj'])) ? $data['htmlObj']->getHtml() : ''
-);
-
-ARE::render($layout_dataAr, $content_dataAr);
-?>
+echo json_encode($retArray);
