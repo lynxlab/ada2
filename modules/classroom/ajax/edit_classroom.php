@@ -44,7 +44,7 @@ require_once MODULES_CLASSROOM_PATH.'/include/management/classroomManagement.inc
 
 $GLOBALS['dh'] = AMAClassroomDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-$retArray = array();
+$retArray = array('status'=>'ERROR');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	/**

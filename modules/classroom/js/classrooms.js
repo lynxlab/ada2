@@ -104,7 +104,6 @@ function editClassroom(id_classroom) {
 				// cancel dialog button
 				dialogButtons[i18n['cancel']] = function() {
 					theDialog.dialog('close');
-					
 				};
 				
 				// set the defined buttons
@@ -152,7 +151,6 @@ function editClassroom(id_classroom) {
 							venuesCache[request.term] = data;
 							response(data);
 							});
-						
 					},
 					focus: function(event,ui) { return false; },
 					change: function(event,ui) {
@@ -171,7 +169,8 @@ function editClassroom(id_classroom) {
 		} else {
 			if (JSONObj.msg) showHideDiv('', JSONObj.msg, false);
 		}
-	});
+	})
+	.fail(function () { showHideDiv('', 'Server Error', false) } );
 }
 
 function ajaxSubmitClassroomForm(data) {
