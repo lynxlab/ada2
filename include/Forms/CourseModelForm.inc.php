@@ -65,6 +65,23 @@ class CourseModelForm extends FForm {
         $this->addTextInput('crediti', translateFN('Crediti corso'))
              ->setRequired()
              ->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
+        
+        // if modules classromm is there, ask for a type of course
+        if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true) {
+        	$desc = translateFN('Tipo di corso').':';
+        	$service_type = array(
+        			ADA_SERVICE_ONLINECOURSE => translateFN('Corso Online'),
+        			ADA_SERVICE_PRESENCECOURSE => translateFN('Corso in Presenza'),
+        			ADA_SERVICE_MIXEDCOURSE => translateFN('Corso misto Online e Presenza')
+        	);
+        	
+        	$this->addSelect('service_level',$desc,$service_type,ADA_SERVICE_ONLINECOURSE)
+        	->setRequired();        	
+        } else {
+        	// else course is online only
+        	$this->addHidden('service_level')->withData(ADA_SERVICE_ONLINECOURSE);
+        }
+
 
         $this->addHidden('id_nodo_iniziale')->withData(0);
         $this->addHidden('id_nodo_toc');
