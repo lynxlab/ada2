@@ -13,9 +13,9 @@ function initDoc()
 }
 function createDataTable()
 {
-         datatable = $j('#course_instance_Table').dataTable({
+ 
+        datatable = $j('#course_instance_Table').dataTable({
         "bJQueryUI": true,
-        "aaSorting": [[1,'asc'],[2,'asc'],[4,'asc']],
         "aoColumnDefs": [
             {
                "aTargets": [ 0 ], 
@@ -26,13 +26,11 @@ function createDataTable()
                "aTargets": [ 1 ], 
                "sClass": "Name_Column",
                "sType":"string",
-               //"sSortDataType": "dom-text"
             },
             {
                "aTargets": [ 2 ], 
                "sClass": "Status_Column",
-               "sSortDataType": "dom-select",
-               "sType": "numeric"
+               "sType": "select"
             },
             {
                "aTargets": [ 3 ], 
@@ -41,7 +39,7 @@ function createDataTable()
             {
                "aTargets": [ 4 ], 
                "sClass": "Date_Column",
-               "sType":"date"
+               "sType":"date-eu"
             },
             {
                "aTargets": [ 5 ], 
@@ -69,13 +67,20 @@ function createDataTable()
           } 
        });
       
-     if(datatable.fnGetData(0).length < 7)
+     if(datatable.fnGetData(0).length < 7) AND (datatable.fnSettings().fnRecordsTotal() > 4)
+     {    
+        $j('#course_instance_Table').css('width' ,'98%'); //se ho il certificato ed è maggiore di 4 il nume di righe
+        //course_instance_Table_info
+     }
+     if((datatable.fnSettings().fnRecordsTotal() < 5) )
      {
+      $j('#course_instance_Table').css('width' ,'100%');  //se nn ho il certificato ed è minore di 4 il num di righ
          
+     }
+     else
+     {
          $j('#course_instance_Table').css('width' ,'101%');
      }
-    
-    
  }
  
  function  initToolTips()
@@ -100,17 +105,15 @@ function createDataTable()
         return $j(this).attr('title');
         }
    });
-  
-    
+ 
  }
  function displayDiv()
  {
-     
-    //$j('.table_result').animate({'marginLeft':'1%'});
-    //$j('.fg-toolbar.ui-widget-header').animate({'marginLeft':'90%'});
-     $j('.table_result').animate({"height": "toggle"});
-       $j('.table_result').animate({'marginLeft':'15%'},"slow");
-      
+    $j('.table_result').animate({"height": "toggle"});
+    $j('.table_result').animate({'marginLeft':'15%'},"slow");
+    
+   
+    
  }
 function saveStatus(selectedValue)
 {
@@ -145,14 +148,14 @@ function saveStatus(selectedValue)
 }
 function showHideDiv ( title, message)
 {
-	var theDiv = $j("<div id='ADAJAX' class='saveResults'><p class='title'>"+title+"</p><p class='message'>"+message+"</p></div>");
-	theDiv.css("position","fixed");
-	theDiv.css("width", "350px");
-	theDiv.css("top", ($j(window).height() / 2) - (theDiv.outerHeight() / 2));
-	theDiv.css("left", ($j(window).width() / 2) - (theDiv.outerWidth() / 2));	
-	theDiv.hide().appendTo('body').fadeIn(500).delay(2000).fadeOut(500, function() { 
-        theDiv.remove(); 
-	if (typeof reload != 'undefined' && reload) self.location.reload(true); });
+    var theDiv = $j("<div id='ADAJAX' class='saveResults'><p class='title'>"+title+"</p><p class='message'>"+message+"</p></div>");
+    theDiv.css("position","fixed");
+    theDiv.css("width", "350px");
+    theDiv.css("top", ($j(window).height() / 2) - (theDiv.outerHeight() / 2));
+    theDiv.css("left", ($j(window).width() / 2) - (theDiv.outerWidth() / 2));	
+    theDiv.hide().appendTo('body').fadeIn(500).delay(2000).fadeOut(500, function() { 
+    theDiv.remove(); 
+    if (typeof reload != 'undefined' && reload) self.location.reload(true); });
     
 }
 function goToSubscription()
@@ -161,8 +164,8 @@ function goToSubscription()
         $j('#course_instance_Table').effect('slide');
     });
     setTimeout( function(){
-            self.document.location.href = 'subscribe.php'+location.search;
-        },220);
+        self.document.location.href = 'subscribe.php'+location.search;
+   },220);
     
 }
 function goToSubscriptions()
@@ -171,7 +174,7 @@ function goToSubscriptions()
         $j('#course_instance_Table').effect('slide');
     });
     setTimeout( function(){
-            self.document.location.href = 'subscriptions.php'+location.search;
-        },200);
+        self.document.location.href = 'subscriptions.php'+location.search;
+    },200);
 }
 
