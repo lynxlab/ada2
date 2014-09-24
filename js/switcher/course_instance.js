@@ -9,58 +9,75 @@ function initDoc()
     createDataTable();
     initToolTips();
     displayDiv();
+    
 }
 function createDataTable()
 {
          datatable = $j('#course_instance_Table').dataTable({
         "bJQueryUI": true,
-        "oLanguage": 
-         {
-            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-         },
-         "aoColumnDefs": [
+        "aaSorting": [[1,'asc'],[2,'asc'],[4,'asc']],
+        "aoColumnDefs": [
             {
                "aTargets": [ 0 ], 
-               "bVisible":false,
+               "sClass": "Id_Column",
+               
             },
             {
                "aTargets": [ 1 ], 
-               "sClass": "Name_Column", 
+               "sClass": "Name_Column",
+               "sType":"string",
+               //"sSortDataType": "dom-text"
             },
             {
                "aTargets": [ 2 ], 
-               "sClass": "idUser_Column",
-               "bVisible":false,
+               "sClass": "Status_Column",
+               "sSortDataType": "dom-select",
+               "sType": "numeric"
             },
             {
                "aTargets": [ 3 ], 
-               "sClass": "istanceId_Column",
                "bVisible":false,
             },
             {
                "aTargets": [ 4 ], 
-               "sClass": "Status_Column", 
+               "sClass": "Date_Column",
+               "sType":"date"
             },
             {
                "aTargets": [ 5 ], 
-               "sClass": "Date_Column", 
+               "sClass": "Levell_Column",
             },
-            {
-               "aTargets": [ 6 ],    
-               "sClass": "Levell_Column", 
-            },
-            {
-               "aTargets": [ 7 ],    
-               "sClass": "Code_Column", 
-            },
-            {
-               "aTargets": [ 8 ],    
-               "sClass": "Certificate_Column", 
-            }
-      ],
-        
-    });
-   }
+        ],
+        "oLanguage": 
+         {
+            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+         },
+         "fnDrawCallback":
+            function () {
+                // put the sort icon outside of the DataTables_sort_wrapper div
+                // for better display styling with CSS
+                $j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
+                sortIcon = $j(this).find('span').clone();
+                $j(this).find('span').remove();
+                
+                if(($j(this).text()!='Certificato'))
+                {
+                    $j(this).parents('th').append(sortIcon);
+                }
+                
+                });
+          } 
+       });
+      
+     if(datatable.fnGetData(0).length < 7)
+     {
+         
+         $j('#course_instance_Table').css('width' ,'101%');
+     }
+    
+    
+ }
+ 
  function  initToolTips()
  {
     $j('.tooltip').tooltip({
@@ -88,16 +105,21 @@ function createDataTable()
  }
  function displayDiv()
  {
-     $j(".table_result").animate({"height": "toggle"}, { duration: 1000 })
+     
+    //$j('.table_result').animate({'marginLeft':'1%'});
+    //$j('.fg-toolbar.ui-widget-header').animate({'marginLeft':'90%'});
+     $j('.table_result').animate({"height": "toggle"});
+       $j('.table_result').animate({'marginLeft':'15%'},"slow");
+      
  }
 function saveStatus(selectedValue)
 {
     var SelectRow = $j(selectedValue).parents('tr')[0];  
     var aData = datatable.fnGetData( SelectRow );
-    
+   
     var data = {
         'status' : selectedValue.value,
-        'id_user': aData[2],
+        'id_user': aData[0],
         'id_instance': aData[3]
     }
      $j.ajax({
@@ -119,9 +141,9 @@ function saveStatus(selectedValue)
        .fail   (function() { 
             console.log("ajax call has failed"); 
 	} )
-   // alert(aData[2]+'  hhhh  ' +aData[3]);
+    
 }
-function showHideDiv ( title, message )
+function showHideDiv ( title, message)
 {
 	var theDiv = $j("<div id='ADAJAX' class='saveResults'><p class='title'>"+title+"</p><p class='message'>"+message+"</p></div>");
 	theDiv.css("position","fixed");
@@ -131,6 +153,7 @@ function showHideDiv ( title, message )
 	theDiv.hide().appendTo('body').fadeIn(500).delay(2000).fadeOut(500, function() { 
         theDiv.remove(); 
 	if (typeof reload != 'undefined' && reload) self.location.reload(true); });
+    
 }
 function goToSubscription()
 {
@@ -139,7 +162,7 @@ function goToSubscription()
     });
     setTimeout( function(){
             self.document.location.href = 'subscribe.php'+location.search;
-        },200);
+        },220);
     
 }
 function goToSubscriptions()
@@ -151,3 +174,4 @@ function goToSubscriptions()
             self.document.location.href = 'subscriptions.php'+location.search;
         },200);
 }
+

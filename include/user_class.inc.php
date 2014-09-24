@@ -1394,17 +1394,10 @@ abstract class ADAAbstractUser extends ADALoggableUser {
         * @return boolean
         */
         
-        public function Check_Requirements_Certificate($id)
+        public function Check_Requirements_Certificate()
         {
-            if(($id%2)==0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-            //return 'da implementare';
+           /*da implementare quando saranno chiari i casi d'uso*/
+            return 'true';
         }
 }
 

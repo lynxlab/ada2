@@ -114,24 +114,39 @@ else {
         $arrayUsers=array();
         $arrayUsers= array_merge($arrayUsers,$presubscriptions);
         $arrayUsers= array_merge($arrayUsers,$subscriptions);
-       
+      
         $dataAr=array();
+        
+        $thead_data = array(
+            translateFN('Id'),
+            translateFN('Nome'),
+            translateFN('Status'),
+            translateFN('Id_istance'),
+            translateFN('Data_iscrizione'),
+            translateFN('Livello')
+            );
+        if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN)){
+            array_push($thead_data,translateFN('Codice iscrizione')); 
+        }
+        if(defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE)){
+            array_push($thead_data,translateFN('Certificato'));  
+        }
         foreach($arrayUsers as $user)
         {
 
             $name = $user->getSubscriberFullname();
-
+           
             /* add tooltip */
             $UserInstances = array();
             $UserInstances = $student_subscribed_course_instance[$user->getSubscriberId()];
 
             if(!empty($UserInstances))
             {
-                $title = 'Studente iscritto ai seguenti corsi :'.'<br>';
+                $title = 'Studente iscritto ai seguenti corsi :'.'<br />';
 
                 foreach($UserInstances as $UserInstance)
                 {
-                    $title = $title.''.$UserInstance['titolo'].' - '.$UserInstance['title'].'<br>';
+                    $title = $title.''.$UserInstance['titolo'].' - '.$UserInstance['title'].'<br />';
                 }
             }
 
@@ -139,6 +154,7 @@ else {
             $span_label->setAttribute('title', $title);
             $span_label->setAttribute('class', 'UserName tooltip');
             $span_label->addChild(new CText($name));
+            
 
             $title = '';
 
@@ -149,6 +165,7 @@ else {
             $option_Presubscribed = CDOMElement::create('option');
             $option_Presubscribed->setAttribute('value', ADA_STATUS_PRESUBSCRIBED);
             $option_Presubscribed->addChild(new CText(translateFN("Preiscritto")));
+            
 
             $option_Subscribed = CDOMElement::create('option');
             $option_Subscribed->setAttribute('value', ADA_STATUS_SUBSCRIBED);
@@ -203,7 +220,7 @@ else {
             {
                 $data_iscrizione = ts2dFN($user->getSubscriptionDate());
             }
-            $userArray = array(translateFN('nome')=>$span_label->getHtml(),translateFN('id_user')=>$user->getSubscriberId(),translateFN('id_istance')=>$instanceId,translateFN('status')=>$select->getHtml(),translateFN('data_iscrizione')=>$data_iscrizione,translateFN('livello')=>$livello);
+            $userArray = array(translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$instanceId,translateFN('Data_iscrizione')=>$data_iscrizione,translateFN('Livello')=>$livello);
 
             if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
             {
@@ -213,11 +230,12 @@ else {
 
             if(defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE))
             {
-               $UserObj = Multiport::findUser($user->getSubscriberId(),$instanceId);
-               $certificate = $UserObj->Check_Requirements_Certificate($user->getSubscriberId());
+               $UserCertificateObj = Multiport::findUser($user->getSubscriberId(),$instanceId);
+               $certificate = $UserCertificateObj->Check_Requirements_Certificate($user->getSubscriberId());
                if($certificate)
                {
-                   $linkCertificate = CDOMElement::create('a','href:add_course.php');
+                 
+                   $linkCertificate = CDOMElement::create('a','href:../browsing/userCertificate.php');
                    $linkCertificate->setAttribute('class', 'linkCertificate');
                    $imgDoc = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/document.png');
                    $imgDoc->setAttribute('class', 'imgDoc tooltip');
@@ -226,6 +244,7 @@ else {
                }
                else {
                    $linkCertificate = CDOMElement::create('a','href:#');
+                   $linkCertificate->setAttribute('class', 'linkCertificate');
                    $imgDoc = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/document.png');
                    $imgDoc->setAttribute('class', 'imgDoc tooltip');
                    $imgDoc->setAttribute('title', translateFN('certificato non disponibile'));
@@ -234,13 +253,12 @@ else {
                $userArray[translateFN('Certificato')] = $linkCertificate->getHtml();
             }
 
-
+            
             array_push($dataAr,$userArray); 
         }
-        $table=new Table();
-        $table->initTable('0','center','1','1','10%','','','','','1','0','','default','course_instance_Table');
-        $table->setTable($dataAr);
-     }
+         
+        $result_table = BaseHtmlLib::tableElement('id:course_instance_Table', $thead_data, $dataAr);
+    }
 }
 $help = translateFN('Da qui il provider admin può gestire le iscrizioni alla classe selezionata');
 
@@ -271,7 +289,7 @@ $content_dataAr = array(
 'help' => $help,
 'edit_switcher'=>$edit_profile_link->getHtml(),
 'data' => $data,
-'table'=>$table->getTable(),
+'table'=>$result_table->getHtml(),
 'buttonSubscription'=>$buttonSubscription->getHtml(),
 'buttonSubscriptions'=>$buttonSubscriptions->getHtml(),
 'messages' => $user_messages->getHtml(),
@@ -285,6 +303,7 @@ $layout_dataAr['JS_filename'] = array(
             JQUERY,
             JQUERY_UI,
             JQUERY_DATATABLE,
+            JQUERY_DATATABLE_DATE,
             JQUERY_NO_CONFLICT,
             );
 

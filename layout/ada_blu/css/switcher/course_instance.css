@@ -1,4 +1,5 @@
 @import url("tooltips.css");
+
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
@@ -8,42 +9,47 @@ and open the template in the editor.
     Created on : 18-set-2014, 12.55.36
     Author     : sara
 */
-.table_result
+
+.select_status{
+    
+}
+.Id_Column
 {
-    margin-top: 5%;
-    width: 70%;
-    margin-left: 20%;
-    display : none;
+    width: 3%;
+    height:40%;
 }
 .Name_Column{
-    width: 35%;
+    width: 33%;
     height:40%;
  }
 .Status_Column{
-    width: 15%;
+    width: 10%;
     height:40%;
 }
 .Date_Column{
-    width: 2%;
+    width: 20%;
     text-align: center;
     height:40%;
 }
 .Levell_Column{
-    width: 1%;
+    width: 20%;
     text-align: center;
     height:40%;
 }
-.Code_Column{
-    width: 20%;
-    height:40%;
+
+.table_result{
+    display:none;
+    margin-top: 5%;
+   
+    width: 70%;
+    margin-left: 110%;
+    
+    
 }
-.Certificate_Column{
-    width: 5%;
-    height:40%;
-}
-.select_status
-{
-  
+.dataTables_wrapper .DataTables_sort_icon {
+    float: right;
+    margin-top: -20px;
+    margin-right: -15px;
 }
 #course_instance_Table caption {
     display:none;
@@ -107,35 +113,80 @@ table.dataTable tr.even .linkCertificate
     border: 2px solid #A3A99A;
     color: #585857;
     font-weight: bold;
+    width: 101%;
+    //margin-left: 1%;
+    
 }
- .saveResults {
-    background: rgba(22, 101, 173, 0.9);
-    padding: 5px 0px 15px 0px;    
-    -webkit-border-radius: 2px;    
-    border-radius: 2px;
-    -webkit-box-shadow:  0px 0px 2px 2px rgba(0, 0, 0, .2);
+#course_instance_Table{
+    //width: 56%;
+        
+}
+.saveResults {
+	background: rgba(22, 101, 173, 0.9);
+	padding: 5px 0px 15px 0px;    
+	-webkit-border-radius: 5px;    
+    border-radius: 5px;
+	-webkit-box-shadow:  0px 0px 2px 2px rgba(0, 0, 0, .2);
     box-shadow:  0px 0px 2px 2px rgba(0, 0, 0, .2);
     font-size: 1.1em;
 }
 
+.saveResults.popup.error  {
+	background: rgba(222, 10, 17, 0.9);
+}
+
+.saveResults.nonAjax {
+	background: none;
+	text-align: center;
+}
+
 .saveResults p {
-    margin:0;
-    padding:0;
-    border:none;
+	margin:0;
+	padding:0;
+	border:none;
 }
 
 .saveResults .title {
-    font-weight: bold;
-    text-align : center;
-    width: 100%;
-    padding: 1px 0px 5px 0px;
-    color: #fff;
-    border-bottom: 1px solid #a0bfdb;
+	font-weight: bold;
+	text-align : center;
+	width: 100%;
+	padding: 1px 0px 5px 0px;
+	color: #fff;
+	border-bottom: 1px solid #a0bfdb;
 }
 
 .saveResults .message {
-    padding: 15px 0px 0px 0px;
-    color:#fff;	
-    text-align : center;
-    width: 100%;	
+	padding: 15px 0px 0px 0px;
+	color:#fff;	
+	text-align : center;
+	width: 100%;	
 }
+/*.dataTables_wrapper table.dataTable {
+	margin: 0 auto;
+	clear: both;
+}*/
+
+
+/**
+ * DataTables styles
+ */
+.dataTables_wrapper { width: 100% !important; }
+.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; top: -10px; font-weight: bold;   color: #fff; }
+.dataTables_wrapper tbody td { height: 2.5em; border:none; vertical-align: middle; }
+.dataTables_wrapper thead th { padding-right: 5px; }
+.dataTables_wrapper .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.dataTables_wrapper .DataTables_sort_icon { float: right; margin-top: -20px; }
+.dataTables_wrapper .dataTables_paginate > a { margin:0; padding: 3px; }
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_paginate { padding: 5px; }
+.dataTables_wrapper .dataTables_info { padding: 8px 0 0 5px; }
+
+/**
+ * DataTables styles for action column
+ */ 
+.dataTables_wrapper ul.ulactions { list-style-type: none; display: table-cell; padding:0; }
+.dataTables_wrapper li.liactions { float: left; border: none !important; }
+.dataTables_wrapper button.editButton,
+.dataTables_wrapper button.deleteButton { height: 1.5em; }
+
