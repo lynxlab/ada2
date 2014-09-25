@@ -52,11 +52,54 @@ require_once 'include/browsing_functions.inc.php';
 // va chiamato cosi'
 // usercredits.php?id_course_instance=31
 $self = whoami();
-$message='questo è il mio certificato';
+
+//mettere tempo  totale dell'utente di visita dei nodi
+
+$title =  translateFN('Attestato di frequenza');
+
 $logo='<img src="'.HTTP_ROOT_DIR.'/layout/ada_blu/img/header-logo.png"  />';
+
+if(isset($_GET['id_user']))
+{
+    $id_user = $_GET['id_user'];
+}
+if(isset($_GET['id_instance']))
+{
+    $id_instance = $_GET['id_instance'];
+}
+
+$UserCertificateObj = Multiport::findUser($id_user,$id_instance);
+
+$userFullName = $UserCertificateObj->getFullName();
+$gender = $UserCertificateObj->getGender();
+$birthplace = $UserCertificateObj->getBirthCity();
+$codFisc = $UserCertificateObj->getFiscalCode();
+$province = $UserCertificateObj->getProvince();
+$birthdate = $UserCertificateObj->getBirthDate();
+
+
+if (strToUpper($gender) == "F"){
+	$nato = "nata";
+} else {
+	$nato = "nato";
+}
+if($birthplace!=null && $birthdate!=null)
+{
+    $birthSentence =  $nato.'a'.$birthplace.'il'.$birthdate;
+}
+else
+{
+    $birthSentence="";
+}
+
+
 $content_dataAr   = array(
- 'logo'=> $logo,  
- 'logoProvider'=>$logoProvider, 
+ 'logo'=> $logo, 
+ 'title'=> $title,
+ 'logoProvider'=>null,
+ 'userFullName'=>$userFullName,
+ 'birthSentence'=>$birthSentence,     
+ 
  'message'=>$message
     );
 ARE::render($layout_dataAr, $content_dataAr,ARE_PDF_RENDER); 

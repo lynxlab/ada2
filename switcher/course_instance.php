@@ -235,7 +235,7 @@ else {
                if($certificate)
                {
                  
-                   $linkCertificate = CDOMElement::create('a','href:../browsing/userCertificate.php');
+                   $linkCertificate = CDOMElement::create('a','href:../browsing/userCertificate.php?id_user='.$user->getSubscriberId().'&id_instance='.$instanceId);
                    $linkCertificate->setAttribute('class', 'linkCertificate');
                    $imgDoc = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/document.png');
                    $imgDoc->setAttribute('class', 'imgDoc tooltip');

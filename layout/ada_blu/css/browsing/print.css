@@ -1,1 +1,21 @@
 @import url("../print.css");
+
+/* rules for user certificate */
+
+.header_Certificate{
+    margin-left: 340px;
+}
+.title_Certificate{
+    margin-top: 30px;
+    font-size: 1.7em;
+    text-align : center ;
+    text-transform: uppercase;
+    font-weight:bold;
+    margin-bottom: 30px;
+}
+.user_data{
+    margin-top: 35px;
+    font-size: 1em; 
+    //margin-left: 0;
+    text-align:center;
+}

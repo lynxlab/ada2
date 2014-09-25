@@ -84,7 +84,8 @@ table.dataTable tr.even .linkCertificate
 }
 
  .Subscription_Button{
-  margin-top: 40px;
+  margin-top: 10px;
+  margin-bottom: 30px;
   background: #BCD6D7;
   background-image: -webkit-linear-gradient(top, #BCD6D7, #94c3e0);
   background-image: -moz-linear-gradient(top, #BCD6D7, #94c3e0);
@@ -107,6 +108,7 @@ table.dataTable tr.even .linkCertificate
   background-image: linear-gradient(to bottom, #BCD6D7,#BCD6D7);
   text-decoration: none;
 }
+
 .fg-toolbar.ui-widget-header {
     background: repeat-x scroll 50% 50% #BCD6D7;
     border: 1px solid #A3A99A;
