@@ -13,14 +13,17 @@ function initDoc()
 }
 function createDataTable()
 {
- 
         datatable = $j('#course_instance_Table').dataTable({
         "bJQueryUI": true,
+        "bFilter": true,
+        "bInfo": true,
+        "bSort": true,
+        "bAutoWidth": false,
+        "bPaginate" : true,
         "aoColumnDefs": [
             {
                "aTargets": [ 0 ], 
                "sClass": "Id_Column",
-               
             },
             {
                "aTargets": [ 1 ], 
@@ -67,20 +70,7 @@ function createDataTable()
           } 
        });
       
-     if(datatable.fnGetData(0).length < 7) AND (datatable.fnSettings().fnRecordsTotal() > 4)
-     {    
-        $j('#course_instance_Table').css('width' ,'98%'); //se ho il certificato ed è maggiore di 4 il nume di righe
-        //course_instance_Table_info
-     }
-     if((datatable.fnSettings().fnRecordsTotal() < 5) )
-     {
-      $j('#course_instance_Table').css('width' ,'100%');  //se nn ho il certificato ed è minore di 4 il num di righ
-         
-     }
-     else
-     {
-         $j('#course_instance_Table').css('width' ,'101%');
-     }
+    
  }
  
  function  initToolTips()
@@ -110,7 +100,7 @@ function createDataTable()
  function displayDiv()
  {
     $j('.table_result').animate({"height": "toggle"});
-    $j('.table_result').animate({'marginLeft':'15%'},"slow");
+    $j('.table_result').animate({'marginLeft':'0'},"slow");
     
    
     
