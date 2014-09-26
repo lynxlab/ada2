@@ -5032,6 +5032,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $duration_subscription = $this->or_zero($istanza_ha['duration_subscription']);
         $start_level_student = $this->or_zero($istanza_ha['start_level_student']);
         $open_subscription = $istanza_ha['open_subscription'];
+        $duration_hours = $this->or_zero($istanza_ha['duration_hours']);
 
         // check value of supposed starting date (cannot be empty)
         if (empty($data_inizio_previsto)) {
@@ -5061,8 +5062,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         // add the record
         // vito, 17 apr 2009, added data_fine
-        $sql  = "insert into istanza_corso (id_corso, data_inizio, durata, data_inizio_previsto,id_layout,data_fine, price, self_instruction, self_registration, title, duration_subscription, start_level_student, open_subscription)";
-        $sql .= " values ($id_corso, $data_inizio, $durata, $data_inizio_previsto,$id_layout, $data_fine, $price, $self_instruction, $self_registration, $title, $duration_subscription, $start_level_student, $open_subscription)";
+        $sql  = "insert into istanza_corso (id_corso, data_inizio, durata, data_inizio_previsto,id_layout,data_fine, price, self_instruction, self_registration, title, duration_subscription, start_level_student, open_subscription, duration_hours)";
+        $sql .= " values ($id_corso, $data_inizio, $durata, $data_inizio_previsto,$id_layout, $data_fine, $price, $self_instruction, $self_registration, $title, $duration_subscription, $start_level_student, $open_subscription, $duration_hours)";
         $res = $this->executeCritical( $sql );
         if (AMA_DB::isError($res)) {
             return $res;
@@ -5195,7 +5196,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         // get a row from table istanza_corso
         $sql = "select id_corso, data_inizio, durata, data_inizio_previsto, id_layout, data_fine, status, " .
-               "price, self_instruction, self_registration, title, duration_subscription, start_level_student, open_subscription ".
+               "price, self_instruction, self_registration, title, duration_subscription, start_level_student, open_subscription, duration_hours ".
                "from istanza_corso where id_istanza_corso=$id";
         $result = $db->getRow($sql,NULL, AMA_FETCH_ASSOC);
 //        print_r($result);
@@ -5415,6 +5416,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $duration_subscription = $this->or_zero($istanza_ha['duration_subscription']);
         $start_level_student = $this->or_zero($istanza_ha['start_level_student']);
         $open_subscription = $istanza_ha['open_subscription'];
+        $duration_hours = $this->or_zero($istanza_ha['duration_hours']);
 
 
         // check value of supposed starting date (cannot be empty)
@@ -5444,7 +5446,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $sql  = "update istanza_corso set data_inizio=$data_inizio, durata=$durata, data_inizio_previsto=$data_inizio_previsto, ";
         $sql .= "data_fine=$data_fine, self_instruction=$self_instruction, title=$title, self_registration=$self_registration, ";
-        $sql .= "price=$price, duration_subscription=$duration_subscription, start_level_student=$start_level_student, open_subscription=$open_subscription where id_istanza_corso=$id";
+        $sql .= "price=$price, duration_subscription=$duration_subscription, start_level_student=$start_level_student, open_subscription=$open_subscription, ";
+        $sql .= "duration_hours=$duration_hours where id_istanza_corso=$id";
         $res = $db->query($sql);
         if (AMA_DB::isError($res)) {
             return new AMA_Error(AMA_ERR_UPDATE);
@@ -6140,6 +6143,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $static_mode = $this->or_zero($this->sql_prepared($course_ha['static_mode']));
         $id_lingua = $this->sql_prepared($course_ha['id_lingua']);
         $crediti =  $this->or_zero($course_ha['crediti']);
+        $duration_hours = $this->or_zero($course_ha['duration_hours']);
 
         // verify key uniqueness (index)
         $id =  $db->getOne("select id_corso from modello_corso where nome = $nome");
@@ -6148,7 +6152,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         // insert a row into table modello_corso
-        $sql1 =  "insert into modello_corso (id_corso, nome, titolo, id_utente_autore, descrizione, data_creazione, data_pubblicazione, id_nodo_toc, id_nodo_iniziale, media_path, static_mode, id_lingua, crediti)";
+        $sql1 =  "insert into modello_corso (id_corso, nome, titolo, id_utente_autore, descrizione, data_creazione, data_pubblicazione, id_nodo_toc, id_nodo_iniziale, media_path, static_mode, id_lingua, crediti, duration_hours)";
         $sql1 .= " values (";
         /**
          * @author giorgio 03/lug/2013
@@ -6156,7 +6160,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
          * call to common dh to get the new id_corso for the course to be inserted
          */        
         $sql1 .= (AMA_Common_DataHandler::instance()->get_course_max_id()+1);
-        $sql1 .= ", $nome, $titolo, $id_autore, $descr, $d_create, $d_publish, $id_nodo_toc, $id_nodo_iniziale, $media_path,$static_mode,$id_lingua, $crediti);";
+        $sql1 .= ", $nome, $titolo, $id_autore, $descr, $d_create, $d_publish, $id_nodo_toc, $id_nodo_iniziale, $media_path,$static_mode,$id_lingua, $crediti, $duration_hours);";
 
         $res = $this->executeCritical( $sql1 );
         
@@ -6571,7 +6575,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if ( AMA_DB::isError( $db ) ) return $db;
 
         // get a row from table MODELLO_CORSO
-        $res_ar =  $db->getRow("select nome, titolo, id_utente_autore, id_layout, descrizione, data_creazione, data_pubblicazione, id_nodo_iniziale, id_nodo_toc, media_path,static_mode, id_lingua, crediti from modello_corso where id_corso=$id");
+        $res_ar =  $db->getRow("select nome, titolo, id_utente_autore, id_layout, descrizione, data_creazione, data_pubblicazione, id_nodo_iniziale, id_nodo_toc, media_path,static_mode, id_lingua, crediti, duration_hours from modello_corso where id_corso=$id");
         if (AMA_DB::isError($res_ar)) {
             return new AMA_Error(AMA_ERR_GET);
         }
@@ -6593,6 +6597,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $res_ha['static_mode']           = $res_ar[10];
         $res_ha['id_lingua']             = $res_ar[11];
         $res_ha['crediti']               = $res_ar[12];
+        $res_ha['duration_hours']        = $res_ar[13];
 
         return $res_ha;
     }
@@ -6624,6 +6629,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $id_layout = $this->or_zero($course_ha['id_layout']);
         $id_lingua = $this->or_zero($course_ha['id_lingua']);
         $crediti = $this->or_zero($course_ha['crediti']);
+        $duration_hours = $this->or_zero($course_ha['duration_hours']);
         /*
      modifica 25/07/01 : non devono essere 0 ma ci devono essere
      $id_nodo_iniziale = $this->or_zero($this->sql_prepared($course_ha['id_nodo_toc']));
@@ -6669,7 +6675,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         // update the rows in the tables
-        $sql1  = "update modello_corso set nome=$nome, titolo=$titolo, descrizione=$descr, data_creazione=$d_create, data_pubblicazione=$d_publish, id_utente_autore=$id_autore, id_nodo_toc=$id_nodo_toc, id_nodo_iniziale=$id_nodo_iniziale, media_path=$media_path, id_layout=$id_layout, id_lingua=$id_lingua, crediti=$crediti where id_corso=$id";
+        $sql1  = "update modello_corso set nome=$nome, titolo=$titolo, descrizione=$descr, data_creazione=$d_create, data_pubblicazione=$d_publish, id_utente_autore=$id_autore, id_nodo_toc=$id_nodo_toc, id_nodo_iniziale=$id_nodo_iniziale, media_path=$media_path, id_layout=$id_layout, id_lingua=$id_lingua, crediti=$crediti, duration_hours=$duration_hours where id_corso=$id";
         $res = $db->query($sql1);
         if (AMA_DB::isError($res)) {
             return new AMA_Error(AMA_ERR_UPDATE);

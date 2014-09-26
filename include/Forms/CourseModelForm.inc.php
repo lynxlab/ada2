@@ -66,6 +66,10 @@ class CourseModelForm extends FForm {
              ->setRequired()
              ->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
         
+        $this->addTextInput('duration_hours', translateFN('Durata prevista in ore'))
+        	->setRequired()
+        	->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
+        
         // if modules classromm is there, ask for a type of course
         if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true) {
         	$desc = translateFN('Tipo di corso').':';

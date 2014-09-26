@@ -240,6 +240,7 @@ CREATE TABLE IF NOT EXISTS `istanza_corso` (
   `start_level_student` int(2) NOT NULL,
   `duration_subscription` int(3) NOT NULL,
   `open_subscription` tinyint(1) NOT NULL,
+  `duration_hours` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_istanza_corso`),
   KEY `id_istanza_corso` (`id_istanza_corso`,`id_corso`),
   KEY `id_corso` (`id_corso`)
@@ -333,7 +334,7 @@ CREATE TABLE IF NOT EXISTS `modello_corso` (
   `static_mode` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `id_lingua` tinyint(3) unsigned NOT NULL,
   `crediti` tinyint(3) NOT NULL DEFAULT '1',
-  `id_servizio` int(10) NOT NULL,
+  `duration_hours` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_corso`),
   UNIQUE KEY `modello_corso_nome` (`nome`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;

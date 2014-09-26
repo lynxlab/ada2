@@ -77,7 +77,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'media_path' => $_POST['media_path'],
             'id_lingua' => $_POST['id_lingua'],
             'static_mode' => $_POST['static_mode'],
-            'crediti' => $_POST['crediti']
+            'crediti' => $_POST['crediti'],
+        	'duration_hours' => $_POST['duration_hours']
         );
         $result = $dh->set_course($_POST['id_corso'], $course);
 
@@ -152,7 +153,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	                'data_creazione' => $courseObj->getCreationDate(),
 	                'data_pubblicazione' => $courseObj->getPublicationDate(),
 	            	'service_level' => $service_level,
-	                'crediti' =>  $courseObj->getCredits() // modifica in Course
+	                'crediti' =>  $courseObj->getCredits(), // modifica in Course
+	                'duration_hours' => $courseObj->getDurationHours()
 	            );
 	            $form->fillWithArrayData($formData);
 	        } else {

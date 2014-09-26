@@ -75,7 +75,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'media_path' => $_POST['media_path'],
             'id_lingua' => $_POST['id_lingua'],
             'static_mode' => $_POST['static_mode'],
-            'crediti' => $_POST['crediti']
+            'crediti' => $_POST['crediti'],
+        	'duration_hours' => $_POST['duration_hours']
         );
         
         $id_course = $dh->add_course($course);

@@ -86,4 +86,7 @@ class Course extends Course_Old
     public function getIsPublic() {
         return $this->publicCourse;
     }
+    public function getDurationHours() {
+    	return $this->duration_hours;
+    }
 }
