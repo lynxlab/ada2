@@ -2,20 +2,42 @@
 
 /* rules for user certificate */
 
+
+
 .header_Certificate{
-    margin-left: 340px;
+    
+    margin-top: 5%;
+    margin-left: 43%;
 }
 .title_Certificate{
-    margin-top: 30px;
+    margin-top: 1%;
     font-size: 1.7em;
     text-align : center ;
     text-transform: uppercase;
     font-weight:bold;
-    margin-bottom: 30px;
+    margin-bottom: 1%;
 }
 .user_data{
-    margin-top: 35px;
+    margin-top: 2%;
     font-size: 1em; 
-    //margin-left: 0;
     text-align:center;
+}
+.course_title
+{
+    margin-top: 1%;
+    margin-bottom: 5%;
+    text-align:center;
+}
+
+.Certificate_datails{
+    margin-left: 3%;
+    margin-top: 10px;
+}
+.placeAndDate{
+   margin-left: 3%;
+   margin-top: 7%; 
+}
+.signature{
+   margin-left: 50%;
+   margin-top: -20px; 
 }

@@ -9,7 +9,6 @@ function initDoc()
     createDataTable();
     initToolTips();
     displayDiv();
-    
 }
 function createDataTable()
 {

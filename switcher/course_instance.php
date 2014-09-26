@@ -61,26 +61,27 @@ require_once ROOT_DIR . '/include/Forms/CourseInstanceSubscriptionsForm.inc.php'
 
 if(!($courseObj instanceof Course) || !$courseObj->isFull()) {
     $data = new CText(translateFN('Corso non trovato'));
+    $data=$data->getHtml();
 } 
 else if(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
     $data = new CText(translateFN('Istanza corso non trovata'));
- 
+    $data=$data->getHtml();
 } 
 else {
+    
     $courseId = $courseObj->getId();
     $instanceId = $courseInstanceObj->getId();
     $presubscriptions = Subscription::findPresubscriptionsToClassRoom($instanceId);
 
     $subscriptions = Subscription::findSubscriptionsToClassRoom($instanceId);
 
-   /* $subscribe_users_link = BaseHtmlLib::link(
-            "subscriptions.php?id_course=$courseId&id_course_instance=$instanceId",
-            translateFN('Upload file'));
-    $subscribe_user_link = BaseHtmlLib::link(
-            "subscribe.php?id_course=$courseId&id_course_instance=$instanceId",
-            translateFN('Iscrivi studente'));*/
     if(count($presubscriptions) == 0 && count($subscriptions) == 0) {
-        $data = new CText(translateFN('Non ci sono studenti iscritti e/o preiscritti'));
+        $thead_data = array(
+            translateFN('Notifica'),
+        );
+        $dataAr=array();
+        $result_table = BaseHtmlLib::tableElement('id:course_instance_Table', $thead_data,$dataAr);
+        $table = $result_table->getHtml();
     } else {
         //first: make associative arrays by ID of presubscription
         $ids_student = array();
@@ -258,6 +259,7 @@ else {
         }
          
         $result_table = BaseHtmlLib::tableElement('id:course_instance_Table', $thead_data, $dataAr);
+        $table = $result_table->getHtml();
     }
 }
 $help = translateFN('Da qui il provider admin può gestire le iscrizioni alla classe selezionata');
@@ -289,7 +291,7 @@ $content_dataAr = array(
 'help' => $help,
 'edit_switcher'=>$edit_profile_link->getHtml(),
 'data' => $data,
-'table'=>$result_table->getHtml(),
+'table'=>$table,
 'buttonSubscription'=>$buttonSubscription->getHtml(),
 'buttonSubscriptions'=>$buttonSubscriptions->getHtml(),
 'messages' => $user_messages->getHtml(),
