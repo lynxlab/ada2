@@ -122,7 +122,7 @@ else {
             translateFN('Nome'),
             translateFN('Status'),
             translateFN('Id_istance'),
-            translateFN('Data_iscrizione'),
+            translateFN('Data iscrizione'),
             translateFN('Livello')
             );
         if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN)){
@@ -153,6 +153,7 @@ else {
             $span_label = CDOMElement::create('span');
             $span_label->setAttribute('title', $title);
             $span_label->setAttribute('class', 'UserName tooltip');
+            $span_label->setAttribute('id', $name);
             $span_label->addChild(new CText($name));
             
 
@@ -220,7 +221,7 @@ else {
             {
                 $data_iscrizione = ts2dFN($user->getSubscriptionDate());
             }
-            $userArray = array(translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$instanceId,translateFN('Data_iscrizione')=>$data_iscrizione,translateFN('Livello')=>$livello);
+            $userArray = array(translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$instanceId,translateFN('Data iscrizione')=>$data_iscrizione,translateFN('Livello')=>$livello);
 
             if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
             {
