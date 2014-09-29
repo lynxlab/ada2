@@ -389,8 +389,6 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
     array_push ($layout_dataAr['JS_filename'],ROOT_DIR.'/js/browsing/search.js');
 }
 
-$options['onload_func'] = 'dataTablesExec()';
-//"\$j('input, a.button, button').uniform();"
 ARE::render($layout_dataAr,$content_dataAr, NULL, array('onload_func' => "initDoc();") );
 
 
