@@ -1396,7 +1396,7 @@ abstract class ADAAbstractUser extends ADALoggableUser {
         
         public function Check_Requirements_Certificate()
         {
-           /*da implementare quando saranno chiari i casi d'uso*/
+           /* be implemented according to the use cases */
             return 'true';
         }
 }
