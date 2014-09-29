@@ -59,6 +59,7 @@ if(isset($_GET['id_instance']))
 {
     $id_instance = $_GET['id_instance'];
 }
+$codice_corso = $courseObj->getCode();
 
 $UserCertificateObj = Multiport::findUser($id_user,$id_instance);
 
@@ -125,6 +126,6 @@ $content_dataAr   = array(
  'placeAndDate'=>$placeAndDate,
  'signature'=>$signature
  );
-ARE::render($layout_dataAr, $content_dataAr,ARE_PDF_RENDER);
+ARE::render($layout_dataAr, $content_dataAr,ARE_PDF_RENDER,array('outputfile'=>translateFN('Attestato').'-['.$codice_corso.']-['.$id_user.']'));
 
 
