@@ -199,7 +199,7 @@ define ("ADA_USER_AUTOMATIC_ENTER",FALSE); // feature disabled !
  * if true the system allow to printing a certificate
  */
 
-define ("ADA_PRINT_CERTIFICATE",TRUE);
+define ("ADA_PRINT_CERTIFICATE",FALSE);
 
 /**
  * Environment constants and global variables.
