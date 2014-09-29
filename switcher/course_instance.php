@@ -262,7 +262,7 @@ else {
         $table = $result_table->getHtml();
     }
 }
-$help = translateFN('Da qui il provider admin può gestire le iscrizioni alla classe selezionata');
+$help = translateFN('Da qui il provider admin può gestire le iscrizioni alla classe selezionata: ').$courseInstanceObj->getTitle();
 
 $edit_profile=$userObj->getEditProfilePage();
 $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
@@ -284,6 +284,7 @@ $content_dataAr = array(
 'banner'=> $banner,
 'path' => $path,
 'label' => $label,
+'course_title'=>translateFN('Gestione classe - ').$courseObj->getTitle().' ['.$courseId.'] - '.$courseInstanceObj->getTitle().' ['.$instanceId.']',
 'status'=> $status,
 'user_name'=> $user_name,
 'user_type'=> $user_type,
