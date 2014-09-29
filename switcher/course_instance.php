@@ -44,8 +44,7 @@ $neededObjAr = array(
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  whoami();  // = tutor!
-//ini_set('display_errors','1');
-//error_reporting(E_ALL);
+
 require_once 'include/switcher_functions.inc.php';
 require_once 'include/Subscription.inc.php';
 require_once ROOT_DIR . '/include/Forms/CourseInstanceSubscriptionsForm.inc.php';
