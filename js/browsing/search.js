@@ -17,7 +17,9 @@ function initDoc()
 }
 
 function dataTablesExec() {
-    var datatable = $j('#table_result').dataTable({"oLanguage": { "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"}});
+    var datatable = $j('#table_result').dataTable({
+        "bJQueryUI": true,
+        "oLanguage": { "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"}});
 }
 
 

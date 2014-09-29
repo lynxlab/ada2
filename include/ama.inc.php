@@ -4176,13 +4176,25 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-		$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
+	$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
 
-        $sql = 'SELECT U.id_utente, U.username, U.tipo, U.nome, U.cognome, U.avatar, I.status FROM utente AS U, iscrizioni AS I '
+        $sql = 'SELECT U.id_utente, U.username, U.tipo, U.nome, U.cognome, U.avatar, I.status,I.data_iscrizione';
+        
+         if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
+        {
+            $sql=$sql.', I.codice FROM utente AS U, iscrizioni AS I '
              . ' WHERE I.id_istanza_corso ='.$id_course_instance
              . ' AND I.status IN ('.implode(',',$status_Ar).')'
              . ' AND U.id_utente = I.id_utente_studente';
-
+        }
+        else
+        {
+            $sql=$sql.' FROM utente AS U, iscrizioni AS I '
+             . ' WHERE I.id_istanza_corso ='.$id_course_instance
+             . ' AND I.status IN ('.implode(',',$status_Ar).')'
+             . ' AND U.id_utente = I.id_utente_studente';
+        }
+        
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -4230,12 +4242,24 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     public function get_presubscribed_students_for_course_instance($id_course_instance) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
-
-        $sql = 'SELECT U.id_utente, U.nome, U.cognome, I.status FROM utente AS U, iscrizioni AS I '
+        
+        $sql = 'SELECT U.id_utente, U.nome, U.cognome, I.status,I.data_iscrizione';
+        
+        if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
+        {
+            $sql = $sql.', I.codice FROM utente AS U, iscrizioni AS I '
              . ' WHERE I.id_istanza_corso ='.$id_course_instance
              . ' AND I.status = '.ADA_STATUS_PRESUBSCRIBED
              . ' AND U.id_utente = I.id_utente_studente';
-
+        }
+        else
+        {
+            $sql = $sql.' FROM utente AS U, iscrizioni AS I '
+             . ' WHERE I.id_istanza_corso ='.$id_course_instance
+             . ' AND I.status = '.ADA_STATUS_PRESUBSCRIBED
+             . ' AND U.id_utente = I.id_utente_studente';
+        }
+        
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
