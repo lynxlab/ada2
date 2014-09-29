@@ -194,6 +194,13 @@ define('SHOW_NODE_EXTENDED_FIELDS',1);
  */
 
 define ("ADA_USER_AUTOMATIC_ENTER",FALSE); // feature disabled !
+
+/*
+ * if true the system allow to printing a certificate
+ */
+
+define ("ADA_PRINT_CERTIFICATE",FALSE);
+
 /**
  * Environment constants and global variables.
  * This section can be modified only by an expert installer.

@@ -33,16 +33,20 @@ class Subscription
     static public function findPresubscriptionsToClassRoom($classRoomId) {
         $dh = $GLOBALS['dh'];
         $result = $dh->get_presubscribed_students_for_course_instance($classRoomId);
-
+       
         if(AMA_DataHandler::isError($result)) {
             return array();
         } else {
             $subscriptionsAr = array();
 
             foreach($result as $r) {
-                $subscription = new Subscription($r['id_utente'], $classRoomId);
+                $subscription = new Subscription($r['id_utente'], $classRoomId,$r['data_iscrizione']);
                 $subscription->setSubscriberFullname($r['nome'] . ' ' . $r['cognome']);
                 $subscription->setSubscriptionStatus($r['status']);
+                if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
+                {
+                    $subscription->setSubscriptionCode($r['codice']);
+                }
                 $subscriptionsAr[] = $subscription;
             }
 
@@ -67,9 +71,13 @@ class Subscription
             $subscriptionsAr = array();
 
             foreach($result as $r) {
-                $subscription = new Subscription($r['id_utente'], $classRoomId);
+                $subscription = new Subscription($r['id_utente'], $classRoomId,$r['data_iscrizione']);
                 $subscription->setSubscriberFullname($r['nome'] . ' ' . $r['cognome']);
                 $subscription->setSubscriptionStatus($r['status']);
+                if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
+                {
+                    $subscription->setSubscriptionCode($r['codice']);
+                }
                 $subscriptionsAr[] = $subscription;
             }
 
@@ -148,7 +156,7 @@ class Subscription
         $this->_subscriberId = $userId;
         $this->_classRoomId = $classRoomId;
         $this->_startStudentLevel = $startStudentLevel;
-
+        
         if($subscriptionDate == 0) {
             $this->_subscriptionDate = time();
         } else {
@@ -157,7 +165,7 @@ class Subscription
 
         $this->_subscriberFullname = '';        
         $this->_subscriberUsername = '';
-        $this->_subscriptionStatus = ADA_STATUS_PRESUBSCRIBED;        
+        $this->_subscriptionStatus = ADA_STATUS_PRESUBSCRIBED; 
     }
     /**
      *
@@ -193,9 +201,7 @@ class Subscription
      * @return string a string representation of the subscription date
      */
     public function getSubscriptionDate() {
-        //return $this->_subscriptionDate;
-
-        return 'Da implementare';
+        return $this->_subscriptionDate;
     }
     /**
      *
@@ -203,6 +209,13 @@ class Subscription
      */
     public function getSubscriptionStatus() {
         return $this->_subscriptionStatus;
+    }
+    /**
+     *
+     * @return string the subscription code as string
+     */
+    public function getSubscriptionCode() {
+        return $this->_subscriptionCode;
     }
 
     public function setSubscriberFullname($fullname) {
@@ -213,6 +226,9 @@ class Subscription
     }
     public function setStartStudentLevel($startStudentLevel) {
     	$this->_startStudentLevel = $startStudentLevel;
+    }
+    public function setSubscriptionCode($code) {
+    	$this->_subscriptionCode = $code;
     }
 
     public function subscriptionStatusAsString() {
@@ -245,5 +261,6 @@ class Subscription
     private $_subscriberFullname;  
     private $_classRoomId;
     private $_subscriptionDate;
-    private $_subscriptionStatus;   
+    private $_subscriptionStatus; 
+    private $_subscriptionCode; 
 }
