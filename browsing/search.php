@@ -296,11 +296,6 @@ $online_users = ADALoggableUser::get_online_usersFN($id_course_instance,$online_
 
 // CHAT, BANNER etc
 $banner = include (ROOT_DIR."/include/banner.inc.php");
-$chat_link = "<a href='../comunica/adaChat.php' target='_blank'>".translateFN("chat")."</a>";
-
-$go_map = "<a href = \" map.php?id_node=$sess_id_node\">" . translateFN("mappa") . "</a>";
-$go_print = "<a href=\" view.php?id_node=" . $sess_id_node . "&op=print\" target=\"_blank\">"  . translateFN("stampa") . "</A>";
-
 $Simple_searchLink="<a href='#'onClick=simpleSearch()>Ricerca semplice</a>";
 $advanced_searchLink="<a href='#'onClick=advancedSearch()>Ricerca avanzata</a>";
 /* 8.
@@ -346,7 +341,6 @@ $content_dataAr = array(
   'simpleSearchLink'=>$Simple_searchLink,
   'advanced_searchLink'=>$advanced_searchLink,
   'menu'=>$menu,
-  'chat_link'=>$chat_link,
   'banner'=> $banner,
   'course_title'=>translateFN(' Ricerca '),
   'user_name'=>$user_name,
@@ -364,8 +358,7 @@ $content_dataAr = array(
   'events'=>$user_events->getHtml(),
   'chat_users'=>$online_users,
   'user_avatar'=>$avatar->getHtml(),
-  'user_modprofilelink' => $userObj->getEditProfilePage(),
-);
+  );
 
 /**
  * Sends data to the rendering engine
@@ -389,7 +382,10 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
     array_push ($layout_dataAr['JS_filename'],ROOT_DIR.'/js/browsing/search.js');
 }
 
-ARE::render($layout_dataAr,$content_dataAr, NULL, array('onload_func' => "initDoc();") );
+$options['onload_func'] = 'dataTablesExec()';
+$menuOptions['self_instruction'] = $self_instruction;
+//"\$j('input, a.button, button').uniform();"
+ARE::render($layout_dataAr,$content_dataAr, NULL, array('onload_func' => "initDoc();"),$menuOptions);
 
 
 ?>

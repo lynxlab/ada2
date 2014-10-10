@@ -620,6 +620,14 @@ class CSpan extends CElement
     }
 }
 
+class CI extends CElement
+{
+	public function __construct()
+	{
+		parent::__construct();
+	}
+}
+
 class CH1 extends CElement
 {
 	public function __construct()

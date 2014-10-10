@@ -67,38 +67,6 @@ $title = $return['title'];
 $path = $return['path'];
 
 /*
- * Go back link
- */
-$navigation_history = $_SESSION['sess_navigation_history'];
-$last_visited_node  = $navigation_history->lastModule();
-$go_back_link = CDOMElement::create('a', 'href:'.$last_visited_node);
-$go_back_link->addChild(new CText(translateFN('Indietro')));
-
-/*
- * Edit profile
- */
-
-$edit_profile=$userObj->getEditProfilePage();
-
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
-}
-else
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-}
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
-/*
- * link Naviga
- 
-$naviga=CDOMElement::create('a','#');
-$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
-$naviga->setAttribute('class', 'positionNaviga');
-$naviga->addChild(new CText(translateFN('Naviga')));
-*/
-/*
  * Output
  */
 $content_dataAr = array(
@@ -111,24 +79,16 @@ $content_dataAr = array(
     'icon' => $icon,
     //'navigation_bar' => $navBar->getHtml(),
     'text' =>  $text,
-    'go_back' => $go_back_link->getHtml(),
     'title' => $title,
     'author' => $author,
     'node_level' => 'livello nodo',
-    'edit_user'=> $edit_profile_link->getHtml(),
-    'naviga'=>$go_back_link->getHtml()
+    'edit_profile'=> $userObj->getEditProfilePage()
     //'course_title' => '<a href="'.HTTP_ROOT_DIR.'/tutor/tutor.php">'.translateFN('Modulo Tutor').'</a> > ',
     //'media' => 'media',
 );
 
 $content_dataAr['notes'] = $other_node_data['notes'];
 $content_dataAr['personal'] = $other_node_data['private_notes'];
-
-
-if ($log_enabled)
-    $content_dataAr['go_history'] = $go_history;
-else
-    $content_dataAr['go_history'] = translateFN("cronologia");
 
 if ($reg_enabled) {
     $content_dataAr['add_bookmark'] = $add_bookmark;
@@ -139,28 +99,6 @@ if ($reg_enabled) {
 $content_dataAr['bookmark'] = $bookmark;
 $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
 $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
-
-if ($mod_enabled) {
-    $content_dataAr['add_node'] = $add_node;
-    $content_dataAr['edit_node'] = $edit_node;
-    $content_dataAr['delete_node'] = $delete_node;
-    $content_dataAr['send_media'] = $send_media;
-    $content_dataAr['add_exercise'] = $add_exercise;
-    $content_dataAr['add_note'] = $add_note;
-    $content_dataAr['add_private_note'] = $add_private_note;
-    $content_dataAr['edit_note'] = $edit_note;
-    $content_dataAr['delete_note'] = $delete_note;
-    $content_dataAr['import_exercise'] = $import_exercise;
-} else {
-    $content_dataAr['add_node'] = '';
-    $content_dataAr['edit_node'] = '';
-    $content_dataAr['delete_node'] = '';
-    $content_dataAr['send_media'] = '';
-    $content_dataAr['add_note'] = '';
-    $content_dataAr['add_private_note'] = '';
-    $content_dataAr['edit_note'] = '';
-    $content_dataAr['delete_note'] = '';
-}
 
 if ($com_enabled) {
     $content_dataAr['ajax_chat_link'] = $ajax_chat_link;
@@ -200,5 +138,5 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
     $layout_dataAr['CSS_filename'][] = 
         ROOT_DIR.'/modules/test/layout/ada_blu/css/tutor.css';   //for tutorSelfInstruction.tpl
      }
-
-ARE::render($layout_dataAr, $content_dataAr);
+$menuOptions['self_instruction'] = $self_instruction;
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);

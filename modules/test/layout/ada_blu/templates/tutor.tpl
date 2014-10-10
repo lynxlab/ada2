@@ -10,6 +10,9 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu -->  
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -84,55 +87,14 @@
                 <div id="bottomcom_t"> </div>
             </div>
             <!-- /com_tools -->
-            <!-- menudestra -->
-            <div id="menuright" class="sottomenu_off menuright_default">
-                <div id="topmenur"> </div>
-                <div id="menurightcontent">
-                    <ul>
-                        <li class="close"> <a href="#" onClick="toggleElementVisibility('menuright', 'right');">
-                                </i18n>
-                                chiudi
-                                </i18n>
-                            </a> </li>
-                    </ul>
-                </div>
-                <div id="bottommenur"> </div>
-            </div>
-            <!-- / menudestra  -->
+    <!-- MENU A TENDINA -->
+        
+        <!-- menudestra -->
+          
+        <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
-        <!-- MENU A TENDINA -->
-        <div id="mainmenu">
-            <ul id="menu">
-                <li id="home"> <a href="../../tutor/tutor.php">
-                        <i18n>home</i18n>
-                    </a> </li>
-                <li id="com" class="unselectedcom" onClick="toggleElementVisibility('submenu_com','up')"> <a>
-                        <i18n>comunica</i18n>
-                    </a> </li>
-                <li id="tools" class="unselectedtools" onClick="toggleElementVisibility('submenu_tools','up')"> <a>
-                        <i18n>strumenti</i18n>
-                    </a> </li>
-                <li id="actions" class="unselectedactions" onClick="toggleElementVisibility('submenu_actions','up')">
-                    <a>
-                        <i18n>agisci</i18n>
-                    </a>
-                </li>
-                <li id="ancora_menuright" onClick="toggleElementVisibility('menuright', 'right');">
-                    <a>
-                        <i18n>Naviga</i18n>
-                    </a>
-                </li>
-                <li id="question_mark" class="unselectedquestion_mark" onClick="toggleElementVisibility('submenu_question_mark','up'); return false;">
-                    <a>
-                        <i18n>Help</i18n>
-                    </a>
-                </li>
-                <li id="esc"> <a href="../../index.php">
-                        <i18n>esci</i18n>
-                    </a> </li>
-            </ul>
-            <!-- / menu -->
+        
             <!-- tendina -->
             <div id="dropdownmenu">
                 <!-- comunica -->

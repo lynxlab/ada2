@@ -319,10 +319,12 @@ else if ( $op == 'preview' )
       'node_level' => $node_data['level'],
       'keywords'   => $node_data['title'],
       'date'       => $node_data['creation_date'],
-      'edit_link'  => NodeEditingViewer::getEditLink('addnode.php?op=add_node'),
-      'save_link'  => NodeEditingViewer::getSaveLink('addnode.php?op=save')
+      'edit_link'  => 'addnode.php?op=add_node',
+      'save_link'=>'addnode.php?op=save'
   );
+  
 }
+
 /*
  * Salvataggio dei contenuti del nodo
  */

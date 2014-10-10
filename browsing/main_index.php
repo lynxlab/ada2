@@ -552,37 +552,10 @@ $search_form = $fObj->getForm();
 
 $banner = include ROOT_DIR.'/include/banner.inc.php';
 
-
-$go_map = '<a href="map.php?map_type=lemma">'
-			. translateFN('mappa') . '</a>';
-/*
- * Chat link
- */
-$chat_link = "<a href='../comunica/ada_chat.php' target='_blank'>".translateFN("chat")."</a>";
-
-/*
- * Forum link
- */
-if ($id_profile == AMA_TYPE_AUTHOR) {
-  // authors cannot enter forums without an instance
-  $forum_link = translateFN("forum");
-}
-else {
-  $forum_link = "<a href=main_index.php?op=forum>".translateFN("forum")."</a>";
-}
-// $dh->add_node_history($sess_id_user, $sess_id_course, $sess_id_node);
-
-$back_link = "<a href='".$_SERVER['HTTP_REFERER']."' class='backLink' title='Go back'>".translateFN("Torna")."</a>";
 //show course istance name if isn't empty - valerio
 if (!empty($courseInstanceObj->title)) {
 	$course_title .= ' - '.$courseInstanceObj->title;
 }
-
-/*
- * Edit profile
- */
-
-$edit_profile=$userObj->getEditProfilePage();
 
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
@@ -593,11 +566,6 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
     $layout_dataAr['JS_filename']=array(ROOT_DIR.'/js/include/menu_functions.js'); 
     
 }
-else
-{
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-}
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
 
 /*
 * Last access link
@@ -616,18 +584,7 @@ if(isset($_SESSION['sess_id_course_instance'])){
     $last_access='-';
 }
 
-/*
- * link Naviga
- */
-$naviga=CDOMElement::create('a','#');
-$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
-$naviga->addChild(new CText(translateFN('Naviga')));
-
-
-
 $content_dataAr = array(
-  'chat_link'    => $chat_link,
-  'forum_link'   => $forum_link,
   'banner'       => $banner,
   'course_title' => "<a href='main_index.php'>".$course_title."</a>",
   'user_name'    => $user_name,
@@ -642,11 +599,8 @@ $content_dataAr = array(
   'messages'     => $user_messages->getHtml(),
   'agenda'       => $user_agenda->getHtml(),
   'events'		 => $user_events->getHtml(),
-  'chat_users'   => $online_users,
-  'go_map'		 => $go_map,
-  'edit_user'=> $edit_profile_link->getHtml(),
-  'naviga'=>$naviga->getHtml()
-);
+  'chat_users'   => $online_users
+ );
 
 ARE::render($layout_dataAr, $content_dataAr);
 

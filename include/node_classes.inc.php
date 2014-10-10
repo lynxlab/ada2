@@ -329,7 +329,7 @@ class Node
       }
       return $children_ha;
     } else {
-      return  translateFN("Nessuno");
+      return  $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
     }
   }
 
@@ -555,6 +555,8 @@ class Node
         }
       }
 
+	  $dataAr = $this->_removeEmptyElements($dataAr);
+
       $t = new Table();
       $t->initTable('0','center','0','0','100%','','','','','0','0');
       $t->setTable($dataAr,$caption="",$summary=translateFN("Indice dei nodi inferiori"));
@@ -562,7 +564,7 @@ class Node
 
       return $t->data;
     } else {
-      return  translateFN("Nessuno")."<p>";
+      return  $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml()."<p>";
     }
 
 }
@@ -858,7 +860,7 @@ function get_filter_links_FN($linksAR,$user_level=1) {
     }
     return $data_Ar;
   } else {
-    return translateFN("Nessuno");;
+    return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
   }
 }
 
@@ -1483,6 +1485,8 @@ function get_linksFN($user_level,$id_profile){
       array_push($dataAr,$ok_link);
     }
 
+    $dataAr = $this->_removeEmptyElements($dataAr);
+    
     $t = new Table();
     $rules = '';
     $style = 'table_link';
@@ -1490,7 +1494,7 @@ function get_linksFN($user_level,$id_profile){
     $t->setTable($dataAr,$caption="",$summary=translateFN("Indice dei nodi collegati"));
     return $t->getTable();
   } else {
-    return translateFN("Nessuno");
+    return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
   }
 }
 // fine filtro links
@@ -1578,6 +1582,8 @@ function get_exercisesFN($user_level){
       }
     }
 
+    $dataAr = $this->_removeEmptyElements($dataAr);
+    
     $rules = '';
     $style = 'table_link';
     $t = new Table();
@@ -1585,7 +1591,7 @@ function get_exercisesFN($user_level){
     $t->setTable($dataAr,$caption="",$summary=translateFN("Indice degli esercizi collegati"));
     return $t->getTable();
   } else {
-    return translateFN("Nessuno")."<p>";
+    return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml()."<p>";
   }
 }
 // fine filtro esercizi
@@ -1712,13 +1718,14 @@ function get_notesFN($user_level,$id_profile){
       }
     }
 
+    $dataAr = $this->_removeEmptyElements($dataAr);
 
     $t = new Table();
     $t->initTable('0','center','0','0','100%','white','','white','','0','0');
     $t->setTable($dataAr,$caption="",$summary=translateFN("Indice delle note"));
     return $t->getTable();
   } else {
-    return translateFN("Nessuno")."<br/>";
+    return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
   }
 }
 // fine filtro note
@@ -1781,6 +1788,8 @@ function get_private_notesFN($user_level,$id_profile){
       }
     }
 
+    $dataAr = $this->_removeEmptyElements($dataAr);
+
     $t = new Table();
     $t->initTable('0','center','0','0','100%','white','','white','','0','0');
     $t->setTable($dataAr,$caption="",$summary=translateFN("Indice delle note private"));
@@ -1810,16 +1819,18 @@ function get_mediaFN($user_level) {
             $rules = '';
             $style = 'table_link';
 
+            $dataAr = $this->_removeEmptyElements($dataAr);
+
             $t = new Table();
             $t->initTable('0', 'center', '2', '0', '100%', '', '', '', '', '0', '0', $rules,$style);
             $t->setTable($dataAr, $caption = "", $summary = translateFN("Indice dei Media collegati"));
             $t->getTable();
             return $t->data;
         } else {
-            return translateFN('Nessuno');
+            return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
         }
     } else {
-        return translateFN('Nessuno');
+        return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
     }
 }
 
@@ -2002,11 +2013,11 @@ function get_mediaFN_OLD($user_level){
       $t->getTable();
       return $t->data;
     } else {
-      return translateFN("Nessuno");
+      return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
     }
 
   } else {
-    return translateFN("Nessuno");
+    return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
   }
   //}
   // fine filtro media
@@ -2028,13 +2039,13 @@ function get_user_mediaFN($user_level){
 
   $course_ha = $dh->get_course($sess_id_course);
   if (AMA_DataHandler::isError($course_ha)){ // not enrolled yet?
-    return translateFN("Nessuno");
+    return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
   }
   $author_id = $course_ha['id_autore'];
   $elencofile = $this->read_user_dirFN("$root_dir/services/media/$author_id");
 
   if ($elencofile == NULL)//($stop<1)
-  return translateFN("Nessuno");
+  return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
 
   $fcount = count($elencofile);
   $media = "";
@@ -2176,7 +2187,7 @@ function get_user_mediaFN($user_level){
     $media.="$var</p>\n";
     return $media;
   } else {
-    return translateFN("Nessuno");
+    return $this->_wrapTextInSpan(translateFN('Nessuno'),'noitem')->getHtml();
   }
 }
 
@@ -2386,6 +2397,47 @@ function executeSearch($name,$title,$text,$dh,$count,$id_user)
   }
     return $resHa;
     
+}
+
+/**
+ * @author giorgio 29/ago/2014
+ * wrap returned text inside a span
+ * 
+ * @param string $text the text to be wrapped
+ * @param string $class if passed, the css class assigned to the span
+ * 
+ * @return CBaseElement on success, null on failure
+ * 
+ * @access private
+ */
+private function _wrapTextInSpan($text, $class=null) {
+	if (strlen($text)>0) {
+		$retel = CDOMElement::create('span');
+		if (!is_null($class) && strlen($class)>0) {
+			$retel->setAttribute('class', $class);
+		}
+		$retel->addChild(new CText($text));
+		return $retel;		
+	} else return null;
+}
+
+/**
+ * @author giorgio 29/ago/2014
+ * remove empty $dataAr elements
+ * 
+ * @param array $dataAr data to operate on
+ * 
+ * @return array cleaned array
+ * 
+ * @access private
+ */
+private function _removeEmptyElements($dataAr) {
+	foreach ($dataAr as $index=>$row) {
+		if (is_array($row) && count($row)==1 && ($row[0]=='&nbsp;' || empty($row[0]))) {
+			unset ($dataAr[$index]);
+		}
+	}
+	return $dataAr;
 }
 
 } //end class node

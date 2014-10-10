@@ -447,9 +447,6 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
      $node_path = $nodeObj->findPathFN();
   }
 
-  $navigation_history  = $_SESSION['sess_navigation_history'];
-  $last_visited_module = $navigation_history->lastModule();
-
 
   $content_dataAr = array(
     //'head'         => $head_form,
@@ -467,8 +464,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
     'level'        => $node_level,
     'keywords'	   => $node_keywords,
     'course_title' => $course_title,
-    'path'         => $node_path,
-    'back'         => $last_visited_module
+    'path'         => $node_path
     //'node_medias'  => $node_medias,
     //'node_links'   => $media_links
   );

@@ -12,7 +12,9 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
-
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu -->     
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -128,155 +130,74 @@
                 </div>
                 <div id="bottomcom_t">
                 </div>
-            </div> <!-- /com_tools -->
+            </div> 
+            <!-- /com_tools -->
             <!-- menudestra -->
-
-            <div id="menuright" class="sottomenu_off menuright_view">
-            <!--<div id="menuright" class="sottomenu_off menuright_view">--><!-- to hide right panel -->
-
-                <div id="topmenur">
-                </div>
+            <div id="menuright" class="menuright_view ui wide right sidebar">
+              <h3 class="ui teal block dividing center aligned  header"><i class="globe icon"></i><i18n>Naviga</i18n></h3>
                 <div id="menurightcontent">
-                    <ul>
-                        <li class="close">
-                            <a href="#" onClick="toggleElementVisibility('menuright', 'right');">
-                                <i18n>chiudi</i18n>
-                            </a>
-                        </li>
-                        <li class="_menu">
-                            <template_field class="template_field" name="main_index_text">main_index_text</template_field>
-                        </li>
-
-                        <li class="_menu">
-                            <template_field class="template_field" name="main_index">main_index</template_field>
-                        </li>
-                        <li class="_menu">
-                        <template_field class="template_field" name="search_form">search_form</template_field>
-                        </li>
-
-                        <li class="_menu">
-                        <template_field class="template_field" name="go_map">go_map</template_field>
-                        </li>
-                    </ul>
-                    <ul id="attachment">
-                        <li class="_name">
-                        <i18n>approfondimenti</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="index">index</template_field>
-                            </li>
-                        </ul>
-                        <!--<li class="_name">
-                        <i18n>collegamenti</i18n>
-                        </li>
-                        <ul>
-                        <li>
-                        <template_field class="template_field" name="link">link</template_field>
-                        </li>
-                        </ul>
-                        -->
-                        <!--li class="_name">
-                        <i18n>esercizi</i18n>
-                        </li>
-                        <ul>
-                        <li>
-                        <template_field class="template_field" name="exercises">exercises</template_field>
-                        </li>
-                        </ul-->
-                        <li class="_name">
-                        <i18n>risorse</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="media">media</template_field>
-                            </li>
-                        </ul>
-                        <!--li class="_name">
-                        <i18n>media di classe</i18n>
-                        </li>
-                        <ul>
-                        <li>
-                        <template_field class="template_field" name="user_media">user_media</template_field>
-                        </li>
-                        </ul>
-                        <li class="_name">
-                        <i18n>note di classe</i18n>
-                        </li>
-                        <ul>
-                        <li>
-                        <template_field class="template_field" name="notes">notes</template_field>
-                        </li>
-                        </ul>
-                        <li class="_name">
-                        <i18n>note personali</i18n>
-                        </li>
-                        <ul>
-                        <li>
-                        <template_field class="template_field" name="personal">personal</template_field>
-                        </li>
-                        </ul-->
-                    </ul>
+                  <div class="ui right labeled icon mini fluid top attached button"  onclick="javascript: hideSideBarFromSideBar();">
+                    <i class="close icon"></i><i18n>Chiudi</i18n>
+                  </div>
+                  <!-- accordion -->
+                  <div class="ui attached segment accordion">
+                  
+			       <div class="title" onClick="showIndex();">
+			         <i class="icon dropdown"></i>
+			         <i18n>indice</i18n><i class="sitemap icon" style="float:right;"></i>
+			       </div>
+			       <div class="content field">
+			         <div id="show_index">
+			             <div class="loader-wrapper">
+			                 <div class="ui active inline mini text loader">
+			                     <i18n>Caricamento</i18n>...
+			                  </div>
+			             </div>
+                     </div>
+			       </div>
+  
+                   <!--div class="active title">
+                     <i class="icon dropdown"></i>
+                     <i18n>azioni</i18n> <i class="edit sign icon"></i> 
+                   </div-->
+                  <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>approfondimenti</i18n><i class="pin icon"></i>
+                   </div>
+                   <div class="content field">
+                     <template_field class="template_field" name="index">index</template_field>
+                   </div>
+                   
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>collegamenti</i18n><i class="url icon"></i>
+                   </div>
+                   <div class="content field">
+                       <template_field class="template_field" name="link">link</template_field>
+                   </div>
+                   
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>esercizi</i18n><i class="text file outline icon"></i>
+                   </div>
+                   <div class="content field">
+                     <template_field class="template_field" name="exercises">exercises</template_field>
+                   </div>
+                   
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>risorse</i18n><i class="browser icon"></i>
+                   </div>
+                   <div class="content field">
+                     <template_field class="template_field" name="media">media</template_field>
+                   </div>
+                  </div>
+                  <!-- /accordion -->  
                 </div>
-                <div id="bottommenur">
-                </div>
-            </div> <!-- / menudestra  -->
-        </div> <!-- / contenitore -->
+              <!-- / menudestra  -->
+        </div> 
+        <!-- / contenitore -->
 
-        <!-- MENU -->
-        <div id="mainmenu">
-            <ul id="menu">
-                <li id="home">
-                    <a href="student.php">
-                        <i18n>home</i18n>
-                    </a>
-                </li>
-                <li id="ancora_menuright" onClick="toggleElementVisibility('menuright', 'right');">
-                    <a>
-                        <i18n>Naviga</i18n>
-                    </a>
-                </li>
-                <li id="question_mark" class="unselectedquestion_mark" onClick="toggleElementVisibility('submenu_question_mark','up'); return false;">
-                    <a>
-                        <i18n>Help</i18n>
-                    </a>
-                </li>
-                <li id="esc">
-                    <a href="../index.php">
-                        <i18n>esci</i18n>
-                    </a>
-                </li>
-            </ul> <!-- / menu -->
-
-            <!-- tendina -->
-            <div id="dropdownmenu">
-
-
-                <!-- puntoint -->
-                <div id="submenu_question_mark" class="sottomenu  sottomenu_off">
-                    <div id="_question_markcontent">
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="help">help</template_field>
-                            </li>
-                            <li>
-                                <a href="../help.php" target="_blank">
-                                    <i18n>informazioni</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../credits.php">
-                                    <i18n>credits</i18n>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div> <!-- / puntoint -->
-            </div> <!--/tendina -->
-
-        </div> <!-- / MENU A TENDINA -->
         <!-- PANELLO VIDEO -->
         <div id="rightpanel" class="sottomenu_off rightpanel_view">
             <div id="toprightpanel">

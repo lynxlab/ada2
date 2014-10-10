@@ -8,8 +8,11 @@
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
-        </div> <!-- / testata -->
-
+        </div> 
+        <!-- / testata -->
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu --> 
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -112,18 +115,6 @@
                 </div>
             </div> <!-- /com_tools -->
         </div> <!-- / contenitore -->
-        <!-- MENU A TENDINA -->
-        <div id="mainmenu">
-            <ul id="menu">
-                <li id="selfclose">
-                    <a href="#" onclick="<template_field class="template_field" name="cancel">cancel</template_field>">
-                        <i18n>Annulla</i18n>
-                    </a>
-                </li>
-            </ul>
-
-        </div> <!-- / MENU A TENDINA -->
-
         <!-- PIEDE -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>

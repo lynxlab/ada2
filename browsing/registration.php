@@ -247,11 +247,19 @@ $content_dataAr = array(
   'home'       => $home,
   'data'       => $data,
   'help'       => $help,
-  'menu'       => $menu,
   'message'    => $message,
   'status'     => $status
 );
 
+ if(isset($msg))
+{
+    $help=CDOMElement::create('label');
+    $help->addChild(new CText(translateFN(ltrim($msg))));
+    $divhelp=CDOMElement::create('div');
+    $divhelp->setAttribute('id', 'help');
+    $divhelp->addChild($help);
+    $content_dataAr['help']=$divhelp->getHtml();
+}
 /**
  * Sends data to the rendering engine
  */

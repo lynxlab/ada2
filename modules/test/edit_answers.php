@@ -56,20 +56,9 @@ $form_return = $management->run();
 if (!AMATestDataHandler::isError($question) && !empty($question)) {
 	$get_topic = (isset($_GET['topic'])?'&topic='.$_GET['topic']:'');
 
-	$edit_question_link = CDOMElement::create('a');
-	$edit_question_link->setAttribute('href', MODULES_TEST_HTTP.'/edit_question.php?action=mod&id_question='.$question['id_nodo'].$get_topic);
-	$edit_question_link->addChild(new CText(sprintf(translateFN('Modifica %s'),translateFN('domanda'))));
-	$edit_question_link = $edit_question_link->getHtml();
-
-	$delete_question_link = CDOMElement::create('a');
-	$delete_question_link->setAttribute('href', MODULES_TEST_HTTP.'/edit_question.php?action=del&id_question='.$question['id_nodo'].$get_topic);
-	$delete_question_link->addChild(new CText(sprintf(translateFN('Cancella %s'),translateFN('domanda'))));
-	$delete_question_link = $delete_question_link->getHtml();
-
-	$back_link = CDOMElement::create('a');
-	$back_link->setAttribute('href', MODULES_TEST_HTTP.'/index.php?id_test='.$question['id_nodo_radice'].$get_topic.'#liQuestion'.$question['id_nodo']);
-	$back_link->addChild(new CText(translateFN('Indietro')));
-	$back_link = $back_link->getHtml();
+        /*template fields for new menu*/
+        $edit_question='action=mod&id_question='.$question['id_nodo'].$get_topic;
+        $delete_question='action=del&id_question='.$question['id_nodo'].$get_topic;
 }
 
 // per la visualizzazione del contenuto della pagina
@@ -78,7 +67,7 @@ $banner = include ($root_dir.'/include/banner.inc.php');
 $content_dataAr = array(
         'head'=>$head_form,
         'banner'=>$banner,
-		'path'=>$form_return['path'],
+        'path'=>$form_return['path'],
         'form'=>$form_return['html'],
         'status'=>$form_return['status'],
         'user_name'=>$user_name,
@@ -88,19 +77,12 @@ $content_dataAr = array(
         'title'=>$node_title,
         'course_title'=>$course_title,
         'back'=>$back,
-		'edit_question'=> $edit_question_link,
-		'delete_question'=> $delete_question_link,
-		'back_link'=> $back_link,
+        'edit_question'=> $edit_question,
+        'delete_question'=> $delete_question
 );
 
 $content_dataAr['notes'] = $other_node_data['notes'];
 $content_dataAr['personal'] = $other_node_data['private_notes'];
-
-
-if ($log_enabled)
-    $content_dataAr['go_history'] = $go_history;
-else
-    $content_dataAr['go_history'] = translateFN("cronologia");
 
 if ($reg_enabled) {
     $content_dataAr['add_bookmark'] = $add_bookmark;
@@ -111,28 +93,6 @@ if ($reg_enabled) {
 $content_dataAr['bookmark'] = $bookmark;
 $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
 $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
-
-if ($mod_enabled) {
-    $content_dataAr['add_node'] = $add_node;
-    $content_dataAr['edit_node'] = $edit_node;
-    $content_dataAr['delete_node'] = $delete_node;
-    $content_dataAr['send_media'] = $send_media;
-    $content_dataAr['add_exercise'] = $add_exercise;
-    $content_dataAr['add_note'] = $add_note;
-    $content_dataAr['add_private_note'] = $add_private_note;
-    $content_dataAr['edit_note'] = $edit_note;
-    $content_dataAr['delete_note'] = $delete_note;
-    $content_dataAr['import_exercise'] = $import_exercise;
-} else {
-    $content_dataAr['add_node'] = '';
-    $content_dataAr['edit_node'] = '';
-    $content_dataAr['delete_node'] = '';
-    $content_dataAr['send_media'] = '';
-    $content_dataAr['add_note'] = '';
-    $content_dataAr['add_private_note'] = '';
-    $content_dataAr['edit_note'] = '';
-    $content_dataAr['delete_note'] = '';
-}
 
 if ($com_enabled) {
     $content_dataAr['ajax_chat_link'] = $ajax_chat_link;

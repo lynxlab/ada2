@@ -85,20 +85,7 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
 
 $label = translateFN('Lista corsi');
 $help = translateFN('Da qui il provider admin può vedere la lista dei corsi presenti sul provider');
-$chatrooms_link = '<a href="'.HTTP_ROOT_DIR . '/comunica/list_chatrooms.php">'. translateFN('Lista chatrooms');
 $Li_edit_home_page="";
-if(!MULTIPROVIDER)
-{
-   $Edit_home_page= CDOMElement::create('a','href:'.HTTP_ROOT_DIR .'/admin/edit_content.php');
-   $Edit_home_page->addChild(new CText(translateFN("Edit home page contents")));
-   $li_edit_home_page=CDOMElement::create('li');
-   $li_edit_home_page->addChild($Edit_home_page);
-   $Li_edit_home_page=$li_edit_home_page->getHtml();
-}
-
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
    
 $content_dataAr = array(
     'user_name' => $user_name,
@@ -108,9 +95,7 @@ $content_dataAr = array(
     'help' => $help,
     'data' => $data->getHtml(),
     'module' => $module,
-    'edit_home_page'=>$Li_edit_home_page,
-    'edit_switcher'=>$edit_profile_link->getHtml(),
-    'ajax_chat_link' => $chatrooms_link,
+    'edit_profile'=>$userObj->getEditProfilePage(),
     'messages' => $user_messages->getHtml()
 );
 

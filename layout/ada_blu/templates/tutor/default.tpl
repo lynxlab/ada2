@@ -10,7 +10,9 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
-
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu --> 
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -86,31 +88,9 @@
             </div> <!-- /com_tools -->
 
             <!-- menudestra -->
-            <div id="menuright" class="sottomenu_off menuright_default">
-                <div id="topmenur">
-                </div>
-                <div id="menurightcontent">
-                    <ul>
-                        <li class="close">
-                            <a href="#" onclick="toggleElementVisibility('menuright', 'right');">
-                                </i18n>chiudi</i18n>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div id="bottommenur">
-                </div>
-            </div> <!-- / menudestra  -->
+            <!-- / menudestra  -->
 
         </div> <!-- / contenitore -->
-
-
-        
-        <!-- MENU A TENDINA -->
-        <div id="mainmenu">
-            <template_field class="microtemplate_field" name="mainmenu">mainmenu</template_field>
-        </div>
-        <!-- / MENU A TENDINA -->
 
         <!-- PIEDE -->
         <div id="footer">
