@@ -21,15 +21,8 @@ and open the template in the editor.
 }
 #torna 
 {
-    background: url(../../img/back.png) no-repeat scroll left; 
-    background-position: 0px;
-    display:none;
+   display:none;
 }
-#torna a
-{
-    margin-left: 40px;
-}
-
 .icon_Column 
 { 
     width: 3%;

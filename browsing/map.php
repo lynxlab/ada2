@@ -162,6 +162,7 @@ $content_dataAr = array(
     'title' => translateFN('mappa'),
     'path' => $node_path,
     'data' => $data,
+    'edit_profile'=> $userObj->getEditProfilePage(),
     'help' => $help
 );
 $options = array('onload_func' => "var map = new Map()");

@@ -117,8 +117,7 @@ $content_dataAr = array(
     'title' => translateFN('Modifica dati utente'),
     'data' => $form->getHtml(),
     'help' => $help,
-	'user_avatar'=>$avatar->getHtml(),
-	'user_modprofilelink' => $userObj->getEditProfilePage(),		
-);
+    'user_avatar'=>$avatar->getHtml()
+ );
 
 ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr);

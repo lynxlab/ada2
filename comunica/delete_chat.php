@@ -95,9 +95,6 @@ $label = translateFN('Cancellazione chatroom') .' ' .$chatTitle .', id: ' .$chat
 $label .= ' - ' . translateFN('Classe') . ': ' . $classId;
 $help = translateFN('Da qui il provider admin può cancellare una chat esistente');
 
-$menu_01 = "<a href=" . $http_root_dir . "/comunica/list_chatrooms.php>" . translateFN("lista di chatrooms") . "</a>";
-$menu_02 = "<a href=" . $http_root_dir . "/comunica/create_chat.php>" . translateFN("crea chatroom") . "</a>";
-
 /*
  *
 $content_dataAr = array(
@@ -121,9 +118,7 @@ $content_dataAr =  array( 'banner'=> $banner,
 //                'label' => $label,
                 'course_title'=>$label,
                 'data'=>$data->getHtml(),
-                'error'=> $err_msg,
-                'menu_01'=>$menu_01,
-                'menu_02'=>$menu_02
+                'error'=> $err_msg
                 );
 
 ARE::render($layout_dataAr, $content_dataAr);

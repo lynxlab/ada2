@@ -11,7 +11,9 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
-
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -82,39 +84,7 @@
             </div>
             <!-- /com_tools -->
         </div>
-        <!-- / contenitore -->
-
-        <!-- MENU A TENDINA -->
-        <div id="mainmenu">
-			<!-- menu -->
-            <ul id="menu">
-                <li id="back">
-					<template_field class="template_field" name="back_link">back_link</template_field>
-				</li>
-                <li id="exercise_actions" class="unselectedexercise_actions" onclick="toggleElementVisibility('submenu_exercise_actions','up')">
-                    <a><i18n>agisci</i18n></a>
-                </li>
-			</ul>
-            <!-- / menu -->
-            <!-- tendina -->
-            <div id="dropdownmenu">
-                <!-- azioni -->
-                <div id="submenu_exercise_actions" class="sottomenu sottomenu_off">
-                    <div id="_actionscontent">
-						<ul>
-							<li><template_field class="template_field" name="edit_question">edit_question</template_field></li>
-							<li><template_field class="template_field" name="delete_question">delete_question</template_field></li>
-						</ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-                <!-- / azioni -->
-            </div>
-			<!-- /tendina -->
-        </div>
-        <!-- / MENU A TENDINA -->
-
+        <!-- / contenitore -->        
         <!-- PIEDE -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>

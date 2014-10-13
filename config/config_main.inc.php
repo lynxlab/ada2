@@ -327,10 +327,9 @@ define('ADA_UPDATE_CACHE',  	2); 	//static rw: the node content is read from fil
 										// otherwise it is read from DB and then written back to file
 define('ADA_FORCE_UPDATE_CACHE',3); 	//static rw: the node content  is read from DB and then written back to file
 										
-
-define('JQUERY',				ROOT_DIR.'/js/include/jquery/jquery-1.9.1.min.js');
-define('JQUERY_UI',				ROOT_DIR.'/js/include/jquery/ui/jquery-ui-1.10.3.custom.min.js');
-define('JQUERY_UI_CSS',			ROOT_DIR.'/js/include/jquery/ui/jquery-ui-1.10.3.custom.min.css');
+define('JQUERY',				ROOT_DIR.'/js/include/jquery/jquery-1.11.1.min.js');
+define('JQUERY_UI',				ROOT_DIR.'/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.js');
+define('JQUERY_UI_CSS',			ROOT_DIR.'/js/include/jquery/ui/jquery-ui-1.11.1.custom.min.css');
 define('JQUERY_DATATABLE',		ROOT_DIR.'/js/include/jquery/dataTables/jquery.dataTables.min.js');
 define('JQUERY_MASKEDINPUT',	ROOT_DIR.'/js/include/jquery/maskedinput/jquery.maskedinput.min.js');
 define('JQUERY_DATATABLE_DATE',	ROOT_DIR.'/js/include/jquery/dataTables/dateSortPlugin.js');
@@ -338,3 +337,5 @@ define('JQUERY_DATATABLE_CSS',	ROOT_DIR.'/js/include/jquery/dataTables/jquery.da
 define('JQUERY_NO_CONFLICT',	ROOT_DIR.'/js/include/jquery.noConflict.js');
 define('JQUERY_NIVOSLIDER',		ROOT_DIR.'/js/include/jquery/nivo-slider/jquery.nivo.slider.pack.js');
 define('JQUERY_NIVOSLIDER_CSS', ROOT_DIR.'/js/include/jquery/nivo-slider/nivo-slider.css');
+define('SEMANTICUI_CSS',		ROOT_DIR.'/js/include/semantic/css/semantic.min.css');
+define('SEMANTICUI_JS',	 		ROOT_DIR.'/js/include/semantic/javascript/semantic.min.js');

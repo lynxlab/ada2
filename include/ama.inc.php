@@ -11887,6 +11887,218 @@ public function get_updates_nodes($userObj, $pointer)
       $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
       return $result;
     }
+    
+    /**
+     * @author giorgio 27/ago/2014
+     * 
+     * gets a menu tree_id from the provider database, if not found 
+     * tries the common database and if still a menu tree_id is not
+     * found for the given script, module and user_type tries the default
+     * 
+     * @param string $module (module for the menu. e.g. browsing, comunica, modules/test)
+     * @param string $script (script for the menu, derived from the URL)
+     * @param string $user_type AMA_USER_TYPE
+     * @param number $self_instruction non zero if course is in self instruction mode
+     * @param boolean $get_all set it to true to get also disabled elements. Defaults to false 
+     * 
+     * @return boolean false | array (
+     * 							'tree_id' the menu tree id to be used
+     * 							'isVertical' non zero if this is a vertical menu
+     * 							'dbToUse' the DataHandler where the menu was found
+     * 						   )
+     * 
+     * @access public
+     */   
+    public function get_menutree_id($module, $script, $user_type, $self_instruction=0) {
+    	
+    	$default_module = 'main';    // module name to be used as a default value
+    	$default_script = 'default'; // script name to be used as a default value
+    	$menu_found = false;
+    	$retVal = array();
+    	
+    	// get the query string as an array
+    	$queryStringArr = (strlen($_SERVER['QUERY_STRING'])>0) ? explode('&', $_SERVER['QUERY_STRING']) : array(); 
+    	
+    	$sql = 'SELECT tree_id, script, isVertical, linked_tree_id FROM menu_page WHERE module=? AND script LIKE ? AND user_type=? AND self_instruction=?';
+    	
+    	$common_dh = AMA_Common_DataHandler::instance();
+    	
+    	/**
+    	 * Rules used to look for a menu:
+    	 * - try passed module/script  in current provider, and if nothing is found
+    	 * - try passed module/script  in common  provider, and if nothing is found
+    	 * - try passed module/default in current provider, and if nothing is found
+    	 * - try passed module/default in common  provider, and if nothing is found
+    	 * - try main/default          in current provider, and if nothing is found
+    	 * - try main/default          in common  provider, and if nothing is found
+    	 * - give up.
+    	 */
+    	
+    	foreach (array($module,$default_module) as $nummodule=>$currentModule) {
+    		foreach (array($script,$default_script) as $numscript=>$currentScript) {
+    			// skip main module/passed script as per above rules
+    			if ($nummodule==1 && $numscript==0) continue;
+    			$params = array ($currentModule, $currentScript.'%', $user_type, $self_instruction);
+    			foreach (array($this,$common_dh) as $dbToUse) {
+    				$candidates = $dbToUse->getAllPrepared($sql, $params, AMA_FETCH_ASSOC);
+    				if (!AMA_DB::isError($candidates) && $candidates!==false && count($candidates)>0) {
+    					$bestScore = 0;
+    					$bestNumOfMatchedParams=0;
+    					/**
+    					 * main loop to look for a menu to return
+    					 */
+    					foreach ($candidates as $menuCandidate) {
+    						/**
+    						 * search if there's a query string and
+    						 * load it in the mneuCandidate array
+    						 */
+    						$querypos = strpos($menuCandidate['script'], '?');    						
+							if ($querypos!==false) {
+								$menuCandidate['queryString'] = substr($menuCandidate['script'], $querypos+1);
+							} else {
+								$menuCandidate['queryString'] = null;
+							}
+							
+    						if (is_null($menuCandidate['queryString'])) {
+    							/**
+    							 * if menu candidate has no query string, it's the menu
+    							 * only if it's the only candidate or the url had no query string
+    							 */
+    							if (count($candidates)===1 || count($queryStringArr)===0) {
+    								$menu_found = true;
+    							} else {
+    								/**
+    								 * save the menu as a default for this script,
+    								 * to be returned if nothing more appropriate is found
+    								 */
+    								if ($bestScore <=0) $bestMatch = $menuCandidate;
+    							}
+    						} else {
+    							/**
+    							 * if menu candidate has a query string the menu is
+    							 * the one with the highest number of matching params
+    							 */
+    							
+    							// make the array of the menuCandidate query string
+    							$menuCandidateArr = explode ('&', $menuCandidate['queryString']);
+    							// find matched parameters array
+    							$matchedParams = array_intersect($menuCandidateArr, $queryStringArr);
+    							if (count($matchedParams)>0) {
+    								
+    								$score = count($matchedParams) / count($menuCandidateArr);
+    								
+    								/**
+    								 * if current candidate has a score higher than the bestScore or
+    								 * if it has an equal score but with more mathched parameters,
+    								 * than it is the new best match
+    								 */
+    								
+    								if ($score > $bestScore ||
+    									($score == $bestScore && count($matchedParams)>$bestNumOfMatchedParams)) {
+    									$bestScore = $score;
+    									$bestNumOfMatchedParams = count($matchedParams);
+    									$bestMatch = $menuCandidate;
+    								}
+    							}
+    						}
+    						if ($menu_found) break;
+    					}
+    					/**
+    					 * if nothing is found BUT there's a bestMatch, use it as the menu
+    					 */
+    					if (!$menu_found && isset($bestMatch)) {
+    						$menu_found = true;
+    						$menuCandidate = $bestMatch;
+    					}
+    					if ($menu_found) break;
+    				}
+    			}
+    			if ($menu_found) break;
+    		}
+    		if ($menu_found) break;
+    	}
+        // if no menu has been found return false right away!
+    	if ($menu_found===true) {
+    		$retVal['tree_id'] = $menuCandidate['tree_id'];
+    		$retVal['isVertical'] = $menuCandidate['isVertical'];
+    		$retVal['dbToUse'] = $dbToUse;
+    		// if is a linked tree, set the actual tree_id to the linked one
+    		if (!is_null($menuCandidate['linked_tree_id'])) {
+    			$retVal['tree_id'] = $menuCandidate['linked_tree_id'];
+    			$retVal['linked_from'] = $menuCandidate['tree_id'];
+    		}
+    	} else $retVal = false;
 
+    	return $retVal;
+    }
+    
+    /**
+     * @author giorgio 27/ago/2014
+     * 
+     * gets the left and right submenu trees
+     * 
+     * @param number $tree_id the id of the menu tree to load
+     * @param AMA_DataHandler $dbToUse the data handler to be used, either Common or Tester
+     * @param boolean $get_all set it to true to get also disabled elements.
+     * 
+     * @return array associative, with 'left' and 'right' keys for each submenu tree
+     * 
+     * @access public
+     */
+    public function get_menu_children($tree_id, $dbToUse, $get_all = false) {
+    	$retVal = array();
+    	// get all the first level items, first left and then right side
+    	foreach (array(0=>'left',1=>'right') as $sideIndex=>$sideString) {
 
+    		$sql = 'SELECT MI.*, MT.extraClass AS menuExtraClass FROM `menu_items` AS MI JOIN `menu_tree` AS MT ON '.
+    			   'MI.item_id=MT.item_id WHERE MT.tree_id=? AND MT.parent_id=0 AND MI.groupRight=?';
+    		if (!$get_all) $sql .= ' AND MI.enabledON!="'.Menu::NEVER_ENABLED.'"';
+    		$sql .= ' ORDER BY MI.order ASC';
+	    	
+    		$res = $dbToUse->getAllPrepared($sql,array($tree_id,$sideIndex),AMA_FETCH_ASSOC);
+	    	
+    		if (!AMA_DB::isError($res) && count($res)>0) {
+	    		
+    			foreach ($res as $count=>$element) {
+    				$res[$count]['children'] = $this->get_menu_children_recursive($tree_id,$element['item_id'],$dbToUse,$get_all);
+    			}
+    			$retVal[$sideString] = $res;
+    		} else {
+    			$retVal[$sideString] = null;
+    		}
+    	}
+    	return $retVal;    	    	
+    }
+    
+    /**
+     * @author giorgio 19/ago/2014
+     * 
+     * recursively gets all the children of a given menu item
+     * 
+     * @param number $tree_id the id of the menu tree to load
+     * @param number $parent_id the id of the parent to get children for
+     * @param AMA_DataHandler $dbToUse the data handler to be used, either Common or Tester
+     * @param boolean $get_all set it to true to get also disabled elements.
+     * 
+     * @return array of found children or null if no children found
+     * 
+     * @access private
+     */
+    private function get_menu_children_recursive($tree_id=0,$parent_id,$dbToUse,$get_all) {
+    	
+    	$sql = 'SELECT MI.*, MT.extraClass AS menuExtraClass FROM `menu_items` AS MI JOIN `menu_tree` AS MT ON '.
+    			'MI.item_id=MT.item_id WHERE MT.tree_id=? AND MT.parent_id=?';
+    	if (!$get_all) $sql .= ' AND MI.enabledON!="'.Menu::NEVER_ENABLED.'"';
+    	$sql .= ' ORDER BY MI.order ASC';
+    	
+    	$res = $dbToUse->getAllPrepared($sql,array($tree_id,$parent_id),AMA_FETCH_ASSOC);
+    	
+    	if (AMA_DB::isError($res) || count($res)<=0 || $res===false) return null;
+    	else {
+    		foreach ($res as $count=>$element) {
+    			$res[$count]['children'] = $this->get_menu_children_recursive($tree_id, $element['item_id'], $dbToUse, $get_all);
+    		}    		
+    		return $res;
+    	}
+    }
 }

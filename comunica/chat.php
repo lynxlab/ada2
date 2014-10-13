@@ -183,15 +183,36 @@ if($userObj instanceof ADAPractitioner) {
 }
 else {
   // pass 0 to close the chat window
-  $exit_chat->setAttribute('onclick','exitChat(0,0);');
+  $onclick = 'exitChat(0,0);';
+  $exit_chat->setAttribute('onclick',$onclick);
+}
+
+/*
+* Last access link
+*/
+
+if(isset($_SESSION['sess_id_course_instance'])){
+        $last_access=$userObj->get_last_accessFN(($_SESSION['sess_id_course_instance']),"UT",null);
+        $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  else {
+        $last_access=$userObj->get_last_accessFN(null,"UT",null);
+        $last_access=AMA_DataHandler::ts_to_date($last_access);
+  }
+  
+ if($last_access=='' || is_null($last_access)){
+    $last_access='-';
 }
 
 $content_dataAr = array(
-  'chat'      => $chat->getHtml(),
-  'exit_chat' => $exit_chat->getHtml(),
-  'user_name' => $user_name,
-  'user_type' => $user_type,
-  'status' => translateFN('Chatroom')
+  'chat'       => $chat->getHtml(),
+  'exit_chat'  => $exit_chat->getHtml(),
+  'user_name'  => $user_name,
+  'user_type'  => $user_type,
+  'user_level' => $user_level,
+  'onclick'    => $onclick,
+  'last_visit' => $last_access,
+  'status'     => translateFN('Chatroom')
 );
 
 

@@ -245,22 +245,6 @@ else {
     $edit_exercise = new CText('');
 }
 /*
- * Go back link
-*/
-$navigation_history = $_SESSION['sess_navigation_history'];
-$last_visited_node  = $navigation_history->lastModule();
-$go_back_link = CDOMElement::create('a', "href:$last_visited_node");
-$go_back_link->addChild(new CText(translateFN('Indietro')));
-
-/*
- * Edit user link
- */
-
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
-/*
  * Last access link
  */
 
@@ -287,13 +271,12 @@ $content_dataAr = array(
         'visited' => '-',
         'icon' => $icon,
         'text' => $dataHa['exercise'],
-        'go_back' => $go_back_link->getHtml(),
         'edit_exercise' => $edit_exercise->getHtml(),
         'title' => $nodeObj->name,
         'author' => $nodeObj->author['username'],
         'node_level' => 'livello nodo',
         'messages' => $user_messages->getHtml(),
-        'edit_user'=> $edit_profile_link->getHtml(),
+        'edit_profile'=> $userObj->getEditProfilePage(),
         'last_visit' => $last_access,
         'agenda' => $user_agenda->getHtml(),
         //'course_title' => '',

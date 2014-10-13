@@ -99,10 +99,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 $help = translateFN('Da qui il provider admin può iscrivere uno studente già registrato alla classe selezionata');
 
-$edit_profile=$userObj->getEditProfilePage();
-$edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
 /*
  * OUTPUT
  */
@@ -113,7 +109,6 @@ $content_dataAr = array(
     'status' => $status,
     'user_name' => $user_name,
     'user_type' => $user_type,
-    'edit_switcher'=>$edit_profile_link->getHtml(),
     'menu' => $menu,
     'help' => $help,
     'data' => $data->getHtml(),

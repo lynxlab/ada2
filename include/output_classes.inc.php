@@ -21,7 +21,7 @@
  */
 class ARE
 {
-  public static function render($layout_dataAr = array(), $content_dataAr = array(), $renderer=NULL, $options=array()) {
+  public static function render($layout_dataAr = array(), $content_dataAr = array(), $renderer=NULL, $options=array(), $menuoptions=array()) {
 
   	/**
   	 * @author giorgio 03/apr/2014
@@ -64,7 +64,7 @@ class ARE
         $meta_refresh_time = isset($options['meta_refresh_time']) ? $options['meta_refresh_time'] : '';
         $meta_refresh_url  = isset($options['meta_refresh_url'])  ? $options['meta_refresh_url'] : '';
         $onload_func       = isset($options['onload_func'])       ? $options['onload_func'] : '';
-        $static_dir        = isset($options['static_dir'])         ? $options['static_dir'] : ROOT_DIR.'services/media/cache/';
+        $static_dir        = isset($options['static_dir'])        ? $options['static_dir'] : ROOT_DIR.'services/media/cache/';
 
         $html_renderer = new HTML($layout_template, $layout_CSS, $user_name, $course_title,
                                   $node_title, $meta_keywords, $author, null,
@@ -156,39 +156,59 @@ class ARE
         $layout_template = $layoutObj->template;
         $layout_CSS      = $layoutObj->CSS_filename;
 
+        /**
+         * @author giorgio 19/ago/2014
+         * 
+         * fix javascript inclusion as follows:
+         * - if the PhP has not included JQUERY, include it as first element
+         * - if the PhP has not included SEMANTICUI_JS, include it just after JQUERY
+         * - if the PhP has not included JQUERY_NO_CONFLICT include it as last element
+         * 
+         * This way, any PhP can include what it needs and in the right order of inclusion
+         */
 		if (!empty($layout_dataAr['JS_filename']) && is_array($layout_dataAr['JS_filename'])) {
-			/**
-             * @author giorgio 25/set/2013
-             * jquery and jquery-noconflict inclusion if there's at least one widget
-             * and if inclusion has not been requested by the file that's being rendered already
-			 */
-			if (!is_null($layoutObj->WIDGET_filename)) {
-				if (!in_array(JQUERY, $layout_dataAr['JS_filename'])) array_push($layout_dataAr['JS_filename'], JQUERY);
-				if (!in_array(JQUERY_NO_CONFLICT, $layout_dataAr['JS_filename'])) array_push($layout_dataAr['JS_filename'], JQUERY_NO_CONFLICT);
+			
+			// if jquery is not included in the script itself, add it at first position
+			if (!in_array(JQUERY, $layout_dataAr['JS_filename'])) $layout_dataAr['JS_filename'] = array_merge(array(JQUERY),$layout_dataAr['JS_filename']);
+			
+			// if semantic ui is not included in the script itself, add it just after JQUERY
+			if (!in_array(SEMANTICUI_JS, $layout_dataAr['JS_filename'])) {
+				// find the key for JQUERY
+				$key = array_search(JQUERY, $layout_dataAr['JS_filename']);
+				// add SEMANTIC after JQUERY slicing the original array
+				$layout_dataAr['JS_filename'] = array_merge(
+						array_slice($layout_dataAr['JS_filename'], 0, $key+1),
+						array(SEMANTICUI_JS),
+						array_slice($layout_dataAr['JS_filename'], $key+1)
+				);
 			}
+			
+			// if jquery noconflict is not included in the script itself, add it at last position
+			if (!in_array(JQUERY_NO_CONFLICT, $layout_dataAr['JS_filename'])) array_push($layout_dataAr['JS_filename'], JQUERY_NO_CONFLICT);
+			
 			$tmp = explode(';',$layoutObj->JS_filename);
 			$tmp = array_merge($tmp,$layout_dataAr['JS_filename']);
 			//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
 			$layoutObj->JS_filename = implode(';',$tmp);
 		} else {
-			/**
-			 * @author giorgio 25/set/2013 
-			 * jquery and jquery-noconflict inclusion if there's at least one widget
-			 */
-			if (!is_null($layoutObj->WIDGET_filename))
-			{ 
-				// see above, inclusion is made already imploded
-				$layoutObj->JS_filename .= ';'.JQUERY.';'.JQUERY_NO_CONFLICT;
-			}
+			// add jquery, semantic and jquery noconflict
+			$layoutObj->JS_filename .= ';'.JQUERY.';'.SEMANTICUI_JS.';'.JQUERY_NO_CONFLICT;
 		}
 
-		if (!empty($layout_dataAr['CSS_filename']) && is_array($layout_dataAr['CSS_filename'])) {
-			$tmp = explode(';',$layoutObj->CSS_filename);
+		$tmp = explode(';',$layoutObj->CSS_filename);
+				
+		if (!empty($layout_dataAr['CSS_filename']) && is_array($layout_dataAr['CSS_filename'])) {			
 			$tmp = array_merge($tmp,$layout_dataAr['CSS_filename']);
-			//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
-			$layoutObj->CSS_filename = implode(';',$tmp);
-			$layout_CSS = implode(';',$tmp);
 		}
+		/**
+		 * @author giorgio 06/ago/2014
+		 * add semantic css last
+		 */
+		if (defined('SEMANTICUI_CSS')) $tmp[] = SEMANTICUI_CSS;
+			
+		//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
+		$layoutObj->CSS_filename = implode(';',$tmp);
+		$layout_CSS = implode(';',$tmp);
 
         /*
          * optional arguments for HTML constructor
@@ -202,6 +222,18 @@ class ARE
         $meta_refresh_url  = isset($options['meta_refresh_url'])  ? $options['meta_refresh_url'] : '';
         $onload_func       = isset($options['onload_func'])       ? $options['onload_func'] : '';
 
+        /**
+         * @author giorgio 19/ago/2014
+         *
+         * make menu here
+         */
+        require_once ROOT_DIR.'/include/menu_class.inc.php';
+        // menu property created 'on-the-fly' 
+        $layoutObj->menu = new Menu($layoutObj->module_dir,
+        		basename(($_SERVER['SCRIPT_FILENAME'])),
+        		$_SESSION['sess_userObj']->getType(),
+        		$menuoptions);
+        
         if ($renderer == ARE_PDF_RENDER) {
         	
         	$orientation   = isset($options['orientation'])       ? $options['orientation'] : '';
@@ -227,6 +259,14 @@ class ARE
         	if (!ADA_Error::isError($widgets_dataAr))
         		$content_dataAr = array_merge ($content_dataAr, $widgets_dataAr);		
         }                
+
+        /**
+         * adamenu must be the first key of $content_dataAr
+         * for the template_field substitution to work inside the menu
+         */
+        $content_dataAr = array ('adamenu'=>$layoutObj->menu->getHtml()) + $content_dataAr;        
+        $content_dataAr['isVertical'] = ($layoutObj->menu->isVertical()) ? ' vertical' : '';
+
         $html_renderer->fillin_templateFN($content_dataAr);
 
         $imgpath = (dirname($layout_template));
@@ -393,28 +433,6 @@ class  Generic_Html extends Output
       $tpl = $this->include_microtemplates();
     }
     // $tpl = $this->include_microtemplates_tree();
-    /*
-    * traduzione dei template
-    * vito, 15 ottobre 2008: parse del template per tradurre il testo contenuto nella lingua dell'utente
-    */
-    // ottiene tutto il testo marcato per la traduzione
-    $matches=array();
-    preg_match_all('/<i18n>(.*)<\/i18n>/', $tpl, $matches);
-    // costruisce l'array contenente il testo tradotto
-    $pattern = array();
-    $translated_text = array();
-    foreach( $matches[1] as $match => $text )
-    {
-      $quoted_text = preg_quote($text,'/');
-      $pattern[$match] = "/<i18n>$quoted_text<\/i18n>/";
-      $translated_text[$match] = translateFN($text);
-    }
-    // sostituisce nel template il testo tradotto al testo originale
-    $tpl = preg_replace( $pattern, $translated_text, $tpl);
-
-    /*
-     * fine della traduzione
-     */
 
     foreach ($dataHa as $field=>$data){
 
@@ -443,6 +461,29 @@ class  Generic_Html extends Output
     // removing extra template fields that don't match
     $ereg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",$this->replace_field_code);
     $tpl = eregi_replace($ereg,"<!-- template_field_removed -->",$tpl);
+    
+    /*
+     * traduzione dei template
+     * vito, 15 ottobre 2008: parse del template per tradurre il testo contenuto nella lingua dell'utente
+     */
+    // ottiene tutto il testo marcato per la traduzione
+    $matches=array();
+    preg_match_all('/<i18n>(.*)<\/i18n>/', $tpl, $matches);
+    // costruisce l'array contenente il testo tradotto
+    $pattern = array();
+    $translated_text = array();
+    foreach( $matches[1] as $match => $text )
+    {
+    	$quoted_text = preg_quote($text,'/');
+    	$pattern[$match] = "/<i18n>$quoted_text<\/i18n>/";
+    	$translated_text[$match] = translateFN($text);
+    }
+    // sostituisce nel template il testo tradotto al testo originale
+    $tpl = preg_replace( $pattern, $translated_text, $tpl);
+    /*
+     * fine della traduzione
+     */
+    
     $this->htmlbody = $tpl;
 
   }
@@ -1138,7 +1179,17 @@ EOT;
         <meta name=\"template\" content=\"$template_name\">
         <meta name=\"family\" content=\"$family_name\">
         <meta name=\"module\" content=\"$module_dir\">
-        <meta name=\"widgets\" content=\"$widget_filename\">
+        <meta name=\"widgets\" content=\"$widget_filename\">";
+        if (isset($layoutObj->menu)) { 
+        	$this->htmlheader .= "
+        <meta name=\"menu\" content=\"".$layoutObj->menu->getId()."\"";
+        	if (!is_null($layoutObj->menu->getLinkedFromId())) {
+        		$this->htmlheader .= " linked-from=\"".$layoutObj->menu->getLinkedFromId()."\"";
+        	}
+        	$this->htmlheader .= ">";
+        }
+        
+        $this->htmlheader .= "
         <meta name=\"class\" content=\"HTML\">
         <meta name=\"outputClasses\" content=\"NEW\">
         <meta name=\"description\" content=\"$description\">

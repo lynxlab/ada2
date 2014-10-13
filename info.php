@@ -475,8 +475,6 @@ else {
 }
 $title = translateFN('Corsi ai quali puoi iscriverti');
 $help = '';
-$homeUser = $userObj->getHomePage();
-$link_to_home = BaseHtmlLib::link($homeUser, translateFN('Home'));
 
 $content_dataAr = array(
     'course_title' => $title,
@@ -485,8 +483,7 @@ $content_dataAr = array(
     'status' => $status,
     'label' => $label,
     'help' => $help,
-    'data' => $data->getHtml(),
-    'home' => $link_to_home->getHtml()
+    'data' => $data->getHtml()
 );
 
 /**

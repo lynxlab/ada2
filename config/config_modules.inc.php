@@ -62,4 +62,18 @@
 	}
 	
 	
+        //defines for module impexport
+        define ('MODULES_IMPEXPORT_PATH', MODULES_DIR.'/impexport');
+        if (file_exists(MODULES_IMPEXPORT_PATH.'/import.php'))
+	{
+		require_once(MODULES_IMPEXPORT_PATH.'/config/config.inc.php');
+	
+		define('MODULES_IMPEXPORT', true);
+		define('MODULES_IMPEXPORT_HTTP', HTTP_ROOT_DIR.'/modules/impexport');
+	}
+	else {
+		define('MODULES_IMPEXPORT', false);
+	}
+   
+
 ?>

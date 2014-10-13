@@ -11,6 +11,12 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
+        <!-- menu -->
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+        <!-- / menu -->
+        <!-- help -->
+            <template_field class="template_field" name="help">help</template_field>  
+        <!-- / help -->     
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->
@@ -144,322 +150,89 @@
             </div>
             <!-- /com_tools -->
             <!-- menudestra -->
-            <div id="menuright" class="sottomenu_off menuright_view"> 
-                <div id="topmenur">
-                </div>
+            <!-- <div id="menuright" class="sottomenu_off menuright_view "> -->
+            <div id="menuright" class="menuright_view ui wide right sidebar">
+              <h3 class="ui teal block dividing center aligned  header"><i class="globe icon"></i><i18n>Naviga</i18n></h3>
                 <div id="menurightcontent">
-                    <ul>
-                        <li class="close">
-                            <a href="#" onClick="toggleElementVisibility('menuright', 'right');">
-                                <i18n>chiudi</i18n>
-                            </a>
-                        </li>
-                        <!--li class="_menu">
-                                <template_field class="template_field_disabled" name="main_index">main_index</template_field>
-                        </li-->
-                        <li class="_menu">
-                                <template_field class="template_field" name="main_index_text">main_index_text</template_field>
-                        </li>
-                        <li class="_menu">
-							<template_field class="template_field" name="search_form">search_form</template_field>
-                        </li>
-                        <!--li class="_menu">
-							<template_field class="template_field" name="go_map">go_map</template_field>
-                        </li-->
-                    </ul>
-                    <ul id="attachment">
-                        <li class="_name">
-                        <i18n>approfondimenti</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="index">index</template_field>
-                            </li>
-                        </ul>
-                        <li class="_name">
-                        <i18n>collegamenti</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="link">link</template_field>
-                            </li>
-                        </ul>
-                        <li class="_name">
-                        <i18n>esercizi</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="exercises">exercises</template_field>
-                            </li>
-                        </ul>
-                        <li class="_name">
-                        <i18n>risorse</i18n>
-                        </li>
-                        <ul>
-                            <li>
-                            <template_field class="template_field" name="media">media</template_field>
-                            </li>
-                        </ul>
-                        <!-- li class="_name">
-                        <i18n>media di classe</i18n>
-                        </li -->
-                        <!-- ul>
-                            <li>
-                            <template_field class="template_field_disabled" name="user_media">user_media</template_field>
-                            </li>
-                        </ul -->
-                        <!-- "li class="_name">
-                        <i18n>note di classe</i18n>
-                        </li -->
-                        <!-- ul>
-                            <li>
-                            <template_field class="template_field_disabled" name="notes">notes</template_field>
-                            </li>
-                        </ul -->
-                        <!-- li class="_name">
-                        <i18n>note personali</i18n>
-                        </li -->
-                        <!-- ul>
-                            <li>
-                            <template_field class="template_field_disabled" name="personal">personal</template_field>
-                            </li>
-                        </ul -->
-                    </ul>
+                  <div class="ui right labeled icon mini fluid top attached button"  onclick="javascript: hideSideBarFromSideBar();">
+                    <i class="close icon"></i><i18n>Chiudi</i18n>
+                  </div>
+                  <!-- accordion -->
+                  <div class="ui attached segment accordion">
+                  
+			       <div class="title" onClick="showIndex();">
+			         <i class="icon dropdown"></i>
+			         <i18n>indice</i18n><i class="sitemap icon" style="float:right;"></i>
+			       </div>
+			       <div class="content field">
+			         <div id="show_index">
+			             <div class="loader-wrapper">
+			                 <div class="ui active inline mini text loader">
+			                     <i18n>Caricamento</i18n>...
+			                  </div>
+			             </div>
+                     </div>
+			       </div>
+ 
+                   <div class="active title">
+                     <i class="icon dropdown"></i>
+                     <i18n>azioni</i18n> <i class="edit sign icon"></i> 
+                   </div>
+                   <div class="active content field">
+                     <template_field class="template_field" name="edit_node">edit_node</template_field>
+                     <template_field class="template_field" name="delete_node">delete_node</template_field>
+                     <!-- 
+                       <template_field class="template_field_disabled" name="add_exercise">add_exercise</template_field>
+                      -->  
+                     <template_field class="template_field" name="add_note">add_note</template_field>
+                     <template_field class="template_field" name="add_private_note">add_private_note</template_field>
+                     <template_field class="template_field" name="edit_note">edit_note</template_field>
+                     <template_field class="template_field" name="delete_note">delete_note</template_field>
+                     <template_field class="template_field" name="publish_note">publish_note</template_field>
+                     <!--
+                       <template_field class="template_field_disabled" name="go_XML">go_XML</template_field> 
+                     -->
+                      <template_field class="template_field" name="go_map">go_map</template_field>
+                   </div>
+                      
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>approfondimenti</i18n><i class="pin icon"></i>
+                   </div>
+                   <div class="content field">
+                     <template_field class="template_field" name="index">index</template_field>
+                   </div>
+                   
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>collegamenti</i18n><i class="url icon"></i>
+                   </div>
+                   <div class="content field">
+                       <template_field class="template_field" name="link">link</template_field>
+                   </div>
+                   
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>esercizi</i18n><i class="text file outline icon"></i>
+                   </div>
+                   <div class="content field">
+                     <template_field class="template_field" name="exercises">exercises</template_field>
+                   </div>
+                   
+                   <div class="title">
+                     <i class="icon dropdown"></i>
+                     <i18n>risorse</i18n><i class="browser icon"></i>
+                   </div>
+                   <div class="content field">
+                     <template_field class="template_field" name="media">media</template_field>
+                   </div>
+                  </div>
+                  <!-- /accordion -->  
                 </div>
-                <div id="bottommenur">
-                </div>
-            </div>
             <!-- / menudestra  -->
-        </div>
+            </div>
         <!-- / contenitore -->
 
-        <!-- menu -->
-        <div id="mainmenu">
-            <ul id="menu">
-                <li id="home">
-                    <a href="user.php">
-                        <i18n>home</i18n>
-                    </a>
-                </li>
-                <li id="com" class="unselectedcom" onClick="toggleElementVisibility('submenu_com','up')">
-                    <a>
-                        <i18n>comunica</i18n>
-                    </a>
-                </li>
-                <li id="tools" class="unselectedtools" onClick="toggleElementVisibility('submenu_tools','up')">
-                    <a>
-                        <i18n>strumenti</i18n>
-                    </a>
-                </li>
-                <li id="actions" class="unselectedactions" onClick="toggleElementVisibility('submenu_actions','up')">
-                    <a>
-                        <i18n>agisci</i18n>
-                    </a>
-                </li>
-                <li id="ancora_menuright" onClick="toggleElementVisibility('menuright', 'right');">
-                    <a>
-                        <i18n>Naviga</i18n>
-                    </a>
-                </li>
-                <li id="question_mark" class="unselectedquestion_mark" onClick="toggleElementVisibility('submenu_question_mark','up'); return false;">
-                    <a>
-                        <i18n>Help</i18n>
-                    </a>
-                </li>
-                <li id="esc">
-                    <a href="../index.php">
-                        <i18n>esci</i18n>
-                    </a>
-                </li>
-            </ul>
-            <!-- / menu -->
-
-            <!-- notifiche eventi -->
-            <template_field class="template_field" name="events">events</template_field>
-            <!-- / notifiche eventi -->
-            <!-- tendina -->
-            <div id="dropdownmenu">
-                <!-- comunica -->
-                <div id="submenu_com" class="sottomenu sottomenu_off">
-                    <div id="_comcontent">
-                        <ul>
-                            <li>
-                                <a href="#" onclick='openMessenger("../comunica/list_messages.php",800,600);'>
-                                    <i18n>messaggeria</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="main_index.php?op=forum">
-                                    <i18n>forum</i18n>
-                                </a>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="chat">chat</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="video_chat">video_chat</template_field>
-                            </li>
-                            <li>
-                                <a href="download.php">
-                                    <i18n>collabora</i18n>
-                                </a>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-                <!-- / comunica -->
-                <!-- strumenti -->
-                <div id="submenu_tools" class="sottomenu sottomenu_off">
-                    <div id="_toolscontent">
-                        <ul>
-                            <li>
-                                <a href="#" onclick='openMessenger("../comunica/list_events.php",800,600);'>
-                                    <i18n>agenda</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="mylog.php">
-                                    <i18n>diario</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="history.php">
-                                    <i18n>cronologia</i18n>
-                                </a>
-                            </li>
-							<li>
-                                <template_field class="template_field" name="exercise_history">exercise_history</template_field>
-                            </li>
-							<li>
-                                <template_field class="template_field" name="test_history">test_history</template_field>
-                            </li>
-							<li>
-                                <template_field class="template_field" name="survey_history">survey_history</template_field>
-                            </li>
-                            <!--
-                            <li>
-                                <a href="lemming.php">
-                                    <i18n>lessico</i18n>
-                                </a>
-                            </li>
-                            -->
-                            <li>
-                                <a href="search.php">
-                                    <i18n>cerca</i18n>
-                                </a>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="go_print">go_print</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="bookmarks">bookmarks</template_field>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-                <!-- / strumenti -->
-                <!-- azioni -->
-                <div id="submenu_actions" class="sottomenu sottomenu_off">
-                    <div id="_actionscontent">
-                        <ul>
-                            <li>
-                                <a href="edit_user.php">
-                                    <i18n>Modifica il tuo profilo</i18n>
-                                </a>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="send_media">send_media</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="add_bookmark">add_bookmark</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="add_node">add_node</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="add_word">add_word</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="edit_node">edit_node</template_field>
-                            </li>
-                            <!-- versione con JS di controllo... ma dov'è?
-                            <li>
-                                <a href="#" onclick="<template_field class="template_field_disabled" name="delete_node">delete_node</template_field>">
-                                    <i18n>Elimina nodo</i18n>
-                                </a>
-                            </li>
-                            -->
-                            <!-- version direttaa.... -->
-                            <li>
-                            <template_field class="template_field" name="delete_node">delete_node</template_field>
-                            </li>
-
-                            <li>
-                            <template_field class="template_field" name="add_exercise">add_exercise</template_field>
-                            </li>
-							<li>
-                            <template_field class="template_field" name="add_test">add_test</template_field>
-                            </li>
-							<li>
-                            <template_field class="template_field" name="add_survey">add_survey</template_field>
-							</li>
-                            <li>
-                            <template_field class="template_field" name="add_note">add_note</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="add_private_note">add_private_note</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="edit_note">edit_note</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="delete_note">delete_note</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="publish_note">publish_note</template_field>
-                            </li>
-                            <li>
-                            <template_field class="template_field" name="go_XML">go_XML</template_field>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-                <!-- / azioni -->
-                <!-- puntoint -->
-                <div id="submenu_question_mark" class="sottomenu  sottomenu_off">
-                    <div id="_question_markcontent">
-                        <ul>
-                            <li>
-                            <!--template_field class="template_field" name="help">help</template_field-->
-                            </li>
-                            <li>
-                                <a href="../help.php" target="_blank">
-                                    <i18n>informazioni</i18n>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../credits.php">
-                                    <i18n>credits</i18n>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="bottomsubmenu">
-                    </div>
-                </div>
-                <!-- / puntoint -->
-            </div>
-            <!--/tendina -->
-
-        </div>
-        <!-- / menu a tendina -->
         <!-- pannello video -->
         <div id="rightpanel" class="sottomenu_off rightpanel_view">
             <div id="toprightpanel">

@@ -127,6 +127,6 @@ $content_dataAr = array(
   'module'       => $module,
   'messages'     => $user_messages->getHtml()
 );
-
-ARE::render($layout_dataAr, $content_dataAr);
+$menuOptions['id_tester'] = $id_tester;
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
 ?>

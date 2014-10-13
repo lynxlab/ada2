@@ -7,8 +7,7 @@
  * @version	0.1
  */
  require_once(dirname(__FILE__).'/../include/AMAImpExportDataHandler.inc.php');
- define ('MODULES_IMPEXPORT_PATH', MODULES_DIR.'/impexport');
-  
+ 
  define ('XML_EXPORT_FILENAME', 'ada_export.xml');
  define ('MODULES_IMPEXPORT_LOGDIR' , ROOT_DIR.'/log/impexport/');
  

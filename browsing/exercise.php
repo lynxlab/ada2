@@ -221,42 +221,21 @@ switch($op) {
 */
 if($id_profile == AMA_TYPE_AUTHOR) {
     /*
-     * build the link for the Delete operation, that when confirmed.
+     * build onclick event for new menu.
     */
 
     $link   = HTTP_ROOT_DIR. '/services/edit_exercise.php?op=delete';
     $text   = addslashes(translateFN('Confermi cancellazione esercizio?'));
-    $delete = "<a href=\"#\" onclick=\"confirmCriticalOperationBeforeRedirect('$text','$link')\">".
-            translateFN('Elimina esercizio').'</a>';
-
-    $edit_exercise = CDOMElement::create('ul');
-    $li_edit = CDOMElement::create('li');
-    $href = HTTP_ROOT_DIR . '/services/edit_exercise.php';
-    $edit_link = CDOMElement::create('a',"href:$href?op=edit");
-    $edit_link->addChild(new CText(translateFN('Modifica esercizio')));
-    $li_edit->addChild($edit_link);
-    $li_delete = CDOMElement::create('li');
-//    $delete_link = CDOMElement::create('a', "href:$href?op=delete");
-//    $delete_link->addChild(new CText(translateFN('Elimina esercizio')));
-//    $li_delete->addChild($delete_link);
-    $li_delete->addChild(new CText($delete));
-    $edit_exercise->addChild($li_edit);
-    $edit_exercise->addChild($li_delete);
+    $onclick="confirmCriticalOperationBeforeRedirect('$text','$link')";
+   
 }
 else {
     $edit_exercise = new CText('');
 }
-/*
- * Go back link
-*/
-$navigation_history = $_SESSION['sess_navigation_history'];
-$last_visited_node  = $navigation_history->lastModule();
-$go_back_link = CDOMElement::create('a', "href:$last_visited_node");
-$go_back_link->addChild(new CText(translateFN('Indietro')));
 
 /*
  * Output
-*/
+ */
 $content_dataAr = array(
         'path' => $nodeObj->findPathFN(),
         'user_name' => $user_uname,
@@ -265,8 +244,7 @@ $content_dataAr = array(
         'visited' => '-',
         'icon' => $icon,
         'text' => $dataHa['exercise'],
-        'go_back' => $go_back_link->getHtml(),
-        'edit_exercise' => $edit_exercise->getHtml(),
+        'onclick'=> $onclick,
         'title' => $nodeObj->name,
         'author' => $nodeObj->author['username'],
         'node_level' => 'livello nodo',
@@ -276,4 +254,5 @@ $content_dataAr = array(
         //'media' => 'media',
 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+$menuOptions['id_node'] = $id_node;
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);

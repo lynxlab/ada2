@@ -8,8 +8,19 @@
 <a name="top">
 </a>
 <div id="header">
-		 <template_field class="microtemplate_field" name="header_com">header_com</template_field>
+    <template_field class="microtemplate_field" name="header_com">header_com</template_field>
 </div> 
+<!-- menu -->
+    <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+<!-- / menu --> 
+<!-- PERCORSO -->
+<div id="journey">
+<i18n>dove sei: </i18n>
+    <span>
+        <i18n>messaggeria</i18n>
+    </span>
+</div> 
+<!-- / percorso -->
 <!-- contenitore -->
 <div id="container">
 <div id="user_wrap">
@@ -88,56 +99,7 @@
     </div>
     </div> <!--  / contenuto -->
 </div> <!-- / contenitore -->
-<!-- MENU -->
-<div id="mainmenucom">
-<ul id="menu">
-		
-		<li id="list">
-				<a href="list_messages.php">
-            <i18n>lista messaggi</i18n>
-        </a>
-		</li>
-		<li id="actions_read" class="unselectedactions_read" onClick="toggleElementVisibility('submenu_actions_read','up')">
-				<a>
-					 <i18n>azioni</i18n>
-				</a>
-		</li>
-		<li id="selfclose">
-				<a href="#" onClick="closeMeAndReloadParent();"><i18n>chiudi</i18n></a> 
-		</li>
-</ul> <!-- / menu -->
-<! -- PERCORSO -->
-<div id="journey">
-		 <i18n>dove sei: </i18n>
-		 <span>
-		 			 <i18n>messaggeria</i18n>
-		 </span>
-	</div> <!-- / percorso -->
-<!-- tendina -->
-<div id="dropdownmenu">
-<! -- azioni -->
-<div id="submenu_actions_read" class="sottomenu sottomenu_off">
-<div id="_actionscontent">
-                    <ul>
-                    		<li>
-                    		    <template_field class="template_field" name="menu_01">menu_01</template_field> 
-                    		</li>		
-                      	<li>
-                    				<template_field class="template_field" name="menu_02">menu_02</template_field>  
-                      	</li>
-                    		<li>
-                    				<template_field class="template_field" name="menu_03">menu_03</template_field> 	
-                        </li>
-                    		<li>
-                    				<template_field class="template_field" name="menu_04">menu_04</template_field>
-                    		</li>
-										</ul>
-</div>
-<div class="bottomsubmenu">
-</div>
-</div><!-- / azioni -->
-</div> <! --/tendina -->
-</div> <!-- / MENU -->
+
 <!-- PIEDE -->
 <div id="footer">
 		 <template_field class="microtemplate_field" name="footer">footer</template_field>

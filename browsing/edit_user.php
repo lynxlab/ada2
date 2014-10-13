@@ -319,63 +319,13 @@ else
     $self = whoami();
 }
 $maxFileSize = (int) (ADA_FILE_UPLOAD_MAX_FILESIZE / (1024*1024));
-$edit_profile=$userObj->getEditProfilePage();
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {
-	$layout_dataAr['CSS_filename'][]=  ROOT_DIR.'/layout/'.$template_family.'/css/browsing/edit_user.css';
-	$layout_dataAr['JS_filename'][]=  ROOT_DIR.'/js/browsing/edit_user.js';
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
-} else {
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
-}
-
-$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
-
-/*
- * Home Page
- */
-
-
-
-/*
- * link corsi
- */
-$corsi=CDOMElement::create('a','href:../info.php');
-$corsi->addChild(new CText(translateFN('Corsi')));
-$corsi=$corsi->getHtml();
-
-
-
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) 
+{
+    $layout_dataAr['CSS_filename'][]=  ROOT_DIR.'/layout/'.$template_family.'/css/browsing/edit_user.css';
+    $layout_dataAr['JS_filename'][]=  ROOT_DIR.'/js/browsing/edit_user.js';
+} 
 $navigation_history = $_SESSION['sess_navigation_history'];
 $last_visited_node  = $navigation_history->lastModule();
-
-
-/*
- * link Naviga
- */
-$naviga=CDOMElement::create('a','#');
-$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
-$naviga->addChild(new CText(translateFN('Naviga')));
-$naviga=$naviga->getHtml();
-
-/*
- * Go back link
- */
-$navigation_history = $_SESSION['sess_navigation_history'];
-$last_visited_node  = $navigation_history->lastModule();
-$go_back_link = CDOMElement::create('a', 'href:'.$last_visited_node);
-//$go_back_link ->setAttribute('class', 'positionNaviga');
-$go_back_link->addChild(new CText(translateFN('Naviga')));
-$go_back_link=$go_back_link->getHtml();
-
-if(!strstr($last_visited_node,'main_index.php'))
-{
-    $naviga='';
-}
- else 
-{
-    $corsi='';
-    $naviga=$go_back_link;
-}
 
 /**
  * do the form have to be submitted with an AJAX call?
@@ -404,9 +354,9 @@ if(isset($_SESSION['sess_id_course_instance']))
     $last_access=AMA_DataHandler::ts_to_date($last_access);
 }
  else {
-     $last_access=$userObj->get_last_accessFN(null,"UT",null);
-     $last_access=AMA_DataHandler::ts_to_date($last_access);
-     $user_level=translateFN('Nd');
+    $last_access=$userObj->get_last_accessFN(null,"UT",null);
+    $last_access=AMA_DataHandler::ts_to_date($last_access);
+    $user_level=translateFN('Nd');
  }
  if($last_access=='' || is_null($last_access)){
     $last_access='-';
@@ -420,18 +370,15 @@ $content_dataAr = array(
     'status' => $status,
     'course_title' => translateFN('Modifica profilo'),
     'data' => $data,
-    //'last_visit' => $userObj->get_last_accessFN(),
     'last_visit' => $last_access,
     'help' => $help,
-    'corsi'=>$corsi,
-    'user_level'=>$user_level,
-    //'edit_profile'=> $edit_profile_link->getHtml(),
-    'naviga'=>$naviga
-);
+    'user_level'=>$user_level
+    );
 
 /**
  * If it's a switcher the renderer is called by switcher/edit_user.php
  */
 if ($userObj->getType() != AMA_TYPE_SWITCHER) {
-	ARE::render($layout_dataAr, $content_dataAr,NULL, $optionsAr);
+        $menuOptions['self_instruction'] = $self_instruction;
+	ARE::render($layout_dataAr, $content_dataAr,NULL, $optionsAr,$menuOptions);
 }

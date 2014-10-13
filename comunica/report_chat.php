@@ -85,10 +85,8 @@ if (empty($media_path))
 
 $banner = include ("$root_dir/include/banner.inc.php");
 
-
-$chat_link = '<a href="'.$http_root_dir.'/comunica/chat.php?id_room='.$id_chatroom.'&id_course='.$id_course
-        .'" target=_blank>'.translateFN('chat').'</a>';
-
+$menuOptions['id_room']=$id_chatroom;
+$menuOptions['id_course']=$id_course;
 // $op
 switch ($op){
     case 'rooms':
@@ -138,16 +136,15 @@ switch ($op){
                 $summary = translateFN("Chat fino al $ymdhms");
                 $tObj->setTable($chat_dataAr,$caption,$summary);
                 $tabled_chat_dataHa = $tObj->getTable();
-                $menu_03 =  "<a href=" . $http_root_dir . "/comunica/report_chat.php?id_instance=$sess_id_course_instance&id_course=$sess_id_course&op=export&days=$days>" . translateFN("esporta testo") . "</a>";
-                $menu_06 = "<a href=" . $http_root_dir . "/comunica/report_chat.php?id_chatroom=$sess_id_course_instance&id_course=$sess_id_course&op=exportTable&days=$days>" . translateFN("esporta foglio") . "</a>";
-
+                $menuOptions['id_instance']=$sess_id_course_instance;
+                $menuOptions['id_course']=$id_course;
+                $menuOptions['days']=$days;
+                $menuOptions['id_chatroom']=$sess_id_course_instance;
             }
             else {
             }
             $tabled_chat_dataHa = translateFN("Nessuna chat disponibile.");
-            $menu_03 =  translateFN("esporta testo");
-            $menu_06 = translateFN("esporta foglio");
-        break;
+       break;
     case 'db':
             $chat_report ="";
   
@@ -188,13 +185,11 @@ switch ($op){
                     $thead_data = array(translateFN('Data e ora'), translateFN('Utente'), translateFN('Messaggio'));
                     $table_Mess = BaseHtmlLib::tableElement('class:sortable', $thead_data, $tbody_data);
                     $tabled_chat_dataHa = $table_Mess->getHtml();
+                    $menuOptions['id_chatroom'] = $id_chatroom;
+                    $menuOptions['days'] = $days;
                     
-                    $menu_03 =  "<a href=" . $http_root_dir . "/comunica/report_chat.php?id_chatroom=$id_chatroom&op=export&days=$days>" . translateFN("esporta testo") . "</a>";
-                    $menu_06 = "<a href=" . $http_root_dir . "/comunica/report_chat.php?id_chatroom=$id_chatroom&op=exportTable&days=$days>" . translateFN("esporta foglio") . "</a>";
             } else {
-                    $tabled_chat_dataHa = translateFN("Nessuna chat disponibile.");
-                    $menu_03 =  translateFN("esporta testo");
-                    $menu_06 = translateFN("esporta foglio");
+                    $tabled_chat_dataHa = translateFN("Nessuna chat disponibile.");      
             }
   //      }
         break;
@@ -303,13 +298,6 @@ case 'exportTable': // XLS-like
         break;
 default:
 }
-
-//$menu_01 = "<a href=" . $http_root_dir . "/browsing/main_index.php?id_instance=$sess_id_course_instance&id_course=$sess_id_course>" . translateFN("indice del corso") . "</a>";
-$menu_02 = $chat_link;
-//$menu_07 = "<a href=" . $http_root_dir . "/tutor/tutor.php>" . translateFN("home") . "</a>";
-//$menu_08 = "";
-
-
 $help = translateFN("Questa &egrave; il report della chat di classe");
 
 
@@ -320,13 +308,10 @@ $help = translateFN("Questa &egrave; il report della chat di classe");
   }
   if (!isset($status))
        $status = "";
-  if (!isset($chat_link))
-       $chat_link = "";
 
-  $chatrooms_link = '<a href="'.HTTP_ROOT_DIR . '/comunica/list_chatrooms.php">'. translateFN('Lista chatrooms');
+$chatrooms_link = '<a href="'.HTTP_ROOT_DIR . '/comunica/list_chatrooms.php">'. translateFN('Lista chatrooms');
 
   $content_dataAr = array(
-                 'chat_link'=>$chat_link,
                  'banner'=> $banner,
                  'course_title'=>  translateFN('Report della chat'). ' - ' . translateFN('Corso') .': '.$course_title,
                  'home'=>"<a href=\"$homepage\">home</a>",
@@ -339,15 +324,7 @@ $help = translateFN("Questa &egrave; il report della chat di classe");
                  'chatrooms'=>$chatrooms_link,
                  'chat_users'=>$online_users,
                  'messages'=>$user_messages,
-                 'agenda'=>$user_agenda,
-                 'menu_01'=>$menu_01,
-                 'menu_02'=>$menu_02,
-                 'menu_03'=>$menu_03,
-                 'menu_04'=>$menu_04,
-                 'menu_05'=>$menu_05,
-                 'menu_06'=>$menu_06,
-                 //'menu_07'=>$menu_07,
-                 //'menu_08'=>$menu_08
+                 'agenda'=>$user_agenda
                 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
