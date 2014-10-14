@@ -303,7 +303,7 @@ $node_data = array(
                    'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
                    'today'=>$ymdhms,
                    'path'=>$node_path,
-                   'user_name'=>$user_name,
+                   'user_name'=>$userObj->nome,
                    'user_type'=>$user_type,
                    'user_level'=>$user_level,
                    'last_visit'=>$last_access,
