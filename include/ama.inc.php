@@ -859,7 +859,7 @@ abstract class Abstract_AMA_DataHandler {
         //ADALogger::log_db('Call to Abstract_AMA_DataHandler destructor');
         if(is_object($this->db) && method_exists($this->db,'disconnect')) {
             //ADALogger::log_db('Closing open connection to database');
-            $this->db->disconnect();
+            $this->disconnect();
         }
     }
 
@@ -868,6 +868,7 @@ abstract class Abstract_AMA_DataHandler {
         if(is_object($this->db) && method_exists($this->db,'disconnect')) {
             //ADALogger::log_db('Closing open connection to database');
             $this->db->disconnect();
+            $this->db = AMA_DB_NOT_CONNECTED;
         }
     }
 }
