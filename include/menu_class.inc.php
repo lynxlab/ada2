@@ -16,7 +16,7 @@
  * @author giorgio
  */
 
-define(NON_MULTIPROVIDER_MENU,!MULTIPROVIDER);
+define('NON_MULTIPROVIDER_MENU',!MULTIPROVIDER);
 
 class Menu
 {
