@@ -68,7 +68,8 @@ include_once 'include/comunica_functions.inc.php';
 /*
  * FINE Redirect to correct home if comunication not enabled
  */
-
+$date = date('l jS \of F Y h:i:s A');
+$label = "Video Chat on ".$date;
 $content = "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0\" width=\"100%\" height=\"600\">
                         <param name=movie value=\"$videoroomObj->link_to_room\">
                         <param name=quality value=high>
@@ -86,7 +87,11 @@ $iframe = "
 $menu_01 = "<a href=\"close_videochat.php?id_room=".$videoroomObj->id_room ."&event_token=$event_token\">" . translateFN("Chiudi") . "</a>";
 $content_dataAr = array (
 //	'data'      => $content,
+	'label' => $label,
 	'menu_01'   => $menu_01,
+	'user_name' =>$username,
+	'user_type' =>$user_type,
+	'status' => $status,
 	'data'      => $iframe
 );
 
