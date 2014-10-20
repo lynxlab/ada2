@@ -16,7 +16,8 @@
 <!-- contenitore -->
 <div id="container">
 <!--dati utente-->
-<div id="user_data" class="user_data_default">
+<div id="status_bar">
+    <div id="user_data" class="user_data_default">
 	<i18n>utente: </i18n>
 	<span>
 		<template_field class="template_field" name="user_name">user_name</template_field>
@@ -31,7 +32,9 @@
 			<template_field class="template_field" name="status">status</template_field>
 		</span>
 	</div>
-</div> <!-- / dati utente -->
+    </div> 
+</div>
+<!-- / dati utente -->
 <!-- label -->
 <div id="label">
 	<div class="topleft">
@@ -57,14 +60,6 @@
 </div>
 </div> <!--  / contenuto -->
 </div> <!-- / contenitore -->
-<!-- PERCORSO -->
-<div id="journey">
-	<i18n>dove sei: </i18n>
-		<span>
-			<i18n>agenda</i18n>
-		</span>
-		</div> <!-- / percorso -->
-</div> <!-- / MENU -->
 <!-- PIEDE -->
 <div id="footer">
 	<template_field class="microtemplate_field" name="footer">footer</template_field>
