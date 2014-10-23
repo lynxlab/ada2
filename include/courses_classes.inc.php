@@ -1467,7 +1467,6 @@ class Student_class {
                         } else {
                             $added_notes = "<!-- 0 -->-";
                         }
-                        $dati['notes_out'] = $added_nodes_count;
                         $read_notes_count= $studentObj->total_visited_notesFN($id_student,$id_course);
                         if ($read_notes_count>0) {
                             $read_nodes_count_norm = str_pad($read_nodes_count,5, "0", STR_PAD_LEFT);
@@ -1475,8 +1474,7 @@ class Student_class {
                         } else {
                             $read_notes = "<!-- 0 -->-";
                         }
-                        $dati['notes_in'] = $read_notes_count;
-
+                        
                         $st_history_count = "0";
                         $debug=0;
                         $st_history_count = $studentObj->total_visited_nodesFN($id_student,ADA_LEAF_TYPE);
