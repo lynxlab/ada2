@@ -5937,12 +5937,20 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $score = $this->or_zero($student_data['score']);
         $msg_out= $this->or_zero($student_data['msg_out']);
         $msg_in = $this->or_zero($student_data['msg_in']);
-        $notes_out = $this->or_zero($student_data['notes_out']);
-        $notes_in = $this->or_zero($student_data['notes_in']);
+        $added_notes = $this->or_zero($student_data['added_notes']);
+        $read_notes = $this->or_zero($student_data['read_notes']);
         $chat = $this->or_zero($student_data['chat']);
         $bookmarks = $this->or_zero($student_data['bookmarks']);
         $index_att= $student_data['index'];
         $level= $student_data['level'];
+        
+        if (MODULES_TEST) {
+        	$exercises_test = $this->or_zero($student_data['exercises_test']);
+        	$score_test = $this->or_zero($student_data['score_test']);
+        	$exercises_survey = $this->or_zero($student_data['exercises_survey']);
+        	$score_survey = $this->or_zero($student_data['score_survey']);
+        }
+        
         //		print_r($student_data);
 
         $sql = "SELECT 'id_user','id_istanza_corso','data' from log_classi
@@ -5956,7 +5964,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             // add a row into table log_classi
             $sql =  "insert into log_classi (id_user,id_corso, id_istanza_corso, data, visite, punti,esercizi, msg_out,msg_in,notes_out,notes_in,chat,bookmarks,indice_att,level)";
             $sql .= " values ($user_id,$course_id, $course_instance_id, $date, $visits, ";
-            $sql .= "$score,$exercises, $msg_out, $msg_in, $notes_out,$notes_in, $chat,$bookmarks, $index_att,$level);";
+            $sql .= "$score,$exercises, $msg_out, $msg_in, $added_notes,$read_notes, $chat,$bookmarks, $index_att,$level);";
             //echo $sql;
 
             $res = $db->query($sql);
@@ -5964,6 +5972,15 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             if (AMA_DB::isError($res)) {
                 return new AMA_Error($this->errorMessage(AMA_ERR_ADD) .
                                 " while in add_class_report");
+            } else {
+            	if (MODULES_TEST) {
+            		$sql = 'update log_classi set `exercises_test`=?, `score_test`=?, `exercises_survey`=?, `score_survey`=? where `id_log`=?';
+            		$res = $this->queryPrepared($sql, array($exercises_test, $score_test, $exercises_survey, $score_survey, $db->lastInsertID()));
+            		if (AMA_DB::isError($res)) {
+            			return new AMA_Error($this->errorMessage(AMA_ERR_UPDATE) .
+            					" while in add_class_report");
+            		}
+            	}
             }
         }
         return true;
