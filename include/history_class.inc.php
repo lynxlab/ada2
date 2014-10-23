@@ -64,7 +64,7 @@ class History
       $this->get_course_data();
     }
 
-    if ( $node_type != null )
+    if (!is_null($node_type))
     {
       return $this->node_visits_count[$node_type];
     }
