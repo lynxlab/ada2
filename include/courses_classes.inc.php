@@ -1555,7 +1555,7 @@ class Student_class {
                         // messages
                         //$mh = new MessageHandler("%d/%m/%Y - %H:%M:%S");
 
-                        $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
+                        $mh = MessageHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
                         $sort_field = "data_ora desc";
 
                         // messages received
