@@ -30,6 +30,8 @@ $allowedUsersAr = array(AMA_TYPE_SWITCHER);
 $neededObjAr = array(
 		AMA_TYPE_SWITCHER => array('layout')
 );
+
+$trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 //require_once 'include/switcher_functions.inc.php';
 include_once '../include/Subscription.inc.php';
