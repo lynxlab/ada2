@@ -31,6 +31,7 @@ $neededObjAr = array(
 		AMA_TYPE_SWITCHER => array('layout')
 );
 
+$trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  "switcher";
 include_once 'include/'.$self.'_functions.inc.php';
