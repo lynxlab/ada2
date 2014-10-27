@@ -1280,9 +1280,9 @@ class Student_class {
             
             $returnArray = array();
             if (isset($report_dataHa['report_generation_date'])) {
-            	$returnArray['report_generation_date'] = $report_dataHa['report_generation_date'];
+            	$report_generation_TS = $report_dataHa['report_generation_date'];
             	unset ($report_dataHa['report_generation_date']);
-            } else $returnArray['report_generation_date'] = null;
+            } else $report_generation_TS = null;
             
             foreach ($report_dataHa as $currentReportRow) {
             	// returnArray elements order (keys) MUST be
@@ -1338,8 +1338,6 @@ class Student_class {
                 
             } 
             
-            // add header row
-            array_unshift($returnArray, $this->generate_class_report_header());
             // generate and add footer (average) row
             $total = ++$row;
             $returnArray[++$row] = array(
@@ -1366,8 +1364,21 @@ class Student_class {
             $returnArray[$row]['index'] = round($totalIndex/$total,2);
             $returnArray[$row]['level'] = '<span id="averageLevel">'.round($totalLevel/$total,2).'</span>'; 
             $returnArray[$row]['level_plus'] = '-';
+            
+            // TABLE LABELS
 
-            return $returnArray;
+            $table_labels[0] = $this->generate_class_report_header();
+
+            /**
+             * @author giorgio 27/ott/2014
+             * 
+             * unset the unwanted columns data and labels. unwanted cols are defined in config/config_class_report.inc.php
+             */
+
+            $arrayToUse = 'reportHTMLColArray';
+            $this->clean_class_reportFN($arrayToUse, $table_labels, $returnArray);
+            
+           	return array('report_generation_date'=>$report_generation_TS) + array_merge($table_labels,$returnArray);
             
         }
         return null;
