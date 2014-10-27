@@ -1295,14 +1295,14 @@ class Student_class {
                 	' '.translateFN('su').' '.$currentReportRow['exercises']*ADA_MAX_SCORE.'</a>';
                 
                 if (MODULES_TEST) {
-                	$st_score_test = $currentReportRow['exercises_test'];
+                	$st_score_test = $currentReportRow['score_test'];
                 	$st_score_norm_test = str_pad($st_score_test,5, "0", STR_PAD_LEFT);
-                	$st_exer_number_test = $currentReportRow['score_test'];
+                	$st_exer_number_test = $currentReportRow['exercises_test'];
                 	$returnArray[$row]['exercises_test'] = '<!-- '.$st_score_norm_test.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=test&id_course_instance='.$id_course_instance.'&id_course='.$id_course.'&id_student='.$currentReportRow['id_stud'].'" class="dontwrap">'.$st_score_test.' '.translateFN('su').' '.$st_exer_number_test.'</a>';
                 		
-                	$st_score_survey = $currentReportRow['exercises_survey'];
+                	$st_score_survey = $currentReportRow['score_survey'];
                 	$st_score_norm_survey = str_pad($st_score_survey,5, "0", STR_PAD_LEFT);
-                	$st_exer_number_survey = $currentReportRow['score_survey'];
+                	$st_exer_number_survey = $currentReportRow['exercises_survey'];
                 	$returnArray[$row]['exercises_survey'] = '<!-- '.$st_score_norm_survey.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=survey&id_course_instance='.$id_course_instance.'&id_course='.$id_course.'&id_student='.$currentReportRow['id_stud'].'" class="dontwrap">'.$st_score_survey.' '.translateFN('su').' '.$st_exer_number_survey.'</a>';                	
                 }                                
                 $returnArray[$row]['added_notes'] = '<a href="tutor.php?op=student_notes&id_student='.$currentReportRow['id_stud'].'&id_instance='.$id_course_instance.'">'. $currentReportRow['notes_out'] .'</a>';
@@ -1323,10 +1323,10 @@ class Student_class {
                 $totalHistory         += $currentReportRow['visits'];
                 $totalExercies        += $currentReportRow['exercises'];
                 $totalExerciesMax     += $currentReportRow['exercises']*ADA_MAX_SCORE;
-                $totalTest            += $currentReportRow['exercises_test'];
-                $totalTestMax         += $currentReportRow['score_test'];
-                $totalSurvey          += $currentReportRow['exercises_survey'];
-                $totalSurveyMax       += $currentReportRow['score_survey'];
+                $totalTest            += $currentReportRow['score_test'];
+                $totalTestMax         += $currentReportRow['exercises_test'];
+                $totalSurvey          += $currentReportRow['score_survey'];
+                $totalSurveyMax       += $currentReportRow['exercises_survey'];
                 $totalAddedNodes      += $currentReportRow['notes_out'];
                 $totalReadNotes       += $currentReportRow['notes_in'];
                 $totalMessageCountIn  += $currentReportRow['msg_in'];
@@ -1347,12 +1347,14 @@ class Student_class {
             		'student' => translateFN("Media"),
             		'history' => round($totalHistory/$total,2),
             		'last_access' => '-',
-            		'exercises' => round($totalExercies/$total,2).' '.translateFN('su').' '.$totalExerciesMax            		
+            		'exercises' => round($totalExercies/$total,2).' '.translateFN('su').' '.floor($totalExerciesMax/$total)
             );
             
             if (MODULES_TEST) {
-            	$returnArray[$row]['exercises_test'] = round($totalTest/$total,2).' '.translateFN('su').' '.$totalTestMax;
-            	$returnArray[$row]['exercises_survey'] = round($totalSurvey/$total,2).' '.translateFN('su').' '.$totalSurveyMax;
+            	$returnArray[$row]['exercises_test'] = round($totalTest/$total,2).' '.translateFN('su').' '.
+            		floor($totalTestMax/$total);
+            	$returnArray[$row]['exercises_survey'] = round($totalSurvey/$total,2).' '.translateFN('su').' '.
+            		floor($totalSurveyMax/$total);
             }
             
             $returnArray[$row]['added_notes'] = round ($totalAddedNodes/$total,2); 
