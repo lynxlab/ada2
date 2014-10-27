@@ -39,7 +39,7 @@ function get_courses_tutorFN($id_user) {
                     $id_toc = $info_course['id_nodo_toc'];
                     $durata_corso = sprintf(translateFN('%d giorni'), $instance_course_ha['durata']);
                     $naviga = '<a href="'.$http_root_dir.'/browsing/view.php?id_node='.$id_course.'_'.$id_toc.'&id_course='.$id_course.'&id_course_instance='.$id_instance.'"><img src="img/timon.png"  alt="'.translateFN('naviga').'" border="0"></a>';
-                    $valuta = '<a href="'.$http_root_dir.'/tutor/tutor.php?op=student&id_instance='.$id_instance.'&id_course='.$id_course.'&mode=update"><img src="img/magnify.png"  alt="'.translateFN('valuta').'" border="0"></a>';
+                    $valuta = '<a href="'.$http_root_dir.'/tutor/tutor.php?op=student&id_instance='.$id_instance.'&id_course='.$id_course.'"><img src="img/magnify.png"  alt="'.translateFN('valuta').'" border="0"></a>';
 
                     $data_inizio = AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], "%d/%m/%Y");
 

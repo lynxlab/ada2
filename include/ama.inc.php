@@ -5943,6 +5943,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $bookmarks = $this->or_zero($student_data['bookmarks']);
         $index_att= $student_data['index'];
         $level= $student_data['level'];
+        $last_access = $this->or_zero($student_data['last_access']);
         
         if (MODULES_TEST) {
         	$exercises_test = $this->or_zero($student_data['exercises_test']);
@@ -5953,36 +5954,43 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         
         //		print_r($student_data);
 
-        $sql = "SELECT 'id_user','id_istanza_corso','data' from log_classi
+        $sql = "SELECT `id_user`,`id_istanza_corso`,`data`,`id_log` from log_classi
    			WHERE `id_istanza_corso`  =  $course_instance_id AND data = $date AND `id_user` = $user_id";
-
-        $res = $db->getOne($sql);
-        if (!empty($res)) {
-            return $res;  //data  already written
+        
+        $res = $this->getRowPrepared($sql, null, AMA_FETCH_ASSOC);
+        if (!AMA_DB::isError($res) && !empty($res)) {
+        	$id_log = $res['id_log'];
+            //data  already written, make an update
+            $sql = "update log_classi set visite=".$visits.", punti=".$score.",esercizi=".$exercises.
+            	   ", msg_out=".$msg_out.",msg_in=".$msg_in.",notes_out=".$added_notes.
+            	   ",notes_in=".$read_notes.",chat=".$chat.",bookmarks=".$bookmarks.
+            	   ",indice_att=".$index_att.",level=".$level.", last_access=".$last_access." where id_log=".$id_log;
         }
         else {
             // add a row into table log_classi
-            $sql =  "insert into log_classi (id_user,id_corso, id_istanza_corso, data, visite, punti,esercizi, msg_out,msg_in,notes_out,notes_in,chat,bookmarks,indice_att,level)";
+            $sql =  "insert into log_classi (id_user,id_corso, id_istanza_corso, data, visite, punti,esercizi, msg_out,msg_in,notes_out,notes_in,chat,bookmarks,indice_att,level,last_access)";
             $sql .= " values ($user_id,$course_id, $course_instance_id, $date, $visits, ";
-            $sql .= "$score,$exercises, $msg_out, $msg_in, $added_notes,$read_notes, $chat,$bookmarks, $index_att,$level);";
+            $sql .= "$score,$exercises, $msg_out, $msg_in, $added_notes,$read_notes, $chat,$bookmarks, $index_att,$level,$last_access);";
             //echo $sql;
-
-            $res = $db->query($sql);
-            // global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
-            if (AMA_DB::isError($res)) {
-                return new AMA_Error($this->errorMessage(AMA_ERR_ADD) .
-                                " while in add_class_report");
-            } else {
-            	if (MODULES_TEST) {
-            		$sql = 'update log_classi set `exercises_test`=?, `score_test`=?, `exercises_survey`=?, `score_survey`=? where `id_log`=?';
-            		$res = $this->queryPrepared($sql, array($exercises_test, $score_test, $exercises_survey, $score_survey, $db->lastInsertID()));
-            		if (AMA_DB::isError($res)) {
-            			return new AMA_Error($this->errorMessage(AMA_ERR_UPDATE) .
-            					" while in add_class_report");
-            		}
-            	}
-            }
         }
+        
+        $res = $db->query($sql);
+        // global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
+        if (AMA_DB::isError($res)) {
+        	return new AMA_Error($this->errorMessage(AMA_ERR_ADD) .
+                                " while in add_class_report");
+        } else {
+        	if (MODULES_TEST) {
+        		if (!isset($id_log)) $id_log = $db->lastInsertID();
+        		$sql = 'update log_classi set `exercises_test`=?, `score_test`=?, `exercises_survey`=?, `score_survey`=? where `id_log`=?';
+        		$res = $this->queryPrepared($sql, array($exercises_test, $score_test, $exercises_survey, $score_survey, $id_log));
+        		if (AMA_DB::isError($res)) {
+        			return new AMA_Error($this->errorMessage(AMA_ERR_UPDATE) .
+        					" while in add_class_report");
+        		}
+        	}
+        }
+        
         return true;
     }
     /**
@@ -6001,41 +6009,65 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
+        
+        /**
+         * @author giorgio 27/ott/2014
+         * 
+         * if we've been passed a null date, get the latest
+         * availeble report for the passed course_instance_id
+         */
+        if (is_null($date)) {
+        	$sql = "SELECT MAX(data) FROM log_classi WHERE id_istanza_corso=".$course_instance_id;
+        	$res = $this->getOnePrepared($sql);
+        	$date = (!AMA_DB::isError($res) && strlen($res)>0) ? $res : time();
+        }
 
         $sql = "SELECT L.*, U.nome, U.cognome "
                 . "FROM (SELECT * from log_classi WHERE id_istanza_corso=$course_instance_id AND data=$date) AS L "
                 . "LEFT JOIN utente AS U ON (L.id_user=U.id_utente)";
 
-        $res = $db->getAll($sql);
+        $res = $db->getAll($sql,array(),AMA_FETCH_ASSOC);
 
         //global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
         if (AMA_DB::isError($res)) {
             return new AMA_Error($this->errorMessage(AMA_ERR_GET) ." while in get_class_report");
         }
-
+        
         foreach ($res as $res_item) {
-            $id_log = $res_item[0];
-            $student_data[$id_log]['id_stud'] = $res_item[1];
+            $id_log = $res_item['id_log'];
+            $student_data[$id_log]['id_stud'] = $res_item['id_user'];
             // vito, 27 mar 2009
-            $student_data[$id_log]['student'] = $res_item[16] .' '. $res_item[17];
+            $student_data[$id_log]['student'] = $res_item['nome'] .' '. $res_item['cognome'];
 
             //        $student_data[$id_log]['id_course_instance'] = $res_item[2];
             //        $student_data[$id_log]['id_course'] = $res_item[3];
 
-            $student_data[$id_log]['visits'] = $res_item[5];
-            $student_data[$id_log]['date'] = $res_item[4];
+            $student_data[$id_log]['visits'] = $res_item['visite'];
+            $student_data[$id_log]['date'] = $res_item['last_access'];
             //$student_data[$id_log]['visits'] = $res_item[5];
-            $student_data[$id_log]['score'] = $res_item[6];
-            //$student_data[$id_log]['exercises'] = $res_item[7];
-            $student_data[$id_log]['notes_out'] = $res_item[11];
-            $student_data[$id_log]['notes_in'] = $res_item[10];
-            $student_data[$id_log]['msg_in'] = $res_item[9];
-            $student_data[$id_log]['msg_out'] = $res_item[8];
-            $student_data[$id_log]['chat'] = $res_item[12];
-            $student_data[$id_log]['bookmarks'] = $res_item[13];
-            $student_data[$id_log]['indice_att'] = $res_item[14];
-            $student_data[$id_log]['level'] = $res_item[15];
+            $student_data[$id_log]['score'] = $res_item['punti'];
+            $student_data[$id_log]['exercises'] = $res_item['esercizi'];
+            $student_data[$id_log]['notes_out'] = $res_item['notes_out'];
+            $student_data[$id_log]['notes_in'] = $res_item['notes_in'];
+            $student_data[$id_log]['msg_in'] = $res_item['msg_in'];
+            $student_data[$id_log]['msg_out'] = $res_item['msg_out'];
+            $student_data[$id_log]['chat'] = $res_item['chat'];
+            $student_data[$id_log]['bookmarks'] = $res_item['bookmarks'];
+            $student_data[$id_log]['indice_att'] = $res_item['indice_att'];
+            $student_data[$id_log]['level'] = $res_item['level'];
+            if (MODULES_TEST) {
+            	$student_data[$id_log]['exercises_test'] = $res_item['exercises_test'];
+            	$student_data[$id_log]['score_test'] = $res_item['score_test'];
+            	$student_data[$id_log]['exercises_survey'] = $res_item['exercises_survey'];
+            	$student_data[$id_log]['score_survey'] = $res_item['score_survey'];
+            }
         }
+        /**
+         * @author giorgio 27/ott/2014
+         * 
+         * added report generation date
+         */
+        if (isset($student_data)) $student_data['report_generation_date'] = $date;
         return $student_data;
     }
 

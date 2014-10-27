@@ -1,0 +1,71 @@
+@CHARSET "UTF-8";
+
+/*
+ * #table_Report jQuery dataTable
+ */
+#table_Report { width: 100% !important; }
+#table_Report tbody td { height: 2.5em; border:none; vertical-align: middle; }
+#table_Report thead th { padding-right: 5px; border-bottom: 1px solid #999; }
+#table_Report .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; }
+#table_Report_previous,
+#table_Report_next { margin:0; padding: 3px; }
+#table_Report_length,
+#table_Report_filter,
+#table_Report_paginate { padding: 5px; }
+#table_Report_info { padding: 8px 0 0 5px; }
+#table_Report .dontwrap { white-space: nowrap; }
+#table_Report tfoot th { font-weight: 100; padding: 10px 0 10px 0; text-align: center; border-top: 1px solid #999; }
+/*
+ * end #table_Report jQuery dataTable
+ */
+
+/*
+ * #table_Report actions
+ */ 
+#table_Report .ulactions { list-style-type: none; display: block; padding:0; margin:0; }
+#table_Report .liactions { text-align:center; border: none !important; margin-bottom: 5px; }
+#table_Report .button_Increase, #table_Report .button_Decrease { height: 1.5em; }
+/*
+ * end #table_Report actions
+ */
+
+.saveResults {
+    background: rgba(22, 101, 173, 0.9);
+    padding: 5px 0px 15px 0px;    
+    -webkit-border-radius: 5px;    
+    border-radius: 5px;
+    -webkit-box-shadow:  0px 0px 2px 2px rgba(0, 0, 0, .2);
+    box-shadow:  0px 0px 2px 2px rgba(0, 0, 0, .2);
+    font-size: 1.1em;
+}
+
+.saveResults.popup.error  {
+    background: rgba(222, 10, 17, 0.9);
+}
+
+.saveResults.nonAjax {
+    background: none;
+    text-align: center;
+}
+
+.saveResults p {
+    margin:0;
+    padding:0;
+    border:none;
+}
+
+.saveResults .title {
+    font-weight: bold;
+    text-align : center;
+    width: 100%;
+    padding: 1px 0px 5px 0px;
+    color: #fff;
+    border-bottom: 1px solid #a0bfdb;
+}
+
+.saveResults .message {
+    padding: 15px 0px 0px 0px;
+    color:#fff; 
+    text-align : center;
+    width: 100%;    
+}

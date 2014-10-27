@@ -1237,9 +1237,17 @@ class Student_class {
         }
         $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
 
-        $ymdhms = today_dateFN();
-        $utime = dt2tsFN($ymdhms);
+        /**
+         * @author giorgio 27/ott/2014
+         * from now on, passing a null date to read_class_data 
+         * will get the most updated class report, so it's
+         * safe to get rid of the following 2 lines of code
+         *  
+         */
+//         $ymdhms = today_dateFN();
+//         $utime = dt2tsFN($ymdhms);
 
+		$utime = null;
         $report_dataHa = $this->read_class_data($id_course,$id_course_instance,$utime);
         // vito, 16 luglio 2008, gestione dell'errore relativo alla chiamata a read_class_data
         if (AMA_DataHandler::isError($report_dataHa)) {
@@ -1249,90 +1257,118 @@ class Student_class {
 
         $num_student = count($report_dataHa);
         if ($num_student >0) {
-            // TABLE LABELS
-            $parms = "op=student&id_instance=$id_course_instance&amp;id_course=$id_course";
-            // vito, 27 mar 2009
-            //        $table_labels[0]['id'] = "<strong><a href=\"tutor.php?$parms&amp;order=id\">".translateFN("id")."</a></strong>";
-            //        $table_labels[0]['student'] = "<strong><a href=\"tutor.php?$parms&amp;order=student\">".translateFN("studente")."</a></strong>";
-            //        $table_labels[0]['history'] = "<strong><a href=\"tutor.php?$parms&amp;order=history\">".translateFN("visite")."</a></strong>";
-            //        $table_labels[0]['last_access'] = "<strong><a href=\"tutor.php?$parms&amp;order=last_access\">".translateFN("recente")."</a></strong>";
-            //        //$table_labels[0]['history'] = "<strong><a href=\"tutor.php?$parms&amp;order=history\">".translateFN("Visite")."</a></strong>";
-            //        $table_labels[0]['score'] = "<strong><a href=\"tutor.php?$parms&amp;order=exercises\">".translateFN("punti")."</a></strong>";
-            //
-            //        $table_labels[0]['added_notes'] = "<strong><a href=\"tutor.php?$parms&amp;order=added_notes\">".translateFN("note scri")."</a></strong>";
-            //        $table_labels[0]['read_notes'] = "<strong><a href=\"tutor.php?$parms&amp;order=read_notes\">".translateFN("note let")."</a></strong>";
-            //
-            //        // vito, 27 mar 2009
-            //        //$table_labels[0]['exercises'] = "<strong><a href=\"tutor.php?$parms&amp;order=exercises\">".translateFN("Esercizi")."</a></strong>";
-            //        $table_labels[0]['message_count_in'] = "<strong><a href=\"tutor.php?$parms&amp;order=message_count_in\">".translateFN("msg ric")."</a></strong>";
-            //        $table_labels[0]['message_count_out'] = "<strong><a href=\"tutor.php?$parms&amp;order=message_count_out\">".translateFN("msg inv")."</a></strong>";
-            //        //$table_labels[0]['read_notes'] = "<strong><a href=\"tutor.php?$parms&amp;order=read_notes\">".translateFN("Note Let")."</a></strong>";
-            //        //$table_labels[0]['added_notes'] = "<strong><a href=\"tutor.php?$parms&amp;order=added_notes\">".translateFN("Note Scri")."</a></strong>";
-            //        $table_labels[0]['chat'] = "<strong><a href=\"tutor.php?$parms&amp;order=chat\">".translateFN("chat ")."</a></strong>";
-            //        //$table_labels[0]['bookmarks'] = "<strong><a href=\"tutor.php?$parms&amp;order=bookmarks\">".translateFN("Bkms")."</a></strong>";
-            //        $table_labels[0]['tags'] = "<strong><a href=\"tutor.php?$parms&amp;order=bookmarks\">".translateFN("tags")."</a></strong>";
-            //        $table_labels[0]['index'] = "<strong><a href=\"tutor.php?$parms&amp;order=index\">".translateFN("attivita'")."</a></strong>";
-            //        $table_labels[0]['level'] = "<strong><a href=\"tutor.php?$parms&amp;order=level\">".translateFN("livello")."</a></strong>";
-
-            $table_labels[0]['id_stud'] = "<strong><a href=\"tutor.php?$parms&amp;order=id\">".translateFN("id")."</a></strong>";
-            $table_labels[0]['student'] = "<strong><a href=\"tutor.php?$parms&amp;order=student\">".translateFN("studente")."</a></strong>";
-            $table_labels[0]['visits'] = "<strong><a href=\"tutor.php?$parms&amp;order=history\">".translateFN("visite")."</a></strong>";
-            $table_labels[0]['date'] = "<strong><a href=\"tutor.php?$parms&amp;order=last_access\">".translateFN("recente")."</a></strong>";
-            //$table_labels[0]['history'] = "<strong><a href=\"tutor.php?$parms&amp;order=history\">".translateFN("Visite")."</a></strong>";
-            $table_labels[0]['score'] = "<strong><a href=\"tutor.php?$parms&amp;order=exercises\">".translateFN("punti")."</a></strong>";
-            // vito, 27 mar 2009
-            //$table_labels[0]['exercises'] = "<strong><a href=\"tutor.php?$parms&amp;order=exercises\">".translateFN("Esercizi")."</a></strong>";
-
-            $table_labels[0]['notes_out'] = "<strong><a href=\"tutor.php?$parms&amp;order=added_notes\">".translateFN("Note Scri")."</a></strong>";
-            $table_labels[0]['notes_in'] = "<strong><a href=\"tutor.php?$parms&amp;order=read_notes\">".translateFN("Note Let")."</a></strong>";
-
-            $table_labels[0]['msg_in'] = "<strong><a href=\"tutor.php?$parms&amp;order=message_count_in\">".translateFN("msg ric")."</a></strong>";
-            $table_labels[0]['msg_out'] = "<strong><a href=\"tutor.php?$parms&amp;order=message_count_out\">".translateFN("msg inv")."</a></strong>";
-
-
-            $table_labels[0]['chat'] = "<strong><a href=\"tutor.php?$parms&amp;order=chat\">".translateFN("chat ")."</a></strong>";
-            //$table_labels[0]['bookmarks'] = "<strong><a href=\"tutor.php?$parms&amp;order=bookmarks\">".translateFN("Bkms")."</a></strong>";
-            $table_labels[0]['bookmarks'] = "<strong><a href=\"tutor.php?$parms&amp;order=bookmarks\">".translateFN("tags")."</a></strong>";
-            $table_labels[0]['indice_att'] = "<strong><a href=\"tutor.php?$parms&amp;order=index\">".translateFN("attivita'")."</a></strong>";
-            $table_labels[0]['level'] = "<strong><a href=\"tutor.php?$parms&amp;order=level\">".translateFN("livello")."</a></strong>";
-
-
-            /*
-           $table_labels[0]['level_plus'] = "<img src=\"img/_up.png\" border=0>";
-           $table_labels[0]['level_less'] = "<img src=\"img/_down.png\" border=0>";
-            */
-            $tabled_dataHa = array_merge($table_labels,$report_dataHa);
             /*
            * vito, 27 mar 2009. Add links to table data.
             */
-            $row_count = count($tabled_dataHa);
-            for ($row = 1; $row < $row_count; $row++) {
-                $tabled_dataHa[$row]['student'] = '<a href="tutor.php?op=zoom_student&id_student='.$tabled_dataHa[$row]['id_stud'].'&id_course='.$id_course.'&id_instance='.$id_course_instance.'">'. $tabled_dataHa[$row]['student'] .'</a>';
-                $tabled_dataHa[$row]['visits']  = '<a href="tutor_history.php?id_student='.$tabled_dataHa[$row]['id_stud'].'&id_course='.$id_course.'&id_course_instance='.$id_course_instance.'">'. $tabled_dataHa[$row]['visits'] .'</a>';
-                $tabled_dataHa[$row]['date']    = '<a href="tutor_history_details.php?period=1&id_student='.$tabled_dataHa[$row]['id_stud'].'&id_course='.$id_course.'&id_course_instance='.$id_course_instance.'">'. ts2dFN($tabled_dataHa[$row]['date']) .'</a>';
-                $tabled_dataHa[$row]['score']    = '<a href="tutor_exercise.php?id_student='.$tabled_dataHa[$row]['id_stud'].'&id_course_instance='.$id_course_instance.'">'. $tabled_dataHa[$row]['score'] .'</a>';
-                $tabled_dataHa[$row]['notes_out'] = '<a href="tutor.php?op=student_notes&id_student='.$tabled_dataHa[$row]['id_stud'].'&id_instance='.$id_course_instance.'">'. $tabled_dataHa[$row]['notes_out'] .'</a>';
-            }
+            
+            $totalHistory = 0;
+            $totalExercies = 0;
+            $totalExerciesMax = 0;
+            $totalTest = 0;
+            $totalTestMax = 0;
+            $totalSurvey = 0;
+            $totalSurveyMax = 0;
+            $totalAddedNodes = 0;
+            $totalReadNotes = 0;
+            $totalMessageCountIn = 0;
+            $totalMessageCountOut = 0;
+            $totalChat = 0;
+            $totalBookmarks = 0;
+            $totalIndex = 0;
+            $totalLevel = 0;
+            $row = -1;
+            
+            $returnArray = array();
+            if (isset($report_dataHa['report_generation_date'])) {
+            	$returnArray['report_generation_date'] = $report_dataHa['report_generation_date'];
+            	unset ($report_dataHa['report_generation_date']);
+            } else $returnArray['report_generation_date'] = null;
+            
+            foreach ($report_dataHa as $currentReportRow) {
+            	// returnArray elements order (keys) MUST be
+            	// the same as returned by get_class_report_from_db
+            	$returnArray[++$row]['id'] = $currentReportRow['id_stud'];            	       
+                $returnArray[$row]['student'] = '<a href="tutor.php?op=zoom_student&id_student='.$currentReportRow['id_stud'].'&id_course='.$id_course.'&id_instance='.$id_course_instance.'">'. $currentReportRow['student'] .'</a>';
+                $returnArray[$row]['history']  = '<a href="tutor_history.php?id_student='.$currentReportRow['id_stud'].'&id_course='.$id_course.'&id_course_instance='.$id_course_instance.'">'. $currentReportRow['visits'] .'</a>';
+                $returnArray[$row]['last_access'] = '<a href="tutor_history_details.php?period=1&id_student='.$currentReportRow['id_stud'].'&id_course='.$id_course.'&id_course_instance='.$id_course_instance.'">'. substr(ts2dFN($currentReportRow['date']),0,-5) .'</a>';
+                $returnArray[$row]['exercises'] = '<a href="tutor_exercise.php?id_student='.$currentReportRow['id_stud'].'&id_course_instance='.$id_course_instance.'" class="dontwrap">'. $currentReportRow['score'] .
+                	' '.translateFN('su').' '.$currentReportRow['exercises']*ADA_MAX_SCORE.'</a>';
+                
+                if (MODULES_TEST) {
+                	$st_score_test = $currentReportRow['exercises_test'];
+                	$st_score_norm_test = str_pad($st_score_test,5, "0", STR_PAD_LEFT);
+                	$st_exer_number_test = $currentReportRow['score_test'];
+                	$returnArray[$row]['exercises_test'] = '<!-- '.$st_score_norm_test.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=test&id_course_instance='.$id_course_instance.'&id_course='.$id_course.'&id_student='.$currentReportRow['id_stud'].'" class="dontwrap">'.$st_score_test.' '.translateFN('su').' '.$st_exer_number_test.'</a>';
+                		
+                	$st_score_survey = $currentReportRow['exercises_survey'];
+                	$st_score_norm_survey = str_pad($st_score_survey,5, "0", STR_PAD_LEFT);
+                	$st_exer_number_survey = $currentReportRow['score_survey'];
+                	$returnArray[$row]['exercises_survey'] = '<!-- '.$st_score_norm_survey.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=survey&id_course_instance='.$id_course_instance.'&id_course='.$id_course.'&id_student='.$currentReportRow['id_stud'].'" class="dontwrap">'.$st_score_survey.' '.translateFN('su').' '.$st_exer_number_survey.'</a>';                	
+                }                                
+                $returnArray[$row]['added_notes'] = '<a href="tutor.php?op=student_notes&id_student='.$currentReportRow['id_stud'].'&id_instance='.$id_course_instance.'">'. $currentReportRow['notes_out'] .'</a>';
+                $returnArray[$row]['read_notes'] = ($currentReportRow['notes_in']>0) ? $currentReportRow['notes_in'] : '-';
+                $returnArray[$row]['message_count_in'] = $currentReportRow['msg_in'];
+                $returnArray[$row]['message_count_out'] = $currentReportRow['msg_out'];
+                $returnArray[$row]['chat'] = $currentReportRow['chat'];
+                $returnArray[$row]['bookmarks'] = $currentReportRow['bookmarks'];
+                $returnArray[$row]['index'] = $currentReportRow['indice_att'];
+                $returnArray[$row]['level'] = '<span id="studentLevel_'.$currentReportRow['id_stud'].'">'.$currentReportRow['level'].'</span>';
+                $forceUpdate = true; 
+                $linksHtml = $this->generateLevelButtons($currentReportRow['id_stud'], $forceUpdate);
+                $returnArray[$row]['level_plus'] = (!is_null($linksHtml)) ? $linksHtml : '-';
 
-            $tObj = new Table();
-            // $tObj->initTable('0','center','0','1','100%','black','white','black','white');
-            $tObj->initTable('0','center','0','1','100%','','','','',0,0,1);
-            // Syntax: $border,$align,$cellspacing,$cellpadding,$width,$col1, $bcol1,$col2, $bcol2
-            $caption = translateFN("Studenti del corso <B>") .' ' . $course_title . "</B> " . translateFN("Iniziato il ");
-            $caption .= "&nbsp;<B>$start_date</B>" ;
-            $summary = translateFN("Report");
-            $tObj->setTable($tabled_dataHa,$caption,$summary);
-            $student_list = $tObj->getTable();
+
+                // UPDATE TOTALS
+                
+                $totalHistory         += $currentReportRow['visits'];
+                $totalExercies        += $currentReportRow['exercises'];
+                $totalExerciesMax     += $currentReportRow['exercises']*ADA_MAX_SCORE;
+                $totalTest            += $currentReportRow['exercises_test'];
+                $totalTestMax         += $currentReportRow['score_test'];
+                $totalSurvey          += $currentReportRow['exercises_survey'];
+                $totalSurveyMax       += $currentReportRow['score_survey'];
+                $totalAddedNodes      += $currentReportRow['notes_out'];
+                $totalReadNotes       += $currentReportRow['notes_in'];
+                $totalMessageCountIn  += $currentReportRow['msg_in'];
+                $totalMessageCountOut += $currentReportRow['msg_out'];
+                $totalChat            += $currentReportRow['chat'];
+                $totalBookmarks       += $currentReportRow['bookmarks'];
+                $totalIndex           += $currentReportRow['indice_att'];
+                $totalLevel           += $currentReportRow['level'];
+                
+            } 
+            
+            // add header row
+            array_unshift($returnArray, $this->generate_class_report_header());
+            // generate and add footer (average) row
+            $total = ++$row;
+            $returnArray[++$row] = array(
+            		'id' => '-',
+            		'student' => translateFN("Media"),
+            		'history' => round($totalHistory/$total,2),
+            		'last_access' => '-',
+            		'exercises' => round($totalExercies/$total,2).' '.translateFN('su').' '.$totalExerciesMax            		
+            );
+            
+            if (MODULES_TEST) {
+            	$returnArray[$row]['exercises_test'] = round($totalTest/$total,2).' '.translateFN('su').' '.$totalTestMax;
+            	$returnArray[$row]['exercises_survey'] = round($totalSurvey/$total,2).' '.translateFN('su').' '.$totalSurveyMax;
+            }
+            
+            $returnArray[$row]['added_notes'] = round ($totalAddedNodes/$total,2); 
+            $returnArray[$row]['read_notes'] = round ($totalReadNotes/$total,2);
+            $returnArray[$row]['message_count_in'] = round($totalMessageCountIn/$total,2);
+            $returnArray[$row]['message_count_out'] = round($totalMessageCountOut/$total,2);
+            $returnArray[$row]['chat'] = round($totalChat/$total,2);
+            $returnArray[$row]['bookmarks'] = round($totalBookmarks/$total,2);
+            $returnArray[$row]['index'] = round($totalIndex/$total,2);
+            $returnArray[$row]['level'] = '<span id="averageLevel">'.round($totalLevel/$total,2).'</span>'; 
+            $returnArray[$row]['level_plus'] = '-';
+
+            return $returnArray;
+            
         }
-        else {
-            // vito, 16 luglio 2008
-            $http_root_dir = $GLOBALS['http_root_dir'];
-            $student_list  = translateFN("Non è presente un report dell'attivita' della classe aggiornato alla data odierna. ");
-            $student_list .= "<a href=\"$http_root_dir/tutor/tutor.php?op=student&id_instance=$id_course_instance&id_course=$id_course&mode=update\">";
-            $student_list .= translateFN("Aggiorna il report.");
-            $student_list .= "</a>";
-        }
-        return $student_list;
+        return null;
     }
 
     // @author giorgio 14/mag/2013
@@ -1391,6 +1427,16 @@ class Student_class {
             $tot_chatlines_count_out = 0;
             $tot_index = 0;
             $tot_level = 0;
+            /**
+             * @author giorgio 27/ott/2014
+             * 
+             * change to:
+             * $report_generation_TS = time();
+             * 
+             * to have full date & time generation of report
+             * but be warned that table log_classi may grow A LOT!
+             */
+            $report_generation_TS = dt2tsFN(today_dateFN());
 
 			if (MODULES_TEST) {
 				$tot_exercises_score_test = 0;
@@ -1410,7 +1456,7 @@ class Student_class {
                 $dati['level'] = $student_level;
                 $ymdhms = today_dateFN();
                 $utime = dt2tsFN($ymdhms);
-                $dati['date'] = $utime;
+                $dati['date'] = $report_generation_TS;
 
                 if (!empty($id_student) and ($status_student == ADA_STATUS_SUBSCRIBED OR $status_student == ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED)) {
 
@@ -1421,7 +1467,6 @@ class Student_class {
                     } else {
 
                         $student_name = $studentObj->getFullname();//$studentObj->nome." ".$studentObj->cognome;
-
 
                         // vito
                         $studentObj->set_course_instance_for_history($id_instance);
@@ -1499,15 +1544,15 @@ class Student_class {
 
                         $st_score_norm = str_pad($st_score,5, "0", STR_PAD_LEFT);
                         $st_exercises = "<!-- $st_score_norm --><a href=" .  $http_root_dir . "/tutor/tutor_exercise.php?id_student=" . $id_student;
-                        $st_exercises.= "&id_course_instance=" . $id_instance . ">";
+                        $st_exercises.= "&id_course_instance=" . $id_instance . " class='dontwrap'>";
                         $st_exercises.=  $st_score." ".translateFN("su")." ".($st_exer_number*ADA_MAX_SCORE) ."</a>";
 
 						if (MODULES_TEST) {
 							$st_score_norm_test = str_pad($st_score_test,5, "0", STR_PAD_LEFT);
-							$st_exercises_test = '<!-- '.$st_score_norm_test.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=test&id_course_instance='.$id_instance.'&id_course='.$id_course.'&id_student='.$id_student.'">'.$st_score_test.' '.translateFN('su').' '.$st_exer_number_test.'</a>';
+							$st_exercises_test = '<!-- '.$st_score_norm_test.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=test&id_course_instance='.$id_instance.'&id_course='.$id_course.'&id_student='.$id_student.'" class="dontwrap">'.$st_score_test.' '.translateFN('su').' '.$st_exer_number_test.'</a>';
 
 							$st_score_norm_survey = str_pad($st_score_survey,5, "0", STR_PAD_LEFT);
-							$st_exercises_survey = '<!-- '.$st_score_norm_survey.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=survey&id_course_instance='.$id_instance.'&id_course='.$id_course.'&id_student='.$id_student.'">'.$st_score_survey.' '.translateFN('su').' '.$st_exer_number_survey.'</a>';
+							$st_exercises_survey = '<!-- '.$st_score_norm_survey.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=survey&id_course_instance='.$id_instance.'&id_course='.$id_course.'&id_student='.$id_student.'" class="dontwrap">'.$st_score_survey.' '.translateFN('su').' '.$st_exer_number_survey.'</a>';
 						}
 
                         // user data
@@ -1520,8 +1565,10 @@ class Student_class {
                         if ($st_history_last_access!= "-") {
 
                             $dati_stude[$num_student]['last_access'] = "<a href=\"$http_root_dir/tutor/tutor_history_details.php?period=1&id_student=$id_student&id_course_instance=$id_instance&id_course=$id_course\">".$st_history_last_access."</a>";
+                            $dati['last_access'] = $studentObj->get_last_accessFN($id_instance,'UT');
                         } else {
                             $dati_stude[$num_student]['last_access'] = $st_history_last_access;
+                            $dati['last_access'] = null;
                         }
 
                         // exercises
@@ -1616,9 +1663,6 @@ class Student_class {
                         $tot_bookmarks_count+=$bookmarks_count;
                         $dati['bookmarks']  =$bookmarks_count;
 
-
-
-
                         // activity index
                         if (empty($index_att)) // parametro passato alla funzione
                             if (empty($GLOBALS['index_activity_expression'])) //
@@ -1634,22 +1678,13 @@ class Student_class {
                         $dati['index'] = $index;
 
                         // level
-
-                        $dati_stude[$num_student]['level'] = $student_level;
                         $tot_level+=$student_level;
-                        $new_level_plus = $student_level+1;
-                        $level_plus = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=student_level&id_student=" . $id_student;
-                        $level_plus .="&id_course=" . $id_course . "&id_instance=" . $id_instance . "&level=" . $new_level_plus . ">";
-                        $level_plus .=  "$new_level_plus</a>";
-
-                        $level_less = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=student_level&id_student=" . $id_student;
-                        $level_less .="&id_course=" . $id_course . "&id_instance=" . $id_instance . "&level=" . ($tudent_level=$student_level-1) . ">";
-                        $level_less .=  ($student_level-1)."</a>";
-
-                        $dati_stude[$num_student]['level_plus'] = $level_plus;
-                        $dati_stude[$num_student]['level_less'] = $level_less;
-
-
+                        $dati_stude[$num_student]['level'] = '<span id="studentLevel_'.$id_student.'">'.$student_level.'</span>';
+                        $forceUpdate = true;
+                        $linksHtml = $this->generateLevelButtons($id_student,$forceUpdate);
+                        
+                        $dati_stude[$num_student]['level_plus'] = (!is_null($linksHtml)) ? $linksHtml : '-';
+                        
                         // inserting a row in table log_classi
 
                         $this->log_class_data($id_course,$id_instance,$dati);
@@ -1677,65 +1712,38 @@ class Student_class {
 
             $av_student = $tot_students;
             $dati_stude[$av_student]['id'] = "-";
-            $dati_stude[$av_student]['student'] = "<strong>".translateFN("Media")."</strong>";
-            $dati_stude[$av_student]['history'] = "<strong>".round($av_history,2)."</strong>";
+            $dati_stude[$av_student]['student'] = translateFN("Media");
+            $dati_stude[$av_student]['history'] = round($av_history,2);
             $dati_stude[$av_student]['last_access'] = "-";
-            $dati_stude[$av_student]['exercises'] = "<strong>".$av_exercises."</strong>";
+            $dati_stude[$av_student]['exercises'] = '<span class="dontwrap">'.$av_exercises.'</span>';
 
 			if (MODULES_TEST) {
-				$dati_stude[$av_student]['exercises_test'] = "<strong>".$av_exercises_test."</strong>";
-				$dati_stude[$av_student]['exercises_survey'] = "<strong>".$av_exercises_survey."</strong>";
+				$dati_stude[$av_student]['exercises_test'] = '<span class="dontwrap">'.$av_exercises_test.'</span>';
+				$dati_stude[$av_student]['exercises_survey'] = '<span class="dontwrap">'.$av_exercises_survey.'</span>';
 			}
 
-            $dati_stude[$av_student]['added_notes'] = "<strong>".round($av_added_notes,2)."</strong>";
-            $dati_stude[$av_student]['read_notes'] = "<strong>".round($av_read_notes,2)."</strong>";
-            $dati_stude[$av_student]['message_count_in'] = "<strong>".round($av_message_count_in,2)."</strong>";
-            $dati_stude[$av_student]['message_count_out'] = "<strong>".round($av_message_count_out,2)."</strong>";
-            $dati_stude[$av_student]['chat'] = "<strong>".round($av_chat_count_out,2)."</strong>";
-            $dati_stude[$av_student]['bookmarks'] = "<strong>".round($av_bookmarks_count,2)."</strong>";
+            $dati_stude[$av_student]['added_notes'] = round($av_added_notes,2);
+            $dati_stude[$av_student]['read_notes'] = round($av_read_notes,2);
+            $dati_stude[$av_student]['message_count_in'] = round($av_message_count_in,2);
+            $dati_stude[$av_student]['message_count_out'] = round($av_message_count_out,2);
+            $dati_stude[$av_student]['chat'] = round($av_chat_count_out,2);
+            $dati_stude[$av_student]['bookmarks'] = round($av_bookmarks_count,2);
 
-            $dati_stude[$av_student]['index'] = "<strong>".round($av_index,2)."</strong>";
-            $dati_stude[$av_student]['level'] = "<strong>".round($av_level,2)."</strong>";
+            $dati_stude[$av_student]['index'] = round($av_index,2);
+            $dati_stude[$av_student]['level'] = '<span id="averageLevel">'.round($av_level,2).'</span>';
             $dati_stude[$av_student]['level_plus'] = "-";
             // @author giorgio 16/mag/2013
             // was $dati_stude[$av_student]['level_minus'] = "-";
-            $dati_stude[$av_student]['level_less'] = "-";
-
-
-
+            // $dati_stude[$av_student]['level_less'] = "-";
 
             if (!empty($order)) {
                 //var_dump($dati_stude);
                 $dati_stude = masort($dati_stude, $order,1,SORT_NUMERIC);
             }
 
-
             // TABLE LABELS
-            $parms = "op=student&id_instance=$id_instance&amp;id_course=$id_course&mode=update";
-            $table_labels[0]['id'] =  "<strong><a href=\"tutor.php?$parms&amp;order=id\">".translateFN("Id")."</a></strong>";
-            $table_labels[0]['student'] = "<strong><a href=\"tutor.php?$parms&amp;order=student\">".translateFN("Studente")."</a></strong>";
-            $table_labels[0]['history'] = "<strong><a href=\"tutor.php?$parms&amp;order=history\">".translateFN("Visite")."</a></strong>";
-            $table_labels[0]['last_access'] = "<strong><a href=\"tutor.php?$parms&amp;order=last_access\">".translateFN("Recente")."</a></strong>";
-            $table_labels[0]['exercises'] = "<strong><a href=\"tutor.php?$parms&amp;order=exercises\">".translateFN("Punti")."</a></strong>";
+            $table_labels[0] = $this->generate_class_report_header();
 
-			if (MODULES_TEST) {
-				$table_labels[0]['exercises_test'] = "<strong><a href=\"tutor.php?$parms&amp;order=exercises_test\">".translateFN("Punti Test")."</a></strong>";
-				$table_labels[0]['exercises_survey'] = "<strong><a href=\"tutor.php?$parms&amp;order=exercises_survey\">".translateFN("Punti Sondaggio")."</a></strong>";
-			}
-
-            $table_labels[0]['added_notes'] = "<strong><a href=\"tutor.php?$parms&amp;order=added_notes\">".translateFN("Note Scri")."</a></strong>";
-            $table_labels[0]['read_notes'] = "<strong><a href=\"tutor.php?$parms&amp;order=read_notes\">".translateFN("Note Let")."</a></strong>";
-            $table_labels[0]['message_count_in'] = "<strong><a href=\"tutor.php?$parms&amp;order=message_count_in\">".translateFN("Msg Ric")."</a></strong>";
-            $table_labels[0]['message_count_out'] = "<strong><a href=\"tutor.php?$parms&amp;order=message_count_out\">".translateFN("Msg Inv")."</a></strong>";
-            $table_labels[0]['chat'] = "<strong><a href=\"tutor.php?$parms&amp;order=chatlines_count_out\">".translateFN("Chat ")."</a></strong>";
-            $table_labels[0]['bookmarks'] = "<strong><a href=\"tutor.php?$parms&amp;order=bookmarks\">".translateFN("Bkms ")."</a></strong>";
-
-
-            $table_labels[0]['index'] = "<strong><a href=\"tutor.php?$parms&amp;order=index\">".translateFN("Attivita'")."</a></strong>";
-            $table_labels[0]['level'] = "<strong><a href=\"tutor.php?$parms&amp;order=level\">".translateFN("Livello")."</a></strong>";
-            $table_labels[0]['level_plus'] = "<img src=\"img/_up.png\" border=0>";
-            $table_labels[0]['level_less'] = "<img src=\"img/_down.png\" border=0>";
-            
             /**
              * @author giorgio 16/mag/2013
              * 
@@ -1743,57 +1751,115 @@ class Student_class {
              */
 
             $arrayToUse = 'report'.$type.'ColArray';
+            $this->clean_class_reportFN($arrayToUse, $table_labels, $dati_stude);
             
-            if ( CONFIG_CLASS_REPORT && is_array($GLOBALS[$arrayToUse]) && count($GLOBALS[$arrayToUse]) )
-            {            	
-            	foreach  ( $GLOBALS[$arrayToUse] as $reportCol )
-            	{
-            		if (constant($reportCol) >0)
-            		{
-            			preg_match("/^REPORT_COLUMN_([A-Z_]*)$/", $reportCol, $output_array);
-            			$arrayKey = strtolower($output_array[1]);
-            			unset ($table_labels[0][$arrayKey]);
-
-            			foreach ($dati_stude as $key=>$oneRow)
-            			{
-            				unset ($dati_stude[$key][$arrayKey]);
-            			}
-            		}
-            	}            	
-            }
-            
-            $tabled_dataHa = array_merge($table_labels,$dati_stude);
-
-            if ($num_student !=-1) {
-                $tObj = new Table();
-                // $tObj->initTable('0','center','0','1','100%','black','white','black','white');
-                $tObj->initTable('0','center','0','1','100%','','','','',0,0,1);
-                // Syntax: $border,$align,$cellspacing,$cellpadding,$width,$col1, $bcol1,$col2, $bcol2
-                $caption = translateFN("Studenti del corso") . " <strong>$course_title</strong>  - ".
-                  		   translateFN("Classe")." ".$instance_course_ha['title']." (".
-                  		   $id_instance.") - " . translateFN("Iniziato il ");
-                $caption .= "&nbsp;<strong>$start_date</strong>" ;
-                
-                $summary = translateFN("Elenco dei corsi monitorati");
-                $tObj->setTable($tabled_dataHa,$caption,$summary);
-                // @author giorgio 14/mag/2013
-                // perform needed actions depending on $type export value
-                if ($type === 'HTML') $student_list = $tObj->getTable();
-                else if ($type === 'FILE'){
-                	$tabled_dataHa['caption'] = $caption;
-                	$student_list = $tabled_dataHa;
-                }
-                
-            } else {
-                $student_list = translateFN("Errore:").$err_msg;
-            }
-
+           	return array('report_generation_date'=>$report_generation_TS) + array_merge($table_labels,$dati_stude);
         } else {
-            $student_list = translateFN("Non ci sono studenti in questa classe");
+        	return null;
         }
-        return $student_list;
-
     }    // end function get_class_reportFN{}
+    
+    /**
+     * generates buttons for increasing and decreasing user level
+     * 
+     * @param number  $id_student
+     * @param boolean $forceUpdate true if the javascript must reload the page in update mode
+     * 
+     * @return string|NULL
+     */
+    private function generateLevelButtons($id_student,$forceUpdate) {
+    	// convert $forceUpdate to string to be properly passed to the JS
+    	$forceUpdate = ($forceUpdate) ? 'true' : 'false';
+    	
+    	$ButtonPlus =  CDOMElement::create('button','class: button_Increase');
+    	$ButtonPlus->setAttribute('onclick','javascript:updateLevel('.$id_student.',1,'.$forceUpdate.');');
+    	
+    	$ButtonMinus = CDOMElement::create('button','class: button_Decrease');
+    	$ButtonMinus->setAttribute('onclick','javascript:updateLevel('.$id_student.',-1,'.$forceUpdate.');');
+    	
+    	$links = array();
+    	$links[0] = CDOMElement::create('li','class:liactions');
+    	$links[0]->addChild ($ButtonPlus);
+    	
+    	$links[1] = CDOMElement::create('li','class:liactions');
+    	$links[1]->addChild ($ButtonMinus);
+    	
+    	if(!empty($links)){
+    		$linksul = CDOMElement::create('ul','class:ulactions');
+    		foreach ($links as $link) $linksul->addChild ($link);
+    		return $linksul->getHtml();
+    	}
+    	return null;
+    }
+    
+    /**
+     * @author giorgio 24/ott/2014
+     * 
+     * generate class report table header
+     * 
+     * @return array the generated table header array
+     * 
+     * @access private
+     */
+    private function generate_class_report_header() {
+    	
+    	$tableHeader['id'] = translateFN("Id");
+    	$tableHeader['student'] = translateFN("Studente");
+    	$tableHeader['history'] = translateFN("Visite");
+    	$tableHeader['last_access'] = translateFN("Recente");
+    	$tableHeader['exercises'] = translateFN("Punti A");
+    	
+    	if (MODULES_TEST) {
+    		$tableHeader['exercises_test'] = translateFN("Punti Test");
+    		$tableHeader['exercises_survey'] = translateFN("Punti Sondaggio");
+    	}
+    		
+    	$tableHeader['added_notes'] = translateFN("Note Scri");
+    	$tableHeader['read_notes'] = translateFN("Note Let");
+    	$tableHeader['message_count_in'] = translateFN("Msg Ric");
+    	$tableHeader['message_count_out'] = translateFN("Msg Inv");
+    	$tableHeader['chat'] = translateFN("Chat ");
+    	$tableHeader['bookmarks'] = translateFN("Bkms ");
+    		
+    	$tableHeader['index'] = translateFN("Attivita'");
+    	$tableHeader['level'] = translateFN("Livello");
+    	$tableHeader['level_plus'] = translateFN("Modifica livello");
+    	
+    	return $tableHeader;    	
+    }
+    
+    /**
+     * @author giorgio 24/ott/2014
+     * 
+     * remove unwanted columns from the class report
+     * unwanted cols are defined in config/config_class_report.inc.php
+     * 
+     * @param array $arrayToUse
+     * @param array $table_labels NOTE: passed by ref, this method will modify the array!
+     * @param array $dati_stude   NOTE: passed by ref, this method will modify the array!
+     * 
+     * @access private
+     */
+    private function clean_class_reportFN($arrayToUse, &$table_labels, &$dati_stude) {
+    	
+    	if ( CONFIG_CLASS_REPORT && is_array($GLOBALS[$arrayToUse]) && count($GLOBALS[$arrayToUse]) )
+    	{
+    		foreach  ( $GLOBALS[$arrayToUse] as $reportCol )
+    		{
+    			if (constant($reportCol) >0)
+    			{
+    				preg_match("/^REPORT_COLUMN_([A-Z_]*)$/", $reportCol, $output_array);
+    				$arrayKey = strtolower($output_array[1]);
+    				unset ($table_labels[0][$arrayKey]);
+    	
+    				foreach ($dati_stude as $key=>$oneRow)
+    				{
+    					unset ($dati_stude[$key][$arrayKey]);
+    				}
+    			}
+    		}
+    	}    	
+    }
 
     function log_class_data($id_course,$id_course_instance,$dati_stude) {
         $dh = $GLOBALS['dh'];

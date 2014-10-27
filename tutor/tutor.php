@@ -67,38 +67,6 @@ switch ($op) {
             }
         }
         break;
-//    case 'student_level':        // Update the user Level
-//        $studenti_ar = array();
-//        $studenti_ar[] = $id_student;
-//
-//        $info_course = $dh->get_course($id_course); // Get title course
-//        if  (AMA_DataHandler::isError($info_course)) {
-//            $msg = $info_course->getMessage();
-//        } else {
-//
-//            $online_users_listing_mode = 2;
-//            $online_users = User::get_online_usersFN($id_course_instance,$online_users_listing_mode);
-//
-//            $course_title = $info_course['titolo'];
-//
-//            $chat_link = "<a href=\"$http_root_dir/comunica/adaChat.php\" target=_blank>".translateFN("chat")."</a>";
-////
-//
-//            $updated = $dh->set_student_level($id_instance, $studenti_ar, $level);
-//
-//            $courses_student = get_student_coursesFN($id_instance, $id_course);
-//            $data['dati'] = $courses_student;
-//            $data['menu_01'] = "<a href=" . $http_root_dir . "/tutor/tutor.php>" . translateFN("Lista dei corsi") . "</a>";
-//            $data['course_title']=$course_title;
-//            $data['menu_02'] = $chat_link;
-//            $data['status'] = translateFN("modificato il livello studente");
-//            $data['chat_users']=$online_users;
-//            $data['help'] = translateFN("Da qui il Tutor pu&ograve; modificare il livello dello studente,
-//                                             in modo da permettere un accesso filtrato ai nodi,
-//                                             ");
-//        }
-//        break;
-//
     case 'student':
     case 'class_report': // Show the students subscribed in selected course and a report
         if(!isset($id_course)) {
@@ -113,6 +81,34 @@ switch ($op) {
             // load
             $courses_student = get_student_courses_from_dbFN($id_course, $id_instance);
         }
+        
+        if (!is_null($courses_student)) {
+        	if (isset($courses_student['report_generation_date']) && !is_null($courses_student['report_generation_date'])) {
+        		$report_generation_TS = $courses_student['report_generation_date'];
+        		unset ($courses_student['report_generation_date']);
+        	}
+        	$thead = array_shift($courses_student);
+        	$tfoot = array_pop($courses_student);
+        	$tObj = BaseHtmlLib::tableElement('id:table_Report',$thead,$courses_student,$tfoot,null);
+        	$data = $tObj->getHtml();
+        } else {
+        	if ($mode=='update') {
+        		$data = translateFN("Non ci sono studenti in questa classe");
+        	} else {
+//         		$http_root_dir = $GLOBALS['http_root_dir'];
+//         		$data  = translateFN("Non è presente un report dell'attivita' della classe aggiornato alla data odierna. ");
+//         		$data .= "<a href=\"$http_root_dir/tutor/tutor.php?op=student&id_instance=$id_instance&id_course=$id_course&mode=update\">";
+//         		$data .= translateFN("Aggiorna il report.");
+//         		$data .= "</a>";
+				/**
+				 * @author giorgio 27/ott/2014
+				 * 
+				 * if no class report was ever generated, redirect the user to the mode=update page
+				 */
+        		redirect("$http_root_dir/tutor/tutor.php?op=student&id_instance=$id_instance&id_course=$id_course&mode=update");
+        	}        	
+        }
+        
         $info_course = $dh->get_course($id_course); // Get title course
         if  (AMA_DataHandler::isError($info_course)) {
             $msg = $info_course->getMessage();
@@ -132,14 +128,28 @@ switch ($op) {
             $sess_id_course = $id_course;
 
             $chat_link = "<a href=\"$http_root_dir/comunica/chat.php\" target=_blank>".translateFN('chat di classe') .'</a>';
-
-            $data = $courses_student;
             
-            $help = translateFN("Da qui il Tutor può consultare il report della classe; il report può essere ordinato in base a una qualsiasi delle colonne.");
-            $help .= '<br />' . translateFN("Cliccando sui dati si accede al dettaglio.")
-                  . '<br />';
+            $instance_course_ha = $dh->course_instance_get($id_instance); // Get the instance courses data
+            $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
 
+           	$help = translateFN("Studenti del corso") . " <strong>$course_title</strong>  - ".
+           			translateFN("Classe")." ".$instance_course_ha['title']." (".
+           			$id_instance.") - " . translateFN("Iniziato il ");
+           	$help .= "&nbsp;<strong>$start_date</strong>" ;
+           	$help .= '<br />' . translateFN("Cliccando sui dati si accede al dettaglio.");
+           	if (isset($report_generation_TS)) {
+           		$updateDIV = CDOMElement::create('div','class:updatelink');
+           		$updateSPAN = CDOMElement::create('span');
+           		$updateSPAN->addChild(new CText(translateFN('Report aggiornato al').' '.ts2dFN($report_generation_TS)));           		
+           		$updateLink = CDOMElement::create('a','href:'.$http_root_dir.
+           				'/tutor/tutor.php?op=student&id_instance='.$id_instance.'&id_course='.$id_course.'&mode=update');
+           		$updateLink->addChild(new CText(' '.translateFN("Aggiorna il report")));
+           		$updateDIV->addChild($updateSPAN);
+           		$updateDIV->addChild($updateLink);
+        		$help .= $updateDIV->getHtml();
+           	}
         }
+        
         break;
 
     case 'student_notes':   // nodi inseriti dallo studente
@@ -278,8 +288,27 @@ switch ($op) {
     	if (!in_array($type, $allowed_export_types)) $type = 'xls';
     	
     	// get needed data
-    	$courses_student = get_student_coursesFN($id_instance, $id_course,'', ($type=='xls') ? 'HTML' : 'FILE');    	
+    	$courses_student = get_student_coursesFN($id_instance, $id_course,'', ($type=='xls') ? 'HTML' : 'FILE');
+
+    	// build the caption
+    	// 0. Get title course
+    	$info_course = $dh->get_course($id_course);
+    	if (AMA_DB::isError($info_course)) $course_title = '';
+    	else $course_title =  $info_course['titolo'];
+    	// 1. Get the instance courses data
+    	$instance_course_ha = $dh->course_instance_get($id_instance);
+    	if (AMA_DB::isError($instance_course_ha)) {
+    		$start_date = '';
+    		$instance_title = '';
+    	} else {
+    		$start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
+    		$instance_title = $instance_course_ha['title'];    		
+    	}
     	
+    	$caption = translateFN("Studenti del corso") . " <strong>$course_title</strong>  - ".
+    			translateFN("Classe")." ".$instance_title." (".
+    			$id_instance.") - " . translateFN("Iniziato il ")."&nbsp;<strong>$start_date</strong>" ;
+    	    	
     	// build up filename to be streamed out
     	$filename = 'course_'.$id_course.'_class_'.$id_instance.'.'.$type;
     	
@@ -289,7 +318,7 @@ switch ($op) {
     		
     		$pdf =& new PdfClass('landscape', strip_tags(html_entity_decode($courses_student['caption'])) );
     		
-    		$pdf->addHeader(strip_tags(html_entity_decode($courses_student['caption'])),
+    		$pdf->addHeader(strip_tags(html_entity_decode($caption)),
     						ROOT_DIR.'/layout/'.$userObj->template_family.'/img/header-logo.png', 14)
     			->addFooter( translateFN("Report")." ". translateFN("generato")." ". translateFN("il")." ". date ("d/m/Y")." ".
     					     translateFN("alle")." ".date ("H:i:s") );
@@ -316,6 +345,7 @@ switch ($op) {
 			$pdf->saveAs($filename);
     	} 	     	
     	else if ($type === 'xls'){
+    		$tObj = BaseHtmlLib::tableElement('id:table_Report',array_shift($courses_student),$courses_student,array(),null);
 	        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
 	        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");          // always modified
 	        header("Cache-Control: no-store, no-cache, must-revalidate");  // HTTP/1.1
@@ -324,7 +354,7 @@ switch ($op) {
 	        header("Content-Type: application/vnd.ms-excel");
 	        // header("Content-Length: ".filesize($name));
 	        header("Content-Disposition: attachment; filename=course_".$id_course."_class_".$id_instance.".xls");
-	        echo $courses_student;
+	        echo  $tObj->getHtml();
 			// header ("Connection: close");
     	}
         exit();
@@ -377,7 +407,6 @@ if (!empty($course_title))
 	$course_title = ' > <a href="'.HTTP_ROOT_DIR.'/browsing/main_index.php">'.$course_title.'</a>';
 }
 
-
 $content_dataAr = array(
     'course_title'=>translateFN('Modulo tutor').$course_title,
     'path'=>$node_path,
@@ -396,9 +425,25 @@ $content_dataAr = array(
     'chat_link' => $chat_link,
  );
 
+$layout_dataAr['CSS_filename'] = array (
+		JQUERY_UI_CSS,
+		JQUERY_DATATABLE_CSS,
+);
+$layout_dataAr['JS_filename'] = array(
+		JQUERY,
+		JQUERY_UI,
+		JQUERY_DATATABLE,
+		JQUERY_NO_CONFLICT
+);
+
 $menuOptions['id_course'] = $id_course;
 $menuOptions['id_instance'] = $id_instance;
 $menuOptions['id_course_instance'] = $id_instance;
 $menuOptions['id_student'] =$id_student;
 
-ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
+$optionsAr['onload_func'] = 'initDoc(';
+if (isset($id_course) && intval($id_course)>0 && isset($id_instance) && intval($id_instance)>0)
+	$optionsAr['onload_func'] .= $id_course.','.$id_instance;
+$optionsAr['onload_func'] .= ');';
+
+ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr,$menuOptions);
