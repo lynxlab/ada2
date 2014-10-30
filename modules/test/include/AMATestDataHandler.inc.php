@@ -1183,4 +1183,55 @@ class AMATestDataHandler extends AMA_DataHandler {
             return $res;
         }
     }
+    
+    /**
+     * @author giorgio 30/ott/2014
+     * 
+     * methods for accessing and manipulating the history_esercizi table
+     */
+
+    /**
+     * Add an item  to table history_esercizi
+     * Useful during the navigation. The date of the visit is computed automatically.
+     *
+     * @access public
+     *
+     * @param $student_id   the id of the student
+     * @param $course_id    the id of the instance of course the student is navigating
+     * @param $node_id      the node to be registered in the history
+     * @param $answer       NOT USED IN MODULES_TEST, kept for compatibility reasons.
+     * @param $remark       NOT USED IN MODULES_TEST, kept for compatibility reasons.
+     * @param $points       NOT USED IN MODULES_TEST, kept for compatibility reasons.
+     * @param $correction   NOT USED IN MODULES_TEST, kept for compatibility reasons.
+     * @param $ripetibile   NOT USED IN MODULES_TEST, kept for compatibility reasons.
+     * @param $attach       NOT USED IN MODULES_TEST, kept for compatibility reasons.
+     * 
+     * @return number|AMA_Error inserted row id or AMA_Error object
+     *
+     * (non-PHPdoc)
+     * @see AMA_Tester_DataHandler::add_ex_history()
+     */
+    public function add_ex_history($student_id, $course_instance_id, $node_id, $answer='', $remark='', $points=0, $correction='', $ripetibile=0, $attach='') {
+    	$result = parent::add_ex_history($student_id, $course_instance_id, $node_id);
+    	if (!AMA_DB::isError($result)) return $this->getConnection()->lastInsertId();
+    	else return $result;
+    }
+    
+    /**
+     * updates the exit time of a node in history_esercizi
+     * 
+     * @param $student_id   the id of the student
+     * @param $course_id    the id of the instance of course the student is navigating
+     * @param $node_id      the node to be registered in the history
+     * 
+     * @return mixed
+     */
+    public function update_exit_time_ex_history($student_id, $course_instance_id, $node_id) {
+    	$sql = 'UPDATE `history_esercizi` SET `data_uscita`=? WHERE `data_visita`=`data_uscita` AND '.
+      	'`id_utente_studente` = ? AND `id_nodo` = ? AND `id_istanza_corso`= ?';
+    	
+    	return $this->queryPrepared($sql, array(time(), $student_id, $node_id, $course_instance_id));
+    	
+    }
+    
 }
