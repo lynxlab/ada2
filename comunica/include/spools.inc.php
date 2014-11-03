@@ -1587,7 +1587,7 @@ class Mailer
         //$res =  @mail($recipient_list,$subject,$message,$headers);
         $res =  @mail($recipient_list,'=?UTF-8?B?' . base64_encode($subject) . '?=',$message,$headers);
         if (!$res){
-          $errObj = new ADA_error(NULL,"Errore nell'invio dell'email", 'Mailer');
+          $errObj = new ADA_error(NULL,"Errore nell'invio dell'email", 'Mailer', AMA_ERR_SEND_MSG);
           return $errObj;
         }
     }
