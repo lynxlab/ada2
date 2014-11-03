@@ -66,7 +66,7 @@ class TopicTest extends NodeTest
 		$out->addChild(new CText($this->titolo));
 		
 		// add topic to history_esercizi table
-		$this->trackTopicToExerciseHistory();
+		if (!$feedback) $this->trackTopicToExerciseHistory();
 		
 		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			if ($this->durata > 0 && is_a($this->_parent,'RootTest')) {
