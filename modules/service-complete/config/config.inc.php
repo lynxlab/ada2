@@ -18,5 +18,6 @@
 define ('NUM_RULES_SET',3);
 
 $GLOBALS['completeClasses'][]  = 'completeConditionTime';
+$GLOBALS['completeClasses'][]  = 'completeConditionLevel';
 
 ?>
