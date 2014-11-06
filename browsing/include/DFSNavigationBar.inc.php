@@ -47,37 +47,39 @@ class DFSNavigationBar
             $this->findNextNode($n, $params['userLevel']);
         }
 
-	/**
+		/**
          * @author giorgio 08/ott/2013
          * check if this is a node wich has been generated when creating a test.
          * If it is, next node is the first topic of the test.
          * BUT, I'll pass the computed $this->_nextNode to give a callBack point
          * to be used when user is in the last topic of the test.
          */
-         if (MODULES_TEST && strpos($n->type,ADA_PERSONAL_EXERCISE_TYPE) == 0) {                 
-		$test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-		$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$n->id));
-
-		if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
-			$node = array_shift($res);
-			$this->_nextTestNode = $node['id_nodo'];
-		}
-
-	      /**
-		* @author giorgio 06/nov/2013
-		* must check if computed $this->_previousNode points to a test
-                * and get last topic if it does.
-		*/
-		$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$this->_previousNode));
-		if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
-			$node = array_shift($res);			
-			$test = NodeTest::readTest($node['id_nodo'], $test_db);
-			$this->_prevTestTopic = count($test->_children);
-			$this->_prevTestNode = $node['id_nodo'];
-		}
-
-         }
-}
+        if (MODULES_TEST && strpos($n->type,ADA_PERSONAL_EXERCISE_TYPE) == 0) {
+        	if (isset($GLOBALS['dh'])) $GLOBALS['dh']->disconnect();
+        	$test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        	$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$n->id));
+        	
+        	if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
+        		$node = array_shift($res);
+        		$this->_nextTestNode = $node['id_nodo'];
+        	}
+        	
+        	/**
+        	 * @author giorgio 06/nov/2013
+        	 * must check if computed $this->_previousNode points to a test
+        	 * and get last topic if it does.
+        	 */
+        	
+        	$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$this->_previousNode));
+        	if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
+        		$node = array_shift($res);
+        		$test = NodeTest::readTest($node['id_nodo'], $test_db);
+        		$this->_prevTestTopic = count($test->_children);
+        		$this->_prevTestNode = $node['id_nodo'];
+        	}
+        	$test_db->disconnect();
+        }
+	}
     /**
      * Finds the node preceding $n in a depth first search
      * and sets $this->_previousNode
