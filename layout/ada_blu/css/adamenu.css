@@ -2,7 +2,7 @@
 .ui.menu.ada { 
 	font-family: "Helvetica Neue", "Helvetica", Arial;
 	border-radius:0;
-	border-bottom: 2px solid #009F98;
+	border-bottom: 1px solid #009F98;
 	/* background-color: #1C68AD; */
 	
 }
@@ -13,13 +13,22 @@
 	float: initial;
 }
 
+.ui.menu.ada ul {
+	padding-left: 0;
+	float:left; 
+}
+
+.ui.menu.ada  a,
 .ui.menu.ada  a.item,
 .ui.menu.ada .dropdown.item,
 .ui.menu.ada .dropdown.item a.item,
 .ui.mobile.ada.menu  .dropdown {
 	text-transform: capitalize;
+	text-decoration: none;
+	cursor: pointer;
 }
 
+.ui.menu.ada .dropdown.item li.item:hover,
 .ui.menu.ada .dropdown.item a.item:hover {
 	background-color: #F5F5F5;
 }

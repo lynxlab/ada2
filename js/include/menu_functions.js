@@ -18,7 +18,7 @@ setUnreadMessagesBadge();
  */
 function hideSideBarFromSideBar() {
 	$j('#menuright').sidebar('hide');
-	$j('a.item.active').removeClass('active');
+	$j('li.item.active').removeClass('active');
 }
 
 document.observe('dom:loaded', function() {
@@ -72,7 +72,7 @@ document.observe('dom:loaded', function() {
 	// $j('.computer.menu .dropdown').dropdown({ on: 'hover' });
 
 	// enable menu items (non dropdown) active class
-	var menuItem = $j('.menu a.item, .menu .link.item').not('.closepanel');
+	var menuItem = $j('.menu li.item, .menu .link.item').not('.closepanel');
 	menuItem.on('click', function() {	  
 	    if(!$j(this).hasClass('dropdown')) {
 	          $j(this).toggleClass('active').closest('.ui.menu')
@@ -81,9 +81,9 @@ document.observe('dom:loaded', function() {
 	});
 	
 	// enable userpopup, if found
-	if ($j('a.item.userpopup').length>0 && $j('#status_bar').length>0) {
+	if ($j('li.item.userpopup').length>0 && $j('#status_bar').length>0) {
 		$j('#status_bar').hide();
-		$j('a.item.userpopup').popup({
+		$j('li.item.userpopup').popup({
 		    position: 'bottom center',
 		    html: $j('#status_bar').html(),
 		    on: 'click',
