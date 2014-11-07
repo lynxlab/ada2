@@ -72,9 +72,9 @@ $birthdate = $UserCertificateObj->getBirthDate();
 
 
 if (strToUpper($gender) == "F"){
-	$nato = "nata";
+	$nato = translateFN('nata');
 } else {
-	$nato = "nato";
+	$nato = translateFN('nato');
 }
 if((!is_null($birthplace) && stripos($birthplace,'NULL')===false && strlen($birthplace)>0) && (!is_null($birthdate) && $birthdate>0 && strlen($birthdate)>0)){
     $birthSentence="";
