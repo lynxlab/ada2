@@ -43,7 +43,7 @@ class CompleteConditionLevel extends CompleteCondition
 	 * 
 	 * @var string
 	 */
-	public static $paramDescription = 'Livello oltre il quale la condizione si intende soddisfatta';
+	public static $paramDescription = 'Livello oltre il quale la condizione si intende soddisfatta. Scrivere <b>0</b> per dire il massimo livello possibile nel corso.';
 
     /**
 	 * method that checks if the contidion is satisfied
@@ -58,9 +58,20 @@ class CompleteConditionLevel extends CompleteCondition
     	
     	$user = MultiPort::findUser($id_student,$id_course_instance);
     	    	
-    	if ($user instanceof ADAUser) {
+    	if ($user instanceof ADAUser && isset($GLOBALS['dh'])) {
     		$level = $user->get_student_level($id_student, $id_course_instance);
-    		return (intval($level)>intval($this->_param));
+    		if (!AMA_DB::isError($level) && is_numeric($level)) {
+    			if (intval($this->_param)===0) {
+    				$course_id = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);
+    				if (!AMA_DB::isError($course_id) && is_numeric($course_id)) {
+    					$max_level = $GLOBALS['dh']->get_course_max_level($course_id);
+    					if (!AMA_DB::isError($max_level) && is_numeric($max_level)) {
+    						return (intval($level)>intval($max_level));
+    					}
+    				}
+    			}
+    			else if (is_numeric($this->_param)) return (intval($level)>intval($this->_param));
+    		}
     	}
     	    	
     	return false;
