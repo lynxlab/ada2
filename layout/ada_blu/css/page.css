@@ -1,7 +1,6 @@
 /* IMPOSTAZIONI GENERALI
 ----------------------------------------------- */
 @CHARSET "UTF-8";
-@import "adamenu.css";
 
 html, body { font-family: Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:5px; color:#000; font-size: small;
 			 background: #fff; }

@@ -106,7 +106,11 @@ var USER_ID = <?php echo $_SESSION['sess_id_user'];?>;
 <?php else: ?>
 var USER_ID = null;
 <?php endif; ?>
-
+<?php if(isset($_SESSION['IE-version']) && $_SESSION['IE-version']!==false): ?>
+var IE_version = <?php echo $_SESSION['IE-version']; ?>;
+<?php else: ?>
+var IE_version = false;
+<?php endif; ?>
 
 
 //media type

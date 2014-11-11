@@ -17,11 +17,26 @@ setUnreadMessagesBadge();
  * href onclick event generated inside the sidebar
  */
 function hideSideBarFromSideBar() {
-	$j('#menuright').sidebar('hide');
-	$j('a.item.active').removeClass('active');
+	if (IE_version==false || IE_version>8) {
+		$j('#menuright').sidebar('hide');
+		$j('li.item.active').removeClass('active');
+	} else {
+		if ($j('#menuright').is(':visible')) $j('#menuright').hide();
+	}
+
 }
 
 document.observe('dom:loaded', function() {
+	
+	/**
+	 * add trim method to String object
+	 */
+	
+	if(typeof String.prototype.trim !== 'function') {
+		  String.prototype.trim = function() {
+		    return this.replace(/^\s+|\s+$/g, ''); 
+		  }
+		}
 	/**
 	 * sets the dropdown menu to appear on hover
 	 * and the menuitem onclick handler for proper css class switching
@@ -32,19 +47,29 @@ document.observe('dom:loaded', function() {
 	 */	
 	
 	/**
-	 * Copy the .computer.menu HTML code, make the
-	 * needed changes and use it as a .mobile.menu
+	 * If it's not internet explorer or is IE>8
+	 * use semantic-ui components
 	 */
-	if ($j('.ui.mobile.ada.menu').length>0) {
-		var menuHTML = $j('.ui.computer.ada.menu').clone();	
-		var rightMenu = $j(menuHTML).find('.right.menu');
-		if (rightMenu.length >0) {
-			rightMenu.remove();
-			$j(menuHTML).find('div').first().append(rightMenu.html());
-		}	
-	    $j(menuHTML).find('.ui.dropdown.item').toggleClass('item').toggleClass('fluid')
-	    .wrap('<div class="ui item"></div>');
-	    $j('.ui.mobile.ada.menu').html(menuHTML.html());
+	if (IE_version==false || IE_version>8) {
+		/**
+		 * Copy the .computer.menu HTML code, make the
+		 * needed changes and use it as a .mobile.menu
+		 */
+		if ($j('.ui.mobile.ada.menu').length>0) {
+			var menuHTML = $j('.ui.computer.ada.menu').clone();	
+			var rightMenu = $j(menuHTML).find('.right.menu');
+			if (rightMenu.length >0) {
+				rightMenu.remove();
+				$j(menuHTML).find('div').first().append(rightMenu.html());
+			}	
+		    $j(menuHTML).find('.ui.dropdown.item').toggleClass('item').toggleClass('fluid')
+		    .wrap('<div class="ui item"></div>');
+		    $j('.ui.mobile.ada.menu').html(menuHTML.html());
+		    $j('.ui.mobile.ada.menubutton .ui.button').on('click', function() {
+		    	$j('#mobilesidebar').sidebar('toggle');
+		    });
+		}
+
 	    
 		// mobile dropdown on click
     	/**
@@ -57,70 +82,101 @@ document.observe('dom:loaded', function() {
     	 * and uncomment the following line
     	 */
 		// $j('.mobile.menu .dropdown').dropdown({ on: 'click' });
-	}
 
-	// computer dropdown on hover
-	/**
-	 * @author giorgio 16/set/2014
-	 * commented line to have a non-js working
-	 * dropdown as a workaround to some bug causing
-	 * firefox crash on xp and vista.
-	 * Should you wish to revert to a js dropdown,
-	 * remove the simple class from menu_functions.inc.php
-	 * and uncomment the following line
-	 */
-	// $j('.computer.menu .dropdown').dropdown({ on: 'hover' });
-
-	// enable menu items (non dropdown) active class
-	var menuItem = $j('.menu a.item, .menu .link.item').not('.closepanel');
-	menuItem.on('click', function() {	  
-	    if(!$j(this).hasClass('dropdown')) {
-	          $j(this).toggleClass('active').closest('.ui.menu')
-	          .find('.item').not($j(this)).removeClass('active');
-	    }
-	});
-	
-	// enable userpopup, if found
-	if ($j('a.item.userpopup').length>0 && $j('#status_bar').length>0) {
-		$j('#status_bar').hide();
-		$j('a.item.userpopup').popup({
-		    position: 'bottom center',
-		    html: $j('#status_bar').html(),
-		    on: 'click',
-		    onHide: function() {
-	    		$j('a.item.active').removeClass('active');
+		// enable menu items (non dropdown) active class
+		var menuItem = $j('.menu li.item, .menu .link.item').not('.closepanel');
+		menuItem.on('click', function() {
+		    if(!$j(this).hasClass('dropdown')) {
+		          $j(this).toggleClass('active').closest('.ui.menu')
+		          .find('.item').not($j(this)).removeClass('active');
 		    }
-		  });
+		});
+		
+		// enable userpopup, if found
+		if ($j('li.item.userpopup').length>0 && $j('#status_bar').length>0) {
+			$j('#status_bar').hide();
+			$j('li.item.userpopup').popup({
+			    position: 'bottom center',
+			    html: $j('#status_bar').html(),
+			    on: 'click',
+			    onHide: function() {
+		    		$j('a.item.active').removeClass('active');
+			    }
+			  });
+		}
+		
+	    // perform search on search icon click
+    	if ($j('.search.link.icon').length>0) {
+    		$j('.search.link.icon').on('click',function(){
+    			var text = $j(this).siblings('input[type="text"]').val().trim();
+    			if (text.length>0) {
+    				document.location.href='search.php?s_UnicNode_text='+text+'&l_search=l_search&submit=cerca';
+    			}
+    		});
+    	}
+		
+	    // init and set resize for mobile sidebar if needed
+	    if ($j('#mobilesidebar').length>0) {
+	        $j('#mobilesidebar').sidebar();
+	        $j(window).resize(function() {
+	        	var w = $j(window).width();
+	        	if (w>768 && $j('#mobilesidebar').sidebar('is open')) {
+	        		$j('#mobilesidebar').sidebar('toggle');
+	        	}
+	        });
+	    }
+	    
+	    $j('.ui.accordion').accordion();
+	    
+	} else {
+		/**
+		 * it's internet explorer v.8 or less, use smartmenus
+		 */
+		$j('.ui.mobile.ada.menubutton ,#mobilesidebar').remove();
+		
+		$j('ul.left.menu, ul.right.menu').smartmenus({
+			subMenusSubOffsetX: 1,
+			subMenusSubOffsetY: -8,
+			subIndicators: false
+		});
+		
+		// enable show/hide userpopup, if found
+		if ($j('li.item.userpopup').length>0 && $j('#status_bar').length>0) {
+			$j('#status_bar').hide();
+			$j('li.item.userpopup').on('click',function() {
+				if($j('#status_bar').is(':visible')) {
+					$j('#status_bar').fadeOut();
+				} else {
+					$j('#status_bar').fadeIn();
+				}
+			});
+		}
 	}
-        
+
     // if there's the searchbox, make it work
     if($j('.item.searchItem input[type="text"]').length>0) {
-      // perform search either on search icon click...
-		$j('.search.link.icon').on('click',function(){
-			var text = $j(this).siblings('input[type="text"]').val().trim();
-			if (text.length>0) {
-				document.location.href='search.php?s_UnicNode_text='+text+'&l_search=l_search&submit=cerca';
+		// perform search on searchmenutext enter key press
+		$j('.item.searchItem input[type="text"]').on('keyup', function(event){
+			if(event.which == 13) {
+				var text = $j(this).val().trim();
+    			if (text.length>0) {
+    				document.location.href='search.php?s_UnicNode_text='+text+'&l_search=l_search&submit=cerca';
+    			}
 			}
 		});
-		// ...or on searchmenutext enter key press
-		$j('.item.searchItem input[type="text"]').on('keyup', function(event){
-			if(event.which == 13) $j(this).siblings('.search.link.icon').click();
-		});  
     }
     
-    // init and set resize for mobile sidebar if needed
-    if ($j('#mobilesidebar').length>0) {
-        $j('#mobilesidebar').sidebar();
-        $j(window).resize(function() {
-        	var w = $j(window).width();
-        	if (w>768 && $j('#mobilesidebar').sidebar('is open')) {
-        		$j('#mobilesidebar').sidebar('toggle');
-        	}
-        });    	
-    }
-    
-    $j('.ui.accordion').accordion();
+
 });
+
+function navigationPanelToggle() {
+	if (IE_version==false || IE_version>8) {
+		$j('#menuright').sidebar({overlay:true}).sidebar('toggle');
+	} else {
+		$j('#menuright').toggle('fade');
+		if (!index_loaded) showIndex();
+	}
+}
 
 /*
  * Per mostrare e nascondere elementi
