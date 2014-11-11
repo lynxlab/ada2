@@ -1,3 +1,4 @@
+<div class="clearfix"></div>
 <div class="footerleft" style="float:left">
 	<a href="#top"><img src="img/up.png" border="0" alt="top"></a>
 </div>
