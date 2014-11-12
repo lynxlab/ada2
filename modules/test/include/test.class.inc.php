@@ -96,7 +96,11 @@ class TestTest extends RootTest
 							// se è l'ultimo esercizio (ovvero se il livello dello studente è il massimo possibile)
 							// e l'esercizio è di tipo sbarramento
 							// 1. cambia lo stato dell'iscrizione dello studente all'istanza corso
-							$dh->course_instance_student_subscribe($_SESSION['sess_id_course_instance'], $_SESSION['sess_id_user'], ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, $level);
+							/**
+							 * @author giorgio disabled on 12/nov/2014 completion is now
+							 * handled using modules/service-complete module
+							 */
+							// $dh->course_instance_student_subscribe($_SESSION['sess_id_course_instance'], $_SESSION['sess_id_user'], ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, $level);
 							/*
 							// 2. genera il messaggio da inviare allo switcher
 							$tester = $userObj->getDefaultTester();
