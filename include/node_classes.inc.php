@@ -2433,8 +2433,11 @@ private function _wrapTextInSpan($text, $class=null) {
  */
 private function _removeEmptyElements($dataAr) {
 	foreach ($dataAr as $index=>$row) {
-		if (is_array($row) && count($row)==1 && ($row[0]=='&nbsp;' || empty($row[0]))) {
-			unset ($dataAr[$index]);
+		if (is_array($row) && count($row)==1) {
+			$firstElement = reset($row);
+			if ($firstElement == '&nbsp;' || empty($firstElement)) {
+				unset ($dataAr[$index]);
+			}
 		}
 	}
 	return $dataAr;
