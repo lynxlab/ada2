@@ -56,15 +56,19 @@ document.observe('dom:loaded', function() {
 		 * needed changes and use it as a .mobile.menu
 		 */
 		if ($j('.ui.mobile.ada.menu').length>0) {
-			var menuHTML = $j('.ui.computer.ada.menu').clone();	
+			var menuHTML = $j('.ui.computer.ada.menu').clone();
+			$j(menuHTML).find('ul.left.menu').toggleClass('left menu sm sm-ada');
 			var rightMenu = $j(menuHTML).find('.right.menu');
 			if (rightMenu.length >0) {
 				rightMenu.remove();
-				$j(menuHTML).find('div').first().append(rightMenu.html());
-			}	
-		    $j(menuHTML).find('.ui.dropdown.item').toggleClass('item').toggleClass('fluid')
-		    .wrap('<div class="ui item"></div>');
-		    $j('.ui.mobile.ada.menu').html(menuHTML.html());
+				$j(menuHTML).find('ul').first().append(rightMenu.html());
+			}
+
+			$j(menuHTML).find('.ui.dropdown.item').toggleClass('item').toggleClass('fluid').
+			wrap('<li class="item"><ul></ul></li>');
+			// use the generated html as the mobile menu
+			$j('.ui.mobile.ada.menu').html(menuHTML.html());
+			// hook the menubutton onclick to mobile menu display
 		    $j('.ui.mobile.ada.menubutton .ui.button').on('click', function() {
 		    	$j('#mobilesidebar').sidebar('toggle');
 		    });
