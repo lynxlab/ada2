@@ -164,7 +164,7 @@
 			         <i class="icon dropdown"></i>
 			         <i18n>indice</i18n><i class="sitemap icon" style="float:right;"></i>
 			       </div>
-			       <div class="content field">
+			       <div class="index content field">
 			         <div id="show_index">
 			             <div class="loader-wrapper">
 			                 <div class="ui active inline mini text loader">
@@ -178,7 +178,7 @@
                      <i class="icon dropdown"></i>
                      <i18n>azioni</i18n> <i class="edit sign icon"></i> 
                    </div>
-                   <div class="active content field">
+                   <div class="active actions content field">
                      <template_field class="template_field" name="edit_node">edit_node</template_field>
                      <template_field class="template_field" name="delete_node">delete_node</template_field>
                      <!-- 
@@ -199,7 +199,7 @@
                      <i class="icon dropdown"></i>
                      <i18n>approfondimenti</i18n><i class="pin icon"></i>
                    </div>
-                   <div class="content field">
+                   <div class="deepenings content field">
                      <template_field class="template_field" name="index">index</template_field>
                    </div>
                    
@@ -207,7 +207,7 @@
                      <i class="icon dropdown"></i>
                      <i18n>collegamenti</i18n><i class="url icon"></i>
                    </div>
-                   <div class="content field">
+                   <div class="links content field">
                        <template_field class="template_field" name="link">link</template_field>
                    </div>
                    
@@ -215,7 +215,7 @@
                      <i class="icon dropdown"></i>
                      <i18n>esercizi</i18n><i class="text file outline icon"></i>
                    </div>
-                   <div class="content field">
+                   <div class="exercises content field">
                      <template_field class="template_field" name="exercises">exercises</template_field>
                    </div>
                    
@@ -223,7 +223,7 @@
                      <i class="icon dropdown"></i>
                      <i18n>risorse</i18n><i class="browser icon"></i>
                    </div>
-                   <div class="content field">
+                   <div class="resources content field">
                      <template_field class="template_field" name="media">media</template_field>
                    </div>
                   </div>
@@ -244,7 +244,12 @@
                             <i18n>chiudi</i18n>
                         </a>
                     </li>
-                    <li id="flvplayer">
+                    <li class="loader-wrapper">
+                             <div class="ui medium inline text loader">
+                                 <i18n>Caricamento</i18n>...
+                              </div>
+                    </li>
+                    <li id="flvplayer">                        
                     </li>
                 </ul>
             </div>
