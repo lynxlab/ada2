@@ -38,6 +38,7 @@
 					</div>
 			</div>		
 </div>
+<div id="status_bar">
 <div id="user_data" class="user_data_default">
  <i18n>utente: </i18n>
  <span>
