@@ -57,6 +57,7 @@ $credits_data = "<p>"
               <li>Stefano Penge</li>
               <li>Vito Modena</li>
               <li>Giorgio Consorti</li>
+              <li>Sara Capotosti</li>		
               <li>Valerio Riva</li>
               <li>Guglielmo Celata</li>
               <li>Stamatis Filippis</li>

@@ -339,3 +339,5 @@ define('JQUERY_NIVOSLIDER',		ROOT_DIR.'/js/include/jquery/nivo-slider/jquery.niv
 define('JQUERY_NIVOSLIDER_CSS', ROOT_DIR.'/js/include/jquery/nivo-slider/nivo-slider.css');
 define('SEMANTICUI_CSS',		ROOT_DIR.'/js/include/semantic/css/semantic.min.css');
 define('SEMANTICUI_JS',	 		ROOT_DIR.'/js/include/semantic/javascript/semantic.min.js');
+define('SMARTMENUS_CSS',		ROOT_DIR.'/js/include/smartmenus/css/sm-core-css.css');
+define('SMARTMENUS_JS',	 		ROOT_DIR.'/js/include/smartmenus/jquery.smartmenus.min.js');
