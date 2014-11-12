@@ -57,31 +57,32 @@ function printit()
 }
 
 function openInRightPanel(httpFilePath, fileExtension) {
-    var rightPanel = 'rightpanel';
-    if( $(rightPanel).hasClassName('sottomenu_off')){
-        $(rightPanel).removeClassName('sottomenu_off');
-        $(rightPanel).hide();
+	
+    var rightPanel = '#rightpanel';
+    if ($j(rightPanel).hasClass('sottomenu_off')){
+    	$j(rightPanel).removeClass('sottomenu_off');
+    	$j(rightPanel).hide();
     }
 
-    if($(rightPanel).visible()) {
-       $(rightPanel).hide();
-    }
-    else {
-        $(rightPanel).show();
-    }
-    if(fileExtension == 'flv') {
-        var flvPlayer = 'flvplayer';
-        $(flvPlayer).innerHTML = "<object id=\"flowplayer\" width=\"500\" height=\"370\" data=\"../external/mediaplayer/flowplayer/flowplayer.swf\""
-                               + "type=\"application/x-shockwave-flash\">"
-                               + "<param name=\"movie\" value=\"../external/mediaplayer/flowplayer/flowplayer.swf\" />"
-                               + "<param name=\"allowfullscreen\" value=\"true\" />"
-                               + "<param name=\"flashvars\" value='config={\"clip\":{\"url\":\""+httpFilePath +"\", \"autoPlay\":false, \"autoBuffering\":true}}' />"
-                               + "</object>";
-
-    }else {
-        var flvPlayer = 'flvplayer';
-        $(flvPlayer).innerHTML = "<embed src=\""
-                                 + httpFilePath
-                                 + "\" controls=\"smallconsole\" width=\"500\" height=\"370\" loop=\"false\" autostart=\"true\">";
+    if ($j(rightPanel).is(':visible')) {
+    	$j(rightPanel).hide();
+    } else {
+    	$j('#flvplayer').html('');        
+        $j(rightPanel + ' .loader-wrapper .loader').toggleClass('active').show();
+        $j(rightPanel).show();
+    	$j.ajax({
+    		type	:	'GET',
+    		url		:	'ajax/videoplayer_panel_code.php',
+    		data	:	{ media_url: httpFilePath, width: 500, height: 370 },
+    		dataType:	'html'
+    	})
+    	.done(function (htmlcode){
+    		if (htmlcode && htmlcode.length>0) {
+    			$j('#flvplayer').html(htmlcode);
+    			if ($j("#flvplayer .ADAflowplayer").length > 0)
+    				$j("#flvplayer .ADAflowplayer").flowplayer();
+    		}
+    	})
+    	.always(function() { $j(rightPanel + ' .loader-wrapper .loader').toggleClass('active').hide(); }) ;
     }
 }
