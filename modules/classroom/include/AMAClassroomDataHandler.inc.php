@@ -85,14 +85,14 @@ class AMAClassroomDataHandler extends AMA_DataHandler {
 	 */
 	public function classroom_getClassroom($id) {
 		$tablesData = array (
-			'classrooms'=>
+			self::$PREFIX.'classrooms'=>
 				array(
 						'fields'=>array('id_classroom','id_venue','name','seats','computers',
 										'internet','wifi','projector','mobility_impaired',								
 										'hourly_rate'),
 						'join_field'=>'id_venue'
 				),
-			'venues'=>
+			self::$PREFIX.'venues'=>
 				array(
 						'fields'=>array('name'),
 						'aliasfields'=>array('venue_name'),
@@ -233,13 +233,13 @@ class AMAClassroomDataHandler extends AMA_DataHandler {
 		reset ($tablesData);
 		while ($tableFields = current($tablesData)) {			
 			$tableName = key($tablesData);			
-			$from .= '`'.self::$PREFIX.$tableName.'`';			
+			$from .= '`'.$tableName.'`';			
 			reset ($tableFields);
 			foreach ($tableFields as $type=>$data) {
 				if ($type==='fields') {
 					while ($field = current($tableFields[$type])) {
 						$index = key($tableFields[$type]);
-						$sql .= '`'.self::$PREFIX.$tableName.'`.`'.$field.'`';
+						$sql .= '`'.$tableName.'`.`'.$field.'`';
 						if (isset($tablesData[$tableName]['aliasfields'][$index])) {
 							$sql .= ' AS `'.$tablesData[$tableName]['aliasfields'][$index].'`';
 						}
@@ -248,7 +248,7 @@ class AMAClassroomDataHandler extends AMA_DataHandler {
 						}
 					}					
 				} else if ($type==='join_field') {
-					$joinON .= '`'.self::$PREFIX.$tableName.'`.`'.$tableFields[$type].'`';					
+					$joinON .= '`'.$tableName.'`.`'.$tableFields[$type].'`';					
 				}								
 			}
 			if (next($tablesData)!==false) {
