@@ -278,6 +278,8 @@ else {
 	// will use user.tpl template here
 	
 	// look for passed course in courseInstances array
+    
+    if($found>1){
 	for ($i=0; $i<count($courseInstances); $i++)
 	{
 	// break out from the loop if id_corso is found, and in $i
@@ -285,7 +287,12 @@ else {
 	if ($courseInstances[$i]['id_corso'] == $get_id_course) break;
 	}
 	
-	$c = $courseInstances[$i];	
+	$c = $courseInstances[$i];
+    }
+    else{
+        $c = $courseInstances[0];
+    }
+        
 	$currentTimestamp = time();
 	
 	$isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
