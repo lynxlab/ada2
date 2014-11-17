@@ -87,7 +87,7 @@
 					<div id="corsodilingua"><i18n>Il corso</i18n></div>
 						<ul id="lista_blocco_due">
 							<li id="gostart"><template_field class="template_field" name="gostart">gostart</template_field></li>		
-							<li id="gocontinue"><template_field class="template_field" name="gocontinue">gocontinue</template_field></li>		
+							<!--li id="gocontinue"><template_field class="template_field" name="gocontinue">gocontinue</template_field></li-->		
 							<li id="goindex"><template_field class="template_field" name="goindex">goindex</template_field></li>
 						</ul>
 				</div>
@@ -98,7 +98,7 @@
 						<ul id="lista_blocco_tre">
 							<li id="goclasse"><template_field class="template_field" name="goclasse">goclasse</template_field></li>		
 							<li id="goforum"><template_field class="template_field" name="goforum">goforum</template_field></li>
-							<li id="msg_forum"><i18n>Nuove note</i18n>:&nbsp;<template_field class="template_field" name="msg_forum">msg_forum</template_field></li>															
+							<!--li id="msg_forum"><i18n>Nuove note</i18n>:&nbsp;<template_field class="template_field" name="msg_forum">msg_forum</template_field></li-->															
 						</ul>
 					</div>
 				<!-- blocco3 end -->
