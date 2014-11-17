@@ -28,12 +28,6 @@ $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_T
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-  AMA_TYPE_VISITOR => array('node','layout','course'),
-  AMA_TYPE_STUDENT => array('node','layout','tutor','course','course_instance'),
-  AMA_TYPE_TUTOR   => array('node','layout','course','course_instance'),
-  AMA_TYPE_AUTHOR  => array('node','layout','course')
-);
 
 $neededObjAr = array(
   AMA_TYPE_VISITOR => array('layout','course'),
