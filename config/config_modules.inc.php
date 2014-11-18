@@ -65,4 +65,17 @@
 	else {
 		define('MODULES_CLASSROOM', false);
 	}
+	
+	//defines for module classagenda
+	define ('MODULES_CLASSAGENDA_PATH', MODULES_DIR.'/classagenda');
+	if (file_exists(MODULES_CLASSAGENDA_PATH.'/index.php'))
+	{
+		require_once(MODULES_CLASSAGENDA_PATH.'/config/config.inc.php');
+	
+		define('MODULES_CLASSAGENDA', true);
+		define('MODULES_CLASSAGENDA_HTTP', HTTP_ROOT_DIR.'/modules/classagenda');
+	}
+	else {
+		define('MODULES_CLASSAGENDA', false);
+	}
 ?>

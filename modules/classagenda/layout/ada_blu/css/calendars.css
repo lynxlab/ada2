@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+
+#classcalendar { width: 70%; float:left; }
+#saveCalendar  { margin: 10px auto; display: block; }
+#selectClassContainer { border: 1px dotted gray; padding:10px; margin-bottom: 15px; }
+#classrooms { width: 26%; float: right; margin: 0 0 0 1%; border: 1px dotted gray; padding: 1%; }
+
+label.venuesListLabel { display: block; margin-bottom: 5px; }
+#venuesList { width: 100%; display: block; margin-bottom: 5px; }
+
+.selectclassroomspan { display: block; margin-bottom: 5px; }

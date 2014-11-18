@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+
+/* THIS IS JUST THE BASIC CSS WITH THE BACK BUTTON STYLED
+   USE IT TO BUILD MODULE'S OWN CSS */
+
+#back a {
+	background: url(../../../../../layout/ada_blu/img/back.png) no-repeat
+		center left;
+	display: block;
+	padding: 0 0 0 40px;
+}
