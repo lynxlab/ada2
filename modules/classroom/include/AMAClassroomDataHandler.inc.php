@@ -78,12 +78,13 @@ class AMAClassroomDataHandler extends AMA_DataHandler {
 	 * gets rows in the classroom table
 	 *
 	 * @param number $id if null gets all rows
+	 * @param number $id_venue id of venue to get classrooms for
 	 *
 	 * @return AMA_Error|array
 	 *
 	 * @access public
 	 */
-	public function classroom_getClassroom($id) {
+	public function classroom_getClassroom($id, $id_venue=null) {
 		$tablesData = array (
 			self::$PREFIX.'classrooms'=>
 				array(
@@ -102,6 +103,13 @@ class AMAClassroomDataHandler extends AMA_DataHandler {
 		
 		if (!is_null($id)) $whereClause  = 'id_classroom='.$id;
 		else $whereClause = null;
+		
+		if (!is_null($id_venue)) {
+			if (!is_null($whereClause)) $whereClause .=  ' AND ';
+			else $whereClause = '';
+			
+			$whereClause .= self::$PREFIX.'venues.id_venue='.$id_venue;
+		}
 		
 		$res = $this->getJoined($tablesData,$whereClause);
 
