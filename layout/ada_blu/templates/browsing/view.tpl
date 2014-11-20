@@ -229,8 +229,9 @@
                   </div>
                   <!-- /accordion -->  
                 </div>
+             </div>
             <!-- / menudestra  -->
-            </div>
+          </div>
         <!-- / contenitore -->
 
         <!-- pannello video -->
