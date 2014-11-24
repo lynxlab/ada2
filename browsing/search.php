@@ -32,10 +32,10 @@ $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_T
  * Get needed objects
  */
 $neededObjAr = array(
-  AMA_TYPE_VISITOR      => array('node','layout','course', 'course_instance'),
+  AMA_TYPE_VISITOR      => array('layout','course', 'course_instance'),
   AMA_TYPE_STUDENT         => array('layout','course', 'course_instance'),
-  AMA_TYPE_TUTOR => array('node','layout','course', 'course_instance'),
-  AMA_TYPE_AUTHOR       => array('node','layout','course', 'course_instance')
+  AMA_TYPE_TUTOR => array('layout','course', 'course_instance'),
+  AMA_TYPE_AUTHOR       => array('layout','course', 'course_instance')
 );
 
 /**
@@ -85,6 +85,7 @@ if (!is_null($submit)) {
  *
  */
     if (!empty($s_UnicNode_text)) {
+        $s_UnicNode_text=trim($s_UnicNode_text);
         $clause = "(";
         $clause = $clause . "nome LIKE '%$s_UnicNode_text%'";
         $clause = $clause . $or. "titolo LIKE '%$s_UnicNode_text%'";
@@ -133,7 +134,8 @@ if (!is_null($submit)) {
             if (!empty($s_node_text)){
                 $count++;
             }
-            $resHa=$nodeObj->executeSearch($s_node_name,$s_node_title,$s_node_text,$dh,$count,$sess_id_user);
+            
+            $resHa=$courseObj->executeSearch(trim($s_node_name),trim($s_node_title),trim($s_node_text),$dh,$count,$sess_id_user);
         }
 
     }
