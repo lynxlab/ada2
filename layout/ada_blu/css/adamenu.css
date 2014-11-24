@@ -142,3 +142,7 @@ div.right.sidebar #menurightcontent { background: white; padding: 0px 15px 15px 
 div.right.sidebar #menurightcontent a.closepanel.item { color: #CC181E; }
 div.right.sidebar #menurightcontent span.index.item,
 div.right.sidebar #menurightcontent span.index.item a { color: #4CB164; }
+
+div.right.sidebar #menurightcontent .resources table.table_link_table { width: 100%; table-layout:fixed; }
+div.right.sidebar #menurightcontent .resources table.table_link_table tbody tr td:first-child { display: none; }
+div.right.sidebar #menurightcontent .resources table.table_link_table tbody td a { width: 100%; display: inline-block; overflow: hidden; text-overflow: ellipsis; line-height: 25px; }

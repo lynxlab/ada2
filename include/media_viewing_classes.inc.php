@@ -441,7 +441,9 @@ class VideoPlayer {
         if ($videoTitle == NULL || !isset($videoTitle)) {
             $videoTitle = $file_name;
         }
-        return '<a href="#" onClick="openInRightPanel(\''.$http_file_path.$file_name.'\',\''.$extension.'\');"><img src="../layout/standard/img/flv_icon.png" alt="video">'.$label.' '.$videoTitle.'</a>';
+        
+        $templateFamily = (isset($_SESSION['sess_template_family']) && strlen($_SESSION['sess_template_family'])>0) ? $_SESSION['sess_template_family'] : ADA_TEMPLATE_FAMILY;
+        return '<a href="#" onClick="openInRightPanel(\''.$http_file_path.$file_name.'\',\''.$extension.'\');"><img src="../layout/'.$templateFamily.'/img/flv_icon.png" alt="video">'.$label.' '.$videoTitle.'</a>';
         //return '<img src="img/_video.png"><a href="'.$http_file_path.$real_file_name.'" target="_blank">'.$file_name.'</a>';
     }
 }

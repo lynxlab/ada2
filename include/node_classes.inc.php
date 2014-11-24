@@ -2329,76 +2329,6 @@ function isNodeExercise($type) {
     }
 }
 
-function executeSearch($name,$title,$text,$dh,$count,$id_user)
-{
-  $out_fields_ar=array('nome','titolo','testo','tipo','id_utente');
-  $operator=array(0=>' AND ',1=>' OR ',2=>' AND ',3=>' OR ');
-  $operator2=array(0=>' AND ',1=>' AND ',2=>' OR ',3=>' OR ');
-  if($count==2)
-  {
-      $operator2=array(0=>' AND ',1=>' OR ');
-  }
- if($count==3)
- {
-     $count=$count+1;
- }
-  
-  for($i=0;$i<$count;$i++)
-  {
-    if (!empty($name)) {
-          $clause = "nome LIKE '%$name%'";
-     }
-    if (!empty($title)){ //keywors
-        if ($clause) {
-            if($operator[$i]==' OR ' && $operator2[$i]==' AND ')
-            {
-                $clause = '('.$clause . $operator[$i]. "titolo LIKE '%$title%')";
-            }
-            else
-            {
-                if($operator[$i]==' AND ' && $operator2[$i]==' OR ')
-                {
-                    $clause = $clause . $operator[$i]. "( titolo LIKE '%$title%'";
-                }
-                else
-                {
-                    $clause = $clause . $operator[$i]. " titolo LIKE '%$title%'";
-                }
-            }
-       }
-       else
-       {
-           $clause ="titolo LIKE '%$title%'";
-       }
-    }
-    if (!empty($text)){
-        if ($clause) {
-            if($operator[$i]==' AND ' && $operator2[$i]==' OR ')
-            {
-                $clause = $clause . $operator2[$i]. "testo LIKE '%$title%')";
-            }
-            else
-            {
-                $clause = $clause . $operator2[$i]. "testo LIKE '%$text%'";
-            }
-       }
-        else
-       {
-           $clause ="testo LIKE '%$text%'";
-       }
-   }
-    $clause = '('.$clause.') and ((tipo <> '.ADA_PRIVATE_NOTE_TYPE.') OR (tipo ='.ADA_PRIVATE_NOTE_TYPE.' AND id_utente = '.$id_user.'))';
-    $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause,$_SESSION['sess_id_course']);
-    if(!AMA_DataHandler::isError($resHa) and is_array($resHa) and !empty($resHa))
-    {
-        break;
-    }
-    $clause="";
-  }
-    return $resHa;
-    
-}
-
 /**
  * @author giorgio 29/ago/2014
  * wrap returned text inside a span
@@ -2433,8 +2363,11 @@ private function _wrapTextInSpan($text, $class=null) {
  */
 private function _removeEmptyElements($dataAr) {
 	foreach ($dataAr as $index=>$row) {
-		if (is_array($row) && count($row)==1 && ($row[0]=='&nbsp;' || empty($row[0]))) {
-			unset ($dataAr[$index]);
+		if (is_array($row) && count($row)==1) {
+			$firstElement = reset($row);
+			if ($firstElement == '&nbsp;' || empty($firstElement)) {
+				unset ($dataAr[$index]);
+			}
 		}
 	}
 	return $dataAr;

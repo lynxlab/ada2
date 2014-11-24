@@ -387,7 +387,6 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 
 #menuright .default_table {
     width: auto !important;
-    width: /**/auto;
 }
 #menuright tbody td, #mainmenu tbody td { line-height: normal; }
 

@@ -914,6 +914,22 @@ class  Generic_Html extends Output
     		$html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName\" type=\"text/css\" media=\"print\">\n";
     	}
     }
+    
+     /*
+     * sara 24/nov/2014 
+     * Look for the print.css file in external modules (newsletter, test ecc..)
+     */
+      if($this->external_module){
+        $stylesheetpath = ROOT_DIR.'/'.$this->module_dir.'/layout/';
+        foreach (array ('',$template_family.'/css/') as $subdir){
+            $fileName = $stylesheetpath .$subdir.$lookFor;
+            if (file_exists($fileName)) {
+                $fileName = str_replace($root_dir,$http_root_dir,$fileName);
+                $html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName\" type=\"text/css\" media=\"print\">\n";
+            }
+        }
+    }
+    
     /**
      * end @author giorgio 03/apr/2014
      */

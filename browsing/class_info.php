@@ -59,6 +59,7 @@ if (count($serviceProviders) == 1) {
 }
  *
  */
+$id_course = (isset ($_GET['id_course']) && intval ($_GET['id_course'])>=0) ? intval ($_GET['id_course']) : -1;
 $providerAr = $common_dh->get_tester_info_from_id_course($id_course);
 $client = $providerAr['puntatore'];
 $provider_dh = AMA_DataHandler::instance(MultiPort::getDSN($client));
@@ -124,7 +125,7 @@ $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'last_visit' => $last_access,
-    'edit_user'=> $edit_profile_link->getHtml(),
+    'edit_profile'=>$userObj->getEditProfilePage(),
     'message' => $message,
     'user_level'=>$user_level,
 //    'iscritto' => $sub_course_data,
