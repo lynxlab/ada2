@@ -53,8 +53,16 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$htmlObj = CDOMElement::create('div','id:calendarContainer');
 				$calendarDIV = CDOMElement::create('div','id:classcalendar');
 				
+				/**
+				 * bottom buttons div
+				 */
+				$buttonsDIV = CDOMElement::create('div','id:buttonsContainer');			
 				$saveButton = CDOMElement::create('input_button','id:saveCalendar');
 				$saveButton->setAttribute('value', translateFN('Salva'));
+				$cancelButton = CDOMElement::create('input_button','id:cancelCalendar');
+				$cancelButton->setAttribute('value', translateFN('Annulla'));
+				$buttonsDIV->addChild($saveButton);
+				$buttonsDIV->addChild($cancelButton);
 				
 				/**
 				 * get courses instances list, build select item
@@ -112,6 +120,45 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$classroomsDIV->addChild($classroomlistDIV);
 				}
 				
+				/**
+				 * build a DIV to hold the tutor list of the selected instance
+				 */
+				$tutorsDIV = CDOMElement::create('div', 'id:tutorsListContainer');
+				$tutorsSPAN = CDOMElement::create('span','class:selecttutorspan');
+				$tutorsSPAN->addChild(new CText(translateFN('Seleziona un tutor').': '));				
+				$tutorsDIV->addChild($tutorsSPAN);
+				$tutorsDIV->addChild(CDOMElement::create('div','id:tutorslist'));
+				
+				/**
+				 * delete classroom event button
+				 */
+				$deleteButtonDIV = CDOMElement::create('div','id:deleteButtonContainer');
+				$deleteButton = CDOMElement::create('input_button','id:deleteButton');
+				$deleteButton->setAttribute('onclick', 'javascript:deleteSelectedEvent();');
+				$deleteButton->setAttribute('value', translateFN('Cancella Elemento Selezionato'));
+				$deleteButtonDIV->addChild($deleteButton);
+				
+				/**
+				 * confirm dialog box
+				 */
+				$confirmDIV = CDOMElement::create('div','id:confirmDialog');
+				$confirmDIV->setAttribute('title', translateFN('Conferma Azione'));
+				// question for not saved events
+				$confirmDelSPAN = CDOMElement::create('span','id:questionMustSave');
+				$confirmDelSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di cambiare istanza?')));
+				// this shall become the ok button label inside the dialog
+				$confirmOK = CDOMElement::create('span','class:confirmOKLbl');
+				$confirmOK->setAttribute('style','display:none;');
+				$confirmOK->addChild (new CText(translateFN('Si')));
+				// this shall become the cancel button label inside the dialog
+				$confirmCancel = CDOMElement::create('span','class:confirmCancelLbl');
+				$confirmCancel->setAttribute('style', 'display:none;');
+				$confirmCancel->addChild (new CText(translateFN('No')));
+				// add the elements to the div
+				$confirmDIV->addChild($confirmOK);
+				$confirmDIV->addChild($confirmCancel);
+				$confirmDIV->addChild($confirmDelSPAN);
+				$confirmDIV->setAttribute('style','display:none;');
 				
 				/**
 				 * add all generated elements to the container
@@ -123,8 +170,11 @@ class calendarsManagement extends abstractClassAgendaManagement
 				if (isset($classroomsDIV)) {
 					$htmlObj->addChild($classroomsDIV);					
 				}
+				$htmlObj->addChild($tutorsDIV);
+				$htmlObj->addChild($deleteButtonDIV);
 				$htmlObj->addChild(CDOMElement::create('div','class:clearfix'));
-				$htmlObj->addChild($saveButton);
+				$htmlObj->addChild($buttonsDIV);
+				$htmlObj->addChild($confirmDIV);
 				
 				break;				
 			default:

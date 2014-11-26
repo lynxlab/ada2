@@ -50,11 +50,26 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$firstEl = reset($result);
 			if (!is_array($firstEl)) $result = array($result);
 			foreach ($result as $classroom) {
-				$radios[$classroom['id_classroom']] = $classroom['name'].
-					' ('.$classroom['seats'].' '.translateFN('posti').')';
+				$radios[$classroom['id_classroom']] = array('name'=>$classroom['name'],
+															'seats'=>$classroom['seats']);
 			}
 			reset($radios);
-			$htmlElement = BaseHtmlLib::radioButtons('class:classroomradio',$radios,'classroomradio');
+			$htmlElement = CDOMElement::create('div');
+			foreach ($radios as $id=>$radio) {
+				$radioEL = CDOMElement::create('radio','name:classroomradio,class:classroomradio,value:'.$id.',id:classroom'.$id);
+				$labelEL = CDOMElement::create('label','for:classroom'.$id);
+				$labelEL->addChild(new CText($radio['name']));
+				
+				if (strlen($radio['seats'])>0) {
+					$labelSPAN = CDOMElement::create('span');
+					$labelSPAN->addChild(new CText(' ('.$radio['seats'].' '.translateFN('posti').')'));
+					$labelEL->addChild($labelSPAN);
+				}
+				 
+				$htmlElement->addChild($radioEL);
+				$htmlElement->addChild($labelEL);
+				$htmlElement->addChild(CDOMElement::create('div','class:clearfix'));
+			}
 			$retVal = $htmlElement->getHtml();
 		}
 	}

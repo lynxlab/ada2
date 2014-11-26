@@ -18,7 +18,96 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * 
 	 * @var string
 	 */
-	public static $PREFIX = 'module_classagenda_';	
+	public static $PREFIX = 'module_classagenda_';
+	
+	public function saveClassroomEvents ($course_instance_id, $eventsArray) {
+		/**
+		 * get all the classroom events for the passed instance
+		 */
+		$previousEvents = $this->getClassRoomEventsForCourseInstance ($course_instance_id);
+		if (AMA_DB::isError($previousEvents)) $previousEvents = array();
+		
+		foreach ($eventsArray as $event) {
+			$eventID = $this->saveClassroomEvent($course_instance_id, $event);
+			if (!AMA_DB::isError($eventID) && intval($eventID)>0) {
+				// event has been updated, remove it from the previous events array
+				if (array_key_exists($eventID, $previousEvents)) unset ($previousEvents[$eventID]);
+			} else if (AMA_DB::isError($eventID)) {
+				// on error return right away
+				return $eventID;
+			}
+		}
+
+		/**
+		 * what is left in the previous events array must be delete
+		 */
+		foreach ($previousEvents as $eventID=>$anEvent) {
+		    $this->deleteClassroomEvent($eventID);
+		}
+		
+		return true;
+	}
+	
+	public function getClassRoomEventsForCourseInstance($course_instance_id) {
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'calendars` WHERE `id_istanza_corso`=?';
+		
+		$result = $this->getAllPrepared($sql,$course_instance_id,AMA_FETCH_ASSOC);
+		if (!AMA_DB::isError($result) && count($result)>0) {			
+			foreach ($result as $aResult) {
+				$retArray[$aResult[self::$PREFIX.'calendars_id']] = $aResult;
+			}
+			return $retArray;
+		} else return array();
+	}
+	
+	public function deleteClassroomEvent($eventID) {
+		return $this->queryPrepared('DELETE FROM `'.self::$PREFIX.'calendars` WHERE '.
+				self::$PREFIX.'calendars_id=?',$eventID);
+	}
+	
+	private function saveClassroomEvent ($course_instance_id, $eventData) {
+		/**
+		 * prepare start timestamp
+		 */
+		list ($date,$time) = explode('T',$eventData['start']);
+		list ($year, $month, $day) = explode('-', $date);
+		
+		$startTimestamp = $this->date_to_ts($day.'/'.$month.'/'.$year, $time);
+		/**
+		 * prepare end timestamp
+		 */
+		list ($date,$time) = explode('T',$eventData['end']);
+		list ($year, $month, $day) = explode('-', $date);
+		
+		$endTimestamp = $this->date_to_ts($day.'/'.$month.'/'.$year, $time);
+		
+		/**
+		 * set classroom to null if no module classroom is there
+		 */
+		if (!defined('MODULES_CLASSROOM') || (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===false)) {
+			$eventData['classroomID'] = null;
+		}
+		
+		$values = array ($startTimestamp, $endTimestamp, $course_instance_id, $eventData['classroomID'], $eventData['tutorID'], $eventData['title']);
+		
+		if (isset($eventData['id']) && strlen($eventData['id'])>0) {
+			$isInsert = false;
+			$sql = 'UPDATE `'.self::$PREFIX.'calendars` SET start=?, end=?, '.
+					'id_istanza_corso=?, id_classroom=?, id_utente_tutor=?, htmlTitle=? WHERE '.self::$PREFIX.'calendars_id=?';
+			array_push($values, intval($eventData['id']));
+		} else {
+			$isInsert = true;
+			// null is passed to generate a new autoincrement
+			$sql = 'INSERT INTO `'.self::$PREFIX.'calendars` VALUES(null,?,?,?,?,?,?)';
+		}
+		
+		$result = $this->queryPrepared($sql,$values);
+		
+		if (!AMA_DB::isError($result)) {
+			// not error, return last insert id or zero
+			return ($isInsert ? 0 : $eventData['id']);
+		} else return $result;
+	}
 
 	/**
 	 * Returns an instance of AMAClassagendaDataHandler.
