@@ -20,11 +20,11 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 */
 	public static $PREFIX = 'module_classagenda_';
 	
-	public function saveClassroomEvents ($course_instance_id, $eventsArray) {
+	public function saveClassroomEvents ($course_instance_id, $venueID, $eventsArray) {
 		/**
 		 * get all the classroom events for the passed instance
 		 */
-		$previousEvents = $this->getClassRoomEventsForCourseInstance ($course_instance_id);
+		$previousEvents = $this->getClassRoomEventsForCourseInstance ($course_instance_id, $venueID);
 		if (AMA_DB::isError($previousEvents)) $previousEvents = array();
 		
 		foreach ($eventsArray as $event) {
@@ -48,10 +48,32 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		return true;
 	}
 	
-	public function getClassRoomEventsForCourseInstance($course_instance_id) {
-		$sql = 'SELECT * FROM `'.self::$PREFIX.'calendars` WHERE `id_istanza_corso`=?';
+	public function getClassRoomEventsForCourseInstance($course_instance_id, $venueID) {
+		$sql = 'SELECT CAL.* FROM `'.self::$PREFIX.'calendars` AS CAL';
 		
-		$result = $this->getAllPrepared($sql,$course_instance_id,AMA_FETCH_ASSOC);
+		$params = null;
+		
+		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true && !is_null($venueID)) {
+			require_once MODULES_CLASSROOM_PATH . '/include/AMAClassroomDataHandler.inc.php';
+			
+			$sql .= ' JOIN `'.AMAClassroomDataHandler::$PREFIX.'classrooms` AS CROOMS'.
+					' ON CAL.id_classroom = CROOMS.id_classroom';
+		}
+		
+		$sql .= ' WHERE 1';
+		
+		if (!is_null($course_instance_id)) {
+			$sql .= ' AND CAL.`id_istanza_corso`='.$course_instance_id;
+		}
+		
+		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true && !is_null($venueID)) {
+			$sql .= ' AND CROOMS.`id_venue`=?';
+			$params = intval($venueID);
+		}
+		
+		
+		$result = $this->getAllPrepared($sql,$params,AMA_FETCH_ASSOC);
+		
 		if (!AMA_DB::isError($result) && count($result)>0) {			
 			foreach ($result as $aResult) {
 				$retArray[$aResult[self::$PREFIX.'calendars_id']] = $aResult;
@@ -88,17 +110,17 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 			$eventData['classroomID'] = null;
 		}
 		
-		$values = array ($startTimestamp, $endTimestamp, $course_instance_id, $eventData['classroomID'], $eventData['tutorID'], $eventData['title']);
+		$values = array ($startTimestamp, $endTimestamp, $course_instance_id, $eventData['classroomID'], $eventData['tutorID']);
 		
 		if (isset($eventData['id']) && strlen($eventData['id'])>0) {
 			$isInsert = false;
 			$sql = 'UPDATE `'.self::$PREFIX.'calendars` SET start=?, end=?, '.
-					'id_istanza_corso=?, id_classroom=?, id_utente_tutor=?, htmlTitle=? WHERE '.self::$PREFIX.'calendars_id=?';
+					'id_istanza_corso=?, id_classroom=?, id_utente_tutor=? WHERE '.self::$PREFIX.'calendars_id=?';
 			array_push($values, intval($eventData['id']));
 		} else {
 			$isInsert = true;
 			// null is passed to generate a new autoincrement
-			$sql = 'INSERT INTO `'.self::$PREFIX.'calendars` VALUES(null,?,?,?,?,?,?)';
+			$sql = 'INSERT INTO `'.self::$PREFIX.'calendars` VALUES(null,?,?,?,?,?)';
 		}
 		
 		$result = $this->queryPrepared($sql,$values);

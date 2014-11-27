@@ -143,9 +143,12 @@ class calendarsManagement extends abstractClassAgendaManagement
 				 */
 				$confirmDIV = CDOMElement::create('div','id:confirmDialog');
 				$confirmDIV->setAttribute('title', translateFN('Conferma Azione'));
-				// question for not saved events
-				$confirmDelSPAN = CDOMElement::create('span','id:questionMustSave');
+				// question for not saved events (case instances list is clicked)
+				$confirmDelSPAN = CDOMElement::create('span','id:instancesListquestion');
 				$confirmDelSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di cambiare istanza?')));
+				// question for not saved events (case venues list is clicked)
+				$confirmVenueDelSPAN = CDOMElement::create('span','id:venuesListquestion');
+				$confirmVenueDelSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di cambiare luogo?')));								
 				// this shall become the ok button label inside the dialog
 				$confirmOK = CDOMElement::create('span','class:confirmOKLbl');
 				$confirmOK->setAttribute('style','display:none;');
@@ -158,6 +161,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmDIV->addChild($confirmOK);
 				$confirmDIV->addChild($confirmCancel);
 				$confirmDIV->addChild($confirmDelSPAN);
+				$confirmDIV->addChild($confirmVenueDelSPAN);
 				$confirmDIV->setAttribute('style','display:none;');
 				
 				/**

@@ -42,29 +42,33 @@ $GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	if (isset($instanceID) && intval($instanceID)>0) {
-		$result = $GLOBALS['dh']->getClassRoomEventsForCourseInstance(intval($instanceID));
-		if(!AMA_DB::isError($result)) {
-			// convert return array to data structure needed by calendar component
-			$i=0;
-			foreach ($result as $eventID=>$aResult) {
-				$retArray[$i]['id'] = $eventID;
-				$retArray[$i]['instanceID'] = $aResult['id_istanza_corso'];
-				$retArray[$i]['classroomID'] = $aResult['id_classroom'];
-				$retArray[$i]['tutorID'] = $aResult['id_utente_tutor'];
-				$retArray[$i]['isSelected'] = boolval(false);
-				
-				list ($day, $month, $year) = explode ('/',ts2dFN($aResult['start']));
-				$retArray[$i]['start'] = $year.'-'.$month.'-'.$day.'T'.ts2tmFN($aResult['start']);
-				
-				list ($day, $month, $year) = explode ('/',ts2dFN($aResult['end']));
-				$retArray[$i]['end'] = $year.'-'.$month.'-'.$day.'T'.ts2tmFN($aResult['end']);
-				
-				$retArray[$i]['title'] = $aResult['htmlTitle'];
-				
-				$i++;
-			}
-			die (json_encode($retArray));
+		$instanceID = intval($instanceID);
+	} else $instanceID=null; // null means to get all instances
+
+	if (isset($venueID) && intval($venueID)>0) {
+		$venueID = intval($venueID);
+	} else $venueID=null; // null means to get all classrooms
+	
+	$result = $GLOBALS['dh']->getClassRoomEventsForCourseInstance($instanceID, $venueID);
+	if(!AMA_DB::isError($result)) {
+		// convert return array to data structure needed by calendar component
+		$i=0;
+		foreach ($result as $eventID=>$aResult) {
+			$retArray[$i]['id'] = $eventID;
+			$retArray[$i]['instanceID'] = $aResult['id_istanza_corso'];
+			$retArray[$i]['classroomID'] = $aResult['id_classroom'];
+			$retArray[$i]['tutorID'] = $aResult['id_utente_tutor'];
+			$retArray[$i]['isSelected'] = boolval(false);
+			
+			list ($day, $month, $year) = explode ('/',ts2dFN($aResult['start']));
+			$retArray[$i]['start'] = $year.'-'.$month.'-'.$day.'T'.ts2tmFN($aResult['start']);
+			
+			list ($day, $month, $year) = explode ('/',ts2dFN($aResult['end']));
+			$retArray[$i]['end'] = $year.'-'.$month.'-'.$day.'T'.ts2tmFN($aResult['end']);
+			
+			$i++;
 		}
+		die (json_encode($retArray));
 	}
 }
 die ();

@@ -44,8 +44,12 @@ $retArray = array();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_POST['instanceID']) && intval($_POST['instanceID'])>0) {
+		
+		if (isset($_POST['venueID']) && intval($_POST['venueID'])>0) {
+			$venueID = intval($venueID);
+		} else $venueID = null;
 				
-		$result = $GLOBALS['dh']->saveClassroomEvents(intval($_POST['instanceID']),
+		$result = $GLOBALS['dh']->saveClassroomEvents(intval($_POST['instanceID']),$venueID,
 													  $_POST['events']);
 		
 		if (!AMA_DB::isError($result) && $result===true) {

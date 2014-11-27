@@ -21,7 +21,7 @@ function initDoc() {
 	// hook instance select change to update number of students
 	updateStudentCountOnInstanceChange();
 	// ask a save confirmation before changing course instance
-	askChangeInstanceConfirm();
+	askChangeInstanceOrVenueConfirm();
 	// hook instance select change to update tutors list
 	updateTutorsListOnInstanceChange();
 	// trigger onchange event to update number of students when page loads
@@ -43,101 +43,107 @@ function initDoc() {
 
 function initCalendar() {
 	if ($j('#classcalendar').length>0) {
-	    calendar = $j('#classcalendar').fullCalendar({
-	        // put your options and callbacks here
-	    	theme 	 : true,	// enables jQuery UI theme
-	    	firstDay : 1,		// monday is the first day
-	    	minTime  : "08:00",	// events starts at 08AM ,
-	    	maxTime  : "20:00",	// events ends at 08PM
-	    	weekends : false,	// hide weekends
-	    	defaultEventMinutes: 60,
-	    	height : 590,
-	    	editable : true,
-	    	selectable : true,
-	    	selectHelper : true,
-	    	defaultView : 'agendaWeek',
-	    	/**
-	    	 * selected or deselect the clicked event
-	    	 */
-	    	eventClick: function(calEvent, jsEvent, view) {
-	    		var doSelection = true;
-	    		
-	    		// get previously selected event
-	    		var selEvent = getSelectedEvent();   		
-	    		
-	    		// unselect previously selected event
-	    		if (selEvent!=null) {
-	    			doSelection = selEvent._id != calEvent._id;
-	    			selEvent.isSelected = false;
-	    			selEvent.className = '';
-	    	        calendar.fullCalendar('updateEvent', selEvent);
-	    		}
-	    		
-    	        // select clicked element if needed
-	    		if (doSelection) {
-	    			calEvent.className = 'selectedClassroomEvent';
-	    	        calEvent.isSelected = true;
-	    	        setSelectedClassroom(calEvent.classroomID);
-	    	        setSelectedTutor(calEvent.tutorID);
-	    	        if (!canDelete) setCanDelete(true);
-	    	        calendar.fullCalendar('updateEvent', calEvent);
-	    		} else {
-	    			if (canDelete) setCanDelete(false);
-	    		}
-    	    },
-    	    /**
-    	     * creates a new event
-    	     */
-	    	select :
-    		function( startDate, endDate, jsEvent, view ) {
-	    		if (startDate.hasTime() && endDate.hasTime()) {
-	    			
-	    			newEvent = {
-	    				start: startDate.format(),
-	    				end: endDate.format(),
-	    				isSelected : false,
-	    				title: buildEventTitle(),
-	    				instanceID : getSelectedCourseInstance(),
-	    				classroomID : getSelectedClassroom(),
-	    				tutorID : getSelectedTutor()
-	    			};
-	    			
-	    			calendar.fullCalendar('renderEvent', newEvent, true);
-	    			calendar.fullCalendar('unselect');
-	    			if(!mustSave) setMustSave(true);	    			
-	    		}
-    		},
-    		eventRender: function(event, element, view) {
-    			// allows html to be used inside the title
-    			var htmlEl = ('month' != view.name) ? 'div' : 'span';
+		calendar = $j('#classcalendar').fullCalendar({
+			// put your options and callbacks here
+			theme 	 : true,	// enables jQuery UI theme
+			firstDay : 1,		// monday is the first day
+			minTime  : "08:00",	// events starts at 08AM ,
+			maxTime  : "20:00",	// events ends at 08PM
+			weekends : false,	// hide weekends
+			defaultEventMinutes: 60,
+			height : 564,
+			editable : true,
+			selectable : true,
+			selectHelper : true,
+			allDaySlot : false,
+			slotEventOverlap : false,
+			defaultView : 'agendaWeek',
+			/**
+			 * selected or deselect the clicked event
+			 */
+			eventClick: function(calEvent, jsEvent, view) {
+				
+				if (!calEvent.editable) return;
+				
+				var doSelection = true;
+				
+				// get previously selected event
+				var selEvent = getSelectedEvent();
+				
+				// unselect previously selected event
+				if (selEvent!=null) {
+					doSelection = selEvent._id != calEvent._id;
+					selEvent.isSelected = false;
+					selEvent.className = '';
+					calendar.fullCalendar('updateEvent', selEvent);
+				}
+				
+				// select clicked element if needed
+				if (doSelection) {
+					calEvent.className = 'selectedClassroomEvent';
+					calEvent.isSelected = true;
+					setSelectedClassroom(calEvent.classroomID);
+					setSelectedTutor(calEvent.tutorID);
+					if (!canDelete) setCanDelete(true);
+					calendar.fullCalendar('updateEvent', calEvent);
+				} else {
+					if (canDelete) setCanDelete(false);
+					}
+			},
+			/**
+			 * creates a new event
+			 */
+			select :
+				function( startDate, endDate, jsEvent, view ) {
+				if (startDate.hasTime() && endDate.hasTime()) {
+					
+					newEvent = {
+						start: startDate.format(),
+						end: endDate.format(),
+						isSelected : false,
+						editable : true,
+						instanceID : getSelectedCourseInstance(),
+						classroomID : getSelectedClassroom(),
+						tutorID : getSelectedTutor()
+					};
+					
+					newEvent.title = buildEventTitle(newEvent);
+					calendar.fullCalendar('renderEvent', newEvent, true);
+					calendar.fullCalendar('unselect');
+					if(!mustSave) setMustSave(true);
+				}
+			},
+			eventRender: function(event, element, view) {
+				// allows html to be used inside the title
+				var htmlEl = ('month' != view.name) ? 'div' : 'span';
 				element.find(htmlEl+'.fc-title').html(element.find(htmlEl+'.fc-title').text());
-    		},
-    		eventDrop: function ( event, delta, revertFunc, jsEvent, ui, view ) {
-    			if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
-    		},
-    		eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) {
-    			if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
-    		},
+			},
+			eventDrop: function ( event, delta, revertFunc, jsEvent, ui, view ) {
+				if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
+			},
+			eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) {
+				if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
+			},
 			header: {
 				left: 'prev,next today',
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			}
-	    });
-	    
-	    // initialize save button and set must save to false
-	    setMustSave(false);
-	    // initialize delete button and set can delete to false
-	    setCanDelete(false);
-	    $j('#saveCalendar').on('click', function ( event ) {
-	    	saveClassRoomEvents();
-    		event.preventDefault();
-	    });
-	    // initialize cancel button	    
-	    $j('#cancelCalendar').button().on('click', function ( event ) {
-	    	reloadClassRoomEvents();
-	    	event.preventDefault();
-	    });
+		});
+		
+		// initialize save button and set must save to false
+		setMustSave(false);
+		// initialize delete button and set can delete to false
+		setCanDelete(false);
+		$j('#saveCalendar').on('click', function ( event ) {
+			saveClassRoomEvents();
+			event.preventDefault();
+		});
+		// initialize cancel button
+		$j('#cancelCalendar').button().on('click', function ( event ) {
+			reloadClassRoomEvents();
+			event.preventDefault();
+		});
 	}
 }
 
@@ -157,6 +163,15 @@ function setSelectedClassroom(classroomid) {
  */
 function setSelectedTutor(tutorid) {
 	if ($j('input[name="tutorradio"]').length>0) $j('input[name="tutorradio"][value='+tutorid+']').prop('checked',true);
+}
+
+/**
+ * gets the selected venue option value
+ * 
+ * @returns selected venue id or null
+ */
+function getSelectedVenue() {
+	return ($j('#venuesList').length>0) ? $j('#venuesList').val() : null;
 }
 
 /**
@@ -187,6 +202,28 @@ function getSelectedTutor() {
 }
 
 /**
+ * gets the label of the radio button associated to the passed tutor id
+ * 
+ * @param tutorid
+ * 
+ * @returns string the retreived label
+ */
+function getTutorRadioLabel(tutorid)  {
+	return $j('input[name="tutorradio"][value='+tutorid+'] + label').text();
+}
+
+/**
+ * gets the label of the radio button associated to the passed classroomid
+ * 
+ * @param classroomid
+ * 
+ * @returns string the retreived label
+ */
+function getClassroomRadioLabel(classroomid) {
+	return $j('input[name="classroomradio"][value='+classroomid+']+ label').text();
+}
+
+/**
  * gets the selected event
  * 
  * @returns event if one is found, or null
@@ -195,7 +232,7 @@ function getSelectedEvent() {
 	// get selected event
 	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
 		return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true);
-		});	    			
+		});
 	return (selEvent.length > 0) ? selEvent[0] : null;
 }
 
@@ -208,32 +245,34 @@ function setSelectedEvent(event) {
 	// get selected event
 	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
 		return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true);
-		});	    			
+		});
 	if (selEvent.length > 0) {
 		selEvent[0] = event;
-		calendar.fullCalendar('updateEvent', event);		
+		calendar.fullCalendar('updateEvent', event);
 	}
 }
 
 /**
  * builds the event title to be rendered
  * 
+ * @param event to build the title
+ * 
  * @returns string, the event title
  */
-function buildEventTitle() {
-	var title = ($j('#instancesList').length>0) ? ($j('#instancesList option:selected').text()) : '';
+function buildEventTitle(event) {
+	var title = ($j('#instancesList').length>0) ? ($j('#instancesList option[value='+event.instanceID+']').text()) : '';
 	
 	// add room and tutor name to the event title
 	if (title.length>0) {
 		if ($j('input[name="classroomradio"]').length>0) {
 			// remove (xx seats) from radiobutton label and use it
-			var roomName = $j('input[name="classroomradio"]:checked + label').text().replace(/ \(.*\)/,'');
+			var roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/,'');
 			title += '<span class="roomnameInEvent">' + roomName + '</span>';
 		}
 		
 		if ($j('input[name="tutorradio"]').length>0) {
 			title += '<span class="tutornameInEvent">'+
-					 $j('input[name="tutorradio"]:checked + label').text()+'</span>';
+					 getTutorRadioLabel(event.tutorID)+'</span>';
 		}
 	}
 	return title;
@@ -253,6 +292,8 @@ function updateClassroomsOnVenueChange() {
 			}).done (function(htmlcode){
 				if (htmlcode && htmlcode.length>0) {
 					$j('#classroomlist').html(htmlcode);
+					// reload classroom events for selected venue
+					reloadClassRoomEvents();
 					// select the first radio button
 					if ($j('input[name="classroomradio"]').length>0) {
 						$j('input[name="classroomradio"]').first().prop('checked',true);
@@ -273,7 +314,6 @@ function updateClassroomsOnVenueChange() {
 function updateStudentCountOnInstanceChange() {
 	if ($j('#instancesList').length>0) {
 		$j('#instancesList').on('change', function(){
-			if (typeof calendar != 'undefined') reloadClassRoomEvents();
 			if ($j('#studentcount').length>0) {
 				$j.ajax({
 					type	:	'GET',
@@ -297,7 +337,7 @@ function updateEventOnClassRoomChange() {
 	var event = getSelectedEvent(), classroomid = getSelectedClassroom();
 	if (event!=null && classroomid>0) {
 		event.classroomID = classroomid;
-		event.title = buildEventTitle();
+		event.title = buildEventTitle(event);
 		setSelectedEvent(event);		
 		if(!mustSave) setMustSave(true);
 	}
@@ -310,7 +350,7 @@ function updateEventOnTutorChange() {
 	var event = getSelectedEvent(), tutorid = getSelectedTutor();
 	if (event!=null && tutorid>0) {
 		event.tutorID = tutorid;
-		event.title = buildEventTitle();
+		event.title = buildEventTitle(event);
 		setSelectedEvent(event);
 		if(!mustSave) setMustSave(true);
 	}
@@ -318,15 +358,19 @@ function updateEventOnTutorChange() {
 
 /**
  * if something needs to be saved and the user
- * wants to change course instance, ask to save
+ * wants to change course instance or venue, ask to save
  */
-function askChangeInstanceConfirm() {
-	if ($j('#instancesList').length>0) {
-		$j('#instancesList').on('mousedown', function(event){
+function askChangeInstanceOrVenueConfirm() {
+	var selector = '';
+	if ($j('#instancesList').length>0) selector += '#instancesList';
+	if ($j('#venuesList').length>0) selector += ',#venuesList';
+	
+	if (selector.length>0) {
+		$j(selector).on('mousedown', function(event){
 			// check if there's something to save here
 			if (mustSave) {
 				event.preventDefault();
-				jQueryConfirm('#confirmDialog', '#questionMustSave',
+				jQueryConfirm('#confirmDialog', '#'+$j(this).attr('id')+'question',
 						function() { saveClassRoomEvents(); }, 
 						function() { event.preventDefault(); });
 			}
@@ -348,6 +392,8 @@ function updateTutorsListOnInstanceChange() {
 			}).done (function(htmlcode){
 				if (htmlcode && htmlcode.length>0) {
 					$j('#tutorslist').html(htmlcode);
+					// reload classroom events
+					if (typeof calendar != 'undefined') reloadClassRoomEvents();
 					// select the first radio button
 					if ($j('input[name="tutorradio"]').length>0) {
 						$j('input[name="tutorradio"]').first().prop('checked',true);
@@ -368,23 +414,26 @@ function saveClassRoomEvents() {
 	
 	var calEvents = calendar.fullCalendar('clientEvents');
 	var eventsToPass = [];
+	var selectedCourseInstance = getSelectedCourseInstance();
 	
-	for (var i=0; i<calEvents.length; i++) {
-		eventsToPass[i] = {
-				id : (typeof calEvents[i].id == 'undefined' || null == calEvents[i].id) ? null : calEvents[i].id,
-				start : calEvents[i].start.format(),
-				end : calEvents[i].end.format(),
-				title : calEvents[i].title,
-				classroomID : calEvents[i].classroomID,
-				tutorID : calEvents[i].tutorID
-		};
+	for (var i=0, j=0; i<calEvents.length; i++) {
+		if (calEvents[i].instanceID==selectedCourseInstance) {
+			eventsToPass[j++] = {
+					id : (typeof calEvents[i].id == 'undefined' || null == calEvents[i].id) ? null : calEvents[i].id,
+					start : calEvents[i].start.format(),
+					end : calEvents[i].end.format(),
+					classroomID : calEvents[i].classroomID,
+					tutorID : calEvents[i].tutorID
+			};
+		}
 	}
 	
 	$j.ajax({
 				type	:	'POST',
 				url		:	'ajax/saveClassroomEvents.php',
 				data	:	{
-					instanceID : getSelectedCourseInstance(),
+					venueID : getSelectedVenue(),
+					instanceID : selectedCourseInstance,
 					events : eventsToPass
 				},
 				dataType:	'json'
@@ -401,17 +450,46 @@ function saveClassRoomEvents() {
  * reloads calendar events for select instance id
  */
 function reloadClassRoomEvents() {
-	var source = {
-			data: {
-                instanceID: getSelectedCourseInstance()
-            },
-            url : 'ajax/getCalendarForInstance.php'
-        };
-	calendar.fullCalendar('removeEvents');
-	calendar.fullCalendar('addEventSource', source);
-        
-	setMustSave(false);
-	setCanDelete(false);
+	/**
+	 * ajax-load events for the selected instance id
+	 */
+	$j.ajax({
+		type	:	'GET',
+		url		:	'ajax/getCalendarForInstance.php',
+		data	:	{ venueID: getSelectedVenue() },
+		dataType:	'json'
+	}).done (function(JSONObj){
+		/**
+		 * remove all events
+		 */
+		calendar.fullCalendar('removeEvents');
+		
+		if (JSONObj) {
+			var selectedInstanceID = getSelectedCourseInstance();
+			/**
+			 * add all loaded events to the calendar
+			 */
+			for (var i=0; i<JSONObj.length; i++) {
+				JSONObj[i].title = buildEventTitle(JSONObj[i]);
+				
+				// set as editable only events of the selected course instance
+				JSONObj[i].editable = (JSONObj[i].instanceID==selectedInstanceID);
+				JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
+				
+				calendar.fullCalendar('renderEvent', JSONObj[i], true);
+				calendar.fullCalendar('unselect');						
+			}
+			
+			$j('a.noteditableClassroomEvent').on ('click', function(event){
+				event.preventDefault();
+				
+			});
+			
+		}
+	}).always(function() {
+		setMustSave(false);
+		setCanDelete(false);
+	});
 }
 
 /**

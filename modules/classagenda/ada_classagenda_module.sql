@@ -8,8 +8,7 @@ CREATE TABLE IF NOT EXISTS `module_classagenda_calendars` (
   `end` int(11) unsigned NOT NULL,
   `id_istanza_corso` int(10) unsigned NOT NULL,
   `id_classroom` int(10) unsigned DEFAULT NULL,
-  `id_utente_tutor` int(10) unsigned NOT NULL,
-  `htmlTitle` text COLLATE utf8_unicode_ci NOT NULL
+  `id_utente_tutor` int(10) unsigned NOT NULL
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --

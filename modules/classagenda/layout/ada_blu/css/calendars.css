@@ -25,6 +25,9 @@ label.venuesListLabel { display: block; margin-bottom: 5px; }
 
 span.roomnameInEvent { color: gold; margin: 5px 0 0 5px; display: block; }
 span.tutornameInEvent { color: darkgreen; margin: 5px 0 0 5px; display: block; }
+
+a.noteditableClassroomEvent { background: lightslategray; opacity:0.9; z-index:1 !important; pointer-events: none; }
+a.editableClassroomEvent { z-index: 2 !important; }
 /**
  * details, alert and confirm dialogs
  */
