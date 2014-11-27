@@ -327,10 +327,11 @@ abstract class Abstract_AMA_DataHandler {
      * @access public
      *
      * @param $date the date string
+     * @param $time the time string (format hh:mm:ss, defaults to null)
      *
      * @return the timestamp as an integer
      */
-    public function date_to_ts($date) {
+    public function date_to_ts($date, $time=null) {
         if ($date == "NULL") {
             return $date;
         }
@@ -356,7 +357,15 @@ abstract class Abstract_AMA_DataHandler {
 
         $anno =(int)$date_ar[2];
 
-        $unix_date = mktime(0,0,0,$mese,$giorno,$anno,-1);
+        if (!is_null($time)) {
+        	list ($ora, $minuti, $secondi) = explode(':', $time);
+        } else {
+        	$ora = 0;
+        	$minuti = 0;
+        	$secondi = 0;
+        }
+
+        $unix_date = mktime($ora,$minuti,$secondi,$mese,$giorno,$anno);
 
         return $unix_date;
         //return strtotime($date);
