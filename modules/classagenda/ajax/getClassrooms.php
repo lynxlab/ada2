@@ -37,7 +37,7 @@ $neededObjAr = array(
 */
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once ROOT_DIR . '/include/HtmlLibrary/BaseHtmlLib.inc.php';
+
 $retVal = translateFN('Nessuna classe trovata');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
