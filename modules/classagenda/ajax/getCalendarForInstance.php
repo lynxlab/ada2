@@ -38,12 +38,38 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
-$GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+$dh = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	if (isset($instanceID) && intval($instanceID)>0) {
 		$instanceID = intval($instanceID);
 	} else $instanceID=null; // null means to get all instances
+	
+	if (is_null($instanceID) && (isset($activeOnly) && intval($activeOnly)>0)) {
+		/**
+		 * take care of active only instances only if
+		 * we've been asked to get all instances
+		 */
+		// first of all, get the coure list
+		$courseList = $dh->get_courses_list(array());
+		// first element of returned array is always the courseId, array is NOT assoc
+		if (!AMA_DB::isError($courseList)) {
+			// for each course in the list...
+			foreach ($courseList as $courseItem) {
+				// ... get the subscribeable course instance list...
+				$courseInstances = $dh->course_instance_subscribeable_get_list(array('title'), $courseItem[0]);
+				// first element of returned array is always the instanceId, array is NOT assoc
+				if (!AMA_DB::isError($courseInstances)) {
+					// ...and, for each subscribeable instance in the list...
+					foreach ($courseInstances as $courseInstanceItem) {
+						if (is_null($instanceID)) $instanceID = array();
+						// ... put its ID in the instanceID array
+						$instanceID[] = $courseInstanceItem[0];
+					}
+				}
+			}
+		}
+	}
 
 	if (isset($venueID) && intval($venueID)>0) {
 		$venueID = intval($venueID);

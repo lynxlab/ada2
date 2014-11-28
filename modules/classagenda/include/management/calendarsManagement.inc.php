@@ -65,31 +65,33 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$buttonsDIV->addChild($cancelButton);
 				
 				/**
-				 * get courses instances list, build select item
-				 * and a span to hold number of subscribed students
+				 * courses instances list shall be obtained by the javascript,
+				 * build empty select item and a span to hold number of subscribed students
+				 * 
 				 */
-				$instances = $this->_getInstances();
-				if (count($instances)>0) {
-					foreach ($instances as $instance) {
-						$dataAr[$instance['id']] = $instance['title'];
-					}
-					reset($dataAr);
 					
-					$instancesSELECT = BaseHtmlLib::selectElement2('id:instancesList,name:instancesList',$dataAr,key($dataAr));
-					unset($dataAr);
-					
-					$instancesLABEL = CDOMElement::create('label','for:instancesList');
-					$instancesLABEL->addChild(new CText(translateFN('Seleziona una classe').': '));
-					
-					$studentCountSPAN = CDOMElement::create('span','class:studentcount');
-					$studentCountSPAN->addChild (new CText(translateFN('Numero di studenti iscritti: ')));
-					$studentCountSPAN->addChild (CDOMElement::create('span','id:studentcount'));
-					
-					$selectClassDIV = CDOMElement::create('div','id:selectClassContainer');
-					$selectClassDIV->addChild($instancesLABEL);
-					$selectClassDIV->addChild($instancesSELECT);
-					$selectClassDIV->addChild($studentCountSPAN);
-				}
+				$instancesSELECT = BaseHtmlLib::selectElement2('id:instancesList,name:instancesList',array());
+				
+				$instancesLABEL = CDOMElement::create('label','for:instancesList');
+				$instancesLABEL->addChild(new CText(translateFN('Seleziona una classe').': '));
+				
+				$onlyActiveCHECK = CDOMElement::create('checkbox','id:onlyActiveInstances');
+				$onlyActiveCHECK->setAttribute('value', 1);
+				$onlyActiveCHECK->setAttribute('name', 'onlyActiveInstances');
+
+				$onlyActiveLABEL = CDOMElement::create('label','for:onlyActiveInstances');
+				$onlyActiveLABEL->addChild(new CText(translateFN('Mostra solo istanze attive')));
+				
+				$studentCountSPAN = CDOMElement::create('span','class:studentcount');
+				$studentCountSPAN->addChild (new CText(translateFN('Numero di studenti iscritti: ')));
+				$studentCountSPAN->addChild (CDOMElement::create('span','id:studentcount'));
+				
+				$selectClassDIV = CDOMElement::create('div','id:selectClassContainer');
+				$selectClassDIV->addChild($instancesLABEL);
+				$selectClassDIV->addChild($instancesSELECT);
+				$selectClassDIV->addChild($onlyActiveCHECK);
+				$selectClassDIV->addChild($onlyActiveLABEL);
+				$selectClassDIV->addChild($studentCountSPAN);
 				
 				/**
 				 * get Venues, build select item
@@ -148,7 +150,10 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmDelSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di cambiare istanza?')));
 				// question for not saved events (case venues list is clicked)
 				$confirmVenueDelSPAN = CDOMElement::create('span','id:venuesListquestion');
-				$confirmVenueDelSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di cambiare luogo?')));								
+				$confirmVenueDelSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di cambiare luogo?')));
+				// question for not saved events (case show active instances is clicked)
+				$confirmOnlyActiveSPAN = CDOMElement::create('span','id:onlyActiveInstancesquestion');
+				$confirmOnlyActiveSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di filtrare le istanze?')));
 				// this shall become the ok button label inside the dialog
 				$confirmOK = CDOMElement::create('span','class:confirmOKLbl');
 				$confirmOK->setAttribute('style','display:none;');
@@ -162,6 +167,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmDIV->addChild($confirmCancel);
 				$confirmDIV->addChild($confirmDelSPAN);
 				$confirmDIV->addChild($confirmVenueDelSPAN);
+				$confirmDIV->addChild($confirmOnlyActiveSPAN);
 				$confirmDIV->setAttribute('style','display:none;');
 				
 				/**
@@ -204,30 +210,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 	}
 	
 	private function _getInstances() {
-		$dh = $GLOBALS['dh'];
-		// grab some course and course instance datas to build up the form properly
-		$formCourseList = array();
 		
-		// first of all, get the coure list
-		$courseList = $dh->get_courses_list(array('titolo'));
-		// first element of returned array is always the courseId, array is NOT assoc
-		if (!AMA_DB::isError($courseList)) {
-			// for each course in the list...
-			foreach ($courseList as $courseItem) {
-				// ... get the subscribeable course instance list...
-				$courseInstances = $dh->course_instance_get_list(array('title'), $courseItem[0]);
-				// first element of returned array is always the instanceId, array is NOT assoc
-				if (!AMA_DB::isError($courseInstances)) {
-					// ...and, for each subscribeable instance in the list...
-					foreach ($courseInstances as $courseInstanceItem) {
-						// ... put its ID and human readble course instance name, course title and course name as an <option> in the <select>
-						$formCourseList[] = array ( 'id'=>$courseInstanceItem[0] , 'title'=>$courseItem[1] . " > ".$courseInstanceItem[1] );
-					}
-				}
-			}
-		}	
-		
-		return $formCourseList;
 	}
 	
 } // class ends here

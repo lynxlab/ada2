@@ -14,7 +14,7 @@
 
 label.venuesListLabel { display: block; margin-bottom: 5px; }
 #venuesList { width: 100%; display: block; margin-bottom: 5px; }
-
+#instancesList { min-width: 40%; }
 .selectclassroomspan,
 .selecttutorspan { display: block; margin-bottom: 5px; }
 
@@ -25,6 +25,7 @@ label.venuesListLabel { display: block; margin-bottom: 5px; }
 
 span.roomnameInEvent { color: gold; margin: 5px 0 0 5px; display: block; }
 span.tutornameInEvent { color: darkgreen; margin: 5px 0 0 5px; display: block; }
+span.studentcount { float: right; }
 
 a.noteditableClassroomEvent { background: lightslategray; opacity:0.9; z-index:1 !important; pointer-events: none; }
 a.editableClassroomEvent { z-index: 2 !important; }

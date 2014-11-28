@@ -24,8 +24,6 @@ function initDoc() {
 	askChangeInstanceOrVenueConfirm();
 	// hook instance select change to update tutors list
 	updateTutorsListOnInstanceChange();
-	// trigger onchange event to update number of students when page loads
-	if ($j('#instancesList').length>0) $j('#instancesList').trigger('change');
 	
 	hasVenues = $j('#venuesList').length>0;
 	if (hasVenues) {
@@ -33,12 +31,28 @@ function initDoc() {
 		updateClassroomsOnVenueChange();
 		// trigger onchange event to update classroom list when page loads
 		$j('#venuesList').trigger('change');
-	} else {
-		// $j('#classcalendar').css('width','100%');
 	}
 	
+	if ($j('#onlyActiveInstances').length>0) {
+		$j('#onlyActiveInstances').on('change',function() {
+			loadCourseInstances();
+			reloadClassRoomEvents();
+		});
+		
+		$j('#onlyActiveInstances, label[for="onlyActiveInstances"]').on('mousedown',function() {
+			if (mustSave) {
+				event.preventDefault();
+				jQueryConfirm('#confirmDialog', '#onlyActiveInstancesquestion',
+						function() { saveClassRoomEvents(); },
+						function() { event.preventDefault(); });
+			}
+		});
+	}
+	
+	loadCourseInstances();
 	initCalendar();
-	reloadClassRoomEvents();
+	// for the first load, classroom events are loaded by change
+	// events triggered on classroom and/or tutor change
 }
 
 function initCalendar() {
@@ -236,6 +250,10 @@ function getSelectedEvent() {
 	return (selEvent.length > 0) ? selEvent[0] : null;
 }
 
+function getShowActiveInstances() {
+	return $j('#onlyActiveInstances').is(':checked');
+}
+
 /**
  * sets the selected calendar event
  * 
@@ -260,21 +278,22 @@ function setSelectedEvent(event) {
  * @returns string, the event title
  */
 function buildEventTitle(event) {
-	var title = ($j('#instancesList').length>0) ? ($j('#instancesList option[value='+event.instanceID+']').text()) : '';
+	var title = '';
+	title += ($j('#instancesList').length>0) ? ($j('#instancesList option[value='+event.instanceID+']').text()) : '';
 	
 	// add room and tutor name to the event title
-	if (title.length>0) {
-		if ($j('input[name="classroomradio"]').length>0) {
-			// remove (xx seats) from radiobutton label and use it
-			var roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/,'');
-			title += '<span class="roomnameInEvent">' + roomName + '</span>';
-		}
-		
-		if ($j('input[name="tutorradio"]').length>0) {
-			title += '<span class="tutornameInEvent">'+
-					 getTutorRadioLabel(event.tutorID)+'</span>';
-		}
+	
+	if ($j('input[name="classroomradio"]').length>0) {
+		// remove (xx seats) from radiobutton label and use it
+		var roomName = getClassroomRadioLabel(event.classroomID).replace(/ \(.*\)/,'');
+		title += '<span class="roomnameInEvent">' + roomName + '</span>';
 	}
+	
+	if ($j('input[name="tutorradio"]').length>0) {
+		title += '<span class="tutornameInEvent">'+
+				 getTutorRadioLabel(event.tutorID)+'</span>';
+	}
+	
 	return title;
 }
 
@@ -446,6 +465,28 @@ function saveClassRoomEvents() {
 			}).always(function() { reloadClassRoomEvents(); setMustSave(false); });
 }
 
+function loadCourseInstances() {
+	if ($j('#instancesList').length>0) {
+		$j('#instancesList').prop('disabled','disabled');
+		$j.ajax({
+			type	:	'GET',
+			url		:	'ajax/getInstances.php',
+			data	:	{ activeOnly: getShowActiveInstances() ? 1:0  },
+			dataType:	'html'
+		}).done (function(htmlcode){
+			if (htmlcode.length>0){
+				$j('#instancesList').html(htmlcode);
+				// mark the first option as selected
+				$j("#instancesList option:first").attr('selected','selected');
+				// trigger onchange event to update number of students when page loads
+				$j('#instancesList').trigger('change');
+			}
+		}).always(function() {
+			$j('#instancesList').prop('disabled',false);
+		});
+	}
+}
+
 /**
  * reloads calendar events for select instance id
  */
@@ -456,7 +497,7 @@ function reloadClassRoomEvents() {
 	$j.ajax({
 		type	:	'GET',
 		url		:	'ajax/getCalendarForInstance.php',
-		data	:	{ venueID: getSelectedVenue() },
+		data	:	{ venueID: getSelectedVenue(), activeOnly: getShowActiveInstances() ? 1:0 },
 		dataType:	'json'
 	}).done (function(JSONObj){
 		/**

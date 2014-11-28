@@ -63,7 +63,8 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		$sql .= ' WHERE 1';
 		
 		if (!is_null($course_instance_id)) {
-			$sql .= ' AND CAL.`id_istanza_corso`='.$course_instance_id;
+			if (!is_array($course_instance_id)) $course_instance_id = array($course_instance_id);
+			$sql .= ' AND CAL.`id_istanza_corso` IN('.implode(',',$course_instance_id).')';
 		}
 		
 		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true && !is_null($venueID)) {
