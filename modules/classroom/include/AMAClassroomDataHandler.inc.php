@@ -259,8 +259,8 @@ class AMAClassroomDataHandler extends AMA_DataHandler {
 					$joinON .= '`'.$tableName.'`.`'.$tableFields[$type].'`';					
 				}								
 			}
-			if (next($tablesData)!==false) {
-				$sql  .= ', ';
+			if (($nextTable = next($tablesData))!==false) {
+				if (count($nextTable['fields'])>0) $sql  .= ', ';
 				$from .= ' JOIN ';
 				$joinON .= ' = ';
 			}
