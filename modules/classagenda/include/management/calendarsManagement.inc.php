@@ -19,14 +19,7 @@ require_once MODULES_CLASSAGENDA_PATH . '/include/management/abstractClassagenda
 
 class calendarsManagement extends abstractClassAgendaManagement
 {
-	public $id_calendar;
-	public $id_course_instance;
-	public $id_classagenda;
-	public $start_timestamp;
-	public $break_start_timestamp;
-	public $break_end_timestamp;
-	public $end_timestamp; 
-    
+	
 	/**
 	 * build, manage and display the module's pages
 	 *
@@ -69,19 +62,22 @@ class calendarsManagement extends abstractClassAgendaManagement
 				 * build empty select item and a span to hold number of subscribed students
 				 * 
 				 */
-					
-				$instancesSELECT = BaseHtmlLib::selectElement2('id:instancesList,name:instancesList',array());
-				
+				$instancesSELECT = BaseHtmlLib::selectElement2('id:instancesList,name:instancesList',array());				
 				$instancesLABEL = CDOMElement::create('label','for:instancesList');
 				$instancesLABEL->addChild(new CText(translateFN('Seleziona una classe').': '));
 				
+				/**
+				 * checkbox to filter active instances only
+				 */
 				$onlyActiveCHECK = CDOMElement::create('checkbox','id:onlyActiveInstances');
 				$onlyActiveCHECK->setAttribute('value', 1);
 				$onlyActiveCHECK->setAttribute('name', 'onlyActiveInstances');
-
 				$onlyActiveLABEL = CDOMElement::create('label','for:onlyActiveInstances');
 				$onlyActiveLABEL->addChild(new CText(translateFN('Mostra solo istanze attive')));
 				
+				/**
+				 * span to hold number of subscribed students
+				 */
 				$studentCountSPAN = CDOMElement::create('span','class:studentcount');
 				$studentCountSPAN->addChild (new CText(translateFN('Numero di studenti iscritti: ')));
 				$studentCountSPAN->addChild (CDOMElement::create('span','id:studentcount'));
@@ -106,12 +102,17 @@ class calendarsManagement extends abstractClassAgendaManagement
 					}
 					reset($dataAr);
 					
+					/**
+					 * venues html select element
+					 */
 					$venuesSELECT = BaseHtmlLib::selectElement2('id:venuesList,name:venuesList',$dataAr,key($dataAr));
-					unset($dataAr);
-					
+					unset($dataAr);					
 					$venuesLABEL = CDOMElement::create('label','for:venuesList,class:venuesListLabel');
 					$venuesLABEL->addChild(new CText(translateFN('Seleziona un luogo').': '));
 					
+					/**
+					 * container for classroom radio buttons
+					 */
 					$classroomSPAN = CDOMElement::create('span','class:selectclassroomspan');
 					$classroomSPAN->addChild(new CText(translateFN('Seleziona una classe').': '));
 					$classroomlistDIV = CDOMElement::create('div','id:classroomlist');
@@ -205,12 +206,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM) {
 			require_once MODULES_CLASSROOM_PATH . '/include/classroomAPI.inc.php';
 			$classroomAPI = new classroomAPI();
-			return $classroomAPI->getAllVenues();
+			return $classroomAPI->getAllVenuesWithClassrooms();
 		} else return null;
 	}
-	
-	private function _getInstances() {
-		
-	}
-	
 } // class ends here

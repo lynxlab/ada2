@@ -143,6 +143,13 @@ class rollcallManagement extends abstractClassAgendaManagement
 		);
 	}
 	
+	/**
+	 * check if $this->_userObj is a tutor for $this->id_course instance
+	 * 
+	 * @return boolean true on success
+	 * 
+	 * @access private
+	 */
 	private function _isTutorOfInstance() {
 		$dh = $GLOBALS['dh'];
 		$res = $dh->course_tutor_instance_get($this->_userObj->getId());
@@ -153,6 +160,13 @@ class rollcallManagement extends abstractClassAgendaManagement
 		} else return false;
 	}
 	
+	/**
+	 * gets the instance name of $this_>id_course_instance
+	 * 
+	 * @return string|NULL
+	 * 
+	 * @access private
+	 */
 	private function _getInstanceName() {
 		$dh = $GLOBALS['dh'];
 		$courseInstance = $dh->course_instance_get($this->id_course_instance);
@@ -175,6 +189,15 @@ class rollcallManagement extends abstractClassAgendaManagement
 		return $studentsList;
 	}
 	
+	/**
+	 * builds the enter and exit buttons for the currrent table row
+	 * 
+	 * @param number $id_student the student for whom the buttons are genertated
+	 * 
+	 * @return CDiv
+	 * 
+	 * @access private
+	 */
 	private function _buildEnterExitButtons($id_student) {
 		
 		// TODO: check user enter/exit status and hide proper buttons here? 
@@ -195,6 +218,15 @@ class rollcallManagement extends abstractClassAgendaManagement
 		return $buttonsDIV->getHtml();
 	}
 	
+	/**
+	 * adds the roll call history to each element of the students list
+	 * 
+	 * @param array $studentsList
+	 * 
+	 * @return array the passed array, with the added roll call history
+	 * 
+	 * @access private
+	 */
 	private function _addRollCallHistoryToStudentList($studentsList) {
 		
 		/**
@@ -213,6 +245,16 @@ class rollcallManagement extends abstractClassAgendaManagement
 		return $studentsList;
 	}
 	
+	/**
+	 * gets the student list to be displayed either when doing a roll call
+	 * or displaying the roll call history details
+	 *  
+	 * @param number $action
+	 * 
+	 * @return Ambigous <NULL, array>
+	 * 
+	 * @access private
+	 */
 	private function _getStudentsList($action) {
 		$dh = $GLOBALS['dh'];
 		$student_listHa = array();

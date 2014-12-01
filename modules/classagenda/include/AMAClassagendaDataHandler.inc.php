@@ -20,6 +20,17 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 */
 	public static $PREFIX = 'module_classagenda_';
 	
+	/**
+	 * saves all the passed classroom events for the passed instance and venue
+	 * 
+	 * @param number $course_instance_id
+	 * @param number $venueID
+	 * @param asrray $eventsArray
+	 * 
+	 * @return AMA_Error on failure|boolean true on success
+	 * 
+	 * @access public
+	 */
 	public function saveClassroomEvents ($course_instance_id, $venueID, $eventsArray) {
 		/**
 		 * get all the classroom events for the passed instance
@@ -48,6 +59,16 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		return true;
 	}
 	
+	/**
+	 * gets all the classroom events for the passed instance and venue
+	 * 
+	 * @param number $course_instance_id
+	 * @param number $venueID
+	 * 
+	 * @return array classroom events or empty
+	 * 
+	 * @access public
+	 */
 	public function getClassRoomEventsForCourseInstance($course_instance_id, $venueID) {
 		$sql = 'SELECT CAL.* FROM `'.self::$PREFIX.'calendars` AS CAL';
 		
@@ -83,11 +104,30 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		} else return array();
 	}
 	
+	/**
+	 * deletes a class room events by its id
+	 * 
+	 * @param number $eventID
+	 * 
+	 * @return mixed
+	 * 
+	 * @access public
+	 */
 	public function deleteClassroomEvent($eventID) {
 		return $this->queryPrepared('DELETE FROM `'.self::$PREFIX.'calendars` WHERE '.
 				self::$PREFIX.'calendars_id=?',$eventID);
 	}
 	
+	/**
+	 * saves one single classroom event array
+	 * 
+	 * @param number $course_instance_id
+	 * @param array $eventData
+	 * 
+	 * @return AMA_Error on failure|updated element id (zero if it's a newly inserted element)
+	 * 
+	 * @access private
+	 */
 	private function saveClassroomEvent ($course_instance_id, $eventData) {
 		/**
 		 * prepare start timestamp
@@ -127,7 +167,7 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		$result = $this->queryPrepared($sql,$values);
 		
 		if (!AMA_DB::isError($result)) {
-			// not error, return last insert id or zero
+			// not error, return last updated id or zero
 			return ($isInsert ? 0 : $eventData['id']);
 		} else return $result;
 	}
