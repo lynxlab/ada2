@@ -327,10 +327,11 @@ abstract class Abstract_AMA_DataHandler {
      * @access public
      *
      * @param $date the date string
+     * @param $time the time string (format hh:mm:ss, defaults to null)
      *
      * @return the timestamp as an integer
      */
-    public function date_to_ts($date) {
+    public function date_to_ts($date, $time=null) {
         if ($date == "NULL") {
             return $date;
         }
@@ -356,7 +357,15 @@ abstract class Abstract_AMA_DataHandler {
 
         $anno =(int)$date_ar[2];
 
-        $unix_date = mktime(0,0,0,$mese,$giorno,$anno,-1);
+        if (!is_null($time)) {
+        	list ($ora, $minuti, $secondi) = explode(':', $time);
+        } else {
+        	$ora = 0;
+        	$minuti = 0;
+        	$secondi = 0;
+        }
+
+        $unix_date = mktime($ora,$minuti,$secondi,$mese,$giorno,$anno);
 
         return $unix_date;
         //return strtotime($date);
@@ -859,7 +868,7 @@ abstract class Abstract_AMA_DataHandler {
         //ADALogger::log_db('Call to Abstract_AMA_DataHandler destructor');
         if(is_object($this->db) && method_exists($this->db,'disconnect')) {
             //ADALogger::log_db('Closing open connection to database');
-            $this->db->disconnect();
+            $this->disconnect();
         }
     }
 
@@ -868,6 +877,7 @@ abstract class Abstract_AMA_DataHandler {
         if(is_object($this->db) && method_exists($this->db,'disconnect')) {
             //ADALogger::log_db('Closing open connection to database');
             $this->db->disconnect();
+            $this->db = AMA_DB_NOT_CONNECTED;
         }
     }
 }
@@ -4176,13 +4186,25 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-		$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
+	$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
 
-        $sql = 'SELECT U.id_utente, U.username, U.tipo, U.nome, U.cognome, U.avatar, I.status FROM utente AS U, iscrizioni AS I '
+        $sql = 'SELECT U.id_utente, U.username, U.tipo, U.nome, U.cognome, U.avatar, I.status,I.data_iscrizione';
+        
+         if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
+        {
+            $sql=$sql.', I.codice FROM utente AS U, iscrizioni AS I '
              . ' WHERE I.id_istanza_corso ='.$id_course_instance
              . ' AND I.status IN ('.implode(',',$status_Ar).')'
              . ' AND U.id_utente = I.id_utente_studente';
-
+        }
+        else
+        {
+            $sql=$sql.' FROM utente AS U, iscrizioni AS I '
+             . ' WHERE I.id_istanza_corso ='.$id_course_instance
+             . ' AND I.status IN ('.implode(',',$status_Ar).')'
+             . ' AND U.id_utente = I.id_utente_studente';
+        }
+        
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -4230,12 +4252,24 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     public function get_presubscribed_students_for_course_instance($id_course_instance) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
-
-        $sql = 'SELECT U.id_utente, U.nome, U.cognome, I.status FROM utente AS U, iscrizioni AS I '
+        
+        $sql = 'SELECT U.id_utente, U.nome, U.cognome, I.status,I.data_iscrizione';
+        
+        if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
+        {
+            $sql = $sql.', I.codice FROM utente AS U, iscrizioni AS I '
              . ' WHERE I.id_istanza_corso ='.$id_course_instance
              . ' AND I.status = '.ADA_STATUS_PRESUBSCRIBED
              . ' AND U.id_utente = I.id_utente_studente';
-
+        }
+        else
+        {
+            $sql = $sql.' FROM utente AS U, iscrizioni AS I '
+             . ' WHERE I.id_istanza_corso ='.$id_course_instance
+             . ' AND I.status = '.ADA_STATUS_PRESUBSCRIBED
+             . ' AND U.id_utente = I.id_utente_studente';
+        }
+        
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -4424,10 +4458,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if ($id) {
             return new AMA_Error(AMA_ERR_UNIQUE_KEY);
         }
-
+        $data_iscrizione = time();
         // insert a row into table iscrizioni
-        $sql1 =  "insert into iscrizioni (id_utente_studente, id_istanza_corso, livello, status)";
-        $sql1 .= " values ($id_studente, $id_istanza_corso, $livello, 1);";
+        $sql1 =  "insert into iscrizioni (id_utente_studente, id_istanza_corso, livello, status,data_iscrizione)";
+        $sql1 .= " values ($id_studente, $id_istanza_corso, $livello, 1,$data_iscrizione);";
         $res = $db->query($sql1);
         // FIXME: usare executeCritical?
         if (AMA_DB::isError($res)) {// || $db->affectedRows()==0)
@@ -5915,35 +5949,60 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $score = $this->or_zero($student_data['score']);
         $msg_out= $this->or_zero($student_data['msg_out']);
         $msg_in = $this->or_zero($student_data['msg_in']);
-        $notes_out = $this->or_zero($student_data['notes_out']);
-        $notes_in = $this->or_zero($student_data['notes_in']);
+        $added_notes = $this->or_zero($student_data['added_notes']);
+        $read_notes = $this->or_zero($student_data['read_notes']);
         $chat = $this->or_zero($student_data['chat']);
         $bookmarks = $this->or_zero($student_data['bookmarks']);
         $index_att= $student_data['index'];
         $level= $student_data['level'];
+        $last_access = $this->or_zero($student_data['last_access']);
+        
+        if (MODULES_TEST) {
+        	$exercises_test = $this->or_zero($student_data['exercises_test']);
+        	$score_test = $this->or_zero($student_data['score_test']);
+        	$exercises_survey = $this->or_zero($student_data['exercises_survey']);
+        	$score_survey = $this->or_zero($student_data['score_survey']);
+        }
+        
         //		print_r($student_data);
 
-        $sql = "SELECT 'id_user','id_istanza_corso','data' from log_classi
+        $sql = "SELECT `id_user`,`id_istanza_corso`,`data`,`id_log` from log_classi
    			WHERE `id_istanza_corso`  =  $course_instance_id AND data = $date AND `id_user` = $user_id";
-
-        $res = $db->getOne($sql);
-        if (!empty($res)) {
-            return $res;  //data  already written
+        
+        $res = $this->getRowPrepared($sql, null, AMA_FETCH_ASSOC);
+        if (!AMA_DB::isError($res) && !empty($res)) {
+        	$id_log = $res['id_log'];
+            //data  already written, make an update
+            $sql = "update log_classi set visite=".$visits.", punti=".$score.",esercizi=".$exercises.
+            	   ", msg_out=".$msg_out.",msg_in=".$msg_in.",notes_out=".$added_notes.
+            	   ",notes_in=".$read_notes.",chat=".$chat.",bookmarks=".$bookmarks.
+            	   ",indice_att=".$index_att.",level=".$level.", last_access=".$last_access." where id_log=".$id_log;
         }
         else {
             // add a row into table log_classi
-            $sql =  "insert into log_classi (id_user,id_corso, id_istanza_corso, data, visite, punti,esercizi, msg_out,msg_in,notes_out,notes_in,chat,bookmarks,indice_att,level)";
+            $sql =  "insert into log_classi (id_user,id_corso, id_istanza_corso, data, visite, punti,esercizi, msg_out,msg_in,notes_out,notes_in,chat,bookmarks,indice_att,level,last_access)";
             $sql .= " values ($user_id,$course_id, $course_instance_id, $date, $visits, ";
-            $sql .= "$score,$exercises, $msg_out, $msg_in, $notes_out,$notes_in, $chat,$bookmarks, $index_att,$level);";
+            $sql .= "$score,$exercises, $msg_out, $msg_in, $added_notes,$read_notes, $chat,$bookmarks, $index_att,$level,$last_access);";
             //echo $sql;
-
-            $res = $db->query($sql);
-            // global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
-            if (AMA_DB::isError($res)) {
-                return new AMA_Error($this->errorMessage(AMA_ERR_ADD) .
-                                " while in add_class_report");
-            }
         }
+        
+        $res = $db->query($sql);
+        // global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
+        if (AMA_DB::isError($res)) {
+        	return new AMA_Error($this->errorMessage(AMA_ERR_ADD) .
+                                " while in add_class_report");
+        } else {
+        	if (MODULES_TEST) {
+        		if (!isset($id_log)) $id_log = $db->lastInsertID();
+        		$sql = 'update log_classi set `exercises_test`=?, `score_test`=?, `exercises_survey`=?, `score_survey`=? where `id_log`=?';
+        		$res = $this->queryPrepared($sql, array($exercises_test, $score_test, $exercises_survey, $score_survey, $id_log));
+        		if (AMA_DB::isError($res)) {
+        			return new AMA_Error($this->errorMessage(AMA_ERR_UPDATE) .
+        					" while in add_class_report");
+        		}
+        	}
+        }
+        
         return true;
     }
     /**
@@ -5962,41 +6021,65 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
+        
+        /**
+         * @author giorgio 27/ott/2014
+         * 
+         * if we've been passed a null date, get the latest
+         * availeble report for the passed course_instance_id
+         */
+        if (is_null($date)) {
+        	$sql = "SELECT MAX(data) FROM log_classi WHERE id_istanza_corso=".$course_instance_id;
+        	$res = $this->getOnePrepared($sql);
+        	$date = (!AMA_DB::isError($res) && strlen($res)>0) ? $res : time();
+        }
 
         $sql = "SELECT L.*, U.nome, U.cognome "
                 . "FROM (SELECT * from log_classi WHERE id_istanza_corso=$course_instance_id AND data=$date) AS L "
                 . "LEFT JOIN utente AS U ON (L.id_user=U.id_utente)";
 
-        $res = $db->getAll($sql);
+        $res = $db->getAll($sql,array(),AMA_FETCH_ASSOC);
 
         //global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
         if (AMA_DB::isError($res)) {
             return new AMA_Error($this->errorMessage(AMA_ERR_GET) ." while in get_class_report");
         }
-
+        
         foreach ($res as $res_item) {
-            $id_log = $res_item[0];
-            $student_data[$id_log]['id_stud'] = $res_item[1];
+            $id_log = $res_item['id_log'];
+            $student_data[$id_log]['id_stud'] = $res_item['id_user'];
             // vito, 27 mar 2009
-            $student_data[$id_log]['student'] = $res_item[16] .' '. $res_item[17];
+            $student_data[$id_log]['student'] = $res_item['nome'] .' '. $res_item['cognome'];
 
             //        $student_data[$id_log]['id_course_instance'] = $res_item[2];
             //        $student_data[$id_log]['id_course'] = $res_item[3];
 
-            $student_data[$id_log]['visits'] = $res_item[5];
-            $student_data[$id_log]['date'] = $res_item[4];
+            $student_data[$id_log]['visits'] = $res_item['visite'];
+            $student_data[$id_log]['date'] = $res_item['last_access'];
             //$student_data[$id_log]['visits'] = $res_item[5];
-            $student_data[$id_log]['score'] = $res_item[6];
-            //$student_data[$id_log]['exercises'] = $res_item[7];
-            $student_data[$id_log]['notes_out'] = $res_item[11];
-            $student_data[$id_log]['notes_in'] = $res_item[10];
-            $student_data[$id_log]['msg_in'] = $res_item[9];
-            $student_data[$id_log]['msg_out'] = $res_item[8];
-            $student_data[$id_log]['chat'] = $res_item[12];
-            $student_data[$id_log]['bookmarks'] = $res_item[13];
-            $student_data[$id_log]['indice_att'] = $res_item[14];
-            $student_data[$id_log]['level'] = $res_item[15];
+            $student_data[$id_log]['score'] = $res_item['punti'];
+            $student_data[$id_log]['exercises'] = $res_item['esercizi'];
+            $student_data[$id_log]['notes_out'] = $res_item['notes_out'];
+            $student_data[$id_log]['notes_in'] = $res_item['notes_in'];
+            $student_data[$id_log]['msg_in'] = $res_item['msg_in'];
+            $student_data[$id_log]['msg_out'] = $res_item['msg_out'];
+            $student_data[$id_log]['chat'] = $res_item['chat'];
+            $student_data[$id_log]['bookmarks'] = $res_item['bookmarks'];
+            $student_data[$id_log]['indice_att'] = $res_item['indice_att'];
+            $student_data[$id_log]['level'] = $res_item['level'];
+            if (MODULES_TEST) {
+            	$student_data[$id_log]['exercises_test'] = $res_item['exercises_test'];
+            	$student_data[$id_log]['score_test'] = $res_item['score_test'];
+            	$student_data[$id_log]['exercises_survey'] = $res_item['exercises_survey'];
+            	$student_data[$id_log]['score_survey'] = $res_item['score_survey'];
+            }
         }
+        /**
+         * @author giorgio 27/ott/2014
+         * 
+         * added report generation date
+         */
+        if (isset($student_data)) $student_data['report_generation_date'] = $date;
         return $student_data;
     }
 

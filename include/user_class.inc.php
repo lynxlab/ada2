@@ -886,6 +886,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
         }
 
         if ($id_course_instance) {
+            
             $last_visited_node = $provider_dh->get_last_visited_nodes($id_user, $id_course_instance, 10);
             /*
             * vito, 10 ottobre 2008: $last_visited_node è Array([0]=>Array([id_nodo], ...))
@@ -1385,6 +1386,20 @@ abstract class ADAAbstractUser extends ADALoggableUser {
 		}
 		return $res;
 	} //end history_ex_done_FN
+        
+        
+        
+       /*
+        * this function fix user certificate. 
+        *       
+        * @return boolean
+        */
+        
+        public function Check_Requirements_Certificate()
+        {
+           /* be implemented according to the use cases */
+            return 'true';
+        }
 }
 
 /**

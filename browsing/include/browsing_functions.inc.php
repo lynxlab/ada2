@@ -345,6 +345,7 @@ if ($id_profile == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MOD
 				require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
 				$s = new Subscription($userObj->getId(), $courseInstanceObj->getId());
 				$s->setSubscriptionStatus(ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
+				if (isset($userObj->livello) && intval($userObj->livello)>0) $s->setStartStudentLevel($userObj->livello);
 				$subscribedCount = Subscription::updateSubscription($s);
 			}
 		}

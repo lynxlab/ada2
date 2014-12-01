@@ -6,7 +6,7 @@
 	
 	<div class="ui mobile only row ada menubutton">
 		<div class="menubutton-container">
-			<a class="ui labeled icon teal down small fluid button" onclick="javascript:$j('#mobilesidebar').sidebar('toggle');">
+			<a class="ui labeled icon teal down small fluid button">
 		        <i class="reorder icon"></i><i18n>Menu</i18n></a>
 		</div>
 	</div>

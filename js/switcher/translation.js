@@ -179,7 +179,7 @@ function initButton()
                 my : "center bottom-5",
                 at : "center top"
         }
-    });
+  });
     
  }
     

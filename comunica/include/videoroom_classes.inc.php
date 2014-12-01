@@ -267,10 +267,11 @@ public function room_access($username,$nome,$cognome,$user_email,$sess_id_user,$
         $becomeModeratorAsInt = 0; // 0 = no Moderator 1 = Moderator @todo impostare a moderatore se practitioner
         if ($id_profile == AMA_TYPE_TUTOR ) {
             $becomeModeratorAsInt = 1;    
+            $allowRecording = 1;
         }
 	$room_id = $this->id_room;
-        $externalUserId = "";
-        $externalUserType = "1"; // potrebbe essere preso da $userObj->type
+        $externalUserId = $sess_id_user;
+        $externalUserType = "ADA"; // potrebbe essere preso da $userObj->type?
         $showAudioVideoTestAsInt = 0; // 0 = no audio/video test
         if ( OPENMEETINGS_VERSION > 0) {
             $user_params   = array(
@@ -304,29 +305,6 @@ public function room_access($username,$nome,$cognome,$user_email,$sess_id_user,$
             $setUser = $this->client_user->setUserObject($user_params);
 
         }
-	//echo "<br> Istanza root: ";
-	//print_r($client_room);
-	
-	$type_params   = array(
-	    'SID' => $this->session_id,
-	    'rooms_id' => $this->id_room
-	);
-	$this->roomTypes = $this->client_room->getRoomById($type_params);
-	
-
-/*
- * ELENCO STANZE: SPOSTARE IN METODO APPOSITO
-	$rooms_params   = array(
-	    'SID' => $this->session_id,
-	    'start' => 1,
-	    'max' => 99,
-		'orderby' => "name",
-		'asc' => 1
-	);
-	
-	$this->rooms = $this->client_room->getRooms($rooms_params);
- */
-	/** FINO QUI' */
 	
 	/*
 	 * LINK A STANZA
@@ -338,18 +316,11 @@ public function room_access($username,$nome,$cognome,$user_email,$sess_id_user,$
 		$language = constant($videochat_lang); 
 	}
         if ( OPENMEETINGS_VERSION > 0) {
-           $this->link_to_room = "http://".$host.$port."/".$dir."/?secureHash=".$secureHash."&scopeRoomId=".$this->id_room."&language=".$language."&user_id=".$sess_id_user;
+           $this->link_to_room = "http://".$host.$port."/".$dir."/?secureHash=".$secureHash."&language=".$language;
         } else {
             $this->link_to_room = "http://".$host.$port."/".$dir."/main.lzx.lzr=swf8.swf?roomid=".$this->id_room."&sid=".$this->session_id."&language=".$language;
        }
 
-	// Versione 0.7
-//	echo "<a href=\"http://localhost:5080/openmeetings/maindebug.lzx.swf8.swf?roomid=3&sid=".$sid ."&language=4\"> entra</a>";
-// Versione 0-8
-//	echo "<a href=\"http://nina.altrascuola.it:5080/openmeetings/main.lzx.lzr=swf8.swf?roomid=3&sid=".$sid ."&language=4\"> entra</a>";
-//	echo "<a href=\"http://localhost:5080/openmeetings/main.lzx.lzr=swf8.swf?roomid=3&sid=".$sid ."&language=4\"> entra</a>";
-//	echo "<a href=\"http://lynx.comunicyou.it/lynx/main.lzx.lzr=swf8.swf?roomid=3&sid=".$sid ."&language=4\"> entra</a>";
-	//	echo "<a href=\"http://77.72.193.243:5080/lynx/main.lzx.lzr=swf8.swf?roomid=7&sid=".$sid ."&language=4\"> entra</a>";
 }
 
 public function delete_room($id_room) {

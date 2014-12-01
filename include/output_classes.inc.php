@@ -166,19 +166,32 @@ class ARE
          * 
          * This way, any PhP can include what it needs and in the right order of inclusion
          */
+        
+        /**
+         * @author giorgio 10/nov/2014
+         * 
+         * If the browser is InternetExplorer 8 or less, use smartmenus instead of semantic-ui
+         * 
+         * NOTE: $_SESSION['IE-version'] is set by module_init_functions.inc.php
+         */
+        $JSToUse = (isset($_SESSION['IE-version']) && 
+        		    $_SESSION['IE-version']!==false && $_SESSION['IE-version']<=8) ? SMARTMENUS_JS : SEMANTICUI_JS;
+        $CSSToUse = (isset($_SESSION['IE-version']) && 
+        		    $_SESSION['IE-version']!==false && $_SESSION['IE-version']<=8) ? SMARTMENUS_CSS : SEMANTICUI_CSS;
+        
 		if (!empty($layout_dataAr['JS_filename']) && is_array($layout_dataAr['JS_filename'])) {
 			
 			// if jquery is not included in the script itself, add it at first position
 			if (!in_array(JQUERY, $layout_dataAr['JS_filename'])) $layout_dataAr['JS_filename'] = array_merge(array(JQUERY),$layout_dataAr['JS_filename']);
 			
-			// if semantic ui is not included in the script itself, add it just after JQUERY
-			if (!in_array(SEMANTICUI_JS, $layout_dataAr['JS_filename'])) {
+			// if $JSToUse is not included in the script itself, add it just after JQUERY
+			if (!in_array($JSToUse, $layout_dataAr['JS_filename'])) {
 				// find the key for JQUERY
 				$key = array_search(JQUERY, $layout_dataAr['JS_filename']);
-				// add SEMANTIC after JQUERY slicing the original array
+				// add $JSToUse after JQUERY slicing the original array
 				$layout_dataAr['JS_filename'] = array_merge(
 						array_slice($layout_dataAr['JS_filename'], 0, $key+1),
-						array(SEMANTICUI_JS),
+						array($JSToUse),
 						array_slice($layout_dataAr['JS_filename'], $key+1)
 				);
 			}
@@ -192,7 +205,7 @@ class ARE
 			$layoutObj->JS_filename = implode(';',$tmp);
 		} else {
 			// add jquery, semantic and jquery noconflict
-			$layoutObj->JS_filename .= ';'.JQUERY.';'.SEMANTICUI_JS.';'.JQUERY_NO_CONFLICT;
+			$layoutObj->JS_filename .= ';'.JQUERY.';'.$JSToUse.';'.JQUERY_NO_CONFLICT;
 		}
 
 		$tmp = explode(';',$layoutObj->CSS_filename);
@@ -202,9 +215,9 @@ class ARE
 		}
 		/**
 		 * @author giorgio 06/ago/2014
-		 * add semantic css last
+		 * add $CSSToUse last
 		 */
-		if (defined('SEMANTICUI_CSS')) $tmp[] = SEMANTICUI_CSS;
+		$tmp[] = $CSSToUse;
 			
 		//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
 		$layoutObj->CSS_filename = implode(';',$tmp);
@@ -901,6 +914,22 @@ class  Generic_Html extends Output
     		$html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName\" type=\"text/css\" media=\"print\">\n";
     	}
     }
+    
+     /*
+     * sara 24/nov/2014 
+     * Look for the print.css file in external modules (newsletter, test ecc..)
+     */
+      if($this->external_module){
+        $stylesheetpath = ROOT_DIR.'/'.$this->module_dir.'/layout/';
+        foreach (array ('',$template_family.'/css/') as $subdir){
+            $fileName = $stylesheetpath .$subdir.$lookFor;
+            if (file_exists($fileName)) {
+                $fileName = str_replace($root_dir,$http_root_dir,$fileName);
+                $html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName\" type=\"text/css\" media=\"print\">\n";
+            }
+        }
+    }
+    
     /**
      * end @author giorgio 03/apr/2014
      */

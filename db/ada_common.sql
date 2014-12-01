@@ -36,6 +36,14 @@ CREATE TABLE IF NOT EXISTS `lingue` (
   KEY `language_code` (`codice_lingua`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+-- --------------------------------------------------------
+
+--
+-- ALTER tabella `lingue`per gestire ligue con varianti. Es. pt-BR
+--
+ALTER TABLE `lingue` CHANGE `codice_lingua` `codice_lingua` CHAR(6) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+
 --
 -- Dump dei dati per la tabella `lingue`
 --

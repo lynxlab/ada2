@@ -65,6 +65,9 @@ class TopicTest extends NodeTest
 
 		$out->addChild(new CText($this->titolo));
 		
+		// add topic to history_esercizi table
+		if (!$feedback) $this->trackTopicToExerciseHistory();
+		
 		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			if ($this->durata > 0 && is_a($this->_parent,'RootTest')) {
 				$minuti = round($this->durata/60,2);
@@ -150,5 +153,25 @@ class TopicTest extends NodeTest
 		$ref = $ul;
 
 		return $out;
+	}
+	
+	/**
+	 * @author giorgio 30/ott/2014
+	 * 
+	 * adds the topic that's about to be rendered to the history_esercizi table
+	 * 
+	 * @access protected
+	 */
+	protected function trackTopicToExerciseHistory() {
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT && isset($_SESSION['sess_id_user']) &&
+			isset($_SESSION['sess_id_course_instance']) && isset($GLOBALS['dh'])) {
+				
+			if (!isset($_GET['unload'])) {
+				$GLOBALS['dh']->add_ex_history($_SESSION['sess_id_user'], $_SESSION['sess_id_course_instance'], $this->id_nodo);
+			} else {
+				$GLOBALS['dh']->update_exit_time_ex_history($_SESSION['sess_id_user'], $_SESSION['sess_id_course_instance'], $this->id_nodo);
+			}
+			
+		}
 	}
 }

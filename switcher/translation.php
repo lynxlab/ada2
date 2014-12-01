@@ -104,18 +104,15 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
-		JQUERY_UNIFORM,
-                JQUERY_DATATABLE,
+        JQUERY_DATATABLE,
 		JQUERY_NO_CONFLICT,
-                JQUERY_MASKEDINPUT,
-                
-                );
+		JQUERY_MASKEDINPUT
+);
 
 $layout_dataAr['CSS_filename'] = array (
 		JQUERY_UI_CSS,
-                JQUERY_UNIFORM_CSS,
-                JQUERY_DATATABLE_CSS,
-                );
+		JQUERY_DATATABLE_CSS
+);
 
 ARE::render($layout_dataAr,$content_dataAr,NULL, array('onload_func' => "initDoc();"));
 ?>

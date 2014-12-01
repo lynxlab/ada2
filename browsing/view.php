@@ -82,7 +82,7 @@ if ($nodeObj->type != ADA_NOTE_TYPE && $nodeObj->type != ADA_PRIVATE_NOTE_TYPE)
 			'userLevel' => $user_level));
 }
 
-if (MODULES_TEST && strpos($nodeObj->type,ADA_PERSONAL_EXERCISE_TYPE) == 0 && ADA_REDIRECT_TO_TEST && $_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {
+if (MODULES_TEST && strpos($nodeObj->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0 && ADA_REDIRECT_TO_TEST && $_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {
         $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$nodeObj->id));
         if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {

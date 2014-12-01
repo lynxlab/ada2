@@ -28,12 +28,6 @@ $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_T
 /**
  * Get needed objects
  */
-$neededObjAr = array(
-  AMA_TYPE_VISITOR => array('node','layout','course'),
-  AMA_TYPE_STUDENT => array('node','layout','tutor','course','course_instance'),
-  AMA_TYPE_TUTOR   => array('node','layout','course','course_instance'),
-  AMA_TYPE_AUTHOR  => array('node','layout','course')
-);
 
 $neededObjAr = array(
   AMA_TYPE_VISITOR => array('layout','course'),
@@ -559,8 +553,6 @@ if (!empty($courseInstanceObj->title)) {
 
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
-    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
-    
     $user_type=$user_type.' livello '.$user_level;
     $user_level='';
     $layout_dataAr['JS_filename']=array(ROOT_DIR.'/js/include/menu_functions.js'); 
@@ -599,6 +591,7 @@ $content_dataAr = array(
   'messages'     => $user_messages->getHtml(),
   'agenda'       => $user_agenda->getHtml(),
   'events'		 => $user_events->getHtml(),
+  'edit_profile'=> $userObj->getEditProfilePage(),
   'chat_users'   => $online_users
  );
 

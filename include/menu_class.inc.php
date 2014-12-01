@@ -16,7 +16,7 @@
  * @author giorgio
  */
 
-define(NON_MULTIPROVIDER_MENU,!MULTIPROVIDER);
+define('NON_MULTIPROVIDER_MENU',!MULTIPROVIDER);
 
 class Menu
 {
@@ -111,7 +111,7 @@ class Menu
 	 * @access public
 	 */
     public function getHtml() {
-    	$mainContainer = CDOMElement::create('div');
+    	$mainContainer = CDOMElement::create('ul','class:left menu sm sm-ada');
 
     	if (is_array($this->_leftItemsArray) && count($this->_leftItemsArray)>0) {
 	    	foreach ($this->_leftItemsArray as $item) {
@@ -120,14 +120,13 @@ class Menu
     	}
     	
     	if (is_array($this->_rightItemsArray) && count($this->_rightItemsArray)>0) {
-    		$rightContainer = CDOMElement::create('div','class:right menu');
+    		$rightContainer = CDOMElement::create('ul','class:right menu sm sm-ada');
     		foreach ($this->_rightItemsArray as $item) {
     			$this->buildAll($rightContainer, $item, true);
     		}
-    		$mainContainer->addChild($rightContainer);
     	}
     	
-    	return $mainContainer->getHtml();
+    	return $mainContainer->getHtml().((isset($rightContainer)) ? $rightContainer->getHtml() : '');
     }
     
     /**
@@ -264,9 +263,6 @@ class Menu
     		$span->addChild(new CText($label));
     		$DOMitem->addChild($span);
     	}
-
-    	// add the extraHTML
-    	if (!is_null($item['extraHTML'])) $DOMitem->addChild(new CText($item['extraHTML']));
     }
     
     /**
@@ -312,7 +308,7 @@ class Menu
      * @access private
      */
     private function buildDropDownItem($item, $firstLevel) {
-    	$DOMitem = CDOMElement::create('div');
+    	$DOMitem = CDOMElement::create('li');
     	
     	// set class attribute
     	/**
@@ -327,11 +323,15 @@ class Menu
     	$baseClass = 'ui item'.($firstLevel ? ' simple dropdown ' : '');    	
     	$DOMitem->setAttribute('class', trim($baseClass.$item['extraClass']));
     	
-    	$this->buildCommon($DOMitem, $item);
+    	$HREFItem = CDOMElement::create('a','href:#,onclick:javascript:return false;');
+    	$this->buildCommon($HREFItem, $item);
+    	$DOMitem->addChild($HREFItem);
+    	
+    	if (!is_null($item['extraHTML'])) $DOMitem->addChild(new CText($item['extraHTML']));
     	
     	$DOMitem->addChild($this->buildDropDownIcon());
     	
-    	$subContainer = CDOMElement::create('div','class:menu');
+    	$subContainer = CDOMElement::create('ul','class:menu');
     	if (!is_null($item['menuExtraClass'])) {
     		$subContainer->setAttribute('class', $subContainer->getAttribute('class').' '.$item['menuExtraClass']);
     	}
@@ -405,8 +405,6 @@ class Menu
     private function buildHREFItem($item) {
     	
     	$DOMitem = CDOMElement::create('a');
-    	// set class attribute
-    	$DOMitem->setAttribute('class', trim('item '.$item['extraClass']));
     	
     	// set href prefix
     	if (!is_null($item['href_prefix'])) {
@@ -434,10 +432,22 @@ class Menu
     		}
     	}
     	
+    	// do not send out without an href
+    	if (strlen($DOMitem->getAttribute('href'))<=0 && strlen($DOMitem->getAttribute('onclick'))<=0) {
+    		$DOMitem->setAttribute('href','#');
+    	}
+    	
     	// build common elements
     	$this->buildCommon($DOMitem,$item);
     	
-    	return $DOMitem;
+    	$LIitem = CDOMElement::create('li');
+    	// set class attribute
+    	$LIitem->setAttribute('class', trim('item '.$item['extraClass']));
+    	$LIitem->addChild($DOMitem);
+    	
+    	if (!is_null($item['extraHTML'])) $LIitem->addChild(new CText($item['extraHTML']));
+    	
+    	return $LIitem;
     }
     
     /**
@@ -450,7 +460,7 @@ class Menu
      * @access private
      */
     private function buildSpecialItem($item) {
-    	$DOMitem = CDOMElement::create('div','class:item');
+    	$DOMitem = CDOMElement::create('li','class:item');
     	if (!is_null($item['extraClass'])) {
     		$DOMitem->setAttribute('class', $DOMitem->getAttribute('class').' '.$item['extraClass']);
     	}

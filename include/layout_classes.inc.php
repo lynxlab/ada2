@@ -335,7 +335,26 @@ class CSS {
         	if (is_file($CSS_provider_dir.$node_type.".css"))
         		$CSS_files[] = $CSS_provider_dir.$node_type.".css";
         }
-
+        
+        /**
+         * @author giorgio 10/nov/2014
+         * 
+         * add adamenu.css
+         */
+        $adamenuCSS = (isset($_SESSION['IE-version']) && 
+        		    $_SESSION['IE-version']!==false && $_SESSION['IE-version']<=8) ? "adamenu-ie8.css" : "adamenu.css";
+        
+        $adamenuCSSDir = $rel_pref."layout/$family/css/";
+        if (is_file($adamenuCSSDir.$adamenuCSS)) $CSS_files[] = $adamenuCSSDir.$adamenuCSS;
+        
+        if (!MULTIPROVIDER) {
+        	/**
+        	 * if not multiprovider, include client's adamenu.css also
+        	 */
+        	$adamenuCSSDir = $CSS_provider_dir . '../';
+        	if (is_file($adamenuCSSDir.$adamenuCSS)) $CSS_files[] = $adamenuCSSDir.$adamenuCSS;
+        }
+        
         $this->CSS_filename = implode(';',$CSS_files);
         $this->CSS_dir = $CSS_dir;
         $this->family = $family;

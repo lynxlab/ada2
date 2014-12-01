@@ -68,7 +68,22 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
   { 
   	$_SESSION['mobile-detect'] = new Mobile_Detect();
   }
-
+  
+  /**
+   * @author giorgio 10/nov/2014
+   * 
+   * sets the IE-version session variable to a float holding
+   * the IE version or false if non-IE or IE version >= 11.0
+   */
+  if (isset($_SESSION['mobile-detect']) && !isset($_SESSION['IE-version'])) {
+  	$isIE = $_SESSION['mobile-detect']->version('IE');
+  	if ($isIE!==false && is_numeric($isIE)) {
+  		$_SESSION['IE-version'] = floatval($isIE);
+  	} else {
+  		$_SESSION['IE-version'] = false;
+  	}
+  }
+  
   if ($trackPageToNavigationHistory) {
 	$caller_file     = $debug_backtrace[$level]['file'];
 	if ( !isset($_SESSION['sess_navigation_history']) ) {

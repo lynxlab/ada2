@@ -205,16 +205,40 @@ class Translator
     /*
      * the following regexp searches for user's browser accepted language
      * preferences.
+     * 
+     *		standard  for HTTP_ACCEPT_LANGUAGE is defined under
+     *		http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4
+     *		pattern to find is therefore something like this:
+     *			1#( language-range [ ";" "q" "=" qvalue ] )
+     *		where:
+     *			language-range  = ( ( 1*8ALPHA *( "-" 1*8ALPHA ) ) | "*" )
+     *			qvalue         = ( "0" [ "." 0*3DIGIT ] ) 
+     *						   | ( "1" [ "." 0*3("0") ] ) 
      */
-    $regexp = "/([a-z]{2}\-[a-zA-Z]{2},)?([a-z]{2})?(?:;q=(0\.[1-9]{1}))?/";
+    $regexp = "/([[:alpha:]]{1,8})(-([[:alpha:]|-]{1,8}))?" .
+    		  "(\s*;\s*q\s*=\s*(1\.0{0,3}|0\.\d{0,3}))?\s*(,|$)/i";
     $matches = array();
-    preg_match_all($regexp,$server_http_accept_language,$matches);
-
-    $l1 = $matches[1];
-    $l2 = $matches[2];
-    $q  = $matches[3];
-
-    $user_defined_languages_count  = count($l2);
+    preg_match_all($regexp,$server_http_accept_language,$matches, PREG_SET_ORDER);
+	
+    if (count($matches)>0) {
+    	foreach ($matches as $match) {
+    		/**
+    		 * if matched string ends with a comma, remove it and assign to $foundLang
+    		 */
+    		if (substr($match[0], -1, 1)===',') $foundLang = substr($match[0],0,-1);
+    		else $foundLang = $match[0];
+    		/**
+    		 * if foundLang has a semicolon it is in the form  of
+    		 * "en;q=0.8", extract its characters up to the semicolon
+    		*/
+    		$hasSemicolon = stripos($foundLang, ';');
+    		if ($hasSemicolon!==false) $foundLang = substr($foundLang, 0, $hasSemicolon);
+    		$l2[] = $foundLang;
+    	}
+    	$user_defined_languages_count  = count($l2);
+    } else {
+    	$user_defined_languages_count  = 0;
+    }
 
     $ada_supported_languages       = self::getSupportedLanguages();
     $ada_supported_languages_count = count($ada_supported_languages);
@@ -244,10 +268,16 @@ class Translator
     }
     for ($i = 0; $i < $user_defined_languages_count; $i++) {
       for($j = 0; $j < $ada_supported_languages_count; $j++) {
-        if($l2[$i] == $ada_supported_languages[$j]['codice_lingua']) {
+      	if(strcasecmp($l2[$i],$ada_supported_languages[$j]['codice_lingua'])===0) {
           return $ada_supported_languages[$j]['codice_lingua'];
+        } else if (strpos($l2[$i], $ada_supported_languages[$j]['codice_lingua'])===0) {
+        	// if browser request lang startsWith current checking language
+        	// it is a bestmatch that can be returned when out of the loops
+        	$bestMatch = $ada_supported_languages[$j]['codice_lingua'];
         }
       }
+      // if there's a best match, it's our man
+      if (isset($bestMatch) && strlen($bestMatch)>0) return $bestMatch;
     }
     /*
      * No supported user language found, return a default language
