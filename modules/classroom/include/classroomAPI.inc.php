@@ -26,10 +26,36 @@ class classroomAPI {
 		$this->_dh = AMAClassroomDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 	}
 	
+	/**
+	 * gets all available venues
+	 */
 	public function getAllVenues() {		
 		return $this->_dh->classroom_getAllVenues();
 	}
 	
+	/**
+	 * gets all available venues having at least one classroom
+	 */
+	public function getAllVenuesWithClassrooms() {
+		return $this->_dh->getJoined(
+			array(
+					AMAClassroomDataHandler::$PREFIX.'venues' => array(
+							'fields'=>array('id_venue','name'),
+							'join_field'=>'id_venue'
+					),			
+					AMAClassroomDataHandler::$PREFIX.'classrooms' => array(
+							'fields'=>array(),
+							'join_field'=>'id_venue'
+							)
+			), null, 'name ASC'
+		);
+	}
+	
+	/**
+	 * gets list of classrooms associated to the passed venue
+	 * 
+	 * @param number $id_venue
+	 */
 	public function getClassroomsForVenue($id_venue) {
 		return $this->_dh->classroom_getClassroom(null,$id_venue);
 	}
