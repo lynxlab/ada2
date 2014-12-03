@@ -47,10 +47,6 @@ $self = 'calendars';
 
 $GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-/**
- * TODO: Add your own code here
- */
-
 $calendarsManager = new calendarsManagement();
 $data = $calendarsManager->run(MODULES_CLASSAGENDA_EDIT_CAL);
 

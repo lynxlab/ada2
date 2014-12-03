@@ -9,9 +9,6 @@
  * @version		   0.1
  */
 
-function initDoc()
-{
-	/**
-	 * TODO: Add your own code here
-	 */
+function initDoc() {
+
 }

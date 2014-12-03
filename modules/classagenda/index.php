@@ -46,14 +46,6 @@ $self = 'classagenda';
 
 $GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-/**
- * TODO: Add your own code here
- */
-
-
-
-
-
 $content_dataAr = array(
 		'user_name' => $user_name,
 		'user_type' => $user_type,
