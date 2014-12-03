@@ -38,13 +38,17 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
+$GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+
 // MODULE's OWN IMPORTS
 $retStr = '';
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' &&
 	isset($id_student) && intval($id_student)>0 &&
-	isset($id_course_instance) && intval($id_course_instance)>0 &&
+	isset($classagenda_calendars_id) && intval($classagenda_calendars_id)>0 &&
 	isset($isEntering)) {
-		$retStr = (($isEntering) ? 'Entrata alle: ' : 'Uscita alle: ').ts2tmFN(time());
-		$retStr .= '<br/>';
+		if ($GLOBALS['dh']->saveRollCallEnterExit ($id_student, $classagenda_calendars_id, $isEntering)) {
+			$retStr = (($isEntering) ? translateFN('Entrata alle: ') : translateFN('Uscita alle: ')).ts2tmFN(time());
+			$retStr .= '<br/>';
+		}
 }
 die ($retStr);

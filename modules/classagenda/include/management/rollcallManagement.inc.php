@@ -20,15 +20,22 @@ require_once MODULES_CLASSAGENDA_PATH . '/include/management/abstractClassagenda
 class rollcallManagement extends abstractClassAgendaManagement
 {
 	public $id_course_instance = null;
+	public $eventData = null;
 	
-	private $_userObj;
+	private $_userObj = null;
 	
-	public function __construct($id_course_instance, $userObj) {
-		
-		$this->_userObj = $userObj;
-		
-		// set object property to passed value
+	public function __construct($id_course_instance = null) {
 		parent::__construct(array('id_course_instance'=>$id_course_instance));
+		
+		$this->_userObj = $_SESSION['sess_userObj'];
+		
+		if ($this->_userObj instanceof ADALoggableUser && is_null($id_course_instance)) {
+			$this->eventData = $this->_findClosestCourseInstance();
+			
+			if (!is_null($this->eventData)) {
+				$this->id_course_instance = $this->eventData['id_istanza_corso'];
+			}
+		}
 	}
     
 	/**
@@ -57,7 +64,7 @@ class rollcallManagement extends abstractClassAgendaManagement
 				if (!isset($this->id_course_instance) || is_null($this->id_course_instance) ||
 					strlen($this->id_course_instance)<=0 || !is_numeric($this->id_course_instance) || 
 						!$this->_isTutorOfInstance()) {
-					$htmlObj->addChild(new CText(translateFN('Istanza corso non valida')));
+					$htmlObj->addChild(new CText(translateFN('Nessun evento da mostrare trovato')));
 				} else {
 					/**
 					 * get list of students subscribed to passed instance
@@ -78,7 +85,11 @@ class rollcallManagement extends abstractClassAgendaManagement
 									translateFN('E-Mail'),
 									translateFN('Dettagli'),
 									translateFN('Azioni'));
-							$caption = translateFN('Registro Entrate-Uscite del ').ts2dFN(time());
+							$caption = translateFN('Registro Entrate-Uscite del');
+							list ($startDate,$starTime) = explode(' ', $this->eventData['start']);
+							list ($endDate,$endTime) = explode(' ', $this->eventData['end']);
+							$caption .= ' '.$startDate.' '.translateFN('ore').' '.$starTime;
+							$caption .= ' '.translateFN('al').' '.$endDate.' '.translateFN('ore').' '.$endTime;
 							$tableID = 'rollcallTable';
 							/**
 							 * set the help message
@@ -151,6 +162,8 @@ class rollcallManagement extends abstractClassAgendaManagement
 	 * @access private
 	 */
 	private function _isTutorOfInstance() {
+		if (is_null($this->_userObj) || $this->_userObj->getType()!=AMA_TYPE_TUTOR) return false;
+		
 		$dh = $GLOBALS['dh'];
 		$res = $dh->course_tutor_instance_get($this->_userObj->getId());
 		if (!AMA_DB::isError($res) && is_array($res) && $res!==false ) {		
@@ -175,15 +188,51 @@ class rollcallManagement extends abstractClassAgendaManagement
 		} else return null;
 	}
 	
+	/**
+	 * adds detail and action buttons to student list array
+	 * 
+	 * @param array $studentsList
+	 * 
+	 * @return array $studentsList with added fields 'details' and 'actions'
+	 *  
+	 * @access private
+	 */
 	private function _addDetailsAndActionToStudentList($studentsList) {
 		if (is_array($studentsList) && count($studentsList)>0) {
+			$dh = $GLOBALS['dh'];
+			
 			foreach ($studentsList as $i=>$student) {
 				
-				// TODO: load module's own data here?
 				$userDetailsSPAN = CDOMElement::create('span','id:'.$student[0].'_details');
+				$isEnterButtonVisibile = true;
+				$detailsStr = '';
+				
+				/**
+				 * load and display details data column
+				 */
+				$detailsAr = $dh->getRollCallDetails($student[0],$this->eventData['module_classagenda_calendars_id']);
+				
+				if (!AMA_DB::isError($detailsAr) && is_array($detailsAr) && count($detailsAr)>0) {					
+					foreach ($detailsAr as $j=>$enterexittime) {
+						if (strlen($enterexittime['entertime'])>0) {
+							if ($j>0) $detailsStr .= '<br/>';
+							$detailsStr .= translateFN('Entrata alle: ');
+							$detailsStr .= ts2tmFN($enterexittime['entertime']);
+							$isEnterButtonVisibile = false;
+						}
+						if (strlen($enterexittime['exittime'])>0) {
+							$detailsStr .= '<br/>';
+							$detailsStr .= translateFN('Usicta alle: ');
+							$detailsStr .= ts2tmFN($enterexittime['exittime']);
+							$isEnterButtonVisibile = true;
+						}
+					}
+				}
+				
+				if (strlen($detailsStr)>0) $userDetailsSPAN->addChild (new CText($detailsStr.'<br/>'));
 				
 				$studentsList[$i]['details'] = $userDetailsSPAN->getHtml(); 
-				$studentsList[$i]['actions'] = $this->_buildEnterExitButtons($student[0]);
+				$studentsList[$i]['actions'] = $this->_buildEnterExitButtons($student[0], $isEnterButtonVisibile);
 			}
 		}
 		return $studentsList;
@@ -193,22 +242,22 @@ class rollcallManagement extends abstractClassAgendaManagement
 	 * builds the enter and exit buttons for the currrent table row
 	 * 
 	 * @param number $id_student the student for whom the buttons are genertated
+	 * @param boolean $isEnterButtonVisibile true if enter button must be made visible
 	 * 
 	 * @return CDiv
 	 * 
 	 * @access private
 	 */
-	private function _buildEnterExitButtons($id_student) {
-		
-		// TODO: check user enter/exit status and hide proper buttons here? 
+	private function _buildEnterExitButtons($id_student, $isEnterButtonVisibile=true) {
 		
 		$enterButton = CDOMElement::create('button','class:enterbutton');
-		$enterButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->id_course_instance.',true);');
+		if (!$isEnterButtonVisibile) $enterButton->setAttribute('style', 'display:none');
+		$enterButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',true);');
 		$enterButton->addChild(new CText(translateFN('Entra')));
 		
 		$exitButton = CDOMElement::create('button','class:exitbutton');
-		$exitButton->setAttribute('style', 'display:none');
-		$exitButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->id_course_instance.',false);');
+		if ($isEnterButtonVisibile) $exitButton->setAttribute('style', 'display:none');
+		$exitButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',false);');
 		$exitButton->addChild(new CText(translateFN('Esce')));
 		
 		$buttonsDIV = CDOMElement::create('div','class:buttonsContainer');
@@ -229,20 +278,52 @@ class rollcallManagement extends abstractClassAgendaManagement
 	 */
 	private function _addRollCallHistoryToStudentList($studentsList) {
 		
+		$dh = $GLOBALS['dh'];
+		$allTimestamps = array();
+		
+		foreach ($studentsList as $i=>$student) {			
+			$result = $dh->getRollCallDetailsForInstance($student['id'],$this->id_course_instance);			
+			
+			if (!AMA_DB::isError($result) && is_array($result) && count($result)>0) {
+				foreach ($result as $aRow) {
+					if (strlen($aRow['entertime'])>0) {
+						// get entertime date only as a timestamp for the array key
+						$arrKey = $dh->date_to_ts(ts2dFN($aRow['entertime']));
+						if(!in_array($arrKey, $allTimestamps)) $allTimestamps[] = $arrKey;
+						
+						if (strlen($studentsList[$i][$arrKey])>0) $studentsList[$i][$arrKey].='<br/>';
+						else $studentsList[$i][$arrKey] = '';
+						
+						$studentsList[$i][$arrKey] .= translateFN('Entrata alle: ');
+						$studentsList[$i][$arrKey] .= ts2tmFN($aRow['entertime']);
+						
+						if (strlen($aRow['exittime'])>0) {
+							$studentsList[$i][$arrKey] .= '<br/>';
+							$studentsList[$i][$arrKey] .= translateFN('Usicta alle: ');
+							$studentsList[$i][$arrKey] .= ts2tmFN($aRow['exittime']);
+						}
+					}
+				}
+			}
+			// remove student id for proper table display
+			unset($studentsList[$i]['id']);
+		}
+		
 		/**
-		 * add 5 days of empty data starting from now
-		 * just for testing purposes
+		 * every array MUST have all the generated keys (timestamps)
+		 * for the HTML table to be properly rendered
 		 */
-		$now = strtotime('now');
-		$onedaystep = strtotime('+1 days') - $now;
-		$stoptime = strtotime ('+5 days', $now);
+		sort ($allTimestamps, SORT_NUMERIC);
+		$retArray = array();
 		
 		foreach ($studentsList as $i=>$student) {
-			for ($timestamp = $now; $timestamp < $stoptime; $timestamp += $onedaystep) {
-				$studentsList[$i][$timestamp] = '';
-			}
+			$retArray[$i]['name'] = strtolower($student['name']);
+			foreach ($allTimestamps as $timestamp) {
+				$retArray[$i][$timestamp] = (!array_key_exists($timestamp, $student)) ? '' : $studentsList[$i][$timestamp]; 
+			}			
 		}
-		return $studentsList;
+		
+		return $retArray;
 	}
 	
 	/**
@@ -273,12 +354,26 @@ class rollcallManagement extends abstractClassAgendaManagement
 								$studn['cognome'],
 								$studn['email'] );						
 					} else if ($action==MODULES_CLASSAGENDA_DO_ROLLCALLHISTORY) {
-						$row = array($studn['nome'].' '.$studn['cognome']);
+						$row = array(
+								'id'=>$one_student['id_utente_studente'],
+								'name'=>$studn['nome'].' '.$studn['cognome']);
 					}
 					array_push($student_listHa,$row);
 				}
 			}
 		}
 		return (count($student_listHa)>0) ? $student_listHa : null;
+	}
+	
+	private function _findClosestCourseInstance() {
+		$dh = $GLOBALS['dh'];
+		$result = $dh->findClosestClassroomEvent ($this->_userObj->getId());
+		
+		if (AMA_DB::isError($result)) return null;
+		else {
+			$result['start'] = ts2dFN($result['start']). ' '.ts2tmFN($result['start']);
+			$result['end'] = ts2dFN($result['end']). ' '.ts2tmFN($result['end']);
+			return $result;
+		}
 	}
 } // class ends here

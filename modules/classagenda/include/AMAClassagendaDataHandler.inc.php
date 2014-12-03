@@ -171,6 +171,96 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 			return ($isInsert ? 0 : $eventData['id']);
 		} else return $result;
 	}
+	
+	/**
+	 * find the closest class room event for the passed tutor.
+	 * Used to make the roll call page
+	 * 
+	 * @param number $tutor_id
+	 */
+	public function findClosestClassroomEvent ($tutor_id) {
+		if (strlen($tutor_id)>0 && is_numeric($tutor_id)) {
+			
+			$sql = 'SELECT *,TIMESTAMPDIFF(SECOND,NOW(),FROM_UNIXTIME(start)) AS startseconds'.
+					' FROM `'.self::$PREFIX.'calendars` WHERE `id_utente_tutor`=?'.
+					// date is today
+					' AND DATE(FROM_UNIXTIME(start))=CURDATE() AND'.
+					// start time is in the future
+					' (TIMESTAMPDIFF(SECOND,NOW(),FROM_UNIXTIME(start)))>0'.
+					// order by startseconds ASC and get the first
+					// row only to get the event starting before any other
+					' ORDER BY startseconds ASC';
+
+			return $this->getRowPrepared($sql,$tutor_id,AMA_FETCH_ASSOC);
+			
+		} else return null;
+	}
+	
+	/**
+	 * saves roll call enter or exit time for a student and the passed calendar
+	 * 
+	 * @param number $id_student
+	 * @param number $id_calendar
+	 * @param boolean $isEntering
+	 * 
+	 * @return boolean true on success
+	 * 
+	 * @access public
+	 */
+	public function saveRollCallEnterExit ($id_student, $id_calendar, $isEntering) {
+		if ($isEntering) {
+			$sql = 'INSERT INTO `'.self::$PREFIX.'rollcall` (`id_utente_studente`,'.
+				   '`'.self::$PREFIX.'calendars_id`,`entertime`) VALUES (?,?,?)';
+			
+			$params = array ($id_student,$id_calendar,$this->date_to_ts('now'));
+		} else {
+			
+			$sql = 'UPDATE `'.self::$PREFIX.'rollcall` SET `exittime`=? WHERE '.
+				   '`id_utente_studente`=? AND `'.self::$PREFIX.'calendars_id`=? AND ISNULL(`exittime`)';
+			
+			$params = array ($this->date_to_ts('now'),$id_student,$id_calendar);			
+		}
+		
+		return !AMA_DB::isError($this->queryPrepared($sql,$params));
+	}
+	
+	/**
+	 * gets roll call detail about a student for the passed calendar
+	 * 
+	 * @param number $id_student
+	 * @param number $id_calendar
+	 * 
+	 * @return mixed
+	 * 
+	 * @access public
+	 */
+	public function getRollCallDetails ($id_student, $id_calendar) {
+		$sql = 'SELECT `entertime`,`exittime` FROM `'.self::$PREFIX.'rollcall`'.
+			   ' WHERE `id_utente_studente`=? AND `'.self::$PREFIX.'calendars_id`=? ORDER BY `entertime` ASC';
+		
+		return $this->getAllPrepared($sql,array($id_student, $id_calendar),AMA_FETCH_ASSOC);
+	}
+	
+	/**
+	 * gets roll call detail about a student for the passed course instance
+	 * 
+	 * @param number $id_student
+	 * @param number $id_course_instance
+	 * 
+	 * @return mixed
+	 * 
+	 * @access public
+	 */
+	public function getRollCallDetailsForInstance ($id_student, $id_course_instance) {
+		$sql = 'SELECT RC.`'.self::$PREFIX.'rollcall_id`, RC.`'.self::$PREFIX.'calendars_id`,'.
+			   ' RC.`entertime`,RC.`exittime` FROM '.
+			   ' `'.self::$PREFIX.'rollcall` AS RC JOIN `'.self::$PREFIX.'calendars` AS CAL'.
+			   ' ON RC.`'.self::$PREFIX.'calendars_id` = CAL.`'.self::$PREFIX.'calendars_id`'.
+			   ' WHERE `id_utente_studente` = ? AND `id_istanza_corso`=?';
+		
+		return $this->getAllPrepared($sql,array($id_student, $id_course_instance), AMA_FETCH_ASSOC);
+		
+	}
 
 	/**
 	 * Returns an instance of AMAClassagendaDataHandler.

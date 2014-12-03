@@ -30,3 +30,35 @@ ALTER TABLE `module_classagenda_calendars`
 --
 ALTER TABLE `module_classagenda_calendars`
 MODIFY `module_classagenda_calendars_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+
+--
+-- Struttura della tabella `module_classagenda_rollcall`
+--
+
+CREATE TABLE IF NOT EXISTS `module_classagenda_rollcall` (
+`module_classagenda_rollcall_id` int(10) unsigned NOT NULL,
+  `id_utente_studente` int(10) NOT NULL,
+  `module_classagenda_calendars_id` int(10) NOT NULL,
+  `entertime` int(11) unsigned NOT NULL,
+  `exittime` int(11) unsigned DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `module_classagenda_rollcall`
+--
+ALTER TABLE `module_classagenda_rollcall`
+ ADD PRIMARY KEY (`module_classagenda_rollcall_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `module_classagenda_rollcall`
+--
+ALTER TABLE `module_classagenda_rollcall`
+MODIFY `module_classagenda_rollcall_id` int(10) unsigned NOT NULL AUTO_INCREMENT;

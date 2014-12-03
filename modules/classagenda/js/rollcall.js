@@ -51,19 +51,19 @@ function initDoc() {
 		initButtons();
 	} else if ($j('#rollcallHistoryTable').length>0) {
 		var tableOptions = $j.extend(commonDataTableOptions,{
-			 "bSort" : false			
+//			 "bSort" : false
 		});
 		$j('#rollcallHistoryTable').dataTable(tableOptions).show();
 	}
 }
 
-function toggleStudentEnterExit (jQueryObj, id_student, id_course_instance, isEntering) {
+function toggleStudentEnterExit (jQueryObj, id_student, classagenda_calendars_id, isEntering) {
 	
 	$j.ajax({
-		type	:	'GET',
+		type	:	'POST',
 		url		:	'ajax/toggleStudentEnterExit.php',
 		data	:	{ id_student: id_student,
-					  id_course_instance: id_course_instance,
+					  classagenda_calendars_id: classagenda_calendars_id,
 					  isEntering : isEntering ? 1 :0 },
 		dataType:	'html'
 	}).done (function(htmlcode){

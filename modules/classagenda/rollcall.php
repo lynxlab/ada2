@@ -44,15 +44,16 @@ require_once MODULES_CLASSAGENDA_PATH.'/include/AMAClassagendaDataHandler.inc.ph
 require_once MODULES_CLASSAGENDA_PATH.'/include/management/rollcallManagement.inc.php';
 
 $self = whoami();
-
+if (isset($GLOBALS['dh'])) $GLOBALS['dh']->disconnect();
 $GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 /**
- * TODO: Add your own code here
+ * $id_course_instance is coming from $_GET
+ * if it's null the class will figure out
+ * the course instance having a class event
+ * with minimum time distance from now
  */
-
-// $id_course_instance is coming from $_GET
-$rollcallManager = new rollcallManagement($id_course_instance, $userObj);
+$rollcallManager = new rollcallManagement();
 $data = $rollcallManager->run(MODULES_CLASSAGENDA_DO_ROLLCALL);
 
 $content_dataAr = array(
