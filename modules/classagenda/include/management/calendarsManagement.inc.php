@@ -114,7 +114,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 					 * container for classroom radio buttons
 					 */
 					$classroomSPAN = CDOMElement::create('span','class:selectclassroomspan');
-					$classroomSPAN->addChild(new CText(translateFN('Seleziona una classe').': '));
+					$classroomSPAN->addChild(new CText(translateFN('Seleziona un\'aula').': '));
 					$classroomlistDIV = CDOMElement::create('div','id:classroomlist');
 					
 					$classroomsDIV->addChild ($venuesLABEL);
