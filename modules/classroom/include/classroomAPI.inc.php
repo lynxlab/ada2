@@ -60,6 +60,44 @@ class classroomAPI {
 		return $this->_dh->classroom_getClassroom(null,$id_venue);
 	}
 	
+	/**
+	 * return the html with the classroom's facilities images
+	 * 
+	 * @param array $classroomAr
+	 * 
+	 * @return CDOMElement|NULL
+	 * 
+	 * @access public
+	 */
+	public function getFacilitesHTML ($classroomAr) {
+		$commonIconClass = '';
+		
+		if (intval($classroomAr['internet'])==1) {
+			$facilities[] = CDOMElement::create('img','src:'.MODULES_CLASSROOM_HTTP.'/layout/images/'.
+					'globe.png,class:'.$commonIconClass.',title:'.translateFN('Internet'));
+		}
+		if (intval($classroomAr['wifi'])==1) {
+			$facilities[] = CDOMElement::create('img','src:'.MODULES_CLASSROOM_HTTP.'/layout/images/'.
+					'wifi.png,class:'.$commonIconClass.',title:'.translateFN('Wi-Fi'));
+		}
+		if (intval($classroomAr['projector'])==1) {
+			$facilities[] = CDOMElement::create('img','src:'.MODULES_CLASSROOM_HTTP.'/layout/images/'.
+					'projector.png,class:'.$commonIconClass.',title:'.translateFN('Proiettore'));
+		}
+		if (intval($classroomAr['mobility_impaired'])==1) {
+			$facilities[] = CDOMElement::create('img','src:'.MODULES_CLASSROOM_HTTP.'/layout/images/'.
+					'wheelchair.png,class:'.$commonIconClass.',title:'.translateFN('Accesso disabili'));
+		}
+		
+		if (isset($facilities) && count($facilities)>0) {
+			$divFacilities = CDOMElement::create('div','class:facilities');
+			foreach ($facilities as $facility) $divFacilities->addChild($facility);
+			return $divFacilities;
+		} else {
+			return null;
+		}
+	}
+	
 	public function __destruct() {		
 		$this->_dh->disconnect();
 	}	
