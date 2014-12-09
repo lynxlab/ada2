@@ -70,6 +70,21 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 				$htmlElement->addChild($labelEL);
 				$htmlElement->addChild(CDOMElement::create('div','class:clearfix'));
 			}
+			
+			/**
+			 * add hidden div with id='facilities<classroomid>'
+			 * to display classroom facilities as a tooltip
+			 */
+			reset($result);
+			foreach ($result as $classroom) {
+				// this will return a div CDOMElement or null
+				$facilitiesHTML = $classroomAPI->getFacilitesHTML($classroom);
+				if (!is_null($facilitiesHTML)) {
+					$facilitiesHTML->setAttribute('id', 'facilities'.$classroom['id_classroom']);
+					$facilitiesHTML->setAttribute('style','display:none;');
+					$htmlElement->addChild($facilitiesHTML);
+				}
+			}
 			$retVal = $htmlElement->getHtml();
 		}
 	}

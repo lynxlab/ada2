@@ -55,6 +55,22 @@ function initDoc() {
 	// events triggered on classroom and/or tutor change
 }
 
+/**
+ * init facilities tooltip on classroom
+ * radio button mouserover
+ */
+function initFacilitiesTooltips() {
+	if ($j('.classroomradio').length>0) {
+		$j(document).tooltip({
+			items : '#classroomlist label',
+			content: function() {
+				var classroomID = parseInt($j(this).attr('for').match(/(\d+)$/)[0]);
+				return ($j('#facilities'+classroomID).length>0) ? $j('#facilities'+classroomID).html() : null;
+			}
+		});
+	}
+}
+
 function initCalendar() {
 	if ($j('#classcalendar').length>0) {
 		calendar = $j('#classcalendar').fullCalendar({
@@ -311,6 +327,7 @@ function updateClassroomsOnVenueChange() {
 			}).done (function(htmlcode){
 				if (htmlcode && htmlcode.length>0) {
 					$j('#classroomlist').html(htmlcode);
+					initFacilitiesTooltips();
 					// reload classroom events for selected venue
 					reloadClassRoomEvents();
 					// select the first radio button
