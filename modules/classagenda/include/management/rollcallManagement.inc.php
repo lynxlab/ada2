@@ -222,7 +222,7 @@ class rollcallManagement extends abstractClassAgendaManagement
 						}
 						if (strlen($enterexittime['exittime'])>0) {
 							$detailsStr .= '<br/>';
-							$detailsStr .= translateFN('Usicta alle: ');
+							$detailsStr .= translateFN('Uscita alle: ');
 							$detailsStr .= ts2tmFN($enterexittime['exittime']);
 							$isEnterButtonVisibile = true;
 						}
@@ -299,7 +299,7 @@ class rollcallManagement extends abstractClassAgendaManagement
 						
 						if (strlen($aRow['exittime'])>0) {
 							$studentsList[$i][$arrKey] .= '<br/>';
-							$studentsList[$i][$arrKey] .= translateFN('Usicta alle: ');
+							$studentsList[$i][$arrKey] .= translateFN('Uscita alle: ');
 							$studentsList[$i][$arrKey] .= ts2tmFN($aRow['exittime']);
 						}
 					}
