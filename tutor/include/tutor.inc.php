@@ -19,6 +19,8 @@ function get_courses_tutorFN($id_user) {
     $durata_key      = translateFN('Durata');
     $naviga_key      = translateFN('Naviga');
     $valuta_key      = translateFN('Valuta');
+    $presenze_key    = translateFN('Presenze');
+    $registro_key    = translateFN('Registro');
     $msg = "";
     if (is_array($all_instance)) {
         foreach ($all_instance as $one_instance) {
@@ -40,7 +42,10 @@ function get_courses_tutorFN($id_user) {
                     $durata_corso = sprintf(translateFN('%d giorni'), $instance_course_ha['durata']);
                     $naviga = '<a href="'.$http_root_dir.'/browsing/view.php?id_node='.$id_course.'_'.$id_toc.'&id_course='.$id_course.'&id_course_instance='.$id_instance.'"><img src="img/timon.png"  alt="'.translateFN('naviga').'" border="0"></a>';
                     $valuta = '<a href="'.$http_root_dir.'/tutor/tutor.php?op=student&id_instance='.$id_instance.'&id_course='.$id_course.'"><img src="img/magnify.png"  alt="'.translateFN('valuta').'" border="0"></a>';
-
+                    if(defined('MODULES_CLASSAGENDA') && (MODULES_CLASSAGENDA)){
+                        $presenze = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcall.php"><img src="img/badge.png"  alt="'.translateFN('presenze').'" border="0"></a>';
+                        $registro = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcallhistory.php?id_course_instance='.$id_instance.'"><img src="img/registro.png"  alt="'.translateFN('registro').'" border="0"></a>';
+                    }
                     $data_inizio = AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], "%d/%m/%Y");
 
 					$dati_corso[$num_courses][$titolo_key] = $titolo;
@@ -50,6 +55,8 @@ function get_courses_tutorFN($id_user) {
                     $dati_corso[$num_courses][$durata_key] = $durata_corso;
                     $dati_corso[$num_courses][$naviga_key] = $naviga;
                     $dati_corso[$num_courses][$valuta_key] = $valuta;
+                    $dati_corso[$num_courses][$presenze_key] = $presenze;
+                    $dati_corso[$num_courses][$registro_key] = $registro;
                 }
             }
         }
