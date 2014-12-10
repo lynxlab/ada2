@@ -147,7 +147,7 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		/**
 		 * set classroom to null if no module classroom is there
 		 */
-		if (!defined('MODULES_CLASSROOM') || (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===false)) {
+		if (strlen($eventData['classroomID'])<=0 || !defined('MODULES_CLASSROOM') || (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===false)) {
 			$eventData['classroomID'] = null;
 		}
 		

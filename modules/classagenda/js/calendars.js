@@ -20,6 +20,8 @@ var canDelete = false;
 function initDoc() {
 	// hook instance select change to update number of students
 	updateStudentCountOnInstanceChange();
+	// hook instance select change to update service (aka course) type
+	updateServiceTypeOnInstanceChange();	
 	// ask a save confirmation before changing course instance
 	askChangeInstanceOrVenueConfirm();
 	// hook instance select change to update tutors list
@@ -30,7 +32,7 @@ function initDoc() {
 		// hook venues select change to update classroom list
 		updateClassroomsOnVenueChange();
 		// trigger onchange event to update classroom list when page loads
-		$j('#venuesList').trigger('change');
+		// $j('#venuesList').trigger('change');
 	}
 	
 	if ($j('#onlyActiveInstances').length>0) {
@@ -201,7 +203,7 @@ function setSelectedTutor(tutorid) {
  * @returns selected venue id or null
  */
 function getSelectedVenue() {
-	return ($j('#venuesList').length>0) ? $j('#venuesList').val() : null;
+	return ($j('#venuesList').length>0 && $j('input[name="classroomradio"]').length>0) ? $j('#venuesList').val() : null;
 }
 
 /**
@@ -339,6 +341,40 @@ function updateClassroomsOnVenueChange() {
 					}
 				}
 			});
+		});
+	}
+}
+
+/**
+ * set instancesList select dropdown to
+ * update service (aka course) type
+ */
+function updateServiceTypeOnInstanceChange() {
+	if ($j('#instancesList').length>0) {
+		$j('#instancesList').on('change', function(){
+			if ($j('#servicetype').length>0) {
+				$j.ajax({
+					type	:	'GET',
+					url		:	'ajax/getServiceType.php',
+					data	:	{ instanceID: $j(this).val() },
+					dataType:	'json'
+				}).done (function(JSONObj){
+					if (JSONObj) {
+						$j('#servicetype').html(JSONObj.serviceTypeString);
+						if('undefined' != typeof JSONObj.isOnline && JSONObj.isOnline===true) {							
+							$j('#classroomlist').html('');
+							$j('#classrooms').hide();
+						} else {
+							// show classrooms div
+							if ($j('#classrooms').length>0 && !$j('#classrooms').is(':visible')) {
+								$j('#classrooms').show();
+								// trigger venues change to update classroom list
+								if (hasVenues) $j('#venuesList').trigger('change');
+							}
+						}
+					}
+				});
+			}
 		});
 	}
 }

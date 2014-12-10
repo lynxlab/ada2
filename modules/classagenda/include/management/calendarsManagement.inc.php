@@ -90,6 +90,17 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$selectClassDIV->addChild($studentCountSPAN);
 				
 				/**
+				 * service (aka course) type box with
+				 * an empty span to be filled in by javascript
+				 */
+				$serviceTypeDIV = CDOMElement::create('div','id:servicetypeContainer');
+				$serviceSPANText = CDOMElement::create('span');
+				$serviceSPANText->addChild(new CText(translateFN('Corso di tipo').': '));
+				$serviceTypeDIV->addChild($serviceSPANText);
+				$serviceTypeDIV->addChild(CDOMElement::create('span','id:servicetype'));
+				
+				
+				/**
 				 * get Venues, build select item
 				 * and needed empty div to hold classroom list for selected venue
 				 */
@@ -173,18 +184,20 @@ class calendarsManagement extends abstractClassAgendaManagement
 				
 				/**
 				 * add all generated elements to the container
-				 */
+				 */				
 				if (isset($selectClassDIV)) {
 					$htmlObj->addChild($selectClassDIV);
 				}
 				$htmlObj->addChild($calendarDIV);
+				$htmlObj->addChild($serviceTypeDIV);
 				if (isset($classroomsDIV)) {
 					$htmlObj->addChild($classroomsDIV);					
 				}
 				$htmlObj->addChild($tutorsDIV);
 				$htmlObj->addChild($deleteButtonDIV);
-				$htmlObj->addChild(CDOMElement::create('div','class:clearfix'));
 				$htmlObj->addChild($buttonsDIV);
+				$htmlObj->addChild(CDOMElement::create('div','class:clearfix'));
+				
 				$htmlObj->addChild($confirmDIV);
 				
 				break;				

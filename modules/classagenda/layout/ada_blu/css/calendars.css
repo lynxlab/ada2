@@ -5,9 +5,15 @@
 #classcalendar { width: 70%; float:left; }
 #saveCalendar  { margin: 10px auto; }
 #selectClassContainer { border: 1px dotted gray; padding:10px; margin-bottom: 15px; }
+#servicetypeContainer,
 #classrooms,
 #tutorsListContainer,
 #deleteButtonContainer { width: 26%; float: right; margin: 0 0 1% 1%; border: 1px dotted gray; padding: 1%; }
+/**
+ * #classrooms div starts hidden, it will
+ * be shown by the javascript if needed
+ */
+#classrooms { display: none; }
 
 #deleteButtonContainer,
 #buttonsContainer { border:none; text-align: center; }
