@@ -84,7 +84,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$retArray[$i]['instanceID'] = $aResult['id_istanza_corso'];
 			$retArray[$i]['classroomID'] = $aResult['id_classroom'];
 			$retArray[$i]['tutorID'] = $aResult['id_utente_tutor'];
-			$retArray[$i]['isSelected'] = boolval(false);
+			$retArray[$i]['isSelected'] = false;
 			
 			list ($day, $month, $year) = explode ('/',ts2dFN($aResult['start']));
 			$retArray[$i]['start'] = $year.'-'.$month.'-'.$day.'T'.ts2tmFN($aResult['start']);
