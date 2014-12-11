@@ -544,13 +544,18 @@ function loadCourseInstances() {
  * reloads calendar events for select instance id
  */
 function reloadClassRoomEvents() {
+	var data = { activeOnly: getShowActiveInstances() ? 1:0 };
+	if (getSelectedVenue()!=null) {
+		data['venueID'] = getSelectedVenue();
+	}
+	
 	/**
 	 * ajax-load events for the selected instance id
 	 */
 	$j.ajax({
 		type	:	'GET',
 		url		:	'ajax/getCalendarForInstance.php',
-		data	:	{ venueID: getSelectedVenue(), activeOnly: getShowActiveInstances() ? 1:0 },
+		data	:	data,
 		dataType:	'json'
 	}).done (function(JSONObj){
 		/**
