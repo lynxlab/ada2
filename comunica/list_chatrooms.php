@@ -82,7 +82,7 @@ switch ($id_profile) {
             $id_course_instance = $chatroom_ha['id_istanza_corso'];
             $id_course = $dh->get_course_id_for_course_instance($chatroom_ha['id_istanza_corso']);
             $courseObj = read_course($id_course);
-            if ((is_object($courseObj)) && (!AMA_dataHandler::isError($userObj)))  {
+            if (is_object($courseObj) && !AMA_DB::isError($courseObj))  {
                     $course_title = $courseObj->titolo; //title
                     $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
             }
@@ -143,12 +143,12 @@ switch ($id_profile) {
 
             // create the entries for the table
             $tbody_data[] = array(
-                $course_title,
-                $id_course_instance,
-                $chat_title,
-                $chatroom_status,
-                $chat_type,
-                $enter,
+                isset($course_title) ? $course_title : '',
+                isset($id_course_instance) ? $id_course_instance : '',
+                isset($chat_title) ? $chat_title : '',
+                isset($chatroom_status) ? $chatroom_status : '',
+                isset($chat_type) ? $chat_type : '',
+                isset($enter) ? $enter : '',
                 "<a href=\"edit_chat.php?id_room=$id_chatroom\"><img src=\"img/edit.png\" alt=\"$edit_label\" border=\"0\"></a>",
                 "<a href=\"delete_chat.php?id_room=$id_chatroom\"><img src=\"img/delete.png\" alt=\"$delete_label\" border=\"0\"></a>"
               );
@@ -505,7 +505,7 @@ $content_dataAr = array(
   'course_title' => $modulo,
   'help' => $help,
   'data' => $list_chatrooms_table,
-  'chat_users' => $online_users,
+  'chat_users' => isset($online_users) ? $online_users : '',
   'edit_profile'=> $userObj->getEditProfilePage()
 );
 

@@ -47,7 +47,7 @@ require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
 /**
  * Check if the switcher is editing a student profile
  */
-$isEditingAStudent = (DataValidator::is_uinteger($_GET['usertype']) === AMA_TYPE_STUDENT);
+$isEditingAStudent = (DataValidator::is_uinteger(isset($_GET['usertype']) ? $_GET['usertype'] : null) === AMA_TYPE_STUDENT);
 
 if (!$isEditingAStudent) {
 	/**
@@ -155,7 +155,7 @@ if (!$isEditingAStudent) {
 	    'label' => $label,
 	    'help' => $help,
 	    'data' => $data->getHtml(),
-	    'module' => $module,
+	    'module' => isset($module) ? $module : '',
 	    'messages' => $user_messages->getHtml()
 	);
 } else {

@@ -600,7 +600,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
     		$this->setBirthDate($dataArr['birthdate']);
     		$this->setGender($dataArr['sesso']);
     		$this->setPhoneNumber($dataArr['telefono']);
-    		$this->setLanguage($dataArr['lingua']);
+    		$this->setLanguage(isset($dataArr['lingua']) ? $dataArr['lingua'] : null);
     		//        $this->setAvatar($dataArr['avatar']);
     		if (isset($_SESSION['uploadHelper']['fileNameWithoutPath'])) $this->setAvatar($_SESSION['uploadHelper']['fileNameWithoutPath']);
     		$this->setCap($dataArr['cap']);
@@ -643,9 +643,9 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $dh = $GLOBALS['dh'];
         $error = $GLOBALS['error'];
         $http_root_dir = $GLOBALS['http_root_dir'];
-        $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
-        $sess_id_node = $_SESSION['sess_id_node'];
-        $sess_id_course = $_SESSION['sess_id_course'];
+        $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+        $sess_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
+        $sess_id_course = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
         $sess_id_user = $_SESSION['sess_id_user'];
 
         /*
@@ -1418,8 +1418,8 @@ class ADAPractitioner extends ADALoggableUser {
     public function __construct($user_dataAr=array()) {
         parent::__construct($user_dataAr);
 
-        $this->tariffa = $user_dataAr['tariffa'];
-        $this->profilo = $user_dataAr['profilo'];
+        $this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : null;
+        $this->profilo = isset($user_dataAr['profilo']) ? $user_dataAr['profilo'] : null;
 
         $this->setHomePage(HTTP_ROOT_DIR.'/tutor/tutor.php');
         $this->setEditProfilePage('tutor/edit_tutor.php');
@@ -1450,8 +1450,8 @@ class ADAPractitioner extends ADALoggableUser {
     	if (!is_null($user_dataAr)) {
     		parent::fillWithArrayData($user_dataAr);
     		 
-    		$this->tariffa = $user_dataAr['tariffa'];
-    		$this->profilo = $user_dataAr['profilo'];    		
+    		$this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : null;
+    		$this->profilo = isset($user_dataAr['profilo']) ? $user_dataAr['profilo'] : null;
     	}
     }
 

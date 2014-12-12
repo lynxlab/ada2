@@ -34,7 +34,7 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  "switcher";
-include_once 'include/'.$self.'_functions.inc.php';
+include_once '../include/'.$self.'_functions.inc.php';
 $self =  "translation";
 /*
  * Html Library containing forms used in this module.

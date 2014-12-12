@@ -1141,7 +1141,7 @@ class AMATestDataHandler extends AMA_DataHandler {
      *
      */
     public function test_getCourseTest($where) {
-        $values = array($id_node);
+        // $values = array($id_node);
         $sql = "SELECT t.*, n.`titolo`
                 FROM `".self::$PREFIX."course_survey` t
 				JOIN `".self::$PREFIX."nodes` n ON (n.`id_nodo` = t.`id_test`)

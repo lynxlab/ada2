@@ -172,7 +172,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST'
                 array(
                     'id_tutor_old' => $id_tutor_old,
                     'id_course_instance' => $courseInstanceObj->getId(),
-                    'id_course' => $id_corso
+                    'id_course' => ($courseObj instanceof Course) ? $courseObj->getId() : null
                 )
         );
     } else {
@@ -188,7 +188,7 @@ $banner = include ROOT_DIR . '/include/banner.inc.php';
 
 $content_dataAr = array(
     'data' => $data->getHtml() . $tooltips,
-    'menu' => $menu,
+    'menu' => isset($menu) ? $menu : '',
     'banner' => $banner,
     'help' => $help,
     'status' => $status,

@@ -102,7 +102,7 @@ class BaseHtmlLib {
     $ul = CDOMElement::create('ul', $element_attributes);
     foreach($data as $label => $text) {
       $li = CDOMElement::create('li');
-      if($value instanceof CBase) {
+      if($text instanceof CBase) {
           $li->addChild($text);
       }
       else {

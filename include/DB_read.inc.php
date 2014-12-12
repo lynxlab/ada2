@@ -67,7 +67,7 @@ function read_course($id_course=NULL) {
    * Return the course object in sess_courseObj
    */
   if(is_null($id_course)) {
-    $sess_courseObj = $_SESSION['sess_courseObj'];
+    $sess_courseObj = isset($_SESSION['sess_courseObj']) ? $_SESSION['sess_courseObj'] : null;
     if ($sess_courseObj instanceof Course) {
       return $sess_courseObj;
     }

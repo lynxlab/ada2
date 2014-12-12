@@ -318,7 +318,7 @@ abstract class Abstract_AMA_DataHandler {
         if ($timestamp == "") {
             return "";
         }
-        return strftime($format, $timestamp);
+        return strftime($format, (float)$timestamp);
     }
 
     /**
@@ -1382,7 +1382,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         // get a row from table UTENTE
         $get_user_result = $this->_get_user_info($id);
-        if(AMA_Common_DataHandler::isError($get_user_reslut)) {
+        if(AMA_Common_DataHandler::isError($get_user_result)) {
             // $get_user_result is an AMA_Error object
             return $get_user_result;
         }
@@ -3202,8 +3202,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $update_author_sql = 'UPDATE autore SET tariffa=?, profilo=? WHERE id_utente_autore=?';
         $valuesAr = array(
-                $author_ha['tariffa'],
-                $author_ha['profilo'],
+                isset($author_ha['tariffa']) ? $author_ha['tariffa'] : null,
+                isset($author_ha['profilo']) ? $author_ha['profilo'] : null,
                 $id
         );
         $result = $this->queryPrepared($update_author_sql, $valuesAr);
@@ -3325,7 +3325,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
                     $user_ha['provincia'],
                     $user_ha['nazione'],
                     $user_ha['codice_fiscale'],
-                    AMA_Common_DataHandler::date_to_ts($user_ha['birthdate']),
+                    $this->date_to_ts($user_ha['birthdate']),
                     $user_ha['sesso'],
                     $user_ha['telefono'],
                     $user_ha['stato'],
@@ -4131,7 +4131,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *     array('tutor id'=>array('course_instance', 'course_instance', 'course_instance'));
      */
 
-    public function get_students_subscribed_course_instance($id_user = false, $presubscription = false) {
+    public function get_students_subscribed_course_instance($id_user = false, $presubscription = false, $both = false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
         if ($both) {
@@ -5057,10 +5057,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if ( AMA_DB::isError( $db ) ) return $db;
 
         // prepare values
-        $data_inizio = $this->or_zero($istanza_ha['data_inizio']);
-        $durata = $this->or_zero($istanza_ha['durata']);
-        $data_inizio_previsto = $this->or_zero($istanza_ha['data_inizio_previsto']);
-        $id_layout = $this->or_zero($istanza_ha['id_layout']);
+        $data_inizio = $this->or_zero(isset($istanza_ha['data_inizio']) ? $istanza_ha['data_inizio'] : '');
+        $durata = $this->or_zero(isset($istanza_ha['durata']) ? $istanza_ha['durata'] : '');
+        $data_inizio_previsto = $this->or_zero(isset($istanza_ha['data_inizio_previsto']) ? $istanza_ha['data_inizio_previsto'] : '');
+        $id_layout = $this->or_zero(isset($istanza_ha['id_layout']) ? $istanza_ha['id_layout'] : '');
         $self_instruction = $istanza_ha['self_instruction'];
         $self_registration = $istanza_ha['self_registration'];
         $price = $this->or_zero($istanza_ha['price']);
@@ -6707,7 +6707,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $d_create = $this->date_to_ts($this->or_null($course_ha['d_create']));
         $d_publish = $this->date_to_ts($this->or_null($course_ha['d_publish']));
         $id_autore = $this->or_zero($course_ha['id_autore']);
-        $id_layout = $this->or_zero($course_ha['id_layout']);
+        $id_layout = $this->or_zero(isset($course_ha['id_layout']) ? $course_ha['id_layout'] : '');
         $id_lingua = $this->or_zero($course_ha['id_lingua']);
         $crediti = $this->or_zero($course_ha['crediti']);
         /*
@@ -6970,30 +6970,30 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // Fixed by Graffio 08/11/2011
         //$id_node = $this->sql_prepared($node_ha['id']);
         $id_author = $node_ha['id_node_author'];
-        $name = $this->sql_prepared($this->or_null($node_ha['name']));
-        $title = $this->sql_prepared($this->or_null($node_ha['title']));
+        $name = $this->sql_prepared($this->or_null(isset($node_ha['name']) ? $node_ha['name'] : null));
+        $title = $this->sql_prepared($this->or_null(isset($node_ha['title']) ? $node_ha['title'] : null));
 
-        $text = $this->sql_prepared($node_ha['text']);
-        $type = $this->sql_prepared($this->or_zero($node_ha['type']));
-        $creation_date = $this->date_to_ts($this->or_null($node_ha['creation_date']));
-        $parent_id = $this->sql_prepared($node_ha['parent_id']);
-        $order = $this->sql_prepared($this->or_null($node_ha['order']));
-        $level = $this->sql_prepared($this->or_zero($node_ha['level']));
-        $version = $this->sql_prepared($this->or_zero($node_ha['version']));
-        $n_contacts = $this->sql_prepared($this->or_zero($node_ha['n_contacts']));
-        $icon = $this->sql_prepared($this->or_null($node_ha['icon']));
+        $text = $this->sql_prepared(isset($node_ha['text']) ? $node_ha['text'] : null);
+        $type = $this->sql_prepared($this->or_zero(isset($node_ha['type']) ? $node_ha['type'] : null));
+        $creation_date = $this->date_to_ts($this->or_null(isset($node_ha['creation_date']) ? $node_ha['creation_date'] : ''));
+        $parent_id = $this->sql_prepared(isset($node_ha['parent_id']) ? $node_ha['parent_id'] : null);
+        $order = $this->sql_prepared($this->or_null(isset($node_ha['order']) ? $node_ha['order'] : null));
+        $level = $this->sql_prepared($this->or_zero(isset($node_ha['level']) ? $node_ha['level'] : null));
+        $version = $this->sql_prepared($this->or_zero(isset($node_ha['version']) ? $node_ha['version'] : null));
+        $n_contacts = $this->sql_prepared($this->or_zero(isset($node_ha['n_contacts']) ? $node_ha['n_contacts'] : null));
+        $icon = $this->sql_prepared($this->or_null(isset($node_ha['icon']) ? $node_ha['icon'] : null));
 
         // modified 7/7/01 ste
         // $color = $this->or_zero($node_ha['color']);
-        $bgcolor = $this->sql_prepared($this->or_null($node_ha['bgcolor']));
-        $color = $this->sql_prepared($this->or_null($node_ha['color']));
+        $bgcolor = $this->sql_prepared($this->or_null(isset($node_ha['bgcolor']) ? $node_ha['bgcolor'] : null));
+        $color = $this->sql_prepared($this->or_null(isset($node_ha['color']) ? $node_ha['color'] : null));
         // end
-        $correctness = $this->sql_prepared($this->or_zero($node_ha['correctness']));
-        $copyright = $this->sql_prepared($this->or_zero($node_ha['copyright']));
+        $correctness = $this->sql_prepared($this->or_zero(isset($node_ha['correctness']) ? $node_ha['correctness'] : null));
+        $copyright = $this->sql_prepared($this->or_zero(isset($node_ha['copyright']) ? $node_ha['copyright'] : null));
         // added 6/7/01 ste
-        $id_position = $this->sql_prepared($node_ha['id_position']);
-        $lingua = $this->sql_prepared($node_ha['lingua']);
-        $pubblicato = $this->sql_prepared($node_ha['pubblicato']);
+        $id_position = $this->sql_prepared(isset($node_ha['id_position']) ? $node_ha['id_position'] : null);
+        $lingua = $this->sql_prepared(isset($node_ha['lingua']) ? $node_ha['lingua'] : null);
+        $pubblicato = $this->sql_prepared(isset($node_ha['pubblicato']) ? $node_ha['pubblicato'] : null);
         // end
         // added 24/7/02 ste
         //  $family = $this->date_to_ts($this->or_null($node_ha['family']));
@@ -8689,7 +8689,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $nome_file = $this->sql_prepared($res_ha['nome_file']);
         $tipo = $res_ha['tipo'];
         $copyright = $this->or_zero($res_ha['copyright']);
-        $id_nodo = $this->sql_prepared($res_ha['id_nodo']);
+        $id_nodo = $this->sql_prepared(isset($res_ha['id_nodo']) ? $res_ha['id_nodo'] : null);
         $keywords = $this->sql_prepared($res_ha['keywords']);
         $titolo = $this->sql_prepared($res_ha['titolo']);
         $pubblicato = $this->or_zero($res_ha['pubblicato']);

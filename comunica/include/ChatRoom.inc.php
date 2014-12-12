@@ -51,7 +51,7 @@ class ChatRoom {
     //*******************************************************************************/
     //main constructor function of the class ChatRoom
     //*******************************************************************************/
-    function ChatRoom($id_chatroom, $tester_dsn) {
+    function ChatRoom($id_chatroom, $tester_dsn=null) {
 
         //$this->tester_dsn = MultiPort::getDSN($tester);
         $this->tester_dsn = $tester_dsn;
@@ -361,7 +361,7 @@ class ChatRoom {
     //*******************************************************************************/
     //adds a chatroom into table chatroom
     //*******************************************************************************/
-    function add_chatroomFN($chatroom_ha, $tester_dsn) {
+    public static function add_chatroomFN($chatroom_ha, $tester_dsn = null) {
         $dh = $GLOBALS['dh'];
 
         /*
@@ -571,7 +571,7 @@ class ChatRoom {
     //*******************************************************************************/
     //gets the list of all the active chatrooms
     //*******************************************************************************/
-    function get_all_chatroomsFN() {
+    public static function get_all_chatroomsFN() {
         $cdh = self::obtainChatDataHandlerInstance();
         $result = $cdh->get_all_chatrooms();
         return $result;
@@ -606,7 +606,7 @@ class ChatRoom {
 /*
 /* @return
  */
-    function get_class_chatroom_for_instance($id_course_instance, $type) {
+    public static function get_class_chatroom_for_instance($id_course_instance, $type) {
         if (!self::isInStaticContext()) {
             $this->id_course_instance = $id_course_instance;
         }

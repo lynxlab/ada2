@@ -140,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                         $chatroom_ha['chat_type']= PUBLIC_CHAT;
                         break;
                 case '-- select --':
+                		$chatroom_old_ha = $chatroomObj->get_info_chatroomFN($id_room);
                         $chatroom_ha['chat_type']= $chatroom_old_ha['tipo_chat'];
                         break;
                 default:
@@ -179,10 +180,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                  $err_msg.= translateFN("Torna all'elenco delle tue");
                  $err_msg.=" <a href=list_chatrooms.php>".translateFN("chatroom")."</a>";
             } else {
-                $errorObj = $chatroom->message;
-                if ($errorObj == "errore: record già esistente"){
-                          $err_msg = "<strong>".translateFN("La chatroom &egrave; stata gi&agrave; aggiornata con questi dati.")."</strong>";
-                }
+            	if (is_object($chatroom)) {
+	                $errorObj = $chatroom->message;
+	                if ($errorObj == "errore: record già esistente"){
+	                          $err_msg = "<strong>".translateFN("La chatroom &egrave; stata gi&agrave; aggiornata con questi dati.")."</strong>";
+	                }
+            	}
             }
     }
 } else {
@@ -269,7 +272,7 @@ $data =  array( 'banner'=> $banner,
                 'star'=>$star,
                 'course_title'=>$course_title,
                 'data'=>$form->getHtml(),
-                'error'=> $err_msg
+                'error'=> isset($err_msg) ? $err_msg : ''
                );
 
 

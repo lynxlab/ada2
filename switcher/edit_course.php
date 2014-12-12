@@ -66,18 +66,18 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->fillWithPostData();
     if ($form->isValid()) {
         $course = array(
-            'nome' => $_POST['nome'],
-            'titolo' => $_POST['titolo'],
-            'descr' => $_POST['descrizione'],
-            'd_create' => $_POST['data_creazione'],
-            'd_publish' => $_POST['data_pubblicazione'],
-            'id_autore' => $_POST['id_utente_autore'],
-            'id_nodo_toc' => $_POST['id_nodo_toc'],
-            'id_nodo_iniziale' => $_POST['id_nodo_iniziale'],
-            'media_path' => $_POST['media_path'],
-            'id_lingua' => $_POST['id_lingua'],
-            'static_mode' => $_POST['static_mode'],
-            'crediti' => $_POST['crediti']
+            'nome' => isset($_POST['nome']) ? $_POST['nome'] : null,
+            'titolo' => isset($_POST['titolo']) ? $_POST['titolo'] : null,
+            'descr' => isset($_POST['descrizione']) ? $_POST['descrizione'] : null,
+            'd_create' => isset($_POST['data_creazione']) ? $_POST['data_creazione'] : null,
+            'd_publish' => isset($_POST['data_pubblicazione']) ? $_POST['data_pubblicazione'] : null,
+            'id_autore' => isset($_POST['id_utente_autore']) ? $_POST['id_utente_autore'] : null,
+            'id_nodo_toc' => isset($_POST['id_nodo_toc']) ? $_POST['id_nodo_toc'] : null,
+            'id_nodo_iniziale' => isset($_POST['id_nodo_iniziale']) ? $_POST['id_nodo_iniziale'] : null,
+            'media_path' => isset($_POST['media_path']) ? $_POST['media_path'] : null,
+            'id_lingua' => isset($_POST['id_lingua']) ? $_POST['id_lingua'] : null,
+            'static_mode' => isset($_POST['static_mode']) ? $_POST['static_mode'] : null,
+            'crediti' => isset($_POST['crediti']) ? $_POST['crediti'] : null
         );
         $result = $dh->set_course($_POST['id_corso'], $course);
 
@@ -127,7 +127,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $form = new CourseModelForm($authors, $languages);
 
-        if (!AMA_DataHandler::isError($course_data)) {
+        if ($courseObj instanceof Course && $courseObj->isFull()) {
             $formData = array(
                 'id_corso' => $courseObj->getId(),
                 'id_utente_autore' => $courseObj->getAuthorId(),
@@ -161,7 +161,7 @@ $content_dataAr = array(
     'label' => $label,
     'help' => $help,
     'data' => $form->getHtml(),
-    'module' => $module,
+    'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
 

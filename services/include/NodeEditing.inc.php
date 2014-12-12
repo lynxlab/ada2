@@ -264,14 +264,14 @@ class NodeEditing {
         return true;
     }
 
-    function createNode($node_data=array()) {
+    public static function createNode($node_data=array()) {
         $dh = $GLOBALS['dh'];
 
         // vito 26 jan 2009
         $regexp = '/([0-9]+),([0-9]+),([0-9]+),([0-9]+)/';
         $matches = array();
 
-        if (preg_match($regexp,$node_data['position'],$matches)) {
+        if (isset($node_data['position']) && preg_match($regexp,$node_data['position'],$matches)) {
             $node_data['pos_x0'] = $matches[1];
             $node_data['pos_y0'] = $matches[2];
             $node_data['pos_x1'] = $matches[3];
@@ -307,7 +307,7 @@ class NodeEditing {
         $root_dir = $GLOBALS['root_dir'];
         $template_family = $_SESSION['sess_template_family'];
         $path_to_icon = $root_dir.'/templates/browsing/'.$template_family;
-        if(trim($node_data['icon']) == "" || !file_exists($node_data['icon'])) {
+        if(!isset($node_data['icon']) || trim($node_data['icon']) == "" || !file_exists($node_data['icon'])) {
             $node_data['icon'] = 'nodo.png';
         }
 

@@ -129,7 +129,7 @@ class exportHelper
 		$nodeInfo['parent_id'] = self::stripOffCourseId($course_id, $nodeInfo['parent_id']);
 
 		// create XML node for current course node
-		$XMLnode =& $domtree->createElement("nodo");
+		$XMLnode = $domtree->createElement("nodo");
 
 		foreach ($nodeInfo as $name=>$value)
 		{
@@ -166,7 +166,7 @@ class exportHelper
 		{
 			foreach ($nodeLinksArr as &$nodeLinkId)
 			{
-				$nodeLinkInfo =& $dh->get_link_info ($nodeLinkId);
+				$nodeLinkInfo = $dh->get_link_info ($nodeLinkId);
 				/**
 				 * - id_autore: WILL BE SELECTED BY THE USER DOING THE IMPORT (is the author, actually)
 				*/
@@ -185,12 +185,12 @@ class exportHelper
 		// end get links
 
 		// get the list of external resources associated to the node
-		$extResArr =& $dh->get_node_resources($nodeId);
+		$extResArr = $dh->get_node_resources($nodeId);
 		if (!empty ($extResArr) && !AMA_DB::isError($extResArr))
 		{
 			foreach ($extResArr as &$extResId)
 			{
-				$extResInfo =& $dh->get_risorsa_esterna_info ($extResId);
+				$extResInfo = $dh->get_risorsa_esterna_info ($extResId);
 				if (!AMA_DB::isError($extResInfo))
 				{
 					$XMLnode->appendChild( self::buildExternalResourceXML($domtree, $extResInfo, $course_id));
@@ -202,7 +202,7 @@ class exportHelper
 		// end get external resources
 
 		// get extended nodes
-        $extendedNode =& $dh->get_extended_node($nodeId);
+        $extendedNode = $dh->get_extended_node($nodeId);
 		if (!empty($extendedNode) && !AMA_DB::isError($extendedNode))
 		{
 			$extendedNode['id_node'] = self::stripOffCourseId($course_id, $extendedNode['id_node']);
@@ -215,7 +215,7 @@ class exportHelper
 		if ($mustRecur)
 		{
 			// get node children only having instance=0
-			$childNodesArray =& $dh->export_get_node_children ($nodeId,0);
+			$childNodesArray = $dh->export_get_node_children ($nodeId,0);
 			if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray))
 			{
 				foreach ($childNodesArray as &$childNodeId)
@@ -257,7 +257,7 @@ class exportHelper
 			if (is_null($XMLElement)) {
 			  $this->testNodeXMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
 			} else {
-			  $XMLElement =& $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
+			  $XMLElement = $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
 			}
 
 			$childrenNodesArr = $dh_test->test_getNodesByParent ($nodeId, null, array('id_istanza'=>0));
@@ -487,7 +487,9 @@ class exportHelper
 			if (!in_array($filePath, $this->mediaFilesArray[$course_id]))
 				array_push ($this->mediaFilesArray[$course_id], $filePath);
 		}
-		$this->_logMessage(__METHOD__.'size of array IS: '.count($this->mediaFilesArray[$course_id]));
+		if (isset($this->mediaFilesArray[$course_id])) {
+			$this->_logMessage(__METHOD__.'size of array IS: '.count($this->mediaFilesArray[$course_id]));
+		}
 		
 	}
 
@@ -582,14 +584,14 @@ class exportHelper
 	public function getAllChildrenArray ($rootNode, $dh, $mustRecur = true)
 	{
 		// first get all passed node data
-		$nodeInfo =& $dh->get_node_info($rootNode);
+		$nodeInfo = $dh->get_node_info($rootNode);
 
 		$retarray = array ('id'=>$rootNode, 'label'=>$nodeInfo['name']);
 
 		if ($mustRecur)
 		{
 			// get node children only having instance=0
-			$childNodesArray =& $dh->export_get_node_children ($rootNode,0);
+			$childNodesArray = $dh->export_get_node_children ($rootNode,0);
 			if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray))
 			{
 				$i=0;

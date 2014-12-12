@@ -45,7 +45,7 @@ class ChatManagementForm extends FForm
         $this->addTextInput('actual_chat_type', translateFN('Tipo'))
              ->setAttribute('readonly', 'readonly');
 
-        if(!$chatroom_started){
+        if(!isset($chatroom_started) || (isset($chatroom_started) && !$chatroom_started)){
              $this->addSelect(
                 'new_chat_type',
                  translateFN('Nuovo tipo'),
@@ -54,7 +54,7 @@ class ChatManagementForm extends FForm
 //                     'Privata' => translateFN('Privata'),
                      'Classe' => translateFN('Classe'),
                      'Pubblica'=>translateFN('Pubblica')
-                 ));
+                 ),0);
           }
 
         $this->addTextInput('max_users', translateFN('Numero di utenti'))
