@@ -63,7 +63,7 @@ if (!isset($_REQUEST['status'])) {
  * mode = ...
  */
 
-if ($_REQUEST['mode']) {
+if (isset($_REQUEST['mode']) && strlen($_REQUEST['mode'])) {
     if ($_REQUEST['mode'] == 'changeLIS') {
         if ($_SESSION['mode'] == 'LIS') {
             unset($_SESSION['mode']);
@@ -127,6 +127,14 @@ if ($_REQUEST['mode']) {
       $msg =   urlencode(translateFN('Redirezionamento automatico'));
       header("Location: $homepage?err_msg=$msg");
       exit();
+      break;
+    default:
+      $user_messages = "";
+      $user_agenda =  "";
+      $user_level = "0";
+      $user_score =  "0";
+      $user_history = "";
+      $user_status = AMA_TYPE_VISITOR;
       break;
   }
   $user_type = $userObj->convertUserTypeFN($id_profile);
@@ -239,7 +247,7 @@ if (in_array('tutor',$thisUserNeededObjAr)){
          */
         $tutorObj = $dh->get_tutor($tutor_id);
         if (!AMA_dataHandler::isError($tutorObj)){
-          $tutor_uname = $tutor['username'];
+          if (isset($tutor['username'])) $tutor_uname = $tutor['username'];
         }
       }
     }
@@ -256,7 +264,7 @@ if (in_array('node',$thisUserNeededObjAr)){
   /**
    * @var Object
    */
-  $nodeObj = read_node_from_DB($id_node);  
+  $nodeObj = read_node_from_DB(isset($id_node) ? $id_node : null);  
   //  mydebug(__LINE__,__FILE__,$nodeObj);
   if (ADA_Error::isError($nodeObj)){
     $nodeObj->handleError();
@@ -322,7 +330,8 @@ if ($id_profile == AMA_TYPE_STUDENT && $log_enabled){
  * service completeness
  */
 if ($id_profile == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
-	if (is_object($courseInstanceObj) && is_object($courseObj) && is_object($userObj))
+	if (isset($courseInstanceObj) && isset($courseObj) && isset($userObj) &&
+		is_object($courseInstanceObj) && is_object($courseObj) && is_object($userObj))
 	{		
 		if ($user_status!=ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
 
@@ -384,9 +393,9 @@ $_SESSION['sess_template_family'] = $template_family;
  * @var Array
  */
 $layout_dataAr = array();
-$layout_dataAr['node_type'] = $node_type;
-$layout_dataAr['family'] = $template_family;
-$layout_dataAr['node_author_id'] = $node_author_id;
-$layout_dataAr['node_course_id'] = $node_course_id;
-$layout_dataAr['module_dir'] = $module_dir;
+$layout_dataAr['node_type'] = isset($node_type) ? $node_type : null;
+$layout_dataAr['family'] = isset($template_family) ? $template_family : null;
+$layout_dataAr['node_author_id'] = isset($node_author_id) ? $node_author_id : null;
+$layout_dataAr['node_course_id'] = isset($node_course_id) ? $node_course_id : null;
+$layout_dataAr['module_dir'] = isset($module_dir) ? $module_dir : null;
 ?>

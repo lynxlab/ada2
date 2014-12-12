@@ -143,10 +143,10 @@ class MessageHandler
     // get the sender's ID and email address
     $res_ar = $udh->find_users_list(array("e_mail"), "username='$sender'");
    
-    if (AMA_DataHandler::isError($res_ar)  or (!is_array($res_ar)))  {
+    if (AMA_DataHandler::isError($res_ar) || (!is_array($res_ar)) || count($res_ar)<=0)  {
       return new AMA_Error(AMA_ERR_SEND_MSG);
     }
-   
+
     $sender_id = $res_ar[0][0];
     $sender_email = $res_ar[0][1];
 

@@ -75,7 +75,7 @@ switch ($mode) {
             $user = $dh->_get_user_info($student_id);
             $username = $user['username'];
             $exercise_dataHa[] = array(
-                    translateFN('Data')=>$dh->ts_to_date($visit[1]),
+                    translateFN('Data')=>AMA_DataHandler::ts_to_date($visit[1]),
                     translateFN('Studente')=>$username,
                     translateFN('Punteggio')=>$visit[3],
                     translateFN('Interazione')=>$user_interaction
@@ -113,7 +113,7 @@ switch ($mode) {
             $data =  $exercise[2];
             $row = array(
                     translateFN('Nodo')=>"<a href=\"tutor_report.php?mode=zoom&id_node=$id_node\">$id_node : $nome </a>",
-                    translateFN('Data')=>$dh->ts_to_date($data)
+                    translateFN('Data')=>AMA_DataHandler::ts_to_date($data)
             );
             array_push($exercise_dataHa,$row);
         }

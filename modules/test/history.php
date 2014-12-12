@@ -55,12 +55,14 @@ else
 $self = 'tutor';
 }
 
-if (!is_a($course_instanceObj,'Course_instance')) {
+if (!isset($course_instanceObj) || !is_a($course_instanceObj,'Course_instance')) {
 	$course_instanceObj = read_course_instance_from_DB($_GET['id_course_instance']);
 }
 
 require_once(MODULES_TEST_PATH.'/include/management/historyManagementTest.inc.php');
-$management = new HistoryManagementTest($_GET['op'],$courseObj,$course_instanceObj,$_SESSION['sess_id_user'],$_GET['id_test'],$_GET['id_history_test']);
+$management = new HistoryManagementTest($_GET['op'],$courseObj,$course_instanceObj,$_SESSION['sess_id_user'],
+		isset($_GET['id_test']) ? $_GET['id_test'] : null,
+		isset($_GET['id_history_test']) ? $_GET['id_history_test'] : null);
 $return = $management->render();
 $text = $return['html'];
 $title = $return['title'];
@@ -76,36 +78,36 @@ $content_dataAr = array(
     'user_type' => $user_type,
     'user_level' => $user_level,
     'visited' => '-',
-    'icon' => $icon,
+    'icon' => isset($icon) ? $icon: null,
     //'navigation_bar' => $navBar->getHtml(),
     'text' =>  $text,
     'title' => $title,
-    'author' => $author,
+    'author' => isset($author) ? $author : null,
     'node_level' => 'livello nodo',
     'edit_profile'=> $userObj->getEditProfilePage()
     //'course_title' => '<a href="'.HTTP_ROOT_DIR.'/tutor/tutor.php">'.translateFN('Modulo Tutor').'</a> > ',
     //'media' => 'media',
 );
 
-$content_dataAr['notes'] = $other_node_data['notes'];
-$content_dataAr['personal'] = $other_node_data['private_notes'];
+$content_dataAr['notes'] = isset($other_node_data['notes']) ? $other_node_data['notes'] : null;
+$content_dataAr['personal'] = isset($other_node_data['private_notes']) ? $other_node_data['private_notes'] : null;
 
 if ($reg_enabled) {
-    $content_dataAr['add_bookmark'] = $add_bookmark;
+    $content_dataAr['add_bookmark'] = isset($add_bookmark) ? $add_bookmark : "";
 } else {
     $content_dataAr['add_bookmark'] = "";
 }
 
-$content_dataAr['bookmark'] = $bookmark;
-$content_dataAr['go_bookmarks_1'] = $go_bookmarks;
-$content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+$content_dataAr['bookmark'] = isset($bookmark) ? $bookmark : "";
+$content_dataAr['go_bookmarks_1'] = isset($go_bookmarks) ? $go_bookmarks : "";
+$content_dataAr['go_bookmarks_2'] = isset($go_bookmarks) ? $go_bookmarks : "";
 
 if ($com_enabled) {
-    $content_dataAr['ajax_chat_link'] = $ajax_chat_link;
+    $content_dataAr['ajax_chat_link'] = isset($ajax_chat_link) ? $ajax_chat_link : "";
     $content_dataAr['messages'] = $user_messages->getHtml();
     $content_dataAr['agenda'] = $user_agenda->getHtml();
     $content_dataAr['events'] = $user_events->getHtml();
-    $content_dataAr['chat_users'] = $online_users;
+    $content_dataAr['chat_users'] = isset($online_users) ? $online_users : "";
 } else {
     $content_dataAr['chat_link'] = translateFN("chat non abilitata");
     $content_dataAr['messages'] = translateFN("messaggeria non abilitata");

@@ -108,11 +108,11 @@ class Node
 //  }
 
   public function __construct($id_node,$extended_data_required=2){
-    $dh            =   $GLOBALS['dh'];
-    $error         =   $GLOBALS['error'];
-    $debug         =   $GLOBALS['debug'];
-    $root_dir      =   $GLOBALS['root_dir'];
-    $http_root_dir =   $GLOBALS['http_root_dir'];
+    $dh            =   isset($GLOBALS['dh']) ? $GLOBALS['dh'] : null;
+    $error         =   isset($GLOBALS['error']) ? $GLOBALS['error'] : null;
+    $debug         =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
+    $root_dir      =   isset($GLOBALS['root_dir']) ? $GLOBALS['root_dir'] : null;
+    $http_root_dir =   isset($GLOBALS['http_root_dir']) ? $GLOBALS['http_root_dir'] : null;
 
     $dataHa = $dh->get_node_info($id_node);
 
@@ -340,11 +340,11 @@ class Node
     // notes are shown only if created by users of this course
     // AND of this instance
 
-    $dh                      = $GLOBALS['dh'];
-    $error                   = $GLOBALS['error'];
-    $sess_id_course          = $_SESSION['sess_id_course'];
-    $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
-    $sess_id_user            = $_SESSION['sess_id_user'];
+    $dh                      = isset($GLOBALS['dh']) ? $GLOBALS['dh'] : null;
+    $error                   = isset($GLOBALS['error']) ? $GLOBALS['error'] : null;
+    $sess_id_course          = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
+    $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+    $sess_id_user            = isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user'] : null;
 
     $visit_count = 0;
     if (empty($id_toc)) {
@@ -379,6 +379,7 @@ class Node
           switch ($node_type_family){
             case ADA_LEAF_TYPE:
             case ADA_LEAF_WORD_TYPE:
+            	$base_type = isset($base_type) ? $base_type : null;
               if (($node_type_family == ADA_LEAF_WORD_TYPE AND $base_type == ADA_GROUP_TYPE) || ($node_type_family == ADA_LEAF_TYPE AND $base_type == ADA_GROUP_WORD_TYPE)) {
                   break;
               }
@@ -1004,7 +1005,8 @@ function search_text_in_glosary($text) {
 		}
 
 		if ($level_filter) {
-			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT && $node_level > $student_level) {
+			if (isset($_SESSION['sess_id_user_type']) &&
+				$_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT && $node_level > $student_level) {
 				return translateFN('Il contenuto di questo nodo non &egrave; accessibile ad utenti di livello ' . $student_level);
 			}
 		}
@@ -1188,17 +1190,17 @@ function search_text_in_glosary($text) {
 		if (!empty($matches)) {
 			foreach($matches as $k=>$v) {
 				preg_match('/TYPE="([^"]+)"/i',$v[1],$type);
-				$type = $type[1];
+				$type = isset($type[1]) ? $type[1] : null;
 				preg_match('/VALUE="([^"]+)"/i',$v[1],$value);
-				$value = $value[1];
+				$value = isset($value[1]) ? $value[1] : null;
 				$add_title = preg_match('/TITLE="([^"]+)"/i',$v[1],$title);
-				$title = $title[1];
+				$title = isset($title[1]) ? $title[1] : null;
 				$add_width = preg_match('/WIDTH="([^"]+)"/i',$v[1],$width);
-				$width = $width[1];
+				$width = isset($width[1]) ? $width[1] : null;
 				$add_height = preg_match('/HEIGHT="([^"]+)"/i',$v[1],$height);
-				$height = $height[1];
-                                $id_node = $_SESSION['sess_id_node'];
-                                $mediaInfoAr = $dh->get_risorsa_esterna_info_from_filename($value,$id_node);
+				$height = isset($height[1]) ? $height[1] : null;
+                $id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
+				$mediaInfoAr = $dh->get_risorsa_esterna_info_from_filename($value,$id_node);
 				$array[$k] = array(
 					'str'=>$v[0],
 					'tag'=>$v[2],
@@ -1354,12 +1356,12 @@ function search_text_in_glosary($text) {
 	}
 
 function get_extended_nodeFN($user_level,$id_profile){
-  $dh =   $GLOBALS['dh'];
-  $error =   $GLOBALS['error'];
-  $debug =   $GLOBALS['debug'];
-  $sess_id_course =   $_SESSION['sess_id_course'];
-  $sess_id_course_instance =   $_SESSION['sess_id_course_instance'];
-  $sess_id_user =   $_SESSION['sess_id_user'];
+  $dh =   isset($GLOBALS['dh']) ? $GLOBALS['dh'] : null;
+  $error =   isset($GLOBALS['error']) ? $GLOBALS['error'] : null;
+  $debug =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
+  $sess_id_course =   isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
+  $sess_id_course_instance =   isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+  $sess_id_user =   isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user'] : null;
   $node_level = $this->level;
   if ($node_level>$user_level && $id_profile == AMA_TYPE_STUDENT){
       return translateFN("Il contenuto di questo nodo non &egrave; accessibile ad utenti di livello $user_level");
@@ -1369,61 +1371,71 @@ function get_extended_nodeFN($user_level,$id_profile){
   $glossary_div->setAttribute('id', 'glossary');
   // hyphenation
   $extended_info = "";
-  $hyphenation_label = CDOMElement::create('DIV');
-  $hyphenation_label->setAttribute('class', 'label_extended');
-  $hyphenation_label->addChild(new CText(translateFN('hyphenation')));
-  $glossary_div->addChild($hyphenation_label);
-  //$extended_info .= $hyphenation_label;
 
-  $hyphenation = CDOMElement::create('DIV');
-  $hyphenation->setAttribute('class', 'content_extended');
-  $hyphenation->addChild(new CText($this->hyphenation));
-  $glossary_div->addChild($hyphenation);
+  if (property_exists($this, 'hyphenation')) {
+  	$hyphenation_label = CDOMElement::create('DIV');
+  	$hyphenation_label->setAttribute('class', 'label_extended');
+  	$hyphenation_label->addChild(new CText(translateFN('hyphenation')));
+  	$glossary_div->addChild($hyphenation_label);
+  	//$extended_info .= $hyphenation_label
+  	$hyphenation = CDOMElement::create('DIV');
+  	$hyphenation->setAttribute('class', 'content_extended');
+  	$hyphenation->addChild(new CText($this->hyphenation));
+  	$glossary_div->addChild($hyphenation);
+  }
 
-  // grammar
-  $grammar_label = CDOMElement::create('DIV');
-  $grammar_label->setAttribute('class', 'label_extended');
-  $grammar_label->addChild(new CText(translateFN('grammar')));
-  $glossary_div->addChild($grammar_label);
-
-  $grammar = CDOMElement::create('DIV');
-  $grammar->setAttribute('class', 'content_extended');
-  $grammar->addChild(new CText($this->grammar));
-  $glossary_div->addChild($grammar);
-
-  // semantic
-  $semantic_label = CDOMElement::create('DIV');
-  $semantic_label->setAttribute('class', 'label_extended');
-  $semantic_label->addChild(new CText(translateFN('semantic')));
-  $glossary_div->addChild($semantic_label);
-
-  $semantic = CDOMElement::create('DIV');
-  $semantic->setAttribute('class', 'content_extended');
-  $semantic->addChild(new CText($this->semantic));
-  $glossary_div->addChild($semantic);
-
-  // notes
-  $notes_label = CDOMElement::create('DIV');
-  $notes_label->setAttribute('class', 'label_extended');
-  $notes_label->addChild(new CText(translateFN('notes')));
-  $glossary_div->addChild($notes_label);
-
-  $notes = CDOMElement::create('DIV');
-  $notes->setAttribute('class', 'content_extended');
-  $notes->addChild(new CText($this->notes));
-  $glossary_div->addChild($notes);
-
-  // examples
-  $examples_label = CDOMElement::create('DIV');
-  $examples_label->setAttribute('class', 'label_extended');
-  $examples_label->addChild(new CText(translateFN('examples')));
-  $glossary_div->addChild($examples_label);
-
-  $examples = CDOMElement::create('DIV');
-  $examples->setAttribute('class', 'content_extended');
-  $examples->addChild(new CText($this->examples));
-  $glossary_div->addChild($examples);
-
+  if (property_exists($this, 'grammar')) {
+  	// grammar
+  	$grammar_label = CDOMElement::create('DIV');
+  	$grammar_label->setAttribute('class', 'label_extended');
+  	$grammar_label->addChild(new CText(translateFN('grammar')));
+  	$glossary_div->addChild($grammar_label);
+  	
+  	$grammar = CDOMElement::create('DIV');
+  	$grammar->setAttribute('class', 'content_extended');
+  	$grammar->addChild(new CText($this->grammar));
+  	$glossary_div->addChild($grammar);  	
+  }
+  
+  if (property_exists($this, 'semantic')) {
+  	// semantic
+  	$semantic_label = CDOMElement::create('DIV');
+  	$semantic_label->setAttribute('class', 'label_extended');
+  	$semantic_label->addChild(new CText(translateFN('semantic')));
+  	$glossary_div->addChild($semantic_label);
+  	
+  	$semantic = CDOMElement::create('DIV');
+  	$semantic->setAttribute('class', 'content_extended');
+  	$semantic->addChild(new CText($this->semantic));
+  	$glossary_div->addChild($semantic);
+  }
+  
+  if (property_exists($this, 'notes')) {
+  	// notes
+  	$notes_label = CDOMElement::create('DIV');
+  	$notes_label->setAttribute('class', 'label_extended');
+  	$notes_label->addChild(new CText(translateFN('notes')));
+  	$glossary_div->addChild($notes_label);
+  	
+  	$notes = CDOMElement::create('DIV');
+  	$notes->setAttribute('class', 'content_extended');
+  	$notes->addChild(new CText($this->notes));
+  	$glossary_div->addChild($notes);
+  }
+  
+  if (property_exists($this, 'examples')) {
+  	// examples
+  	$examples_label = CDOMElement::create('DIV');
+  	$examples_label->setAttribute('class', 'label_extended');
+  	$examples_label->addChild(new CText(translateFN('examples')));
+  	$glossary_div->addChild($examples_label);
+  	
+  	$examples = CDOMElement::create('DIV');
+  	$examples->setAttribute('class', 'content_extended');
+  	$examples->addChild(new CText($this->examples));
+  	$glossary_div->addChild($examples);  	
+  }
+  
 //  $gloassary_div->getHtml();
 
   return $glossary_div->getHtml();
@@ -1432,12 +1444,12 @@ function get_extended_nodeFN($user_level,$id_profile){
 function get_linksFN($user_level,$id_profile){
   //global $dh,$error,$debug;
   //global $sess_id_course,$sess_id_course_instance,$sess_id_user;
-  $dh =   $GLOBALS['dh'];
-  $error =   $GLOBALS['error'];
-  $debug =   $GLOBALS['debug'];
-  $sess_id_course =   $_SESSION['sess_id_course'];
-  $sess_id_course_instance =   $_SESSION['sess_id_course_instance'];
-  $sess_id_user =   $_SESSION['sess_id_user'];
+  $dh =   isset($GLOBALS['dh']) ? $GLOBALS['dh'] : null;
+  $error =   isset($GLOBALS['error']) ? $GLOBALS['error'] : null;
+  $debug =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
+  $sess_id_course =   isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
+  $sess_id_course_instance =   isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+  $sess_id_user =   isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user'] : null;
 
   // filtro sui link:
   // verifica se i nodi linkati hanno livello<= a quello dell'utente
@@ -1502,11 +1514,11 @@ function get_linksFN($user_level,$id_profile){
 function get_exercisesFN($user_level){
   //global $dh,$error;
   //global $sess_id_user, $sess_id_course_instance;
-  $dh =   $GLOBALS['dh'];
-  $error =   $GLOBALS['error'];
-  $debug =   $GLOBALS['debug'];
-  $sess_id_course_instance =   $_SESSION['sess_id_course_instance'];
-  $sess_id_user =   $_SESSION['sess_id_user'];
+  $dh =   isset($GLOBALS['dh']) ? $GLOBALS['dh'] : null;
+  $error =   isset($GLOBALS['error']) ? $GLOBALS['error'] : null;
+  $debug =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
+  $sess_id_course_instance =   isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+  $sess_id_user =   isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user'] : null;
 
   // filtering exercises:
   // have the exercises been already  executed?
@@ -1597,11 +1609,11 @@ function get_exercisesFN($user_level){
 // fine filtro esercizi
 
 function get_notesFN($user_level,$id_profile){
-  $dh =   $GLOBALS['dh'];
-  $error =   $GLOBALS['error'];
-  $debug =   $GLOBALS['debug'];
-  $sess_id_course_instance =   $_SESSION['sess_id_course_instance'];
-  $sess_id_user =   $_SESSION['sess_id_user'];
+  $dh =   isset($GLOBALS['dh']) ? $GLOBALS['dh'] : null;
+  $error =   isset($GLOBALS['error']) ? $GLOBALS['error'] : null;
+  $debug =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
+  $sess_id_course_instance =   isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+  $sess_id_user =   isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user'] : null;
   $id_node_base = $this->id;
 
   if (!empty($this->children)) {
@@ -1734,11 +1746,11 @@ function get_notesFN($user_level,$id_profile){
 function get_private_notesFN($user_level,$id_profile){
   //global $dh,$error,$debug;
   //global $sess_id_user, $sess_id_course_instance;
-  $dh =   $GLOBALS['dh'];
-  $error =   $GLOBALS['error'];
-  $debug =   $GLOBALS['debug'];
-  $sess_id_course_instance =   $_SESSION['sess_id_course_instance'];
-  $sess_id_user =   $_SESSION['sess_id_user'];
+  $dh =   isset($GLOBALS['dh']) ? $GLOBALS['dh'] : null;
+  $error =   isset($GLOBALS['error']) ? $GLOBALS['error'] : null;
+  $debug =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
+  $sess_id_course_instance =   isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+  $sess_id_user =   isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user'] : null;
 
   if (!empty($this->children)) {
 
@@ -2028,11 +2040,11 @@ function get_mediaFN_OLD($user_level){
 
 function get_user_mediaFN($user_level){
   // indexing files
-  $root_dir = $GLOBALS['root_dir'];
-  $http_root_dir = $GLOBALS['http_root_dir'];
-  $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
-  $sess_id_course = $_SESSION['sess_id_course'];
-  $sess_id_node = $_SESSION['sess_id_node'];
+  $root_dir = isset($GLOBALS['root_dir']) ? $GLOBALS['root_dir'] : null;
+  $http_root_dir = isset($GLOBALS['http_root_dir']) ? $GLOBALS['http_root_dir'] : null;
+  $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+  $sess_id_course = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
+  $sess_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
   //$sess_id_node = $GLOBALS['sess_id_node'];
 
   $dh = $GLOBALS['dh'];
@@ -2133,7 +2145,7 @@ function get_user_mediaFN($user_level){
 
     $course_instance = $filenameAr[0];
 
-    $id_sender  = $filenameAr[1];
+    $id_sender  = isset($filenameAr[1]) ? $filenameAr[1] : null;
 
     if (is_numeric($id_sender)) {
       $fid_node =  $filenameAr[2]."_".$filenameAr[3];
@@ -2288,7 +2300,7 @@ function is_allowedFN($command,$id_profile){
 
 function edit($id_profile){
   // va al form di modifica del nodo attuale se l'utente ha le permission giuste
-  $sess_id_node = $_SESSION['sess_id_node'];
+  $sess_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
   $id_node = $this->id;
   if ($this->is_allowedFN('modify',$id_profile)){
     header("Location: ../services/edit_node.php?op=edit&id_node=$sess_id_node");
@@ -2303,7 +2315,7 @@ function delete($id_profile){
     header("Location: ../services/edit_node.php?op=delete&id_node=$sess_id_node");
   }
 }
-function isNodeExercise($type) {
+public static function isNodeExercise($type) {
     switch ($type[0]) { // type can be a string of 5 chars, like 30001
         case ADA_STANDARD_EXERCISE_TYPE:
             return TRUE;
@@ -2363,7 +2375,8 @@ private function _wrapTextInSpan($text, $class=null) {
  */
 private function _removeEmptyElements($dataAr) {
 	foreach ($dataAr as $index=>$row) {
-		if (is_array($row) && count($row)==1) {
+		if (is_array($row) && count($row)==1 && isset($row[0]) &&
+			($row[0]=='&nbsp;' || empty($row[0]))) {
 			$firstElement = reset($row);
 			if ($firstElement == '&nbsp;' || empty($firstElement)) {
 				unset ($dataAr[$index]);
@@ -2510,7 +2523,7 @@ class Link  extends Resource
     // constructor
     $dh =   $GLOBALS['dh'];
     $error =   $GLOBALS['error'];
-    $debug =   $GLOBALS['debug'];
+    $debug =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
 
     $dataHa = $dh->get_link_info($id_link);
     if (AMA_DataHandler::isError($dataHa) || (!is_array($dataHa))){

@@ -59,8 +59,9 @@ $credits_data = "<p>"
               <li>Giorgio Consorti</li>
               <li>Sara Capotosti</li>		
               <li>Valerio Riva</li>
+              <li>Sara Capotosti</li>
               <li>Guglielmo Celata</li>
-              <li>Stamatis Filippis</li>
+              <li>Stamatis Filippis</li>              
               </ul>".
               "Hanno contribuito al disegno dell'interfaccia:".
               "<ul>
@@ -75,18 +76,18 @@ $credits_data = "<p>"
 $title=translateFN('Credits');
 
 $content_dataAr = array(
-  'home'=>$home,
-  'user_name' => $user_name,
-  'user_type' => $user_type,
-  'user_level' => $user_level,
-  'status' => $status,
-  'help'=>$credits_data,
-  'menu'=>$menu,
+  'home'=>isset($home) ? $home : null,
+  'user_name' => isset($user_name) ? $user_name : null,
+  'user_type' => isset($user_type) ? $user_type : null,
+  'user_level' => isset($user_level) ? $user_level : null,
+  'status' => isset($status) ? $status :null,
+  'help'=> isset($credits_data) ? $credits_data : null,
+  'menu'=> isset ($menu) ? $menu : null,
   'course_title' => translateFN("Credits"),
   //'banner'=>$banner,
-  'message'=>$message,
-  'agenda_link'=>$agenda_link,
-  'msg_link'=>$msg_link
+  'message'=> isset($message) ? $message : null,
+  'agenda_link'=> isset($agenda_link) ? $agenda_link : null,
+  'msg_link'=> isset($msg_link) ? $msg_link : null
 );
 
 ARE::render($layout_dataAr, $content_dataAr);

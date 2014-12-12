@@ -215,7 +215,7 @@ class exportHelper
 		if ($mustRecur)
 		{
 			// get node children only having instance=0
-			$childNodesArray =& $dh->get_node_children ($nodeId,0);
+			$childNodesArray =& $dh->export_get_node_children ($nodeId,0);
 			if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray))
 			{
 				foreach ($childNodesArray as &$childNodeId)
@@ -589,7 +589,7 @@ class exportHelper
 		if ($mustRecur)
 		{
 			// get node children only having instance=0
-			$childNodesArray =& $dh->get_node_children ($rootNode,0);
+			$childNodesArray =& $dh->export_get_node_children ($rootNode,0);
 			if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray))
 			{
 				$i=0;

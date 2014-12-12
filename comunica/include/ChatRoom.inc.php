@@ -589,7 +589,7 @@ class ChatRoom {
     //*******************************************************************************/
     //gets the id of the active chatroom, relative to a specific class
     //*******************************************************************************/
-    function get_class_chatroomFN($id_course_instance) {
+    public static function get_class_chatroomFN($id_course_instance) {
         if (!self::isInStaticContext()) {
             $this->id_course_instance = $id_course_instance;
         }

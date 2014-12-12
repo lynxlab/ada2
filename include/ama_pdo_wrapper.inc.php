@@ -147,11 +147,11 @@ class AMA_PDO_wrapper
 		try {
 			$stmt = $this->connection_object->prepare($query);
 			$stmt->execute($params);
-			if (is_null($col)) $retval =& $stmt->fetchAll ($fetchmode);
-			else if (is_numeric($col) && intval($col)>=0) $retval =& $stmt->fetchAll($fetchmode,intval($col));
+			if (is_null($col)) $retval = $stmt->fetchAll ($fetchmode);
+			else if (is_numeric($col) && intval($col)>=0) $retval = $stmt->fetchAll($fetchmode,intval($col));
 			else throw new PDOException("Soemthing went wrong in query execution ".__FILE__." line: ".__LINE__);			
 		} catch (PDOException $e) {
-			$retval =& self::handleException($e); 
+			$retval = self::handleException($e); 
 		}
 		return $retval;
 	}
@@ -276,7 +276,7 @@ class AMA_PDO_wrapper
 		try {
 			$stmt = $this->connection_object->prepare($query);
 			$stmt->execute($params);
-			$retval =& $stmt->fetch ($fetchmode);
+			$retval = $stmt->fetch ($fetchmode);
 			return $retval;
 		} catch (PDOException $e) {
 			return self::handleException($e);
@@ -294,7 +294,7 @@ class AMA_PDO_wrapper
 	 */
 	public function &query($query) {
 		try {
-			$retval =& $this->connection_object->query($query);
+			$retval = $this->connection_object->query($query);
 			return $retval;
 		} catch (PDOException $e) {
 			return self::handleException($e);
@@ -311,7 +311,7 @@ class AMA_PDO_wrapper
 	 */
 	public function &exec($query) {
 		try {
-			$retval =& $this->connection_object->exec($query);
+			$retval = $this->connection_object->exec($query);
 			if (!is_bool($retval)) return $retval;
 			else return 0;
 		} catch (PDOException $e) {
@@ -345,7 +345,7 @@ class AMA_PDO_wrapper
 	 * @access public
 	 */
 	public function &prepare ($query, $types=null, $result_types=null,$lobs=array()){
-		$stmt =& $this->connection_object->prepare($query);
+		$stmt = $this->connection_object->prepare($query);
 		return $stmt; // ,$types,$result_types,$lobs);
 	}
 

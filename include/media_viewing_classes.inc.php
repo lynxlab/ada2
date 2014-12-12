@@ -44,29 +44,29 @@ class MediaViewer {
      * @param array $VIEWING_PREFERENCES
      * @return string
      */
-    public function getViewer($media_data=array()) {
-        $media_type  = $media_data[1];
+    public function getViewer($media_data=array()) {    	
+        $media_type  = isset($media_data[1]) ? $media_data[1] : null;
 		if (isset($media_data['type'])) {
 			$media_type = $media_data['type'];
 		}
 
-        $media_value = $media_data[2];
+        $media_value = isset($media_data[2]) ? $media_data[2] : null;
 		if (isset($media_data['value'])) {
 			$media_value = $media_data['value'];
 		}
 
 		$media_title = null;
-		if (!is_null($media_data['title'])) {
+		if (isset($media_data['title']) && !is_null($media_data['title'])) {
 			$media_title = $media_data['title'];
 		}
 
 		$media_width = null;
-		if (!is_null($media_data['width'])) {
+		if (isset($media_data['width']) && !is_null($media_data['width'])) {
 			$media_width = $media_data['width'];
 		}
 		
 		$media_height = null;
-		if (!is_null($media_data['height'])) {
+		if (isset($media_data['height']) && !is_null($media_data['height'])) {
 			$media_height = $media_data['height'];
 		}
 
@@ -89,7 +89,7 @@ class MediaViewer {
 		else if ($media_type === _VIDEO || $media_type === _LABIALE || $media_type === _FINGER_SPELLING) {
 			$return = VideoPlayer::view($this->media_path,$media_value,$this->viewing_preferences[_VIDEO],$media_title,$media_width,$media_height);
 		}
-		else if ($media_type === _LIS && $_SESSION['mode'] == 'LIS') {
+		else if ($media_type === _LIS && isset($_SESSION['mode']) && $_SESSION['mode'] == 'LIS') {
 			$return = VideoPlayer::view($this->media_path,$media_value,$this->viewing_preferences[_VIDEO],$media_title,$media_width,$media_height);
 		}
 		else if ($media_type === _DOC) {
@@ -136,7 +136,7 @@ class MediaViewer {
     }
 	
     public function displayLink ($media_data=array()) {
-        $media_value = $media_data[2];
+        $media_value = isset($media_data[2]) ? $media_data[2] : null;
 		if (isset($media_data['value'])) {
 			$media_value = $media_data['value'];
 		}
@@ -161,25 +161,31 @@ class MediaViewer {
 		}
                 $media_real_file_name = $media_data[3];
                 $path_to_media = $media_data[4];
-		$media_title = $media_data[5];
+		$media_title = isset($media_data[5]) ? $media_data[5] : null;
 		if (isset($media_data['title'])) {
 			$media_title  = $media_data['title'];
 		}
+				
 		
         if ($media_type === _IMAGE || $media_type === _MONTESSORI) {
-			return ImageViewer::link($this->media_path,$media_value, $media_real_file_name,$path_to_media, $this->viewing_preferences[_IMAGE], $media_title, $media_type);
+        	$viewing_prefs = isset($this->viewing_preferences[_IMAGE]) ? $this->viewing_preferences[_IMAGE] : null;
+			return ImageViewer::link($this->media_path,$media_value, $media_real_file_name,$path_to_media, $viewing_prefs, $media_title, $media_type);
 		}
 		else if ($media_type === _SOUND || $media_type === _PRONOUNCE) {
-			return AudioPlayer::link($this->media_path,$media_value, $media_real_file_name, $path_to_media,$this->viewing_preferences[_SOUND], $media_title, $media_type);
+			$viewing_prefs = isset($this->viewing_preferences[_SOUND]) ? $this->viewing_preferences[_SOUND] : null;
+			return AudioPlayer::link($this->media_path,$media_value, $media_real_file_name, $path_to_media,$viewing_prefs, $media_title, $media_type);
 		}
 		else if ($media_type === _VIDEO || $media_type === _LABIALE || $media_type === _LIS || $media_type === _FINGER_SPELLING) {
-			return VideoPlayer::link($this->media_path,$media_value, $media_real_file_name, $path_to_media,$this->viewing_preferences[_VIDEO], $media_title, $media_type);
+			$viewing_prefs = isset($this->viewing_preferences[_VIDEO]) ? $this->viewing_preferences[_VIDEO] : null;
+			return VideoPlayer::link($this->media_path,$media_value, $media_real_file_name, $path_to_media,$viewing_prefs, $media_title, $media_type);
 		}
 		else if ($media_type === _DOC) {
-			return DocumentViewer::link($this->media_path,$media_value, $media_real_file_name, $path_to_media,$this->viewing_preferences[_DOC], $media_title);
+			$viewing_prefs = isset($this->viewing_preferences[_DOC]) ? $this->viewing_preferences[_DOC] : null;
+			return DocumentViewer::link($this->media_path,$media_value, $media_real_file_name, $path_to_media,$viewing_prefs, $media_title);
 		}
 		else if ($media_type === _LINK) {
-			return ExternalLinkViewer::view($this->media_path, $media_value, $this->viewing_preferences[_LINK]);
+			$viewing_prefs = isset($this->viewing_preferences[_LINK]) ? $this->viewing_preferences[_LINK] : null;
+			return ExternalLinkViewer::view($this->media_path, $media_value, $viewing_prefs);
 		}
 		else {
 			return '';
@@ -207,7 +213,7 @@ class ImageViewer {
      * @param  mixed  $ImageViewingPreferences
      * @return string
      */
-    public function view( $http_file_path, $file_name, $ImageViewingPreferences = IMG_VIEWING_MODE, $imageTitle = null,$width = null,$height = null) {
+    public static function view( $http_file_path, $file_name, $ImageViewingPreferences = IMG_VIEWING_MODE, $imageTitle = null,$width = null,$height = null) {
 		if (!is_null($width)) {
 			$width = ' width="'.$width.'"';
 		}
@@ -228,7 +234,7 @@ class ImageViewer {
         return $exploded_img;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $ImageViewingPreferences = IMG_VIEWING_MODE, $imageTitle = null) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $ImageViewingPreferences = IMG_VIEWING_MODE, $imageTitle = null) {
 
 		$size = getimagesize($path_to_file);
 		$x = $size[0];
@@ -272,7 +278,7 @@ class AudioPlayer {
      * @param  mixed  $AudioPlayingPreferences
      * @return string
      */
-    public function view( $http_file_path, $file_name, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
+    public static function view( $http_file_path, $file_name, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
         $http_root_dir = $GLOBALS['http_root_dir'];
         if ($audioTitle == NULL || !isset($audioTitle)) {
             $audioTitle = $file_name;
@@ -300,7 +306,7 @@ class AudioPlayer {
         return $exploded_audio;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
         if ($audioTitle == NULL || !isset($audioTitle)) {
                 $imageTitle = $file_name;
         }
@@ -323,7 +329,7 @@ class VideoPlayer {
      * @param  mixed  $VideoPlayingPreferences
      * @return string
      */
-    public function view( $http_file_path, $file_name, $VideoPlayingPreferences = VIDEO_PLAYING_MODE, $videoTitle = null, $width = null,$height = null) {
+    public static function view( $http_file_path, $file_name, $VideoPlayingPreferences = VIDEO_PLAYING_MODE, $videoTitle = null, $width = null,$height = null) {
     	
     	require_once ROOT_DIR.'/include/getid3/getid3.php';
 
@@ -421,7 +427,7 @@ class VideoPlayer {
         return $exploded_video;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $VideoPlayingPreferences=VIDEO_PLAYING_MODE, $videoTitle = null, $media_type ) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $VideoPlayingPreferences=VIDEO_PLAYING_MODE, $videoTitle = null, $media_type ) {
         switch ($media_type) {
             case _VIDEO:
                 $label = translateFN('video');
@@ -463,10 +469,10 @@ class InternalLinkViewer {
      * @param  int    $user_level
      * @return string
      */
-    public function view( $http_file_path, $media_value, $InternalLinkViewingPreferences = 0, $user_level, $id_course ) {
+    public static function view( $http_file_path, $media_value, $InternalLinkViewingPreferences = 0, $user_level, $id_course ) {
         $id_node = $id_course .'_'.$media_value;
 
-        $nodeObj =& new Node($id_node, 0);
+        $nodeObj = new Node($id_node, 0);
         // controllo errore
 
         if ( $nodeObj->full == 1 ) {
@@ -486,7 +492,7 @@ class InternalLinkViewer {
         return $exploded_link;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $InternalLinkViewingPreferences ) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $InternalLinkViewingPreferences ) {
         //return '<a href="'.$http_file_path.$real_file_name.'">'.$file_name.'</a>';
         return '';
     }
@@ -505,7 +511,7 @@ class ExternalLinkViewer {
      * @param  mixed  $ExternalLinkViewingPreferences
      * @return string
      */
-    public function view( $http_file_path, $media_value, $ExternalLinkViewingPreferences ) {
+    public static function view( $http_file_path, $media_value, $ExternalLinkViewingPreferences ) {
         switch ( $ExternalLinkViewingPreferences ) {
             case 0:
             case 1:
@@ -545,7 +551,7 @@ class ExternalLinkViewer {
         return $exploded_ext_link;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name,$path_to_file, $ExternalLinkViewingPreferences ) {
+    public static function link( $http_file_path, $file_name, $real_file_name,$path_to_file, $ExternalLinkViewingPreferences ) {
         //return '<a href="'.$http_file_path.$real_file_name.'">'.$file_name.'</a>';
         return '';
     }
@@ -564,7 +570,7 @@ class DocumentViewer {
      * @param  mixed  $DocumentViewingPreferences
      * @return string
      */
-    public function view( $http_file_path, $media_value, $DocumentViewingPreferences = DOC_VIEWING_MODE) {
+    public static function view( $http_file_path, $media_value, $DocumentViewingPreferences = DOC_VIEWING_MODE) {
         switch ( $DocumentViewingPreferences ) {
             case 0:
             case 1:
@@ -576,7 +582,7 @@ class DocumentViewer {
         return $exploded_document;
     }
 
-    public function link( $http_file_path, $file_name, $real_file_name, $path_to_file,$DocumentViewingPreferences ) {
+    public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file,$DocumentViewingPreferences ) {
         $complete_file_name = $file_name;
         if (strlen($file_name) > 15) {
             preg_match('/\.[^.]*$/', $complete_file_name, $ext);

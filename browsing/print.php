@@ -52,7 +52,7 @@ include_once 'include/cache_manager.inc.php';
 
 $cacheObj = New CacheManager($id_profile);
 $cacheObj->checkCache($id_profile);
-if ($cacheObj->getCachedData){
+if ($cacheObj->getCachedData()){
 	exit();
 }
 
@@ -123,8 +123,15 @@ if ($userObj instanceof ADAGuest) {
 
 
 // info on author and tutor
-$tutor_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$tutor_id\">$tutor_uname</a>";
-$author_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$node_author_id\">$node_author</a>";
+if (isset($tutor_uname) && isset($tutor_id)) {
+	$tutor_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$tutor_id\">$tutor_uname</a>";
+} else $tutor_info_link = '';
+
+if (isset($node_author) && isset($node_author_id)) {
+	$author_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$node_author_id\">$node_author</a>";
+} else $author_info_link = '';
+
+
 
 // E-portal
 $eportal = PORTAL_NAME;
@@ -152,7 +159,7 @@ $content_dataAr = array(
 	'user_score' => $user_score,
 	'status' => $status,
 	'node_level' => $node_level,
-	'visited' => $visited,
+	'visited' => isset($visited) ? $visited : '',
 	'path' => $node_path,
 	'title' => $node_title,
 	'version' => $node_version,
@@ -207,11 +214,23 @@ if ($node_type == ADA_GROUP_WORD_TYPE OR $node_type == ADA_LEAF_WORD_TYPE) {
 
 $PRINT_optionsAr = array(
 		'id'=>$id_node,
-		'url'=>$_SERVER['URI'],
+		/**
+		 * @author giorgio 10/dic/2014
+		 * 
+		 * maybe someone meant the full current document url with the following?
+		 * 
+		 * 'url'=>$_SERVER['URI'],
+		 * 
+		 * find below correct code:
+		 */
+		'url'=> HTTP_ROOT_DIR . '/' . $_SERVER['REQUEST_URI'], 
 		'course_title' => strip_tags($content_dataAr['course_title']),
 		'portal' => $eportal,
 		'onload_func' => 'window.print();'
 );
+
+$layout_dataAR = array();
+
 ARE::render($layout_dataAR,$content_dataAr, ARE_PRINT_RENDER, $PRINT_optionsAr);
 
 /**

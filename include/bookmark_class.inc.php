@@ -66,13 +66,13 @@ class Bookmark{
 
 	
 
-       function get_bookmarks($id_user,$id_tutor="",$id_node=''){
+       public static function get_bookmarks($id_user,$id_tutor="",$id_node=''){
                 // ritorna la lista di bookmark dell'utente ed eventualmente (se passato) per il nodo
 
                    $dh = $GLOBALS['dh'];
                    $error = $GLOBALS['error'];
                    $sess_id_course_instance = $GLOBALS['sess_id_course_instance'];
-                   $debug = $GLOBALS['debug'];
+                   $debug = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
 
                 $out_fields_ar = array('id_nodo','data','descrizione','id_utente_studente');
                 $data_studentHa = $dh->find_bookmarks_list($out_fields_ar,$id_user,$sess_id_course_instance,$id_node);
@@ -109,7 +109,7 @@ class Bookmark{
        }
 
 
-       function is_node_bookmarkedFN($id_user,$id_node){
+       public static function is_node_bookmarkedFN($id_user,$id_node){
                 // cerca un nodo nella lista di bookmark dell'utente
                 $dataHa = Bookmark::get_bookmarks($id_user,$id_tutor="",$id_node);
 
@@ -120,7 +120,7 @@ class Bookmark{
                        return $id_bk;
                 }
 		*/
-		if (is_array($dataHa))
+		if (is_array($dataHa) && isset($dataHa[0][0]))
 			return  $dataHa[0][0];
 		else
                 	return FALSE;

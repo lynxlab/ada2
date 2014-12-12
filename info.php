@@ -43,7 +43,7 @@ $neededObjAr = array(
 require_once ROOT_DIR . '/include/module_init.inc.php';
 require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 
-$op = DataValidator::validate_string($_GET['op']);
+$op = isset($_GET['op']) ? DataValidator::validate_string($_GET['op']) : false;
 $today_date = today_dateFN();
 
 //$self = 'list_chatrooms'; // x template
@@ -481,7 +481,7 @@ $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
-    'label' => $label,
+    'label' => isset($label) ? $label : null,
     'help' => $help,
     'data' => $data->getHtml()
 );

@@ -94,8 +94,8 @@ class ArrayToXML {
     // Check all children of node
     foreach ($children as $elementName => $node) {
       // Check if there are multiple node with the same key and generate a multiarray
-      if($arr[$elementName] != NULL) {
-        if($arr[$elementName][0] !== NULL) {
+      if(array_key_exists($elementName, $arr) && $arr[$elementName] != NULL) {
+        if(isset($arr[$elementName][0]) && $arr[$elementName][0] !== NULL) {
           $i = count($arr[$elementName]);
           ArrayToXML::toArray($node, $arr[$elementName][$i]);
         } else {

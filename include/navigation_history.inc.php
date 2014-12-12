@@ -71,7 +71,7 @@ class NavigationHistory
     }
 
     // vito 5 giugno 2009
-    if($this->items[($this->free_ptr-1) % $this->items_max_size] != $item) {
+    if($this->free_ptr>0 && $this->items[($this->free_ptr-1) % $this->items_max_size] != $item) {
       $this->last_page = $this->items[($this->free_ptr-1) % $this->items_max_size];
       $this->arguments_for_last_page = $this->arguments_for_item[($this->free_ptr-1) % $this->items_max_size];
     }

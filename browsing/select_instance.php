@@ -98,16 +98,13 @@ if (!isset($_GET['instances']) && !isset($_GET['node']) &&
 	
 	$content_dataAr = array(
 			'user_name'  => $user_name,
-			'home'       => $home,
 			'data'       => $data,
 			'help'       => $helpDIV->getHtml(),
-			'menu'       => $menu,
-			'message'    => $message,
 			'status'     => $status
 	);
 	
 	/**
 	 * Sends data to the rendering engine
 	*/
-	ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);	
+	ARE::render($layout_dataAr, $content_dataAr);	
 }

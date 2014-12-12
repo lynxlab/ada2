@@ -318,8 +318,6 @@ switch ($op){
     break;
 }
 
-// security test
-$testo = strip_tags ($testo,"<BR><UL><OL><LI><P><B><I><LINK><IMG>");
 
 if (!isset($titolo)) {
   $titolo = "";
@@ -332,6 +330,9 @@ if (!isset($course_title)) {
 }
 if (!isset($testo)) {
   $testo = "";
+} else {
+	// security test
+	$testo = strip_tags ($testo,"<BR><UL><OL><LI><P><B><I><LINK><IMG>");	
 }
 
 /*

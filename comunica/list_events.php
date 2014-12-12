@@ -206,7 +206,7 @@ if(isset($_SESSION['sess_id_course_instance'])){
 $content_dataAr = array(
   'banner'       => $banner,
   'course_title' => $course_title,
-  'go_back'      => $go_back,
+  'go_back'      => isset($go_back) ? $go_back : null,
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'user_level'   => $user_level,

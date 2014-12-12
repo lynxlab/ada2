@@ -1,0 +1,2 @@
+This directory will hold the cache file used by simplepie when loading RSS
+feeds. Make sure it is writeable by the webserver to make it work.

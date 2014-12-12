@@ -428,7 +428,8 @@ function whoami(){
     $parent = $PHP_SELF; //register_globals = off AND   PHP<4.2.2
   }
 
-  $self = array_shift(explode('.',basename($parent)));  // = es. view
+  $exploded = explode('.',basename($parent));
+  $self = array_shift($exploded);  // = es. view
   $GLOBALS['SELF'] = $self;
   return $self;
 }

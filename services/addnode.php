@@ -112,7 +112,7 @@ if ( $op == 'add_node' ) {
   {
     $node_type = Utilities::getAdaNodeTypeFromString($type);
 
-    $nodeObj =& read_node_from_DB($id_parent);
+    $nodeObj = read_node_from_DB($id_parent);
     // gestione errore !!!
     // vito, 20 feb 2009
     if($node_type == ADA_NOTE_TYPE || $node_type == ADA_PRIVATE_NOTE_TYPE) {
@@ -220,9 +220,9 @@ if ( $op == 'add_node' ) {
    * nella variabile di sessione $sess_navigation_history.
    */
   //$navigation_history = $_SESSION['sess_navigation_history'];
-
-  if ( !isset($_SESSION['sess_node_editing']['node_data']) ||
-  ($need_to_unset_session = strcmp($navigation_history->previousItem(), __FILE__)) !== 0)
+  $need_to_unset_session = (strcmp($navigation_history->previousItem(), __FILE__) !== 0);
+  
+  if ( !isset($_SESSION['sess_node_editing']['node_data']) || $need_to_unset_session)
   {
     if ( $need_to_unset_session !== 0 )
     {
@@ -389,7 +389,7 @@ $content_dataAr = array(
   'agenda'       => $user_agenda->getHtml(),
   'course_title' => '<a href="../browsing/main_index.php">'.$course_title.'</a>',
   'path'         => $nodePath,
-  'back'         => $back,
+  'back'         => isset($back) ? $back : '',
   'icon'         => $icon,
   'cancel'       => $cancel
 );

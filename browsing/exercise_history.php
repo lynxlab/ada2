@@ -82,7 +82,7 @@ switch ($op) {
     // lettura dei dati dal database
     // Seleziona gli esercizi dello studente selezionato nel corso selezionato
 
-        $userObj->get_exercise_dataFN($id_course_instance, $id_student) ;
+        $userObj->get_exercise_dataFN($id_course_instance, $userObj->getId()) ;
 
         // Esercizi svolti e relativi punteggi
         $history .= '<p>';
@@ -144,11 +144,11 @@ $content_dataAr = array(
     'banner'=>$banner,
     'course_title'=>translateFN('Storico Esercizi').' > <a href="main_index.php">'.$course_title.'</a>',
     'path'=>$node_path,
-    'class'=>$class . ' ' . translateFN('iniziata il') . ' ' . $start_date,
+    // 'class'=>$class . ' ' . translateFN('iniziata il') . ' ' . $start_date,
     'user_name'=>$user_name,
     'user_type'=>$user_type,
-    'student'=>$student_name,
-    'level'=>$student_level,
+    'student'=>$userObj->getFullName(),
+    'level'=>$userObj->livello,
     'edit_profile'=> $userObj->getEditProfilePage(),
     'data'=>$history,
     'user_level'=>$user_level,

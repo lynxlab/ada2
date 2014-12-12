@@ -94,7 +94,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	
 	
 	            $started = ($c['data_inizio'] > 0 && $c['data_inizio'] < time()) ? translateFN('Si') : translateFN('No');
-	            $start_date = ($c['data inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
+	            $start_date = ($c['data_inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
 	
 	            $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 	            $isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
@@ -174,7 +174,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	        }
 	        else {
 	            $started = ($c['data_inizio'] > 0 && $c['data_inizio'] < time()) ? translateFN('Si') : translateFN('No');
-	            $start_date = ($c['data inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
+	            $start_date = ($c['data_inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
 	
 	            $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 	            $isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
@@ -252,22 +252,22 @@ if (!$displayWhatsNew)
 	// set default template
 	$self = 'default';
 	$content_dataAr = array(
-	    'banner' => $banner,
-	    'today' => $ymdhms,
+	    'banner' => isset($banner) ? $banner : null,
+	    'today' => isset($ymdhms) ? $ymdhms : null,
 	    'user_name' => $user_name,
-            'user_level'=>translateFN("Nd"),
-            'status'=>$status,
+        'user_level'=>translateFN("Nd"),
+        'status'=>$status,
 	    'user_type' => $user_type,
 	    'last_visit' => $last_access,
-	    'message' => $message,
-            'help'=>$help,
+	    'message' => isset($message) ? $message : null,
+        'help'=>isset($help) ? $help : null,
 	//    'iscritto' => $sub_course_data,
 	//    'iscrivibili' => $to_sub_course_data,
 	    'course_title' => translateFN("Home dell'utente"),
 	//    'corsi' => $corsi,
 	//    'profilo' => $profilo,
 	    'data' => $data->getHtml(),
-            'edit_profile'=>$userObj->getEditProfilePage(),
+        'edit_profile'=>$userObj->getEditProfilePage(),
 	    'messages' => $user_messages->getHtml(),
 	    'agenda' => $user_agenda->getHtml(),
 	    'events' => $user_events->getHtml(),

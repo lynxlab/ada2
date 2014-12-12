@@ -15,7 +15,7 @@ class ExerciseDAO {
      * @return ADA_Exercise object on success, AMA_PEAR_Error on failure.
      */
 
-    function getExercise( $id_node, $id_answer=null ) {
+    static function getExercise( $id_node, $id_answer=null ) {
         $dh = $GLOBALS['dh'];
         $exercise_nodes = $dh->get_exercise($id_node);
         if ( AMA_DataHandler::isError( $exercise_nodes ) ) {
@@ -342,7 +342,7 @@ class ADA_Esercizio {
         $this->id        = $id_node;
         $this->testo     = $testo;
         $this->dati      = $dati;
-        if ($tudent_answer == null) {
+        if ($student_answer == null) {
             $this->risposta['ripetibile'] = true; 
         } else {
             $this->risposta  = $student_answer;

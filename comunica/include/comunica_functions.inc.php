@@ -18,27 +18,27 @@ require_once ROOT_DIR.'/include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php';
 require_once ROOT_DIR.'/comunica/include/videoroom_classes.inc.php';
 
 
-if ($_REQUEST['id_node']){
+if (isset($_REQUEST['id_node'])){
   $sess_id_node = $_REQUEST['id_node'];
   $id_node = $_REQUEST['id_node'];
 } else {
-  $sess_id_node = $_SESSION['sess_id_node'];
+  $sess_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
 }
 
 
-if ($_REQUEST['id_course']){
+if (isset($_REQUEST['id_course'])){
   $sess_id_course = intval($_REQUEST['id_course']);
   $id_course = $sess_id_course;
 } else {
-  $sess_id_course = $_SESSION['sess_id_course'];
+  $sess_id_course = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
 }
 
-if ($_REQUEST['id_course_instance']){
+if (isset($_REQUEST['id_course_instance'])){
   $sess_id_course_instance = intval($_REQUEST['id_course_instance']);
   $id_course_instance = $sess_id_course_instance;
   //  $is_istance_active = 1; ??
 } else {
-  $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
+  $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
 }
 
 
@@ -53,7 +53,7 @@ if (!isset($_REQUEST['status'])) {
   $status = $_REQUEST['status'];
 }
 
-if ($_REQUEST['id_room']){
+if (isset($_REQUEST['id_room'])){
   $sess_id_room = intval($_REQUEST['id_room']);
   $id_room = $sess_id_room;
   $id_chatroom = $sess_id_room;
@@ -128,9 +128,9 @@ else {
 }
 
 /*
- * Get this user needed objects from $neededObjAr based on user tyoe
+ * Get this user needed objects from $neededObjAr based on user type
  */
-if(is_array($neededObjAr) && is_array($neededObjAr[$id_profile])) {
+if(is_array($neededObjAr) && isset($neededObjAr[$id_profile]) && is_array($neededObjAr[$id_profile])) {
   $thisUserNeededObjAr = $neededObjAr[$id_profile];
 }
 else {
@@ -425,8 +425,8 @@ $_SESSION['sess_template_family'] = $template_family;
  * @var Array
  */
 $layout_dataAr = array();
-$layout_dataAr['node_type'] = $node_type;
-$layout_dataAr['family'] = $template_family;
-$layout_dataAr['node_author_id'] = $node_author_id;
-$layout_dataAr['node_course_id'] = $node_course_id;
-$layout_dataAr['module_dir'] = $module_dir;
+if(isset($node_type))       $layout_dataAr['node_type'] = $node_type;
+if(isset($template_family)) $layout_dataAr['family'] = $template_family;
+if(isset($node_author_id))  $layout_dataAr['node_author_id'] = $node_author_id;
+if(isset($node_course_id))  $layout_dataAr['node_course_id'] = $node_course_id;
+if(isset($module_dir))      $layout_dataAr['module_dir'] = $module_dir;

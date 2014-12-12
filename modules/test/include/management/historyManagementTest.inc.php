@@ -53,7 +53,7 @@ class HistoryManagementTest extends TutorManagementTest {
 	 *
 	 * @return array an array composed of 'html', 'path' and 'title' keys
 	 */
-	protected function list_tests() {
+	protected function list_tests($student = false) {
 		$array = parent::list_tests(true);
 
 		$array['html'] = str_replace('&id_student='.$this->id_student,'',$array['html']);
@@ -71,7 +71,7 @@ class HistoryManagementTest extends TutorManagementTest {
 	 *
 	 * @return array an array composed of 'html', 'path' and 'title' keys
 	 */
-	protected function list_history_tests() {
+	protected function list_history_tests($student = false) {
 		$array = parent::list_history_tests(true);
 
 		$array['html'] = str_replace('&id_student='.$this->id_student,'',$array['html']);

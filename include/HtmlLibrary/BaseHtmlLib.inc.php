@@ -200,10 +200,10 @@ class BaseHtmlLib {
       foreach($table_row as $column_in_row) {
         $column = CDOMElement::create('td',"class:$css_td_class");
           if($parityCol%2 == 0) {
-            $column->setAttribute('class',"$css_even_td_class");
+            if (isset($css_even_td_class)) $column->setAttribute('class',"$css_even_td_class");
           }
           else {
-            $column->setAttribute('class',"$css_odd_td_class");
+            if (isset($css_odd_td_class)) $column->setAttribute('class',"$css_odd_td_class");
           }
         if($column_in_row instanceof CBase) {
           $column->addChild($column_in_row);

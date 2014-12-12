@@ -79,13 +79,13 @@ class Spool extends Abstract_AMA_DataHandler
     }
     // Fine modifica
 
-    $title     = $this->or_null(/*$this->sql_prepared(*/$message_ha['titolo']/*)*/);
-    $id_group  = $this->or_zero($message_ha['id_group']);
-    $priority  = $this->or_zero($message_ha['priorita']);
+    $title     = $this->or_null(/*$this->sql_prepared(*/isset($message_ha['titolo']) ? $message_ha['titolo'] : ''/*)*/);
+    $id_group  = $this->or_zero( isset($message_ha['id_group']) ? $message_ha['id_group'] : '' );
+    $priority  = $this->or_zero( isset($message_ha['priorita']) ? $message_ha['priorita'] : '' );
     $body      = $this->or_null(/*$this->sql_prepared(*/$message_ha['testo']/*)*/);
     $type      = /*"'".*/$this->type/*."'"*/;
     $sender_id = $this->user_id;
-    $flags     = $this->or_zero($message_ha['flags']);
+    $flags     = $this->or_zero( isset($message_ha['flags']) ? $message_ha['flags'] : '' );
 
     $db =& parent::getConnection();
     if (AMA_DB::isError($db)) return $db;
@@ -743,7 +743,8 @@ class Spool extends Abstract_AMA_DataHandler
     }
 
     // return the two elements as an array reference
-    return array($msg_ha, $recipients_ids);
+    $retval = array($msg_ha, $recipients_ids);
+    return $retval;
   }
 
   /**
@@ -1072,15 +1073,23 @@ class SimpleSpool extends Spool
    * @param   $recipients_ids_ar - list of recipients ids
    *
    * @return  an AMA_Error object if something goes wrong
+   * 
+   * (non-PHPdoc)
+   * @see Spool::add_message()
+   * 
+   * @author giorgio 20/ott/2014
+   * 
+   * added $check_on_uniqueness parameters to make the
+   * definition compatible with Spool::add_message()
    *
    **/
-  public function add_message($message_ha, $recipients_ids_ar) {
+  public function add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness = false) {
 
     // logger("entered SimpleSpool::add_message", 3);
 
     $this->clean();
 
-    $res = parent::add_message($message_ha, $recipients_ids_ar, false);
+    $res = parent::add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness);
     if (AMA_DataHandler::isError($res)) {
       // $res is an AMA_Error object
       return $res;
@@ -1332,14 +1341,22 @@ class AgendaSpool extends Spool
    * @param   $recipients_ids_ar - list of recipients ids
    *
    * @return  an AMA_Error object if something goes wrong
-   *
+   * 
+   * (non-PHPdoc)
+   * @see Spool::add_message()
+   * 
+   * @author giorgio 20/ott/2014
+   * 
+   * added $check_on_uniqueness parameters to make the
+   * definition compatible with Spool::add_message()
+   * 
    **/
-  public function add_message($message_ha, $recipients_ids_ar) {
+  public function add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness = false) {
 
     // logger("entered AgendaSpool::add_message", 3);
     $this->clean();
 
-    return parent::add_message($message_ha, $recipients_ids_ar, false);
+    return parent::add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness);
   }
 
 
@@ -1410,13 +1427,21 @@ class ChatSpool extends Spool
    *
    * @return  an AMA_Error object if something goes wrong
    *
+   * (non-PHPdoc)
+   * @see Spool::add_message()
+   * 
+   * @author giorgio 20/ott/2014
+   * 
+   * added $check_on_uniqueness parameters to make the
+   * definition compatible with Spool::add_message()
+   * 
    **/
-  public function add_message($message_ha, $recipients_ids_ar= array()) {
+  public function add_message($message_ha, $recipients_ids_ar= array(), $check_on_uniqueness = false) {
     $this->clean();
     /*
      * Call parent add_message with no checks on message uniqueness
      */
-    return parent::add_message($message_ha, $recipients_ids_ar, FALSE);
+    return parent::add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness);
   }
 
 

@@ -128,7 +128,7 @@ abstract class QuestionClozeTest extends QuestionTest
 	 *
 	 * @see getMaxScore
 	 */
-	public function getMostCorrectAnswer($ordine) {
+	public function getMostCorrectAnswer($ordine=null) {
 		$score = 0;
 		$mostCorrectAnswer = null;
 

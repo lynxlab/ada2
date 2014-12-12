@@ -255,7 +255,7 @@ class AMATestDataHandler extends AMA_DataHandler {
      *
      */
     public function test_getNodes($where) {
-        $values = array($id_node);
+        // $values = array($id_node);
         $sql = "SELECT *
                 FROM `".self::$PREFIX."nodes` t
                 WHERE true";
@@ -471,7 +471,7 @@ class AMATestDataHandler extends AMA_DataHandler {
 				WHERE ha.`id_history_test` = ?";
         $res =  $this->getAllPrepared($sql, array($id_history_text), AMA_FETCH_ASSOC);
 
-        if(self::isError($tmp_res)) {
+        if(self::isError($res)) {
             return new AMA_Error(AMA_ERR_GET);
         }
         else {

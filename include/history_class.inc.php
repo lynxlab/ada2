@@ -64,7 +64,7 @@ class History
       $this->get_course_data();
     }
 
-    if (!is_null($node_type))
+    if (!is_null($node_type) && strlen($node_type)>0)
     {
       return $this->node_visits_count[$node_type];
     }
@@ -391,9 +391,15 @@ class History
     }
 
     $nodes_time = 0 ;
-    $n_session = $visit_time[0]['session_id'] ;
-    $n_start = $visit_time[0]['data_visita'] ;
-    $n_time_prec = $visit_time[0]['data_visita'] ;
+    if (isset($visit_time[0])) {
+	    $n_session = $visit_time[0]['session_id'] ;
+	    $n_start = $visit_time[0]['data_visita'] ;
+	    $n_time_prec = $visit_time[0]['data_visita'] ;    	
+    } else {
+    	$n_session = null ;
+    	$n_start = null ;
+    	$n_time_prec = null ;
+    }
     $num_nodi = count($visit_time);
     foreach($visit_time as $key=>$val){
       // controlla se vi e' stato cambio del valore del session_id
@@ -427,7 +433,7 @@ class History
     $dh = $GLOBALS['dh'];
     $error = $GLOBALS['error'];
     $http_root_dir = $GLOBALS['http_root_dir'];
-    $debug = $GLOBALS['debug'];
+    // $debug = $GLOBALS['debug'];
 
     $data = array();
     //if (!$user_historyAr) {

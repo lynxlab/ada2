@@ -115,7 +115,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         
         $confirm_link_html = CDOMElement::create('a', 'href:'.HTTP_ROOT_DIR."/browsing/confirm.php?uid=$id_user&tok=$token");
         $confirm_link_html->addChild(new CText(translateFN('conferma registrazione')));
-        $confirm_link_html_rendered .= $confirm_link_html->getHtml();
+        $confirm_link_html_rendered = $confirm_link_html->getHtml();
         
         $PLAINText = sprintf(translateFN('Gentile %s, ti chiediamo di confermare la registrazione ai %s.'),
         		$userObj->getFullName(), PORTAL_NAME)
@@ -151,6 +151,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'tipo' => ADA_MSG_SIMPLE,
             'mittente' => $adm_uname
         );
+        $tester = isset($tester) ? $tester : null;
         $mh = MessageHandler::instance(MultiPort::getDSN($tester));
         /**
          * Send the message as an internal message
@@ -243,12 +244,12 @@ $optionsAr['onload_func'] = 'initDateField();';
 $title = translateFN('Informazioni');
 
 $content_dataAr = array(
-  'user_name'  => $user_name,
-  'home'       => $home,
-  'data'       => $data,
-  'help'       => $help,
-  'message'    => $message,
-  'status'     => $status
+  'user_name'  => isset($user_name) ? $user_name : null,
+  'home'       => isset($home) ? $home : null,
+  'data'       => isset($data) ? $data : null,
+  'help'       => isset($help) ? $help : null,
+  'message'    => isset($message) ? $message : null,
+  'status'     => isset($status) ? $status : null
 );
 
  if(isset($msg))

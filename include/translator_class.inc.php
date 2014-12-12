@@ -46,13 +46,16 @@ class Translator
 		return self::$already_translated_messages[self::messageHash($message,$language_code)];
 	}
 
-    self::$already_translated_messages[self::messageHash($message,$language_code)] = $common_dh->find_message_translation($message, $language_code);
+	$translated_message = $common_dh->find_message_translation($message, $language_code);
+    
     if (AMA_DataHandler::isError($translated_message)) {
       /*
        * In case an error occurs during translation retrieval,
        * return the original message to the user.
        */
       return $message;
+    } else {
+    	self::$already_translated_messages[self::messageHash($message,$language_code)] = $translated_message;
     }
     return self::$already_translated_messages[self::messageHash($message,$language_code)];
   }

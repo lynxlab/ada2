@@ -320,7 +320,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
        * durante l'upload.
        */
 	  $empty_filename = empty($filename);
-	  $accepted_mimetype = ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
+	  $accepted_mimetype = isset($ADA_MIME_TYPE[$file_type]) && ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
 	  $accepted_filesize = ($file_size < ADA_FILE_UPLOAD_MAX_FILESIZE);
 	  
       if ( !$empty_filename && !$file_upload_error &&
@@ -451,7 +451,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
   $content_dataAr = array(
     //'head'         => $head_form,
     //'banner'       => $banner,
-    'form'         => $form,
+    'form'         => isset($form) ? $form : '',
     'status'       => $status,
     'user_name'    => $user_name,
     'user_type'    => $user_type,
@@ -475,7 +475,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
 
 
 
-  ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr);
+  ARE::render($layout_dataAr, $content_dataAr,NULL,isset($optionsAr) ? $optionsAr : null);
 }
 /*
  * L'autore e l'amministratore non possono utilizzare il modulo collabora,

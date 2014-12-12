@@ -58,6 +58,7 @@ $languages = Translator::getLanguagesIdAndName();
  * Set the $editUserObj depending on logged user type
  */
 $editUserObj = null;
+$self_instruction = isset($self_instruction) ? $self_instruction : null;
 
 switch($userObj->getType()) {
 	case AMA_TYPE_STUDENT:
@@ -309,7 +310,8 @@ $layout_dataAr['CSS_filename'] = array(
 		JQUERY_UI_CSS,
 		ROOT_DIR.'/js/include/jquery/pekeUpload/pekeUpload.css'
 );
-$self_instruction=$_GET['self_instruction'];   //if a course instance is self_instruction
+//if a course instance is self_instruction
+$self_instruction=isset($_GET['self_instruction']) ? $_GET['self_instruction'] : null;
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
     $self='editUserSelfInstruction';

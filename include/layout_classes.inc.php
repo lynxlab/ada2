@@ -57,6 +57,15 @@ class Layout {
 	}
 	$this->family = $family;
 	$this->module_dir = $module_dir;
+	
+	/**
+	 * @author giorgio 20/ott/2014
+	 * 
+	 * $basedir_ada var was already here but it looks like
+	 * it's never used. I set it to null and keep it here
+	 * for compatibilty reason, it's probably safe to remove it
+	 */
+	if (!isset($basedir_ada)) $basedir_ada = null;
 
 	// Template
 	$TplObj = new Template($user_type,$node_type,$family,$node_author_id,$node_course_id,$basedir_ada,$module_dir,$this->external_module);
@@ -212,7 +221,7 @@ class Template {
 			 *  Should you disable it, check carefully all 'anonymous' pages
 			 *  at least info.php should use the default template
 			 */
-			if (!file_exists($tpl_filename))
+			if (!isset($tpl_filename) || !file_exists($tpl_filename))
 			{
 				$tpl_filename = $tpl_dir."default".$tpl_fileextension;
 			}
@@ -222,7 +231,7 @@ class Template {
 	 * giorgio 11/ago/2013
 	 * if $tpl_filename is not found inside client dir, resume normal operation
 	 */
-	if (!file_exists($tpl_filename))
+	if (!isset($tpl_filename) || !file_exists($tpl_filename))
 	{
 		$tpl_dir = $root_dir."/layout/$family/templates/$module_dir/";
 		$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
@@ -300,6 +309,7 @@ class CSS {
 			$module_dir = 'main';
 		}
 
+		if (!isset($CSS_module_dir)) $CSS_module_dir = '';
 		$CSS_dir = $rel_pref."layout/$family/css/$module_dir/";
 	}
 

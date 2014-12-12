@@ -168,7 +168,8 @@ class ADAAddressBook
           if(AMA_DataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
             $tutors_Ar = array();
           }
-          $tutors_Ar = array_unique($tutors_Ar);
+          
+          $tutors_Ar = array_unique($tutors_Ar, SORT_REGULAR);
 
           /*
            * GET SWITCHER OF TESTER

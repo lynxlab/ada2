@@ -221,10 +221,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 
      //get time and date and transform it to sting format
      //ts2dFN()
-    $old_start_time = $dh->ts_to_date($chatroom_old_ha['tempo_avvio'], "%H:%M:%S");
-     $old_start_day = $dh->ts_to_date($chatroom_old_ha['tempo_avvio']);
-     $old_end_time = $dh->ts_to_date($chatroom_old_ha['tempo_fine'], "%H:%M:%S");
-     $old_end_day = $dh->ts_to_date($chatroom_old_ha['tempo_fine']);
+    $old_start_time = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_avvio'], "%H:%M:%S");
+     $old_start_day = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_avvio']);
+     $old_end_time = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_fine'], "%H:%M:%S");
+     $old_end_day = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_fine']);
     // different chat type options are available for admins and for tutors
     // admin case
     $chat_room_HA['start_day'] = $old_start_day;

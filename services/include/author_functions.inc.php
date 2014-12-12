@@ -27,7 +27,7 @@ require_once ROOT_DIR.'/include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php';
 //require_once ROOT_DIR . '/include/media_viewing_classes.inc.php';
 
 
-if ($_REQUEST['id_node']){
+if (isset($_REQUEST['id_node'])){
   $sess_id_node = $_REQUEST['id_node'];
   $id_node = $_REQUEST['id_node'];
 } else {
@@ -35,14 +35,14 @@ if ($_REQUEST['id_node']){
 }
 
 
-if ($_REQUEST['id_course']){
+if (isset($_REQUEST['id_course'])){
   $sess_id_course = $_REQUEST['id_course'];
   $id_course = $sess_id_course;
 } else {
   $sess_id_course = $_SESSION['sess_id_course'];
 }
 
-if ($_REQUEST['id_course_instance']){
+if (isset($_REQUEST['id_course_instance'])){
   $sess_id_course_instance = $_REQUEST['id_course_instance'];
   $id_course_instance = $sess_id_course_instance;
   //  $is_istance_active = 1; ??
@@ -224,9 +224,9 @@ $_SESSION['sess_template_family'] = $template_family;
  * Layout data
  */
 $layout_dataAr = array(
-  'node_type'      => $node_type,
-  'family'         => $template_family,
-  'node_author_id' => $node_author_id,
-  'node_course_id' => $node_course_id,
-  'module_dir'     => $module_dir
+  'node_type'      => isset($node_type) ? $node_type : '',
+  'family'         => isset($template_family) ? $template_family : '',
+  'node_author_id' => isset($node_author_id) ? $node_author_id : '',
+  'node_course_id' => isset($node_course_id) ? $node_course_id : '',
+  'module_dir'     => isset($module_dir) ? $module_dir : ''
 );

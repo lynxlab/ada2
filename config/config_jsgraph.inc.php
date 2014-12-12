@@ -13,6 +13,8 @@
 /
 /*****************************************************/
 
+define('ADA_MULTI_CONFIG', true);
+
 // Height and width of each color sample
 define('WIDTH',30);
 define('HEIGHT',30);
