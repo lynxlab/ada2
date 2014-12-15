@@ -265,25 +265,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
 
   $id_profile = $sess_userObj->getType();
 
-  /**
-   *  set session array containing services_type definition.
-   */
-  if (!isset($_SESSION['service_level'])){
-    if($common_dh instanceof AMA_Common_DataHandler) {
-        $servicesTypeAr =  $common_dh->get_service_type();
-        if(!empty($servicesTypeAr) && !AMA_DataHandler::isError($servicesTypeAr)){
-            foreach($servicesTypeAr as $servicesType){
-                if(isset($servicesType['livello_servizio']) && isset($servicesType['nome_servizio'])){
-                    $_SESSION['service_level'][$servicesType['livello_servizio']]=translateFN($servicesType['nome_servizio']);
-                    
-                }
-            }
-        } 
-        else{
-            if(defined('ADA_SERVICE_ONLINECOURSE')){$_SESSION['service_level'][ADA_SERVICE_ONLINECOURSE]=translateFN('Corso Online');}
-        }
-     }
-  }
+  loadServiceTypes();
   
   /*
    * Get needed object for this user from $neededObjAr 
@@ -752,6 +734,30 @@ function clear_dataFN($variableToClearAr=array()) {
   if (in_array('layout', $variableToClearAr)) {
     $GLOBALS['layout_CSS']      = 'css/default/default.css';
     $GLOBALS['layout_template'] = 'templates/default/default';
+  }
+}
+    
+/**
+ *  set array session containing services_type definition.
+ */
+function loadServiceTypes(){
+ 
+  if (!isset($_SESSION['service_level'])){
+    if($GLOBALS['common_dh'] instanceof AMA_Common_DataHandler) {
+        $servicesTypeAr =  $GLOBALS['common_dh']->get_service_type();
+        if(!empty($servicesTypeAr) && !AMA_DB::isError($servicesTypeAr)){
+            foreach($servicesTypeAr as $servicesType){
+                if(isset($servicesType['livello_servizio']) && isset($servicesType['nome_servizio'])){
+                    $_SESSION['service_level'][$servicesType['livello_servizio']]=translateFN($servicesType['nome_servizio']);
+                    
+                }
+            }
+        } 
+        else{
+            if(defined('DEFAULT_SERVICE_TYPE') && defined('DEFAULT_SERVICE_TYPE_NAME')){
+                $_SESSION['service_level'][DEFAULT_SERVICE_TYPE]=translateFN(DEFAULT_SERVICE_TYPE_NAME);}
+        }
+     }
   }
 }
 ?>

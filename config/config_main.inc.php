@@ -104,7 +104,7 @@ define('ADA_COURSEINSTANCE_STATUS_PUBLIC',   2);
 /**
  * ADA generic services types
  */
-define('ADA_SERVICE_ONLINECOURSE', 1);
+define('DEFAULT_SERVICE_TYPE', 1);
 
 /**
  * ADA token

@@ -135,8 +135,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	        }
 	
 	        $form = new CourseModelForm($authors, $languages);
-                var_dump($courseObj);
-	        if (!AMA_DataHandler::isError($course_data)) {
+                if (!AMA_DataHandler::isError($course_data)) {
 	            $formData = array(
 	                'id_corso' => $courseObj->getId(),
 	                'id_utente_autore' => $courseObj->getAuthorId(),
