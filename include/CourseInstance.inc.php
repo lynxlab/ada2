@@ -98,5 +98,8 @@ class Course_instance extends Course_instance_Old
     public function getOpenSubscription() {
         return $this->open_subscription;
     }
+    public function getDurationHours() {
+    	return $this->duration_hours;
+    }
 
 }

@@ -77,7 +77,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'media_path' => $_POST['media_path'],
             'id_lingua' => $_POST['id_lingua'],
             'static_mode' => $_POST['static_mode'],
-            'crediti' => $_POST['crediti']
+            'crediti' => $_POST['crediti'],
+            'duration_hours' => $_POST['duration_hours'],
+            'service_level' => $_POST['service_level']
         );
         $result = $dh->set_course($_POST['id_corso'], $course);
 
@@ -87,7 +89,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $update_serviceDataAr = array(
                     'service_name' => $_POST['titolo'],
                     'service_description' => $_POST['descrizione'],
-                    'service_level' => $service_dataAr[3],
+                    'service_level' => $_POST['service_level'],
                     'service_duration' => $service_dataAr[4],
                     'service_min_meetings' => $service_dataAr[5],
                     'service_max_meetings' => $service_dataAr[6],
@@ -113,41 +115,51 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $form = new CText(translateFN('Corso non trovato'));
     } else {
-        $providerAuthors = $dh->find_authors_list(array('username'), '');
-        $authors = array();
-        foreach ($providerAuthors as $author) {
-            $authors[$author[0]] = $author[1];
-        }
-
-        $availableLanguages = Translator::getSupportedLanguages();
-        $languages = array();
-        foreach ($availableLanguages as $language) {
-            $languages[$language['id_lingua']] = $language['nome_lingua'];
-        }
-
-        $form = new CourseModelForm($authors, $languages);
-
-        if (!AMA_DataHandler::isError($course_data)) {
-            $formData = array(
-                'id_corso' => $courseObj->getId(),
-                'id_utente_autore' => $courseObj->getAuthorId(),
-                'id_lingua' => $courseObj->getLanguageId(),
-                'id_layout' => $courseObj->getLayoutId(),
-                'nome' => $courseObj->getCode(),
-                'titolo' => $courseObj->getTitle(),
-                'descrizione' => $courseObj->getDescription(),
-                'id_nodo_iniziale' => $courseObj->getRootNodeId(),
-                'id_nodo_toc' => $courseObj->getTableOfContentsNodeId(),
-                'media_path' => $courseObj->getMediaPath(),
-                'static_mode' => $courseObj->getStaticMode(),
-                'data_creazione' => $courseObj->getCreationDate(),
-                'data_pubblicazione' => $courseObj->getPublicationDate(),
-                'crediti' =>  $courseObj->getCredits() // modifica in Course
-            );
-            $form->fillWithArrayData($formData);
-        } else {
-            $form = new CText(translateFN('Corso non trovato'));
-        }
+    	
+    	// get service data
+    	$service_dataAr = $common_dh->get_service_info_from_course($courseObj->getId());
+    	if (AMA_Common_DataHandler::isError($service_dataAr) || count($service_dataAr)==0) {
+    		$form = new CText(translateFN('Servizio non trovato (2)'));
+    	} else {
+            
+	    	$providerAuthors = $dh->find_authors_list(array('username'), '');
+	        $authors = array();
+	        foreach ($providerAuthors as $author) {
+	            $authors[$author[0]] = $author[1];
+	        }
+	
+	        $availableLanguages = Translator::getSupportedLanguages();
+	        $languages = array();
+	        foreach ($availableLanguages as $language) {
+	            $languages[$language['id_lingua']] = $language['nome_lingua'];
+	        }
+	
+	        $form = new CourseModelForm($authors, $languages);
+                var_dump($courseObj);
+	        if (!AMA_DataHandler::isError($course_data)) {
+	            $formData = array(
+	                'id_corso' => $courseObj->getId(),
+	                'id_utente_autore' => $courseObj->getAuthorId(),
+	                'id_lingua' => $courseObj->getLanguageId(),
+	                'id_layout' => $courseObj->getLayoutId(),
+	                'nome' => $courseObj->getCode(),
+	                'titolo' => $courseObj->getTitle(),
+	                'descrizione' => $courseObj->getDescription(),
+	                'id_nodo_iniziale' => $courseObj->getRootNodeId(),
+	                'id_nodo_toc' => $courseObj->getTableOfContentsNodeId(),
+	                'media_path' => $courseObj->getMediaPath(),
+	                'static_mode' => $courseObj->getStaticMode(),
+	                'data_creazione' => $courseObj->getCreationDate(),
+	                'data_pubblicazione' => $courseObj->getPublicationDate(),
+	            	'crediti' =>  $courseObj->getCredits(), // modifica in Course
+	                'duration_hours' => $courseObj->getDurationHours(),
+                        'service_level'  =>$courseObj->getServiceLevel()
+	            );
+	            $form->fillWithArrayData($formData);
+	        } else {
+	            $form = new CText(translateFN('Corso non trovato'));
+	        }
+	    }
     }
 }
 

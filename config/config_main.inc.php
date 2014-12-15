@@ -95,11 +95,16 @@ define('ADA_GROUP_WORD_TYPE',  81);
 define('ADA_PERSONAL_EXERCISE_TYPE',  9);
 
 /**
- * ADA services types
+ * ADA instance services types
  */
 define('ADA_COURSEINSTANCE_STATUS_PRIVATE',  0);
 define('ADA_COURSEINSTANCE_STATUS_RESERVED', 1);
 define('ADA_COURSEINSTANCE_STATUS_PUBLIC',   2);
+
+/**
+ * ADA generic services types
+ */
+define('ADA_SERVICE_ONLINECOURSE', 1);
 
 /**
  * ADA token
