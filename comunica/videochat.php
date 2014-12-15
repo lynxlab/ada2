@@ -89,13 +89,13 @@ $content_dataAr = array (
 //	'data'      => $content,
 	'label' => $label,
 	'menu_01'   => $menu_01,
-	'user_name' =>$username,
+	'user_name' =>isset($user_uname) ? $user_uname : '',
 	'user_type' =>$user_type,
 	'status' => $status,
 	'data'      => $iframe
 );
 
 
-ARE::render($layout_dataAR,$content_dataAr,NULL,$options_Ar);
+ARE::render($layout_dataAr,$content_dataAr,NULL,$options_Ar);
 
 ?>
