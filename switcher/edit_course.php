@@ -78,7 +78,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'id_lingua' => $_POST['id_lingua'],
             'static_mode' => $_POST['static_mode'],
             'crediti' => $_POST['crediti'],
-        	'duration_hours' => $_POST['duration_hours']
+            'duration_hours' => $_POST['duration_hours'],
+            'service_level' => $_POST['service_level']
         );
         $result = $dh->set_course($_POST['id_corso'], $course);
 
@@ -136,7 +137,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	        }
 	
 	        $form = new CourseModelForm($authors, $languages);
-	
+                var_dump($courseObj);
 	        if (!AMA_DataHandler::isError($course_data)) {
 	            $formData = array(
 	                'id_corso' => $courseObj->getId(),
@@ -154,7 +155,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	                'data_pubblicazione' => $courseObj->getPublicationDate(),
 	            	'service_level' => $service_level,
 	                'crediti' =>  $courseObj->getCredits(), // modifica in Course
-	                'duration_hours' => $courseObj->getDurationHours()
+	                'duration_hours' => $courseObj->getDurationHours(),
+                        'service_level'  =>$courseObj->getServiceLevel()
 	            );
 	            $form->fillWithArrayData($formData);
 	        } else {

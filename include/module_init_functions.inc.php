@@ -265,6 +265,26 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
 
   $id_profile = $sess_userObj->getType();
 
+  /**
+   *  set session array containing services_type definition.
+   */
+  if (!isset($_SESSION['service_level'])){
+    if($common_dh instanceof AMA_Common_DataHandler) {
+        $servicesTypeAr =  $common_dh->get_service_type();
+        if(!empty($servicesTypeAr) && !AMA_DataHandler::isError($servicesTypeAr)){
+            foreach($servicesTypeAr as $servicesType){
+                if(isset($servicesType['livello_servizio']) && isset($servicesType['nome_servizio'])){
+                    $_SESSION['service_level'][$servicesType['livello_servizio']]=translateFN($servicesType['nome_servizio']);
+                    
+                }
+            }
+        } 
+        else{
+            if(defined('ADA_SERVICE_ONLINECOURSE')){$_SESSION['service_level'][ADA_SERVICE_ONLINECOURSE]=translateFN('Corso Online');}
+        }
+     }
+  }
+  
   /*
    * Get needed object for this user from $neededObjAr 
    */

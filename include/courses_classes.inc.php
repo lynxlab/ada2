@@ -30,6 +30,7 @@ class Course_Old {
     var $static_mode;
     var $crediti;
     var $duration_hours;
+    var $service_level;
 
     public function __construct($id_course) {
         $dh = $GLOBALS['dh'];
