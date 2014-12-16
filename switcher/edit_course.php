@@ -115,7 +115,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $form = new CText(translateFN('Corso non trovato'));
     } else {
-    	
+    	// get service data
+    	$service_dataAr = $common_dh->get_service_info_from_course($courseObj->getId());
     	if (AMA_Common_DataHandler::isError($service_dataAr) || count($service_dataAr)==0) {
     		$form = new CText(translateFN('Servizio non trovato (2)'));
     	} else {
