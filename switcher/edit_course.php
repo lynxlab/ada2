@@ -121,10 +121,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     	if (AMA_Common_DataHandler::isError($service_dataAr) || count($service_dataAr)==0) {
     		$form = new CText(translateFN('Servizio non trovato (2)'));
     	} else {
-	    	
-    		$service_level = intval($service_dataAr[3]);
-    		
-	        $providerAuthors = $dh->find_authors_list(array('username'), '');
+            
+	    	$providerAuthors = $dh->find_authors_list(array('username'), '');
 	        $authors = array();
 	        foreach ($providerAuthors as $author) {
 	            $authors[$author[0]] = $author[1];
@@ -137,8 +135,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	        }
 	
 	        $form = new CourseModelForm($authors, $languages);
-                var_dump($courseObj);
-	        if (!AMA_DataHandler::isError($course_data)) {
+                if (!AMA_DataHandler::isError($course_data)) {
 	            $formData = array(
 	                'id_corso' => $courseObj->getId(),
 	                'id_utente_autore' => $courseObj->getAuthorId(),
@@ -153,8 +150,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	                'static_mode' => $courseObj->getStaticMode(),
 	                'data_creazione' => $courseObj->getCreationDate(),
 	                'data_pubblicazione' => $courseObj->getPublicationDate(),
-	            	'service_level' => $service_level,
-	                'crediti' =>  $courseObj->getCredits(), // modifica in Course
+	            	'crediti' =>  $courseObj->getCredits(), // modifica in Course
 	                'duration_hours' => $courseObj->getDurationHours(),
                         'service_level'  =>$courseObj->getServiceLevel()
 	            );

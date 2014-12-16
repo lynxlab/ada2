@@ -201,6 +201,11 @@ define ("ADA_USER_AUTOMATIC_ENTER",FALSE); // feature disabled !
 
 define ("ADA_PRINT_CERTIFICATE",FALSE);
 
+/*
+ * If there isn't db_common.service_type table, use this to define default service type. 
+ */
+define('DEFAULT_SERVICE_TYPE_NAME','Corso Online');
+
 /**
  * Environment constants and global variables.
  * This section can be modified only by an expert installer.
