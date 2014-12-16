@@ -279,7 +279,8 @@ class AMA_PDO_wrapper
 			$retval = $stmt->fetch ($fetchmode);
 			return $retval;
 		} catch (PDOException $e) {
-			return self::handleException($e);
+			$retval = self::handleException($e);
+			return $retval;
 		}
 	}
 

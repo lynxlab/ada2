@@ -580,7 +580,7 @@ class ChatRoom {
     //*******************************************************************************/
     //gets the id of the active public chatroom
     //*******************************************************************************/
-    function find_public_chatroomFN() {
+    public static function find_public_chatroomFN() {
         $cdh = self::obtainChatDataHandlerInstance();
         $result = $cdh->find_public_chatroom();
         return $result;
@@ -628,7 +628,7 @@ class ChatRoom {
     //*******************************************************************************/
     // returns an array contaning the ids of the chatrooms relative to a specific class
     //*******************************************************************************/
-    function get_all_class_chatroomsFN($id_course_instance) {
+    public static function get_all_class_chatroomsFN($id_course_instance) {
         if (!self::isInStaticContext()) {
             $this->id_course_instance = $id_course_instance;
         }
@@ -640,7 +640,7 @@ class ChatRoom {
     //*******************************************************************************/
     //gets all the private chatrooms taht a user could have access
     //*******************************************************************************/
-    function get_all_private_chatroomsFN($user_id) {
+    public static function get_all_private_chatroomsFN($user_id) {
         $cdh = self::obtainChatDataHandlerInstance();
         $result = $cdh->get_all_private_chatrooms($user_id);
         return $result;

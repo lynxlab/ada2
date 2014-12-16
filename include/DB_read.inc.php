@@ -23,7 +23,7 @@ function read_node_from_DB($id_node) {
     $read_id_node = $id_node;
   }
   else {
-    $read_id_node = $_SESSION['sess_id_node'];
+    $read_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
   }
 
   if(isset($read_id_node)) {

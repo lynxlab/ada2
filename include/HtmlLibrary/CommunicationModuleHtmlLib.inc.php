@@ -945,7 +945,7 @@ class CommunicationModuleHtmlLib
 
   static private function display_messages_as_form($data_Ar=array(), $message_type = ADA_MSG_SIMPLE,  $testers_dataAr=array()) {
     $common_dh = $GLOBALS['common_dh'];
-    $javascript_ok = check_javascriptFN($GLOBALS['HTTP_USER_AGENT']);
+    $javascript_ok = check_javascriptFN($_SERVER['HTTP_USER_AGENT']);
 
     $appointments_Ar = array();
 
@@ -1066,6 +1066,7 @@ class CommunicationModuleHtmlLib
           $read->setAttribute('checked','checked');
         }
 
+        if (!isset($action_link)) $action_link=null;
         $appointments_Ar[] = array($sender_username, $data_msg, $subject_link, $priority, $delete, $read, $action_link);
 
       }
@@ -1073,7 +1074,7 @@ class CommunicationModuleHtmlLib
 
     if(count($appointments_Ar) > 0) {
       $table = BaseHtmlLib::tableElement('',$thead_data, $appointments_Ar);
-
+      if (!isset($module)) $module=null;	
       $form = CDOMElement::create('form',"name:form, method:post, action:$module");
       $form->addChild($table);
       $div = CDOMElement::create('div','id:buttons');

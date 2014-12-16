@@ -208,7 +208,7 @@ if (in_array('tutor',$thisUserNeededObjAr)){
          */
         $tutorObj = $dh->get_tutor($tutor_id);
         if (!AMA_dataHandler::isError($tutorObj)){
-          $tutor_uname = $tutor['username'];
+          $tutor_uname = $tutorObj['username'];
         }
       }
     }

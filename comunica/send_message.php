@@ -241,7 +241,7 @@ switch ($op){
     $pre_testo  = translateFN('Risposta al messaggio');
     $post_testo = translateFN('Inviato da') . ' ' . $destinatario;
 
-    $testo_ar = split("[\n]", $testo_replay);
+    $testo_ar = preg_split("#[\n]#", $testo_replay);
 
     $testo = "";
     foreach($testo_ar as $riga) {
@@ -286,7 +286,7 @@ switch ($op){
     $pre_testo = translateFN('Risposta al messaggio');
     $post_testo = translateFN('Inviato da') . ' ' . trim($destinatari_Ar[0]);
 
-    $testo_ar = split("[\n]",  trim($testo_replay));
+    $testo_ar = preg_split("#[\n]#",  trim($testo_replay));
 
     $testo = "";
     foreach($testo_ar as $riga) {

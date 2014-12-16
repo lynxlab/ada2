@@ -74,60 +74,61 @@ $nodeList = $nodeObj->graph_indexFN();
 $otherPos = array(0,0,0,0);
 $tipo_mappa = returnMapType();
 
-
+if (!AMA_DB::isError($nodeList) && is_array($nodeList) && count($nodeList)>0) {
 // AND HIS CHILDS
-foreach($nodeList as $key){
-    if( $nodeObj->level <= $userObj->livello){
-//        print_r($key);
-        $nodePostId = 'input_'.$key['id_child']; // node id for javascript
-        $childNodeObj = read_node_from_DB($key['id_child']);
-        if($childNodeObj instanceof Node) {
-                    // saving new positions
-            if( isset($_POST[$nodePostId] )){
-                 $nodeArray = $childNodeObj -> object2arrayFN();
-                 $nodeArray['position'] = $_POST[$nodePostId]; // it is a string as requested by NodeEditing::saveNode()
-                 $nodeArray['icon'] = $key['icon_child']; // it does not function: NodeEditing::saveNode(), lines 210-214
-
-//                 $res = NodeEditing::saveNode($nodeArray);
-                 $res = NodeEditing::saveNodePosition($nodeArray);
-                 if($res == true){
-                    // read from here new Position
-                        $p = split(",", $_POST[$nodePostId]);
-                        $width = ($p[2]-$p[0]);
-                        if($width < 0 ) $width *= -1;
-                        $nodeChildPos = array( $p[0], $p[1], 100, 100 );
-                }else{
-                        // code here
-                        $nodeChildPos = returnAdaNodePos($key['position_child'], $key['id_child']);
-                }
-            }else{
-                    $nodeChildPos = returnAdaNodePos($key['position_child'], $key['id_child']);
-                }
-        }else{
-                    // code here
-
-        }
-
-            //settings style, id etc etc etc for javascript
-        $thisNodeStyle = 'left:'.$nodeChildPos[0].'px;top:'.$nodeChildPos[1].'px;width:'.$nodeChildPos[2].'px;height:auto;';
-        $node_type = returnAdaNodeType($key['type_child']);
-        if((($node_type == "lemma" || $node_type == 'gruppo_lemmi') && $tipo_mappa == "lemma")|| (($node_type == "gruppo" || $node_type == 'nodo') && $tipo_mappa != "lemma") ){
-            $data .= '<div class="newNodeMap" style="position:absolute;'.$thisNodeStyle.'" id="'.$key['id_child'].'">';
-            $data .= '<img src="'.returnAdaNodeIcon($key['icon_child'], $key['type_child']).'"/>';
-
-            // setting icon
-             if( $key['type_child'] == ADA_GROUP_TYPE) {
-                 $data .= '<a href="?id_node='.$key['id_child'].'">'.$key['name_child'].'</a>';
-             }elseif ($key['type_child'] == ADA_GROUP_WORD_TYPE ) {
-                 $data .= '<a href="?id_node='.$key['id_child'].'&map_type=lemma">'.$key['name_child'].'</a>';
-             }else {
-                 $data .= '<a href="'.HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$key['id_child'].'">'.$key['name_child'].'</a>';
-             }
-            // hidden div whit information for javascript
-            $data .= '<div style="display:none">'.returnAdaNodeLink($key['linked']).'</div>';
-            $data .= '</div>';
-         };
-    }
+	foreach($nodeList as $key){
+	    if( $nodeObj->level <= $userObj->livello){
+	//        print_r($key);
+	        $nodePostId = 'input_'.$key['id_child']; // node id for javascript
+	        $childNodeObj = read_node_from_DB($key['id_child']);
+	        if($childNodeObj instanceof Node) {
+	                    // saving new positions
+	            if( isset($_POST[$nodePostId] )){
+	                 $nodeArray = $childNodeObj -> object2arrayFN();
+	                 $nodeArray['position'] = $_POST[$nodePostId]; // it is a string as requested by NodeEditing::saveNode()
+	                 $nodeArray['icon'] = $key['icon_child']; // it does not function: NodeEditing::saveNode(), lines 210-214
+	
+	//                 $res = NodeEditing::saveNode($nodeArray);
+	                 $res = NodeEditing::saveNodePosition($nodeArray);
+	                 if($res == true){
+	                    // read from here new Position
+	                        $p = split(",", $_POST[$nodePostId]);
+	                        $width = ($p[2]-$p[0]);
+	                        if($width < 0 ) $width *= -1;
+	                        $nodeChildPos = array( $p[0], $p[1], 100, 100 );
+	                }else{
+	                        // code here
+	                        $nodeChildPos = returnAdaNodePos($key['position_child'], $key['id_child']);
+	                }
+	            }else{
+	                    $nodeChildPos = returnAdaNodePos($key['position_child'], $key['id_child']);
+	                }
+	        }else{
+	                    // code here
+	
+	        }
+	
+	            //settings style, id etc etc etc for javascript
+	        $thisNodeStyle = 'left:'.$nodeChildPos[0].'px;top:'.$nodeChildPos[1].'px;width:'.$nodeChildPos[2].'px;height:auto;';
+	        $node_type = returnAdaNodeType($key['type_child']);
+	        if((($node_type == "lemma" || $node_type == 'gruppo_lemmi') && $tipo_mappa == "lemma")|| (($node_type == "gruppo" || $node_type == 'nodo') && $tipo_mappa != "lemma") ){
+	            $data .= '<div class="newNodeMap" style="position:absolute;'.$thisNodeStyle.'" id="'.$key['id_child'].'">';
+	            $data .= '<img src="'.returnAdaNodeIcon($key['icon_child'], $key['type_child']).'"/>';
+	
+	            // setting icon
+	             if( $key['type_child'] == ADA_GROUP_TYPE) {
+	                 $data .= '<a href="?id_node='.$key['id_child'].'">'.$key['name_child'].'</a>';
+	             }elseif ($key['type_child'] == ADA_GROUP_WORD_TYPE ) {
+	                 $data .= '<a href="?id_node='.$key['id_child'].'&map_type=lemma">'.$key['name_child'].'</a>';
+	             }else {
+	                 $data .= '<a href="'.HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$key['id_child'].'">'.$key['name_child'].'</a>';
+	             }
+	            // hidden div whit information for javascript
+	            $data .= '<div style="display:none">'.returnAdaNodeLink($key['linked']).'</div>';
+	            $data .= '</div>';
+	         };
+	    }
+	}
 }
 
 $data .= '</div>';

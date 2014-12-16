@@ -777,7 +777,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $error = $GLOBALS['error'];
         $http_root_dir = $GLOBALS['http_root_dir'];
         $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
-        $sess_id_node = $_SESSION['sess_id_node'];
+        $sess_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
 
         if (!isset($id_course_instance))
             $id_course_instance = $sess_id_course_instance;
@@ -987,7 +987,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $sess_id_node = $_SESSION['sess_id_node'];
         $sess_id_course = $_SESSION['sess_id_course'];
         $sess_id_user = $_SESSION['sess_id_user'];
-        $debug = $GLOBALS['debug'];
+        $debug = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
 
         $out_fields_ar = array('id_nodo','data_visita');
         $history = $dh->find_nodes_history_list($out_fields_ar, "", $course_instance_id, $node_id);

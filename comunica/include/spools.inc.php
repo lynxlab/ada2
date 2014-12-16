@@ -1407,8 +1407,8 @@ class ChatSpool extends Spool
     $this->rtc = $GLOBALS['ChatSpool_rtc'];
     $this->type = $type;
 
-    if (empty($id_chatroom)) {
-      $this->id_chatroom = $GLOBALS['id_chatroom'];
+    if (!isset($id_chatroom) || empty($id_chatroom)) {
+      $this->id_chatroom = isset($GLOBALS['id_chatroom']) ? $GLOBALS['id_chatroom'] : null;
     }
     else {
       $this->id_chatroom = $id_chatroom;

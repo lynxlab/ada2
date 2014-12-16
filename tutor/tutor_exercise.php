@@ -205,7 +205,8 @@ if (!empty($courseInstanceObj->title)) {
 	$course_title .= ' - '.$courseInstanceObj->title;
 }
 
-if (!is_object($nodeObj)) {
+if (!isset($nodeObj) || !is_object($nodeObj)) {
+	if (!isset($node)) $node=null;
 	$nodeObj = read_node_from_DB($node);
 }
 if (!ADA_Error::isError($nodeObj) AND isset($courseObj->id)) {
@@ -216,8 +217,8 @@ if (!ADA_Error::isError($nodeObj) AND isset($courseObj->id)) {
 $content_dataAr = array(
     'banner'=>$banner,
     'course_title'=>translateFN('Modulo tutor').' > <a href="'.HTTP_ROOT_DIR.'/browsing/main_index.php">'.$course_title.'</a>',
-    'path'=>$node_path,
-    'class'=>$class . ' ' . translateFN('iniziata il') . ' ' . $start_date,
+    'path'=>isset($node_path) ? $node_path : '',
+    'class'=>(isset($class) && isset($start_date)) ? $class . ' ' . translateFN('iniziata il') . ' ' . $start_date : '',
     'user_name'=>$user_name,
     'user_type'=>$user_type,
     'student'=>$student_name,

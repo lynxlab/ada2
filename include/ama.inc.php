@@ -6079,8 +6079,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
          * 
          * added report generation date
          */
-        if (isset($student_data)) $student_data['report_generation_date'] = $date;
-        return $student_data;
+        if (isset($student_data)) {
+        	$student_data['report_generation_date'] = $date;
+	        return $student_data;
+        } else return null;
     }
 
     /**

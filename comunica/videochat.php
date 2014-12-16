@@ -96,6 +96,6 @@ $content_dataAr = array (
 );
 
 
-ARE::render($layout_dataAr,$content_dataAr,NULL,$options_Ar);
+ARE::render($layout_dataAr,$content_dataAr,NULL,isset($options_Ar) ? $options_Ar : null);
 
 ?>

@@ -399,8 +399,8 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
    */
   if(in_array('course',$thisUserNeededObjAr)) {
     
-    $id_course      = isset($_REQUEST['id_course']) ? DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/) : null;
-    $sess_id_course = isset ($_SESSION['sess_id_course']) ? DataValidator::is_uinteger($_SESSION['sess_id_course']) : null;
+    $id_course      = isset($_REQUEST['id_course']) ? DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/) : false;
+    $sess_id_course = isset ($_SESSION['sess_id_course']) ? DataValidator::is_uinteger($_SESSION['sess_id_course']) : false;
     /* extracting the course id from node id, if given */
     if (isset($_SESSION['sess_id_node']) && !$invalid_node) {
 //    if ($nodeObj instanceof Node){
@@ -611,7 +611,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
           } // end if node         
           elseif ($sess_courseObj instanceof Course) {
                     $courseIdRequired = $sess_courseObj->id;
-                    $InstanceIdList = $dh->course_instance_get_list($field_list_ar, $courseIdRequired);
+                    $InstanceIdList = $dh->course_instance_get_list(array(), $courseIdRequired);
                     if (AMA_DataHandler::isError($InstanceIdList) || count($InstanceIdList) == 0 ) {
                               $invalid_course_instance = TRUE;
                     }

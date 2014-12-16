@@ -65,6 +65,7 @@ if (!isset($sess_id_course_instance) && isset($id_instance)) {
 
 $title = translateFN("ADA - Chat Log");
 
+if (!isset($id_chatroom)) $id_chatroom = null;
 $chatroomObj = new ChatRoom($id_chatroom);
 if (is_object($chatroomObj) && !AMA_DataHandler::isError($chatroomObj)) {
     //get the array with all the current info of the chatoorm
@@ -73,7 +74,7 @@ if (is_object($chatroomObj) && !AMA_DataHandler::isError($chatroomObj)) {
     // ******************************************************
     // get  course object
     $courseObj = read_course($id_course);
-    if ((is_object($courseObj)) && (!AMA_dataHandler::isError($userObj)))  {
+    if ((is_object($courseObj)) && (!AMA_DB::isError($courseObj)))  {
             $course_title = $courseObj->titolo; //title
             $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
     }
@@ -85,9 +86,10 @@ if (empty($media_path))
 
 $banner = include ("$root_dir/include/banner.inc.php");
 
-$menuOptions['id_room']=$id_chatroom;
-$menuOptions['id_course']=$id_course;
+if (isset($id_chatroom)) $menuOptions['id_room']=$id_chatroom;
+if (isset($id_course)) $menuOptions['id_course']=$id_course;
 // $op
+if (!isset($op)) $op=null;
 switch ($op){
     case 'rooms':
     case '':
@@ -155,6 +157,7 @@ switch ($op){
                             $id_chatroom = $sess_id_course_instance;
 
             $mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
+            if(!isset($sess_user_id)) $sess_user_id = null;
             $chat_data = $mh->find_chat_messages($sess_user_id, ADA_MSG_CHAT, $id_chatroom, $fields_list="", $clause="", $ordering="");
             if (is_array($chat_data)){
                     $chat_dataAr = array();
@@ -178,7 +181,9 @@ switch ($op){
                         }
                     }
                     $user_chat_report = translateFN("Totale messaggi:")." ".$c."<br />";
-                    $user_chat_report .= translateFN("Ultimo messaggio:")." ". $data_ora."<br />";
+                    if(isset($data_ora) && strlen($data_ora)>0) {
+                    	$user_chat_report .= translateFN("Ultimo messaggio:")." ". $data_ora."<br />";
+                    }
                     $user_chat_report .= translateFN("Utenti / messaggi:")."<br /><br />";
                     $user_chat_report .=$chat_report;
 
@@ -186,7 +191,7 @@ switch ($op){
                     $table_Mess = BaseHtmlLib::tableElement('class:sortable', $thead_data, $tbody_data);
                     $tabled_chat_dataHa = $table_Mess->getHtml();
                     $menuOptions['id_chatroom'] = $id_chatroom;
-                    $menuOptions['days'] = $days;
+                    if (isset($days)) $menuOptions['days'] = $days;
                     
             } else {
                     $tabled_chat_dataHa = translateFN("Nessuna chat disponibile.");      
@@ -314,7 +319,7 @@ $chatrooms_link = '<a href="'.HTTP_ROOT_DIR . '/comunica/list_chatrooms.php">'. 
   $content_dataAr = array(
                  'banner'=> $banner,
                  'course_title'=>  translateFN('Report della chat'). ' - ' . translateFN('Corso') .': '.$course_title,
-                 'home'=>"<a href=\"$homepage\">home</a>",
+                 'home'=> isset($homepage) ? "<a href=\"$homepage\">home</a>" : '',
                  'user_name'=>$user_name,
                  'user_type'=>$user_type,
                  'level'=>$user_level,
@@ -322,9 +327,9 @@ $chatrooms_link = '<a href="'.HTTP_ROOT_DIR . '/comunica/list_chatrooms.php">'. 
                  'data'=>$tabled_chat_dataHa,
                  'status'=>$status,
                  'chatrooms'=>$chatrooms_link,
-                 'chat_users'=>$online_users,
-                 'messages'=>$user_messages,
-                 'agenda'=>$user_agenda
+                 'chat_users'=>isset($online_users) ? $online_users : '',
+                 'messages'=>isset($user_messages) ? $user_messages : '',
+                 'agenda'=>isset($user_agenda) ? $user_agenda : ''
                 );
 
-ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
+ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,isset($menuOptions) ? $menuOptions : null);

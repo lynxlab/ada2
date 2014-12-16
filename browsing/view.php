@@ -333,7 +333,7 @@ switch($id_profile) {
 			     	 */
 			     	if (($nodeObj->type == ADA_PRIVATE_NOTE_TYPE && $id_profile==AMA_TYPE_STUDENT) ||
 			     			($id_profile==AMA_TYPE_TUTOR)) {
-			     				$publish_note.= "<a href=\"". $http_root_dir . "/services/edit_node.php?".
+			     				$publish_note = "<a href=\"". $http_root_dir . "/services/edit_node.php?".
 			     						"op=publish".
 			     						"&id_node=" . $sess_id_node .
 			     						"&id_course=" . $sess_id_course .
@@ -553,7 +553,7 @@ switch ($op){
 		
 		$optionsAr['onload_func'] = 'initDoc();';
 		
-                if (is_object($navBar)) {
+                if (isset($navBar) && is_object($navBar)) {
                     $content_dataAr['go_prev'] = $navBar->getHtml('prev'); // can pass href text as second param
                     $content_dataAr['go_next'] = $navBar->getHtml('next'); // can pass href text as second param
                 }

@@ -646,7 +646,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function tutorCallback($params = array(), $external_params=array()) {
+  public static function tutorCallback($params = array(), $external_params=array()) {
     $http_root_dir = $GLOBALS['http_root_dir'];
     $show_visits   = !$GLOBALS['hide_visits'];
 
@@ -673,13 +673,13 @@ class CourseViewer
       if (isset($show_visits) && $show_visits == TRUE) {
       $visits = 0;
 
-      if ($params['node']['numero_visite'] > 0) {
+      if (isset($params['node']['numero_visite']) && $params['node']['numero_visite'] > 0) {
         $visits = $params['node']['numero_visite'];
       }
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
     }
 
-    if ($params['node']['is_someone_there'] >= 1) {
+    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
       $icon = CDOMElement::create('img', 'src:img/_student.png');
       $icon->setAttribute('name',translateFN('altri'));
       $icon->setAttribute('alt',translateFN('altri'));
@@ -783,7 +783,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function forumTutorCallback($params = array(), $external_params=array()) {
+  public static function forumTutorCallback($params = array(), $external_params=array()) {
     return self::forumCommonCallback($params, $external_params);
   }
 
@@ -794,7 +794,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function forumAuthorCallback($params = array(), $external_params=array()) {
+  public static function forumAuthorCallback($params = array(), $external_params=array()) {
     return self::forumCommonCallback($params, $external_params);
   }
 
