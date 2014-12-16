@@ -29,6 +29,8 @@ class Course_Old {
     var $template_family;
     var $static_mode;
     var $crediti;
+    var $duration_hours;
+    var $service_level;
 
     public function __construct($id_course) {
         $dh = $GLOBALS['dh'];
@@ -594,6 +596,7 @@ class Course_instance_Old {
     var $price;
     var $start_level_student;
     var $open_subscription;
+    var $duration_hours;
 
 
 

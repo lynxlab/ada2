@@ -62,6 +62,9 @@ class CourseInstanceForm extends FForm {
                 array(0 => translateFN('No'), 1 => translateFN('Si')),
                 0);
         
+        $this->addTextInput('duration_hours', translateFN('Durata prevista in ore'))
+        	 ->setRequired()
+        	 ->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
 
         $this->addTextInput('duration_subscription', translateFN("Durata iscrizione dell'utente in gg."))
              ->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR);

@@ -65,6 +65,20 @@ class CourseModelForm extends FForm {
         $this->addTextInput('crediti', translateFN('Crediti corso'))
              ->setRequired()
              ->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
+        
+        $this->addTextInput('duration_hours', translateFN('Durata prevista in ore'))
+        	->setRequired()
+        	->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
+
+        
+        /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+       
+        if(isset($_SESSION['service_level'])){
+            $desc = translateFN('Tipo di corso').':';
+            $this->addSelect('service_level',$desc,$_SESSION['service_level'],$_SESSION['service_level'][1])
+            ->setRequired();  
+        }
+
 
         $this->addHidden('id_nodo_iniziale')->withData(0);
         $this->addHidden('id_nodo_toc');
