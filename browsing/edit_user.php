@@ -106,7 +106,9 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
         if ($_SESSION['sess_userObj']->getType() != AMA_TYPE_SWITCHER) {
         	$_SESSION['sess_userObj'] = $editUserObj;
         }
-
+        /* unset $_SESSION['service_level'] to reload it with the correct  user language translation */
+        unset($_SESSION['service_level']);
+        
         $navigationHistoryObj = $_SESSION['sess_navigation_history'];
         $location = $navigationHistoryObj->lastModule();
         header('Location: ' . $location);

@@ -76,7 +76,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 'title' => $_POST['title'],
                 'duration_subscription' => $_POST['duration_subscription'],
                 'start_level_student' => $_POST['start_level_student'],
-                'open_subscription' => $_POST['open_subscription']
+                'open_subscription' => $_POST['open_subscription'],
+            	'duration_hours' => $_POST['duration_hours']
             );
             $result = $dh->course_instance_set($_POST['id_course_instance'], $course_instanceAr);
             if(AMA_DataHandler::isError($result)) {
@@ -192,7 +193,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'title' => $courseInstanceObj->getTitle(),
             'duration_subscription' => $courseInstanceObj->getDurationSubscription(),
             'start_level_student' => $courseInstanceObj->getStartLevelStudent(),
-            'open_subscription' => $courseInstanceObj->getOpenSubscription() ? 1 : 0
+            'open_subscription' => $courseInstanceObj->getOpenSubscription() ? 1 : 0,
+        	'duration_hours' => $courseInstanceObj->getDurationHours()
         );
         $data = new CourseInstanceForm();
         $data->fillWithArrayData($formData);
