@@ -53,17 +53,23 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 			// 3 is service level, get it as int and string
 			
 			$retArray['isOnline'] = $serviceArr[3]==ADA_SERVICE_ONLINECOURSE;
-			switch ($serviceArr[3]) {
-				case ADA_SERVICE_ONLINECOURSE:
-					$retArray['serviceTypeString'] = translateFN('Corso Online');
-					break;
-				case ADA_SERVICE_PRESENCECOURSE:
-					$retArray['serviceTypeString'] = translateFN('Corso in Presenza');
-					break;
-				case ADA_SERVICE_MIXEDCOURSE:
-					$retArray['serviceTypeString'] = translateFN('Corso misto Online e Presenza');
-					break;
-			}
+                        
+                        if(isset($_SESSION['service_level'][$serviceArr[3]])){
+                            $retArray['serviceTypeString'] = $_SESSION['service_level'][$serviceArr[3]];
+                        } else {
+                        
+                                switch ($serviceArr[3]) {
+                                        case ADA_SERVICE_ONLINECOURSE:
+                                                $retArray['serviceTypeString'] = translateFN('Corso Online');
+                                                break;
+                                        case ADA_SERVICE_PRESENCECOURSE:
+                                                $retArray['serviceTypeString'] = translateFN('Corso in Presenza');
+                                                break;
+                                        case ADA_SERVICE_MIXEDCOURSE:
+                                                $retArray['serviceTypeString'] = translateFN('Corso misto Online e Presenza');
+                                                break;
+                                }
+                        }
 		}
 	}
 }

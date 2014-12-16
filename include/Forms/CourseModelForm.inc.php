@@ -69,21 +69,14 @@ class CourseModelForm extends FForm {
         $this->addTextInput('duration_hours', translateFN('Durata prevista in ore'))
         	->setRequired()
         	->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
+
         
-        // if modules classromm is there, ask for a type of course
-        if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true) {
-        	$desc = translateFN('Tipo di corso').':';
-        	$service_type = array(
-        			ADA_SERVICE_ONLINECOURSE => translateFN('Corso Online'),
-        			ADA_SERVICE_PRESENCECOURSE => translateFN('Corso in Presenza'),
-        			ADA_SERVICE_MIXEDCOURSE => translateFN('Corso misto Online e Presenza')
-        	);
-        	
-        	$this->addSelect('service_level',$desc,$service_type,ADA_SERVICE_ONLINECOURSE)
-        	->setRequired();        	
-        } else {
-        	// else course is online only
-        	$this->addHidden('service_level')->withData(ADA_SERVICE_ONLINECOURSE);
+        /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+       
+        if(isset($_SESSION['service_level'])){
+            $desc = translateFN('Tipo di corso').':';
+            $this->addSelect('service_level',$desc,$_SESSION['service_level'],$_SESSION['service_level'][1])
+            ->setRequired();  
         }
 
 

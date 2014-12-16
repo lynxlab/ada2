@@ -78,7 +78,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'id_lingua' => $_POST['id_lingua'],
             'static_mode' => $_POST['static_mode'],
             'crediti' => $_POST['crediti'],
-        	'duration_hours' => $_POST['duration_hours']
+            'duration_hours' => $_POST['duration_hours'],
+            'service_level' => $_POST['service_level']
         );
         $result = $dh->set_course($_POST['id_corso'], $course);
 
@@ -120,10 +121,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     	if (AMA_Common_DataHandler::isError($service_dataAr) || count($service_dataAr)==0) {
     		$form = new CText(translateFN('Servizio non trovato (2)'));
     	} else {
-	    	
-    		$service_level = intval($service_dataAr[3]);
-    		
-	        $providerAuthors = $dh->find_authors_list(array('username'), '');
+            
+	    	$providerAuthors = $dh->find_authors_list(array('username'), '');
 	        $authors = array();
 	        foreach ($providerAuthors as $author) {
 	            $authors[$author[0]] = $author[1];
@@ -136,8 +135,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	        }
 	
 	        $form = new CourseModelForm($authors, $languages);
-	
-	        if (!AMA_DataHandler::isError($course_data)) {
+                if (!AMA_DataHandler::isError($course_data)) {
 	            $formData = array(
 	                'id_corso' => $courseObj->getId(),
 	                'id_utente_autore' => $courseObj->getAuthorId(),
@@ -152,9 +150,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	                'static_mode' => $courseObj->getStaticMode(),
 	                'data_creazione' => $courseObj->getCreationDate(),
 	                'data_pubblicazione' => $courseObj->getPublicationDate(),
-	            	'service_level' => $service_level,
-	                'crediti' =>  $courseObj->getCredits(), // modifica in Course
-	                'duration_hours' => $courseObj->getDurationHours()
+	            	'crediti' =>  $courseObj->getCredits(), // modifica in Course
+	                'duration_hours' => $courseObj->getDurationHours(),
+                        'service_level'  =>$courseObj->getServiceLevel()
 	            );
 	            $form->fillWithArrayData($formData);
 	        } else {

@@ -407,6 +407,7 @@ CREATE TABLE IF NOT EXISTS `modello_corso` (
   `id_lingua` tinyint(3) unsigned NOT NULL,
   `crediti` tinyint(3) NOT NULL DEFAULT '1',
   `duration_hours` int unsigned NOT NULL DEFAULT '0',
+  `tipo_servizio` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`id_corso`),
   UNIQUE KEY `modello_corso_nome` (`nome`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
