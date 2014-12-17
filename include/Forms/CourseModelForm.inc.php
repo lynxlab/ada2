@@ -75,7 +75,7 @@ class CourseModelForm extends FForm {
        
         if(isset($_SESSION['service_level'])){
             $desc = translateFN('Tipo di corso').':';
-            $this->addSelect('service_level',$desc,$_SESSION['service_level'],$_SESSION['service_level'][1])
+            $this->addSelect('service_level',$desc,$_SESSION['service_level'],reset($_SESSION['service_level']))
             ->setRequired();  
         }
 
