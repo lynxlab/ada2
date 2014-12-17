@@ -2148,11 +2148,11 @@ function get_user_mediaFN($user_level){
     $id_sender  = isset($filenameAr[1]) ? $filenameAr[1] : null;
 
     if (is_numeric($id_sender)) {
-      $fid_node =  $filenameAr[2]."_".$filenameAr[3];
+      $fid_node =  $filenameAr[2]."_".(isset($filenameAr[3]) ? $filenameAr[3] : '');
       $filename = "";
 
       // vito, 30 mar 2009
-      $this_file_type = $filenameAr[4];
+      $this_file_type = isset($filenameAr[4]) ? $filenameAr[4] : null;
 
       //for ($k = 4; $k<=$stop;$k++){
       for ($k = 5; $k<=$stop;$k++){
