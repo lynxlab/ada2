@@ -127,7 +127,7 @@ class ADAAddressBook
               if(AMA_DataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
                $tutors_Ar = array();
               }
-              $tutors_Ar = array_unique($tutors_Ar);
+              $tutors_Ar = array_unique($tutors_Ar, SORT_REGULAR);
 
               $switcher_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER), $retrieve_extended_data);
               if(AMA_DataHandler::isError($switcher_Ar) || !is_array($switcher_Ar)) {
