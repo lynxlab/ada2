@@ -37,26 +37,27 @@ class ADAAddressBook
         $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
         $tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
         $tester_name = $tester_info_Ar[1];
-//        $users[$tester_name] = $tester_dh->get_users_by_type($user_types_Ar[AMA_TYPE_SWITCHER],$retrieve_extended_data);
-//        if(AMA_Common_DataHandler::isError($users)) {
-//          // Gestione errore
-//        }
+        
+        $users[$tester_name] = $tester_dh->get_users_by_type($user_types_Ar[AMA_TYPE_SWITCHER],$retrieve_extended_data);
+        if(AMA_Common_DataHandler::isError($users)) {
+        	$users[$tester_name]=array();
+        }
         /*
          * Ottiene tutti i practitioner presenti sul tester
          */
-        $practitioners_Ar = $tester_dh->get_users_by_type(array(AMA_TYPE_TUTOR), $retrieve_extended_data);
-        if(AMA_DataHandler::isError($practitioners_Ar) || !is_array($practitioners_Ar)) {
-          $practitioners_Ar = array();
-        }
+//         $practitioners_Ar = $tester_dh->get_users_by_type(array(AMA_TYPE_TUTOR), $retrieve_extended_data);
+//         if(AMA_DataHandler::isError($practitioners_Ar) || !is_array($practitioners_Ar)) {
+//           $practitioners_Ar = array();
+//         }
         /*
          * Ottiene tutti gli utenti che hanno richiesto un servizio sul tester
          * e che sono in attesa di assegnamento ad un practitioner
          */
-        $users_Ar = $tester_dh->get_registered_students_without_tutor();
-        if(AMA_DataHandler::isError($users_Ar) || !is_array($users_Ar)) {
-          $users_Ar = array();
-        }
-        $users[$tester_name] = array_merge($practitioners_Ar, $users_Ar);
+        // $users_Ar = $tester_dh->get_registered_students_without_tutor();
+//         if(AMA_DataHandler::isError($users_Ar) || !is_array($users_Ar)) {
+//           $users_Ar = array();
+//         }
+//         $users[$tester_name] = array_merge($practitioners_Ar, $users_Ar);
         break;
 
       case AMA_TYPE_TUTOR:
