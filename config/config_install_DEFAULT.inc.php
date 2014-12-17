@@ -420,6 +420,7 @@ $ADA_MIME_TYPE["audio/x-aiff"]['type'] = _SOUND;
 $ADA_MIME_TYPE["image/gif"]['type'] = _IMAGE;
 $ADA_MIME_TYPE["image/jpeg"]['type'] = _IMAGE;
 $ADA_MIME_TYPE["image/pjpeg"]['type'] = _IMAGE;
+$ADA_MIME_TYPE["image/png"]['type'] = _IMAGE;
 $ADA_MIME_TYPE["image/x-png"]['type'] = _IMAGE;
 $ADA_MIME_TYPE["text/html"]['type'] = _LINK;
 $ADA_MIME_TYPE["text/css"]['type'] = _LINK;
