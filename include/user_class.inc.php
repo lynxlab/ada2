@@ -439,7 +439,7 @@ abstract class ADAGenericUser {
 
 
     // FIXME: sarebbe statico, ma viene usato come metodo non statico.
-    public function convertUserTypeFN($id_profile) {
+    public static function convertUserTypeFN($id_profile) {
         switch  ($id_profile) {
             case 0: // reserved
                 $user_type = translateFN('utente ada');

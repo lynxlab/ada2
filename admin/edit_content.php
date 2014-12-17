@@ -89,7 +89,8 @@ $files_news = read_dir(ROOT_DIR. $filePath .'/docs/'.$reqType,'txt');
 //print_r($files_news);
 
 
-$codeLang = $_GET['codeLang'];
+$codeLang = isset($_GET['codeLang']) ? $_GET['codeLang'] : null;
+if (!isset($op)) $op=null;
 switch ($op) {
     case 'edit':
         $newsmsg = array();
@@ -98,6 +99,7 @@ switch ($op) {
         $fileToOpen = ROOT_DIR . $filePath . '/docs/'. $reqType .'/'. $reqType .'_'.$codeLang.'.txt';
         $newsfile = $fileToOpen; 
         if ($fid = @fopen($newsfile,'r')){
+        	if (!isset($newsmsg[$reqType])) $newsmsg[$reqType] = '';
             while (!feof($fid))
                 $newsmsg[$reqType] .= fread($fid,4096);
             fclose($fid);
@@ -144,6 +146,7 @@ switch ($op) {
                 
             }
             $files_to_edit[$index]['data'] = translateFN('last change').': '.$lastChange;
+            if (!isset($thead_data)) $thead_data=null;
             $data = BaseHtmlLib::tableElement('', $thead_data, $files_to_edit);
         }
         break;
@@ -169,7 +172,7 @@ $content_dataAr = array(
     'help' => $help,
 //    'actions_menu' => $actions_menu->getHtml(),
     'data' => $data->getHtml(),
-    'module' => $module,
+    'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
 /**

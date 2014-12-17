@@ -115,7 +115,7 @@ class Layout {
      *
      * @return array $layouts
      */
-    function getLayouts() {
+    public static function getLayouts() {
         /*
      * path to the directory containing all the layouts families
         */

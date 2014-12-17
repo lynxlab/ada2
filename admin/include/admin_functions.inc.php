@@ -18,19 +18,19 @@ require_once ROOT_DIR.'/comunica/include/UserDataHandler.inc.php';
 require_once ROOT_DIR.'/include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php';
 require_once ROOT_DIR.'/include/HtmlLibrary/AdminModuleHtmlLib.inc.php';
 
-if ($_REQUEST['id_course']){
+if (isset($_REQUEST['id_course'])){
   $sess_id_course = $_REQUEST['id_course'];
   $id_course = $sess_id_course;
 } else {
-  $sess_id_course = $_SESSION['sess_id_course'];
+  $sess_id_course = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
 }
 
-if ($_REQUEST['id_course_instance']){
+if (isset($_REQUEST['id_course_instance'])){
   $sess_id_course_instance = $_REQUEST['id_course_instance'];
   $id_course_instance = $sess_id_course_instance;
   //  $is_istance_active = 1; ??
 } else {
-  $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
+  $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
 }
 
 
@@ -81,7 +81,7 @@ $user_mail    = $userObj->email;
 /*
  * Get this user needed objects from $neededObjAr based on user tyoe
  */
-if(is_array($neededObjAr) && is_array($neededObjAr[$id_profile])) {
+if(is_array($neededObjAr) && isset($neededObjAr[$id_profile]) && is_array($neededObjAr[$id_profile])) {
   $thisUserNeededObjAr = $neededObjAr[$id_profile];
 }
 else {
@@ -150,10 +150,10 @@ $_SESSION['sess_template_family'] = $template_family;
  * Layout data
  */
 $layout_dataAr = array(
-  'node_type'      => $node_type,
-  'family'         => $template_family,
-  'node_author_id' => $node_author_id,
-  'node_course_id' => $node_course_id,
-  'module_dir'     => $module_dir
+  'node_type'      => isset($node_type) ? $node_type : null,
+  'family'         => isset($template_family) ? $template_family : null,
+  'node_author_id' => isset($node_author_id) ? $node_author_id : null,
+  'node_course_id' => isset($node_course_id) ? $node_course_id : null,
+  'module_dir'     => isset($module_dir) ? $module_dir : null
 );
 ?>

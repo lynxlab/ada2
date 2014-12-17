@@ -1405,7 +1405,7 @@ class MultiPort
      * tester.
      */
 
-    $sess_selected_tester = $_SESSION['sess_selected_tester'];
+    $sess_selected_tester = isset($_SESSION['sess_selected_tester']) ? $_SESSION['sess_selected_tester'] : null;
 
     /*
      * If we are retrieving messages representing events or events proposal,
@@ -1902,7 +1902,7 @@ class MultiPort
 
   static public function isUserBrowsingThePublicTester() {
 
-    $sess_selected_tester = $_SESSION['sess_selected_tester'];
+    $sess_selected_tester = isset($_SESSION['sess_selected_tester']) ? $_SESSION['sess_selected_tester'] : '';
     return $sess_selected_tester == NULL || $sess_selected_tester == ADA_PUBLIC_TESTER;
   }
 
@@ -1912,7 +1912,7 @@ class MultiPort
     $testers_activity_dataAr = array();
     $testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
 
-    if(AMA_Common_DataHandler::isError($tester_infoAr)) {
+    if(AMA_Common_DataHandler::isError($testers_infoAr)) {
       return array();
     }
     $current_timestamp = time();
