@@ -206,6 +206,7 @@ if ( $op == 'add_node' ) {
   /*
    * Determina quali media l'utente può inserire in base al tipo di utente, al tipo di nodo ed all'operazione.
    */
+  if (!isset($node_type)) $node_type = null;
   $flags = PreferenceSelector::getPreferences($id_profile, $node_type, ADD_OPERATION, $ADA_ELEMENT_VIEWING_PREFERENCES);
 
   /*
@@ -241,7 +242,11 @@ if ( $op == 'add_node' ) {
 
   //    $data = NodeEditingViewer::getEditingForm($form_action, $id_course, $id_course_instance, $sess_id_user, $node_to_edit, $flags);
   //    $form = $data['form'];
-  $form = NodeEditingViewer::getEditingForm($form_action, $id_course, $id_course_instance, $sess_id_user, $node_to_edit, $flags);
+  
+  $form = NodeEditingViewer::getEditingForm($form_action, 
+  		isset($id_course) ? $id_course : null,
+  		isset($id_course_instance) ? $id_course_instance : null, 
+  		isset($sess_id_user) ? $sess_id_user : null, $node_to_edit, $flags);
   /* vito, 20 feb 2009
    * usa i dati presenti nella sessione per mostrare alcune informazioni relative al nodo
    * che si sta editando
@@ -377,7 +382,7 @@ $cancel = "confirmCriticalOperationBeforeRedirect('$text','$link')";
 $banner = include ROOT_DIR.'/include/banner.inc.php';
 
 $content_dataAr = array(
-  'head'         => $head_form,
+  'head'         => isset($head_form) ? $head_form : '',
   'banner'       => $banner,
   'menu'         => $menu,
   'help'         => $help,
@@ -388,7 +393,7 @@ $content_dataAr = array(
   'messages'     => $user_messages->getHtml(),
   'agenda'       => $user_agenda->getHtml(),
   'course_title' => '<a href="../browsing/main_index.php">'.$course_title.'</a>',
-  'path'         => $nodePath,
+  'path'         => isset($nodePath) ? $nodePath : '',
   'back'         => isset($back) ? $back : '',
   'icon'         => $icon,
   'cancel'       => $cancel

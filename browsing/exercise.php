@@ -77,7 +77,7 @@ if (MODULES_TEST && strpos($nodeObj->type,ADA_PERSONAL_EXERCISE_TYPE) == 0) {
             }
 	}
 }
-
+if (!isset($op)) $op=null;
 switch($op) {
     case 'answer':
         if (isset($useranswer)) {
@@ -242,8 +242,8 @@ $content_dataAr = array(
         'user_type' => $user_type,
         'user_level' => $user_level,
         'visited' => '-',
-        'icon' => $icon,
-        'text' => $dataHa['exercise'],
+        'icon' => isset($icon) ? $icon : '',
+        'text' => isset($dataHa['exercise']) ? $dataHa['exercise'] : null,
         'onclick'=> $onclick,
         'title' => $nodeObj->name,
         'author' => $nodeObj->author['username'],

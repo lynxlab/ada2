@@ -31,7 +31,7 @@ if (isset($_REQUEST['id_node'])){
   $sess_id_node = $_REQUEST['id_node'];
   $id_node = $_REQUEST['id_node'];
 } else {
-  $sess_id_node = $_SESSION['sess_id_node'];
+  $sess_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
 }
 
 
@@ -39,7 +39,7 @@ if (isset($_REQUEST['id_course'])){
   $sess_id_course = $_REQUEST['id_course'];
   $id_course = $sess_id_course;
 } else {
-  $sess_id_course = $_SESSION['sess_id_course'];
+  $sess_id_course = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
 }
 
 if (isset($_REQUEST['id_course_instance'])){
@@ -47,7 +47,7 @@ if (isset($_REQUEST['id_course_instance'])){
   $id_course_instance = $sess_id_course_instance;
   //  $is_istance_active = 1; ??
 } else {
-  $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
+  $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
 }
 
 
@@ -141,6 +141,7 @@ if (in_array('node',$thisUserNeededObjAr)){
   /**
    *  get Node Object
    */
+  if (!isset($id_node)) $id_node = null;
   $nodeObj = read_node_from_DB($id_node);
   
   if (ADA_Error::isError($nodeObj)){

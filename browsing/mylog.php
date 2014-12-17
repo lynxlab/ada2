@@ -39,7 +39,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
 //$self = whoami();
 include_once 'include/browsing_functions.inc.php';
 
-if ($courseInstanceObj instanceof Course_instance) {
+if (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
@@ -300,7 +300,7 @@ $node_data = array(
                    'banner'=>$banner,
                    'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
                    'today'=>$ymdhms,
-                   'path'=>$node_path,
+                   'path'=>isset($node_path) ? $node_path : '',
                    'user_name'=>$userObj->nome,
                    'user_type'=>$user_type,
                    'user_level'=>$user_level,
@@ -333,8 +333,8 @@ $node_data = array(
     $node_data['help']=$help->getHtml();
 }
 
-$menuOptions['self_instruction'] = $self_instruction;
-ARE::render($layout_dataAR,$node_data, NULL, $options,$menuOptions);
+if(isset($self_instruction)) $menuOptions['self_instruction'] = $self_instruction;
+ARE::render($layout_dataAR,$node_data, NULL, $options,isset($menuOptions) ? $menuOptions : null);
 
 /* Versione XML:
 

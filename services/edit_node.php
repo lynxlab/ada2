@@ -55,6 +55,7 @@ $level = 0; // default
 $chat_link = "";
 
 $online_users_listing_mode = 2;
+if (!isset($id_course_instance)) $id_course_instance=null;
 $online_users = ADALoggableUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
 
 if (!isset($op)) {
@@ -376,14 +377,14 @@ switch ($op) {
          * - the way the user prefers to receive the notification
          */
         // fake configuration data, TO BE MOVED IN CONFIG_INSTALL //
-         define(ADA_BROADCAST_UPDATE,1);
-         define(ADA_BROADCAST_NOUPDATE,0);
-         define(ADA_USER_AUTOMATIC_RECEIVE_UPDATE,1);
-         define(ADA_USER_AUTOMATIC_DONOT_RECEIVE_UPDATE,0);
-         define(ADA_NOTIFICATION_REALTIME,0);
-         define(ADA_NOTIFICATION_DAILY,1);
-         define(ADA_NOTIFICATION_WEEKLY,7);
-         define(ADA_NOTIFICATION_MONTHLY,30);
+         define('ADA_BROADCAST_UPDATE',1);
+         define('ADA_BROADCAST_NOUPDATE',0);
+         define('ADA_USER_AUTOMATIC_RECEIVE_UPDATE',1);
+         define('ADA_USER_AUTOMATIC_DONOT_RECEIVE_UPDATE',0);
+         define('ADA_NOTIFICATION_REALTIME',0);
+         define('ADA_NOTIFICATION_DAILY',1);
+         define('ADA_NOTIFICATION_WEEKLY',7);
+         define('ADA_NOTIFICATION_MONTHLY',30);
          
          /* read the configuration for the platform installation (from config_install file...) */
           $broadcast_update = ADA_BROADCAST_UPDATE;
@@ -591,14 +592,14 @@ switch ($op) {
         if(strcmp($navigation_history->previousItem(), __FILE__) !== 0) {
             $_SESSION['page_to_load_on_cancel_editing'] = $navigation_history->previousPage();
         }
-
-        if ( !isset($_SESSION['sess_node_editing']['node_data'])  ||
-                ($need_to_unset_session = strcmp($navigation_history->previousItem(), __FILE__)) !== 0) {
+        $need_to_unset_session = strcmp($navigation_history->previousItem(), __FILE__);
+        if ( !isset($_SESSION['sess_node_editing']['node_data'])  || $need_to_unset_session !== 0) {
             if ( $need_to_unset_session !== 0 ) {
                 unset($_SESSION['sess_node_editing']);
             }
 
             $media_found = array();
+            if (!isset($id_node)) $id_node=null;
             $node_to_edit = getNodeData($id_node);
             $media_found = NodeEditing::getMediaFromNodeText($node_to_edit['text']);
             $_SESSION['sess_node_editing']['media_in_db'] = serialize($media_found);
@@ -615,6 +616,7 @@ switch ($op) {
                * Mostra l'editor
         */
         //    $data   = NodeEditingViewer::getEditingForm($action, $id_course, $sess_id_course_instance, $sess_id_user, $node_to_edit, $flags);
+        if (!isset($id_course)) $id_course=null;
         $form   = NodeEditingViewer::getEditingForm($action, $id_course, $sess_id_course_instance, $sess_id_user, $node_to_edit, $flags);
         $status = translateFN("Modifica del nodo");
         /* vito, 20 feb 2009
@@ -645,7 +647,7 @@ switch ($op) {
         );
 }
 
-if (is_object($data)) {
+if (isset($data) && is_object($data)) {
     $msg = urlencode($data->message);
     header("Location: " . $http_root_dir . "/browsing/view.php?id_node=$id_node&msg=$msg");
 }
@@ -690,7 +692,7 @@ $text   = addslashes(translateFN('Vuoi annullare le modifiche apportate al nodo?
 $cancel = "confirmCriticalOperationBeforeRedirect('$text','$link')";
 
 $content_dataAr = array(
-        'banner'     => $banner,
+        'banner'     => isset($banner) ? $banner : '',
         'status'     => $status,
         'user_name'  => $user_name,
         'user_type'  => $user_type,
@@ -702,8 +704,8 @@ $content_dataAr = array(
         'messages'   => $user_messages->getHtml(),
         'agenda'     => $user_agenda->getHtml(),
         'chat_users' => $online_users,
-        'menu'       => $data['menu'],
-        'head'       => $data['head_form'],
+        'menu'       => isset($data['menu']) ? $data['menu'] : '',
+        'head'       => isset($data['head_form']) ? $data['head_form'] : '',
         'form'       => $html_form,
         'icon'       => $icon,
         'cancel'     => $cancel

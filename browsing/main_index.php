@@ -50,7 +50,7 @@ include_once 'include/cache_manager.inc.php';
 include_once CORE_LIBRARY_PATH.'/includes.inc.php';
 include_once ROOT_DIR.'/include/bookmark_class.inc.php';
 
-if ($courseInstanceObj instanceof Course_instance) {
+if (isset ($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))

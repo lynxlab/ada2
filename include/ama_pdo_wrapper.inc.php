@@ -316,7 +316,8 @@ class AMA_PDO_wrapper
 			if (!is_bool($retval)) return $retval;
 			else return 0;
 		} catch (PDOException $e) {
-			return self::handleException($e);
+			$retval = self::handleException($e); 
+			return $retval;
 		}
 	}
 	

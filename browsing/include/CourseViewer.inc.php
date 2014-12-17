@@ -540,7 +540,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function internalLinkSelector($params = array(), $external_params=array()) {
+  public static function internalLinkSelector($params = array(), $external_params=array()) {
     $css_classname = self::getClassNameForNodeType($params['node']['tipo']);
     $list_item = CDOMElement::create('span', "class:$css_classname");
     $list_item->addChild(self::getDisclosureElement($params, $external_params));
@@ -596,7 +596,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function authorCallback($params = array(), $external_params=array()) {
+  public static function authorCallback($params = array(), $external_params=array()) {
     $http_root_dir = $GLOBALS['http_root_dir'];
     $show_visits   = !$GLOBALS['hide_visits'];
 
@@ -630,7 +630,7 @@ class CourseViewer
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
     }
 
-    if ($params['node']['is_someone_there'] >= 1) {
+    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
       $icon = CDOMElement::create('img', 'src:img/_student.png');
       $icon->setAttribute('name',translateFN('altri'));
       $icon->setAttribute('alt',translateFN('altri'));
@@ -1023,7 +1023,7 @@ class CourseViewer
    * @param boolean $executed
    * @return string
    */
-  function getCSSClassNameForExerciseType($exercise_type, $executed=false) {
+  public static function getCSSClassNameForExerciseType($exercise_type, $executed=false) {
 
     if ($executed) {
       $executed_classname = 'ADA_EXECUTED_EXERCISE';

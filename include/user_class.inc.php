@@ -776,7 +776,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $dh = $GLOBALS['dh'];
         $error = $GLOBALS['error'];
         $http_root_dir = $GLOBALS['http_root_dir'];
-        $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
+        $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
         $sess_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
 
         if (!isset($id_course_instance))
@@ -1000,7 +1000,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
         //  returns  the number of global visits for this node
 
         $dh = $GLOBALS['dh'];
-        $debug = $GLOBALS['debug'];
+        $debug = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
         $visit_count = 0;
         $out_fields_ar = array('n_contatti');
         //$search_fields_ar = array('id_nodo');

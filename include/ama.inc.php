@@ -7093,22 +7093,22 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $id_node = $this->sql_prepared($node_ha['id']);
         $name = $this->sql_prepared($this->or_null($node_ha['name']));
-        $title = $this->sql_prepared($this->or_null($node_ha['title']));
+        $title = $this->sql_prepared($this->or_null(isset($node_ha['title']) ? $node_ha['title'] : ''));
 
         $text = $this->sql_prepared($node_ha['text']);
         //if (isset($node_ha['type'])) {
         $type = $this->sql_prepared($this->or_zero($node_ha['type']));
         //}
         //if (isset($node_ha['id_instance'])) {
-        $id_instance = $this->sql_prepared($this->or_null($node_ha['id_instance']));
+        $id_instance = $this->sql_prepared($this->or_null(isset($node_ha['id_instance']) ? $node_ha['id_instance'] : ''));
         //}
         $parent_id = $this->sql_prepared($this->or_null($node_ha['parent_id']));
 
         $order = $this->sql_prepared($this->or_zero($node_ha['order']));
-        $level = $this->sql_prepared($this->or_zero($node_ha['level']));
-        $version = $this->sql_prepared($this->or_zero($node_ha['version']));
-        $icon = $this->sql_prepared($this->or_null($node_ha['icon']));
-        $correctness = $this->sql_prepared($this->or_zero($node_ha['correctness']));
+        $level = $this->sql_prepared($this->or_zero(isset($node_ha['level']) ? $node_ha['level'] : ''));
+        $version = $this->sql_prepared($this->or_zero(isset($node_ha['version']) ? $node_ha['version'] : ''));
+        $icon = $this->sql_prepared($this->or_null(isset($node_ha['icon']) ? $node_ha['icon'] : ''));
+        $correctness = $this->sql_prepared($this->or_zero(isset($node_ha['correctness']) ? $node_ha['correctness'] : ''));
 
         /*
      * vito, 23 jan 2009
@@ -8769,15 +8769,15 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-        $nome_file = $this->sql_prepared($res_ha['nome_file']);
-        $titolo = $this->sql_prepared($res_ha['titolo']);
-        $tipo      = $res_ha['tipo'];
-        $copyright = $this->or_zero($res_ha['copyright']);
-        $id_utente = $this->or_zero($res_ha['id_utente']);
-        $keywords = $this->sql_prepared($res_ha['keywords']);
-        $pubblicato = $this->or_zero($res_ha['pubblicato']);
-        $descrizione = $this->sql_prepared($res_ha['descrizione']);
-        $lingua = $this->sql_prepared($res_ha['lingua']);
+        $nome_file = $this->sql_prepared(isset($res_ha['nome_file']) ? $res_ha['nome_file'] : '');
+        $titolo = $this->sql_prepared(isset($res_ha['titolo']) ? $res_ha['titolo'] : '');
+        $tipo      = isset($res_ha['tipo']) ? $res_ha['tipo'] : null;
+        $copyright = $this->or_zero(isset($res_ha['copyright']) ? $res_ha['copyright'] : '');
+        $id_utente = $this->or_zero(isset($res_ha['id_utente']) ? $res_ha['id_utente'] : '');
+        $keywords = $this->sql_prepared(isset($res_ha['keywords']) ? $res_ha['keywords'] : '');
+        $pubblicato = $this->or_zero(isset($res_ha['pubblicato']) ? $res_ha['pubblicato'] : '');
+        $descrizione = $this->sql_prepared(isset($res_ha['descrizione']) ? $res_ha['descrizione'] : '');
+        $lingua = $this->sql_prepared(isset($res_ha['lingua']) ? $res_ha['lingua'] : '');
 
         // check values
         if (empty($nome_file)) {

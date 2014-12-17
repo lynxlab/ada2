@@ -175,7 +175,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
             * caricando, rinominiamo il nuovo file.
             * es. pippo.txt -> ggmmaa_hhmmss_pippo.txt
             */
-           if ( is_file($destination) && $_POST['overwrite'] == false)
+           if ( is_file($destination) && isset($_POST['overwrite']) && $_POST['overwrite'] == false)
            {
                $date = date('dmy_His');
                $filename  = $date.'_'.$filename;
@@ -199,7 +199,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
             * Se il file e' stato uploadato correttamente , inserisco il file come risorsa collegata all'autore
             * nella tabella risorse_nodi
             */
-            $ada_filetype = $ADA_MIME_TYPE[$file_type]['type'];
+            $ada_filetype = isset($ADA_MIME_TYPE[$file_type]['type']) ? $ADA_MIME_TYPE[$file_type]['type'] : null;
             $res_ha = array(
                 'nome_file' => $filename_prefix.$filename,
                 'tipo'      => $ada_filetype, //array associativo definito in ada_config.php

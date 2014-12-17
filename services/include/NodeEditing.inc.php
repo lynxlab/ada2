@@ -25,14 +25,14 @@ class NodeEditing {
      * @param  string $text  - text of node
      * @return array  $media - an associative array ('media'=>'media_type')
      */
-    function getMediaFromNodeText( $text ) {
+    public static function getMediaFromNodeText( $text ) {
         // vito, 21 luglio 2008
         if ( get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/ ) {
             $text = stripslashes($text);
         }
 
-        $media_type  .= _IMAGE.'|'._SOUND.'|'._VIDEO.'|'._PRONOUNCE.'|'._MONTESSORI.'|'._LABIALE.'|'._LIS.'|'._FINGER_SPELLING.'|'._LINK.'|INTERNAL'; //'0|1|2|4|....';
-        $media_value .= '(?:[a-zA-Z0-9_\-]+\.[a-zA-Z0-9]{3,4})';
+        $media_type  = _IMAGE.'|'._SOUND.'|'._VIDEO.'|'._PRONOUNCE.'|'._MONTESSORI.'|'._LABIALE.'|'._LIS.'|'._FINGER_SPELLING.'|'._LINK.'|INTERNAL'; //'0|1|2|4|....';
+        $media_value = '(?:[a-zA-Z0-9_\-]+\.[a-zA-Z0-9]{3,4})';
 
 //        $extract_media_tags = '/<(?:LINK|MEDIA) TYPE="('.$media_type.')" VALUE="([a-zA-Z0-9_\-\/\.?~+%=&,$\'\(\):;*@\[\]]+)">/';
         $extract_media_tags = '/<(?:LINK|MEDIA) TYPE="([0-5]+|INTERNAL)" VALUE="([a-zA-Z0-9_\-\/\.?~+%=&,$\'\(\):;*@\[\]]+)">/';
@@ -59,7 +59,7 @@ class NodeEditing {
      * @param array  $media_to_add    - all the media(internal links, external resources) added to this node
      * @return mixed
      */
-    function updateMediaAssociationsWithNode( $edited_node_id, $user_id, $media_to_remove = array(), $media_to_add = array() ) {
+    public static function updateMediaAssociationsWithNode( $edited_node_id, $user_id, $media_to_remove = array(), $media_to_add = array() ) {
         $dh = $GLOBALS['dh'];
 
         // vito, 27 mar 2009
@@ -198,7 +198,7 @@ class NodeEditing {
      * @param array $node_data
      * @return mixed
      */
-    function saveNode($node_data=array()) {
+    public static function saveNode($node_data=array()) {
         $dh = $GLOBALS['dh'];
         /*
      * Increment version counter
@@ -363,11 +363,11 @@ class NodeEditingViewer {
         }
 
         if ($node_to_edit['type'] == ADA_LEAF_WORD_TYPE OR $node_to_edit['type'] == ADA_GROUP_WORD_TYPE) {
-            $node_to_edit_hyphenation = $node_to_edit['hyphenation'];
-            $node_to_edit_semantic = $node_to_edit['semantic'];
-            $node_to_edit_grammar = $node_to_edit['grammar'];
-            $node_to_edit_notes = $node_to_edit['notes'];
-            $node_to_edit_examples = $node_to_edit['examples'];
+            $node_to_edit_hyphenation = isset($node_to_edit['hyphenation']) ? $node_to_edit['hyphenation'] : null;
+            $node_to_edit_semantic = isset($node_to_edit['semantic']) ? $node_to_edit['semantic'] : null;
+            $node_to_edit_grammar = isset($node_to_edit['grammar']) ? $node_to_edit['grammar'] : null;
+            $node_to_edit_notes = isset($node_to_edit['notes']) ? $node_to_edit['notes'] : null;
+            $node_to_edit_examples = isset($node_to_edit['examples']) ? $node_to_edit['examples'] : null;
             if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
                 $node_to_edit_hyphenation = stripslashes($node_to_edit_hyphenation);
                 $node_to_edit_semantic = stripslashes($node_to_edit_semantic);
@@ -627,7 +627,7 @@ class NodeEditingViewer {
      * @param  string $form_action
      * @return string
      */
-    function getPreviewForm( $action_return_to_edit_node, $action_save_edited_node ) {
+    public static function getPreviewForm( $action_return_to_edit_node, $action_save_edited_node ) {
         $node_data = getNodeDataFromPost($_POST);
         $_SESSION['sess_node_editing']['node_data'] = serialize($node_data);
 
@@ -899,7 +899,7 @@ class NodeEditingViewer {
             $label      = CDOMElement::create('label', 'for:bg_color');
             $label->addChild(new CText(translateFN('Colore sfondo')));
             $input_text = CDOMElement::create('text','id:bg_color, name:bg_color');
-            $input_text->setAttribute('value',$node_data['bg_color']);
+            $input_text->setAttribute('value',isset($node_data['bg_color']) ? $node_data['bg_color'] : null);
             $node_bgcolor->addChild($label);
             $node_bgcolor->addChild($input_text);
 
@@ -907,7 +907,7 @@ class NodeEditingViewer {
         }
         else {
             $hidden_bgcolor = CDOMElement::create('hidden','id:bg_color, name:bg_color');
-            $hidden_bgcolor->setAttribute('value',$node_data['bg_color']);
+            $hidden_bgcolor->setAttribute('value',isset($node_data['bg_color']) ? $node_data['bg_color'] : null);
             $node_data_div->addChild($hidden_bgcolor);
         }
 
@@ -1254,7 +1254,7 @@ class NodeEditingViewer {
         if($div_fu !== NULL) {
             $div_addons->addChild($div_fu);
         }
-        if($div_media_properties !== NULL) {
+        if(isset($div_media_properties) && $div_media_properties !== NULL) {
             $div_addons->addChild($div_media_properties);
         }
 
@@ -1283,7 +1283,7 @@ class NodeEditingViewer {
      * @param array  $node_data
      * @return string
      */
-    function getAuthorMediaOnlySelector($id_course, $media_type=NULL, $select_name, $node_data) {
+    public static function getAuthorMediaOnlySelector($id_course, $media_type=NULL, $select_name, $node_data) {
         if ($media_type == NULL) {
             $media_type = array(_SOUND,_VIDEO,_IMAGE,_DOC, _PRONOUNCE, _FINGER_SPELLING, _LABIALE, _LIS, _MONTESSORI);
         }
@@ -1544,7 +1544,9 @@ class NodeEditingViewer {
 
 class PreferenceSelector {
     public static function getPreferences( $user_type, $node_type, $operation_on_node, $preferences_array = array()) {
-        return $preferences_array[$user_type][$node_type][$operation_on_node];
+    	if (isset($preferences_array[$user_type][$node_type][$operation_on_node])) {
+    		return $preferences_array[$user_type][$node_type][$operation_on_node];
+    	} else return null;
     }
 }
 
@@ -1569,6 +1571,7 @@ class Utilities {
     }
 
     public static function getFileHintFromADAFileType ( $type ) {
+    	$hint='';
         switch ($type) {
             case _IMAGE:
             case _MONTESSORI:
