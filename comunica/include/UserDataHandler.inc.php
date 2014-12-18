@@ -28,7 +28,7 @@ class UserDataHandler extends Abstract_AMA_DataHandler
    * @param string $dsn - a valid data source name
    */  
   public function __construct($dsn = NULL) {
-    $this->tester_dsn = $dsn;
+    self::$tester_dsn = $dsn;
     parent::__construct($dsn);
   }
 

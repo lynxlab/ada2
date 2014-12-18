@@ -93,7 +93,7 @@ foreach($twDatas as $k=>$twitterAr) {
 	$mediaReplaceURLs = array();
 	
 	// checks if it's retweeted
-	if (is_object($twitterAr->retweeted_status))
+	if (property_exists($twitterAr, 'retweeted_status') && is_object($twitterAr->retweeted_status))
 	{
 		$username = $twitterAr->retweeted_status->user->name;
 		$screenname = $twitterAr->retweeted_status->user->screen_name;		
@@ -112,7 +112,7 @@ foreach($twDatas as $k=>$twitterAr) {
 	
 	// makes the hashtags links
 	$curr=0;
-	if ($twitterAr->entities->hashtags) {
+	if (is_object($twitterAr->entities) &&  $twitterAr->entities->hashtags) {
 		foreach ($twitterAr->entities->hashtags as $hastag)
 		{
 			$hashText[++$curr] = $hastag->text;
@@ -138,7 +138,14 @@ foreach($twDatas as $k=>$twitterAr) {
 	
 	// makes media links
 	$curr=0;
-	$mediaObj = $isRetweeded ? $twitterAr->retweeted_status->entities->media : $twitterAr->entities->media;
+	
+	$mediaObj = false;
+	if ($isRetweeded && property_exists($twitterAr->retweeted_status->entities, 'media')) {
+		$mediaObj = $twitterAr->retweeted_status->entities->media;
+	} else if (property_exists($twitterAr->entities, 'media')) {
+		$mediaObj = $twitterAr->entities->media;
+	}
+	
 	if ($mediaObj) {
 		foreach ($mediaObj as $aMedia)
 		{

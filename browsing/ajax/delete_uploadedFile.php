@@ -36,11 +36,12 @@ $neededObjAr = array(
   AMA_TYPE_STUDENT => array('layout','node','course','course_instance')
 );
 
+$trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 $self =  'download';
 
-include_once 'include/browsing_functions.inc.php';
+include_once '../include/browsing_functions.inc.php';
 include_once ROOT_DIR.'/include/upload_funcs.inc.php';
 include_once ROOT_DIR.'/include/Course.inc.php';
 

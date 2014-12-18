@@ -43,13 +43,13 @@ include_once 'include/admin_functions.inc.php';
  * YOUR CODE HERE
  */
 $id_tester = DataValidator::is_uinteger($_GET['id_tester']);
-if(DataValidator::is_uinteger($_GET['page']) === FALSE){
+if(!isset($_GET['page']) || DataValidator::is_uinteger($_GET['page']) === FALSE){
   $page = 1;  
 }
 else {
   $page = $_GET['page'];
 }
-$userTypeToFilter = DataValidator::is_uinteger($_GET['user_type']);
+$userTypeToFilter = isset($_GET['user_type']) ? DataValidator::is_uinteger($_GET['user_type']) : false;
 
 $users_per_page = 20;
 

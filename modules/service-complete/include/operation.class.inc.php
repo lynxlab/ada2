@@ -140,6 +140,8 @@ class Operation
     		$operator = null;
     	}
     	
+    	if (!isset($operand2)) $operand2 = null;
+    	
     	$data[++$key] = array ('id'=>$key, 'operator'=>$operator, 'operand1'=>$operand1, 'operand2'=>$operand2, 'priority'=>$this->_priority);
     	
     	return $key;

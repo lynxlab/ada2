@@ -72,6 +72,20 @@ elseif(isset($_REQUEST['submit_advancedForm']))
 else {
     $submit=null;
 }
+
+if(isset($_POST['s_node_name']))
+{
+	$s_node_name=$_POST['s_node_name'];
+} else $s_node_name = '';
+if(isset($_POST['s_node_title']))
+{
+	$s_node_title=$_POST['s_node_title'];
+} else $s_node_title = '';
+if(isset($_POST['s_node_text']))
+{
+	$s_node_text=$_POST['s_node_text'];
+} else $s_node_text = '';
+
 if (!is_null($submit)) {
 
     $out_fields_ar = array('nome','titolo','testo','tipo','id_utente');
@@ -106,18 +120,7 @@ if (!is_null($submit)) {
     if($s_UnicNode_text=="")
     {
         $count=0;
-        if(isset($_POST['s_node_name']))
-        {
-            $s_node_name=$_POST['s_node_name'];
-        }
-        if(isset($_POST['s_node_title']))
-        {
-            $s_node_title=$_POST['s_node_title'];
-        }
-        if(isset($_POST['s_node_text']))
-        {
-            $s_node_text=$_POST['s_node_text'];
-        }
+
         if(empty($s_node_name) && empty($s_node_title)  && empty($s_node_text))
         {
             $clause = '((tipo <> '.ADA_PRIVATE_NOTE_TYPE.') OR (tipo ='.ADA_PRIVATE_NOTE_TYPE.' AND id_utente = '.$sess_id_user.'))';
@@ -181,6 +184,10 @@ if (!is_null($submit)) {
               $class_name = 'ADA_LEAF_WORD_TYPE';
               $node_count++;
               break;
+          case ADA_PERSONAL_EXERCISE_TYPE:
+          	  $class_name = 'ADA_PERSONAL_EXERCISE_TYPE';
+          	  $node_count++;
+          	  break;
 
           }
           $s_node_text_enc = urlencode($s_node_text);
@@ -203,13 +210,13 @@ if (!is_null($submit)) {
   }
 }  // end Submit
 
-$menu .= "<p>".translateFN("Scrivi la o le parole che vuoi cercare, poi clicca su Cerca. ");
+$menu  = "<p>".translateFN("Scrivi la o le parole che vuoi cercare, poi clicca su Cerca. ");
 $menu .= "<br>".translateFN("Il sistema restituir&agrave; una lista con i nodi che contengono TUTTE le parole inserite.");
 $menu .= "<br>".translateFN("Le parole vengono trovate anche all'interno di altre parole e senza distinzioni tra maiuscole e minuscole.")."</p>";;
 
 /*menù advanced search*/
 
-$menuAdvanced_search .= "<p>".translateFN("Scrivi la o le parole che vuoi cercare, poi clicca su Cerca.");
+$menuAdvanced_search  = "<p>".translateFN("Scrivi la o le parole che vuoi cercare, poi clicca su Cerca.");
 $menuAdvanced_search .= "<br>".translateFN("Puoi effettuare la ricerca su più campi contemporaneamente. ");
 $menuAdvanced_search .= "<br>".translateFN("Il sistema proverà a restituituire una lista dei nodi contenenti tutte le parole indicate; ");
 $menuAdvanced_search .= translateFN("se ciò non è possibile restituirà la lista dei nodi che ne contengono almeno una.");
@@ -252,7 +259,7 @@ search form
   )
 );
 
-if ($op == 'lemma') {
+if (isset($op) && $op == 'lemma') {
     $form_dataHa[] = array (
     'label'=>'',
     'type'=>'hidden',
@@ -294,7 +301,7 @@ else
   
 }
 $online_users_listing_mode = 2;
-$online_users = ADALoggableUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
+$online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance,$online_users_listing_mode);
 
 // CHAT, BANNER etc
 $banner = include (ROOT_DIR."/include/banner.inc.php");
@@ -332,12 +339,13 @@ if(isset($_GET['s_AdvancedForm']))
 {
     $result_AdvancedSearch=$results;
     unset($results);
-}
+} else $result_AdvancedSearch = null;
+
 $content_dataAr = array(
   'form'=>$search_form,
   'advancedSearch_form'=>$advancedSearch_form,
   'menuAdvanced_search'=>$menuAdvanced_search,
-  'results'=>$results,
+  'results'=>isset($results) ? $results : '',
   'help'=>$spanSimple_search->getHtml().$spanAdvanced_search->getHtml(),
   'result_AdvancedSearch'=>$result_AdvancedSearch,
   'simpleSearchLink'=>$Simple_searchLink,
@@ -352,9 +360,9 @@ $content_dataAr = array(
   'last_visit' => $last_access,
   'index'=>$node_index,
   //'title'=>$node_title,
-  'author'=>$node_author,
-  'text'=>$data['text'],
-  'link'=>$data['link'],
+  'author'=>isset($node_author) ? $node_author : '',
+  // 'text'=>$data['text'],
+  // 'link'=>$data['link'],
   'messages'=>$user_messages->getHtml(),
   'agenda'=>$user_agenda->getHtml(),
   'events'=>$user_events->getHtml(),
@@ -368,17 +376,14 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
-		JQUERY_UNIFORM,
-                JQUERY_DATATABLE,
+       	JQUERY_DATATABLE,
 		JQUERY_NO_CONFLICT,
-                JQUERY_MASKEDINPUT
-                );
+		JQUERY_MASKEDINPUT);
 
 $layout_dataAr['CSS_filename'] = array (
 		JQUERY_UI_CSS,
-                JQUERY_UNIFORM_CSS,
-                JQUERY_DATATABLE_CSS
-);
+		JQUERY_DATATABLE_CSS);
+
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
     array_push ($layout_dataAr['JS_filename'],ROOT_DIR.'/js/browsing/search.js');

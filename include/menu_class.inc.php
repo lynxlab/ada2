@@ -427,8 +427,10 @@ class Menu
     	// set href properties
     	if (!is_null($item['href_properties'])) {
     		$properties = json_decode($item['href_properties'],true);
-    		foreach ($properties as $name=>$value) {
-    			$DOMitem->setAttribute($name,$this->constSubstitute($value));
+    		if (is_array($properties) && count($properties)>0) {
+	    		foreach ($properties as $name=>$value) {
+	    			$DOMitem->setAttribute($name,$this->constSubstitute($value));
+	    		}
     		}
     	}
     	

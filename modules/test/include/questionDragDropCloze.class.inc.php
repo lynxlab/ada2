@@ -277,7 +277,9 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
 			$return = ($answer->id_nodo == $value && $answer->correttezza > 0);
 			if (!$return) {
 				$givenAnswer = $this->searchChild($value);
-				$return = (strcasecmp($answer->testo, $givenAnswer->testo) == 0 && $answer->correttezza > 0);
+				if (is_object($givenAnswer)) {
+					$return = (strcasecmp($answer->testo, $givenAnswer->testo) == 0 && $answer->correttezza > 0);
+				} else $return = false;
 			}
 			return $return;
 		}

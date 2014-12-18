@@ -51,7 +51,7 @@ include_once 'include/cache_manager.inc.php';
 
 $cacheObj = New CacheManager($id_profile);
 $cacheObj->checkCache($id_profile);
-if ($cacheObj->getCachedData){
+if ($cacheObj->getCachedData()){
 	exit();
 }
 
@@ -59,9 +59,10 @@ if ($cacheObj->getCachedData){
 /** DYNAMIC mode
  *
  */
-if ($courseInstanceObj instanceof Course_instance) {
+if (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
-}
+} else $self_instruction = null;
+
 if ($userObj instanceof ADAGuest  || ($courseObj->getIsPublic() && $userObj->getType()!=AMA_TYPE_AUTHOR)) {
     $self = 'guest_view';
 }
@@ -77,12 +78,13 @@ if ($nodeObj->type != ADA_NOTE_TYPE && $nodeObj->type != ADA_PRIVATE_NOTE_TYPE)
 {
 	require_once 'include/DFSNavigationBar.inc.php';
 	$navBar = new DFSNavigationBar($nodeObj, array(
-			'prevId' => $_GET['prevId'], 
-			'nextId' => $_GET['nextId'],
+			'prevId' => isset($_GET['prevId']) ? $_GET['prevId'] : null, 
+			'nextId' => isset($_GET['nextId']) ? $_GET['nextId'] : null,
 			'userLevel' => $user_level));
 }
 
-if (MODULES_TEST && strpos($nodeObj->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0 && ADA_REDIRECT_TO_TEST && $_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {
+if (MODULES_TEST && strpos($nodeObj->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0 && ADA_REDIRECT_TO_TEST && 
+	isset($_SESSION['sess_id_user_type']) && $_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {
         $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$nodeObj->id));
         if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
@@ -107,13 +109,13 @@ $form_dataHa = array(
         'name' => 's_node_text',
         'size' => '20',
         'maxlength' => '40',
-        'value' => $s_node_text
+        'value' => isset($s_node_text) ? $s_node_text : null
     ),
     array(
         'label' => '',
         'type' => 'hidden',
         'name' => 'l_search',
-        'value' => $l_search
+        'value' => isset($l_search) ? $l_search : null
     ),
     array(
         'label' => '',
@@ -232,13 +234,31 @@ else {
 	}
 }
 
-// info on author and tutor
-$tutor_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$tutor_id\">$tutor_uname</a>";
-$author_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$node_author_id\">$node_author</a>";
+// info on author and tutor and link for writing to tutor and author
+if (isset($tutor_uname)) {
+	$write_to_tutor_link = "<a href=\"$http_root_dir/comunica/send_message.php?destinatari=$tutor_uname\">$tutor_uname</a>";
+	if (isset($tutor_id)) {
+		$tutor_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$tutor_id\">$tutor_uname</a>";
+	} else $tutor_info_link = null;	
+} else {
+	$write_to_tutor_link = null;
+	$tutor_info_link = null;
+}
 
-// link for writing to tutor and author
-$write_to_tutor_link = "<a href=\"$http_root_dir/comunica/send_message.php?destinatari=$tutor_uname\">$tutor_uname</a>";
-$write_to_author_link = "<a href=\"$http_root_dir/comunica/send_message.php?destinatari=$author_uname\">$node_author</a>";
+if (isset($node_author)) {
+	if (isset($author_uname)) {
+		$write_to_author_link = "<a href=\"$http_root_dir/comunica/send_message.php?destinatari=$author_uname\">$node_author</a>";
+	} else $write_to_author_link = null;
+	
+	if (isset($node_author_id)) {
+		$author_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$node_author_id\">$node_author</a>";
+	} else {
+		$author_info_link = null;
+	}	
+} else {
+	$write_to_author_link = null;
+	$author_info_link = null;
+}
 
 //next node
 $next_node_link = '';
@@ -313,7 +333,7 @@ switch($id_profile) {
 			     	 */
 			     	if (($nodeObj->type == ADA_PRIVATE_NOTE_TYPE && $id_profile==AMA_TYPE_STUDENT) ||
 			     			($id_profile==AMA_TYPE_TUTOR)) {
-			     				$publish_note.= "<a href=\"". $http_root_dir . "/services/edit_node.php?".
+			     				$publish_note = "<a href=\"". $http_root_dir . "/services/edit_node.php?".
 			     						"op=publish".
 			     						"&id_node=" . $sess_id_node .
 			     						"&id_course=" . $sess_id_course .
@@ -339,7 +359,10 @@ switch($id_profile) {
 		if ($id_profile == AMA_TYPE_STUDENT && $courseInstanceObj instanceof Course_instance && $courseInstanceObj->getSelfInstruction()){
 		  $mod_enabled = FALSE;
 		  $com_enabled = FALSE;
-		} 
+		} else if ($id_profile == AMA_TYPE_VISITOR) {
+			$mod_enabled = FALSE;
+			$com_enabled = FALSE;			
+		}
 
 		//show course istance name if isn't empty - valerio
 		if (!empty($courseInstanceObj->title)) {
@@ -370,7 +393,7 @@ $content_dataAr = array(
 	'user_score' => $user_score,
 	'status' => $status,
         'node_level' => $node_level,
-	'visited' => $visited,
+	'visited' => isset($visited) ? $visited : null,
 	'path' => $node_path,
 	'title' => $node_title,
 	'version' => $node_version,
@@ -415,26 +438,26 @@ if ($node_type == ADA_GROUP_WORD_TYPE OR $node_type == ADA_LEAF_WORD_TYPE) {
 	* */
 }
 
-if ($reg_enabled) {
+if ($reg_enabled && isset($add_bookmark)) {
 	$content_dataAr['add_bookmark'] = $add_bookmark;
 } else {
 	$content_dataAr['add_bookmark'] = "";
 }
 
-$content_dataAr['bookmark'] = $bookmark;
-$content_dataAr['go_bookmarks_1'] = $go_bookmarks;
-$content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+$content_dataAr['bookmark'] = isset($bookmark) ? $bookmark  : null;
+$content_dataAr['go_bookmarks_1'] = isset($go_bookmarks) ? $go_bookmarks : null;
+$content_dataAr['go_bookmarks_2'] = isset($go_bookmarks) ? $go_bookmarks : null;
 
 if ($mod_enabled) {
 	
-	$content_dataAr['edit_node'] = $edit_node;
-	$content_dataAr['delete_node'] = $delete_node;
-	$content_dataAr['add_exercise'] = $add_exercise;
-	$content_dataAr['add_note'] = $add_note;
-	$content_dataAr['add_private_note'] = $add_private_note;
-	$content_dataAr['edit_note'] = $edit_note;
-	$content_dataAr['delete_note'] = $delete_note;
-	$content_dataAr['publish_note'] = $publish_note;
+	if (isset($edit_node))        $content_dataAr['edit_node'] = $edit_node;
+	if (isset($delete_node))      $content_dataAr['delete_node'] = $delete_node;
+	if (isset($add_exercise))     $content_dataAr['add_exercise'] = $add_exercise;
+	if (isset($add_note))         $content_dataAr['add_note'] = $add_note;
+	if (isset($add_private_note)) $content_dataAr['add_private_note'] = $add_private_note;
+	if (isset($edit_note))        $content_dataAr['edit_note'] = $edit_note;
+	if (isset($delete_note))      $content_dataAr['delete_note'] = $delete_note;
+	if (isset($publish_note))     $content_dataAr['publish_note'] = $publish_note;
 } else {
 	
 	$content_dataAr['edit_node'] = '';
@@ -464,7 +487,7 @@ if ($id_profile == AMA_TYPE_STUDENT)
 	$content_dataAr['exercise_history'] = '<a href="exercise_history.php?id_course_instance='.$sess_id_course_instance.'">'.translateFN('storico esercizi').'</a>';
 }
 
-
+$op = isset($op) ? $op : null;
 switch ($op){
 
 	case 'viewXML':
@@ -530,7 +553,7 @@ switch ($op){
 		
 		$optionsAr['onload_func'] = 'initDoc();';
 		
-                if (is_object($navBar)) {
+                if (isset($navBar) && is_object($navBar)) {
                     $content_dataAr['go_prev'] = $navBar->getHtml('prev'); // can pass href text as second param
                     $content_dataAr['go_next'] = $navBar->getHtml('next'); // can pass href text as second param
                 }

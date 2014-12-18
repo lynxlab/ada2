@@ -53,9 +53,9 @@ if ($id_course) {
   $sess_id_course = $id_course;
 }
 
-if ($id_course_instance) {
+if (isset($id_course_instance)) {
   $sess_id_course_instance = $id_course_instance;
-}
+} else $sess_id_course_instance = null;
 
 if (isset($del_msg_id) and (!empty($del_msg_id))){
   // vito, 19 gennaio 2009, qui va in errore durante il log del messaggio

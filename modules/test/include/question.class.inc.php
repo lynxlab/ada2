@@ -386,7 +386,7 @@ abstract class QuestionTest extends NodeTest
 	 *
 	 * @see getMaxScore
 	 */
-	public function getMostCorrectAnswer() {
+	public function getMostCorrectAnswer($ordine=null) {
 		$score = 0;
 		$mostCorrectAnswer = null;
 

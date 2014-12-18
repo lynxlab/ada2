@@ -16,7 +16,7 @@ function convertFilterArrayToString ($filterArray, $dh, $futureSentence = true)
 	$html .= ($futureSentence) ? translateFN ("sar&agrave;") : translateFN("&egrave; stata");
 	$html .= ' '.translateFN('inviata a');
 	
-	$idNewsletter = intval ($filterArray['id']);
+	$idNewsletter = isset($filterArray['id']) ? intval ($filterArray['id']) : 0;
 
 	if (isset ($filterArray['userType']) && $filterArray['userType']>0)
 	{
@@ -90,7 +90,14 @@ function convertFilterArrayToString ($filterArray, $dh, $futureSentence = true)
 		}
 			
 		$html = ucfirst (strtolower ($html)).'.';
+		
+		if (!isset($instanceInfo['title'])) $instanceInfo['title'] = '';
+		 
 		$html = str_replace('<instancename>', $instanceInfo['title'], $html);
+		
+		if (!isset($courseInfo['nome'])) $courseInfo['nome']='';
+		if (!isset($courseInfo['titolo'])) $courseInfo['titolo']='';
+		
 		$html = str_replace('<coursename>', '('.$filterArray['idCourse'].')'.' '.$courseInfo['nome'].'-'.$courseInfo['titolo'], $html);			
 	}
 	else

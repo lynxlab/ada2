@@ -15,7 +15,7 @@
 //------------------------------------------------------------------
 // Manifest Constants that control varius aspect of JpGraph
 //------------------------------------------------------------------
-if (!defined(ADA_MULTI_CONFIG)){
+if (!defined('ADA_MULTI_CONFIG')){
 	// First find out where we are executed from
 	// DEFINE("DIR_BASE","/home/ljp/www/jpgraph/dev/");
 	DEFINE("DIR_BASE",ROOT_DIR."include/graph/");

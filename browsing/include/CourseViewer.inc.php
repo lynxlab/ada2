@@ -14,7 +14,7 @@ class CourseViewer
    * @param array $callback_params
    * @return string - the html code for the generated course index
    */
-  function displayInternalLinkSelector($id_course, $callback_params=array()) {
+  public static function displayInternalLinkSelector($id_course, $callback_params=array()) {
     $dh = $GLOBALS['dh'];
     if (isset($callback_params['id_edited_node'])) {
         $info_node = $dh->get_node_info($callback_params['id_edited_node']);
@@ -54,7 +54,7 @@ class CourseViewer
    * @param  string  $container_div_name
    * @return string  -
    */
-  function displayMainIndex($userObj, $id_course, $expand_index, $order, $id_course_instance=NULL, $container_div_name=NULL){
+  public static function displayMainIndex($userObj, $id_course, $expand_index, $order, $id_course_instance=NULL, $container_div_name=NULL){
     $dh = $GLOBALS['dh'];
 
     // vito, 3 ottobre 2008
@@ -244,7 +244,7 @@ class CourseViewer
    * @param  string  $container_div_name
    * @return string  -
    */
-  function displayForumIndex($userObj, $id_course, $expand_index, $order, $id_course_instance, $with_icons=NULL, $container_div_name=NULL) {
+  public static function displayForumIndex($userObj, $id_course, $expand_index, $order, $id_course_instance, $with_icons=NULL, $container_div_name=NULL) {
     $dh = $GLOBALS['dh'];
     $show_visits   = !$GLOBALS['hide_visits'];
     /**
@@ -285,8 +285,8 @@ class CourseViewer
       return $class_tutor_id;
     }
 
-	$callback_params['user_id'] = $userObj->id_user;
-	$callback_params['class_tutors_ids'] = $class_tutors_ids;
+	$callback_params['user_id'] = $userObj->getId();
+	$callback_params['class_tutors_ids'] = $class_tutor_id;
 	$callback_params['show_icons'] = $show_icons;
 	$forum_data = $dh->get_notes_for_this_course_instance($id_course_instance, $userObj->id_user, $order_by_date, $show_visits);
     switch( $userObj->tipo ) {// sarebbe meglio $userObj->getType()
@@ -376,7 +376,7 @@ class CourseViewer
    * @param unknown_type $callback_params
    * @return unknown
    */
-  function ordered($course_data, $callback, $callback_params=array(),$id_toc) {
+  public static function ordered($course_data, $callback, $callback_params=array(),$id_toc) {
     $list = CDOMElement::create('ul');
     /*
      * Ottiene le informazioni sul nodo principale
@@ -415,7 +415,7 @@ class CourseViewer
    * @param unknown_type $callback_params
    * @return unknown
    */
-  function struct($course_data, $id_toc, $expand_index, $callback, $callback_params=array()) {
+  public static function struct($course_data, $id_toc, $expand_index, $callback, $callback_params=array()) {
 
     $lda = self::buildLda($course_data);
     $s   = array();
@@ -433,7 +433,7 @@ class CourseViewer
       $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona'=> 'group.png','root'=>true);
     }
       // vito 13 gennaio 2009
-    if (count($lda[$id_toc]) > 0 ) {
+    if (isset($lda[$id_toc]) && count($lda[$id_toc]) > 0 ) {
       $show_hide_span = TRUE;
     }
     else {
@@ -523,7 +523,7 @@ class CourseViewer
    * @param  array $result
    * @return array
    */
-  function buildLda($result = array()) {
+  public static function buildLda($result = array()) {
     $lda = array();
     if(count($result)){
       foreach ($result as $item) {
@@ -540,7 +540,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function internalLinkSelector($params = array(), $external_params=array()) {
+  public static function internalLinkSelector($params = array(), $external_params=array()) {
     $css_classname = self::getClassNameForNodeType($params['node']['tipo']);
     $list_item = CDOMElement::create('span', "class:$css_classname");
     $list_item->addChild(self::getDisclosureElement($params, $external_params));
@@ -596,7 +596,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function authorCallback($params = array(), $external_params=array()) {
+  public static function authorCallback($params = array(), $external_params=array()) {
     $http_root_dir = $GLOBALS['http_root_dir'];
     $show_visits   = !$GLOBALS['hide_visits'];
 
@@ -630,7 +630,7 @@ class CourseViewer
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
     }
 
-    if ($params['node']['is_someone_there'] >= 1) {
+    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
       $icon = CDOMElement::create('img', 'src:img/_student.png');
       $icon->setAttribute('name',translateFN('altri'));
       $icon->setAttribute('alt',translateFN('altri'));
@@ -646,7 +646,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function tutorCallback($params = array(), $external_params=array()) {
+  public static function tutorCallback($params = array(), $external_params=array()) {
     $http_root_dir = $GLOBALS['http_root_dir'];
     $show_visits   = !$GLOBALS['hide_visits'];
 
@@ -673,13 +673,13 @@ class CourseViewer
       if (isset($show_visits) && $show_visits == TRUE) {
       $visits = 0;
 
-      if ($params['node']['numero_visite'] > 0) {
+      if (isset($params['node']['numero_visite']) && $params['node']['numero_visite'] > 0) {
         $visits = $params['node']['numero_visite'];
       }
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
     }
 
-    if ($params['node']['is_someone_there'] >= 1) {
+    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
       $icon = CDOMElement::create('img', 'src:img/_student.png');
       $icon->setAttribute('name',translateFN('altri'));
       $icon->setAttribute('alt',translateFN('altri'));
@@ -695,7 +695,7 @@ class CourseViewer
    * @param array $external_params	- an array of parameters passed to this function from struct()'s caller
    * @return string
    */
-  function studentCallback($params = array(), $external_params=array()) {
+  public static function studentCallback($params = array(), $external_params=array()) {
     $http_root_dir = $GLOBALS['http_root_dir'];
     $show_visits   = !$GLOBALS['hide_visits'];
 
@@ -716,7 +716,7 @@ class CourseViewer
     //$icon = CDOMElement::create('img', "src:img/{$params['node']['icona']}");
     //$list_item->addChild($icon);
 
-    if ($external_params['user_level'] >= $params['node']['livello']) {
+    if (isset($params['node']['livello']) && $external_params['user_level'] >= $params['node']['livello']) {
       preg_match("/^([0-9]+)_/", $params['node']['id_nodo'], $match);
       $id_course = $match[1];
 
@@ -739,7 +739,7 @@ class CourseViewer
     if (isset($show_visits) && $show_visits == TRUE) {
       $visits = 0;
 
-      if ($params['node']['numero_visite'] > 0) {
+      if (isset($params['node']['numero_visite']) && $params['node']['numero_visite'] > 0) {
         $visits = $params['node']['numero_visite'];
       }
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
@@ -756,7 +756,7 @@ class CourseViewer
       $list_item->addChild($link);
     }
 
-    if ($params['node']['is_someone_there'] >= 1) {
+    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
       $icon = CDOMElement::create('img', 'src:img/_student.png');
       $icon->setAttribute('name',translateFN('altri'));
       $icon->setAttribute('alt',translateFN('altri'));
@@ -772,7 +772,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function forumStudentCallback($params = array(), $external_params=array()) {
+  public static function forumStudentCallback($params = array(), $external_params=array()) {
     return self::forumCommonCallback($params, $external_params);
   }
 
@@ -783,7 +783,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function forumTutorCallback($params = array(), $external_params=array()) {
+  public static function forumTutorCallback($params = array(), $external_params=array()) {
     return self::forumCommonCallback($params, $external_params);
   }
 
@@ -794,16 +794,16 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function forumAuthorCallback($params = array(), $external_params=array()) {
+  public static function forumAuthorCallback($params = array(), $external_params=array()) {
     return self::forumCommonCallback($params, $external_params);
   }
 
-  function forumCommonCallback($params=array(), $external_params=array()) {
+  public static function forumCommonCallback($params=array(), $external_params=array()) {
     $http_root_dir = $GLOBALS['http_root_dir'];
 
     $show_visits   = !$GLOBALS['hide_visits'];
 
-    $css_classname = self::getClassNameForNote($params['node'], $external_params['user_id'], $external_params['class_tutor_id']);
+    $css_classname = self::getClassNameForNote($params['node'], $external_params['user_id'], isset($external_params['class_tutor_id']) ? $external_params['class_tutor_id'] : null);
 
     $list_item = CDOMElement::create('span');
     $list_item->addChild(self::getDisclosureElement($params, $external_params));
@@ -815,12 +815,17 @@ class CourseViewer
       $list_item->setAttribute('class',$css_classname);
     }
 
-    $link_to_note = CDOMElement::create('a',"href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}");
-    $username = CDOMElement::create('span', 'class:username');
-    $username->addChild(new CText($params['node']['username']));
-    $link_to_note->addChild(new CText($params['node']['nome']));
-    $list_item->addChild($link_to_note);
-    $list_item->addChild($username);
+    if (isset($params['node']['username'])) {
+    	$username = CDOMElement::create('span', 'class:username');
+    	$username->addChild(new CText($params['node']['username']));
+    }
+    if (isset($params['node']['nome'])) {
+    	$link_to_note = CDOMElement::create('a',"href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}");
+    	$link_to_note->addChild(new CText($params['node']['nome']));    	
+    }
+    
+    if (isset($link_to_note)) $list_item->addChild($link_to_note);
+    if (isset($username)) $list_item->addChild($username);
 
 	if (!empty($params['node']['testo'])) {
 		$link_zoom = CDOMElement::create('a');
@@ -837,13 +842,13 @@ class CourseViewer
     if (isset($show_visits) && $show_visits == TRUE) {
       $visits = 0;
 
-      if ($params['node']['numero_visite'] > 0) {
+      if (isset($params['node']['numero_visite']) && $params['node']['numero_visite'] > 0) {
         $visits = $params['node']['numero_visite'];
       }
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
     }
 
-    if ($params['node']['is_someone_there'] >= 1) {
+    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
       $image = CDOMElement::create('img','name:altri, src:img/_student.png');
       $list_item->addChild($image);
     }
@@ -875,7 +880,7 @@ class CourseViewer
     return $list_item;
   }
 
-  function displayForumMenu($op, $userObj) {
+  public static function displayForumMenu($op, $userObj) {
     $menu = CDOMElement::create('span','id:forum_menu, class:right_menu');
     $ul   = CDOMElement::create('ul');
     $export_all = CDOMElement::create('li');
@@ -886,7 +891,7 @@ class CourseViewer
 
     if ($userObj->tipo == AMA_TYPE_STUDENT) {
       $export_student_notes = CDOMElement::create('li');
-      $export_student_notes_link = CDOMElement::create('a', "href:main_index.php?op=$op&order=chrono&list_mode=export_single&id_student=$userObj->id");
+      $export_student_notes_link = CDOMElement::create('a', "href:main_index.php?op=$op&order=chrono&list_mode=export_single&id_student=".$userObj->getId());
       $export_student_notes_link->addChild(new CText(translateFN("Esporta note studente")));
       $export_student_notes->addChild($export_student_notes_link);
       $ul->addChild($export_student_notes);
@@ -942,7 +947,7 @@ class CourseViewer
    * @param unknown_type $node_type
    * @return string
    */
-  function getClassNameForNodeType($node_type) {
+  public static function getClassNameForNodeType($node_type) {
       $node_type_family = $node_type[0];
       switch($node_type) {
       case ADA_NOTE_TYPE:
@@ -988,7 +993,7 @@ class CourseViewer
    * @param integer $tutor_id
    * @return string
    */
-  function getClassNameForNote($node, $user_id, $tutor_id) {
+  public static function getClassNameForNote($node, $user_id, $tutor_id) {
     $classname = 'ADA_NOTE_TYPE ';
 
     if($node['tipo'] == ADA_GROUP_TYPE) {
@@ -1018,7 +1023,7 @@ class CourseViewer
    * @param boolean $executed
    * @return string
    */
-  function getCSSClassNameForExerciseType($exercise_type, $executed=false) {
+  public static function getCSSClassNameForExerciseType($exercise_type, $executed=false) {
 
     if ($executed) {
       $executed_classname = 'ADA_EXECUTED_EXERCISE';
@@ -1055,7 +1060,7 @@ class CourseViewer
    * @param  array  $external_params - an array with additional parameters
    * @return string $list_item       - an html string for a course index item
    */
-  function getDisclosureElement($params = array(), $external_params = array()) {
+  public static function getDisclosureElement($params = array(), $external_params = array()) {
     // vito 13 gennaio 2009
     if (!isset($params['show_hide_span']) || $params['show_hide_span'] == FALSE) {
       $list_item = CDOMElement::create('span');

@@ -83,22 +83,22 @@ if (isset($commentStr)){
 }
 
 // create the root element of the xml tree
-$xmlRoot =& $domtree->createElement("ada_export");
+$xmlRoot = $domtree->createElement("ada_export");
 $xmlRoot->setAttribute("exportDate", date('r'));
 // append it to the document created
-$xmlRoot =& $domtree->appendChild($xmlRoot);
+$xmlRoot = $domtree->appendChild($xmlRoot);
 
 foreach ($nodesToExport as $course_id=>$nodeList)
 {
 	// need an Import/Export DataHandler
-	$dh =& AMAImpExportDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+	$dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 	
-	$course_data =& $dh->get_course ($course_id);
+	$course_data = $dh->get_course ($course_id);
 
 	if (!empty($course_data) && !AMA_DB::isError($course_data))
 	{
 		// create node for current course
-		$XMLcourse =& $domtree->createElement('modello_corso');
+		$XMLcourse = $domtree->createElement('modello_corso');
 		$XMLcourse->setAttribute('exportedId', $course_id);
 		// set course model datas
 		foreach ($course_data as $name=>$value)
@@ -126,7 +126,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 		if (!is_array($nodeList) ||
 		(is_array($nodeList) &&  empty($nodeList))) $nodeList=array ($course_id.exportHelper::$courseSeparator.$course_data['id_nodo_iniziale']);
 
-		$XMLAllNodes =& $domtree->createElement("nodi");
+		$XMLAllNodes = $domtree->createElement("nodi");
 		$XMLNodeChildren = array();
 		// loop the nodes to be exported
 		foreach ($nodeList as &$aNodeId)
@@ -147,19 +147,19 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 		if (MODULES_TEST) {
 			// need an AMATestDataHandler, so disconnect the AMAImpExportDataHandler and reconnect
 			$dh->disconnect();
-			$dh_test =& AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+			$dh_test = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 			
 			// get surveys
-			$surveysArr =& $dh_test->test_getCourseTest (array('id_corso'=>$course_id));
+			$surveysArr = $dh_test->test_getCourseTest (array('id_corso'=>$course_id));
 			// build an array of test root nodes id that MUST be exported
 			$surveyRootNodes = array();
 
 			if (!empty($surveysArr) && !AMA_DB::isError($surveysArr))
 			{
-				$XMLAllSurveys =& $domtree->createElement('surveys');
+				$XMLAllSurveys = $domtree->createElement('surveys');
 				foreach ($surveysArr as &$surveyElement)
 				{
-					$XMLSurvey =& $domtree->createElement('survey');
+					$XMLSurvey = $domtree->createElement('survey');
 					foreach ($surveyElement as $name=>$value)
 					{
 						if ($name==='titolo'|| $name==='id_corso') continue;
@@ -185,7 +185,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 			 * test_course_survey.id_test and test_nodes.id_nodo !!!
 			 */
 			// get tests
-			$testsArr =& $dh_test->test_getNodes(array('id_corso'=>$course_id,'id_nodo_parent'=>null,'id_nodo_radice'=>null,
+			$testsArr = $dh_test->test_getNodes(array('id_corso'=>$course_id,'id_nodo_parent'=>null,'id_nodo_radice'=>null,
 					'id_nodo_riferimento'=>$exportHelper->exportedNONTestNodeArray,'id_istanza'=>0));
 			
 			if (!empty ($testsArr) && !AMA_DB::isError($testsArr))

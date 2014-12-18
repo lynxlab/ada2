@@ -698,7 +698,7 @@ function getNodeData( $id_node ) {
              'icon' => $nodeObj->icon,
              'id_node_author' => $nodeObj->author['id'], //vito, 28 nov 2008 gets only the author id
              'creation_date' => $nodeObj->creation_date,
-             'id_instance' => $nodeObj->id_instance
+             'id_instance' => $nodeObj->instance
   );
   if ($nodeObj->type == ADA_LEAF_WORD_TYPE OR $nodeObj->type == ADA_GROUP_WORD_TYPE) {
       $node_data['hyphenation'] = $nodeObj->hyphenation;
@@ -728,25 +728,25 @@ function getNodeDataFromPost( $post_data = array() ) {
    'bg_color' => $post_data['bg_color'],
    'correctness' => $post_data['correctness'],
    'copyright' => $post_data['copyright'],
-   'n_contacts' => $post_data['n_contacts'], 
+   'n_contacts' => isset($post_data['n_contacts']) ? $post_data['n_contacts'] : null, 
    'icon' => $post_data['icon'],
    'id_node_author' => $post_data['id_node_author'],
    'creation_date' => $post_data['creation_date'],
    'DataFCKeditor' => $post_data['DataFCKeditor'],
-   'DataFCK_hyphen' => $post_data['DataFCK_hyphen'],
-   'hyphenation' =>  $post_data['ADACodeHyphen'],
-   'DataFCK_grammar' => $post_data['DataFCK_grammar'],
-   'grammar' => $post_data['ADACodeGrammar'],
-   'DataFCK_semantic' => $post_data['DataFCK_semantic'],
-   'semantic' => $post_data['ADACodeSemantic'],
-   'DataFCK_notes' => $post_data['DataFCK_notes'],
-   'notes' => $post_data['ADACodeNotes'],
-   'DataFCK_examples' => $post_data['DataFCK_examples'],
-   'examples' => $post_data['ADACodeExamples'],
-   'DataFCK_exlanguage' => $post_data['DataFCK_exlanguage'],
-   'exlanguage' => $post_data['ADACodeExlanguage'],
+   'DataFCK_hyphen' => isset($post_data['DataFCK_hyphen']) ? $post_data['DataFCK_hyphen'] : null,
+   'hyphenation' =>  isset($post_data['ADACodeHyphen']) ? $post_data['ADACodeHyphen'] : null,
+   'DataFCK_grammar' => isset($post_data['DataFCK_grammar']) ? $post_data['DataFCK_grammar'] : null,
+   'grammar' => isset($post_data['ADACodeGrammar']) ? $post_data['ADACodeGrammar'] : null,
+   'DataFCK_semantic' => isset($post_data['DataFCK_semantic']) ? $post_data['DataFCK_semantic'] : null,
+   'semantic' => isset($post_data['ADACodeSemantic']) ? $post_data['ADACodeSemantic'] : null,
+   'DataFCK_notes' => isset($post_data['DataFCK_notes']) ? $post_data['DataFCK_notes'] : null,
+   'notes' => isset($post_data['ADACodeNotes']) ? $post_data['ADACodeNotes'] : null,
+   'DataFCK_examples' => isset($post_data['DataFCK_examples']) ? $post_data['DataFCK_examples'] : null,
+   'examples' => isset($post_data['ADACodeExamples']) ? $post_data['ADACodeExamples'] : null,
+   'DataFCK_exlanguage' => isset($post_data['DataFCK_exlanguage']) ? $post_data['DataFCK_exlanguage'] : null,
+   'exlanguage' => isset($post_data['ADACodeExlanguage']) ? $post_data['ADACodeExlanguage'] : null,
   	// @author giorgio 26/apr/2013
-   'forcecreationupdate' => $post_data['forcecreationupdate']	
+   'forcecreationupdate' => isset($post_data['forcecreationupdate']) ? $post_data['forcecreationupdate'] : null	
   );
 
   return $node_data;

@@ -117,41 +117,41 @@ $content_dataAr = array(
     'user_type' => $user_type,
     'user_level' => $user_level,
     'visited' => '-',
-    'icon' => $icon,
+    'icon' => isset($icon) ? $icon : '',
     //'navigation_bar' => $navBar->getHtml(),
     'text' =>  $text,
     'go_back' => $go_back_link->getHtml(),
 	'back_link' => $back_link->getHtml(),
-    'edit_test' => $edit_test_link,
-	'delete_test' => $delete_test_link,
-	'add_topic' => $add_topic_link,
-	'add_question' => $add_question_link,
-    'title' => $title,
-    'author' => $author,
+    'edit_test' => isset($edit_test_link) ? $edit_test_link : '',
+	'delete_test' => isset($delete_test_link) ? $delete_test_link : '',
+	'add_topic' => isset($add_topic_link) ? $add_topic_link : '',
+	'add_question' => isset($add_question_link) ? $add_question_link : '',
+    'title' => isset($title) ? $title : '',
+    'author' => isset($author) ? $author : '',
     'node_level' => 'livello nodo',
-    'course_title' => '<a href="../../browsing/main_index.php">'.$course_title.'</a> > ',
+    'course_title' => isset($course_title) ? '<a href="../../browsing/main_index.php">'.$course_title.'</a> > ' : '',
     //'media' => 'media',
 );
 
-$content_dataAr['notes'] = $other_node_data['notes'];
-$content_dataAr['personal'] = $other_node_data['private_notes'];
+if (isset($other_node_data['notes'])) $content_dataAr['notes'] = $other_node_data['notes'];
+if (isset($other_node_data['private_notes'])) $content_dataAr['personal'] = $other_node_data['private_notes'];
 
-if ($reg_enabled) {
+if ($reg_enabled && isset($add_bookmark)) {
     $content_dataAr['add_bookmark'] = $add_bookmark;
 } else {
     $content_dataAr['add_bookmark'] = "";
 }
 
-$content_dataAr['bookmark'] = $bookmark;
-$content_dataAr['go_bookmarks_1'] = $go_bookmarks;
-$content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+$content_dataAr['bookmark'] = isset($bookmark) ? $bookmark : '';
+$content_dataAr['go_bookmarks_1'] = isset($go_bookmarks) ? $go_bookmarks : '';
+$content_dataAr['go_bookmarks_2'] = isset($go_bookmarks) ? $go_bookmarks : '';
 
 if ($com_enabled) {
-    $content_dataAr['ajax_chat_link'] = $ajax_chat_link;
+    $content_dataAr['ajax_chat_link'] = isset($ajax_chat_link) ? $ajax_chat_link : '';
     $content_dataAr['messages'] = $user_messages->getHtml();
     $content_dataAr['agenda'] = $user_agenda->getHtml();
     $content_dataAr['events'] = $user_events->getHtml();
-    $content_dataAr['chat_users'] = $online_users;
+    $content_dataAr['chat_users'] = isset($online_users) ? $online_users : '';
 } else {
     $content_dataAr['chat_link'] = translateFN("chat non abilitata");
     $content_dataAr['messages'] = translateFN("messaggeria non abilitata");
@@ -182,7 +182,7 @@ if ($id_profile == AMA_TYPE_AUTHOR) {
 	$content_dataAr['delete_test'] = 'mode='.$mode.'&action=del&id_test='.$test->id_nodo;
 }
 $content_dataAr['go_back'] = $last_visited_node;
-$content_dataAr['what'] = $what;
+$content_dataAr['what'] = isset($what) ? $what : '';
 
 
 ARE::render($layout_dataAr, $content_dataAr);

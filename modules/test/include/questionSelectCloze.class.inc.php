@@ -69,6 +69,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
 	public function clozePlaceholder($params) {
 		$ordine = $params[1];
 		$value = $params[2];
+		$class = '';
 
 		$name = $this->getPostFieldName();
 

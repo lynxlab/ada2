@@ -314,11 +314,11 @@ abstract class Abstract_AMA_DataHandler {
      *
      * @return the string representing the timestamp as a date, according to the format
      */
-    public function ts_to_date($timestamp, $format=ADA_DATE_FORMAT) {
+    public static function ts_to_date($timestamp, $format=ADA_DATE_FORMAT) {
         if ($timestamp == "") {
             return "";
         }
-        return strftime($format, $timestamp);
+        return strftime($format, (float)$timestamp);
     }
 
     /**
@@ -340,12 +340,14 @@ abstract class Abstract_AMA_DataHandler {
             return time();
         }
 
-        $date_ar = split ('[\\/.-]', $date);
+        // $date_ar = split ('[\\/.-]', $date);
+        $date_ar = preg_split ('/[\\/.-]/', $date);
         if (count($date_ar)<3) {
             return 0;
         }
 
-        $format_ar = split ('[/.-]',ADA_DATE_FORMAT);
+        // $format_ar = split ('[/.-]',ADA_DATE_FORMAT);
+        $format_ar = preg_split ('/[\\/.-]/',ADA_DATE_FORMAT);
         if ($format_ar[0]=="%d") {
             $giorno = (int)$date_ar[0];
             $mese = (int)$date_ar[1];
@@ -402,7 +404,7 @@ abstract class Abstract_AMA_DataHandler {
      *
      * @return bool whether $value is an error
      */
-    public function isError($value) {
+    public static function isError($value) {
         return (is_object($value) && AMA_DB::isError($value));
                         //         ($value instanceof  AMA_Error)
                         // (get_class($value) == 'AMA_Error' || is_subclass_of($value, 'PEAR_Error')));
@@ -700,7 +702,7 @@ abstract class Abstract_AMA_DataHandler {
      *                object when AMA_FETCH_OBJECT is specified.
      */
     protected function getColPrepared($sql, $values=array()) {
-    	return self::getAllPrepared($query,$values,PDO::FETCH_COLUMN,0);
+    	return self::getAllPrepared($sql,$values,PDO::FETCH_COLUMN,0);
     }
 
     /**
@@ -1380,7 +1382,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         // get a row from table UTENTE
         $get_user_result = $this->_get_user_info($id);
-        if(AMA_Common_DataHandler::isError($get_user_reslut)) {
+        if(AMA_Common_DataHandler::isError($get_user_result)) {
             // $get_user_result is an AMA_Error object
             return $get_user_result;
         }
@@ -3222,8 +3224,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $update_author_sql = 'UPDATE autore SET tariffa=?, profilo=? WHERE id_utente_autore=?';
         $valuesAr = array(
-                $author_ha['tariffa'],
-                $author_ha['profilo'],
+                isset($author_ha['tariffa']) ? $author_ha['tariffa'] : null,
+                isset($author_ha['profilo']) ? $author_ha['profilo'] : null,
                 $id
         );
         $result = $this->queryPrepared($update_author_sql, $valuesAr);
@@ -3314,7 +3316,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
                     $user_ha['provincia'],
                     $user_ha['nazione'],
                     $user_ha['codice_fiscale'],
-                    AMA_Common_DataHandler::date_to_ts($user_ha['birthdate']),
+                    $this->date_to_ts($user_ha['birthdate']),
                     $user_ha['sesso'],
                     $user_ha['telefono'],
                     $user_ha['stato'],
@@ -3345,7 +3347,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
                     $user_ha['provincia'],
                     $user_ha['nazione'],
                     $user_ha['codice_fiscale'],
-                    AMA_Common_DataHandler::date_to_ts($user_ha['birthdate']),
+                    $this->date_to_ts($user_ha['birthdate']),
                     $user_ha['sesso'],
                     $user_ha['telefono'],
                     $user_ha['stato'],
@@ -3513,7 +3515,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $res_ha['node_id']      = $res_ar[0];
         $res_ha['student_id']   = $res_ar[1];
         $res_ha['course_id']    = $res_ar[2];
-        $res_ha['date']         = $this->ts_to_date($res_ar[3]);
+        $res_ha['date']         = self::ts_to_date($res_ar[3]);
         $res_ha['description']  = $res_ar[4];
         $res_ha['ordering']     = $res_ar[5];
 
@@ -4006,8 +4008,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $res_ha['node_id']      = $res_ar[0];
         $res_ha['student_id']   = $res_ar[1];
         $res_ha['course_id']    = $res_ar[2];
-        $res_ha['visit_date']   = $this->ts_to_date($res_ar[3]);
-        $res_ha['exit_date']    = $this->ts_to_date($res_ar[4]);
+        $res_ha['visit_date']   = self::ts_to_date($res_ar[3]);
+        $res_ha['exit_date']    = self::ts_to_date($res_ar[4]);
         $res_ha['session_id']   = $res_ar[5];
         $res_ha['time_spent']   = $res_ar[4]-$res_ar[3];
 
@@ -4151,7 +4153,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *     array('tutor id'=>array('course_instance', 'course_instance', 'course_instance'));
      */
 
-    public function get_students_subscribed_course_instance($id_user = false, $presubscription = false) {
+    public function get_students_subscribed_course_instance($id_user = false, $presubscription = false, $both = false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
         if ($both) {
@@ -5077,10 +5079,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if ( AMA_DB::isError( $db ) ) return $db;
 
         // prepare values
-        $data_inizio = $this->or_zero($istanza_ha['data_inizio']);
-        $durata = $this->or_zero($istanza_ha['durata']);
-        $data_inizio_previsto = $this->or_zero($istanza_ha['data_inizio_previsto']);
-        $id_layout = $this->or_zero($istanza_ha['id_layout']);
+        $data_inizio = $this->or_zero(isset($istanza_ha['data_inizio']) ? $istanza_ha['data_inizio'] : '');
+        $durata = $this->or_zero(isset($istanza_ha['durata']) ? $istanza_ha['durata'] : '');
+        $data_inizio_previsto = $this->or_zero(isset($istanza_ha['data_inizio_previsto']) ? $istanza_ha['data_inizio_previsto'] : '');
+        $id_layout = $this->or_zero(isset($istanza_ha['id_layout']) ? $istanza_ha['id_layout'] : '');
         $self_instruction = $istanza_ha['self_instruction'];
         $self_registration = $istanza_ha['self_registration'];
         $price = $this->or_zero($istanza_ha['price']);
@@ -5338,6 +5340,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     public function &course_instance_find_list($field_list_ar, $clause='') {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
+        $more_fields = '';
 
         // build comma separated string out of $field_list_ar array
         if (count($field_list_ar)) {
@@ -6101,8 +6104,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
          * 
          * added report generation date
          */
-        if (isset($student_data)) $student_data['report_generation_date'] = $date;
-        return $student_data;
+        if (isset($student_data)) {
+        	$student_data['report_generation_date'] = $date;
+	        return $student_data;
+        } else return null;
     }
 
     /**
@@ -6695,8 +6700,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $res_ha['id_autore']             = $res_ar[2];
         $res_ha['id_layout']             = $res_ar[3];
         $res_ha['descr']                 = $res_ar[4];
-        $res_ha['d_create']              = $this->ts_to_date($res_ar[5]);
-        $res_ha['d_publish']             = $this->ts_to_date($res_ar[6]);
+        $res_ha['d_create']              = self::ts_to_date($res_ar[5]);
+        $res_ha['d_publish']             = self::ts_to_date($res_ar[6]);
         $res_ha['id_nodo_iniziale']      = $res_ar[7];
         $res_ha['id_nodo_toc']           = $res_ar[8];
         $res_ha['media_path']            = $res_ar[9];
@@ -6733,7 +6738,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $d_create = $this->date_to_ts($this->or_null($course_ha['d_create']));
         $d_publish = $this->date_to_ts($this->or_null($course_ha['d_publish']));
         $id_autore = $this->or_zero($course_ha['id_autore']);
-        $id_layout = $this->or_zero($course_ha['id_layout']);
+        $id_layout = $this->or_zero(isset($course_ha['id_layout']) ? $course_ha['id_layout'] : '');
         $id_lingua = $this->or_zero($course_ha['id_lingua']);
         $crediti = $this->or_zero($course_ha['crediti']);
         $duration_hours = $this->or_zero($course_ha['duration_hours']);
@@ -6998,30 +7003,30 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // Fixed by Graffio 08/11/2011
         //$id_node = $this->sql_prepared($node_ha['id']);
         $id_author = $node_ha['id_node_author'];
-        $name = $this->sql_prepared($this->or_null($node_ha['name']));
-        $title = $this->sql_prepared($this->or_null($node_ha['title']));
+        $name = $this->sql_prepared($this->or_null(isset($node_ha['name']) ? $node_ha['name'] : null));
+        $title = $this->sql_prepared($this->or_null(isset($node_ha['title']) ? $node_ha['title'] : null));
 
-        $text = $this->sql_prepared($node_ha['text']);
-        $type = $this->sql_prepared($this->or_zero($node_ha['type']));
-        $creation_date = $this->date_to_ts($this->or_null($node_ha['creation_date']));
-        $parent_id = $this->sql_prepared($node_ha['parent_id']);
-        $order = $this->sql_prepared($this->or_null($node_ha['order']));
-        $level = $this->sql_prepared($this->or_zero($node_ha['level']));
-        $version = $this->sql_prepared($this->or_zero($node_ha['version']));
-        $n_contacts = $this->sql_prepared($this->or_zero($node_ha['n_contacts']));
-        $icon = $this->sql_prepared($this->or_null($node_ha['icon']));
+        $text = $this->sql_prepared(isset($node_ha['text']) ? $node_ha['text'] : null);
+        $type = $this->sql_prepared($this->or_zero(isset($node_ha['type']) ? $node_ha['type'] : null));
+        $creation_date = $this->date_to_ts($this->or_null(isset($node_ha['creation_date']) ? $node_ha['creation_date'] : ''));
+        $parent_id = $this->sql_prepared(isset($node_ha['parent_id']) ? $node_ha['parent_id'] : null);
+        $order = $this->sql_prepared($this->or_null(isset($node_ha['order']) ? $node_ha['order'] : null));
+        $level = $this->sql_prepared($this->or_zero(isset($node_ha['level']) ? $node_ha['level'] : null));
+        $version = $this->sql_prepared($this->or_zero(isset($node_ha['version']) ? $node_ha['version'] : null));
+        $n_contacts = $this->sql_prepared($this->or_zero(isset($node_ha['n_contacts']) ? $node_ha['n_contacts'] : null));
+        $icon = $this->sql_prepared($this->or_null(isset($node_ha['icon']) ? $node_ha['icon'] : null));
 
         // modified 7/7/01 ste
         // $color = $this->or_zero($node_ha['color']);
-        $bgcolor = $this->sql_prepared($this->or_null($node_ha['bgcolor']));
-        $color = $this->sql_prepared($this->or_null($node_ha['color']));
+        $bgcolor = $this->sql_prepared($this->or_null(isset($node_ha['bgcolor']) ? $node_ha['bgcolor'] : null));
+        $color = $this->sql_prepared($this->or_null(isset($node_ha['color']) ? $node_ha['color'] : null));
         // end
-        $correctness = $this->sql_prepared($this->or_zero($node_ha['correctness']));
-        $copyright = $this->sql_prepared($this->or_zero($node_ha['copyright']));
+        $correctness = $this->sql_prepared($this->or_zero(isset($node_ha['correctness']) ? $node_ha['correctness'] : null));
+        $copyright = $this->sql_prepared($this->or_zero(isset($node_ha['copyright']) ? $node_ha['copyright'] : null));
         // added 6/7/01 ste
-        $id_position = $this->sql_prepared($node_ha['id_position']);
-        $lingua = $this->sql_prepared($node_ha['lingua']);
-        $pubblicato = $this->sql_prepared($node_ha['pubblicato']);
+        $id_position = $this->sql_prepared(isset($node_ha['id_position']) ? $node_ha['id_position'] : null);
+        $lingua = $this->sql_prepared(isset($node_ha['lingua']) ? $node_ha['lingua'] : null);
+        $pubblicato = $this->sql_prepared(isset($node_ha['pubblicato']) ? $node_ha['pubblicato'] : null);
         // end
         // added 24/7/02 ste
         //  $family = $this->date_to_ts($this->or_null($node_ha['family']));
@@ -7119,22 +7124,22 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $id_node = $this->sql_prepared($node_ha['id']);
         $name = $this->sql_prepared($this->or_null($node_ha['name']));
-        $title = $this->sql_prepared($this->or_null($node_ha['title']));
+        $title = $this->sql_prepared($this->or_null(isset($node_ha['title']) ? $node_ha['title'] : ''));
 
         $text = $this->sql_prepared($node_ha['text']);
         //if (isset($node_ha['type'])) {
         $type = $this->sql_prepared($this->or_zero($node_ha['type']));
         //}
         //if (isset($node_ha['id_instance'])) {
-        $id_instance = $this->sql_prepared($this->or_null($node_ha['id_instance']));
+        $id_instance = $this->sql_prepared($this->or_null(isset($node_ha['id_instance']) ? $node_ha['id_instance'] : ''));
         //}
         $parent_id = $this->sql_prepared($this->or_null($node_ha['parent_id']));
 
         $order = $this->sql_prepared($this->or_zero($node_ha['order']));
-        $level = $this->sql_prepared($this->or_zero($node_ha['level']));
-        $version = $this->sql_prepared($this->or_zero($node_ha['version']));
-        $icon = $this->sql_prepared($this->or_null($node_ha['icon']));
-        $correctness = $this->sql_prepared($this->or_zero($node_ha['correctness']));
+        $level = $this->sql_prepared($this->or_zero(isset($node_ha['level']) ? $node_ha['level'] : ''));
+        $version = $this->sql_prepared($this->or_zero(isset($node_ha['version']) ? $node_ha['version'] : ''));
+        $icon = $this->sql_prepared($this->or_null(isset($node_ha['icon']) ? $node_ha['icon'] : ''));
+        $correctness = $this->sql_prepared($this->or_zero(isset($node_ha['correctness']) ? $node_ha['correctness'] : ''));
 
         /*
      * vito, 23 jan 2009
@@ -8010,7 +8015,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $res_ha['title']       = $res_ar[3];
         $res_ha['text']        = $res_ar[4];
         $res_ha['type']        = $res_ar[5];
-        $res_ha['creation_date']    = $this->ts_to_date($res_ar[6]);
+        $res_ha['creation_date']    = self::ts_to_date($res_ar[6]);
         $res_ha['parent_id']   = $res_ar[7];
         $res_ha['ordine']      = $res_ar[8];
         $res_ha['order']       = $res_ar[8];
@@ -8102,7 +8107,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // do the query
         $res_ar =  $db->getAll("select id_nodo$more_fields from nodo $clause");
         if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        	$retval = new AMA_Error(AMA_ERR_GET);
+            return $retval;
         }
         // return nested array
         return $res_ar;
@@ -8214,11 +8220,13 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         $res_ar =  $db->getCol($sql);
         if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        	$retval = new AMA_Error(AMA_ERR_GET); 
+            return $retval;
         }
         // return an error in case of an empty recordset
         if (!$res_ar) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+        	$retval = new AMA_Error(AMA_ERR_NOT_FOUND);
+            return $retval;
         }
         // return nested array
         return $res_ar;
@@ -8248,11 +8256,13 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         $res_ar =  $db->getALL($sql, null, AMA_FETCH_ASSOC);
         if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        	$retval = new AMA_Error(AMA_ERR_GET);
+            return $retval;
         }
         // return an error in case of an empty recordset
         if (!$res_ar) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+        	$retval = new AMA_Error(AMA_ERR_NOT_FOUND);
+            return $retval;
         }
         // return nested array
         return $res_ar;
@@ -8281,12 +8291,14 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql  = "select id_link from link where id_nodo='$node_id'";
         $res_ar =  $db->getCol($sql);
         if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        	$retval = new AMA_Error(AMA_ERR_GET);
+            return $retval;
         }
 
         // return an error in case of an empty recordset
         if (!$res_ar) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+        	$retval = new AMA_Error(AMA_ERR_NOT_FOUND);
+            return $retval;
         }
         // return nested array
         return $res_ar;
@@ -8315,12 +8327,14 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql  = "select id_risorsa_ext from risorse_nodi where id_nodo='$node_id'";
         $res_ar =  $db->getCol($sql);
         if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        	$retval = new AMA_Error(AMA_ERR_GET);
+            return $retval;
         }
 
         // return an error in case of an empty recordset
         if (!$res_ar) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+        	$retval = new AMA_Error(AMA_ERR_NOT_FOUND); 
+            return $retval;
         }
         // return nested array
         return $res_ar;
@@ -8708,7 +8722,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $nome_file = $this->sql_prepared($res_ha['nome_file']);
         $tipo = $res_ha['tipo'];
         $copyright = $this->or_zero($res_ha['copyright']);
-        $id_nodo = $this->sql_prepared($res_ha['id_nodo']);
+        $id_nodo = $this->sql_prepared(isset($res_ha['id_nodo']) ? $res_ha['id_nodo'] : null);
         $keywords = $this->sql_prepared($res_ha['keywords']);
         $titolo = $this->sql_prepared($res_ha['titolo']);
         $pubblicato = $this->or_zero($res_ha['pubblicato']);
@@ -8786,15 +8800,15 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-        $nome_file = $this->sql_prepared($res_ha['nome_file']);
-        $titolo = $this->sql_prepared($res_ha['titolo']);
-        $tipo      = $res_ha['tipo'];
-        $copyright = $this->or_zero($res_ha['copyright']);
-        $id_utente = $this->or_zero($res_ha['id_utente']);
-        $keywords = $this->sql_prepared($res_ha['keywords']);
-        $pubblicato = $this->or_zero($res_ha['pubblicato']);
-        $descrizione = $this->sql_prepared($res_ha['descrizione']);
-        $lingua = $this->sql_prepared($res_ha['lingua']);
+        $nome_file = $this->sql_prepared(isset($res_ha['nome_file']) ? $res_ha['nome_file'] : '');
+        $titolo = $this->sql_prepared(isset($res_ha['titolo']) ? $res_ha['titolo'] : '');
+        $tipo      = isset($res_ha['tipo']) ? $res_ha['tipo'] : null;
+        $copyright = $this->or_zero(isset($res_ha['copyright']) ? $res_ha['copyright'] : '');
+        $id_utente = $this->or_zero(isset($res_ha['id_utente']) ? $res_ha['id_utente'] : '');
+        $keywords = $this->sql_prepared(isset($res_ha['keywords']) ? $res_ha['keywords'] : '');
+        $pubblicato = $this->or_zero(isset($res_ha['pubblicato']) ? $res_ha['pubblicato'] : '');
+        $descrizione = $this->sql_prepared(isset($res_ha['descrizione']) ? $res_ha['descrizione'] : '');
+        $lingua = $this->sql_prepared(isset($res_ha['lingua']) ? $res_ha['lingua'] : '');
 
         // check values
         if (empty($nome_file)) {
@@ -9600,9 +9614,9 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-        /*
-     * Add user data in table utenti
-        */
+        /**
+         * Add user data in table utenti
+         */ 
         $result = $this->add_user($student_ar);
         if(self::isError($result)) {
             // $result is an AMA_Error object
@@ -9620,7 +9634,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             // $res is an AMA_Error object
             return $res;
         }
-        return $id; // return the id of inserted student.
+        return $id_student; // return the id of inserted student.
     }
 
     /**
@@ -10755,7 +10769,7 @@ public function get_updates_nodes($userObj, $pointer)
                 $this->or_null($user_dataAr['provincia']),
                 $this->or_null($user_dataAr['nazione']),
                 $this->or_null($user_dataAr['codice_fiscale']),
-                $this->or_zero(AMA_Common_DataHandler::date_to_ts($user_dataAr['birthdate'])),
+                $this->or_zero($this->date_to_ts($user_dataAr['birthdate'])),
                 $this->or_null($user_dataAr['sesso']),
                 $this->or_null($user_dataAr['telefono']),
                 $user_dataAr['stato'],
@@ -11517,8 +11531,8 @@ public function get_updates_nodes($userObj, $pointer)
         $res_ha['node_id']      = $res_ar[1];
         $res_ha['student_id']   = $res_ar[2];
         $res_ha['course_id']    = $res_ar[3];
-        $res_ha['visit_date']   = $this->ts_to_date($res_ar[4]);
-        $res_ha['exit_date']    = $this->ts_to_date($res_ar[5]);
+        $res_ha['visit_date']   = self::ts_to_date($res_ar[4]);
+        $res_ha['exit_date']    = self::ts_to_date($res_ar[5]);
         $res_ha['answer']       = $res_ar[6];
         $res_ha['remark']       = $res_ar[7];
         $res_ha['points']       = $res_ar[8];

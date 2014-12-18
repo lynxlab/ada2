@@ -375,7 +375,7 @@ class TutorManagementTest {
 			);
 		}
 
-		if ($returnHtml && is_a($return['html'],CBase)) {
+		if ($returnHtml && is_a($return['html'],'CBase')) {
 			$return['html'] = $return['html']->getHtml();
 		}
 		return $return;

@@ -645,7 +645,8 @@ class MultiPort
         if(DataValidator::is_uinteger($id_course_instance) !== FALSE) {
           $userObj->set_course_instance_for_history($id_course_instance);
         }
-        elseif (DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) !== FALSE) {
+        elseif (isset($_SESSION['sess_id_course_instance']) && 
+        		DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) !== FALSE) {
           $userObj->set_course_instance_for_history($_SESSION['sess_id_course_instance']);
         }
 
@@ -800,7 +801,7 @@ class MultiPort
         $userObj = new ADAUser($user_dataAr);
         $userObj->setUserId($id_user);
 
-        if(DataValidator::is_uinteger($id_course_instance) !== FALSE) {
+        if(isset($id_course_instance) && DataValidator::is_uinteger($id_course_instance) !== FALSE) {
           $userObj->set_course_instance_for_history($id_course_instance);
         }
         elseif (DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) !== FALSE) {
@@ -1404,7 +1405,7 @@ class MultiPort
      * tester.
      */
 
-    $sess_selected_tester = $_SESSION['sess_selected_tester'];
+    $sess_selected_tester = isset($_SESSION['sess_selected_tester']) ? $_SESSION['sess_selected_tester'] : null;
 
     /*
      * If we are retrieving messages representing events or events proposal,
@@ -1453,6 +1454,7 @@ class MultiPort
         if($tester_dsn != null) {
           $mh = MessageHandler::instance($tester_dsn);
 
+          $clause = isset($clause) ? $clause : null;
           $msgs_ha = $mh->find_messages($user_id, $msgType, $fields_list_Ar, $clause, $sort_field);
 
           if (!AMA_DataHandler::isError($msgs_ha)){
@@ -1479,6 +1481,7 @@ class MultiPort
 
         $mh = MessageHandler::instance($tester_dsn);
 
+		$clause = isset($clause) ? $clause : null;
         $msgs_ha = $mh->find_messages($user_id, $msgType, $fields_list_Ar, $clause, $sort_field);
 
         if (!AMA_DataHandler::isError($msgs_ha)){
@@ -1587,6 +1590,7 @@ class MultiPort
 //    $msgFlags = ADA_EVENT_CONFIRMED;
     $retrieve_only_unread_events = true;
 
+    $msgFlags = isset($msgFlags) ? $msgFlags : null;
     $result_Ar = self::get_messages($userObj, ADA_MSG_AGENDA, $msgFlags, $retrieve_only_unread_events);
 
     return $result_Ar;
@@ -1898,7 +1902,7 @@ class MultiPort
 
   static public function isUserBrowsingThePublicTester() {
 
-    $sess_selected_tester = $_SESSION['sess_selected_tester'];
+    $sess_selected_tester = isset($_SESSION['sess_selected_tester']) ? $_SESSION['sess_selected_tester'] : '';
     return $sess_selected_tester == NULL || $sess_selected_tester == ADA_PUBLIC_TESTER;
   }
 
@@ -1908,7 +1912,7 @@ class MultiPort
     $testers_activity_dataAr = array();
     $testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
 
-    if(AMA_Common_DataHandler::isError($tester_infoAr)) {
+    if(AMA_Common_DataHandler::isError($testers_infoAr)) {
       return array();
     }
     $current_timestamp = time();
@@ -1959,7 +1963,7 @@ class MultiPort
   	$testers_activity_dataAr = array();
   	$testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
   
-  	if(AMA_Common_DataHandler::isError($tester_infoAr)) {
+  	if(AMA_Common_DataHandler::isError($testers_infoAr)) {
   		return array();
   	}
   	$userId = $userObj->getId();
@@ -1987,7 +1991,7 @@ class MultiPort
    * 
    * @author giorgio 30/apr/2013
    */  
-   public function update_new_nodes_in_session ($userObj)
+   public static function update_new_nodes_in_session ($userObj)
    {
    		
    		
@@ -1999,7 +2003,7 @@ class MultiPort
    		$testers_activity_dataAr = array();
    		$testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
    		
-   		if(AMA_Common_DataHandler::isError($tester_infoAr)) {
+   		if(AMA_Common_DataHandler::isError($testers_infoAr)) {
    			return array();
    		}
    		$userId = $userObj->getId();
@@ -2049,7 +2053,7 @@ class MultiPort
   	$testers_activity_dataAr = array();
   	$testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
   
-  	if(AMA_Common_DataHandler::isError($tester_infoAr)) {
+  	if(AMA_Common_DataHandler::isError($testers_infoAr)) {
   		return array();
   	}
   	$userId = $userObj->getId();

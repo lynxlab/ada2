@@ -175,7 +175,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
             * caricando, rinominiamo il nuovo file.
             * es. pippo.txt -> ggmmaa_hhmmss_pippo.txt
             */
-           if ( is_file($destination) && $_POST['overwrite'] == false)
+           if ( is_file($destination) && isset($_POST['overwrite']) && $_POST['overwrite'] == false)
            {
                $date = date('dmy_His');
                $filename  = $date.'_'.$filename;
@@ -199,7 +199,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
             * Se il file e' stato uploadato correttamente , inserisco il file come risorsa collegata all'autore
             * nella tabella risorse_nodi
             */
-            $ada_filetype = $ADA_MIME_TYPE[$file_type]['type'];
+            $ada_filetype = isset($ADA_MIME_TYPE[$file_type]['type']) ? $ADA_MIME_TYPE[$file_type]['type'] : null;
             $res_ha = array(
                 'nome_file' => $filename_prefix.$filename,
                 'tipo'      => $ada_filetype, //array associativo definito in ada_config.php
@@ -320,7 +320,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
        * durante l'upload.
        */
 	  $empty_filename = empty($filename);
-	  $accepted_mimetype = ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
+	  $accepted_mimetype = isset($ADA_MIME_TYPE[$file_type]) && ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
 	  $accepted_filesize = ($file_size < ADA_FILE_UPLOAD_MAX_FILESIZE);
 	  
       if ( !$empty_filename && !$file_upload_error &&
@@ -451,7 +451,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
   $content_dataAr = array(
     //'head'         => $head_form,
     //'banner'       => $banner,
-    'form'         => $form,
+    'form'         => isset($form) ? $form : '',
     'status'       => $status,
     'user_name'    => $user_name,
     'user_type'    => $user_type,
@@ -475,7 +475,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
 
 
 
-  ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr);
+  ARE::render($layout_dataAr, $content_dataAr,NULL,isset($optionsAr) ? $optionsAr : null);
 }
 /*
  * L'autore e l'amministratore non possono utilizzare il modulo collabora,

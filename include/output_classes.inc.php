@@ -32,15 +32,18 @@ class ARE
   		$renderer = ARE_PDF_RENDER;
   	}
   	
+  	if (!isset($id_profile)) $id_profile = null;
+  	
     switch($renderer) {
         case ARE_PRINT_RENDER:
           
+        	
           $layoutObj = read_layout_from_DB($id_profile,
-          $layout_dataAr['family'],
-          $layout_dataAr['node_type'],
-          $layout_dataAr['node_author_id'],
-          $layout_dataAr['node_course_id'],
-          $layout_dataAr['module_dir']
+          isset($layout_dataAr['family']) ? $layout_dataAr['family'] : '',
+          isset($layout_dataAr['node_type']) ? $layout_dataAr['node_type'] : '',
+          isset($layout_dataAr['node_author_id']) ? $layout_dataAr['node_author_id'] : '',
+          isset($layout_dataAr['node_course_id']) ? $layout_dataAr['node_course_id'] : '',
+          isset($layout_dataAr['module_dir']) ? $layout_dataAr['module_dir'] : ''
         );
           
         // TODO: controlli su layoutObj
@@ -74,7 +77,7 @@ class ARE
         $html_renderer->fillin_templateFN($content_dataAr);
 
         $imgpath = (dirname($layout_template));
-        $html_renderer->resetImgSrcFN($imgpath,$template_family);
+        $html_renderer->resetImgSrcFN($imgpath,isset($layoutObj->family) ? $layoutObj->family : ADA_TEMPLATE_FAMILY);
         $html_renderer->apply_styleFN();
 
         $html_renderer->outputFN('page');
@@ -95,11 +98,11 @@ class ARE
         case ARE_FILE_RENDER:
 	  
          $layoutObj = read_layout_from_DB($id_profile,
-          $layout_dataAr['family'],
-          $layout_dataAr['node_type'],
-          $layout_dataAr['node_author_id'],
-          $layout_dataAr['node_course_id'],
-          $layout_dataAr['module_dir']
+          isset($layout_dataAr['family']) ? $layout_dataAr['family'] : null,
+          isset($layout_dataAr['node_type']) ? $layout_dataAr['node_type'] : null,
+          isset($layout_dataAr['node_author_id']) ? $layout_dataAr['node_author_id'] : null,
+          isset($layout_dataAr['node_course_id']) ? $layout_dataAr['node_course_id'] : null,
+          isset($layout_dataAr['module_dir']) ? $layout_dataAr['module_dir'] : null
         );
         // TODO: controlli su layoutObj
 
@@ -118,6 +121,7 @@ class ARE
         $meta_refresh_url  = isset($options['meta_refresh_url'])  ? $options['meta_refresh_url'] : '';
         $onload_func       = isset($options['onload_func'])       ? $options['onload_func'] : '';
         $static_dir        = isset($options['static_dir'])         ? $options['static_dir'] : ROOT_DIR.'services/media/cache/';
+
         if (!file_exists($static_dir)){
                 mkdir($static_dir);
         }	
@@ -133,7 +137,7 @@ class ARE
         $html_renderer->fillin_templateFN($content_dataAr);
 
         $imgpath = (dirname($layout_template));
-        $html_renderer->resetImgSrcFN($imgpath,$template_family);
+        $html_renderer->resetImgSrcFN($imgpath,isset($layoutObj->family) ? $layoutObj->family : ADA_TEMPLATE_FAMILY);
         $html_renderer->apply_styleFN();
 
         $html_renderer->outputFN('file');
@@ -145,11 +149,11 @@ class ARE
       case ARE_PDF_RENDER:
       default:
         $layoutObj = read_layout_from_DB($id_profile,
-          $layout_dataAr['family'],
-          $layout_dataAr['node_type'],
-          $layout_dataAr['node_author_id'],
-          $layout_dataAr['node_course_id'],
-          $layout_dataAr['module_dir']
+          isset($layout_dataAr['family']) ? $layout_dataAr['family'] : null,
+          isset($layout_dataAr['node_type']) ? $layout_dataAr['node_type'] : null,
+          isset($layout_dataAr['node_author_id']) ? $layout_dataAr['node_author_id'] : null,
+          isset($layout_dataAr['node_course_id']) ? $layout_dataAr['node_course_id'] : null,
+          isset($layout_dataAr['module_dir']) ? $layout_dataAr['module_dir'] : null
         );
         // TODO: controlli su layoutObj
 
@@ -268,6 +272,7 @@ class ARE
          */
         if (!is_null($layoutObj->WIDGET_filename))
         {
+        	if (!isset($layout_dataAr['widgets']) || strlen($layout_dataAr['widgets'])<=0) $layout_dataAr['widgets'] = '';
         	$widgets_dataAr = $html_renderer->fillin_widgetsFN($layoutObj->WIDGET_filename,$layout_dataAr['widgets']);
         	if (!ADA_Error::isError($widgets_dataAr))
         		$content_dataAr = array_merge ($content_dataAr, $widgets_dataAr);		
@@ -283,7 +288,8 @@ class ARE
         $html_renderer->fillin_templateFN($content_dataAr);
 
         $imgpath = (dirname($layout_template));
-        $html_renderer->resetImgSrcFN($imgpath,$template_family);
+        // $html_renderer->resetImgSrcFN($imgpath,$template_family);
+        $html_renderer->resetImgSrcFN($imgpath,$layoutObj->family);
         $html_renderer->apply_styleFN();
 
         $html_renderer->outputFN(($renderer == ARE_PDF_RENDER) ? 'pdf' : 'page');
@@ -450,6 +456,7 @@ class  Generic_Html extends Output
     foreach ($dataHa as $field=>$data){
 
       $ereg = str_replace('%field_name%',$field,$this->replace_field_code);
+      $preg = str_replace('%field_name%',$field,preg_quote($this->replace_field_code,'/'));
       //$replace_string = "<!-- #BeginEditable \"$field\" -->([a-zA-Z0-9_\t;&\n ])*<!-- #EndEditable -->";
 
       if (gettype($data)=='array'){
@@ -459,21 +466,25 @@ class  Generic_Html extends Output
         if (ADA_STATIC_TEMPLATE_FIELD) {
           $tpl = str_replace($ereg,$tabled_data,$tpl); //faster !!!
         } else {
-          $tpl = eregi_replace($ereg,$tabled_data,$tpl);
+          $tpl = preg_replace('/'.$preg.'/i',$tabled_data,$tpl);
+//        $tpl = eregi_replace($ereg,$tabled_data,$tpl);
         }
       } else {
         // simple data type
         if (ADA_STATIC_TEMPLATE_FIELD) {
           $tpl = str_replace($ereg,$data,$tpl); //faster !!!
         } else {
-          $tpl = eregi_replace($ereg,$data,$tpl);
+          $tpl = preg_replace('/'.$preg.'/i',$tabled_data,$tpl);
+//        $tpl = eregi_replace($ereg,$data,$tpl);
         }
       }
     }
 
     // removing extra template fields that don't match
     $ereg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",$this->replace_field_code);
-    $tpl = eregi_replace($ereg,"<!-- template_field_removed -->",$tpl);
+    $preg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",preg_quote($this->replace_field_code,'/'));
+    $tpl = preg_replace('/'.$preg.'/i',"<!-- template_field_removed -->",$tpl);
+//  $tpl = eregi_replace($ereg,"<!-- template_field_removed -->",$tpl);
     
     /*
      * traduzione dei template
@@ -496,7 +507,7 @@ class  Generic_Html extends Output
     /*
      * fine della traduzione
      */
-    
+
     $this->htmlbody = $tpl;
 
   }
@@ -554,8 +565,9 @@ class  Generic_Html extends Output
               $microtpl_code = "<!-- not found at address: $microtpl_filename"; // raises an error?
             }
         }
-
-        $tpl_row = ereg_replace($ereg,$microtpl_code,$tpl_row);
+        $preg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",preg_quote($this->replace_microtemplate_field_code,'/'));
+        $tpl_row = preg_replace('/'.$preg.'/',$microtpl_code,$tpl_row);
+//         $tpl_row = ereg_replace($ereg,$microtpl_code,$tpl_row);
 
       }
       $tpl_new_ar[]=$tpl_row;
@@ -610,8 +622,9 @@ class  Generic_Html extends Output
             }
           }
         }
-
-        $tpl_row = ereg_replace($ereg,$microtpl_code,$tpl_row);
+        $preg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",preg_quote($this->replace_microtemplate_field_code,'/'));
+        $tpl_row = preg_replace('/'.$preg.'/',$microtpl_code,$tpl_row);
+//         $tpl_row = ereg_replace($ereg,$microtpl_code,$tpl_row);
       }
       $tpl_new_ar[]=$tpl_row;
     }
@@ -1261,18 +1274,18 @@ EOT;
   {
   	
   	require_once ROOT_DIR.'/widgets/include/widget_includes.inc.php';
-  	
-  	try {
-  		$widgetAr = ArrayToXML::toArray(file_get_contents($widgetsConfFilename));
+  	if (is_file($widgetsConfFilename)) {
+  		try {
+  			$widgetAr = ArrayToXML::toArray(file_get_contents($widgetsConfFilename));
+  		}
+  		catch (Exception $e) {
+  			/*
+  			 * see config_errors.inc.php line 167 and following.
+  			 * depending on the erorr phase / severity something will happen...
+  			 */
+  			return new ADA_Error(NULL,'Widget configuration XML is not valid',__METHOD__,ADA_ERROR_ID_XML_PARSING);  			 
+  		}  		
   	}
-  	catch (Exception $e) {
-  		/*
-  		 * see config_errors.inc.php line 167 and following.
-  		 * depending on the erorr phase / severity something will happen...
-  		 */
-  		return new ADA_Error(NULL,'Widget configuration XML is not valid',__METHOD__,ADA_ERROR_ID_XML_PARSING);
-  	
-  	}  	
   	
   	/**
   	 * @author giorgio 25/feb/2014

@@ -51,7 +51,7 @@ class RootManagementTest extends ManagementTest {
 
 		if ($_POST) {
 			$data = $_POST;
-		}
+		} else $data = null;
 
 		require_once(MODULES_TEST_PATH.'/include/forms/rootFormTest.inc.php');
 		if(get_class($this) == 'TestManagementTest') {

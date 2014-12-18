@@ -68,7 +68,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'titolo' => $_POST['titolo'],
             'descr' => $_POST['descrizione'],
             'd_create' => ts2dFN(time()),//$_POST['data_creazione'],
-            'd_publish' => $_POST['data_pubblicazione'],
+            'd_publish' => isset($_POST['data_pubblicazione']) ? $_POST['data_pubblicazione'] : null,
             'id_autore' => $_POST['id_utente_autore'],
             'id_nodo_toc' => $_POST['id_nodo_toc'],
             'id_nodo_iniziale' => $_POST['id_nodo_iniziale'],
@@ -163,7 +163,7 @@ $content_dataAr = array(
     'label' => $label,
     'help' => $help,
     'data' => $form->getHtml(),
-    'module' => $module,
+    'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
 
