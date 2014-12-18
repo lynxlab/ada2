@@ -382,7 +382,8 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 (154, 'browsing', 'external_link.php?file=gpl.txt', 4, 0, 0, 29),
 (155, 'browsing', 'external_link.php?file=gpl.txt', 1, 0, 0, 29),
 (156, 'comunica', 'videochat.php', 3, 0, 0, NULL),
-(157, 'comunica', 'videochat.php', 4, 0, 0, 156);
+(157, 'comunica', 'videochat.php', 4, 0, 0, 156),
+(158, 'modules/apps', 'default', 6, 0, 0, 124);
 
 --
 -- Indexes for dumped tables
