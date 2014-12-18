@@ -71,18 +71,18 @@ $content_dataAr = array(
     'status' => $status,
     'label' => $title,
 	'title' => $title,
-    'help' => $help,
+    'help' => isset($help) ? $help : '',
     'text' => $text,
     'go_back' => $go_back_link->getHtml(),    
-    'module' => $module,
+    'module' => isset($module) ? $module : '',
     'ajax_chat_link' => '<a href="'.HTTP_ROOT_DIR . '/comunica/list_chatrooms.php">'. translateFN('Lista chatrooms'),
     'messages' => $user_messages->getHtml(),
 	'course_title' => '<a href="'.HTTP_ROOT_DIR.'/switcher/switcher.php">'.translateFN('Modulo Switcher').'</a> > ',
 	'back_link' => $go_back_link->getHtml(),
 );
 
-$content_dataAr['notes'] = $other_node_data['notes'];
-$content_dataAr['personal'] = $other_node_data['private_notes'];
+if (isset($other_node_data['notes'])) $content_dataAr['notes'] = $other_node_data['notes'];
+if (isset($other_node_data['private_notes'])) $content_dataAr['personal'] = $other_node_data['private_notes'];
 
 if ($reg_enabled) {
     $content_dataAr['add_bookmark'] = $add_bookmark;
@@ -90,9 +90,9 @@ if ($reg_enabled) {
     $content_dataAr['add_bookmark'] = "";
 }
 
-$content_dataAr['bookmark'] = $bookmark;
-$content_dataAr['go_bookmarks_1'] = $go_bookmarks;
-$content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+if (isset($bookmark)) $content_dataAr['bookmark'] = $bookmark;
+if (isset($go_bookmarks)) $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
+if (isset($go_bookmarks)) $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
 
 if ($com_enabled) {
     $content_dataAr['ajax_chat_link'] = $ajax_chat_link;

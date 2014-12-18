@@ -89,11 +89,11 @@ if($id_profile == AMA_TYPE_TUTOR){
  */
 
 $actual_date= time();
-$actual_start_time = $dh->ts_to_date($actual_date, "%H:%M:%S");
-$actual_start_day = $dh->ts_to_date($actual_date, "%d/%m/%y");
+$actual_start_time = AMA_DataHandler::ts_to_date($actual_date, "%H:%M:%S");
+$actual_start_day = AMA_DataHandler::ts_to_date($actual_date, "%d/%m/%y");
 $default_end_date= time()+ SHUTDOWN_CHAT_TIME;
-$default_end_time = $dh->ts_to_date($default_end_date, "%H:%M:%S");
-$default_end_day = $dh->ts_to_date($default_end_date, "%d/%m/%y");
+$default_end_time = AMA_DataHandler::ts_to_date($default_end_date, "%H:%M:%S");
+$default_end_day = AMA_DataHandler::ts_to_date($default_end_date, "%d/%m/%y");
 // default max users numebr
 $default_max_users= DEFAULT_MAX_USERS;
 // default course instance value

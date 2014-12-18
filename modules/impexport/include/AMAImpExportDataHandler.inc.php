@@ -43,7 +43,7 @@ class AMAImpExportDataHandler extends AMA_DataHandler {
 	 * @see get_node_info
 	 *
 	 */
-	public function get_node_children($node_id,$id_course_instance="") {
+	public function &export_get_node_children($node_id,$id_course_instance="") {
 		$db =& $this->getConnection();
 
 		$excludeNodeTypes = array ( ADA_NOTE_TYPE, ADA_PRIVATE_NOTE_TYPE );
@@ -68,7 +68,8 @@ class AMAImpExportDataHandler extends AMA_DataHandler {
 		}
 		// return an error in case of an empty recordset
 		if (!$res_ar) {
-			return new AMA_Error(AMA_ERR_NOT_FOUND);
+			$retErr = new AMA_Error(AMA_ERR_NOT_FOUND);
+			return $retErr;
 		}
 		// return nested array
 		return $res_ar;

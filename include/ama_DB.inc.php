@@ -56,7 +56,7 @@ class AMA_DB
 	 * @access public
 	 */
 	public static function isError($data, $code=null) {
-		return ($data instanceof PDOException || $data instanceof AMA_Error);
+		return ($data instanceof PDOException || $data instanceof AMA_Error || $data instanceof ADA_Error);
 	}
 
 	/**

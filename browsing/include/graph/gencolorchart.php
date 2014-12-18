@@ -15,7 +15,7 @@
 include "jpgraph.php";
 include "jpgraph_canvas.php";
 
-if (!defined(ADA_MULTI_CONFIG)){
+if (!defined('ADA_MULTI_CONFIG')){
 	// Height and width of each color sample
 	DEFINE("WIDTH",30);
 	DEFINE("HEIGHT",30);

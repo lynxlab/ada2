@@ -1472,13 +1472,13 @@ class Student_class {
     function get_class_reportFN($id_course,$order="",$index_att="",$type='HTML') {
         $dh = $GLOBALS['dh'];
         $http_root_dir = $GLOBALS['http_root_dir'];
-        $debug  = $GLOBALS['debug'];
-        $npar = $GLOBALS['npar'];
-        $hpar = $GLOBALS['hpar'];
-        $mpar = $GLOBALS['mpar'];
-        $epar = $GLOBALS['epar'];
-        $bpar = $GLOBALS['mpar'];
-        $cpar = $GLOBALS['epar'];
+        $debug  = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
+        $npar = isset($GLOBALS['npar']) ? $GLOBALS['npar'] : null;
+        $hpar = isset($GLOBALS['hpar']) ? $GLOBALS['hpar'] : null;
+        $mpar = isset($GLOBALS['mpar']) ? $GLOBALS['mpar'] : null;
+        $epar = isset($GLOBALS['epar']) ? $GLOBALS['epar'] : null;
+        $bpar = isset($GLOBALS['mpar']) ? $GLOBALS['mpar'] : null;
+        $cpar = isset($GLOBALS['epar']) ? $GLOBALS['epar'] : null;
 
         // default parameters for activity index are in configuration file
         if (empty($npar))
@@ -1490,9 +1490,9 @@ class Student_class {
         if (!isset($epar))
             $epar = EXE_PAR; // exercises
         if (!isset($bpar))
-            $bpar = BKM_PAR; //bookmarks
+            $bpar = (defined('BKM_PAR')) ? BKM_PAR : null; //bookmarks
         if (!isset($cpar))
-            $cpar = CHA_PAR; // chat
+            $cpar = (defined('CHA_PAR')) ? CHA_PAR : null; // chat
 
         $student_list_ar = $this->student_list;
         $id_instance = $this->id;
@@ -1517,6 +1517,7 @@ class Student_class {
             $tot_exercises_number = 0;
             $tot_added_notes = 0;
             $tot_read_notes  = 0;
+            $tot_message_count = 0;
             $tot_message_count_in = 0;
             $tot_message_count_out = 0;
             $tot_bookmarks_count = 0;
@@ -1583,13 +1584,13 @@ class Student_class {
                         $dati['score'] = $st_score;
 
 						if (MODULES_TEST) {
-							$st_score_test = ($test_score[$id_student]['score_test'])?$test_score[$id_student]['score_test']:0;
-							$st_exer_number_test = ($test_score[$id_student]['max_score_test'])?$test_score[$id_student]['max_score_test']:0;
+							$st_score_test = isset($test_score[$id_student]['score_test'])?$test_score[$id_student]['score_test']:0;
+							$st_exer_number_test = isset($test_score[$id_student]['max_score_test'])?$test_score[$id_student]['max_score_test']:0;
 							$dati['exercises_test'] = $st_exer_number_test;
 							$dati['score_test'] = $st_score_test;
 
-							$st_score_survey = ($test_score[$id_student]['score_survey'])?$test_score[$id_student]['score_survey']:0;
-							$st_exer_number_survey = ($test_score[$id_student]['max_score_survey'])?$test_score[$id_student]['max_score_survey']:0;
+							$st_score_survey = isset($test_score[$id_student]['score_survey'])?$test_score[$id_student]['score_survey']:0;
+							$st_exer_number_survey = isset($test_score[$id_student]['max_score_survey'])?$test_score[$id_student]['max_score_survey']:0;
 							$dati['exercises_survey'] = $st_exer_number_survey;
 							$dati['score_survey'] = $st_score_survey;
 						}
@@ -1761,8 +1762,11 @@ class Student_class {
 
                         // activity index
                         if (empty($index_att)) // parametro passato alla funzione
-                            if (empty($GLOBALS['index_activity_expression'])) //
+                            if (empty($GLOBALS['index_activity_expression'])) {
+                            	//
+                            	if (!isset($bcount)) $bcount=1;
                                 $index =  ($added_nodes_count * $npar) + ($st_history_count * $hpar)  + ($user_message_count * $mpar) + ($st_exer_number * $epar) + ($bookmarks_count * $bcount) + ($chatlines_count_out * $cpar);
+                            }
                             else
                                 $index = eval($GLOBALS['index_activity_expression']);
                         else
@@ -1959,19 +1963,19 @@ class Student_class {
 
     function log_class_data($id_course,$id_course_instance,$dati_stude) {
         $dh = $GLOBALS['dh'];
-        $debug  = $GLOBALS['debug'];
+        $debug  = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
         $dataHa = $dh->add_class_report($id_course,$id_course_instance,$dati_stude);
         if (AMA_DataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             // header("Location: $error?err_msg=$msg");
-        }
+        } else $msg = null;
         return $msg;
 
     }
 
     function read_class_data($id_course,$id_course_instance,$date) {
         $dh     = $GLOBALS['dh'];
-        $debug  = $GLOBALS['debug'];
+        $debug  = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : '';
         $dataHa = $dh->get_class_report($id_course,$id_course_instance,$date);
         // vito, 16 luglio 2008. Lasciamo la gestione dell'errore al chiamante.
         return $dataHa;

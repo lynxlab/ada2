@@ -1739,7 +1739,7 @@ if ($duplicate_dir_structure) {
         $names["add"][]="username or email address";
         $edittypes["add"][]="text";
         $necessary["add"][]="";
-        $values["add"][]=$username;
+        $values["add"][]=isset($username) ? $username : null;
         $options["add"][]="";
         $maxsize["add"][]=50;
 

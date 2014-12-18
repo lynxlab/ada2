@@ -57,7 +57,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
    */
   $errorsAr = array();
   
-  if($_POST['user_tester'] == 'none') {
+  if(isset($_POST['user_tester']) && $_POST['user_tester'] == 'none') {
     $errorsAr['user_tester'] = true;
   }
   
@@ -235,7 +235,7 @@ else {
    'user_phone'=> $user_dataAr['telefono'],
    //'user_status'=> $user_dataAr['stato']
     'user_tester' => $tester,
-    'user_profile' => $user_dataAr['profilo'],
+    'user_profile' => isset($user_dataAr['profilo']) ? $user_dataAr['profilo'] : null,
     'user_birthcity' => $user_dataAr['birthcity'],
     'user_birthprovince' => $user_dataAr['birthprovince']
     );
@@ -266,13 +266,18 @@ $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 
 
+if (isset($id_tester)) {
+	$tester_profile_link = CDOMElement::create('a','href:tester_profile.php?id_tester='.$id_tester);
+	$tester_profile_link->addChild(new CText(translateFN("Profilo del tester")));
+	$list_users_link = CDOMElement::create('a','href:list_users.php?id_tester='.$id_tester.'&page='.$page);
+	$list_users_link->addChild(new CText(translateFN("Lista utenti")));
+	
+}
 
-$tester_profile_link = CDOMElement::create('a','href:tester_profile.php?id_tester='.$id_tester);
-$tester_profile_link->addChild(new CText(translateFN("Profilo del tester")));
-$list_users_link = CDOMElement::create('a','href:list_users.php?id_tester='.$id_tester.'&page='.$page);
-$list_users_link->addChild(new CText(translateFN("Lista utenti")));
-
-$module = $home_link->getHtml() . ' > ' . $tester_profile_link->getHtml() . ' > ' .$list_users_link->getHtml() . ' > ' . $label;
+$module = $home_link->getHtml();
+if (isset($tester_profile_link)) $module .= ' > ' . $tester_profile_link->getHtml();
+if (isset($list_users_link)) $module .= ' > ' .$list_users_link->getHtml();
+$module .= ' > ' . $label;
 
 $help  = translateFN("Lista degli utenti presenti sul tester");
 $menu_dataAr = array();

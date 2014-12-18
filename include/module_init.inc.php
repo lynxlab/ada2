@@ -71,10 +71,10 @@ $GLOBALS['simpleCleaned'] = true;
 /**
  *	Validates $_SESSION data
  */
-if(!is_array($neededObjAr)) {
+if(!isset($neededObjAr) || !is_array($neededObjAr)) {
   $neededObjAr = array();
 }
-if(!is_array($allowedUsersAr)) {
+if(!isset($allowedUsersAr) || !is_array($allowedUsersAr)) {
   $allowedUsersAr = array();
 }
 if (!isset($trackPageToNavigationHistory)) {
@@ -85,7 +85,7 @@ session_controlFN($neededObjAr, $allowedUsersAr, $trackPageToNavigationHistory);
 /**
  * Clears variables specified in $whatAR
  */
-if(is_array($variableToClearAR)) {
+if(isset($variableToClearAR) && is_array($variableToClearAR)) {
   clear_dataFN($variableToClearAR);
 }
 

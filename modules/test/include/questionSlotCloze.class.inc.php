@@ -307,13 +307,16 @@ class QuestionSlotClozeTest extends QuestionClozeTest
 			*/
 			$answer = $this->searchChild($ordine, 'ordine', true);
 
-			$risposta = $this->givenAnswer['risposta'][self::POST_ANSWER_VAR][$ordine];
+			if (isset($this->givenAnswer['risposta'][self::POST_ANSWER_VAR][$ordine])) {
+				$risposta = $this->givenAnswer['risposta'][self::POST_ANSWER_VAR][$ordine];
+			} else $risposta = '';
+			
 			if (empty($answer) && empty($risposta)) {
 				return ' ';
 			}
 			$obj = CDOMElement::create('div');
 			$risposta = $this->searchChild($risposta);
-			$obj->addChild(new CText($risposta->testo));
+			if(is_object($risposta)) $obj->addChild(new CText($risposta->testo));
 			$class = 'answer_slot_test';
 			if (!empty($risposta) && !empty($answer)) {
 				$tmp_class = '';
@@ -504,7 +507,9 @@ class QuestionSlotClozeTest extends QuestionClozeTest
 			$return = ($answer->id_nodo == $value && $answer->correttezza > 0);
 			if (!$return) {
 				$givenAnswer = $this->searchChild($value);
-				$return = (strcasecmp($answer->testo, $givenAnswer->testo) == 0 && $answer->correttezza > 0);
+				if (is_object($givenAnswer)) {
+					$return = (strcasecmp($answer->testo, $givenAnswer->testo) == 0 && $answer->correttezza > 0);
+				} else $return = false;				
 			}
 			return $return;
 		}

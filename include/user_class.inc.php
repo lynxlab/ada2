@@ -340,11 +340,13 @@ abstract class ADAGenericUser {
     }
     
     protected function setEditProfilePage ($relativeUrl) {
-    	// make it leading slash-agnostic 	
-    	if ($relativeUrl{0}!== DIRECTORY_SEPARATOR) $relativeUrl = DIRECTORY_SEPARATOR .$relativeUrl;
-
-    	if (is_file(ROOT_DIR . $relativeUrl)) $this->editprofilepage = $relativeUrl;
-    	else $this->editprofilepage = '';    	
+    	if (isset($relativeUrl) && strlen($relativeUrl)>0) {
+    		// make it leading slash-agnostic
+    		if ($relativeUrl{0}!== DIRECTORY_SEPARATOR) $relativeUrl = DIRECTORY_SEPARATOR .$relativeUrl;
+    		
+    		if (is_file(ROOT_DIR . $relativeUrl)) $this->editprofilepage = $relativeUrl;
+    		else $this->editprofilepage = '';    		
+    	} else $this->editprofilepage = '';
     }
 
     public function setTesters($testersAr = array()) {
@@ -437,7 +439,7 @@ abstract class ADAGenericUser {
 
 
     // FIXME: sarebbe statico, ma viene usato come metodo non statico.
-    public function convertUserTypeFN($id_profile) {
+    public static function convertUserTypeFN($id_profile) {
         switch  ($id_profile) {
             case 0: // reserved
                 $user_type = translateFN('utente ada');
@@ -542,39 +544,38 @@ abstract class ADALoggableUser extends ADAGenericUser {
    * provincia, nazione, codice_fiscale, sesso,
    * telefono, stato
         */
-        if(DataValidator::is_uinteger($user_dataHa['id'])) {
+        if(isset($user_dataHa['id']) && DataValidator::is_uinteger($user_dataHa['id'])) {
             $this->id_user = $user_dataHa['id'];
         }
         else {
             $this->id_user = 0;
         }
-        $this->nome                   = $user_dataHa['nome'];
-        $this->cognome                = $user_dataHa['cognome'];
-        $this->tipo                   = $user_dataHa['tipo'];
-        $this->email                  = $user_dataHa['email'];
-        $this->telefono               = $user_dataHa['telefono'];
-        $this->username               = $user_dataHa['username'];
-        $this->template_family        = $user_dataHa['layout'];
-        $this->indirizzo              = $user_dataHa['indirizzo'];
-        $this->citta                  = $user_dataHa['citta'];
-        $this->provincia              = $user_dataHa['provincia'];
-        $this->nazione                = $user_dataHa['nazione'];
-        $this->codice_fiscale         = $user_dataHa['codice_fiscale'];
-        $this->birthdate              = $user_dataHa['birthdate'];
-        $this->sesso                  = $user_dataHa['sesso'];
+        $this->nome                   = isset($user_dataHa['nome']) ? $user_dataHa['nome'] : null;
+        $this->cognome                = isset($user_dataHa['cognome']) ? $user_dataHa['cognome'] : null;
+        $this->tipo                   = isset($user_dataHa['tipo']) ? $user_dataHa['tipo'] : null;
+        $this->email                  = isset($user_dataHa['email']) ? $user_dataHa['email'] : null;
+        $this->username               = isset($user_dataHa['username']) ? $user_dataHa['username'] : null;
+        $this->template_family        = isset($user_dataHa['layout']) ? $user_dataHa['layout'] : null;
+        $this->indirizzo              = isset($user_dataHa['indirizzo']) ? $user_dataHa['indirizzo'] : null;
+        $this->citta                  = isset($user_dataHa['citta']) ? $user_dataHa['citta'] : null;
+        $this->provincia              = isset($user_dataHa['provincia']) ? $user_dataHa['provincia'] : null;
+        $this->nazione                = isset($user_dataHa['nazione']) ? $user_dataHa['nazione'] : null;
+        $this->codice_fiscale         = isset($user_dataHa['codice_fiscale']) ? $user_dataHa['codice_fiscale'] : null;
+        $this->birthdate              = isset($user_dataHa['birthdate']) ? $user_dataHa['birthdate'] : null;
+        $this->sesso                  = isset($user_dataHa['sesso']) ? $user_dataHa['sesso'] :null;
 
-        $this->telefono               = $user_dataHa['telefono'];
+        $this->telefono               = isset($user_dataHa['telefono']) ? $user_dataHa['telefono'] : null;
 
-        $this->stato                  = $user_dataHa['stato'];
-        $this->lingua                 = $user_dataHa['lingua'];
-        $this->timezone               = $user_dataHa['timezone'];
+        $this->stato                  = isset($user_dataHa['stato']) ? $user_dataHa['stato'] : null;
+        $this->lingua                 = isset($user_dataHa['lingua']) ? $user_dataHa['lingua'] : null;
+        $this->timezone               = isset($user_dataHa['timezone']) ? $user_dataHa['timezone'] : null;
 
-        $this->cap                    = $user_dataHa['cap'];
-        $this->SerialNumber           = $user_dataHa['matricola'];
-        $this->avatar                 = $user_dataHa['avatar'];
+        $this->cap                    = isset($user_dataHa['cap']) ? $user_dataHa['cap'] : null;
+        $this->SerialNumber           = isset($user_dataHa['matricola']) ? $user_dataHa['matricola'] : null;
+        $this->avatar                 = isset($user_dataHa['avatar']) ? $user_dataHa['avatar'] : null;
         
-        $this->birthcity			  = $user_dataHa['birthcity'];
-        $this->birthprovince		  = $user_dataHa['birthprovince'];
+        $this->birthcity			  = isset($user_dataHa['birthcity']) ? $user_dataHa['birthcity'] : null;
+        $this->birthprovince		  = isset($user_dataHa['birthprovince']) ? $user_dataHa['birthprovince'] : null;
 
 
     }
@@ -591,7 +592,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
     			$this->setPassword($dataArr['password']);
     		}
     		$this->setSerialNumber($dataArr['matricola']);
-    		$this->setLayout($user_layout);
+    		$this->setLayout($dataArr['layout']);
     		$this->setAddress($dataArr['indirizzo']);
     		$this->setCity($dataArr['citta']);
     		$this->setProvince($dataArr['provincia']);
@@ -599,7 +600,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
     		$this->setBirthDate($dataArr['birthdate']);
     		$this->setGender($dataArr['sesso']);
     		$this->setPhoneNumber($dataArr['telefono']);
-    		$this->setLanguage($dataArr['lingua']);
+    		$this->setLanguage(isset($dataArr['lingua']) ? $dataArr['lingua'] : null);
     		//        $this->setAvatar($dataArr['avatar']);
     		if (isset($_SESSION['uploadHelper']['fileNameWithoutPath'])) $this->setAvatar($_SESSION['uploadHelper']['fileNameWithoutPath']);
     		$this->setCap($dataArr['cap']);
@@ -642,9 +643,9 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $dh = $GLOBALS['dh'];
         $error = $GLOBALS['error'];
         $http_root_dir = $GLOBALS['http_root_dir'];
-        $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
-        $sess_id_node = $_SESSION['sess_id_node'];
-        $sess_id_course = $_SESSION['sess_id_course'];
+        $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+        $sess_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
+        $sess_id_course = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
         $sess_id_user = $_SESSION['sess_id_user'];
 
         /*
@@ -775,8 +776,8 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $dh = $GLOBALS['dh'];
         $error = $GLOBALS['error'];
         $http_root_dir = $GLOBALS['http_root_dir'];
-        $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
-        $sess_id_node = $_SESSION['sess_id_node'];
+        $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+        $sess_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
 
         if (!isset($id_course_instance))
             $id_course_instance = $sess_id_course_instance;
@@ -891,10 +892,12 @@ abstract class ADALoggableUser extends ADAGenericUser {
             /*
             * vito, 10 ottobre 2008: $last_visited_node è Array([0]=>Array([id_nodo], ...))
             */
-            
-            $last_visited_time =  ($return_dateonly) ? AMA_DataHandler::ts_to_date($last_visited_node[0]['data_uscita']) : $last_visited_node[0]['data_uscita'] ;
-            
-            return array($last_visited_node[0]['id_nodo'], $last_visited_time);
+            if (!AMA_DB::isError($last_visited_node) && is_array($last_visited_node) && isset($last_visited_node[0])) {
+            	
+	            $last_visited_time =  ($return_dateonly) ? AMA_DataHandler::ts_to_date($last_visited_node[0]['data_uscita']) : $last_visited_node[0]['data_uscita'] ;
+	            
+	            return array($last_visited_node[0]['id_nodo'], $last_visited_time);
+            } else return "-";
          } else {
             /*
              * Sara, 2/07/2014
@@ -931,12 +934,14 @@ abstract class ADALoggableUser extends ADAGenericUser {
                         {
                             $id_instance=$courseInstance['id_istanza_corso'];
                             $last_access=$tester->get_last_visited_nodes($id_user,$id_instance,10);
-                            $last_accessAr= array($last_access[0]['id_nodo'], $last_access[0]['data_uscita']); 
-                            
-                            if($last_accessAr[1]>$Max)
-                            {
-                                $id_nodo=$last_accessAr[0];
-                                $Max=$last_accessAr[1];
+                            if (!AMA_DB::isError($last_access) && is_array($last_access) && count($last_access)) {
+                            	$last_accessAr= array($last_access[0]['id_nodo'], $last_access[0]['data_uscita']);
+                            	
+                            	if($last_accessAr[1]>$Max)
+                            	{
+                            		$id_nodo=$last_accessAr[0];
+                            		$Max=$last_accessAr[1];
+                            	}
                             }
                         }
                      } 
@@ -955,10 +960,10 @@ abstract class ADALoggableUser extends ADAGenericUser {
         //  returns  the number of visits for this node
 
 
-        $dh = $GLOBALS['dh'];
-        $error = $GLOBALS['error'];
-        $http_root_dir = $GLOBALS['http_root_dir'];
-        $debug = $GLOBALS['debug'];
+        $dh = isset ($GLOBALS['dh']) ? $GLOBALS['dh'] : null;
+        $error = isset($GLOBALS['error']) ? $GLOBALS['error'] : null;
+        $http_root_dir = isset($GLOBALS['http_root_dir']) ? $GLOBALS['http_root_dir'] : null;
+        $debug = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
 
         $visit_count = 0;
         $out_fields_ar = array('id_utente_studente','data_visita','data_uscita');
@@ -982,7 +987,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $sess_id_node = $_SESSION['sess_id_node'];
         $sess_id_course = $_SESSION['sess_id_course'];
         $sess_id_user = $_SESSION['sess_id_user'];
-        $debug = $GLOBALS['debug'];
+        $debug = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
 
         $out_fields_ar = array('id_nodo','data_visita');
         $history = $dh->find_nodes_history_list($out_fields_ar, "", $course_instance_id, $node_id);
@@ -995,7 +1000,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
         //  returns  the number of global visits for this node
 
         $dh = $GLOBALS['dh'];
-        $debug = $GLOBALS['debug'];
+        $debug = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
         $visit_count = 0;
         $out_fields_ar = array('n_contatti');
         //$search_fields_ar = array('id_nodo');
@@ -1306,7 +1311,7 @@ abstract class ADAAbstractUser extends ADALoggableUser {
 			$dh = $GLOBALS['dh'];
 			$error = $GLOBALS['error'];
 			$http_root_dir = $GLOBALS['http_root_dir'];
-			$debug = $GLOBALS['debug'];
+			$debug = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
 
 		if (empty($id_profile))
 			$id_profile = AMA_TYPE_TUTOR;
@@ -1413,8 +1418,8 @@ class ADAPractitioner extends ADALoggableUser {
     public function __construct($user_dataAr=array()) {
         parent::__construct($user_dataAr);
 
-        $this->tariffa = $user_dataAr['tariffa'];
-        $this->profilo = $user_dataAr['profilo'];
+        $this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : null;
+        $this->profilo = isset($user_dataAr['profilo']) ? $user_dataAr['profilo'] : null;
 
         $this->setHomePage(HTTP_ROOT_DIR.'/tutor/tutor.php');
         $this->setEditProfilePage('tutor/edit_tutor.php');
@@ -1441,12 +1446,13 @@ class ADAPractitioner extends ADALoggableUser {
         $this->profilo = $profile;
     }
     
-    public function fillWithArrayData($user_dataAr) {
-    	
-    	parent::fillWithArrayData($user_dataAr);
-    	
-    	$this->tariffa = $user_dataAr['tariffa'];
-    	$this->profilo = $user_dataAr['profilo'];
+    public function fillWithArrayData($user_dataAr=null) {
+    	if (!is_null($user_dataAr)) {
+    		parent::fillWithArrayData($user_dataAr);
+    		 
+    		$this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : null;
+    		$this->profilo = isset($user_dataAr['profilo']) ? $user_dataAr['profilo'] : null;
+    	}
     }
 
     public function toArray() {

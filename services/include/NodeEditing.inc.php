@@ -25,14 +25,14 @@ class NodeEditing {
      * @param  string $text  - text of node
      * @return array  $media - an associative array ('media'=>'media_type')
      */
-    function getMediaFromNodeText( $text ) {
+    public static function getMediaFromNodeText( $text ) {
         // vito, 21 luglio 2008
         if ( get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/ ) {
             $text = stripslashes($text);
         }
 
-        $media_type  .= _IMAGE.'|'._SOUND.'|'._VIDEO.'|'._PRONOUNCE.'|'._MONTESSORI.'|'._LABIALE.'|'._LIS.'|'._FINGER_SPELLING.'|'._LINK.'|INTERNAL'; //'0|1|2|4|....';
-        $media_value .= '(?:[a-zA-Z0-9_\-]+\.[a-zA-Z0-9]{3,4})';
+        $media_type  = _IMAGE.'|'._SOUND.'|'._VIDEO.'|'._PRONOUNCE.'|'._MONTESSORI.'|'._LABIALE.'|'._LIS.'|'._FINGER_SPELLING.'|'._LINK.'|INTERNAL'; //'0|1|2|4|....';
+        $media_value = '(?:[a-zA-Z0-9_\-]+\.[a-zA-Z0-9]{3,4})';
 
 //        $extract_media_tags = '/<(?:LINK|MEDIA) TYPE="('.$media_type.')" VALUE="([a-zA-Z0-9_\-\/\.?~+%=&,$\'\(\):;*@\[\]]+)">/';
         $extract_media_tags = '/<(?:LINK|MEDIA) TYPE="([0-5]+|INTERNAL)" VALUE="([a-zA-Z0-9_\-\/\.?~+%=&,$\'\(\):;*@\[\]]+)">/';
@@ -59,7 +59,7 @@ class NodeEditing {
      * @param array  $media_to_add    - all the media(internal links, external resources) added to this node
      * @return mixed
      */
-    function updateMediaAssociationsWithNode( $edited_node_id, $user_id, $media_to_remove = array(), $media_to_add = array() ) {
+    public static function updateMediaAssociationsWithNode( $edited_node_id, $user_id, $media_to_remove = array(), $media_to_add = array() ) {
         $dh = $GLOBALS['dh'];
 
         // vito, 27 mar 2009
@@ -198,7 +198,7 @@ class NodeEditing {
      * @param array $node_data
      * @return mixed
      */
-    function saveNode($node_data=array()) {
+    public static function saveNode($node_data=array()) {
         $dh = $GLOBALS['dh'];
         /*
      * Increment version counter
@@ -264,14 +264,14 @@ class NodeEditing {
         return true;
     }
 
-    function createNode($node_data=array()) {
+    public static function createNode($node_data=array()) {
         $dh = $GLOBALS['dh'];
 
         // vito 26 jan 2009
         $regexp = '/([0-9]+),([0-9]+),([0-9]+),([0-9]+)/';
         $matches = array();
 
-        if (preg_match($regexp,$node_data['position'],$matches)) {
+        if (isset($node_data['position']) && preg_match($regexp,$node_data['position'],$matches)) {
             $node_data['pos_x0'] = $matches[1];
             $node_data['pos_y0'] = $matches[2];
             $node_data['pos_x1'] = $matches[3];
@@ -307,7 +307,7 @@ class NodeEditing {
         $root_dir = $GLOBALS['root_dir'];
         $template_family = $_SESSION['sess_template_family'];
         $path_to_icon = $root_dir.'/templates/browsing/'.$template_family;
-        if(trim($node_data['icon']) == "" || !file_exists($node_data['icon'])) {
+        if(!isset($node_data['icon']) || trim($node_data['icon']) == "" || !file_exists($node_data['icon'])) {
             $node_data['icon'] = 'nodo.png';
         }
 
@@ -324,7 +324,7 @@ class NodeEditing {
         
     }
 
-    function getAuthorMedia( $id_course, $media_type=array() ) {
+    public static function getAuthorMedia( $id_course, $media_type=array() ) {
         $dh = $GLOBALS['dh'];
         $course_ha = $dh->get_course($id_course);
         if ( AMA_DataHandler::isError($course_ha) ) {
@@ -353,19 +353,21 @@ class NodeEditingViewer {
      * @param int    $flags
      * @return string
      */
-    function getEditingForm( $form_action, $id_course, $id_course_instance, $id_user, $node_to_edit=array(), $flags=null ) {
+    public static function getEditingForm( $form_action, $id_course, $id_course_instance, $id_user, $node_to_edit=array(), $flags=null ) {
         // vito, 1 ottobre 2008
-        $node_to_edit_text = $node_to_edit['text'];
+        if (isset($node_to_edit['text'])) $node_to_edit_text = $node_to_edit['text'];
+        else $node_to_edit_text = '';
+        
         if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
             $node_to_edit_text = stripslashes($node_to_edit_text);
         }
 
         if ($node_to_edit['type'] == ADA_LEAF_WORD_TYPE OR $node_to_edit['type'] == ADA_GROUP_WORD_TYPE) {
-            $node_to_edit_hyphenation = $node_to_edit['hyphenation'];
-            $node_to_edit_semantic = $node_to_edit['semantic'];
-            $node_to_edit_grammar = $node_to_edit['grammar'];
-            $node_to_edit_notes = $node_to_edit['notes'];
-            $node_to_edit_examples = $node_to_edit['examples'];
+            $node_to_edit_hyphenation = isset($node_to_edit['hyphenation']) ? $node_to_edit['hyphenation'] : null;
+            $node_to_edit_semantic = isset($node_to_edit['semantic']) ? $node_to_edit['semantic'] : null;
+            $node_to_edit_grammar = isset($node_to_edit['grammar']) ? $node_to_edit['grammar'] : null;
+            $node_to_edit_notes = isset($node_to_edit['notes']) ? $node_to_edit['notes'] : null;
+            $node_to_edit_examples = isset($node_to_edit['examples']) ? $node_to_edit['examples'] : null;
             if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
                 $node_to_edit_hyphenation = stripslashes($node_to_edit_hyphenation);
                 $node_to_edit_semantic = stripslashes($node_to_edit_semantic);
@@ -625,7 +627,7 @@ class NodeEditingViewer {
      * @param  string $form_action
      * @return string
      */
-    function getPreviewForm( $action_return_to_edit_node, $action_save_edited_node ) {
+    public static function getPreviewForm( $action_return_to_edit_node, $action_save_edited_node ) {
         $node_data = getNodeDataFromPost($_POST);
         $_SESSION['sess_node_editing']['node_data'] = serialize($node_data);
 
@@ -745,7 +747,7 @@ class NodeEditingViewer {
         return $link->getHtml();
     }
 
-    function getHeadForm($id_user, $user_level, $user_type, $parentNodeObj, $new_node_id, $new_node_type ) {
+    public static function getHeadForm($id_user, $user_level, $user_type, $parentNodeObj, $new_node_id, $new_node_type ) {
         // NOTE or PRIVATE_NOTE
         $replied_node_data = CDOMElement::create('div','id:replied_node_data');
         if ( $new_node_type == ADA_NOTE_TYPE || $new_node_type == ADA_PRIVATE_NOTE_TYPE) {
@@ -785,7 +787,7 @@ class NodeEditingViewer {
      * @param array $node_data - an associative array containing node data
      * @return string
      */
-    function getNodeDataDiv( $flags, $node_data=array(), $id_course ) {
+    public static function getNodeDataDiv( $flags, $node_data=array(), $id_course ) {
         $php_file_uploader = 'upload.php?caller=editor';
         $node_data_div = CDOMElement::create('div','id:jsnode_data_div');
 
@@ -897,7 +899,7 @@ class NodeEditingViewer {
             $label      = CDOMElement::create('label', 'for:bg_color');
             $label->addChild(new CText(translateFN('Colore sfondo')));
             $input_text = CDOMElement::create('text','id:bg_color, name:bg_color');
-            $input_text->setAttribute('value',$node_data['bg_color']);
+            $input_text->setAttribute('value',isset($node_data['bg_color']) ? $node_data['bg_color'] : null);
             $node_bgcolor->addChild($label);
             $node_bgcolor->addChild($input_text);
 
@@ -905,7 +907,7 @@ class NodeEditingViewer {
         }
         else {
             $hidden_bgcolor = CDOMElement::create('hidden','id:bg_color, name:bg_color');
-            $hidden_bgcolor->setAttribute('value',$node_data['bg_color']);
+            $hidden_bgcolor->setAttribute('value',isset($node_data['bg_color']) ? $node_data['bg_color'] : null);
             $node_data_div->addChild($hidden_bgcolor);
         }
 
@@ -1087,7 +1089,7 @@ class NodeEditingViewer {
      * @param int $flags
      * @return string
      */
-    function getButtons( $flags ) {
+    public static function getButtons( $flags ) {
         $div_buttons = CDOMElement::create('div','id:jsbuttons');
 
 //    if ($flags & EDITOR_INSERT_NODE_DATA)
@@ -1141,7 +1143,7 @@ class NodeEditingViewer {
      * @param string $fckeditor_instance
      * @return string
      */
-    function getAddOns( $flags, $id_course, $id_course_instance, $id_user, $id_node) {
+    public static function getAddOns( $flags, $id_course, $id_course_instance, $id_user, $id_node) {
         $php_file_uploader = 'upload.php?caller=editor';
 
         $div_addons = CDOMElement::create('div','id:jsaddons');
@@ -1252,7 +1254,7 @@ class NodeEditingViewer {
         if($div_fu !== NULL) {
             $div_addons->addChild($div_fu);
         }
-        if($div_media_properties !== NULL) {
+        if(isset($div_media_properties) && $div_media_properties !== NULL) {
             $div_addons->addChild($div_media_properties);
         }
 
@@ -1267,7 +1269,7 @@ class NodeEditingViewer {
      * @param  string $fckeditorInstance
      * @return string
      */
-    function getInternalLinkSelector( $id_course, $id_node, $container_div, $action ) {
+    public static function getInternalLinkSelector( $id_course, $id_node, $container_div, $action ) {
         // vito, 22 apr 2009, added $id_node and 'id_edited_node'
         return CourseViewer::displayInternalLinkSelector($id_course, array('action'=>$action, 'container_div' => $container_div, 'id_edited_node' => $id_node));
     }
@@ -1281,7 +1283,7 @@ class NodeEditingViewer {
      * @param array  $node_data
      * @return string
      */
-    function getAuthorMediaOnlySelector($id_course, $media_type=NULL, $select_name, $node_data) {
+    public static function getAuthorMediaOnlySelector($id_course, $media_type=NULL, $select_name, $node_data) {
         if ($media_type == NULL) {
             $media_type = array(_SOUND,_VIDEO,_IMAGE,_DOC, _PRONOUNCE, _FINGER_SPELLING, _LABIALE, _LIS, _MONTESSORI);
         }
@@ -1319,7 +1321,7 @@ class NodeEditingViewer {
      * @param string $fckeditorInstance
      * @return string
      */
-    function getAuthorMediaSelector($id_course, $media_type=NULL) {
+    public static function getAuthorMediaSelector($id_course, $media_type=NULL) {
         if ($media_type == NULL) {
             $media_type = array(_SOUND,_VIDEO,_IMAGE,_DOC, _PRONOUNCE, _FINGER_SPELLING, _LABIALE, _LIS, _MONTESSORI);
         }
@@ -1370,7 +1372,7 @@ class NodeEditingViewer {
      * @param string $fckeditorInstance
      * @return string
      */
-    function getAuthorMediaManager() {
+    public static function getAuthorMediaManager() {
         $form = CDOMElement::create('form','id:properties_media, class:editor_form');
         /*
             $form = CDOMElement::create('form',"id:uploadfile, name:uploadfileform, enctype:multipart/form-data,
@@ -1438,7 +1440,7 @@ class NodeEditingViewer {
         foreach($supported_languages as $language)
         {
             $option = CDOMElement::create('option',"value:{$language['id_lingua']}");
-            if ($language['codice_lingua'] == $login_page_language_code) {
+            if (isset($login_page_language_code) && $language['codice_lingua'] == $login_page_language_code) {
                 $option->setAttribute('selected','selected');
             }
             $option->addChild(new CText($language['nome_lingua']));
@@ -1507,7 +1509,7 @@ class NodeEditingViewer {
      * @param int $id_course
      * @return string
      */
-    function getAuthorExternalLinkSelector($id_course) {
+    public static function getAuthorExternalLinkSelector($id_course) {
 
         $media_type = array(_LINK);
         $author_media = NodeEditing::getAuthorMedia($id_course, $media_type);
@@ -1541,13 +1543,15 @@ class NodeEditingViewer {
 }
 
 class PreferenceSelector {
-    function getPreferences( $user_type, $node_type, $operation_on_node, $preferences_array = array()) {
-        return $preferences_array[$user_type][$node_type][$operation_on_node];
+    public static function getPreferences( $user_type, $node_type, $operation_on_node, $preferences_array = array()) {
+    	if (isset($preferences_array[$user_type][$node_type][$operation_on_node])) {
+    		return $preferences_array[$user_type][$node_type][$operation_on_node];
+    	} else return null;
     }
 }
 
 class Utilities {
-    function getAdaNodeTypeFromString( $type ) {
+    public static function getAdaNodeTypeFromString( $type ) {
         switch ($type) {
             case 'LEAF':
                 return ADA_LEAF_TYPE;
@@ -1566,7 +1570,8 @@ class Utilities {
         }
     }
 
-    function getFileHintFromADAFileType ( $type ) {
+    public static function getFileHintFromADAFileType ( $type ) {
+    	$hint='';
         switch ($type) {
             case _IMAGE:
             case _MONTESSORI:
@@ -1592,7 +1597,7 @@ class Utilities {
         return $hint;
     }
 
-    function getIconForNodeType( $type ) {
+    public static function getIconForNodeType( $type ) {
         switch( $type ) {
             case ADA_LEAF_TYPE:
                 return 'nodo.png';
@@ -1612,7 +1617,7 @@ class Utilities {
         }
     }
 
-    function getEditingFormTitleForNodeType($type) {
+    public static function getEditingFormTitleForNodeType($type) {
         switch($type) {
             case ADA_LEAF_TYPE:
             case ADA_GROUP_TYPE:

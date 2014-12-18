@@ -40,12 +40,12 @@ include_once 'include/browsing_functions.inc.php';
 $self =  whoami();
 require_once ROOT_DIR.'/include/HtmlLibrary/UserModuleHtmlLib.inc.php';
 
-$external_link_id = DataValidator::is_uinteger($_GET['id']);
+$external_link_id = isset($_GET['id']) ? DataValidator::is_uinteger($_GET['id']) : false;
 
-$filename = DataValidator::validate_local_filename($_GET['file']);
+$filename = isset($_GET['file']) ? DataValidator::validate_local_filename($_GET['file']) : false;
 
 //$url = DataValidator::validate_url($_GET['url']);
-$url = $_GET['url'];
+$url = isset($_GET['url']) ?  $_GET['url'] : null;
 
 if($external_link_id != false) {
   $external_resourceAr = $dh->get_risorsa_esterna_info($external_link_id);

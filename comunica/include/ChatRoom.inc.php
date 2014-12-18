@@ -51,7 +51,7 @@ class ChatRoom {
     //*******************************************************************************/
     //main constructor function of the class ChatRoom
     //*******************************************************************************/
-    function ChatRoom($id_chatroom, $tester_dsn) {
+    function ChatRoom($id_chatroom, $tester_dsn=null) {
 
         //$this->tester_dsn = MultiPort::getDSN($tester);
         $this->tester_dsn = $tester_dsn;
@@ -361,7 +361,7 @@ class ChatRoom {
     //*******************************************************************************/
     //adds a chatroom into table chatroom
     //*******************************************************************************/
-    function add_chatroomFN($chatroom_ha, $tester_dsn) {
+    public static function add_chatroomFN($chatroom_ha, $tester_dsn = null) {
         $dh = $GLOBALS['dh'];
 
         /*
@@ -571,7 +571,7 @@ class ChatRoom {
     //*******************************************************************************/
     //gets the list of all the active chatrooms
     //*******************************************************************************/
-    function get_all_chatroomsFN() {
+    public static function get_all_chatroomsFN() {
         $cdh = self::obtainChatDataHandlerInstance();
         $result = $cdh->get_all_chatrooms();
         return $result;
@@ -580,7 +580,7 @@ class ChatRoom {
     //*******************************************************************************/
     //gets the id of the active public chatroom
     //*******************************************************************************/
-    function find_public_chatroomFN() {
+    public static function find_public_chatroomFN() {
         $cdh = self::obtainChatDataHandlerInstance();
         $result = $cdh->find_public_chatroom();
         return $result;
@@ -589,7 +589,7 @@ class ChatRoom {
     //*******************************************************************************/
     //gets the id of the active chatroom, relative to a specific class
     //*******************************************************************************/
-    function get_class_chatroomFN($id_course_instance) {
+    public static function get_class_chatroomFN($id_course_instance) {
         if (!self::isInStaticContext()) {
             $this->id_course_instance = $id_course_instance;
         }
@@ -606,7 +606,7 @@ class ChatRoom {
 /*
 /* @return
  */
-    function get_class_chatroom_for_instance($id_course_instance, $type) {
+    public static function get_class_chatroom_for_instance($id_course_instance, $type) {
         if (!self::isInStaticContext()) {
             $this->id_course_instance = $id_course_instance;
         }
@@ -628,7 +628,7 @@ class ChatRoom {
     //*******************************************************************************/
     // returns an array contaning the ids of the chatrooms relative to a specific class
     //*******************************************************************************/
-    function get_all_class_chatroomsFN($id_course_instance) {
+    public static function get_all_class_chatroomsFN($id_course_instance) {
         if (!self::isInStaticContext()) {
             $this->id_course_instance = $id_course_instance;
         }
@@ -640,7 +640,7 @@ class ChatRoom {
     //*******************************************************************************/
     //gets all the private chatrooms taht a user could have access
     //*******************************************************************************/
-    function get_all_private_chatroomsFN($user_id) {
+    public static function get_all_private_chatroomsFN($user_id) {
         $cdh = self::obtainChatDataHandlerInstance();
         $result = $cdh->get_all_private_chatrooms($user_id);
         return $result;

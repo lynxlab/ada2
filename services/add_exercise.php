@@ -56,6 +56,7 @@ $level = 0; // default
 $chat_link = "";
 $target = $http_root_dir . "/browsing/view";
 $online_users_listing_mode = 2;
+if (!isset($id_course_instance)) $id_course_instance = null;
 $online_users = ADAGenericUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
 
 
@@ -157,9 +158,9 @@ if ( isset($step) && !isset($verify)) {
 		   	* per l'inserimento.
         */
 
-            $tipo_esercizio = (int) $_SESSION['add_exercise']['exercise_family'];
+            $tipo_esercizio = isset($_SESSION['add_exercise']['exercise_family']) ? (int) $_SESSION['add_exercise']['exercise_family'] : null;
             $viewer = ExerciseViewerFactory::create($tipo_esercizio);
-            $exercise_data = $_SESSION['add_exercise'];
+            $exercise_data = isset($_SESSION['add_exercise']) ? $_SESSION['add_exercise'] : null;
             $form   = $viewer->getAuthorForm("add_exercise.php?verify=2", $exercise_data);
             break;
 
@@ -326,18 +327,18 @@ $banner = include ("$root_dir/include/banner.inc.php");
 
 
 $content_dataAr = array(
-        'head'=>$head_form,
+        'head'=>isset($head_form) ? $head_form : '',
         'banner'=>$banner,
-        'form'=>$form,
+        'form'=>isset($form) ? $form : '',
         'status'=>$status,
         'user_name'=>$user_name,
         'user_type'=>$user_type,
         'messages'=>$user_messages->getHtml(),
         'agenda'=>$user_agenda->getHtml(),
-        'title'=>$node_title,
-        'course_title'=>$course_title,
-        'path'=>$node_path,
-        'back'=>$back
+        'title'=>isset($node_title) ? $node_title : '',
+        'course_title'=>isset($course_title) ? $course_title : '',
+        'path'=>isset($node_path) ? $node_path : '',
+        'back'=>isset($back) ? $back : ''
 );
 
 ARE::render($layout_dataAr, $content_dataAr);

@@ -225,7 +225,7 @@ abstract class RootTest extends NodeTest
 	 * @return returns true if the topic has been setted, false otherwise
 	 */
 	protected function setCurrentTopic() {
-		if ($_POST[self::POST_SUBMIT_VAR]) {
+		if (isset($_POST[self::POST_SUBMIT_VAR])) {
 			$this->_currentTopic++;
 		}
 		else if (empty($this->_currentTopic)) {
@@ -374,7 +374,7 @@ abstract class RootTest extends NodeTest
 						if (!empty($sub->_children)) {
 							foreach($sub->_children as $i) {
 								$i->setDisplay(false);
-								if (is_a($i,TopicTest)) {
+								if (is_a($i,'TopicTest')) {
 									if (!empty($i->_children)) {
 										foreach($i->_children as $v) {
 											$v->setDisplay(false);
@@ -421,7 +421,7 @@ abstract class RootTest extends NodeTest
 				$i = $sub->_children[$r];
 				if (!in_array($i->id_nodo,$tmpList)) {
 					$tmpList[] = $i->id_nodo;
-					if (is_a($i,QuestionTest)) {
+					if (is_a($i,'QuestionTest')) {
 						$this->_randomQuestion[] = $i->id_nodo;
 					}
 					else {
@@ -513,8 +513,17 @@ abstract class RootTest extends NodeTest
 	 *
 	 * @param $return_html choose the return type
 	 * @return an object of CDOMElement or a string containing html
-	 */
-	public function render($return_html=true) {
+	 * 
+	 * (non-PHPdoc)
+	 * @see NodeTest::render()
+	 * 
+	 * @author giorgio 20/ott/2014
+	 * 
+	 * added feedback, rating and rating_answer parameters
+	 * that are not used here, but are needed to make the
+	 * declaration compatible with NodeTest::render()
+	 */	
+	public function render($return_html=true,$feedback=false,$rating=false,$rating_answer=false) {
 		$html = $this->renderingHtml($ref);
 
 		if (is_null($ref)) $ref = $html;
@@ -721,7 +730,7 @@ abstract class RootTest extends NodeTest
 					$questions = array();
 					while(!empty($genericItems)) {
 						foreach($genericItems as $k=>$child) {
-							if (!is_subclass_of($child, QuestionTest)) {
+							if (!is_subclass_of($child, 'QuestionTest')) {
 								for($i=0;$i<$child->countChildren();$i++) {
 									$genericItems[] = $child->getChild($i);
 								}
@@ -1035,12 +1044,12 @@ abstract class RootTest extends NodeTest
 				$topic = $this->getChild($i);
 				if (!empty($topic->_children)) {
 					foreach($topic->_children as $subTopic) {
-						if (is_a($subTopic,TopicTest)) {
+						if (is_a($subTopic,'TopicTest')) {
 							foreach($subTopic->_children as $v) {
 								$questions[] = $v;
 							}
 						}
-						else if (is_a($subTopic,QuestionTest)) {
+						else if (is_a($subTopic,'QuestionTest')) {
 							$questions[] = $subTopic;
 						}
 					}

@@ -207,6 +207,7 @@ else {
     foreach($testers_dataAr as $tester_dataAr) {
       $testersAr[$tester_dataAr['puntatore']] = $tester_dataAr['nome'];
     }
+    if(!isset($errorsAr)) $errorsAr=null;
     $form = AdminModuleHtmlLib::getFormImportLanguage('import_language.php',$testersAr, "", $errorsAr);
   }
 }

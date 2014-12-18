@@ -161,9 +161,9 @@ abstract class CCoreAttributesElement extends CBaseElement
             }
             else
             {
-				if ($this->$text === false) {
-					$this->$text = 'false';
-				}
+            	if (!property_exists($this, $text) || $this->$text === false) {
+            		$this->$text = 'false';
+            	}            	
 				else if ($this->$text === true) {
 					$this->$text = 'true';
 				}
@@ -311,12 +311,14 @@ abstract class CElement extends CBaseAttributesElement
             {
                 foreach($this->_children as $child)
                 {
+                	if (!isset($attribute[$match]) || strlen($attribute[$match])<=0) $attribute[$match] ='';
                     $attribute[$match] .= $child->getHtml();
                 }
             }
             else
             {
-				if ($this->$attr === false) {
+            	 
+				if (!property_exists($this, $attr) || $this->$attr === false) {
 					$this->$attr = 'false';
 				}
 				else if ($this->$attr === true) {
@@ -380,7 +382,7 @@ abstract class CEmptyElement extends CBaseAttributesElement
         {
             $pattern[$match] = "/\s*%$text%\s*/";
 
-				if ($this->$text === false) {
+				if (!property_exists($this, $text) || $this->$text === false) {
 					$this->$text = 'false';
 				}
 				else if ($this->$text === true) {

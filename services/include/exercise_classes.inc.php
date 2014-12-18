@@ -15,7 +15,7 @@ class ExerciseDAO {
      * @return ADA_Exercise object on success, AMA_PEAR_Error on failure.
      */
 
-    function getExercise( $id_node, $id_answer=null ) {
+    public static function getExercise( $id_node, $id_answer=null ) {
         $dh = $GLOBALS['dh'];
         $exercise_nodes = $dh->get_exercise($id_node);
         if ( AMA_DataHandler::isError( $exercise_nodes ) ) {
@@ -53,7 +53,7 @@ class ExerciseDAO {
      * @param int $id_student  -
      * @return mixed - a string representing next exercise id in case it finds an exercise to show or null.
      */
-    function getNextExerciseId ( $exercise, $id_student ) {
+    public static function getNextExerciseId ( $exercise, $id_student ) {
         $dh = $GLOBALS['dh'];
 
         $next_exercise_id = null;
@@ -94,7 +94,7 @@ class ExerciseDAO {
      * @param object $exercise - the exercise object we want to save.
      * @return mixed - true or AMA_PEAR Error.
      */
-    function save( $exercise ) {
+    public static function save( $exercise ) {
         $dh = $GLOBALS['dh'];
         // AL MOMENTO NON  VIENE USATO PER CREARE L'ESERCIZIO
 
@@ -234,7 +234,7 @@ class ExerciseDAO {
 
     }
 
-    function canEditExercise($exercise_id) {
+    public static function canEditExercise($exercise_id) {
         $dh = $GLOBALS['dh'];
 
         $tokens = explode('_',$exercise_id);
@@ -270,7 +270,7 @@ class ExerciseDAO {
         return TRUE;
     }
 
-    function addAnswer($exercise, $answer_data=array()) {
+    public static function addAnswer($exercise, $answer_data=array()) {
         $dh = $GLOBALS['dh'];
 
         $tmpAr = array();
@@ -290,7 +290,7 @@ class ExerciseDAO {
                 'level'          => $exercise->getExerciseLevel(),
                 'order'          => $answer_data['position'],
                 'version'        => 0,
-                'creation_date'  => $ymdhms,
+                'creation_date'  => isset($ymdhms) ? : null,
                 'icon'           => '',
                 'type'           => ADA_LEAF_TYPE,
                 'pos_x0'       => 100,
@@ -342,7 +342,7 @@ class ADA_Esercizio {
         $this->id        = $id_node;
         $this->testo     = $testo;
         $this->dati      = $dati;
-        if ($tudent_answer == null) {
+        if ($student_answer == null) {
             $this->risposta['ripetibile'] = true; 
         } else {
             $this->risposta  = $student_answer;
@@ -645,7 +645,7 @@ class ADA_Esercizio {
      */
     function saveOrUpdateRisposta () {
         if ($this->flag_ex) {
-            if ($this->risposta['id_nodo'] == NULL) {
+            if (!isset($this->risposta['id_nodo']) || $this->risposta['id_nodo'] == NULL) {
                 return 0;
             }
         }
@@ -972,6 +972,7 @@ class Standard_ExerciseViewer extends ExerciseViewer {
         $label2->addChild(new CText(translateFN('Testo risposta')));
         $div_textarea2->addChild($label2);
         $textarea2 = CDOMElement::create('textarea','id:answer,name:answer');
+        if (!isset($answer)) $answer = '';
         $textarea2->addChild(new CText($answer));
         $div_textarea2->addChild($textarea2);
         $form->addChild($div_textarea2);
@@ -981,6 +982,7 @@ class Standard_ExerciseViewer extends ExerciseViewer {
         $label3->addChild(new CText(translateFN('Commento alla risposta')));
         $div_textarea3->addChild($label3);
         $textarea3 = CDOMElement::create('textarea','id:comment,name:comment');
+        if (!isset($comment)) $comment='';
         $textarea3->addChild(new CText($comment));
         $div_textarea3->addChild($textarea3);
         $form->addChild($div_textarea3);
@@ -989,6 +991,7 @@ class Standard_ExerciseViewer extends ExerciseViewer {
         $label4 = CDOMElement::create('label','for:hide');
         $label4->addChild(new CText(translateFN('Correttezza:')));
         $div_correctness->addChild($label4);
+        if (!isset($correctness)) $correctness = '';
         $div_correctness->addChild(CDOMElement::create('text',"id:correctness,name:correctness,value:$correctness"));
         $form->addChild($div_correctness);
 
@@ -3220,7 +3223,7 @@ $http_root_dir = $GLOBALS['http_root_dir'];
 }
 
 class ExerciseViewerFactory {
-    function create( $exercise_type ) {
+    public static function create( $exercise_type ) {
         switch ( $exercise_type ) {
             case ADA_STANDARD_EXERCISE_TYPE:
             default:
@@ -3242,7 +3245,7 @@ class ExerciseViewerFactory {
 }
 
 class ExerciseCorrectionFactory {
-    function create( $exercise_type ) {
+    public static function create( $exercise_type ) {
         switch ( $exercise_type ) {
             case ADA_STANDARD_EXERCISE_TYPE:
             default:

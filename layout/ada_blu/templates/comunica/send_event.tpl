@@ -95,7 +95,7 @@
       			<p>
         	      <i18n>Giorno (gg/mm/aaaa): </i18n>
 <input name="data_evento" type="text" size="10" maxlength="10" id="event_date" class="date_input" value="<template_field class="template_field" name="event_date">event_date</template_field>">
-<a href="javascript:show_calendar('document.form.data_evento', document.form.data_evento.value);"><img src="../layout/standard/img/cal.png" alt="Scegli una data">
+<a href="javascript:show_calendar('document.form.data_evento', document.form.data_evento.value);"><img src="img/cal.png" alt="Scegli una data">
 </a>
                       <!--input type="text" name="data_evento" value="<template_field class="template_field" name="event_date">event_date</template_field>"-->
                     </p>

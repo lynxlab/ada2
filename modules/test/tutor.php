@@ -45,12 +45,15 @@ $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_
 
 $self = whoami();
 
-if (!is_a($course_instanceObj,'Course_instance')) {
+if (!isset($course_instanceObj) || !is_a($course_instanceObj,'Course_instance')) {
 	$course_instanceObj = read_course_instance_from_DB($_GET['id_course_instance']);
 }
 
 require_once(MODULES_TEST_PATH.'/include/management/tutorManagementTest.inc.php');
-$management = new TutorManagementTest($_GET['op'],$courseObj,$course_instanceObj,$_GET['id_student'],$_GET['id_test'],$_GET['id_history_test']);
+$management = new TutorManagementTest($_GET['op'],$courseObj,$course_instanceObj,
+		isset($_GET['id_student']) ? $_GET['id_student'] : null,
+		isset($_GET['id_test']) ? $_GET['id_test'] : null,
+		isset($_GET['id_history_test']) ? $_GET['id_history_test'] : null);
 $return = $management->render();
 $text = $return['html'];
 $title = $return['title'];
@@ -74,36 +77,36 @@ $content_dataAr = array(
     'user_type' => $user_type,
     'user_level' => $user_level,
     'visited' => '-',
-    'icon' => $icon,
+    'icon' => isset($icon) ? $icon : '',
     //'navigation_bar' => $navBar->getHtml(),
     'text' =>  $text,
     'go_back' => $go_back_link->getHtml(),
     'title' => $title,
-    'author' => $author,
+    'author' => isset($author) ? $author : '',
     'node_level' => 'livello nodo',
     'course_title' => '<a href="'.HTTP_ROOT_DIR.'/tutor/tutor.php">'.translateFN('Modulo Tutor').'</a> > ',
     //'media' => 'media',
 );
 
-$content_dataAr['notes'] = $other_node_data['notes'];
-$content_dataAr['personal'] = $other_node_data['private_notes'];
+if (isset($other_node_data['notes'])) $content_dataAr['notes'] = $other_node_data['notes'];
+if (isset($other_node_data['private_notes'])) $content_dataAr['personal'] = $other_node_data['private_notes'];
 
-if ($reg_enabled) {
+if ($reg_enabled && isset($add_bookmark)) {
     $content_dataAr['add_bookmark'] = $add_bookmark;
 } else {
     $content_dataAr['add_bookmark'] = "";
 }
 
-$content_dataAr['bookmark'] = $bookmark;
-$content_dataAr['go_bookmarks_1'] = $go_bookmarks;
-$content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+if (isset($bookmark)) $content_dataAr['bookmark'] = $bookmark;
+if (isset($go_bookmarks)) $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
+if (isset($go_bookmarks)) $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
 
 if ($com_enabled) {
-    $content_dataAr['ajax_chat_link'] = $ajax_chat_link;
+    if (isset($ajax_chat_link)) $content_dataAr['ajax_chat_link'] = $ajax_chat_link;
     $content_dataAr['messages'] = $user_messages->getHtml();
     $content_dataAr['agenda'] = $user_agenda->getHtml();
     $content_dataAr['events'] = $user_events->getHtml();
-    $content_dataAr['chat_users'] = $online_users;
+    if (isset($online_users)) $content_dataAr['chat_users'] = $online_users;
 } else {
     $content_dataAr['chat_link'] = translateFN("chat non abilitata");
     $content_dataAr['messages'] = translateFN("messaggeria non abilitata");

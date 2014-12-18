@@ -51,7 +51,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $retArray=array("status"=>"ERROR","msg"=>  translateFN("Problemi nell'aggiornamento dello stato dell'iscrizione"),"title"=>  translateFN('Notifica'));
     }
     else {
-        $retArray=array("status"=>"OK","msg"=>  translateFN("Hai aggiornato correttamente lo stato dell'iscrizione"),"text"=>$message,"title"=>  translateFN('Notifica'));
+        $retArray=array("status"=>"OK","msg"=>  translateFN("Hai aggiornato correttamente lo stato dell'iscrizione"),"title"=>  translateFN('Notifica'));
     }
 
 echo json_encode($retArray);

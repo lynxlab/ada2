@@ -44,6 +44,7 @@ include_once 'include/tutor.inc.php';
  */
 $id_course = $courseInstanceObj->id_corso;
 $start_date = AMA_DataHandler::ts_to_date($courseInstanceObj->data_inizio, "%d/%m/%Y");
+$history = '';
 if ($id_course) {
     // get object course
     $courseObj = read_course_from_DB($id_course);
@@ -62,7 +63,7 @@ if ((is_object($studentObj)) && (!AMA_dataHandler::isError($studentObj))) {
     $user_name_student = $studentObj->username;
     $student_name = $studentObj->nome . " " . $studentObj->cognome;
     $user_historyObj = $studentObj->history;
-    $user_level = $studentObj->level;
+    $user_level = $studentObj->livello;
     $user_historyObj->setCourse($id_course);
 } else {
     $errObj = new ADA_error(translateFN("Utente non trovato"), translateFN("Impossibile proseguire."));
@@ -81,7 +82,7 @@ if ($period != 'all') {
     $history .= $user_historyObj->get_historyFN();
 //     $history .= '</p>';
 }
-
+if (!isset($op)) $op = null;
 switch ($op) {
     case 'export': 
     	/**
@@ -91,7 +92,7 @@ switch ($op) {
     	 */
     	
     	$allowed_export_types = array ('xls' , 'pdf');
-    	if (!in_array($type, $allowed_export_types)) $type = 'xls';
+    	if (!isset($type) || !in_array($type, $allowed_export_types)) $type = 'xls';
     	
     	$filename = date ("Ymd")."-".$courseInstanceObj->id."-" . $studentObj->getLastName() . "-" . $studentObj->getId() ."_period_" .$period.".".$type;
 
@@ -122,30 +123,36 @@ switch ($op) {
     			$PDFdata['table'][0]['data'] = $user_historyObj->history_nodes_list_filtered_FN($period,false);
     		else 
     			$PDFdata['table'][0]['data'] = $user_historyObj->get_historyFN(false);
-    		
-    		// set table title
-    		$PDFdata['table'][0]['title'] =  $PDFdata['table'][0]['data']['caption'];
-    		unset ($PDFdata['table'][0]['data']['caption']);
-    		
-    		// add sequence number to each returned element
-    		foreach ($PDFdata['table'][0]['data'] as $num=>$row) $PDFdata['table'][0]['data'][$num]['num'] = $num+1;    		    		
-    		// prepare labels for header row and set columns order
-    		// first column is sequence number
-    		$PDFdata['table'][0]['cols'] = array ('num'=>'#');
-    		// then all the others as returned in data, we just need the keys so let's take row 0 only
-    		foreach ( $PDFdata['table'][0]['data'][0] as $key=>$val )
-    			if ($key!=='num') $PDFdata['table'][0]['cols'][$key] = translateFN($key);
 
-    		// this time returned data contains html tags, let's strip'em down
-    		foreach ( $PDFdata['table'][0]['data'] as $num=>$rowElement )
-    		{
-    			foreach ($rowElement as $key=>$cellValue)
-    				$PDFdata['table'][0]['data'][$num][$key] = strip_tags($cellValue,$allowableTags);
-    		}
+    		if (!AMA_DB::isError($PDFdata['table'][0]['data']) &&
+    				is_array($PDFdata['table'][0]['data']) && count($PDFdata['table'][0]['data'])>0) {
+    					
+	    		// set table title
+	    		$PDFdata['table'][0]['title'] =  $PDFdata['table'][0]['data']['caption'];
+	    		unset ($PDFdata['table'][0]['data']['caption']);
+	    		
+	    		// add sequence number to each returned element
+	    		foreach ($PDFdata['table'][0]['data'] as $num=>$row) $PDFdata['table'][0]['data'][$num]['num'] = $num+1;    		    		
+	    		// prepare labels for header row and set columns order
+	    		// first column is sequence number
+	    		$PDFdata['table'][0]['cols'] = array ('num'=>'#');
+	    		if (isset($PDFdata['table'][0]['data'][0]) && is_array($PDFdata['table'][0]['data'][0])) {
+		    		// then all the others as returned in data, we just need the keys so let's take row 0 only
+		    		foreach ( $PDFdata['table'][0]['data'][0] as $key=>$val )
+		    			if ($key!=='num') $PDFdata['table'][0]['cols'][$key] = translateFN($key);
+		
+		    		// this time returned data contains html tags, let's strip'em down
+		    		foreach ( $PDFdata['table'][0]['data'] as $num=>$rowElement )
+		    		{
+		    			foreach ($rowElement as $key=>$cellValue)
+		    				$PDFdata['table'][0]['data'][$num][$key] = strip_tags($cellValue,$allowableTags);
+		    		}
+	    		}
+    		} else unset($PDFdata['table'][0]);
     		
     		require_once ROOT_DIR.'/include/PdfClass.inc.php';
     		
-    		$pdf =& new PdfClass('',$PDFdata['title']);
+    		$pdf = new PdfClass('',$PDFdata['title']);
     		
     		$pdf->addHeader($PDFdata['title'], ROOT_DIR.'/layout/'.$userObj->template_family.'/img/header-logo.png' )
     		->addFooter( translateFN("Report")." ". translateFN("generato")." ". translateFN("il")." ". date ("d/m/Y")." ".
@@ -165,14 +172,16 @@ switch ($op) {
     		$pdf->ezText($PDFdata['block3'],$pdf->docFontSize,array('justification'=>'center'));
     		$pdf->ezSetDy(-20);
     		
-    		// tabels output
-    		foreach ( $PDFdata['table'] as $count=>$PDFTable )
-    		{
-    			$pdf->ezTable($PDFTable['data'], $PDFTable['cols'],
-    					$PDFTable['title'],
-    					array ('width'=>$pdf->ez['pageWidth'] - $pdf->ez['leftMargin'] - $pdf->ez['rightMargin'] ));
-    			if ($count < count($PDFdata['table'])-1  ) $pdf->ezSetDy(-20);
-    		}    		
+    		if (is_array($PDFdata['table'])) {
+	    		// tables output
+	    		foreach ( $PDFdata['table'] as $count=>$PDFTable )
+	    		{
+	    			$pdf->ezTable($PDFTable['data'], $PDFTable['cols'],
+	    					$PDFTable['title'],
+	    					array ('width'=>$pdf->ez['pageWidth'] - $pdf->ez['leftMargin'] - $pdf->ez['rightMargin'] ));
+	    			if ($count < count($PDFdata['table'])-1  ) $pdf->ezSetDy(-20);
+	    		}    		
+    		}
     		$pdf->saveAs($filename);
     	}
     	else
@@ -199,7 +208,7 @@ switch ($op) {
 }
 	$student_name = $studentObj->getFullName();
 	
-	$prehistory .= translateFN("Corsista").": ".$student_name."<br/>";
+	$prehistory  = translateFN("Corsista").": ".$student_name."<br/>";
 	$prehistory .= translateFN("Corso").": ".$course_title . ', ' . translateFN('iniziato il') . ' ' . $start_date."<br/>";
 	
 	$prehistory .= sprintf(translateFN('Cronologia dello studente %s, aggiornata al %s'), $student_name, $ymdhms);

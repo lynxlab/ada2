@@ -41,7 +41,7 @@ require_once ROOT_DIR . '/include/Forms/UserRemovalForm.inc.php';
  */
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $userId = DataValidator::is_uinteger($_POST['id_user']);
-    if($userId !== false) {
+    if($userId !== false && isset($_POST['delete']) && intval($_POST['delete'])===1) {
         $userToDeleteObj = MultiPort::findUser($userId);
         if($userToDeleteObj instanceof ADALoggableUser) {
             $userToDeleteObj->setStatus(ADA_STATUS_PRESUBSCRIBED);
@@ -52,7 +52,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = new CText(translateFN('Utente non trovato') . '(3)');
         }
     } else {
-        $data = new CText(translateFN('Utente non trovato') . '(4)');
+        $data = new CText(translateFN('Utente non disabilitato.'));
     }
 } else {
     $userId = DataValidator::is_uinteger($_GET['id_user']);
@@ -82,7 +82,7 @@ $content_dataAr = array(
     'label' => $label,
     'help' => $help,
     'data' => $data->getHtml(),
-    'module' => $module,
+    'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
 

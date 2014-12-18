@@ -208,7 +208,7 @@ switch ($mode) {
             }
         }
 
-        if ($err_msg) {
+        if (isset($err_msg)) {
             $tabled_visits_dataHa = translateFN("Nessun corso assegnato all'autore.");
         }
         else {

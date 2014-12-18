@@ -23,7 +23,7 @@ function read_node_from_DB($id_node) {
     $read_id_node = $id_node;
   }
   else {
-    $read_id_node = $_SESSION['sess_id_node'];
+    $read_id_node = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
   }
 
   if(isset($read_id_node)) {
@@ -67,7 +67,7 @@ function read_course($id_course=NULL) {
    * Return the course object in sess_courseObj
    */
   if(is_null($id_course)) {
-    $sess_courseObj = $_SESSION['sess_courseObj'];
+    $sess_courseObj = isset($_SESSION['sess_courseObj']) ? $_SESSION['sess_courseObj'] : null;
     if ($sess_courseObj instanceof Course) {
       return $sess_courseObj;
     }
@@ -78,15 +78,17 @@ function read_course($id_course=NULL) {
     );
   }
 
+  $sess_id_course = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
+  
   if (DataValidator::is_uinteger($id_course) !== FALSE) {
     $read_id_course = $id_course;
   }
   else {
-    $read_id_course = $_SESSION['sess_id_course'];
+    $read_id_course = $sess_id_course;
   }
 
-  if($read_id_course == $_SESSION['sess_id_course']) {
-    $sess_courseObj = $_SESSION['sess_courseObj'];
+  if($read_id_course == $sess_id_course) {
+    $sess_courseObj = isset($_SESSION['sess_courseObj']) ? $_SESSION['sess_courseObj'] : null;
     if($sess_courseObj instanceof Course && $sess_courseObj->getId() == $read_id_course) {
       return $_SESSION['sess_courseObj'];
     }
@@ -196,7 +198,7 @@ function read_user($id_user=NULL) {
   // FIXME: qui $id_user diventa ZERO. VEDIAMO DI CAPIRE PERCHE'.
   //$id_user = is_int($id_user) ? $id_user : 0;
 
-  if ($id_user === $_SESSION['sess_id_user']) {
+  if (isset($_SESSION['sess_id_user']) && $id_user === $_SESSION['sess_id_user']) {
     $sess_userObj = $_SESSION['sess_userObj'];
     if($sess_userObj instanceof ADAGenericUser && $sess_userObj->getId() == $id_user) {
         // QUI DEVO VEDERE QUALI SONO I TESTER ASSOCIATI A QUESTO UTENTE.
@@ -289,7 +291,7 @@ function read_user_from_DB($id_user) {
 
 function read_layout_from_DB($id_profile,$family="",$node_type="",$node_author_id="",$node_course_id="",$module_dir="") {
 
-  $self = $GLOBALS['self'];
+  $self = isset($GLOBALS['self']) ? $GLOBALS['self'] : null;
   if(empty($node_type)) {
     $read_node_type = $self;
   }

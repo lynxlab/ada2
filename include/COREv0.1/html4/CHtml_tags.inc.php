@@ -6,7 +6,7 @@
  */
 class CHtml_tags
 {
-    public function getTagForHtmlElement($element_class)
+    public static function getTagForHtmlElement($element_class)
     {
         $core_attributes  = "%id% %class% %style% %title% %datas%";
         $i18n_attributes  = "%lang% %dir%";
@@ -15,6 +15,7 @@ class CHtml_tags
         $accesskey = "%accesskey%";
         $tabindex  = "%tabindex%";
         $focusable = "%onfocus% %onblur%";
+        $focusable_element = "";
         $select_element = "%disabled% %label%";
         $alignable_element = "%align% %char% %charoff% %valign%";
         $tablecell_element = "%abbr% %axis% %header% %scope% %rowspan% %colspan%";

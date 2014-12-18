@@ -78,7 +78,7 @@ $content_dataAr = array(
     'edit_profile'=>$userObj->getEditProfilePage(),
     'help' => $help,
     'data' => $data->getHtml(),
-    'module' => $module,
+    'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
 

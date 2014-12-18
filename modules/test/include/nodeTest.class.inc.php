@@ -83,7 +83,7 @@ abstract class NodeTest
 	 */
     public function __get($name)
     {
-		if (!property_exists(get_class($this),$name)) {
+		if (!property_exists(get_class($this),$name) || !isset($this->{$name})) {
             return null;
         }
 		else return $this->{$name};
