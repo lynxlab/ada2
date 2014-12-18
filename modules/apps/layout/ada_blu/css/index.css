@@ -2,14 +2,7 @@
 
 /* THIS IS JUST THE BASIC CSS WITH THE BACK BUTTON STYLED
    USE IT TO BUILD MODULE'S OWN CSS */
-
-#back a {
-	background: url(../../../../../layout/ada_blu/img/back.png) no-repeat
-		center left;
-	display: block;
-	padding: 0 0 0 40px;
-}
-
+#container { border: none; }
 #getButton {
 	margin: 0 auto;
 }

@@ -60,7 +60,7 @@ class AMAAppsDataHandler extends AMA_Common_DataHandler {
 	 *
 	 * @return an instance of AMAAppsDataHandler
 	 */
-	static function instance() {            
+	public static function instance($dsn=null) {            
         return new AMAAppsDataHandler();
 	}
 }
