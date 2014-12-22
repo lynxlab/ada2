@@ -6797,6 +6797,29 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         return true;
     }
 
+   /*
+    * Get course type
+    *
+    * @access public
+    *
+    * @ return course_type
+    *
+    * @return an error if something goes wrong
+    *
+    */
+    public function get_course_type($id_course) {
+        $db =& $this->getConnection();
+        if (AMA_DB::isError($db)) return $db;
+        $sql = "SELECT tipo_servizio FROM modello_corso where id_corso=$id_course ";
+        $result = $db->getOne($sql);
+        if(self::isError($result)) {
+            return new AMA_Error(AMA_ERR_GET);
+        }
+        return $result;
+    }
+    
+    
+    
     /**
      * Methods accessing table `nodo`
      */
