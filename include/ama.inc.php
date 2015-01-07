@@ -1647,7 +1647,6 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         $testers_sql = 'SELECT ' .$fields.' puntatore FROM tester WHERE 1';
-
         $testers_result = $db->getAll($testers_sql, NULL, AMA_FETCH_ASSOC);
         if(self::isError($testers_result)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -11305,6 +11304,63 @@ public function get_updates_nodes($userObj, $pointer)
         }
         return $get_user_result;
     }
+    
+    /**
+   * get some log data for a given tester
+   * @return  $res_ar array
+   */
+  public function tester_log_report($tester = 'default') {
+
+      /*
+	$res_ar = array();
+        $sql = array();
+	$sql['final_users'] = "SELECT COUNT(`id_utente`), `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT;
+	$sql['sessions'] = "SELECT COUNT(`id_istanza_corso`), `data_inizio` FROM `istanza_corso` WHERE `data_inizio` > 0";
+	$sql['sessions_alt1'] = "SELECT COUNT(`id_utente_studente`), `status` FROM `iscrizioni` WHERE `status` > 1";
+	$sql['sessions_closed'] = "SELECT COUNT('id') FROM `sessione_eguidance`";
+	$sql['system_messages'] = "SELECT COUNT(`id_messaggio`), `tipo` FROM `messaggi` WHERE `tipo` = 'S'";
+	$sql['user_messages'] = "SELECT COUNT(`id_messaggio`), `tipo` FROM `messaggi` WHERE `tipo` = 'A'";
+	$sql['visits'] = "SELECT COUNT('id_history') FROM `history_nodi`";
+//	$sql['users_in_chatrooms'] = "SELECT * FROM utente_chatroom_log, utente WHERE utente_chatroom_log.id_utente = utente.id_utente AND utente_chatroom_log.azione = 'EN'";
+	$sql['chatrooms'] = "SELECT COUNT('id_chatroom') FROM `chatroom`";
+	$sql['videochatrooms'] = "SELECT COUNT(`id`) FROM `openmeetings_room`";
+       * 
+       */
+        $res_ar = array();
+        $sql = array();
+	$sql['final_users'] = "SELECT COUNT(`id_utente`), `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT; //utenti registrati
+        $sql['user_subribed'] = "SELECT COUNT(DISTINCT(`id_utente_studente`)), `status` FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED; //utenti iscritti";
+        $sql['course'] = "SELECT COUNT(`id_corso`) FROM `modello_corso`"; //tot corsi
+        
+        /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+        if(isset($_SESSION['service_level'])){
+            foreach($_SESSION['service_level'] as $key=>$value){
+                $sql['course_'.$key]="SELECT COUNT(`id_corso`) FROM `modello_corso` where `tipo_servizio`=$key"; //corsi per tipologia
+            } 
+            
+        }
+        
+	$sql['sessions_started'] = "SELECT COUNT(`id_istanza_corso`), `data_inizio` FROM `istanza_corso` WHERE `data_inizio` > 0"; //corsi iniziati
+	$sql['sessions_closed'] = "SELECT COUNT(`id_istanza_corso`), `data_inizio` FROM `istanza_corso` WHERE `data_fine` <= " . time();  //corsi chiusi
+	$sql['system_messages'] = "SELECT COUNT(`id_messaggio`), `tipo` FROM `messaggi` WHERE `tipo` = '". ADA_MSG_SIMPLE ."'"  ;
+	$sql['agenda_confirmed'] = "SELECT COUNT(`id_messaggio`), `tipo` FROM `messaggi` WHERE `tipo` = '". ADA_MSG_AGENDA . "' AND (flags & " . ADA_EVENT_CONFIRMED .")";
+	$sql['visits'] = "SELECT COUNT('id_history') FROM `history_nodi`";
+//	$sql['users_in_chatrooms'] = "SELECT * FROM utente_chatroom_log, utente WHERE utente_chatroom_log.id_utente = utente.id_utente AND utente_chatroom_log.azione = 'EN'";
+	$sql['chatrooms'] = "SELECT COUNT('id_chatroom') FROM `chatroom`";
+	$sql['videochatrooms'] = "SELECT COUNT(`id`) FROM `openmeetings_room`";
+        
+	$db =& $this->getConnection();
+	if ( AMA_DB::isError( $db ) ) return $db;
+
+        $res_ar['provider'] = $tester;
+	foreach ($sql as $type => $query){
+	    $res =  $db->getOne($query);
+            if(!AMA_DataHandler::isError($res)) {
+                $res_ar[$type] = $res;
+            }
+	}
+	return $res_ar;
+  }
 
 
     /**

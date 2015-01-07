@@ -2141,6 +2141,40 @@ class MultiPort
   	else return false;  
   }
   
+  /*
+   * Used by admin/log_report.php
+   */
+    static public function log_report($pointer=NULL) {
+        $log_dataAr = array();
+        $common_dh = $GLOBALS['common_dh'];
+        $filedArray = array('nome','ragione_sociale');
+        if(isset($pointer)){
+            $testers_list=$common_dh->get_tester_info_from_pointer($pointer);
+            $tester_name = $testers_list[1];
+            $tester=$pointer;
+        }else{
+            $testers_list = $common_dh->get_all_testers($filedArray);
+        }
+        if (!AMA_DB::isError($testers_list)) {
+            foreach ($testers_list as $testerAr) {
+                if(is_null($pointer)){
+                    $tester_name = $testerAr['nome'];
+                    $tester = $testerAr['puntatore'];
+                }
+                $tester_dsn = self::getDSN($tester);
+                if ($tester_dsn != null) {
+                    $tester_dh = AMA_DataHandler::instance($tester_dsn);
+                    $result = $tester_dh->tester_log_report($tester_name);
+                    if (!AMA_DB::isError($result)) {
+                        $result['provider']= $tester_name;
+                        $log_dataAr[$tester] = $result;
+                    }
+                }
+            }
+        }
+        return $log_dataAr;
+    } 
+  
 }
 
 ?>
