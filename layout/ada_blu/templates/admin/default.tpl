@@ -67,7 +67,7 @@
     <div id="contentcontent">
         <div class="first">
           <template_field class="template_field" name="help">help</template_field>
-					<div>
+					<div id="data">
     					 <template_field class="template_field" name="data">data</template_field>
 					</div>
        </div>
