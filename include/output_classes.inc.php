@@ -272,7 +272,7 @@ class ARE
          */
         if (!is_null($layoutObj->WIDGET_filename))
         {
-        	if (!isset($layout_dataAr['widgets']) || strlen($layout_dataAr['widgets'])<=0) $layout_dataAr['widgets'] = '';
+        	if (!isset($layout_dataAr['widgets'])) $layout_dataAr['widgets'] = '';
         	$widgets_dataAr = $html_renderer->fillin_widgetsFN($layoutObj->WIDGET_filename,$layout_dataAr['widgets']);
         	if (!ADA_Error::isError($widgets_dataAr))
         		$content_dataAr = array_merge ($content_dataAr, $widgets_dataAr);		

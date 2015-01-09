@@ -76,7 +76,8 @@ class AMA_DB
 				if (self::isError($wrapper->connection_object())) {
 					// if there were errors, $wrapper->connection_object is a PDOException
 					// so we return it
-					return $wrapper->connection_object();
+					$retval = $wrapper->connection_object(); 
+					return $retval;
 				}
 				break;
 				/**
