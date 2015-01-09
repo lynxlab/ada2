@@ -28,9 +28,9 @@ and open the template in the editor.
     color: #585857;
     font-weight: bold;
 }
-#table_log_report tbody td { height: 2.5em; border:none; vertical-align: middle; text-align: center;}
+#table_log_report tbody td { height: 2.5em; border:none; vertical-align: middle;font-size: 95%;}
 #table_log_report thead th { padding-right: 5px; border-bottom: 1px solid #999; }
-#table_log_report .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; }
+#table_log_report .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; font-size: 67%;}
 #table_log_report_previous,
 #table_log_report_next { margin:0; padding: 3px; }
 #table_log_report_length,
@@ -39,7 +39,7 @@ and open the template in the editor.
 #table_log_report_info { padding: 8px 0 0 5px; }
 #table_log_report .dontwrap { white-space: nowrap; }
 #table_log_report caption { width: 50%; margin: -25px auto 0 auto; position: relative; font-weight: bold;}
-#table_log_report tfoot th { font-weight: 100; padding: 10px 0 10px 0; text-align: center; border-top: 1px solid #999; }
+#table_log_report tfoot th { border-top: 1px solid #999;font-size: 78%; }
 /*
  * end #table_log_report jQuery dataTable
  */

@@ -38,7 +38,13 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  whoami();  // = admin!
 
 include_once 'include/admin_functions.inc.php';
+include_once ROOT_DIR.'/config/config_log_report.inc.php';
 
+$label = translateFN("Log report");
+$data = CDOMElement::create('div');
+
+$thead_data=array();
+$testersData_Ar=array();
 $log_dataAr = array();
 
 if($userObj->getType()==AMA_TYPE_ADMIN){
@@ -47,52 +53,92 @@ if($userObj->getType()==AMA_TYPE_ADMIN){
     $log_dataAr=Multiport::log_report($userObj->getDefaultTester());
 }
 
-$label = translateFN("Log report");
-$data = CDOMElement::create('div');
-
-
-$head_provider = translateFN("provider");
-$head_desc_user = translateFN("utenti registrati");
-$head_desc_course =translateFN("totale corsi");
-$head_desc_sessions = translateFN("edizioni iniziate");
-$head_desc_sessions_assigned = translateFN("utenti iscritti");
-$head_desc_sessions_closed = translateFN("edizioni chiuse");
-$head_desc_messages = translateFN("messaggi");
-$head_desc_events = translateFN("appuntamenti");
-$head_desc_visits = translateFN("pagine visitate");
-$head_desc_chatrooms = translateFN("chat");
-$head_desc_video_chatrooms = translateFN("video chat");
-
-
-$thead_data=array($head_desc_sessions,$head_desc_sessions_closed,$head_desc_messages,$head_desc_events,$head_desc_visits,$head_desc_chatrooms,$head_desc_video_chatrooms);
-
-/* if isset $_SESSION['service_level'] it means that the istallation supports course type */
-if(isset($_SESSION['service_level'])){
+if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) ){
+    $service_position=0;
     $arrayService=array();
-    foreach($_SESSION['service_level'] as $key=>$value){
-        array_push($arrayService, $value);
+    foreach($GLOBALS['LogReport_Array'] as $key=>$value){
+        if(strpos($key,'service_level')===0){
+            if($value['show']==true){
+                /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+                if(isset($_SESSION['service_level'])){
+                    foreach($_SESSION['service_level'] as $key_service=>$value){
+                        $arrayService['course_'.$key_service]=array('label'=>$value,'show'=>true);
+                    }
+                }
+            }
+            unset($GLOBALS['LogReport_Array'][$key]);
+            break;
+        }else{
+            $service_position++;
+        }
     }
-    $thead_data=array_merge($arrayService,$thead_data);
+    if(!empty($arrayService)){
+       $GLOBALS['LogReport_Array']= array_slice($GLOBALS['LogReport_Array'], 0, $service_position,true)+ $arrayService+array_slice($GLOBALS['LogReport_Array'], $service_position,null,true);
+    }
 }
 
-array_unshift($thead_data,$head_provider,$head_desc_user,$head_desc_sessions_assigned,$head_desc_course);
-if($userObj->getType()==AMA_TYPE_ADMIN){
-    $totalAr['provider'] = translateFN('totale'); 
-    foreach ($log_dataAr as $singleProviderAr) {
-        foreach ($singleProviderAr as $key => $value) {
-            if (is_numeric($singleProviderAr[$key])) {
-                $totalAr[$key] +=  $singleProviderAr[$key];
+
+if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) && is_array($log_dataAr) && count($log_dataAr)){ 
+    foreach($GLOBALS['LogReport_Array'] as $key=>$tableInfo){
+        if($tableInfo['show']==true){
+            if(!isset($thead_data[$key])){
+                $thead_data[$key]=translateFN($tableInfo['label']);
+            }
+            foreach($log_dataAr as $providerName=>$providerData){
+                if(isset($providerData['user_subscribed']) && intval($providerData['user_subscribed'])>0){
+                    $totStudentSubscribed=intval($providerData['user_subscribed']);
+                }else{
+                    $totStudentSubscribed=0;
+                }
+                if(isset($providerData[$key])){
+                    $testersData_Ar[$providerName][$key]=$providerData[$key];
+                }else{
+                    if(strpos($key,'student_CompletedStatus_sessStarted')===0){
+                        if(intval($providerData['student_CompletedStatus_sessStarted'])>0 && $totStudentSubscribed>0){
+                            $StatusCompleted_SessStared=intval($providerData['student_CompletedStatus_sessStarted']);
+                            $testersData_Ar[$providerName][$key]=number_format(($StatusCompleted_SessStared*100)/$totStudentSubscribed,2);
+                        }else{
+                            $testersData_Ar[$providerName][$key]=0;
+                        }
+                    }elseif(strpos($key,'student_CompletedStatus_sessionEnd')===0){
+                        if(intval($providerData['student_CompletedStatus_sessionEnd'])>0 && $totStudentSubscribed>0){
+                            $StatusCompleted_SessEnd=intval($providerData['student_CompletedStatus_sessionEnd']);
+                            $testersData_Ar[$providerName][$key]=number_format(($StatusCompleted_SessEnd*100)/$totStudentSubscribed,2);
+                        }else{
+                            $testersData_Ar[$providerName][$key]=0;
+                        }
+                    }elseif(strpos($key,'tot_student_CompletedStatus')===0){
+                        if(intval($providerData['tot_student_CompletedStatus'])>0 && $totStudentSubscribed>0){
+                            $tot_student_CompletedStatus=intval($providerData['tot_student_CompletedStatus']);
+                            $testersData_Ar[$providerName][$key]=number_format(($tot_student_CompletedStatus*100)/$totStudentSubscribed,2);
+                        }else{
+                            $testersData_Ar[$providerName][$key]=0;
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+
+//if($userObj->getType()==AMA_TYPE_ADMIN){
+//    $totalAr['provider'] = translateFN('totale'); 
+//    foreach ($testersData_Ar as $singleProviderAr) {
+//        foreach ($singleProviderAr as $key => $value) {
+//            if (is_numeric($singleProviderAr[$key])) {
+//                $totalAr[$key] +=  $singleProviderAr[$key];
+//            }
+//        }
+//    }
+//}
 if($userObj->tipo==AMA_TYPE_ADMIN){
     $caption=translateFN('Riepilogo attività dei provider');
 }
 elseif($userObj->tipo==AMA_TYPE_SWITCHER){
     $caption=translateFN('Riepilogo attività del provider');
 }
-$table = BaseHtmlLib::tableElement('id:table_log_report',$thead_data, $log_dataAr,$totalAr,$caption);  
+$table = BaseHtmlLib::tableElement('id:table_log_report',$thead_data, $testersData_Ar);  
   
 $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
