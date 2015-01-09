@@ -11319,10 +11319,10 @@ public function get_updates_nodes($userObj, $pointer)
                 if($value['show']==true){
                     switch($key){
                         case 'final_users':
-                            $sql[$key]="SELECT COUNT(`id_utente`), `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT;
+                            $sql[$key]="SELECT COUNT(`id_utente`) `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT;
                             break;
                         case 'user_subscribed':
-                            $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`)),  FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED;
+                            $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`))  FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED;
                             break;
                         case 'course':
                             $sql[$key]="SELECT COUNT(`id_corso`) FROM `modello_corso`"; 

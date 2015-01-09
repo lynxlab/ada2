@@ -122,23 +122,23 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
 }
 
 
-//if($userObj->getType()==AMA_TYPE_ADMIN){
-//    $totalAr['provider'] = translateFN('totale'); 
-//    foreach ($testersData_Ar as $singleProviderAr) {
-//        foreach ($singleProviderAr as $key => $value) {
-//            if (is_numeric($singleProviderAr[$key])) {
-//                $totalAr[$key] +=  $singleProviderAr[$key];
-//            }
-//        }
-//    }
-//}
+if($userObj->getType()==AMA_TYPE_ADMIN){
+    $totalAr['provider'] = translateFN('totale'); 
+    foreach ($testersData_Ar as $singleProviderAr) {
+        foreach ($singleProviderAr as $key => $value) {
+            if (is_numeric($singleProviderAr[$key])) {
+                $totalAr[$key] +=  $singleProviderAr[$key];
+            }
+        }
+    }
+}
 if($userObj->tipo==AMA_TYPE_ADMIN){
     $caption=translateFN('Riepilogo attività dei provider');
 }
 elseif($userObj->tipo==AMA_TYPE_SWITCHER){
     $caption=translateFN('Riepilogo attività del provider');
 }
-$table = BaseHtmlLib::tableElement('id:table_log_report',$thead_data, $testersData_Ar);  
+$table = BaseHtmlLib::tableElement('id:table_log_report',$thead_data, $testersData_Ar,$totalAr,$caption);  
   
 $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
