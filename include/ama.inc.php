@@ -122,7 +122,7 @@ abstract class Abstract_AMA_DataHandler {
 //            ADALogger::log_db('Creating a new database connection '. $this->dsn);
             $db =& AMA_DB::connect($this->dsn);
             if(AMA_DB::isError($db)) {
-            	$reval = new AMA_Error(AMA_ERR_DB_CONNECTION); 
+            	$retval = new AMA_Error(AMA_ERR_DB_CONNECTION); 
                 return $retval;
             }
             $this->db =& $db;
