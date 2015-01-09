@@ -58,7 +58,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 require_once ROOT_DIR.'/widgets/ajax/include/simplepie.inc.php';
 
 if (!isset($id)) die ('na facebook feed to load');
-if (!isset($format) && !in_array($format, array('atom10','rss20'))) $format = "atom10";
+if (!isset($format)) $format = "atom10";
+else if (!in_array($format, array('atom10','rss20'))) $format = "atom10";
 if (!isset($showDescription) || !is_numeric($showDescription)) $showDescription=0;
 if (!isset($count) || !is_numeric($count)) $count=20;
 
