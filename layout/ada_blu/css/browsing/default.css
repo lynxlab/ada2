@@ -198,8 +198,8 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 /* .topleft { background: url(../../img/topleft.png) no-repeat top left; } */
 .topleftc { background: url(../../img/topleftc.png) no-repeat top left; }
 /*.topright { background: url(../../img/topright.png) no-repeat top right; }*/
-.bottomleft { background: url(../../img/middle.png) no-repeat bottom left; }
-.bottomright { background: url(../../img/middle.png) no-repeat bottom right; }
+/* .bottomleft { background: url(../../img/middle.png) no-repeat bottom left; } */
+/* .bottomright { background: url(../../img/middle.png) no-repeat bottom right; } */
 
 .contentlabel { padding: 5px; }
 

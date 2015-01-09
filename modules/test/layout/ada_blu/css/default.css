@@ -199,8 +199,8 @@ background: url(../../../../../layout/ada_blu/img/back.png) no-repeat center lef
 /* .topleft { background: url(../../../../../layout/ada_blu/img/topleft.png) no-repeat top left; } */
 .topleftc { background: url(../../../../../layout/ada_blu/img/topleftc.png) no-repeat top left; }
 /*.topright { background: url(../../../../../layout/ada_blu/img/topright.png) no-repeat top right; }*/
-.bottomleft { background: url(../../../../../layout/ada_blu/img/middle.png) no-repeat bottom left; }
-.bottomright { background: url(../../../../../layout/ada_blu/img/middle.png) no-repeat bottom right; }
+/* .bottomleft { background: url(../../../../../layout/ada_blu/img/middle.png) no-repeat bottom left; } */
+/* .bottomright { background: url(../../../../../layout/ada_blu/img/middle.png) no-repeat bottom right; } */
 
 .contentlabel { padding: 5px; }
 

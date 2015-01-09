@@ -199,8 +199,8 @@ background: url(../../../../../layout/clear/img/back.png) no-repeat center left;
 /* .topleft { background: url(../../../../../layout/clear/img/topleft.png) no-repeat top left; } */
 .topleftc { background: url(../../../../../layout/clear/img/topleftc.png) no-repeat top left; }
 /*.topright { background: url(../../../../../layout/clear/img/topright.png) no-repeat top right; }*/
-.bottomleft { background: url(../../../../../layout/clear/img/middle.png) no-repeat bottom left; }
-.bottomright { background: url(../../../../../layout/clear/img/middle.png) no-repeat bottom right; }
+/* .bottomleft { background: url(../../../../../layout/clear/img/middle.png) no-repeat bottom left; } */
+/* .bottomright { background: url(../../../../../layout/clear/img/middle.png) no-repeat bottom right; } */
 
 .contentlabel { padding: 5px; }
 
