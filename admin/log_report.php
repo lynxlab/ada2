@@ -150,8 +150,9 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
 
 
 if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) && is_array($log_dataAr) && count($log_dataAr)){ 
+    $checkAr=reset($log_dataAr);
     foreach($GLOBALS['LogReport_Array'] as $key=>$tableInfo){
-        if($tableInfo['show']==true){
+        if($tableInfo['show']==true && array_key_exists($key, $checkAr)){
             if(!isset($thead_data[$key])){
                 if(strpos($key,'student_CompletedStatus_sessStarted_Rate')===0){
                     $title=  translateFN('Percentuale di completamento delle classi in corso');
@@ -185,7 +186,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                 }else{
                     $totStudentSubscribed=0;
                 }
-                if(isset($providerData[$key])){
+                if((isset($providerData[$key]) && is_numeric($providerData[$key]) && intval($providerData[$key])>=0)||(isset($providerData[$key]) && !is_numeric($providerData[$key]))){
                     $testersData_Ar[$providerName][$key]=$providerData[$key];
                 }else{
                     if(strpos($key,'student_CompletedStatus_sessStarted')===0){

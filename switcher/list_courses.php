@@ -41,11 +41,13 @@ include_once 'include/switcher_functions.inc.php';
 /*
  * YOUR CODE HERE
  */
-$coursesAr = $dh->get_courses_list(array('nome', 'titolo', 'descrizione'));
+$coursesAr = $dh->get_courses_list(array('nome', 'titolo', 'descrizione','tipo_servizio'));
 if(is_array($coursesAr) && count($coursesAr) > 0) {
     $thead_data = array(
+       null,
        translateFN('id'),
        translateFN('codice'),
+       translateFN('tipo'),
        translateFN('titolo'),
        translateFN('descrizione'),
        translateFN('azioni')
@@ -57,28 +59,31 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
     $instances_img = CDOMElement::create('img', 'src:img/student.png,alt:view');
 
     foreach($coursesAr as $course) {
+        $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/open.png');
+        $imgDetails->setAttribute('class', 'imgDetls tooltip');
+        $imgDetails->setAttribute('title', translateFN('visualizza/nasconde la descrizione del corso'));
+                
         $courseId = $course[0];
-
         $edit_link = BaseHtmlLib::link("edit_course.php?id_course=$courseId", $edit_img->getHtml());
         $view_link = BaseHtmlLib::link("view_course.php?id_course=$courseId", $view_img->getHtml());
         $instances_link = BaseHtmlLib::link("list_instances.php?id_course=$courseId", $instances_img->getHtml());
-		if (MODULES_TEST) {
-			$survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP.'/switcher.php?id_course='.$courseId, translateFN('Sondaggi'));
-		}
+        if (MODULES_TEST) {
+            $survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP.'/switcher.php?id_course='.$courseId, translateFN('Sondaggi'));
+        }
 
         $add_instance_link = BaseHtmlLib::link("add_instance.php?id_course=$courseId", translateFN('Add instance'));
         $delete_course_link = BaseHtmlLib::link("delete_course.php?id_course=$courseId", translateFN('Delete course'));
 
-		$actions = array($edit_link,$view_link,$instances_link);
-		if (MODULES_TEST) {
-			$actions[] = $survey_link;
-		}
-		$actions = array_merge($actions,array($add_instance_link,$delete_course_link));
+        $actions = array($edit_link,$view_link,$instances_link);
+        if (MODULES_TEST) {
+            $actions[] = $survey_link;
+        }
+        $actions = array_merge($actions,array($add_instance_link,$delete_course_link));
         $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actions);
-
-        $tbody_data[] = array($courseId, $course[1],  $course[2], $course[3], $actions);
+        
+        $tbody_data[] = array($imgDetails,$courseId, $course[1],$course[4],  $course[2], $course[3], $actions);
     }
-    $data = BaseHtmlLib::tableElement('', $thead_data, $tbody_data);
+    $data = BaseHtmlLib::tableElement('id:table_list_courses', $thead_data, $tbody_data);
 } else {
     $data = new CText(translateFN('Non sono stati trovati corsi'));
 }
@@ -99,4 +104,19 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml()
 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+$layout_dataAr['JS_filename'] = array(
+                JQUERY,
+                JQUERY_UI,
+                JQUERY_DATATABLE,
+                JQUERY_DATATABLE_DATE,
+                JQUERY_NO_CONFLICT
+        );
+
+$layout_dataAr['CSS_filename']= array(
+                JQUERY_UI_CSS,        
+                JQUERY_DATATABLE_CSS
+        );
+
+$render = null;
+$options['onload_func'] = 'initDoc()';
+ARE::render($layout_dataAr, $content_dataAr,$render,$options);

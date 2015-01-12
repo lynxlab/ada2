@@ -11370,6 +11370,11 @@ public function get_updates_nodes($userObj, $pointer)
                         case 'videochatrooms':
                             $sql[$key]="SELECT COUNT(`id`) FROM `openmeetings_room`";
                             break;
+                        case 'student_CompletedStatus_sessStarted_Rate':
+                        case 'student_CompletedStatus_sessionEnd_Rate':
+                        case 'tot_student_CompletedStatus_Rate':
+                        $sql[$key]="SELECT -1";
+                            break;
                     }
                     
                 }

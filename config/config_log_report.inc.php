@@ -27,6 +27,7 @@ $GLOBALS['LogReport_Array'] = array (
     'system_messages'=>array('label'=>'messaggi' ,'show'=>true),
     'chatrooms'=>array('label'=>'chat' ,'show'=>true),
     'videochatrooms'=>array('label'=>'video chat' ,'show'=>true)
+    
 );
 
 
