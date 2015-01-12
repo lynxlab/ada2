@@ -20,15 +20,13 @@ $GLOBALS['LogReport_Array'] = array (
     'sessions_closed'=>array('label'=>'ed. chiuse' ,'show'=>true),
     'student_CompletedStatus_sessionEnd'=>array('label'=>'std. status complt.' ,'show'=>true),
     'student_CompletedStatus_sessionEnd_Rate'=>array('label'=>'% complt.' ,'show'=>true),
+    'tot_Session'=>array('label'=>'tot. edizioni' ,'show'=>true),
     'tot_student_CompletedStatus'=>array('label'=>'tot. std. status complt.' ,'show'=>true),
     'tot_student_CompletedStatus_Rate'=>array('label'=>'tot. %' ,'show'=>true),
-    'tot_Session'=>array('label'=>'tot. edizioni' ,'show'=>true),
     'visits'=>array('label'=>'pagine visitate' ,'show'=>true),
     'system_messages'=>array('label'=>'messaggi' ,'show'=>true),
     'chatrooms'=>array('label'=>'chat' ,'show'=>true),
     'videochatrooms'=>array('label'=>'video chat' ,'show'=>true)
-   
-    
 );
 
 

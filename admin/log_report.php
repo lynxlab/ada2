@@ -53,6 +53,77 @@ if($userObj->getType()==AMA_TYPE_ADMIN){
     $log_dataAr=Multiport::log_report($userObj->getDefaultTester());
 }
 
+//$head_provider = translateFN("provider");
+//$head_desc_user = translateFN("utenti registrati");
+//$head_desc_sessions_assigned = translateFN("utenti presi in carico");
+//$head_tot_course = translateFN("tot corsi");
+//$head_desc_sessions = translateFN("sessioni iniziate");
+//$head_student_CompletedStatus_sessStarted = translateFN("std. status complt");
+//$head_student_CompletedStatus_sessStarted_Rate = translateFN("% complt.");
+//$head_desc_sessions_closed = translateFN("sessioni chiuse");
+//$head_student_CompletedStatus_sessionEnd = translateFN("std. status complt.");
+//$head_student_CompletedStatus_sessionEnd_Rate = translateFN("% complt.");
+//$head_tot_student_CompletedStatus = translateFN("tot. std. status complt.");
+//$head_tot_student_CompletedStatus_Rate = translateFN("tot. %");
+//$head_tot_session = translateFN("tot. edizioni");
+//$head_desc_messages = translateFN("messaggi");
+//$head_desc_visits = translateFN("pagine visitate");
+//$head_desc_chatrooms = translateFN("chat");
+//$head_desc_video_chatrooms = translateFN("video chat");
+//
+//$thead_data=array($head_desc_sessions,$head_student_CompletedStatus_sessStarted,$head_student_CompletedStatus_sessStarted_Rate,$head_desc_sessions_closed,$head_student_CompletedStatus_sessionEnd,$head_student_CompletedStatus_sessionEnd_Rate,
+//    $head_tot_student_CompletedStatus,$head_tot_student_CompletedStatus_Rate,$head_tot_session,$head_desc_messages,$head_desc_visits,$head_desc_chatrooms,$head_desc_video_chatrooms);
+//
+///* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+//if(isset($_SESSION['service_level'])){
+//    $arrayService=array($head_tot_course);
+//    foreach($_SESSION['service_level'] as $key=>$value){
+//        array_push($arrayService, $value);
+//    }
+//    $thead_data=array_merge($arrayService,$thead_data);
+//}
+//
+//array_unshift($thead_data,$head_provider,$head_desc_user,$head_desc_sessions_assigned);
+//
+//
+//$testersData_Ar = array();
+//
+//foreach ($log_dataAr as $singleProviderAr) {
+//    $testerName=$singleProviderAr['provider'];
+//    foreach($singleProviderAr as $key=>$value){
+//    $testersData_Ar[$testerName][$key]=$value;    
+//    if(isset($singleProviderAr['user_subscribed']) && intval($singleProviderAr['user_subscribed'])>0){
+//        $totStudentSubscribed=intval($providerData['user_subscribed']);
+//        }else{
+//            $totStudentSubscribed=0;
+//        }
+//    if(strpos($key,'student_CompletedStatus_sessStarted')===0){
+//    if((!isset($testersData_Ar[$testerName]['student_CompletedStatus_sessStarted_Rate'])) && intval($singleProviderAr['student_CompletedStatus_sessStarted'])>0 && $totStudentSubscribed>0 ){
+//        $StatusCompleted_SessStared=intval($providerData['student_CompletedStatus_sessStarted']);
+//        $testersData_Ar[$testerName]['student_CompletedStatus_sessStarted_Rate']=number_format(($StatusCompleted_SessStared*100)/$totStudentSubscribed,2);
+//    }else{
+//        $testersData_Ar[$testerName]['student_CompletedStatus_sessStarted_Rate']=0;
+//    }
+//    }
+//    if(strpos($key,'student_CompletedStatus_sessionEnd')===0){
+//    if((!isset($testersData_Ar[$testerName]['student_CompletedStatus_sessionEnd_Rate'])) && intval($singleProviderAr['student_CompletedStatus_sessionEnd'])>0 && $totStudentSubscribed>0){
+//        $StatusCompleted_SessEnd=intval($providerData['student_CompletedStatus_sessionEnd']);
+//        $testersData_Ar[$testerName]['student_CompletedStatus_sessionEnd_Rate']=number_format(($StatusCompleted_SessEnd*100)/$totStudentSubscribed,2);    
+//    }else{
+//        $testersData_Ar[$testerName]['student_CompletedStatus_sessionEnd_Rate']=0;
+//    }
+//    }
+//    if(strpos($key,'tot_student_CompletedStatus')===0){
+//    if( (!isset($testersData_Ar[$testerName]['tot_student_CompletedStatus_Rate'])) && intval($providerData['tot_student_CompletedStatus'])>0 && $totStudentSubscribed>0){
+//        $tot_student_CompletedStatus=intval($providerData['tot_student_CompletedStatus']);
+//        $testersData_Ar[$testerName]['tot_student_CompletedStatus_Rate']=number_format(($tot_student_CompletedStatus*100)/$totStudentSubscribed,2);
+//    }else{
+//        $testersData_Ar[$testerName]['tot_student_CompletedStatus_Rate']=0;
+//    }
+//    }
+//    }
+//}
+
 if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) ){
     $service_position=0;
     $arrayService=array();
@@ -82,7 +153,31 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
     foreach($GLOBALS['LogReport_Array'] as $key=>$tableInfo){
         if($tableInfo['show']==true){
             if(!isset($thead_data[$key])){
-                $thead_data[$key]=translateFN($tableInfo['label']);
+                if(strpos($key,'student_CompletedStatus_sessStarted_Rate')===0){
+                    $title=  translateFN('Percentuale di completamento delle classi in corso');
+                    $span_label = CDOMElement::create('span');
+                    $span_label->setAttribute('title', $title);
+                    $span_label->setAttribute('class', 'Rate tooltip');
+                    $span_label->addChild(new CText($tableInfo['label']));
+                    $thead_data[$key]=$span_label->getHtml();
+                }elseif(strpos($key,'student_CompletedStatus_sessionEnd_Rate')===0){
+                    $title=  translateFN('Percentuale di completamento delle classi terminate');
+                    $span_label = CDOMElement::create('span');
+                    $span_label->setAttribute('title', $title);
+                    $span_label->setAttribute('class', 'Rate tooltip');
+                    $span_label->addChild(new CText($tableInfo['label']));
+                    $thead_data[$key]=$span_label->getHtml();
+                }elseif(strpos($key,'tot_student_CompletedStatus_Rate')===0){
+                    $title=  translateFN('Percentuale di completamento su tutte le classi');
+                    $span_label = CDOMElement::create('span');
+                    $span_label->setAttribute('title', $title);
+                    $span_label->setAttribute('class', 'Rate tooltip');
+                    $span_label->addChild(new CText($tableInfo['label']));
+                    $thead_data[$key]=$span_label->getHtml();
+                }
+                else{
+                    $thead_data[$key]=translateFN($tableInfo['label']);
+                }
             }
             foreach($log_dataAr as $providerName=>$providerData){
                 if(isset($providerData['user_subscribed']) && intval($providerData['user_subscribed'])>0){
@@ -164,6 +259,7 @@ $content_dataAr = array(
 
 $layout_dataAr['JS_filename'] = array(
                 JQUERY,
+                JQUERY_UI,
                 JQUERY_DATATABLE,
                 JQUERY_DATATABLE_DATE,
                 JQUERY_NO_CONFLICT

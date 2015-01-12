@@ -7,6 +7,9 @@ and open the template in the editor.
     Created on : 30-dic-2014, 15.19.31
     Author     : sara
 */
+
+@import url("../switcher/tooltips.css");
+
 #data{display:none;}
 
 .fg-toolbar.ui-widget-header {
@@ -16,6 +19,12 @@ and open the template in the editor.
     font-weight: bold;
     height: 30px;
 }
+.tooltip {
+   background: transparent;
+   border-color: transparent;
+   cursor: default;
+ }
+
 
 /**
  * DataTables styles

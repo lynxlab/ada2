@@ -7,6 +7,7 @@
 function initDoc(isAdmin)
 {
     createDataTable(isAdmin===1);
+    initToolTips();
     displayDiv();
 }
 function createDataTable(showElements)
@@ -24,6 +25,27 @@ function createDataTable(showElements)
         }
     });
     
+}
+function initToolTips(){
+    $j('.tooltip').tooltip({
+        show : {
+                effect : "slideDown",
+                delay : 300,
+                duration : 100
+        },
+        hide : {
+                effect : "slideUp",
+                delay : 100,
+                duration : 100
+        },
+        position : {
+                my : "center bottom-5",
+                at : "center top"
+        },
+        content: function() {
+        return $j(this).attr('title');
+        }
+   });
 }
 function displayDiv(){
     $j('#data').animate({"height": "toggle"});
