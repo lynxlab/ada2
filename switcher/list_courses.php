@@ -41,6 +41,7 @@ include_once 'include/switcher_functions.inc.php';
 /*
  * YOUR CODE HERE
  */
+
 $coursesAr = $dh->get_courses_list(array('nome', 'titolo', 'descrizione','tipo_servizio'));
 if(is_array($coursesAr) && count($coursesAr) > 0) {
     $thead_data = array(
@@ -65,8 +66,35 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
                 
         $courseId = $course[0];
         $edit_link = BaseHtmlLib::link("edit_course.php?id_course=$courseId", $edit_img->getHtml());
+        
+        if(isset($edit_link)){
+            $title=translateFN('Clicca per modificare il corso');
+            $div_edit = CDOMElement::create('div');
+            $div_edit->setAttribute('title', $title);
+            $div_edit->setAttribute('class', 'tooltip');
+            $div_edit->addChild(($edit_link));
+        }
+        
         $view_link = BaseHtmlLib::link("view_course.php?id_course=$courseId", $view_img->getHtml());
+        
+        if(isset($view_link)){
+            $title=translateFN('Clicca per visualizzare il corso');
+            $div_view = CDOMElement::create('div');
+            $div_view->setAttribute('title', $title);
+            $div_view->setAttribute('class', 'tooltip');
+            $div_view->addChild(($view_link));
+        }
+        
         $instances_link = BaseHtmlLib::link("list_instances.php?id_course=$courseId", $instances_img->getHtml());
+        
+        if(isset($instances_link)){
+            $title=translateFN('Gestione edizioni');
+            $div_instances = CDOMElement::create('div');
+            $div_instances->setAttribute('title', $title);
+            $div_instances->setAttribute('class', 'tooltip');
+            $div_instances->addChild(($instances_link));
+        }
+        
         if (MODULES_TEST) {
             $survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP.'/switcher.php?id_course='.$courseId, translateFN('Sondaggi'));
         }
@@ -74,14 +102,22 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         $add_instance_link = BaseHtmlLib::link("add_instance.php?id_course=$courseId", translateFN('Add instance'));
         $delete_course_link = BaseHtmlLib::link("delete_course.php?id_course=$courseId", translateFN('Delete course'));
 
-        $actions = array($edit_link,$view_link,$instances_link);
+        $actions = array($div_edit,$div_view,$div_instances);
         if (MODULES_TEST) {
             $actions[] = $survey_link;
         }
+        
         $actions = array_merge($actions,array($add_instance_link,$delete_course_link));
         $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actions);
         
-        $tbody_data[] = array($imgDetails,$courseId, $course[1],$course[4],  $course[2], $course[3], $actions);
+         /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+        if(isset($_SESSION['service_level'])){
+            $servicelevel=$_SESSION['service_level'][$course[4]];
+        }
+        if(!isset($servicelevel)){$servicelevel='NP';}
+        
+        
+        $tbody_data[] = array($imgDetails,$courseId, $course[1],$servicelevel,  $course[2], $course[3], $actions);
     }
     $data = BaseHtmlLib::tableElement('id:table_list_courses', $thead_data, $tbody_data);
 } else {
@@ -117,6 +153,12 @@ $layout_dataAr['CSS_filename']= array(
                 JQUERY_DATATABLE_CSS
         );
 
+$filter=null;
+if(isset($_GET['filter']) && isset($_SESSION['service_level'])){
+    $filter=$_SESSION['service_level'][$_GET['filter']];
+}
 $render = null;
-$options['onload_func'] = 'initDoc()';
+$filter="'".$filter."'";
+$options['onload_func'] = 'initDoc('.$filter.')';
+
 ARE::render($layout_dataAr, $content_dataAr,$render,$options);

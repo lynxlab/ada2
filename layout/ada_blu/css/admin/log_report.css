@@ -24,8 +24,9 @@ and open the template in the editor.
    border-color: transparent;
    cursor: default;
  }
-
-
+a,li{
+    background: transparent !important;
+}
 /**
  * DataTables styles
 */ 

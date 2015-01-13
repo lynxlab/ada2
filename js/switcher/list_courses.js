@@ -4,19 +4,17 @@
  * and open the template in the editor.
  */
 
-function initDoc()
+function initDoc(filter)
 {
-    createDataTable();
+    createDataTable(filter);
     initToolTips();
     displayDiv();
 }
-function createDataTable()
+function createDataTable(filter)
 {
     var lastCol = $j('#table_list_courses thead th').length-1;
     var descriptionCol=lastCol-1;
     var titleCol=lastCol-2;
-    
-    
     oTable = $j('#table_list_courses').dataTable({
         "bJQueryUI": true,
         "bFilter": true,
@@ -30,19 +28,19 @@ function createDataTable()
             "bSortable":false
         },
         {
-            "aTargets": [2],
-            "bSortable":false
-        },
-        {
             "aTargets": [descriptionCol],
             "bSortable":false,
             "bVisible":false
         },
         {
             "aTargets": [lastCol],
-            "bSortable":false
+            "bSortable":false,
+            "sClass": "action_Column"
         }
         ],
+        "oSearch" : { 
+            "sSearch" : ('undefined' !== typeof filter && filter.length>0) ? filter : ''
+	},
         "oLanguage": 
         {
            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
@@ -59,7 +57,7 @@ function createDataTable()
         }
     });
     
-    $j('#table_list_courses tbody  td img').on('click', function () {
+    $j('.imgDetls').on('click', function () {
     var nTr = $j(this).parents('tr')[0];    
     if ( oTable.fnIsOpen(nTr) )
     {

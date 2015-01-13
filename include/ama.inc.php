@@ -11382,29 +11382,7 @@ public function get_updates_nodes($userObj, $pointer)
         }
         
         
-        
-//$sql['final_users'] = "SELECT COUNT(`id_utente`), `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT; //utenti registrati
-//$sql['user_subscribed'] = "SELECT COUNT(DISTINCT(`id_utente_studente`)), `status` FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED; //utenti iscritti";
-//$sql['course'] = "SELECT COUNT(`id_corso`) FROM `modello_corso`"; //tot corsi
-//
-// /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
-//                            if(isset($_SESSION['service_level'])){
-//                                foreach($_SESSION['service_level'] as $key=>$value){
-//                                    $sql['course_'.$key]="SELECT COUNT(`id_corso`) FROM `modello_corso` where `tipo_servizio`=$key"; 
-//                                } 
-//
-//                            }
-//
-//$sql['sessions_started'] = "SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` >". time(); //corsi iniziati
-//$sql['student_CompletedStatus_sessStarted'] = "SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=5 AND `id_istanza_corso` in (SELECT `id_istanza_corso`FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` > ". time().')';
-//$sql['sessions_closed'] = "SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_fine` <= " . time();  //corsi chiusi
-//$sql['student_CompletedStatus_sessionEnd']="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=5 AND `id_istanza_corso` in (SELECT `id_istanza_corso`FROM `istanza_corso` WHERE `data_fine` <= " . time().')';
-//$sql['tot_student_CompletedStatus']="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=5";
-//$sql['tot_Session']="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso`";
-//$sql['visits'] = "SELECT COUNT('id_history') FROM `history_nodi`";
-//$sql['system_messages'] = "SELECT COUNT(`id_messaggio`), `tipo` FROM `messaggi` WHERE `tipo` = '". ADA_MSG_SIMPLE ."'"  ;
-//$sql['chatrooms'] = "SELECT COUNT('id_chatroom') FROM `chatroom`";
-//$sql['videochatrooms'] = "SELECT COUNT(`id`) FROM `openmeetings_room`";
+
 
 
 $db =& $this->getConnection();
