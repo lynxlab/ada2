@@ -26,8 +26,12 @@ and open the template in the editor.
  }
 .action_Column{width: 32%;}
 
-a,li{
+#table_list_courses a,li{
     background: transparent !important;
+    text-decoration: none;
+}
+#table_list_courses a:hover{
+    color:red;
 }
 .first ul li{
     border-bottom: transparent;

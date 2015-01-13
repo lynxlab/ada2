@@ -109,9 +109,9 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         
         $actions = array_merge($actions,array($add_instance_link,$delete_course_link));
         $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actions);
-        
+        $servicelevel=null;
          /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
-        if(isset($_SESSION['service_level'])){
+        if(isset($_SESSION['service_level'][$course[4]])){
             $servicelevel=$_SESSION['service_level'][$course[4]];
         }
         if(!isset($servicelevel)){$servicelevel='NP';}
@@ -124,7 +124,13 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
     $data = new CText(translateFN('Non sono stati trovati corsi'));
 }
 
-$label = translateFN('Lista corsi');
+$filter=null;
+if(isset($_GET['filter']) && isset($_SESSION['service_level'])){
+    $filter=$_SESSION['service_level'][$_GET['filter']];
+    $label = translateFN('Lista corsi di tipo "').$filter.'"';
+}
+else{ $label = translateFN('Lista corsi'); }
+
 $help = translateFN('Da qui il provider admin può vedere la lista dei corsi presenti sul provider');
 $Li_edit_home_page="";
    
@@ -153,10 +159,6 @@ $layout_dataAr['CSS_filename']= array(
                 JQUERY_DATATABLE_CSS
         );
 
-$filter=null;
-if(isset($_GET['filter']) && isset($_SESSION['service_level'])){
-    $filter=$_SESSION['service_level'][$_GET['filter']];
-}
 $render = null;
 $filter="'".$filter."'";
 $options['onload_func'] = 'initDoc('.$filter.')';
