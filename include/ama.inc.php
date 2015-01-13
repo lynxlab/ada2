@@ -11311,73 +11311,77 @@ public function get_updates_nodes($userObj, $pointer)
    */
   public function tester_log_report($tester = 'default') {
 
-//        $res_ar = array();
-//        $sql = array();
+
         if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) ){
             $res_ar = array();
             $sql = array();
             foreach($GLOBALS['LogReport_Array'] as $key=>$value){
-               if($value['show']==true){
-                    switch($key){
-                        case 'final_users':
-                            $sql[$key]="SELECT COUNT(`id_utente`) `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT;
-                            break;
-                        case 'user_subscribed':
-                            $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`))  FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED;
-                            break;
-                        case 'course':
-                            $sql[$key]="SELECT COUNT(`id_corso`) FROM `modello_corso`"; 
-                            break;
-                        case 'service_level':
-                            /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
-                            if(isset($_SESSION['service_level'])){
-                                foreach($_SESSION['service_level'] as $keyService_level=>$value){
-                                    $sql['course_'.$keyService_level]="SELECT COUNT(`id_corso`) FROM `modello_corso` where `tipo_servizio`=$keyService_level"; 
-                                } 
-
-                            }
-                            break;
-                        case 'sessions_started':
-                            $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` >". time(); 
-                            break;
-                        case 'student_CompletedStatus_sessStarted':
-                            $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=5 AND `id_istanza_corso` in (SELECT `id_istanza_corso`FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` > ". time().')';
-                            break; 
-                        case 'sessions_closed':
-                            $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_fine` <= " . time();  //corsi chiusi
-                            break; 
-                        case 'student_CompletedStatus_sessionEnd':
-                            $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=5 AND `id_istanza_corso` in (SELECT `id_istanza_corso`FROM `istanza_corso` WHERE `data_fine` <= " . time().')';
-                            break;
-                        case 'tot_student_CompletedStatus':
-                            $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=5";
-                            break;
-                        case 'tot_Session':
-                            $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso`";
-                            break;
-                        case 'tot_Session':
-                            $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso`";
-                            break;
-                        case 'visits':
-                            $sql[$key]="SELECT COUNT('id_history') FROM `history_nodi`";
-                            break;
-                        case 'system_messages':
-                            $sql[$key]="SELECT COUNT(`id_messaggio`) FROM `messaggi` WHERE `tipo` = '". ADA_MSG_SIMPLE ."'"  ;
-                            break;
-                        case 'chatrooms':
-                            $sql[$key]="SELECT COUNT('id_chatroom') FROM `chatroom`";
-                            break;
-                        case 'videochatrooms':
-                            $sql[$key]="SELECT COUNT(`id`) FROM `openmeetings_room`";
-                            break;
-                        case 'student_CompletedStatus_sessStarted_Rate':
-                        case 'student_CompletedStatus_sessionEnd_Rate':
-                        case 'tot_student_CompletedStatus_Rate':
-                        $sql[$key]="SELECT -1";
-                            break;
-                    }
+                switch($key){
                     
+                    case 'final_users':
+                        $sql[$key]="SELECT COUNT(`id_utente`) `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT;
+                        break;
+                    case 'user_subscribed':
+                        $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`))  FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED;
+                        break;
+                    case 'course':
+                        $sql[$key]="SELECT COUNT(`id_corso`) FROM `modello_corso`"; 
+                        break;
+                    case 'service_level':
+                        /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+                        if(isset($_SESSION['service_level'])){
+                            foreach($_SESSION['service_level'] as $keyService_level=>$value){
+                                $sql['course_'.$keyService_level]="SELECT COUNT(`id_corso`) FROM `modello_corso` where `tipo_servizio`=$keyService_level"; 
+                            } 
+
+                        }
+                        break;
+                    case 'sessions_started':
+                        $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` >". time(); 
+                        break;
+                    case'student_subscribedStatus_sessStarted':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=2 AND `id_istanza_corso` in (SELECT `id_istanza_corso`FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` > ". time().')';
+                        break;
+                    case 'student_CompletedStatus_sessStarted':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=5 AND `id_istanza_corso` in (SELECT `id_istanza_corso`FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` > ". time().')';
+                        break; 
+                    case 'sessions_closed':
+                        $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_fine` <= " . time();  //corsi chiusi
+                        break; 
+                    case'student_subscribedStatus_sessEnd':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=2 AND `id_istanza_corso` in (SELECT `id_istanza_corso`FROM `istanza_corso` WHERE `data_fine` <= " . time().')';
+                        break;
+                    case 'student_CompletedStatus_sessionEnd':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=5 AND `id_istanza_corso` in (SELECT `id_istanza_corso`FROM `istanza_corso` WHERE `data_fine` <= " . time().')';
+                        break;
+                    case 'tot_student_subscribedStatus':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=2";
+                        break;
+                    case 'tot_student_CompletedStatus':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=5";
+                        break;
+                    case 'tot_Session':
+                        $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso`";
+                        break;
+                    case 'visits':
+                        $sql[$key]="SELECT COUNT('id_history') FROM `history_nodi`";
+                        break;
+                    case 'system_messages':
+                        $sql[$key]="SELECT COUNT(`id_messaggio`) FROM `messaggi` WHERE `tipo` = '". ADA_MSG_SIMPLE ."'"  ;
+                        break;
+                    case 'chatrooms':
+                        $sql[$key]="SELECT COUNT('id_chatroom') FROM `chatroom`";
+                        break;
+                    case 'videochatrooms':
+                        $sql[$key]="SELECT COUNT(`id`) FROM `openmeetings_room`";
+                        break;
+                    case 'student_CompletedStatus_sessStarted_Rate':
+                    case 'student_CompletedStatus_sessionEnd_Rate':
+                    case 'tot_student_CompletedStatus_Rate':
+                    $sql[$key]="SELECT -1";
+                        break;
                 }
+         
             }
         }
         

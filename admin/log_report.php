@@ -110,39 +110,48 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                 }
             }
             foreach($log_dataAr as $providerName=>$providerData){
-                if(isset($providerData['user_subscribed']) && intval($providerData['user_subscribed'])>0){ //cercare di farglielo fare una volta sola
-                    $totStudentSubscribed=intval($providerData['user_subscribed']);
-                }else{
-                    $totStudentSubscribed=0;
-                }
                 if((isset($providerData[$key]) && is_numeric($providerData[$key]) && intval($providerData[$key])>=0)||(isset($providerData[$key]) && !is_numeric($providerData[$key]))){
-                    if($userObj->getType()==AMA_TYPE_SWITCHER && array_key_exists(preg_replace('/course_/', '',$key), $_SESSION['service_level'])){
-                        $service_id=preg_replace('/course_/', '',$key);
-                        $link_Service_level= BaseHtmlLib::link("../switcher/list_courses.php?filter=$service_id", $providerData[$key]);
-                        $testersData_Ar[$providerName][$key]=$link_Service_level->getHtml();
+                    if($userObj->getType()==AMA_TYPE_SWITCHER){
+                        if(array_key_exists(preg_replace('/course_/', '',$key), $_SESSION['service_level'])){
+                            $service_id=preg_replace('/course_/', '',$key);
+                            $link_Service_level= BaseHtmlLib::link("../switcher/list_courses.php?filter=$service_id", $providerData[$key]);
+                            $testersData_Ar[$providerName][$key]=$link_Service_level->getHtml();
+                        }elseif(strpos($key,'course')===0){
+                            $link_Courses= BaseHtmlLib::link("../switcher/list_courses.php", $providerData[$key]);
+                            $testersData_Ar[$providerName][$key]=$link_Courses->getHtml();
+                        }elseif(strpos($key,'user_subscribed')===0){
+                            $link_Users= BaseHtmlLib::link("../switcher/list_users.php?list=students", $providerData[$key]);
+                            $testersData_Ar[$providerName][$key]=$link_Users->getHtml();
+                        }
                     }
-                    else{
+                    if(!isset($testersData_Ar[$providerName][$key])){
                         $testersData_Ar[$providerName][$key]=$providerData[$key];
                     }
                 }else{
                     if(strpos($key,'student_CompletedStatus_sessStarted')===0){
-                        if(intval($providerData['student_CompletedStatus_sessStarted'])>0 && $totStudentSubscribed>0){
-                            $StatusCompleted_SessStared=intval($providerData['student_CompletedStatus_sessStarted']);
-                            $testersData_Ar[$providerName][$key]=number_format(($StatusCompleted_SessStared*100)/$totStudentSubscribed,2);
+                        $StudentCompleted_SessStared=intval($providerData['student_CompletedStatus_sessStarted']);
+                        $StudentSubscribed_SessStared=intval($providerData['student_subscribedStatus_sessStarted']);
+                        $totStudent=$StudentCompleted_SessStared+$StudentSubscribed_SessStared;
+                        if($StudentCompleted_SessStared >0 && $StudentSubscribed_SessStared >0){
+                            $testersData_Ar[$providerName][$key]=number_format(($StudentCompleted_SessStared*100)/$totStudent,1);
                         }else{
                             $testersData_Ar[$providerName][$key]=0;
                         }
                     }elseif(strpos($key,'student_CompletedStatus_sessionEnd')===0){
-                        if(intval($providerData['student_CompletedStatus_sessionEnd'])>0 && $totStudentSubscribed>0){
-                            $StatusCompleted_SessEnd=intval($providerData['student_CompletedStatus_sessionEnd']);
-                            $testersData_Ar[$providerName][$key]=number_format(($StatusCompleted_SessEnd*100)/$totStudentSubscribed,2);
+                        $StudentCompleted_SessEnd=intval($providerData['student_CompletedStatus_sessionEnd']);
+                        $StudentSubscribed_SessEnd=intval($providerData['student_subscribedStatus_sessEnd']);
+                        $totStudent=$StudentCompleted_SessEnd+$StudentSubscribed_SessEnd;
+                        if($StudentCompleted_SessEnd >0 && $StudentSubscribed_SessEnd >0){
+                            $testersData_Ar[$providerName][$key]=number_format(($StudentCompleted_SessEnd*100)/$totStudent,1);
                         }else{
                             $testersData_Ar[$providerName][$key]=0;
                         }
                     }elseif(strpos($key,'tot_student_CompletedStatus')===0){
-                        if(intval($providerData['tot_student_CompletedStatus'])>0 && $totStudentSubscribed>0){
-                            $tot_student_CompletedStatus=intval($providerData['tot_student_CompletedStatus']);
-                            $testersData_Ar[$providerName][$key]=number_format(($tot_student_CompletedStatus*100)/$totStudentSubscribed,2);
+                        $tot_student_CompletedStatus=intval($providerData['tot_student_CompletedStatus']);
+                        $tot_student_subscribedStatus=intval($providerData['tot_student_subscribedStatus']);
+                        $totStudent=$tot_student_CompletedStatus+$tot_student_subscribedStatus;
+                        if($tot_student_CompletedStatus >0 && $tot_student_subscribedStatus >0){
+                           $testersData_Ar[$providerName][$key]=number_format(($tot_student_CompletedStatus*100)/$totStudent,1);
                         }else{
                             $testersData_Ar[$providerName][$key]=0;
                         }
@@ -152,23 +161,27 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
         }
     }
 }
-
-
+$totalAr=array();
 if($userObj->getType()==AMA_TYPE_ADMIN){
     $totalAr['provider'] = translateFN('totale'); 
     foreach ($testersData_Ar as $singleProviderAr) {
         foreach ($singleProviderAr as $key => $value) {
-            if (is_numeric($singleProviderAr[$key])) {
+            if (isset($singleProviderAr[$key]) && is_numeric($singleProviderAr[$key])) {
+                if(!isset($totalAr[$key])){
+                    $totalAr[$key]=0;
+                }
                 $totalAr[$key] +=  $singleProviderAr[$key];
             }
         }
     }
 }
+
 if($userObj->tipo==AMA_TYPE_ADMIN){
     $caption=translateFN('Riepilogo attività dei provider');
 }
 elseif($userObj->tipo==AMA_TYPE_SWITCHER){
     $caption=translateFN('Riepilogo attività del provider');
+    $totalAr=null;
 }
 $table = BaseHtmlLib::tableElement('id:table_log_report',$thead_data, $testersData_Ar,$totalAr,$caption);  
   
