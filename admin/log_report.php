@@ -52,7 +52,7 @@ if($userObj->getType()==AMA_TYPE_ADMIN){
 }elseif($userObj->getType()==AMA_TYPE_SWITCHER){
     $log_dataAr=Multiport::log_report($userObj->getDefaultTester());
 }
-
+/* Set services level in $GLOBALS['LogReport_Array']*/
 if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) ){
     $service_position=0;
     $arrayService=array();
@@ -77,12 +77,16 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
     }
 }
 
-
+/*  Sara-14/01/2015
+ *  This cycle builds two arrays: $thead_data and $testersData_Ar like mirror of $GLOBALS['LogReport_Array'].
+ *  Be required the total match of arrays to show correctly table. es: $thead_data={A,B,C} $testersData_Ar={a1,b1,c1}
+ */
 if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) && is_array($log_dataAr) && count($log_dataAr)){ 
     $checkAr=reset($log_dataAr);
     foreach($GLOBALS['LogReport_Array'] as $key=>$tableInfo){
         if($tableInfo['show']==true && array_key_exists($key, $checkAr)){
             if(!isset($thead_data[$key])){
+                /* init Tooltip */
                 if(strpos($key,'student_CompletedStatus_sessStarted_Rate')===0){
                     $title=  translateFN('Percentuale di completamento delle classi in corso');
                     $span_label = CDOMElement::create('span');
@@ -119,7 +123,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                         }elseif(strpos($key,'course')===0){
                             $link_Courses= BaseHtmlLib::link("../switcher/list_courses.php", $providerData[$key]);
                             $testersData_Ar[$providerName][$key]=$link_Courses->getHtml();
-                        }elseif(strpos($key,'user_subscribed')===0){
+                        }elseif(strpos($key,'final_users')===0){
                             $link_Users= BaseHtmlLib::link("../switcher/list_users.php?list=students", $providerData[$key]);
                             $testersData_Ar[$providerName][$key]=$link_Users->getHtml();
                         }
@@ -128,7 +132,8 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                         $testersData_Ar[$providerName][$key]=$providerData[$key];
                     }
                 }else{
-                    if(strpos($key,'student_CompletedStatus_sessStarted')===0){
+                    /* rates calculation */
+                    if(strpos($key,'student_CompletedStatus_sessStarted_Rate')===0){
                         $StudentCompleted_SessStared=intval($providerData['student_CompletedStatus_sessStarted']);
                         $StudentSubscribed_SessStared=intval($providerData['student_subscribedStatus_sessStarted']);
                         $totStudent=$StudentCompleted_SessStared+$StudentSubscribed_SessStared;
@@ -137,7 +142,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                         }else{
                             $testersData_Ar[$providerName][$key]=0;
                         }
-                    }elseif(strpos($key,'student_CompletedStatus_sessionEnd')===0){
+                    }elseif(strpos($key,'student_CompletedStatus_sessionEnd_Rate')===0){
                         $StudentCompleted_SessEnd=intval($providerData['student_CompletedStatus_sessionEnd']);
                         $StudentSubscribed_SessEnd=intval($providerData['student_subscribedStatus_sessEnd']);
                         $totStudent=$StudentCompleted_SessEnd+$StudentSubscribed_SessEnd;
@@ -146,7 +151,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                         }else{
                             $testersData_Ar[$providerName][$key]=0;
                         }
-                    }elseif(strpos($key,'tot_student_CompletedStatus')===0){
+                    }elseif(strpos($key,'tot_student_CompletedStatus_Rate')===0){
                         $tot_student_CompletedStatus=intval($providerData['tot_student_CompletedStatus']);
                         $tot_student_subscribedStatus=intval($providerData['tot_student_subscribedStatus']);
                         $totStudent=$tot_student_CompletedStatus+$tot_student_subscribedStatus;
@@ -163,7 +168,6 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
 }
 $totalAr=array();
 if($userObj->getType()==AMA_TYPE_ADMIN){
-    $totalAr['provider'] = translateFN('totale'); 
     foreach ($testersData_Ar as $singleProviderAr) {
         foreach ($singleProviderAr as $key => $value) {
             if (isset($singleProviderAr[$key]) && is_numeric($singleProviderAr[$key])) {
@@ -171,7 +175,7 @@ if($userObj->getType()==AMA_TYPE_ADMIN){
                     $totalAr[$key]=0;
                 }
                 $totalAr[$key] +=  $singleProviderAr[$key];
-            }
+            }else{$totalAr[$key]=translateFN('totale');}
         }
     }
 }

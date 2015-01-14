@@ -62,7 +62,7 @@ function createDataTable(filter)
     if ( oTable.fnIsOpen(nTr) )
     {
         /* This row is already open - close it */
-        this.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/open.png";
+        this.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_open.png";
         oTable.fnClose( nTr );
     }
     else
