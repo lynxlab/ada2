@@ -60,7 +60,7 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
     $instances_img = CDOMElement::create('img', 'src:img/student.png,alt:view');
 
     foreach($coursesAr as $course) {
-        $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/open.png');
+        $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
         $imgDetails->setAttribute('class', 'imgDetls tooltip');
         $imgDetails->setAttribute('title', translateFN('visualizza/nasconde la descrizione del corso'));
                 
@@ -114,7 +114,7 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         if(isset($_SESSION['service_level'][$course[4]])){
             $servicelevel=$_SESSION['service_level'][$course[4]];
         }
-        if(!isset($servicelevel)){$servicelevel='NP';}
+        if(!isset($servicelevel)){$servicelevel='Corso Online';}
         
         
         $tbody_data[] = array($imgDetails,$courseId, $course[1],$servicelevel,  $course[2], $course[3], $actions);

@@ -99,7 +99,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 );
                 $total_results = array();
                 //$imgDetails='<img class="imgEx tooltip" src='.HTTP_ROOT_DIR.'/layout/ada_blu/img/details_open.png >';
-                $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/open.png');
+                $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
                 $imgDetails->setAttribute('class', 'imgDetls tooltip');
                 $imgDetails->setAttribute('title', translateFN('espande/riduce il testo'));
                 foreach ($result as $row){
