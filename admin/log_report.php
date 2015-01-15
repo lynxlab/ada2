@@ -121,7 +121,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                         $thead_data[$key]=$span_label->getHtml();
                         break;
                     case 'student_CompletedStatus_sessStarted':
-                        $title=  translateFN('Numero di studenti che hanno completato le class in corso');
+                        $title=  translateFN('Numero di studenti che hanno completato le classi in corso');
                         $span_label = CDOMElement::create('span');
                         $span_label->setAttribute('title', $title);
                         $span_label->setAttribute('class', 'Rate tooltip');
