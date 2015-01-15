@@ -87,37 +87,65 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
         if($tableInfo['show']==true && array_key_exists($key, $checkAr)){
             if(!isset($thead_data[$key])){
                 /* init Tooltip */
-                if(strpos($key,'student_CompletedStatus_sessStarted_Rate')===0){
-                    $title=  translateFN('Percentuale di completamento delle classi in corso');
-                    $span_label = CDOMElement::create('span');
-                    $span_label->setAttribute('title', $title);
-                    $span_label->setAttribute('class', 'Rate tooltip');
-                    $span_label->addChild(new CText($tableInfo['label']));
-                    $thead_data[$key]=$span_label->getHtml();
-                }elseif(strpos($key,'student_CompletedStatus_sessionEnd_Rate')===0){
-                    $title=  translateFN('Percentuale di completamento delle classi terminate');
-                    $span_label = CDOMElement::create('span');
-                    $span_label->setAttribute('title', $title);
-                    $span_label->setAttribute('class', 'Rate tooltip');
-                    $span_label->addChild(new CText($tableInfo['label']));
-                    $thead_data[$key]=$span_label->getHtml();
-                }elseif(strpos($key,'tot_student_CompletedStatus_Rate')===0){
-                    $title=  translateFN('Percentuale di completamento su tutte le classi');
-                    $span_label = CDOMElement::create('span');
-                    $span_label->setAttribute('title', $title);
-                    $span_label->setAttribute('class', 'Rate tooltip');
-                    $span_label->addChild(new CText($tableInfo['label']));
-                    $thead_data[$key]=$span_label->getHtml();
-                }elseif(strpos($key,'tot_Session')===0){
-                    $title=  translateFN('Totale edizioni calcolato sommando le edizioni iniziate, le edizioni terminate, le edizioni esistenti me non ancora iniziate');
-                    $span_label = CDOMElement::create('span');
-                    $span_label->setAttribute('title', $title);
-                    $span_label->setAttribute('class', 'Rate tooltip');
-                    $span_label->addChild(new CText($tableInfo['label']));
-                    $thead_data[$key]=$span_label->getHtml();
-                }
-                else{
-                    $thead_data[$key]=translateFN($tableInfo['label']);
+                switch($key){
+                    case 'student_CompletedStatus_sessStarted_Rate':
+                        $title=  translateFN('Percentuale di completamento delle classi in corso');
+                        $span_label = CDOMElement::create('span');
+                        $span_label->setAttribute('title', $title);
+                        $span_label->setAttribute('class', 'Rate tooltip');
+                        $span_label->addChild(new CText($tableInfo['label']));
+                        $thead_data[$key]=$span_label->getHtml();
+                        break;
+                    case 'student_CompletedStatus_sessionEnd_Rate':
+                        $title=  translateFN('Percentuale di completamento delle classi terminate');    
+                        $span_label = CDOMElement::create('span');
+                        $span_label->setAttribute('title', $title);
+                        $span_label->setAttribute('class', 'Rate tooltip');
+                        $span_label->addChild(new CText($tableInfo['label']));
+                        $thead_data[$key]=$span_label->getHtml();
+                        break;
+                    case 'tot_student_CompletedStatus_Rate':
+                        $title=  translateFN('Percentuale di completamento calcolata sulle classi in corso e su quelle terminate');
+                        $span_label = CDOMElement::create('span');
+                        $span_label->setAttribute('title', $title);
+                        $span_label->setAttribute('class', 'Rate tooltip');
+                        $span_label->addChild(new CText($tableInfo['label']));
+                        $thead_data[$key]=$span_label->getHtml();
+                        break;
+                    case 'tot_Session':
+                        $title=  translateFN('Totale classi calcolato sommando le edizioni iniziate, le edizioni terminate, le edizioni esistenti me non ancora iniziate');
+                        $span_label = CDOMElement::create('span');
+                        $span_label->setAttribute('title', $title);
+                        $span_label->setAttribute('class', 'Rate tooltip');
+                        $span_label->addChild(new CText($tableInfo['label']));
+                        $thead_data[$key]=$span_label->getHtml();
+                        break;
+                    case 'student_CompletedStatus_sessStarted':
+                        $title=  translateFN('Numero di studenti che hanno completato le class in corso');
+                        $span_label = CDOMElement::create('span');
+                        $span_label->setAttribute('title', $title);
+                        $span_label->setAttribute('class', 'Rate tooltip');
+                        $span_label->addChild(new CText($tableInfo['label']));
+                        $thead_data[$key]=$span_label->getHtml();
+                        break;
+                    case 'student_CompletedStatus_sessionEnd':
+                        $title=  translateFN('Numero di studenti che hanno completato le classi terminate');
+                        $span_label = CDOMElement::create('span');
+                        $span_label->setAttribute('title', $title);
+                        $span_label->setAttribute('class', 'Rate tooltip');
+                        $span_label->addChild(new CText($tableInfo['label']));
+                        $thead_data[$key]=$span_label->getHtml();
+                        break;
+                    case 'tot_student_CompletedStatus':
+                        $title=  translateFN('Quantità calcolata  sommando gli studenti che hanno completato le classi iniziate e quelli che hanno compleato le classi terminate');
+                        $span_label = CDOMElement::create('span');
+                        $span_label->setAttribute('title', $title);
+                        $span_label->setAttribute('class', 'Rate tooltip');
+                        $span_label->addChild(new CText($tableInfo['label']));
+                        $thead_data[$key]=$span_label->getHtml();
+                        break;
+                    default:
+                        $thead_data[$key]=translateFN($tableInfo['label']);
                 }
             }
             foreach($log_dataAr as $providerName=>$providerData){
