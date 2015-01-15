@@ -74,7 +74,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($canSubscribeUser && $courseObj instanceof Course && $courseObj->isFull()) {
             	$courseProviderAr = $common_dh->get_tester_info_from_id_course($courseObj->getId());
-            	if (!AMA_DB::isError($courseProviderAr) && is_array($courseProviderAr) && isset($courseProviderAr['puntatore'])) {            		
+                if (!AMA_DB::isError($courseProviderAr) && is_array($courseProviderAr) && isset($courseProviderAr['puntatore'])) {            		
             		if (!in_array($courseProviderAr['puntatore'], $subscriberObj->getTesters())) {
             			// subscribe user to course provider
             			$canSubscribeUser = Multiport::setUser($subscriberObj, array($courseProviderAr['puntatore']));

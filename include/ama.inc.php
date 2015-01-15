@@ -1648,7 +1648,6 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         $testers_sql = 'SELECT ' .$fields.' puntatore FROM tester WHERE 1';
-
         $testers_result = $db->getAll($testers_sql, NULL, AMA_FETCH_ASSOC);
         if(self::isError($testers_result)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -11306,6 +11305,100 @@ public function get_updates_nodes($userObj, $pointer)
         }
         return $get_user_result;
     }
+    
+   
+ /** Sara -14/01/2015
+   * get some log data for a given tester
+   * @return  $res_ar array
+   */
+    public function tester_log_report($tester = 'default') {
+
+        if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) ){
+            $res_ar = array();
+            $sql = array();
+            foreach($GLOBALS['LogReport_Array'] as $key=>$value){
+            /* if a case fails or a query return error, the corresponding column will not appear in log report table */
+                switch($key){
+                    
+                    case 'final_users':
+                        $sql[$key]="SELECT COUNT(`id_utente`) `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT;
+                        break;
+                    case 'user_subscribed':
+                        $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`))  FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED;
+                        break;
+                    case 'course':
+                        $sql[$key]="SELECT COUNT(`id_corso`) FROM `modello_corso`"; 
+                        break;
+                    case 'service_level':
+                        /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+                        if(isset($_SESSION['service_level'])){
+                            foreach($_SESSION['service_level'] as $keyService_level=>$value){
+                                $sql['course_'.$keyService_level]="SELECT COUNT(`id_corso`) FROM `modello_corso` where `tipo_servizio`=$keyService_level"; 
+                            } 
+
+                        }
+                        break;
+                    case 'sessions_started':
+                        $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` >". time(); 
+                        break;
+                    case'student_subscribedStatus_sessStarted':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_STATUS_SUBSCRIBED." AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
+                        break;
+                    case 'student_CompletedStatus_sessStarted':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
+                        break; 
+                    case 'sessions_closed':
+                        $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_fine` <= " . time();  
+                        break; 
+                    case'student_subscribedStatus_sessEnd':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_STATUS_SUBSCRIBED." AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
+                        break;
+                    case 'student_CompletedStatus_sessionEnd':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
+                        break;
+                    case 'tot_student_subscribedStatus':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=".ADA_STATUS_SUBSCRIBED; 
+                        break;
+                    case 'tot_student_CompletedStatus':
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED;
+                        break;
+                    case 'tot_Session':
+                        $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso`";
+                        break;
+                    case 'visits':
+                        $sql[$key]="SELECT COUNT('id_history') FROM `history_nodi`";
+                        break;
+                    case 'system_messages':
+                        $sql[$key]="SELECT COUNT(`id_messaggio`) FROM `messaggi` WHERE `tipo` = '". ADA_MSG_SIMPLE ."'"  ;
+                        break;
+                    case 'chatrooms':
+                        $sql[$key]="SELECT COUNT('id_chatroom') FROM `chatroom`";
+                        break;
+                    case 'videochatrooms':
+                        $sql[$key]="SELECT COUNT(`id`) FROM `openmeetings_room`";
+                        break;
+                /* Return array of this method must have this key otherwise the corresponding columns will not appear in log-report table */
+                    case 'student_CompletedStatus_sessStarted_Rate':
+                    case 'student_CompletedStatus_sessionEnd_Rate':
+                    case 'tot_student_CompletedStatus_Rate':
+                    $sql[$key]="SELECT -1";
+                        break;
+                }
+         
+            }
+        }
+
+$db =& $this->getConnection();
+	if ( AMA_DB::isError( $db ) ) return $db;
+        $res_ar['provider'] = $tester;
+	foreach ($sql as $type => $query){   
+	    $res =  $db->getOne($query);
+            if(!AMA_DataHandler::isError($res)) {
+                $res_ar[$type] = $res;
+            }
+	}
+        return $res_ar;
+}
 
 
     /**

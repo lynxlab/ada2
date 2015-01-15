@@ -1,0 +1,61 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 30-dic-2014, 15.19.31
+    Author     : sara
+*/
+
+@import url("../switcher/tooltips.css");
+
+#data{display:none;}
+
+.fg-toolbar.ui-widget-header {
+    background: repeat-x scroll 50% 50% #BCD6D7;
+    border: 1px solid #A3A99A;
+    color: #585857;
+    font-weight: bold;
+    height: 30px;
+}
+.tooltip {
+   background: transparent;
+   border-color: transparent;
+   cursor: default;
+ }
+a,li{
+    background: transparent !important;
+    color:#585857;
+}
+/**
+ * DataTables styles
+*/ 
+
+#table_log_report { 
+    width: 100% !important; 
+    background: repeat-x scroll 50% 50% #BCD6D7;
+    border: 1px solid #A3A99A;
+    color: #585857;
+    font-weight: bold;
+}
+#table_log_report tbody td { height: 2.5em; border:none; vertical-align: middle;font-size: 95%;}
+#table_log_report thead th { padding-right: 5px; border-bottom: 1px solid #999; }
+#table_log_report .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; font-size: 67%;}
+#table_log_report_previous,
+#table_log_report_next { margin:0; padding: 3px; }
+#table_log_report_length,
+#table_log_report_filter,
+#table_log_report_paginate { padding: 5px; }
+#table_log_report_info { padding: 8px 0 0 5px; }
+#table_log_report .dontwrap { white-space: nowrap; }
+#table_log_report caption { width: 50%; margin: -25px auto 0 auto; position: relative; font-weight: bold;}
+#table_log_report tfoot th { border-top: 1px solid #999;font-size: 78%; }
+/*
+ * end #table_log_report jQuery dataTable
+ */
+
+
+
+
+
