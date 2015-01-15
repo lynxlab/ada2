@@ -56,7 +56,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 			
 			$count = $dh->get_users_filtered ($_POST, true);
 			
-			$htmlcount .= translateFN ('In totale, la newsletter sar&agrave; inviata a ');
+			$htmlcount = translateFN ('In totale, la newsletter sar&agrave; inviata a ');
 			$htmlcount .= '<strong>'.$count.'</strong> ';
 			$htmlcount .= ($count==1) ? translateFN('utente') : translateFN('utenti');
 			$htmlcount .='.';

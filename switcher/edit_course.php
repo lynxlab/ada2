@@ -66,20 +66,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->fillWithPostData();
     if ($form->isValid()) {
         $course = array(
-            'nome' => $_POST['nome'],
-            'titolo' => $_POST['titolo'],
-            'descr' => $_POST['descrizione'],
-            'd_create' => $_POST['data_creazione'],
-            'd_publish' => $_POST['data_pubblicazione'],
-            'id_autore' => $_POST['id_utente_autore'],
-            'id_nodo_toc' => $_POST['id_nodo_toc'],
-            'id_nodo_iniziale' => $_POST['id_nodo_iniziale'],
-            'media_path' => $_POST['media_path'],
-            'id_lingua' => $_POST['id_lingua'],
-            'static_mode' => $_POST['static_mode'],
-            'crediti' => $_POST['crediti'],
-            'duration_hours' => $_POST['duration_hours'],
-            'service_level' => $_POST['service_level']
+            'nome' => isset($_POST['nome']) ? $_POST['nome'] : null,
+            'titolo' => isset($_POST['titolo']) ? $_POST['titolo'] : null,
+            'descr' => isset($_POST['descrizione']) ? $_POST['descrizione'] : null,
+            'd_create' => isset($_POST['data_creazione']) ? $_POST['data_creazione'] : null,
+            'd_publish' => isset($_POST['data_pubblicazione']) ? $_POST['data_pubblicazione'] : null,
+            'id_autore' => isset($_POST['id_utente_autore']) ? $_POST['id_utente_autore'] : null,
+            'id_nodo_toc' => isset($_POST['id_nodo_toc']) ? $_POST['id_nodo_toc'] : null,
+            'id_nodo_iniziale' => isset($_POST['id_nodo_iniziale']) ? $_POST['id_nodo_iniziale'] : null,
+            'media_path' => isset($_POST['media_path']) ? $_POST['media_path'] : null,
+            'id_lingua' => isset($_POST['id_lingua']) ? $_POST['id_lingua'] : null,
+            'static_mode' => isset($_POST['static_mode']) ? $_POST['static_mode'] : null,
+            'crediti' => isset($_POST['crediti']) ? $_POST['crediti'] : null,
+            'duration_hours' => isset($_POST['duration_hours']) ? $_POST['duration_hours'] : null,
+            'service_level' => isset($_POST['service_level']) ? $_POST['service_level'] : null
         );
         $result = $dh->set_course($_POST['id_corso'], $course);
 
@@ -115,50 +115,43 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $form = new CText(translateFN('Corso non trovato'));
     } else {
-    	
-    	// get service data
-    	$service_dataAr = $common_dh->get_service_info_from_course($courseObj->getId());
-    	if (AMA_Common_DataHandler::isError($service_dataAr) || count($service_dataAr)==0) {
-    		$form = new CText(translateFN('Servizio non trovato (2)'));
-    	} else {
-            
-	    	$providerAuthors = $dh->find_authors_list(array('username'), '');
-	        $authors = array();
-	        foreach ($providerAuthors as $author) {
-	            $authors[$author[0]] = $author[1];
-	        }
-	
-	        $availableLanguages = Translator::getSupportedLanguages();
-	        $languages = array();
-	        foreach ($availableLanguages as $language) {
-	            $languages[$language['id_lingua']] = $language['nome_lingua'];
-	        }
-	
-	        $form = new CourseModelForm($authors, $languages);
-                if (!AMA_DataHandler::isError($course_data)) {
-	            $formData = array(
-	                'id_corso' => $courseObj->getId(),
-	                'id_utente_autore' => $courseObj->getAuthorId(),
-	                'id_lingua' => $courseObj->getLanguageId(),
-	                'id_layout' => $courseObj->getLayoutId(),
-	                'nome' => $courseObj->getCode(),
-	                'titolo' => $courseObj->getTitle(),
-	                'descrizione' => $courseObj->getDescription(),
-	                'id_nodo_iniziale' => $courseObj->getRootNodeId(),
-	                'id_nodo_toc' => $courseObj->getTableOfContentsNodeId(),
-	                'media_path' => $courseObj->getMediaPath(),
-	                'static_mode' => $courseObj->getStaticMode(),
-	                'data_creazione' => $courseObj->getCreationDate(),
-	                'data_pubblicazione' => $courseObj->getPublicationDate(),
-	            	'crediti' =>  $courseObj->getCredits(), // modifica in Course
-	                'duration_hours' => $courseObj->getDurationHours(),
-                        'service_level'  =>$courseObj->getServiceLevel()
-	            );
-	            $form->fillWithArrayData($formData);
-	        } else {
-	            $form = new CText(translateFN('Corso non trovato'));
-	        }
-	    }
+        $providerAuthors = $dh->find_authors_list(array('username'), '');
+        $authors = array();
+        foreach ($providerAuthors as $author) {
+            $authors[$author[0]] = $author[1];
+        }
+
+        $availableLanguages = Translator::getSupportedLanguages();
+        $languages = array();
+        foreach ($availableLanguages as $language) {
+            $languages[$language['id_lingua']] = $language['nome_lingua'];
+        }
+
+        $form = new CourseModelForm($authors, $languages);
+
+        if ($courseObj instanceof Course && $courseObj->isFull()) {
+            $formData = array(
+                'id_corso' => $courseObj->getId(),
+                'id_utente_autore' => $courseObj->getAuthorId(),
+                'id_lingua' => $courseObj->getLanguageId(),
+                'id_layout' => $courseObj->getLayoutId(),
+                'nome' => $courseObj->getCode(),
+                'titolo' => $courseObj->getTitle(),
+                'descrizione' => $courseObj->getDescription(),
+                'id_nodo_iniziale' => $courseObj->getRootNodeId(),
+                'id_nodo_toc' => $courseObj->getTableOfContentsNodeId(),
+                'media_path' => $courseObj->getMediaPath(),
+                'static_mode' => $courseObj->getStaticMode(),
+                'data_creazione' => $courseObj->getCreationDate(),
+                'data_pubblicazione' => $courseObj->getPublicationDate(),
+                'crediti' =>  $courseObj->getCredits(), // modifica in Course
+                'duration_hours' => $courseObj->getDurationHours(),
+                'service_level'  =>$courseObj->getServiceLevel()
+            );
+            $form->fillWithArrayData($formData);
+        } else {
+            $form = new CText(translateFN('Corso non trovato'));
+        }
     }
 }
 
@@ -172,7 +165,7 @@ $content_dataAr = array(
     'label' => $label,
     'help' => $help,
     'data' => $form->getHtml(),
-    'module' => $module,
+    'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
 

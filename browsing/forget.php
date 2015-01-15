@@ -54,7 +54,7 @@ $self =  "registration";
  * Negotiate login page language
  */
 
-$lang_get = $_GET['lan'];
+$lang_get = isset($_GET['lan']) ? $_GET['lan'] : null;
 
 Translator::loadSupportedLanguagesInSession();
 $supported_languages = Translator::getSupportedLanguages();
@@ -391,10 +391,10 @@ if (isset($message) && strlen($message)>0) {
 $content_dataAr = array(
   'title'     => $title,
   'menu'      => $menu,
-  'data'      => $message.$dati, // FIXME: move to message field
+  'data'      => $dati, // FIXME: move to message field
   'help'      => $help,
-  'user_type' => $userType,
-  'message'   => $message // FIXME: not visible !
+  'user_type' => isset($userType) ? $userType : null,
+  // 'message'   => $message // FIXME: not visible !
 );
 
 ARE::render($layout_dataAr, $content_dataAr);

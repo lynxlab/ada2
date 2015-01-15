@@ -41,9 +41,9 @@ include_once 'include/'.$self.'_functions.inc.php';
 /*
  * YOUR CODE HERE
  */
-$sess_id_user            = $_SESSION['sess_id_user'];
-$sess_id_course          = $_SESSION['sess_id_course'];
-$sess_id_course_instance = $_SESSION['sess_id_course_instance'];
+$sess_id_user            = isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user'] : null;
+$sess_id_course          = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
+$sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
 
 
 if (!isset($msg)) {
@@ -119,7 +119,7 @@ else {
   $total_course_data = $tObj->getTable();
 }
 
-if ($err_msg) {
+if (isset($err_msg)) {
   $total_course_data = translateFN("Nessun corso assegnato all'autore.");
 }
 // menu' table

@@ -189,8 +189,8 @@ background: url(../../../../../layout/standard/img/back.png) no-repeat center le
 /* .topleft { background: url(../../../../../layout/standard/img/topleft.png) no-repeat top left; } */
 .topleftc { background: url(../../../../../layout/standard/img/topleftc.png) no-repeat top left; }
 /*.topright { background: url(../../../../../layout/standard/img/topright.png) no-repeat top right; }*/
-.bottomleft { background: url(../../../../../layout/standard/img/middle.png) no-repeat bottom left; }
-.bottomright { background: url(../../../../../layout/standard/img/middle.png) no-repeat bottom right; }
+/* .bottomleft { background: url(../../../../../layout/standard/img/middle.png) no-repeat bottom left; } */
+/* .bottomright { background: url(../../../../../layout/standard/img/middle.png) no-repeat bottom right; } */
 
 .contentlabel { padding: 5px; }
 

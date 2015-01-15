@@ -8232,10 +8232,10 @@ CREATE TABLE IF NOT EXISTS `service_type` (
   `id_tipo_servizio` int(11) NOT NULL AUTO_INCREMENT,
   `livello_servizio` tinyint(3) unsigned DEFAULT NULL,
   `nome_servizio` text COLLATE utf8_unicode_ci,
-  `descrizione_servizio` text COLLATE utf8_unicode_ci NOT NULL,
-  `custom_1` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `custom_2` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `custom_3` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `descrizione_servizio` text COLLATE utf8_unicode_ci,
+  `custom_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `custom_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `custom_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id_tipo_servizio`),
   UNIQUE KEY `livello_servizio` (`livello_servizio`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

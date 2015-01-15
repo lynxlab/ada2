@@ -305,14 +305,14 @@ $help .= translateFN('Il file deve avere estensione txt e deve contenere in ogni
  */
 $optionsAr = array('onload_func' => "PAGER.showPage('subscribed');");
 $content_dataAr = array(
-    'banner'=> $banner,
-    'path' => $path,
-    'label' => $label,
-    'status'=> $status,
-    'user_name'=> $user_name,
-    'user_type'=> $user_type,
-    'menu' => $menu,
-    'help' => $help,
+    'banner'=> isset($banner) ? $banner : '',
+    'path' => isset($path) ? $path : '',
+    'label' => isset($label) ? $label : '',
+    'status'=> isset($status) ? $status : '',
+    'user_name'=> isset($user_name) ? $user_name : '',
+    'user_type'=> isset($user_type) ? $user_type : '',
+    'menu' => isset($menu) ? $menu : '',
+    'help' => isset($help) ? $help : '',
     'data' => $data->getHtml(),
     'messages' => $user_messages->getHtml(),
     'agenda '=> $user_agenda->getHtml()

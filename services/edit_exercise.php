@@ -99,8 +99,9 @@ switch($op) {
         */
         $navigation_history = $_SESSION['sess_navigation_history'];
 
-        if ( !isset($_SESSION['sess_edit_exercise']['exercise'])  ||
-                ($need_to_unset_session = strcmp($navigation_history->previousItem(), __FILE__)) !== 0) {
+        $need_to_unset_session = strcmp($navigation_history->previousItem(), __FILE__);
+        
+        if ( !isset($_SESSION['sess_edit_exercise']['exercise'])  || $need_to_unset_session !== 0) {
             if ( $need_to_unset_session !== 0 ) {
                 unset($_SESSION['sess_edit_exercise']);
             }
@@ -238,25 +239,25 @@ switch($op) {
 //$dataHa['go_back'].= "<BR><a href=\"$http_root_dir/browsing/exercise.php?id_node=$id_next_exercise\">".translateFN("Prossimo esercizio")."</a>";
 
 $content_dataAr = array(
-        'banner'=> $banner,
+        'banner'=> isset($banner) ? $banner : '',
         'status'=>$status,
-        'course_title'=>$course_title,
+        'course_title'=>isset($course_title) ? $course_title : '',
         'user_name'=>$user_name,
         'user_type'=>$user_type,
         'user_level'=>$user_level,
-        'author'=>$node_author,
-        'node_level'=>$node_level,
-        'visited'=>$visited,
+        'author'=>isset($node_author) ? $node_author : '',
+        'node_level'=>isset($node_level) ? $node_level : '',
+        'visited'=>isset($visited) ? $visited : '',
         'path'=>$node_path,
 // 'index'=>$node_index,
 // 'link'=>$data['link'],
         'title'=>$node_title,
         'form'=>$dataHa['exercise'],
-        'media'=>$dataHa['media'],
+        'media'=>isset($dataHa['media']) ? $dataHa['media']: '',
 //                   'edit_exercise'=>$edit_exercise_html,
         'messages'=>$user_messages->getHtml(),
         'agenda'=>$user_agenda->getHtml(),
-        'chat_users'=>$online_users,
+        'chat_users'=>isset($online_users) ? $online_users : '',
         'icon' => $icon
 
 );

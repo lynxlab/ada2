@@ -159,7 +159,7 @@ else {
 // a message can be sent only if no errors are found
 if (count($errors) == 0) {
   //prepare message to send
-  $message_ha = $send_chat_message_form;
+  $message_ha = isset($send_chat_message_form) ? $send_chat_message_form : null;
   $message_ha['tipo'] = $message_type;
 
   if ($message_ha['tipo']== ADA_MSG_PRV_CHAT) {

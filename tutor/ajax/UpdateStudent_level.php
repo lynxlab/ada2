@@ -38,8 +38,6 @@ $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  whoami();
 
-include_once 'include/'.$self.'_functions.inc.php';
-
 /*
  * YOUR CODE HERE
  */
@@ -65,7 +63,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	       $retArray=array("status"=>"ERROR","msg"=>  translateFN("Problemi nell'aggiornamento del livello").'<br/>'.translateFN('Provare ad aggiornare il report e ripetere l\'operazione'),"title"=>  translateFN('Notifica'));
 	    } 
 	    else {
-	        $retArray=array("status"=>"OK","msg"=>  translateFN("Hai aggiornato correttamente il livello dello studente"),"text"=>$message,"title"=>  translateFN('Notifica'));
+	        $retArray=array("status"=>"OK","msg"=>  translateFN("Hai aggiornato correttamente il livello dello studente"),"title"=>  translateFN('Notifica'));
 	    }
 	 }
 	 echo json_encode($retArray);

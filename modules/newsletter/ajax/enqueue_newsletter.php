@@ -75,6 +75,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 			$sleepTime = intval (3600 / MODULES_NEWSLETTER_EMAILS_PER_HOUR * 1000000); // sleep time in microseconds
 			
 			$logFile = MODULES_NEWSLETTER_LOGDIR.'log-'.$id_newsletter.'-'.date('d-m-Y_His');
+			if (!is_dir(MODULES_NEWSLETTER_LOGDIR)) mkdir (MODULES_NEWSLETTER_LOGDIR, 0777, true);
 			if (!is_file($logFile)) touch ($logFile);
 			
 			ADAFileLogger::log("Sending out to: \n".print_r($recipients,true), $logFile );			

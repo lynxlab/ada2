@@ -86,11 +86,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
 
-    if(DataValidator::validate_not_empty_string($destinatari) === FALSE) {
+    if(!isset($destinatari) || DataValidator::validate_not_empty_string($destinatari) === FALSE) {
         $errors['destinatari'] = ADA_EVENT_PROPOSAL_ERROR_RECIPIENT;
     }
 
-    if(DataValidator::validate_not_empty_string($titolo) === FALSE) {
+    if(!isset($titolo) || DataValidator::validate_not_empty_string($titolo) === FALSE) {
         $errors['titolo'] = ADA_EVENT_PROPOSAL_ERROR_SUBJECT;
     }
 
@@ -131,7 +131,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Actually send event only if no errors were found
     if (count($errors)== 0){
 
-      $recipients_ar = explode(",", $form["destinatari"]);
+      // $recipients_ar = explode(",", $form["destinatari"]);
 
       // prepare event to send
       /*
@@ -194,17 +194,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   } //end if Spedisci
   // *****
 
-    $destinatari_Ar =  $form["destinatari"];
+    $destinatari_Ar =  isset($form["destinatari"]) ? $form["destinatari"] : null;
     $destinatari = '';
-    foreach($destinatari_Ar as $d) {
-      $destinatario = trim($d);
-      $div = CDOMElement::create('div', "id:$destinatario");
-      $checkbox    = CDOMElement::create('checkbox', "name:destinatari[], value:$destinatario, checked: checked");
-      $checkbox->setAttribute('onclick', "remove_addressee('$destinatario');");
-      $div->addChild($checkbox);
-      $div->addChild(new CText($destinatario));
-      $destinatari .= $div->getHtml();
+    if (is_array($destinatari_Ar) && count($destinatari_Ar)>0) {
+    	foreach($destinatari_Ar as $d) {
+    		$destinatario = trim($d);
+    		$div = CDOMElement::create('div', "id:$destinatario");
+    		$checkbox    = CDOMElement::create('checkbox', "name:destinatari[], value:$destinatario, checked: checked");
+    		$checkbox->setAttribute('onclick', "remove_addressee('$destinatario');");
+    		$div->addChild($checkbox);
+    		$div->addChild(new CText($destinatario));
+    		$destinatari .= $div->getHtml();
+    	}
     }
+    
 
 }
 
@@ -264,8 +267,8 @@ $content_dataAr = array(
   'user_type'      => $user_type,
   'user_level'   => $user_level,  
   'titolo'         => $titolo,
-  'testo'          => trim($testo),
-  'destinatari'    => trim($destinatari),
+  'testo'          => isset($testo) ? trim($testo) : '',
+  'destinatari'    => isset($destinatari) ? trim($destinatari) : '',
   //'student_button' => $student_button,
   //'tutor_button'   => $tutor_button,
   //'author_button'  => $author_button,

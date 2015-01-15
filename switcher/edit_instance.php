@@ -215,7 +215,7 @@ $content_dataAr = array(
     'label' => $label,
     'help' => $help,
     'data' => $data->getHtml(),
-    'module' => $module,
+    'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
 

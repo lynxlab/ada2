@@ -71,17 +71,34 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     $canSubscribeUser = true;
                 }                
             }
-            if ($canSubscribeUser) {
-                $subscriptionDate=0;
-                $s = new Subscription($subscriberObj->getId(), $courseInstanceId,$subscriptionDate,$startStudentLevel);
-                $s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
-                Subscription::addSubscription($s);
-                $data = new CText('Utente iscritto');
+            
+            if ($canSubscribeUser && $courseObj instanceof Course && $courseObj->isFull()) {
+            	$courseProviderAr = $common_dh->get_tester_info_from_id_course($courseObj->getId());
+                if (!AMA_DB::isError($courseProviderAr) && is_array($courseProviderAr) && isset($courseProviderAr['puntatore'])) {            		
+            		if (!in_array($courseProviderAr['puntatore'], $subscriberObj->getTesters())) {
+            			// subscribe user to course provider
+            			$canSubscribeUser = Multiport::setUser($subscriberObj, array($courseProviderAr['puntatore']));
+            			if (!$canSubscribeUser) {
+            				$data = new CText(translateFN('Problemi nell\'iscrizione utente al provider del corso.').' '.translateFN('Utente non iscritto'));
+            			}
+            		}
+            		if ($canSubscribeUser) {
+            			$subscriptionDate=0;
+            			$s = new Subscription($subscriberObj->getId(), $courseInstanceId,$subscriptionDate,$startStudentLevel);
+            			$s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
+            			Subscription::addSubscription($s);
+            			$data = new CText(translateFN('Utente iscritto'));
+            		} else {
+		                $data = new CText(translateFN('Problemi').' '.translateFN('Utente non iscritto'));
+		            }
+            	} else {
+            		$data = new CText(translateFN('Problemi nel recuperare il provider del corso.').' '.translateFN('Utente non iscritto'));
+            	}
             } else {
-                $data = new CText('Problemi');
+                $data = new CText(translateFN('Problemi').' '.translateFN('Utente non iscritto'));
             }
         } else {
-            $data = new CText('Dati inseriti non validi');
+            $data = new CText(translateFN('Dati inseriti non validi'));
         }
     } else {
         $data = new CText('');
@@ -103,14 +120,14 @@ $help = translateFN('Da qui il provider admin può iscrivere uno studente già r
  * OUTPUT
  */
 $content_dataAr = array(
-    'banner' => $banner,
-    'path' => $path,
-    'label' => $label,
-    'status' => $status,
+    'banner' => isset($banner) ? $banner : '',
+    'path' => isset($path) ? $path : '',
+    'label' => isset($label) ? $label : '',
+    'status' => isset($status) ? $status : '',
     'user_name' => $user_name,
     'user_type' => $user_type,
-    'menu' => $menu,
-    'help' => $help,
+    'menu' => isset($menu) ? $menu : '',
+    'help' => isset($help) ? $help : '',
     'data' => $data->getHtml(),
     'messages' => $user_messages->getHtml(),
     'agenda ' => $user_agenda->getHtml()

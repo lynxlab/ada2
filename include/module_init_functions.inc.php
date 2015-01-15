@@ -209,14 +209,14 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 //  if($parm_errorHa['user_level']) {
 //  }
 
-  $GLOBALS['sess_id_user']            = $_SESSION['sess_id_user'];
-  $GLOBALS['sess_id_user_type']       = $_SESSION['sess_id_user_type'];
-  $GLOBALS['sess_user_level']         = $_SESSION['sess_user_level'];
-  $GLOBALS['sess_id_course']          = $_SESSION['sess_id_course'];
-  $GLOBALS['sess_id_course_instance'] = $_SESSION['sess_id_course_instance'];
-  $GLOBALS['sess_id_node']            = $_SESSION['sess_id_node'];
-  $GLOBALS['sess_selected_tester']    = $_SESSION['sess_selected_tester'];
-  $GLOBALS['sess_user_language']      = $_SESSION['sess_user_language'];
+  $GLOBALS['sess_id_user']            = isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user'] : null;
+  $GLOBALS['sess_id_user_type']       = isset($_SESSION['sess_id_user_type']) ? $_SESSION['sess_id_user_type'] : null;
+  $GLOBALS['sess_user_level']         = isset($_SESSION['sess_user_level']) ? $_SESSION['sess_user_level'] : null;
+  $GLOBALS['sess_id_course']          = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
+  $GLOBALS['sess_id_course_instance'] = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+  $GLOBALS['sess_id_node']            = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
+  $GLOBALS['sess_selected_tester']    = isset($_SESSION['sess_selected_tester']) ? $_SESSION['sess_selected_tester'] : null;
+  $GLOBALS['sess_user_language']      = isset($_SESSION['sess_user_language']) ? $_SESSION['sess_user_language'] : null;
 }
 
 function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
@@ -232,7 +232,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   /*
    * ADA common data handler
    */
-  $common_dh = $GLOBALS['common_dh'];
+  $common_dh = isset($GLOBALS['common_dh']) ? $GLOBALS['common_dh'] : null;
   if(!$common_dh instanceof AMA_Common_DataHandler) {
     $common_dh = AMA_Common_DataHandler::instance();
     $GLOBALS['common_dh'] = $common_dh;
@@ -270,7 +270,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   /*
    * Get needed object for this user from $neededObjAr 
    */
-  if(is_array($neededObjAr) && is_array($neededObjAr[$id_profile])) {
+  if(is_array($neededObjAr) && isset($neededObjAr[$id_profile]) && is_array($neededObjAr[$id_profile])) {
     $thisUserNeededObjAr = $neededObjAr[$id_profile];
   }
   else {
@@ -304,11 +304,23 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
 
   }
   else if($id_profile == AMA_TYPE_STUDENT){
-    $id_course      = DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/);
-    $sess_id_course = DataValidator::is_uinteger($_SESSION['sess_id_course']);
+  	if (isset($_REQUEST['id_course']))
+    	$id_course      = DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/);
+  	else
+  		$id_course = false;
+  	
+  	if (isset($_SESSION['sess_id_course']))
+    	$sess_id_course = DataValidator::is_uinteger($_SESSION['sess_id_course']);
+  	else
+  		$sess_id_course = false;
+  	
+  	if (isset($_REQUEST['id_node']))
+  		$req_id_node = DataValidator::validate_node_id($_REQUEST['id_node']);
+  	else
+  		$req_id_node = false;
     
-    if ($id_course === FALSE && $sess_id_course === FALSE && DataValidator::validate_node_id($_REQUEST['id_node'])) {
-    	$id_course = substr($_REQUEST['id_node'], 0, strpos($_REQUEST['id_node'], '_'));
+    if ($id_course === FALSE && $sess_id_course === FALSE && $req_id_node!==FALSE) {
+    	$id_course = substr($req_id_node, 0, strpos($req_id_node, '_'));
     }
     
     if($id_course !== FALSE && $id_course !== $sess_id_course) {
@@ -338,7 +350,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   }
   else
   {
-  	$sess_selected_tester = $_SESSION['sess_selected_tester'];
+  	$sess_selected_tester = isset($_SESSION['sess_selected_tester']) ? $_SESSION['sess_selected_tester'] : null;
   }
   
   //$dh = AMA_DataHandler::instance(MultiPort::getDSN($sess_selected_tester));
@@ -358,8 +370,8 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
    */
   // TODO: portare in sessione $nodeObj?
   if(in_array('node',$thisUserNeededObjAr)) {
-    $id_node      = DataValidator::validate_node_id($_REQUEST['id_node']/*$GLOBALS['id_node']*/); 
-    $sess_id_node = DataValidator::validate_node_id($_SESSION['sess_id_node']);
+    $id_node      = isset($_REQUEST['id_node']) ? DataValidator::validate_node_id($_REQUEST['id_node']/*$GLOBALS['id_node']*/) : false; 
+    $sess_id_node = isset($_SESSION['sess_id_node']) ? DataValidator::validate_node_id($_SESSION['sess_id_node']) : false;
     
     if($id_node !== FALSE) {
         $dataHa = $dh->get_node_info($id_node);
@@ -389,8 +401,8 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
    */
   if(in_array('course',$thisUserNeededObjAr)) {
     
-    $id_course      = DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/);
-    $sess_id_course = DataValidator::is_uinteger($_SESSION['sess_id_course']);
+    $id_course      = isset($_REQUEST['id_course']) ? DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/) : false;
+    $sess_id_course = isset ($_SESSION['sess_id_course']) ? DataValidator::is_uinteger($_SESSION['sess_id_course']) : false;
     /* extracting the course id from node id, if given */
     if (isset($_SESSION['sess_id_node']) && !$invalid_node) {
 //    if ($nodeObj instanceof Node){
@@ -538,11 +550,13 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
 
       if (isset($target_course_instance)) {
       	$id_course_instance = DataValidator::is_uinteger($target_course_instance);
-      } else {
+      } else if (isset($_REQUEST['id_course_instance'])) {
       	$id_course_instance = DataValidator::is_uinteger($_REQUEST['id_course_instance']/*$GLOBALS['id_course_instance']*/); // FIXME: qui ci va $_REQUEST['id_course_instance']
+      } else {
+      	$id_course_instance = false;
       }
       
-      $sess_id_course_instance = DataValidator::is_uinteger($_SESSION['sess_id_course_instance']);      
+      $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) : false;      
       if($id_course_instance !== FALSE) {
         $course_instanceObj = read_course_instance_from_DB($id_course_instance);
         if (ADA_Error::isError($course_instanceObj)) {
@@ -579,7 +593,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
         $instanceIdRequired = array();
         if (isset($_SESSION['sess_id_node']) && !$invalid_node) {
 //        if ($nodeObj instanceof Node) { // required a node
-              $instanceIdRequired[] = $dataHa['instance']; 
+              $instanceIdRequired[] = isset($dataHa['instance']) ? $dataHa['instance'] : null; 
               if ($instanceIdRequired[0] == 0) { // the node is NOT a note 
                     $field_list_ar = array();
                     if (isset($_SESSION['sess_id_course']) && !$invalid_course) {
@@ -599,7 +613,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
           } // end if node         
           elseif ($sess_courseObj instanceof Course) {
                     $courseIdRequired = $sess_courseObj->id;
-                    $InstanceIdList = $dh->course_instance_get_list($field_list_ar, $courseIdRequired);
+                    $InstanceIdList = $dh->course_instance_get_list(array(), $courseIdRequired);
                     if (AMA_DataHandler::isError($InstanceIdList) || count($InstanceIdList) == 0 ) {
                               $invalid_course_instance = TRUE;
                     }
@@ -673,41 +687,41 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
 function clear_dataFN($variableToClearAr=array()) {
   //ADALogger::log('clear data FN');
 
-  $sess_id                 = $_SESSION['sess_id'];
-  $sess_id_user            = $_SESSION['sess_id_user'];
-  $sess_id_course          = $_SESSION['sess_id_course'];
-  $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
-  $sess_id_node            = $_SESSION['sess_id_node'];
+  $sess_id                 = isset($_SESSION['sess_id']) ? $_SESSION['sess_id']: null;
+  $sess_id_user            = isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user']: null;
+  $sess_id_course          = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
+  $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? $_SESSION['sess_id_course_instance'] : null;
+  $sess_id_node            = isset($_SESSION['sess_id_node']) ? $_SESSION['sess_id_node'] : null;
 
   /**
    * Node variables
    */
-  $node_parent = $GLOBALS['node_parent'];
-  $node_map    = $GLOBALS['node_map'];
-  $node_index  = $GLOBALS['node_index'];
-  $node_path   = $GLOBALS['node_path'];
-  $node_title  = $GLOBALS['node_title'];
+  $node_parent = isset($GLOBALS['node_parent']) ? $GLOBALS['node_parent'] : null;
+  $node_map    = isset($GLOBALS['node_map']) ? $GLOBALS['node_map'] : null;
+  $node_index  = isset($GLOBALS['node_index']) ? $GLOBALS['node_index'] : null;
+  $node_path   = isset($GLOBALS['node_path']) ? $GLOBALS['node_path'] : null;
+  $node_title  = isset($GLOBALS['node_title']) ? $GLOBALS['node_title'] : null;
 
   /**
    * User variables
    */
-  $id_profile     = $GLOBALS['id_profile'];
-  $user_name      = $GLOBALS['user_name'];
-  $user_history   = $GLOBALS['user_history'];
-  $user_bookmarks = $GLOBALS['user_bookmarks'];
-  $user_level     = $GLOBALS['user_level'];
+  $id_profile     = isset($GLOBALS['id_profile']) ? $GLOBALS['id_profile'] : null;
+  $user_name      = isset($GLOBALS['user_name']) ? $GLOBALS['user_name'] : null;
+  $user_history   = isset($GLOBALS['user_history']) ? $GLOBALS['user_history'] : null;
+  $user_bookmarks = isset($GLOBALS['user_bookmarks']) ? $GLOBALS['user_bookmarks'] : null;
+  $user_level     = isset($GLOBALS['user_level']) ? $GLOBALS['user_level'] : null;
 
   /**
    * Course variables
    */
-  $id_course    = $GLOBALS['id_course'];
-  $course_title = $GLOBALS['course_title'];
+  $id_course    = isset($GLOBALS['id_course']) ? $GLOBALS['id_course'] : null;
+  $course_title = isset($GLOBALS['course_title']) ? $GLOBALS['course_title'] : null;
 
   /**
    * Layout variables
    */
-  $layout_CSS = $GLOBALS['layout_CSS'];
-  $layout_template = $GLOBALS['layout_template'];
+  $layout_CSS = isset($GLOBALS['layout_CSS']) ? $GLOBALS['layout_CSS'] : null;
+  $layout_template = isset($GLOBALS['layout_template']) ? $GLOBALS['layout_template'] : null;
 
   if (in_array( 'node', $variableToClearAr)) {
     $GLOBALS['node_title']  = '';
@@ -738,6 +752,7 @@ function clear_dataFN($variableToClearAr=array()) {
 }
     
 /**
+ *  Sara-14/01/2015
  *  set array session containing services_type definition.
  */
 function loadServiceTypes(){

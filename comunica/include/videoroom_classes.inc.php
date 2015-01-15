@@ -40,7 +40,7 @@ class videoroom
 public function __construct($id_course_instance=""){
     $dh            =   $GLOBALS['dh'];
     $error         =   $GLOBALS['error'];
-    $debug         =   $GLOBALS['debug'];
+    $debug         =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
     $root_dir      =   $GLOBALS['root_dir'];
     $http_root_dir =   $GLOBALS['http_root_dir'];
     
@@ -49,7 +49,7 @@ public function __construct($id_course_instance=""){
 public function videoroom_info($id_course_instance,$tempo_avvio=NULL, $interval=NULL){
     $dh            =   $GLOBALS['dh'];
     $error         =   $GLOBALS['error'];
-    $debug         =   $GLOBALS['debug'];
+    $debug         =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
     $root_dir      =   $GLOBALS['root_dir'];
     $http_root_dir =   $GLOBALS['http_root_dir'];   
     $video_roomAr = $dh->get_videoroom_info($id_course_instance, $tempo_avvio, $interval);

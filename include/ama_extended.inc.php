@@ -81,41 +81,43 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 				{
 					// get ExtraFields array
 					$extraFields = $userObj->getExtraFields();
-					// if $user_id not found, build an insert into else an update
-					if ($user_id===false)
-					{
-						$saveQry = "INSERT INTO ".$extraTableName." ( ".ADAUser::getExtraTableKeyProperty().", ";
-						$saveQry .= implode(", ", $extraFields);
-						$saveQry .= ") VALUES (".$id_student. str_repeat(",?", count($extraFields)).")" ;
-					}
-					else
-					{
-						$saveQry = "UPDATE ".$extraTableName." SET ";
-						foreach ($extraFields as $num=>$field)
+					if (!AMA_DB::isError($extraFields) && is_array($extraFields) && count($extraFields)>0) {
+						// if $user_id not found, build an insert into else an update
+						if ($user_id===false)
 						{
-							$saveQry .= $field."=?";
-							if ($num < count($extraFields)-1) $saveQry .= ", ";
-						}
-						$saveQry .= " WHERE ".ADAUser::getExtraTableKeyProperty()."=".$id_student;
-					}
-	
-					// build valuesAr with extraFields only
-					foreach ($extraFields as $field)
-					{
-						if (isset ($user_dataAr[$field]))
-						{
-							// check if it's a date and convert it to timestamp
-							if (stripos($field,"date") !==false)
-								$valuesAr[] = $this->date_to_ts($user_dataAr[$field]);
-							else
-								$valuesAr[] = $user_dataAr[$field];
+							$saveQry = "INSERT INTO ".$extraTableName." ( ".ADAUser::getExtraTableKeyProperty().", ";
+							$saveQry .= implode(", ", $extraFields);
+							$saveQry .= ") VALUES (".$id_student. str_repeat(",?", count($extraFields)).")" ;
 						}
 						else
-							$valuesAr[] = null;
+						{
+							$saveQry = "UPDATE ".$extraTableName." SET ";
+							foreach ($extraFields as $num=>$field)
+							{
+								$saveQry .= $field."=?";
+								if ($num < count($extraFields)-1) $saveQry .= ", ";
+							}
+							$saveQry .= " WHERE ".ADAUser::getExtraTableKeyProperty()."=".$id_student;
+						}
+						
+						// build valuesAr with extraFields only
+						foreach ($extraFields as $field)
+						{
+							if (isset ($user_dataAr[$field]))
+							{
+								// check if it's a date and convert it to timestamp
+								if (stripos($field,"date") !==false)
+									$valuesAr[] = $this->date_to_ts($user_dataAr[$field]);
+								else
+									$valuesAr[] = $user_dataAr[$field];
+							}
+							else
+								$valuesAr[] = null;
+						}
+						$result = $this->queryPrepared($saveQry, $valuesAr);
+						if (AMA_DB::isError($result)) $retval = $result;
+						else $retval = true;
 					}
-					$result = $this->queryPrepared($saveQry, $valuesAr);
-					if (AMA_DB::isError($result)) $retval = $result;
-					else $retval = true;
 				}
 			}
 			else if (in_array($extraTableName, ADAUser::getLinkedTables()))

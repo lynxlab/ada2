@@ -140,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                         $chatroom_ha['chat_type']= PUBLIC_CHAT;
                         break;
                 case '-- select --':
+                		$chatroom_old_ha = $chatroomObj->get_info_chatroomFN($id_room);
                         $chatroom_ha['chat_type']= $chatroom_old_ha['tipo_chat'];
                         break;
                 default:
@@ -179,10 +180,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                  $err_msg.= translateFN("Torna all'elenco delle tue");
                  $err_msg.=" <a href=list_chatrooms.php>".translateFN("chatroom")."</a>";
             } else {
-                $errorObj = $chatroom->message;
-                if ($errorObj == "errore: record già esistente"){
-                          $err_msg = "<strong>".translateFN("La chatroom &egrave; stata gi&agrave; aggiornata con questi dati.")."</strong>";
-                }
+            	if (is_object($chatroom)) {
+	                $errorObj = $chatroom->message;
+	                if ($errorObj == "errore: record già esistente"){
+	                          $err_msg = "<strong>".translateFN("La chatroom &egrave; stata gi&agrave; aggiornata con questi dati.")."</strong>";
+	                }
+            	}
             }
     }
 } else {
@@ -221,10 +224,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 
      //get time and date and transform it to sting format
      //ts2dFN()
-    $old_start_time = $dh->ts_to_date($chatroom_old_ha['tempo_avvio'], "%H:%M:%S");
-     $old_start_day = $dh->ts_to_date($chatroom_old_ha['tempo_avvio']);
-     $old_end_time = $dh->ts_to_date($chatroom_old_ha['tempo_fine'], "%H:%M:%S");
-     $old_end_day = $dh->ts_to_date($chatroom_old_ha['tempo_fine']);
+    $old_start_time = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_avvio'], "%H:%M:%S");
+     $old_start_day = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_avvio']);
+     $old_end_time = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_fine'], "%H:%M:%S");
+     $old_end_day = AMA_DataHandler::ts_to_date($chatroom_old_ha['tempo_fine']);
     // different chat type options are available for admins and for tutors
     // admin case
     $chat_room_HA['start_day'] = $old_start_day;
@@ -269,7 +272,7 @@ $data =  array( 'banner'=> $banner,
                 'star'=>$star,
                 'course_title'=>$course_title,
                 'data'=>$form->getHtml(),
-                'error'=> $err_msg
+                'error'=> isset($err_msg) ? $err_msg : ''
                );
 
 

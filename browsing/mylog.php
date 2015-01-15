@@ -39,7 +39,7 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
 //$self = whoami();
 include_once 'include/browsing_functions.inc.php';
 
-if ($courseInstanceObj instanceof Course_instance) {
+if (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
@@ -209,7 +209,7 @@ $export_log_link = "<a href=$http_root_dir/browsing/mylog.php?op=export>".transl
 // $online_users_listing_mode = 2  : username and email of users
 
 $online_users_listing_mode = 2;
-$online_users = ADALoggableUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
+$online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance,$online_users_listing_mode);
 
 
 /*
@@ -291,18 +291,16 @@ HTML page building
          $body_onload = "includeFCKeditor('log_today');";
          $options = array('onload_func' => $body_onload);
 
-          if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) 
-     {        
-     
-        $layout_dataAR['JS_filename'] = array(
-        ROOT_DIR.'/js/browsing/mylog.js');   //for defaultSelfInstruction.tpl
-     }
+         if ($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))  {
+         	$layout_dataAR['JS_filename'] = array(
+	        ROOT_DIR.'/js/browsing/mylog.js');   //for defaultSelfInstruction.tpl
+	     } else $layout_dataAR = array();
 
 $node_data = array(
                    'banner'=>$banner,
                    'course_title'=>'<a href="main_index.php">'.$course_title.'</a>',
                    'today'=>$ymdhms,
-                   'path'=>$node_path,
+                   'path'=>isset($node_path) ? $node_path : '',
                    'user_name'=>$userObj->nome,
                    'user_type'=>$user_type,
                    'user_level'=>$user_level,
@@ -310,11 +308,11 @@ $node_data = array(
                    'data'=>$log_data,
 		   'menu'=>$menu,
 		   'help'=>$help,
-                   'bookmarks'=>$user_bookmarks,
+                   'bookmarks'=>isset($user_bookmarks) ? $user_bookmarks : '',
                    'status'=>$status,
-                   'profilo'=>$profilo,
-                   'myforum'=>$my_forum,
-                   'title'=>$node_title,
+                   'profilo'=>isset($profilo) ? $profilo : '',
+                   'myforum'=>isset($my_forum) ? $my_forum : '',
+                   'title'=>isset($node_title) ? $node_title : '',
                    'edit_profile'=> $userObj->getEditProfilePage()
                   );
 
@@ -335,8 +333,8 @@ $node_data = array(
     $node_data['help']=$help->getHtml();
 }
 
-$menuOptions['self_instruction'] = $self_instruction;
-ARE::render($layout_dataAR,$node_data, NULL, $options,$menuOptions);
+if(isset($self_instruction)) $menuOptions['self_instruction'] = $self_instruction;
+ARE::render($layout_dataAR,$node_data, NULL, $options,isset($menuOptions) ? $menuOptions : null);
 
 /* Versione XML:
 

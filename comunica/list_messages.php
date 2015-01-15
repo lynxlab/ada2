@@ -83,7 +83,7 @@ $banner = include ROOT_DIR.'/include/banner.inc.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // build array of messages ids to be set as read
-  if (count($form['read'])) {
+  if (isset($form['read']) && count($form['read'])) {
     $to_set_as_read_ar = $form['read'];
   }
   else {
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 
   // build array of messages ids to be removed
-  if (count($form['del'])) {
+  if (isset($form['del']) && count($form['del'])) {
     $to_remove_ar = $form['del'];
   }
   else {

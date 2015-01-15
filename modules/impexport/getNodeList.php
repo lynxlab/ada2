@@ -51,7 +51,7 @@ if ($courseID > 0)
 {
 	$rootNode = $courseID.exportHelper::$courseSeparator."0";
 	// need an Import/Export DataHandler
-	$dh =& AMAImpExportDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+	$dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 	
 	$exportHelper = new exportHelper($courseID);
 	

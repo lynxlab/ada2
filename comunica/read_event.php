@@ -51,9 +51,9 @@ if ($id_course) {
   $sess_id_course = $id_course;
 }
 
-if ($id_course_instance) {
+if (isset($id_course_instance)) {
   $sess_id_course_instance = $id_course_instance;
-}
+} else $sess_id_course_instance = null;
 
 if (isset($del_msg_id) and !empty($del_msg_id)){
 
@@ -124,7 +124,12 @@ $destinatario = str_replace (",", ", ", $msg_ha['destinatari']);
 
 
 $dest_encode = urlencode($mittente);
-$testo= urlencode(trim($message_text));
+if (isset($message_text) && strlen($message_text)>0) {
+	$testo= urlencode(trim($message_text));
+} else {
+	$message_text='';
+	$testo='';
+}
 $oggetto_url=urlencode(trim($oggetto));
 
 // Registrazione variabili per replay

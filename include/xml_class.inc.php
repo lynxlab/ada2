@@ -57,7 +57,7 @@ require_once "XML/Parser.php";
 require_once "XML/Unserializer.php";
 
 	$xml_data = $this->xml_data ;
-	$unserializer = &new XML_Unserializer();
+	$unserializer = new XML_Unserializer();
 	$unserializer->unserialize($xml_data);
 	$data = $unserializer->getUnserializedData();
 	$this->data = $data;

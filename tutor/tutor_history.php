@@ -228,7 +228,7 @@ switch ($mode) {
         }
 
         $studentObj->get_exercise_dataFN($sess_id_course_instance, $id_student);
-        $st_exercise_dataAr =$userObj->user_ex_historyAr;
+        $st_exercise_dataAr = isset($userObj->user_ex_historyAr) ? $userObj->user_ex_historyAr : null;
         $st_score = 0;
         $st_exer_number = 0 ;
         if (is_array($st_exercise_dataAr)) {
@@ -248,6 +248,9 @@ switch ($mode) {
         break;
 
 } // end switch  mode
+
+if (!isset($op)) $op = null;
+
 switch ($op) {
     case 'export':
     	
@@ -287,31 +290,37 @@ switch ($op) {
     	
     	// begin table 0
     	$PDFdata['table'][0]['data'] = $user_historyObj->history_last_nodes_FN(10,false);
-    	// add sequence number to each returned element
-    	foreach ($PDFdata['table'][0]['data'] as $num=>$row) $PDFdata['table'][0]['data'][$num]['num'] = $num+1;
-    	// prepare labels for header row and set columns order
-    	// first column is sequence number
-    	$PDFdata['table'][0]['cols'] = array ('num'=>'#');
-    	// then all the others as returned in data, we just need the keys so let's take row 0 only
-    	foreach ( $PDFdata['table'][0]['data'][0] as $key=>$val ) 
-			if ($key!=='num') $PDFdata['table'][0]['cols'][$key] = translateFN($key);
-		$PDFdata['table'][0]['title'] =  translateFN("Ultime ".count($PDFdata['table'][0]['data'])." visite");
+    	if (!AMA_DB::isError($PDFdata['table'][0]['data']) &&
+    		is_array($PDFdata['table'][0]['data']) && count($PDFdata['table'][0]['data'])>0) {
+	    	// add sequence number to each returned element
+	    	foreach ($PDFdata['table'][0]['data'] as $num=>$row) $PDFdata['table'][0]['data'][$num]['num'] = $num+1;
+	    	// prepare labels for header row and set columns order
+	    	// first column is sequence number
+	    	$PDFdata['table'][0]['cols'] = array ('num'=>'#');
+	    	// then all the others as returned in data, we just need the keys so let's take row 0 only
+	    	foreach ( $PDFdata['table'][0]['data'][0] as $key=>$val ) 
+				if ($key!=='num') $PDFdata['table'][0]['cols'][$key] = translateFN($key);
+			$PDFdata['table'][0]['title'] =  translateFN("Ultime ".count($PDFdata['table'][0]['data'])." visite");    		
+    	} else unset($PDFdata['table'][0]);
     	
     	// begin table 1
-    	$PDFdata['table'][1]['data'] =  $user_historyObj->history_nodes_visited_FN(false);    	
-    	// add sequence number to each returned element
-    	foreach ($PDFdata['table'][1]['data'] as $num=>$row) $PDFdata['table'][1]['data'][$num]['num'] = $num+1;
-    	// prepare labels for header row and set columns order
-    	// first column is sequence number
-    	$PDFdata['table'][1]['cols'] = array ('num'=>'#');
-    	// then all the others as returned in data, we just need the keys so let's take row 0 only
-    	foreach ( $PDFdata['table'][1]['data'][0] as $key=>$val )
-    		if ($key!=='num') $PDFdata['table'][1]['cols'][$key] = translateFN($key);
-    	$PDFdata['table'][1]['title'] =  translateFN("Nodi ordinati per numero di visite");		
+    	$PDFdata['table'][1]['data'] =  $user_historyObj->history_nodes_visited_FN(false);
+    	if (!AMA_DB::isError($PDFdata['table'][1]['data']) &&
+    		is_array($PDFdata['table'][1]['data']) && count($PDFdata['table'][1]['data'])>0) {
+	    	// add sequence number to each returned element
+	    	foreach ($PDFdata['table'][1]['data'] as $num=>$row) $PDFdata['table'][1]['data'][$num]['num'] = $num+1;
+	    	// prepare labels for header row and set columns order
+	    	// first column is sequence number
+	    	$PDFdata['table'][1]['cols'] = array ('num'=>'#');
+	    	// then all the others as returned in data, we just need the keys so let's take row 0 only
+	    	foreach ( $PDFdata['table'][1]['data'][0] as $key=>$val )
+	    		if ($key!=='num') $PDFdata['table'][1]['cols'][$key] = translateFN($key);
+	    	$PDFdata['table'][1]['title'] =  translateFN("Nodi ordinati per numero di visite");		
+    	} else unset($PDFdata['table'][1]);  	
     	
     	require_once ROOT_DIR.'/include/PdfClass.inc.php';
 
-		$pdf =& new PdfClass('',$PDFdata['title']);
+		$pdf = new PdfClass('',$PDFdata['title']);
 		
 		$pdf->addHeader($PDFdata['title'], ROOT_DIR.'/layout/'.$userObj->template_family.'/img/header-logo.png' )
 		     ->addFooter( translateFN("Report")." ". translateFN("generato")." ". translateFN("il")." ". date ("d/m/Y")." ".
@@ -331,14 +340,16 @@ switch ($op) {
     	$pdf->ezText($PDFdata['block3'],$pdf->docFontSize,array('justification'=>'center'));
     	$pdf->ezSetDy(-20);
     	
-		// tabels output    	
-    	foreach ( $PDFdata['table'] as $count=>$PDFTable )
-    	{
-    		$pdf->ezTable($PDFTable['data'], $PDFTable['cols'],
-    				$PDFTable['title'],
-    				array ('width'=>$pdf->ez['pageWidth'] - $pdf->ez['leftMargin'] - $pdf->ez['rightMargin'] ));
-    		if ($count < count($PDFdata['table'])-1  ) $pdf->ezSetDy(-20);  
-    	}
+		// tables output
+		if (is_array($PDFdata['table'])) {
+	    	foreach ( $PDFdata['table'] as $count=>$PDFTable )
+	    	{
+	    		$pdf->ezTable($PDFTable['data'], $PDFTable['cols'],
+	    				$PDFTable['title'],
+	    				array ('width'=>$pdf->ez['pageWidth'] - $pdf->ez['leftMargin'] - $pdf->ez['rightMargin'] ));
+	    		if ($count < count($PDFdata['table'])-1  ) $pdf->ezSetDy(-20);  
+	    	}
+		}    	
 
     	$pdf->saveAs($filename);
     	
@@ -374,7 +385,7 @@ $chat_link = "<a href=\"$http_root_dir/comunica/ada_chat.php\" target=_blank>".t
 $menu_07 = menu_detailsFN($id_student,$id_course_instance,$id_course);
 
 $content_dataAr = array(
-        'help' => $help,
+        'help' => isset($help) ? $help : '',
         'course_title'=> $course_title . ', ' . translateFN('iniziato il') . ' ' . $start_date,
         'user_name'=>$user_name,
         'user_type' => $user_type,
@@ -386,8 +397,8 @@ $content_dataAr = array(
         'student'=>$student_name,
         'chat_link'=>$chat_link,
         'history'=>$history,
-        'menu_07'=>$menu_07,
-        'menu_08'=>$menu_08,
+        'menu_07'=>isset($menu_07) ? $menu_07 : '',
+        'menu_08'=>isset($menu_08) ? $menu_08 : '',
         'messages'=>$user_messages->getHtml(),
         'agenda'=>$user_agenda->getHtml()
 );

@@ -51,6 +51,8 @@ if (!isset($_GET['mode'])) {
   $mode = $_GET['mode'];
 }
 
+if (!isset($op)) $op = null;
+
 switch ($op) {
     case 'student_level':
         $studenti_ar = array($id_student);
@@ -76,6 +78,7 @@ switch ($op) {
             }
         }
         if ($mode=='update') {
+        	if (!isset($order)) $order=null;
             $courses_student = get_student_coursesFN($id_instance,$id_course,$order);
         } else {
             // load
@@ -247,11 +250,13 @@ switch ($op) {
 
     case 'zoom_student':
         //$sess_id_course_instance = $id_instance;
-        $info_course = $dh->get_course($id_course); // Get title course
-        if  (AMA_DataHandler::isError($info_course)) {
-            $msg = $info_course->getMessage();
-        } else {
-            $course_title = $info_course['titolo'];
+        if (isset($id_course)) {
+	        $info_course = $dh->get_course($id_course); // Get title course
+	        if  (AMA_DataHandler::isError($info_course)) {
+	            $msg = $info_course->getMessage();
+	        } else {
+	            $course_title = $info_course['titolo'];
+	        }
         }
         // Who's online
         // $online_users_listing_mode = 0 (default) : only total numer of users online
@@ -316,7 +321,7 @@ switch ($op) {
     	{
     		require_once ROOT_DIR.'/include/PdfClass.inc.php';
     		
-    		$pdf =& new PdfClass('landscape', strip_tags(html_entity_decode($courses_student['caption'])) );
+    		$pdf = new PdfClass('landscape', strip_tags(html_entity_decode($courses_student['caption'])) );
     		
     		$pdf->addHeader(strip_tags(html_entity_decode($caption)),
     						ROOT_DIR.'/layout/'.$userObj->template_family.'/img/header-logo.png', 14)
@@ -369,6 +374,7 @@ switch ($op) {
         $data = get_courses_tutorFN($_SESSION['sess_id_user']);
         $help = translateFN("Da qui il Tutor può visualizzare l'elenco dei corsi di cui è attualmente tutor.");
         $online_users_listing_mode = 2;
+        if (!isset($id_course_instance)) $id_course_instance=null;
         $online_users = ADALoggableUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
 
 
@@ -381,6 +387,7 @@ $banner = include ROOT_DIR . '/include/banner.inc.php';
 
 $online_users_listing_mode = 2;
 //$online_users = ADAGenericUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
+if (!isset($id_course_instance)) $id_course_instance=null;
 $online_users = ADALoggableUser::get_online_usersFN($id_course_instance, $online_users_listing_mode);
 
 if (!empty($id_instance))
@@ -393,23 +400,25 @@ if (!empty($id_instance))
 		$course_title .= ' - '.$courseInstanceObj->title;
 	}
 
-	if (!is_object($nodeObj)) {
+	if (!isset($nodeObj) || !is_object($nodeObj)) {
+		if (!isset($node)) $node=null;
 		$nodeObj = read_node_from_DB($node);
 	}
+	
 	if (!ADA_Error::isError($nodeObj) AND isset($courseObj->id)) {
 		$_SESSION['sess_id_course'] = $courseObj->id;
 		$node_path = $nodeObj->findPathFN();
 	}
 }
 
-if (!empty($course_title))
+if (isset($courseObj) && $courseObj instanceof Course && strlen($courseObj->getTitle())>0)
 {
-	$course_title = ' > <a href="'.HTTP_ROOT_DIR.'/browsing/main_index.php">'.$course_title.'</a>';
+	$course_title = ' > <a href="'.HTTP_ROOT_DIR.'/browsing/main_index.php">'.$courseObj->getTitle().'</a>';
 }
 
 $content_dataAr = array(
-    'course_title'=>translateFN('Modulo tutor').$course_title,
-    'path'=>$node_path,
+    'course_title'=>translateFN('Modulo tutor').(isset($course_title) ? (' '.$course_title): null),
+    'path'=>isset($node_path) ? $node_path : '',
     'banner' => $banner,
     'user_name' => $user_name,
     'user_type' => $user_type,
@@ -422,7 +431,7 @@ $content_dataAr = array(
     'dati'  => $data,
     'status' => $status,
     'chat_users' => $online_users,
-    'chat_link' => $chat_link,
+    'chat_link' => isset($chat_link) ? $chat_link : ''
  );
 
 $layout_dataAr['CSS_filename'] = array (
@@ -435,11 +444,11 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_DATATABLE,
 		JQUERY_NO_CONFLICT
 );
-
-$menuOptions['id_course'] = $id_course;
-$menuOptions['id_instance'] = $id_instance;
-$menuOptions['id_course_instance'] = $id_instance;
-$menuOptions['id_student'] =$id_student;
+$menuOptions = array();
+if (isset($id_course))   $menuOptions['id_course'] = $id_course;
+if (isset($id_instance)) $menuOptions['id_instance'] = $id_instance;
+if (isset($id_instance)) $menuOptions['id_course_instance'] = $id_instance;
+if (isset($id_student))  $menuOptions['id_student'] =$id_student;
 
 $optionsAr['onload_func'] = 'initDoc(';
 if (isset($id_course) && intval($id_course)>0 && isset($id_instance) && intval($id_instance)>0)

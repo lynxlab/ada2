@@ -196,10 +196,10 @@ function sumDateTimeFN ($arraydate){
 
 
 function dt2tsFN ($date){
-  $date_ar = split ('[\\/.-]', $date);
+  $date_ar = preg_split ('/[\\/.-]/', $date);
   if (count($date_ar)<3)
   return 0;
-  $format_ar = split ('[/.-]',ADA_DATE_FORMAT);
+  $format_ar = preg_split ('#[/.-]#',ADA_DATE_FORMAT);
   if ($format_ar[0]=="%d"){
     $giorno = (int)$date_ar[0];
     $mese = (int)$date_ar[1];
@@ -428,7 +428,8 @@ function whoami(){
     $parent = $PHP_SELF; //register_globals = off AND   PHP<4.2.2
   }
 
-  $self = array_shift(explode('.',basename($parent)));  // = es. view
+  $exploded = explode('.',basename($parent));
+  $self = array_shift($exploded);  // = es. view
   $GLOBALS['SELF'] = $self;
   return $self;
 }
@@ -573,6 +574,13 @@ function dirTree($path) {
   return ( $dirlist ) ;
 }
 
+function delTree($dir) {
+	$files = array_diff(scandir($dir), array('.','..'));
+	foreach ($files as $file) {
+		(is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
+	}
+	return rmdir($dir);
+}
 
 function leggidir($dir,$ext=""){
   return read_dir($dir);

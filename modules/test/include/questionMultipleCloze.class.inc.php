@@ -649,7 +649,7 @@ public function countSpanAndRemoveClozeMarker($params) {
 						}
 						$div = CDOMElement::create('div','class:'.$class);
 						$span = CDOMElement::create('span','class:answerPopup');
-						$span->addChild(new CText($this->exerciseWords[$order]));
+						if (isset($this->exerciseWords[$order])) $span->addChild(new CText($this->exerciseWords[$order]));
 						$div->addChild($span);
 						if ($this->rating || $this->rating_answer) {
 							$span->setAttribute('title', $this->id_nodo.'_'.$order);

@@ -74,7 +74,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
              */
             $data_inizio_previsto = dt2tsFN($_POST['data_inizio_previsto']);
             $durata = $_POST['durata'];
-            $data_fine = $dh->add_number_of_days($durata,$data_inizio);
+            $data_fine = $dh->add_number_of_days($durata,isset($data_inizio) ? $data_inizio : null);
             $id_istanza_corso = $result;
             $chatroom_ha['id_chat_owner']= $userObj->id_user;
             $chatroom_ha['chat_title'] = $course_title; // $_POST['chat_title'];
@@ -123,7 +123,7 @@ $content_dataAr = array(
     'label' => $label,
     'help' => $help,
     'data' => $form->getHtml(),
-    'module' => $module,
+    'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
 

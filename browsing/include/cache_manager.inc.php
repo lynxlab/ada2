@@ -46,6 +46,7 @@ class CacheManager {
     // sets the properties static_mode and cache_mode    
     switch ($id_profile){
         case AMA_TYPE_VISITOR:
+        default:
            if (isset($_GET['cachemode'])){ // superseed constants
                 $cache_mode = $_GET['cachemode'];
                 switch ($cache_mode ){

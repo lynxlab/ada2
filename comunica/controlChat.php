@@ -344,7 +344,7 @@ else
 
 // write the time of the event into the utente_chatroom table
 $last_event= $chatroomObj->set_last_event_timeFN($sess_id_user,$id_chatroom);
-if (AMA_DataHandler::isError($bannedusers_ar))
+if (isset($bannedusers_ar) && AMA_DataHandler::isError($bannedusers_ar))
 {
     exitWith_JSON_Error(translateFN("Errore nell'aggiornamento del tempo relativo all'utlimo evento"));
 }

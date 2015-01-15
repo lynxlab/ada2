@@ -277,16 +277,16 @@ $buttonSubscriptions->addChild (new CText(translateFN('Upload file')));
 $optionsAr = array('onload_func' => "initDoc();");
 
 $content_dataAr = array(
-'banner'=> $banner,
-'path' => $path,
-'label' => $label,
+'banner'=> isset($banner) ? $banner : '',
+'path' => isset($path) ? $path : '',
+'label' => isset($label) ? $label : '',
 'course_title'=>translateFN('Gestione classe - ').$courseObj->getTitle().' ['.$courseId.'] - '.$courseInstanceObj->getTitle().' ['.$instanceId.']',
 'status'=> $status,
 'user_name'=> $user_name,
 'user_type'=> $user_type,
-'menu' => $menu,
+'menu' => isset($menu) ? $menu : '',
 'help' => $help,
-'data' => $data,
+'data' => isset($data) ? $data : '',
 'table'=>$table,
 'edit_profile'=> $userObj->getEditProfilePage(),
 'buttonSubscription'=>$buttonSubscription->getHtml(),
