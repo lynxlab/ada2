@@ -752,6 +752,7 @@ function clear_dataFN($variableToClearAr=array()) {
 }
     
 /**
+ *  Sara-14/01/2015
  *  set array session containing services_type definition.
  */
 function loadServiceTypes(){

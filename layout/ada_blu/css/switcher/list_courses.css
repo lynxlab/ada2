@@ -1,0 +1,64 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 12-gen-2015, 14.45.53
+    Author     : sara
+*/
+
+@import url("../switcher/tooltips.css");
+
+#data{display:none;}
+
+.fg-toolbar.ui-widget-header {
+    background: repeat-x scroll 50% 50% #BCD6D7;
+    border: 1px solid #A3A99A;
+    color: #585857;
+    font-weight: bold;
+    height: 30px;
+}
+.tooltip {
+   background: transparent;
+   border-color: transparent;
+   cursor: default;
+ }
+.action_Column{width: 32%;}
+
+#table_list_courses a,li{
+    background: transparent !important;
+    text-decoration: none;
+}
+#table_list_courses a:hover{
+    color:red;
+}
+.first ul li{
+    border-bottom: transparent;
+}
+
+/**
+ * DataTables styles
+*/ 
+
+#table_list_courses { width: 100% !important; }
+#table_list_courses tbody td { height: 2.5em; border:none; vertical-align: middle;}
+#table_list_courses thead th { padding-right: 5px; border-bottom: 1px solid #999;}
+#table_list_courses .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%;}
+#table_list_courses_previous,
+#table_list_courses_next { margin:0; padding: 3px; }
+#table_list_courses_length,
+#table_list_courses_filter,
+#table_list_courses_paginate { padding: 5px; }
+#table_list_courses_info { padding: 8px 0 0 5px; }
+#table_list_courses .dontwrap { white-space: nowrap; }
+#table_list_courses caption { width: 50%; margin: -25px auto 0 auto; position: relative; font-weight: bold;}
+#table_list_courses tfoot th { border-top: 1px solid #999;font-size: 78%; }
+/*
+ * end #table_log_report jQuery dataTable
+ */
+
+
+
+
+
