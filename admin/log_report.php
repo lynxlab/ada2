@@ -108,13 +108,20 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                     $span_label->setAttribute('class', 'Rate tooltip');
                     $span_label->addChild(new CText($tableInfo['label']));
                     $thead_data[$key]=$span_label->getHtml();
+                }elseif(strpos($key,'tot_Session')===0){
+                    $title=  translateFN('Totale edizioni calcolato sommando le edizioni iniziate, le edizioni terminate, le edizioni esistenti me non ancora iniziate');
+                    $span_label = CDOMElement::create('span');
+                    $span_label->setAttribute('title', $title);
+                    $span_label->setAttribute('class', 'Rate tooltip');
+                    $span_label->addChild(new CText($tableInfo['label']));
+                    $thead_data[$key]=$span_label->getHtml();
                 }
                 else{
                     $thead_data[$key]=translateFN($tableInfo['label']);
                 }
             }
             foreach($log_dataAr as $providerName=>$providerData){
-                if((isset($providerData[$key]) && is_numeric($providerData[$key]) && intval($providerData[$key])>=0)||(isset($providerData[$key]) && !is_numeric($providerData[$key]))){
+                if(isset($providerData[$key]) && ((is_numeric($providerData[$key]) && intval($providerData[$key])>=0)||( !is_numeric($providerData[$key])))){
                     if($userObj->getType()==AMA_TYPE_SWITCHER){
                         if(array_key_exists(preg_replace('/course_/', '',$key), $_SESSION['service_level'])){
                             $service_id=preg_replace('/course_/', '',$key);
