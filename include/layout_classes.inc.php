@@ -356,7 +356,8 @@ class CSS {
         	
         	if (is_file($CSS_provider_dir.$module_dir."/default.css"))
         		$CSS_files[] = $CSS_provider_dir."default.css";
-        	else if (is_file($CSS_provider_dir."main/default.css"))
+        	
+        	if (is_file($CSS_provider_dir."main/default.css"))
         		$CSS_files[] = $CSS_provider_dir."main/default.css";
         	
         	if (is_file($CSS_provider_dir.$module_dir."/".$node_type.".css"))
