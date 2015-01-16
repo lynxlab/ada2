@@ -88,10 +88,10 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
             if(!isset($thead_data[$key])){
                 /* init Tooltip */
                 if(strpos($key,'course_')===0){
-                    $title=  translateFN('Numero corsi di tipo - '.$tableInfo['label']);
+                    $title=  translateFN('Numero corsi di tipo : '.$tableInfo['label']);
                     $span_label = CDOMElement::create('span');
                     $span_label->setAttribute('title', $title);
-                    $span_label->setAttribute('class', 'Rate tooltip');
+                    $span_label->setAttribute('class', 'tooltip');
                     $span_label->addChild(new CText($tableInfo['label']));
                     $thead_data[$key]=$span_label->getHtml();
                 }else{
@@ -100,7 +100,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $title=  translateFN('Utenti registrati al provider');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
@@ -108,79 +108,119 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $title=  translateFN('Utenti iscritti ad almeno un corso');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
+                            $span_label->addChild(new CText($tableInfo['label']));
+                            $thead_data[$key]=$span_label->getHtml();
+                            break;
+                        case 'course':
+                            $title=  translateFN('Totale corsi');
+                            $span_label = CDOMElement::create('span');
+                            $span_label->setAttribute('title', $title);
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'sessions_started':
-                            $title=  translateFN('Classi iniziate');
+                            $title=  translateFN('Edizioni in corso');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'sessions_closed':
-                            $title=  translateFN('Classi terminate');
+                            $title=  translateFN('Edizioni terminate');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_CompletedStatus_sessStarted_Rate':
-                            $title=  translateFN('Percentuale di completamento delle classi in corso');
+                            $title=  translateFN('Percentuale di completamento delle edizioni in corso');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_CompletedStatus_sessionEnd_Rate':
-                            $title=  translateFN('Percentuale di completamento delle classi terminate');    
+                            $title=  translateFN('Percentuale di completamento delle edizioni terminate');    
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'tot_student_CompletedStatus_Rate':
-                            $title=  translateFN('Percentuale di completamento calcolata sulle classi in corso e su quelle terminate');
+                            $title=  translateFN('Percentuale di completamento calcolata sulle edizioni in corso e su quelle terminate');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'tot_Session':
-                            $title=  translateFN('Totale classi calcolato sommando le edizioni iniziate, le edizioni terminate, le edizioni esistenti me non ancora iniziate');
+                            $title=  translateFN('Totale edizioni calcolato sommando le edizioni in corso, le edizioni terminate, le edizioni esistenti me non ancora iniziate');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_CompletedStatus_sessStarted':
-                            $title=  translateFN('Numero di studenti che hanno completato le classi in corso');
+                            $title=  translateFN('Numero di studenti che hanno completato le edizioni in corso');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_CompletedStatus_sessionEnd':
-                            $title=  translateFN('Numero di studenti che hanno completato le classi terminate');
+                            $title=  translateFN('Numero di studenti che hanno completato le edizioni terminate');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'tot_student_CompletedStatus':
-                            $title=  translateFN('Quantità calcolata  sommando gli studenti che hanno completato le classi iniziate e quelli che hanno compleato le classi terminate');
+                            $title=  translateFN('Quantità calcolata  sommando gli studenti che hanno completato le edizioni iniziate e quelli che hanno compleato le edizioni terminate');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
-                            $span_label->setAttribute('class', 'Rate tooltip');
+                            $span_label->setAttribute('class', 'tooltip');
+                            $span_label->addChild(new CText($tableInfo['label']));
+                            $thead_data[$key]=$span_label->getHtml();
+                            break;
+                        case 'visits':
+                            $title=  translateFN('Pagine visitate');
+                            $span_label = CDOMElement::create('span');
+                            $span_label->setAttribute('title', $title);
+                            $span_label->setAttribute('class', 'tooltip');
+                            $span_label->addChild(new CText($tableInfo['label']));
+                            $thead_data[$key]=$span_label->getHtml();
+                            break;
+                        case 'system_messages':
+                            $title=  translateFN('Numero di messaggi');
+                            $span_label = CDOMElement::create('span');
+                            $span_label->setAttribute('title', $title);
+                            $span_label->setAttribute('class', 'tooltip');
+                            $span_label->addChild(new CText($tableInfo['label']));
+                            $thead_data[$key]=$span_label->getHtml();
+                            break;
+                        case 'chatrooms':
+                            $title=  translateFN('Numero di chat');
+                            $span_label = CDOMElement::create('span');
+                            $span_label->setAttribute('title', $title);
+                            $span_label->setAttribute('class', 'tooltip');
+                            $span_label->addChild(new CText($tableInfo['label']));
+                            $thead_data[$key]=$span_label->getHtml();
+                            break;
+                        case 'videochatrooms':
+                            $title=  translateFN('Numero di chatrooms');
+                            $span_label = CDOMElement::create('span');
+                            $span_label->setAttribute('title', $title);
+                            $span_label->setAttribute('class', 'tooltip');
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
@@ -244,12 +284,12 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
 }
 
 $totalAr=array();
-$student_subscribedStatus_sessStarted=0;
-$student_CompletedStatus_sessStarted=0;
-$student_subscribedStatus_sessEnd=0;
-$student_CompletedStatus_sessionEnd=0;
-$tot_student_subscribedStatus=0;
-$tot_student_CompletedStatus=0;
+$Tot_student_subscribedStatus_sessStarted=0;
+$Tot_student_CompletedStatus_sessStarted=0;
+$Tot_student_subscribedStatus_sessEnd=0;
+$Tot_student_CompletedStatus_sessionEnd=0;
+$Tot_student_subscribedStatus=0;
+$Tot_student_CompletedStatus=0;
 
 if($userObj->getType()==AMA_TYPE_ADMIN){
     /* values for rates calculation in tfoot */
@@ -257,22 +297,22 @@ if($userObj->getType()==AMA_TYPE_ADMIN){
         foreach ($singleProviderAr as $key => $value) {
             switch($key){
                 case 'student_subscribedStatus_sessStarted':
-                    $student_subscribedStatus_sessStarted += $singleProviderAr[$key];
+                    $Tot_student_subscribedStatus_sessStarted += $singleProviderAr[$key];
                     break;
                 case 'student_CompletedStatus_sessStarted':
-                    $student_CompletedStatus_sessStarted += $singleProviderAr[$key];
+                    $Tot_student_CompletedStatus_sessStarted += $singleProviderAr[$key];
                     break;
                 case 'student_subscribedStatus_sessEnd':
-                    $student_subscribedStatus_sessEnd += $singleProviderAr[$key];
+                    $Tot_student_subscribedStatus_sessEnd += $singleProviderAr[$key];
                     break;
                 case 'student_CompletedStatus_sessionEnd':
-                    $student_CompletedStatus_sessionEnd += $singleProviderAr[$key];
+                    $Tot_student_CompletedStatus_sessionEnd += $singleProviderAr[$key];
                     break;
                 case 'tot_student_subscribedStatus':
-                    $tot_student_subscribedStatus += $singleProviderAr[$key];
+                    $Tot_student_subscribedStatus += $singleProviderAr[$key];
                     break;
                 case 'tot_student_CompletedStatus':
-                    $tot_student_CompletedStatus += $singleProviderAr[$key];
+                    $Tot_student_CompletedStatus += $singleProviderAr[$key];
                     break;
                 
                 }
@@ -286,18 +326,18 @@ if($userObj->getType()==AMA_TYPE_ADMIN){
                     $totalAr[$key]=0;
                 }
                 if(strpos($key,'student_CompletedStatus_sessStarted_Rate')===0){
-                    if($student_subscribedStatus_sessStarted >0 || $student_CompletedStatus_sessStarted >0){
-                        $totalAr[$key]=number_format(($student_CompletedStatus_sessStarted*100)/($student_subscribedStatus_sessStarted+$student_CompletedStatus_sessStarted),1);
+                    if($Tot_student_subscribedStatus_sessStarted >0 || $Tot_student_CompletedStatus_sessStarted >0){
+                        $totalAr[$key]=number_format(($Tot_student_CompletedStatus_sessStarted*100)/($Tot_student_subscribedStatus_sessStarted+$Tot_student_CompletedStatus_sessStarted),1);
                     }
                     else{$totalAr[$key]=0;}
                 }elseif(strpos($key,'student_CompletedStatus_sessionEnd_Rate')===0){
-                    if($student_subscribedStatus_sessEnd >0 || $student_CompletedStatus_sessionEnd >0){
-                        $totalAr[$key]=number_format(($student_CompletedStatus_sessionEnd*100)/($student_subscribedStatus_sessEnd+$student_CompletedStatus_sessionEnd),1);
+                    if($Tot_student_subscribedStatus_sessEnd >0 || $Tot_student_CompletedStatus_sessionEnd >0){
+                        $totalAr[$key]=number_format(($Tot_student_CompletedStatus_sessionEnd*100)/($Tot_student_subscribedStatus_sessEnd+$Tot_student_CompletedStatus_sessionEnd),1);
                     }
                     else{$totalAr[$key]=0;}
                 }elseif(strpos($key,'tot_student_CompletedStatus_Rate')===0){
-                    if($tot_student_subscribedStatus >0 || $tot_student_CompletedStatus >0){
-                        $totalAr[$key]=number_format(($tot_student_CompletedStatus*100)/($tot_student_subscribedStatus+$tot_student_CompletedStatus),1);
+                    if($Tot_student_subscribedStatus >0 || $Tot_student_CompletedStatus >0){
+                        $totalAr[$key]=number_format(($Tot_student_CompletedStatus*100)/($Tot_student_subscribedStatus+$Tot_student_CompletedStatus),1);
                     }
                     else{$totalAr[$key]=0;}
                 }
@@ -307,13 +347,15 @@ if($userObj->getType()==AMA_TYPE_ADMIN){
     }
 }
 
-$home_link = CDOMElement::create('a','href:admin.php');
+
 if($userObj->tipo==AMA_TYPE_ADMIN){
     $caption=translateFN('Riepilogo attività dei provider');
+    $home_link = CDOMElement::create('a','href:admin.php');
     $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 }
 elseif($userObj->tipo==AMA_TYPE_SWITCHER){
     $caption=translateFN('Riepilogo attività del provider');
+    $home_link = CDOMElement::create('a','href:../switcher/list_courses.php');
     $home_link->addChild(new CText(translateFN("Home del provider admin")));
     $totalAr=null;
 }
