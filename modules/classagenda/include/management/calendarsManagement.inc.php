@@ -187,6 +187,15 @@ class calendarsManagement extends abstractClassAgendaManagement
 				// question for not saved events (case show active instances is clicked)
 				$confirmOnlyActiveSPAN = CDOMElement::create('span','id:onlyActiveInstancesquestion');
 				$confirmOnlyActiveSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di filtrare le istanze?')));
+				// question asked for tutor overlapping
+				$confirmTutorOverlap = CDOMElement::create('span','id:tutorOverlapquestion');
+				$confirmTutorOverlap->addChild(new CText(translateFN('Il tutor selezionato ha già un evento in data')));
+				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapDate'));
+				$confirmTutorOverlap->addChild(new CText(' '.translateFN('dalle ore').' '));
+				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapStartTime'));
+				$confirmTutorOverlap->addChild(new CText(' '.translateFN('alle ore').' '));
+				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapEndTime'));
+				$confirmTutorOverlap->addChild(new CText(' '.translateFN('Vuoi mantenere la modifica fatta?')));
 				// this shall become the ok button label inside the dialog
 				$confirmOK = CDOMElement::create('span','class:confirmOKLbl');
 				$confirmOK->setAttribute('style','display:none;');
@@ -201,6 +210,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmDIV->addChild($confirmDelSPAN);
 				$confirmDIV->addChild($confirmVenueDelSPAN);
 				$confirmDIV->addChild($confirmOnlyActiveSPAN);
+				$confirmDIV->addChild($confirmTutorOverlap);
 				$confirmDIV->setAttribute('style','display:none;');
 				
 				/**

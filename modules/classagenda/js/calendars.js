@@ -16,6 +16,7 @@ var hasVenues = false;
 var calendar  = undefined;
 var mustSave = false;
 var canDelete = false;
+var loadedEvents = null;
 
 function initDoc() {
 	// hook instance select change to update number of students
@@ -139,11 +140,21 @@ function initCalendar() {
 						tutorID : getSelectedTutor()
 					};
 					
-					newEvent.title = buildEventTitle(newEvent);
-					calendar.fullCalendar('renderEvent', newEvent, true);
-					calendar.fullCalendar('unselect');
-					if(!mustSave) setMustSave(true);
-					updateAllocatedHours(moment.duration(endDate.subtract(startDate)).asMilliseconds(), 1);
+					var placeEvent = function() {
+						newEvent.title = buildEventTitle(newEvent);
+						calendar.fullCalendar('renderEvent', newEvent, true);
+						if(!mustSave) setMustSave(true);
+						updateAllocatedHours(moment.duration(endDate.subtract(startDate)).asMilliseconds(), 1);
+						calendar.fullCalendar('unselect');
+					}
+					
+					if (!checkTutorOverlap(newEvent)) {
+						placeEvent();
+					} else {
+						jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+								function() { placeEvent(); },
+								function() { calendar.fullCalendar('unselect'); });
+					}
 				}
 			},
 			eventRender: function(event, element, view) {
@@ -152,11 +163,33 @@ function initCalendar() {
 				element.find(htmlEl+'.fc-title').html(element.find(htmlEl+'.fc-title').text());
 			},
 			eventDrop: function ( event, delta, revertFunc, jsEvent, ui, view ) {
-				if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
+				
+				var placeEvent = function() {
+					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
+				}
+				
+				if (!checkTutorOverlap(event)) {
+					placeEvent();
+				} else {
+					jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+							function() { placeEvent(); },
+							function() { revertFunc(); });
+				}
 			},
 			eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) {
-				if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
-				updateAllocatedHours(delta.asMilliseconds(), 0);
+				
+				var placeEvent = function() {
+					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
+					updateAllocatedHours(delta.asMilliseconds(), 0);
+				}
+				
+				if (!checkTutorOverlap(event)) {
+					placeEvent();
+				} else {
+					jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+							function() { placeEvent(); },
+							function() { revertFunc(); });
+				}
 			},
 			header: {
 				left: 'prev,next today',
@@ -560,9 +593,7 @@ function loadCourseInstances() {
  */
 function reloadClassRoomEvents() {
 	var data = { activeOnly: getShowActiveInstances() ? 1:0 };
-	if (getSelectedVenue()!=null) {
-		data['venueID'] = getSelectedVenue();
-	}
+	var venueID = getSelectedVenue();
 	
 	/**
 	 * ajax-load events for the selected instance id
@@ -579,19 +610,22 @@ function reloadClassRoomEvents() {
 		calendar.fullCalendar('removeEvents');
 		
 		if (JSONObj) {
+			loadedEvents = JSONObj;
 			var selectedInstanceID = getSelectedCourseInstance();
 			/**
 			 * add all loaded events to the calendar
 			 */
 			for (var i=0; i<JSONObj.length; i++) {
-				JSONObj[i].title = buildEventTitle(JSONObj[i]);
-				
-				// set as editable only events of the selected course instance
-				JSONObj[i].editable = (JSONObj[i].instanceID==selectedInstanceID);
-				JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
-				
-				calendar.fullCalendar('renderEvent', JSONObj[i], true);
-				calendar.fullCalendar('unselect');						
+				if (JSONObj[i].venueID==venueID) {
+					JSONObj[i].title = buildEventTitle(JSONObj[i]);
+					
+					// set as editable only events of the selected course instance
+					JSONObj[i].editable = (JSONObj[i].instanceID==selectedInstanceID);
+					JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
+					
+					calendar.fullCalendar('renderEvent', JSONObj[i], true);
+					calendar.fullCalendar('unselect');
+				}
 			}
 			
 			$j('a.noteditableClassroomEvent').on ('click', function(event){
@@ -599,7 +633,11 @@ function reloadClassRoomEvents() {
 				
 			});
 			
+		} else {
+			loadedEvents = null;
 		}
+	}).fail(function() {
+		loadedEvents = null;
 	}).always(function() {
 		setMustSave(false);
 		setCanDelete(false);
@@ -631,6 +669,36 @@ function updateAllocatedHours(durationDelta, lessonsDelta) {
 	if ($j('#lessons_count').length>0) {
 		$j('#lessons_count').text(parseInt($j('#lessons_count').text())+lessonsDelta);
 	}
+}
+
+function checkTutorOverlap(event) {
+	if (loadedEvents!=null) {
+		newStart = moment(event.start);
+		newEnd = moment(event.end);
+		
+		for (var i=0; i<loadedEvents.length; i++) {
+			
+			loadedStart = moment(loadedEvents[i].start);
+			loadedEnd = moment(loadedEvents[i].end);
+			
+			if (event.tutorID==loadedEvents[i].tutorID &&
+				   ( loadedStart.isSame(newStart) || loadedEnd.isSame(newEnd)   ||
+					 loadedStart.isSame(newEnd)   || loadedEnd.isSame(newStart) ||
+					(newStart.isBefore(loadedStart) && newEnd.isAfter(loadedStart)) ||
+					(newStart.isAfter(loadedStart)  && newStart.isBefore(loadedEnd))
+			   )) {
+				
+				$j('#overlapDate').text(newStart.format('L'));				
+				$j('#overlapStartTime').text(loadedStart.format('HH.mm'));
+				$j('#overlapEndTime').text(loadedEnd.format('HH.mm'));
+				
+				return true;
+				
+				// return !confirm ("Sovrapposizione");
+			}
+		}
+	}
+	return false;
 }
 
 /**
@@ -684,6 +752,7 @@ function setModalDialogText (windowId, spanId) {
 	$j(windowId + ' span').not('[id^="var"]').hide();
 	// shows the passed span that holds the message to be shown
 	$j(spanId).show();
+	$j(spanId).children().show();
 }
 
 /**

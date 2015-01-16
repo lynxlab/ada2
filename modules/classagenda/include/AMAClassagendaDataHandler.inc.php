@@ -70,11 +70,15 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * @access public
 	 */
 	public function getClassRoomEventsForCourseInstance($course_instance_id, $venueID) {
-		$sql = 'SELECT CAL.* FROM `'.self::$PREFIX.'calendars` AS CAL';
+		$sql = 'SELECT CAL.* ';
+		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true) {
+			$sql .= ',CROOMS.`id_venue` ';
+		}
+		$sql .='FROM `'.self::$PREFIX.'calendars` AS CAL';
 		
 		$params = null;
 		
-		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true && !is_null($venueID)) {
+		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true) {
 			require_once MODULES_CLASSROOM_PATH . '/include/AMAClassroomDataHandler.inc.php';
 			
 			$sql .= ' JOIN `'.AMAClassroomDataHandler::$PREFIX.'classrooms` AS CROOMS'.

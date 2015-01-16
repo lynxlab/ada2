@@ -81,10 +81,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 		$i=0;
 		foreach ($result as $eventID=>$aResult) {
 			$retArray[$i]['id'] = $eventID;
-			$retArray[$i]['instanceID'] = $aResult['id_istanza_corso'];
-			$retArray[$i]['classroomID'] = $aResult['id_classroom'];
-			$retArray[$i]['tutorID'] = $aResult['id_utente_tutor'];
+			$retArray[$i]['instanceID'] = (int) $aResult['id_istanza_corso'];
+			$retArray[$i]['classroomID'] = (int) $aResult['id_classroom'];
+			$retArray[$i]['tutorID'] = (int) $aResult['id_utente_tutor'];
 			$retArray[$i]['isSelected'] = false;
+			if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true) {
+				$retArray[$i]['venueID'] = (int) $aResult['id_venue'];
+			}
 			
 			list ($day, $month, $year) = explode ('/',ts2dFN($aResult['start']));
 			$retArray[$i]['start'] = $year.'-'.$month.'-'.$day.'T'.ts2tmFN($aResult['start']);
