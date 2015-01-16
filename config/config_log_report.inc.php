@@ -23,7 +23,7 @@ $GLOBALS['LogReport_Array'] = array (
     'user_subscribed'=>array('label'=>'utenti iscritti' ,'show'=>true),
     'course'=>array('label'=>'tot. corsi' ,'show'=>true),
     'service_level' =>array('label'=>'service_level' ,'show'=>true),  // if true show course types.
-    'sessions_started'=>array('label'=>'ed. iniziate' ,'show'=>true),
+    'sessions_started'=>array('label'=>'ed. in corso' ,'show'=>true),
     'student_CompletedStatus_sessStarted'=>array('label'=>'std. status complt.' ,'show'=>true), 
     'student_subscribedStatus_sessStarted'=>array('label'=>'std. status subscribed' ,'show'=>false),
     'student_CompletedStatus_sessStarted_Rate'=>array('label'=>'% complt.' ,'show'=>true),

@@ -57,8 +57,11 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
 
     $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
     $view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
-    $instances_img = CDOMElement::create('img', 'src:img/student.png,alt:view');
-
+    $instances_img = CDOMElement::create('img', 'src:img/instances.png,alt:view');
+    $add_instance_img= CDOMElement::create('img', 'src:img/add_instances.png,alt:view');
+    $survey_img= CDOMElement::create('img', 'src:img/_exer.png,alt:view');
+    $delete_img= CDOMElement::create('img', 'src:img/trash.png,alt:view');
+            
     foreach($coursesAr as $course) {
         $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
         $imgDetails->setAttribute('class', 'imgDetls tooltip');
@@ -88,7 +91,7 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         $instances_link = BaseHtmlLib::link("list_instances.php?id_course=$courseId", $instances_img->getHtml());
         
         if(isset($instances_link)){
-            $title=translateFN('Gestione edizioni');
+            $title=translateFN('Gestione classi');
             $div_instances = CDOMElement::create('div');
             $div_instances->setAttribute('title', $title);
             $div_instances->setAttribute('class', 'tooltip');
@@ -96,18 +99,40 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         }
         
         if (MODULES_TEST) {
-            $survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP.'/switcher.php?id_course='.$courseId, translateFN('Sondaggi'));
+            $survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP.'/switcher.php?id_course='.$courseId, $survey_img->getHtml());
+            $title=translateFN('Sondaggi');
+            $div_survey = CDOMElement::create('div');
+            $div_survey->setAttribute('title', $title);
+            $div_survey->setAttribute('class', 'tooltip');
+            $div_survey->addChild(($survey_link));
         }
 
-        $add_instance_link = BaseHtmlLib::link("add_instance.php?id_course=$courseId", translateFN('Add instance'));
-        $delete_course_link = BaseHtmlLib::link("delete_course.php?id_course=$courseId", translateFN('Delete course'));
-
-        $actions = array($div_edit,$div_view,$div_instances);
-        if (MODULES_TEST) {
-            $actions[] = $survey_link;
+        $add_instance_link = BaseHtmlLib::link("add_instance.php?id_course=$courseId", $add_instance_img->getHtml());
+        
+        if(isset($add_instance_link)){
+            $title=translateFN('Aggiungi classe');
+            $div_AddInstances = CDOMElement::create('div');
+            $div_AddInstances->setAttribute('title', $title);
+            $div_AddInstances->setAttribute('class', 'tooltip');
+            $div_AddInstances->addChild(($add_instance_link));
         }
         
-        $actions = array_merge($actions,array($add_instance_link,$delete_course_link));
+        $delete_course_link = BaseHtmlLib::link("delete_course.php?id_course=$courseId", $delete_img->getHtml());
+        
+        if(isset($delete_course_link)){
+            $title=translateFN('Cancella corso');
+            $div_delete = CDOMElement::create('div');
+            $div_delete->setAttribute('title', $title);
+            $div_delete->setAttribute('class', 'tooltip');
+            $div_delete->addChild(($delete_course_link));
+        }
+        
+        $actions = array($div_edit,$div_view,$div_instances);
+        if (MODULES_TEST) {
+            $actions[] = $div_survey;
+        }
+        
+        $actions = array_merge($actions,array($div_AddInstances,$div_delete));
         $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actions);
         $servicelevel=null;
          /* if isset $_SESSION['service_level'] it means that the istallation supports course type */

@@ -15,7 +15,7 @@ function createDataTable(showElements)
     datatable = $j('#table_log_report').dataTable({
         "bJQueryUI": true,
         "bFilter": showElements,
-        "bInfo": true,
+        "bInfo": showElements,
         "bSort": showElements,
         "bAutoWidth": true,
         "bPaginate" : showElements,

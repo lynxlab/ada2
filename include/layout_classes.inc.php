@@ -196,8 +196,23 @@ class Template {
         }
 
 	if ($is_external_module) {
-		$tpl_dir = $root_dir."/$module_dir/layout/$family/templates/";
-		$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
+		
+		if (!MULTIPROVIDER) {
+			$tpl_dir = $root_dir."/clients/".$user_provider."/layout/$family/templates/$module_dir/";
+			$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
+			
+			if (!isset($tpl_filename) || !file_exists($tpl_filename)) {
+				$tpl_filename = $tpl_dir."default".$tpl_fileextension;
+				if (!isset($tpl_filename) || !file_exists($tpl_filename)) {
+					unset($tpl_filename);
+				}
+			}
+		} 
+		
+		if(!isset($tpl_filename)) {
+			$tpl_dir = $root_dir."/$module_dir/layout/$family/templates/";
+			$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
+		}
 	}
 	else {
 		/**
@@ -337,13 +352,16 @@ class CSS {
          */
         if (!MULTIPROVIDER)
         {
-        	$CSS_provider_dir = $rel_pref."clients/".$user_provider."/layout/$family/css/$module_dir/"; 
+        	$CSS_provider_dir = $rel_pref."clients/".$user_provider."/layout/$family/css/"; 
         	
-        	if (is_file($CSS_provider_dir."default.css"))
+        	if (is_file($CSS_provider_dir.$module_dir."/default.css"))
         		$CSS_files[] = $CSS_provider_dir."default.css";
-
-        	if (is_file($CSS_provider_dir.$node_type.".css"))
-        		$CSS_files[] = $CSS_provider_dir.$node_type.".css";
+        	
+        	if (is_file($CSS_provider_dir."main/default.css"))
+        		$CSS_files[] = $CSS_provider_dir."main/default.css";
+        	
+        	if (is_file($CSS_provider_dir.$module_dir."/".$node_type.".css"))
+        		$CSS_files[] = $CSS_provider_dir.$module_dir."/".$node_type.".css";
         }
         
         /**

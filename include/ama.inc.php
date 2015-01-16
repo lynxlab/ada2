@@ -11366,13 +11366,13 @@ public function get_updates_nodes($userObj, $pointer)
                         $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso`";
                         break;
                     case 'visits':
-                        $sql[$key]="SELECT COUNT('id_history') FROM `history_nodi`";
+                        $sql[$key]="SELECT COUNT(`id_history`) FROM `history_nodi` AS hn JOIN `studente` AS st ON hn.id_utente_studente = st.id_utente_studente";
                         break;
                     case 'system_messages':
                         $sql[$key]="SELECT COUNT(`id_messaggio`) FROM `messaggi` WHERE `tipo` = '". ADA_MSG_SIMPLE ."'"  ;
                         break;
                     case 'chatrooms':
-                        $sql[$key]="SELECT COUNT('id_chatroom') FROM `chatroom`";
+                        $sql[$key]="SELECT COUNT(`id_chatroom`) FROM `chatroom`";
                         break;
                     case 'videochatrooms':
                         $sql[$key]="SELECT COUNT(`id`) FROM `openmeetings_room`";
