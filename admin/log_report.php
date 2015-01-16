@@ -176,6 +176,14 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
+                        case 'student_subscribedStatus_sessStarted':
+                            $title=  translateFN('Numero di studenti iscritti alle edizioni in corso');
+                            $span_label = CDOMElement::create('span');
+                            $span_label->setAttribute('title', $title);
+                            $span_label->setAttribute('class', 'tooltip');
+                            $span_label->addChild(new CText($tableInfo['label']));
+                            $thead_data[$key]=$span_label->getHtml();
+                            break;
                         case 'student_CompletedStatus_sessionEnd':
                             $title=  translateFN('Numero di studenti che hanno completato le edizioni terminate');
                             $span_label = CDOMElement::create('span');
@@ -184,8 +192,24 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label->addChild(new CText($tableInfo['label']));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
+                        case 'student_subscribedStatus_sessEnd':
+                            $title=  translateFN('Numero di studenti iscritti alle edizioni terminate');
+                            $span_label = CDOMElement::create('span');
+                            $span_label->setAttribute('title', $title);
+                            $span_label->setAttribute('class', 'tooltip');
+                            $span_label->addChild(new CText($tableInfo['label']));
+                            $thead_data[$key]=$span_label->getHtml();
+                            break;
                         case 'tot_student_CompletedStatus':
                             $title=  translateFN('Quantità calcolata  sommando gli studenti che hanno completato le edizioni iniziate e quelli che hanno compleato le edizioni terminate');
+                            $span_label = CDOMElement::create('span');
+                            $span_label->setAttribute('title', $title);
+                            $span_label->setAttribute('class', 'tooltip');
+                            $span_label->addChild(new CText($tableInfo['label']));
+                            $thead_data[$key]=$span_label->getHtml();
+                            break;
+                        case 'tot_student_subscribedStatus':
+                            $title=  translateFN('Quantità calcolata  sommando gli studenti iscritti alle edizioni iniziate e quelli iscritti alle edizioni terminate');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
