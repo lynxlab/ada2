@@ -98,7 +98,28 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$serviceSPANText->addChild(new CText(translateFN('Corso di tipo').': '));
 				$serviceTypeDIV->addChild($serviceSPANText);
 				$serviceTypeDIV->addChild(CDOMElement::create('span','id:servicetype'));
+				/**
+				 * total course instance duration and hours allocated by calendar
+				 */
+				$serviceTypeDurationUL = CDOMElement::create('ul','id:serviceduration');
+				$serviceTypeDurationUL->setAttribute('style', 'display:none');
+
+				$durationHours = CDOMElement::create('li','class:durationLI');
+				$durationHours->addChild(new CText(translateFN('Durata prevista in ore').': '));
+				$durationHours->addChild(CDOMElement::create('span','id:duration_hours'));
+				$serviceTypeDurationUL->addChild($durationHours);
 				
+				$allocatedHours = CDOMElement::create('li','class:allocatedLI');
+				$allocatedHours->addChild(new CText(translateFN('Tempo allocato (ore:minuti)').': '));
+				$allocatedHours->addChild(CDOMElement::create('span','id:allocated_hours'));
+				$serviceTypeDurationUL->addChild($allocatedHours);
+				
+				$lessonsNumber = CDOMElement::create('li','class:lessonsLI');
+				$lessonsNumber->addChild(new CText(translateFN('Numero di incontri').': '));
+				$lessonsNumber->addChild(CDOMElement::create('span','id:lessons_count'));
+				$serviceTypeDurationUL->addChild($lessonsNumber);
+				
+				$serviceTypeDIV->addChild($serviceTypeDurationUL);
 				
 				/**
 				 * get Venues, build select item

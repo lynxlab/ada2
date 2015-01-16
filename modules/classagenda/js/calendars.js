@@ -143,6 +143,7 @@ function initCalendar() {
 					calendar.fullCalendar('renderEvent', newEvent, true);
 					calendar.fullCalendar('unselect');
 					if(!mustSave) setMustSave(true);
+					updateAllocatedHours(moment.duration(endDate.subtract(startDate)).asMilliseconds(), 1);
 				}
 			},
 			eventRender: function(event, element, view) {
@@ -155,6 +156,7 @@ function initCalendar() {
 			},
 			eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) {
 				if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
+				updateAllocatedHours(delta.asMilliseconds(), 0);
 			},
 			header: {
 				left: 'prev,next today',
@@ -174,6 +176,8 @@ function initCalendar() {
 		// initialize cancel button
 		$j('#cancelCalendar').button().on('click', function ( event ) {
 			reloadClassRoomEvents();
+			// reload instance details by triggering an instance change
+			if ($j('#instancesList').length>0) { $j('#instancesList').trigger('change'); } 
 			event.preventDefault();
 		});
 	}
@@ -355,7 +359,7 @@ function updateServiceTypeOnInstanceChange() {
 			if ($j('#servicetype').length>0) {
 				$j.ajax({
 					type	:	'GET',
-					url		:	'ajax/getServiceType.php',
+					url		:	'ajax/getServiceDetails.php',
 					data	:	{ instanceID: $j(this).val() },
 					dataType:	'json'
 				}).done (function(JSONObj){
@@ -364,12 +368,23 @@ function updateServiceTypeOnInstanceChange() {
 						if('undefined' != typeof JSONObj.isOnline && JSONObj.isOnline===true) {							
 							$j('#classroomlist').html('');
 							$j('#classrooms').hide();
-						} else {
+							$j('#serviceduration').hide();
+						} else if('undefined' != typeof JSONObj.isPresence && JSONObj.isPresence===true) {
 							// show classrooms div
 							if ($j('#classrooms').length>0 && !$j('#classrooms').is(':visible')) {
 								$j('#classrooms').show();
 								// trigger venues change to update classroom list
 								if (hasVenues) $j('#venuesList').trigger('change');
+							}
+							if ($j('#serviceduration').length>0 && 'undefined' != typeof JSONObj.duration_hours) {
+								$j('#serviceduration').show();
+								$j('#duration_hours').text(JSONObj.duration_hours);
+								
+								if ($j('#allocated_hours').length>0 && 'undefined' != typeof JSONObj.allocated_hours)
+									$j('#allocated_hours').text(millisecondsToHourMin(JSONObj.allocated_hours));
+								
+								if ($j('#lessons_count').length>0 && 'undefined' != typeof JSONObj.lessons_count)
+									$j('#lessons_count').text(JSONObj.lessons_count);
 							}
 						}
 					}
@@ -591,15 +606,51 @@ function reloadClassRoomEvents() {
 	});
 }
 
+function millisecondsToHourMin(millis) {
+	var minutes = Math.floor (millis/(1000*60));
+	var hours = (Math.floor (minutes / 60)) + ''; // converted to string by +''
+	var realminutes = (minutes % 60)+ ''; // converted to string by +''
+	// zero-pad strings to a fixed length of 2
+	hours = (hours.length < 2) ? '0'+hours : hours;
+	realminutes = (realminutes.length < 2) ? '0'+realminutes : realminutes;
+	
+	return hours+':'+realminutes;
+}
+
+function updateAllocatedHours(durationDelta, lessonsDelta) {
+	if ($j('#allocated_hours').length>0 && $j('#allocated_hours').text().length>0) {
+		var allocatedDuration = moment.duration($j('#allocated_hours').text());
+		if (lessonsDelta>=0) {
+			allocatedDuration.add(durationDelta);
+		} else if (lessonsDelta<0) {
+			allocatedDuration.subtract(durationDelta);
+		}
+		$j('#allocated_hours').text(millisecondsToHourMin(allocatedDuration.asMilliseconds()));
+	}
+	
+	if ($j('#lessons_count').length>0) {
+		$j('#lessons_count').text(parseInt($j('#lessons_count').text())+lessonsDelta);
+	}
+}
+
 /**
  * deletes the select calendar event
  */
 function deleteSelectedEvent() {
+	var selectedDuration = null;
 	calendar.fullCalendar('removeEvents', function (clEvent) {
-		return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true);
+		if (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true) {
+			if (selectedDuration==null) {
+				selectedDuration = moment.duration();
+				selectedDuration.add(clEvent.end.subtract(clEvent.start));
+			}			
+			return true;
+		} else return false;
 		});
+	
 	setCanDelete(false);
 	if (!mustSave) setMustSave(true);
+	updateAllocatedHours(selectedDuration, -1);
 }
 
 /**

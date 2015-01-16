@@ -29,6 +29,9 @@ label.venuesListLabel { display: block; margin-bottom: 5px; }
 
 #calendarContainer label { cursor: pointer; }
 
+ul#serviceduration { padding: 0 15px 0 15px; margin:5px 0 0 0;  }
+ul#serviceduration li { color: #000; border:none; } 
+
 span.roomnameInEvent { color: gold; margin: 5px 0 0 5px; display: block; }
 span.tutornameInEvent { color: darkgreen; margin: 5px 0 0 5px; display: block; }
 span.studentcount { float: right; }
