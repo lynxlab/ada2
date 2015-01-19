@@ -22,7 +22,7 @@ and open the template in the editor.
 .tooltip {
    background: transparent;
    border-color: transparent;
-   cursor: default;
+   cursor:pointer;
  }
 .action_Column{width: 32%;}
 
