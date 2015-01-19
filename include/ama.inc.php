@@ -11357,10 +11357,10 @@ public function get_updates_nodes($userObj, $pointer)
                         $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
                         break;
                     case 'tot_student_subscribedStatus':
-                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=".ADA_STATUS_SUBSCRIBED; 
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`=".ADA_STATUS_SUBSCRIBED.'AND ic.`data_inizio` > 0' ;
                         break;
-                    case 'tot_student_CompletedStatus':
-                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` WHERE  `status`=".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED;
+                    case 'tot_student_CompletedStatus': 
+                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`=".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED.'AND ic.`data_inizio` > 0' ;
                         break;
                     case 'tot_Session':
                         $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso`";
