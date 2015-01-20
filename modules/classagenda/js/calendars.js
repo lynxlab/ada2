@@ -35,22 +35,22 @@ function initDoc() {
 		// $j('#venuesList').trigger('change');
 	}
 	
-	if ($j('#onlyActiveInstances').length>0 || $j('#onlySelectedInstance').length>0) {
-		$j('#onlyActiveInstances, #onlySelectedInstance').on('change',function() {
+	if ($j('#filterInstanceState').length>0 || $j('#onlySelectedInstance').length>0) {
+		$j('#filterInstanceState, #onlySelectedInstance').on('change',function() {
 			/**
-			 * reload course instances list only when #onlyActiveInstances changes 
+			 * reload course instances list only when #filterInstanceState changes 
 			 */
-			if ($j(this).attr('id')=='onlyActiveInstances') {
+			if ($j(this).attr('id')=='filterInstanceState') {
 				loadCourseInstances();
 			}
 			reloadClassRoomEvents();
 		});
 		
-		$j('#onlyActiveInstances, label[for="onlyActiveInstances"],'+
+		$j('#filterInstanceState, label[for="filterInstanceState"],'+
 		   '#onlySelectedInstance, label[for="onlySelectedInstance"]').on('mousedown',function() {
 			if (mustSave) {
 				event.preventDefault();
-				jQueryConfirm('#confirmDialog', '#onlyActiveInstancesquestion',
+				jQueryConfirm('#confirmDialog', '#filterInstanceStatequestion',
 						function() { saveClassRoomEvents(); },
 						function() { event.preventDefault(); });
 			}
@@ -339,8 +339,8 @@ function getSelectedEvent() {
 	return (selEvent.length > 0) ? selEvent[0] : null;
 }
 
-function getShowActiveInstances() {
-	return ($j('#onlyActiveInstances').length>0) ? $j('#onlyActiveInstances').is(':checked') : false;
+function getFilterInstanceState() {
+	return ($j('#filterInstanceState').length>0) ? $j('#filterInstanceState').val() : null;
 }
 
 function getShowSelectedInstance() {
@@ -613,7 +613,7 @@ function loadCourseInstances() {
 		$j.ajax({
 			type	:	'GET',
 			url		:	'ajax/getInstances.php',
-			data	:	{ activeOnly: getShowActiveInstances() ? 1:0  },
+			data	:	{ filterInstanceState : getFilterInstanceState() },
 			dataType:	'html'
 		}).done (function(htmlcode){
 			if (htmlcode.length>0){
@@ -642,14 +642,16 @@ function loadCourseInstances() {
  * reloads calendar events for select instance id
  */
 function reloadClassRoomEvents() {
-	var data = { activeOnly: getShowActiveInstances() ? 1:0 };
+	var data = {
+			filterInstanceState : getFilterInstanceState() 
+		};
 	var venueID = getSelectedVenue();
 	var selectedInstanceID = getSelectedCourseInstance();
 	
 	if (getShowSelectedInstance()) {
 		$j.extend (data, {
 			instanceID: selectedInstanceID
-		})
+		});
 	}
 	
 	/**
@@ -742,8 +744,8 @@ function checkTutorOverlap(event) {
 						 * Set dialog text with overlapping found event data
 						 */
 						$j('#overlapTutorName').text(getTutorRadioLabel(event.tutorID));
-						if ('undefined' != typeof JSONObj.data.id_istanza_corso) {
-							$j('#overlapInstanceName').text(($j('#instancesList').length>0) ? ($j('#instancesList option[value='+JSONObj.data.id_istanza_corso+']').text()) : '');
+						if ('undefined' != typeof JSONObj.data.instanceName) {
+							$j('#overlapInstanceName').html(($j('#instancesList').length>0) ? JSONObj.data.instanceName : '');
 						}
 						if ('undefined' != JSONObj.data.date)  {
 							$j('#overlapDate').text(JSONObj.data.date);

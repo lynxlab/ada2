@@ -59,6 +59,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$retVal['data']['date'] = ts2dFN($result['start']);
 			$retVal['data']['start'] = ts2tmFN($result['start']);
 			$retVal['data']['end'] = ts2tmFN($result['end']);
+			
+			$courseInstance = $dh->course_instance_get($result['id_istanza_corso']);
+			if (!AMA_DB::isError($courseInstance)) {
+				$course = $dh->get_course_info_for_course_instance($result['id_istanza_corso']);
+				if (!AMA_DB::isError($course)) {
+					$retVal['data']['instanceName'] = $course['titolo'].' &gt; '.$courseInstance['title'];
+				}
+			}
 		}
 	}
 }

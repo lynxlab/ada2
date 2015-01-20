@@ -41,7 +41,8 @@ require_once(ROOT_DIR.'/include/module_init.inc.php');
 $retVal = translateFN('Nessuna istanza trovata');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
-	$activeOnly =  (isset($activeOnly) && intval($activeOnly)>0);
+	$filterInstanceState =  (isset($filterInstanceState) && intval($filterInstanceState)>0) ?
+		$filterInstanceState : MODULES_CLASSAGENDA_ALL_INSTANCES;
 	
 	$dh = $GLOBALS['dh'];
 	// grab some course and course instance datas to build up the form properly
@@ -54,8 +55,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 		// for each course in the list...
 		foreach ($courseList as $courseItem) {
 			// ... get the subscribeable course instance list...
-			if (!$activeOnly) $courseInstances = $dh->course_instance_get_list(array('title'), $courseItem[0]);
-			else $courseInstances = $dh->course_instance_subscribeable_get_list(array('title'), $courseItem[0]);
+			if ($filterInstanceState == MODULES_CLASSAGENDA_STARTED_INSTANCES) {
+				$courseInstances = $dh->course_instance_find_list(array('title'), 'id_corso='.$courseItem[0].
+						' AND data_inizio>0 and durata>0');
+			}
+			else if ($filterInstanceState == MODULES_CLASSAGENDA_NONSTARTED_INSTANCES) {
+				$courseInstances = $dh->course_instance_find_list(array('title'), 'id_corso='.$courseItem[0].
+						' AND data_inizio<=0');
+			}
+			else {
+				$courseInstances = $dh->course_instance_get_list(array('title'), $courseItem[0]);
+			}
 			// first element of returned array is always the instanceId, array is NOT assoc
 			if (!AMA_DB::isError($courseInstances)) {
 				// ...and, for each subscribeable instance in the list...

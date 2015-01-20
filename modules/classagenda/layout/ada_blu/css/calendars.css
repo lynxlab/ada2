@@ -34,7 +34,7 @@ ul#serviceduration li { color: #000; border:none; }
 
 span.roomnameInEvent { color: gold; margin: 5px 0 0 5px; display: block; }
 span.tutornameInEvent { color: darkgreen; margin: 5px 0 0 5px; display: block; }
-span.studentcount { float: right; }
+span.studentcount { display: block; margin-top: 5px; }
 
 a.noteditableClassroomEvent { background: lightslategray; opacity:0.9; z-index:1 !important; pointer-events: none; }
 a.editableClassroomEvent { z-index: 2 !important; }
@@ -57,7 +57,7 @@ div#confirmDialog {
 
 #instancesListquestion,
 #venuesListquestion,
-#onlyActiveInstancesquestion,
+#filterInstanceStatequestion,
 #tutorOverlapquestion {
     text-align: center;
     display: inline-block;

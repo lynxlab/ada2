@@ -69,11 +69,15 @@ class calendarsManagement extends abstractClassAgendaManagement
 				/**
 				 * checkbox to filter active instances only
 				 */
-				$onlyActiveCHECK = CDOMElement::create('checkbox','id:onlyActiveInstances');
-				$onlyActiveCHECK->setAttribute('value', 1);
-				$onlyActiveCHECK->setAttribute('name', 'onlyActiveInstances');
-				$onlyActiveLABEL = CDOMElement::create('label','for:onlyActiveInstances');
-				$onlyActiveLABEL->addChild(new CText(translateFN('Mostra solo istanze attive')));
+				$filterInstanceState = array(
+						MODULES_CLASSAGENDA_ALL_INSTANCES => translateFN('Tutte'),
+						MODULES_CLASSAGENDA_STARTED_INSTANCES => translateFN('Solo iniziate'),
+						MODULES_CLASSAGENDA_NONSTARTED_INSTANCES => translateFN('Solo non iniziate')
+				);
+				$filterInstanceSELECT = BaseHtmlLib::selectElement2('id:filterInstanceState,name:filterInstanceState',
+						$filterInstanceState,MODULES_CLASSAGENDA_ALL_INSTANCES);
+				$filterInstanceLABEL = CDOMElement::create('label','for:filterInstanceState');
+				$filterInstanceLABEL->addChild(new CText(translateFN('Mostra le classi').': '));
 				
 				/**
 				 * checkbox to filter selected instance only
@@ -82,23 +86,15 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$onlySelectedCHECK->setAttribute('value', 1);
 				$onlySelectedCHECK->setAttribute('name', 'onlySelectedInstance');
 				$onlySelectedLABEL = CDOMElement::create('label','for:onlySelectedInstance');
-				$onlySelectedLABEL->addChild(new CText(translateFN('Mostra solo istanza selezionata')));
-				
-				/**
-				 * span to hold number of subscribed students
-				 */
-				$studentCountSPAN = CDOMElement::create('span','class:studentcount');
-				$studentCountSPAN->addChild (new CText(translateFN('Numero di studenti iscritti: ')));
-				$studentCountSPAN->addChild (CDOMElement::create('span','id:studentcount'));
+				$onlySelectedLABEL->addChild(new CText(translateFN('Mostra solo la classe selezionata')));
 				
 				$selectClassDIV = CDOMElement::create('div','id:selectClassContainer');
 				$selectClassDIV->addChild($instancesLABEL);
 				$selectClassDIV->addChild($instancesSELECT);
-				$selectClassDIV->addChild($onlyActiveCHECK);
-				$selectClassDIV->addChild($onlyActiveLABEL);
+				$selectClassDIV->addChild($filterInstanceLABEL);
+				$selectClassDIV->addChild($filterInstanceSELECT);
 				$selectClassDIV->addChild($onlySelectedCHECK);
 				$selectClassDIV->addChild($onlySelectedLABEL);
-				$selectClassDIV->addChild($studentCountSPAN);
 				
 				/**
 				 * service (aka course) type box with
@@ -109,6 +105,14 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$serviceSPANText->addChild(new CText(translateFN('Corso di tipo').': '));
 				$serviceTypeDIV->addChild($serviceSPANText);
 				$serviceTypeDIV->addChild(CDOMElement::create('span','id:servicetype'));
+				
+				/**
+				 * span to hold number of subscribed students
+				 */
+				$studentCountSPAN = CDOMElement::create('span','class:studentcount');
+				$studentCountSPAN->addChild (new CText(translateFN('Numero di studenti iscritti: ')));
+				$studentCountSPAN->addChild (CDOMElement::create('span','id:studentcount'));
+				$serviceTypeDIV->addChild($studentCountSPAN);				
 				/**
 				 * total course instance duration and hours allocated by calendar
 				 */
@@ -196,7 +200,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmVenueDelSPAN = CDOMElement::create('span','id:venuesListquestion');
 				$confirmVenueDelSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di cambiare luogo?')));
 				// question for not saved events (case show active instances is clicked)
-				$confirmOnlyActiveSPAN = CDOMElement::create('span','id:onlyActiveInstancesquestion');
+				$confirmOnlyActiveSPAN = CDOMElement::create('span','id:filterInstanceStatequestion');
 				$confirmOnlyActiveSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di filtrare le istanze?')));
 				// question asked for tutor overlapping
 				$confirmTutorOverlap = CDOMElement::create('span','id:tutorOverlapquestion');
