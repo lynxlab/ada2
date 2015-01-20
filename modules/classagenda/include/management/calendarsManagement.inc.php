@@ -76,6 +76,15 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$onlyActiveLABEL->addChild(new CText(translateFN('Mostra solo istanze attive')));
 				
 				/**
+				 * checkbox to filter selected instance only
+				 */
+				$onlySelectedCHECK = CDOMElement::create('checkbox','id:onlySelectedInstance');
+				$onlySelectedCHECK->setAttribute('value', 1);
+				$onlySelectedCHECK->setAttribute('name', 'onlySelectedInstance');
+				$onlySelectedLABEL = CDOMElement::create('label','for:onlySelectedInstance');
+				$onlySelectedLABEL->addChild(new CText(translateFN('Mostra solo istanza selezionata')));
+				
+				/**
 				 * span to hold number of subscribed students
 				 */
 				$studentCountSPAN = CDOMElement::create('span','class:studentcount');
@@ -87,6 +96,8 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$selectClassDIV->addChild($instancesSELECT);
 				$selectClassDIV->addChild($onlyActiveCHECK);
 				$selectClassDIV->addChild($onlyActiveLABEL);
+				$selectClassDIV->addChild($onlySelectedCHECK);
+				$selectClassDIV->addChild($onlySelectedLABEL);
 				$selectClassDIV->addChild($studentCountSPAN);
 				
 				/**

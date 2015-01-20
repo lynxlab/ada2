@@ -16,7 +16,6 @@ var hasVenues = false;
 var calendar  = undefined;
 var mustSave = false;
 var canDelete = false;
-var loadedEvents = null;
 
 function initDoc() {
 	// hook instance select change to update number of students
@@ -36,13 +35,19 @@ function initDoc() {
 		// $j('#venuesList').trigger('change');
 	}
 	
-	if ($j('#onlyActiveInstances').length>0) {
-		$j('#onlyActiveInstances').on('change',function() {
-			loadCourseInstances();
+	if ($j('#onlyActiveInstances').length>0 || $j('#onlySelectedInstance').length>0) {
+		$j('#onlyActiveInstances, #onlySelectedInstance').on('change',function() {
+			/**
+			 * reload course instances list only when #onlyActiveInstances changes 
+			 */
+			if ($j(this).attr('id')=='onlyActiveInstances') {
+				loadCourseInstances();
+			}
 			reloadClassRoomEvents();
 		});
 		
-		$j('#onlyActiveInstances, label[for="onlyActiveInstances"]').on('mousedown',function() {
+		$j('#onlyActiveInstances, label[for="onlyActiveInstances"],'+
+		   '#onlySelectedInstance, label[for="onlySelectedInstance"]').on('mousedown',function() {
 			if (mustSave) {
 				event.preventDefault();
 				jQueryConfirm('#confirmDialog', '#onlyActiveInstancesquestion',
@@ -335,7 +340,11 @@ function getSelectedEvent() {
 }
 
 function getShowActiveInstances() {
-	return $j('#onlyActiveInstances').is(':checked');
+	return ($j('#onlyActiveInstances').length>0) ? $j('#onlyActiveInstances').is(':checked') : false;
+}
+
+function getShowSelectedInstance() {
+	return ($j('#onlySelectedInstance').length>0) ? $j('#onlySelectedInstance').is(':checked') : false;
 }
 
 /**
@@ -577,7 +586,7 @@ function saveClassRoomEvents() {
 		}
 	}
 	
-	$j.ajax({
+	return $j.ajax({
 				type	:	'POST',
 				url		:	'ajax/saveClassroomEvents.php',
 				data	:	{
@@ -597,6 +606,9 @@ function saveClassRoomEvents() {
 
 function loadCourseInstances() {
 	if ($j('#instancesList').length>0) {
+		
+		var oldSelectedInstance = getSelectedCourseInstance();
+		
 		$j('#instancesList').prop('disabled','disabled');
 		$j.ajax({
 			type	:	'GET',
@@ -606,8 +618,17 @@ function loadCourseInstances() {
 		}).done (function(htmlcode){
 			if (htmlcode.length>0){
 				$j('#instancesList').html(htmlcode);
-				// mark the first option as selected
-				$j("#instancesList option:first").attr('selected','selected');
+				/**
+				 * if oldSelectedInstance is still in the returned <select> element,
+				 * select id. Else select the first returned <option>
+				 */
+				if (typeof $j('#instancesList option[value="'+oldSelectedInstance+'"]').val() == 'undefined') {
+					// mark the first option as selected
+					$j("#instancesList option:first").attr('selected','selected');					
+				} else {
+					$j('#instancesList option[value="'+oldSelectedInstance+'"]').attr('selected','selected');
+				}
+
 				// trigger onchange event to update number of students when page loads
 				$j('#instancesList').trigger('change');
 			}
@@ -623,6 +644,13 @@ function loadCourseInstances() {
 function reloadClassRoomEvents() {
 	var data = { activeOnly: getShowActiveInstances() ? 1:0 };
 	var venueID = getSelectedVenue();
+	var selectedInstanceID = getSelectedCourseInstance();
+	
+	if (getShowSelectedInstance()) {
+		$j.extend (data, {
+			instanceID: selectedInstanceID
+		})
+	}
 	
 	/**
 	 * ajax-load events
@@ -639,8 +667,6 @@ function reloadClassRoomEvents() {
 		calendar.fullCalendar('removeEvents');
 		
 		if (JSONObj) {
-			loadedEvents = JSONObj;
-			var selectedInstanceID = getSelectedCourseInstance();
 			/**
 			 * add all loaded events to the calendar
 			 */
@@ -662,12 +688,8 @@ function reloadClassRoomEvents() {
 				
 			});
 			
-		} else {
-			loadedEvents = null;
 		}
-	}).fail(function() {
-		loadedEvents = null;
-	}).always(function() {
+	}).fail(function() {}).always(function() {
 		setMustSave(false);
 		setCanDelete(false);
 	});
