@@ -62,7 +62,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				 * build empty select item and a span to hold number of subscribed students
 				 * 
 				 */
-				$instancesSELECT = BaseHtmlLib::selectElement2('id:instancesList,name:instancesList',array());				
+				$instancesSELECT = BaseHtmlLib::selectElement2('id:instancesList,name:instancesList',array());
 				$instancesLABEL = CDOMElement::create('label','for:instancesList');
 				$instancesLABEL->addChild(new CText(translateFN('Seleziona una classe').': '));
 				
@@ -160,7 +160,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				 */
 				$tutorsDIV = CDOMElement::create('div', 'id:tutorsListContainer');
 				$tutorsSPAN = CDOMElement::create('span','class:selecttutorspan');
-				$tutorsSPAN->addChild(new CText(translateFN('Seleziona un tutor').': '));				
+				$tutorsSPAN->addChild(new CText(translateFN('Seleziona un tutor').': '));
 				$tutorsDIV->addChild($tutorsSPAN);
 				$tutorsDIV->addChild(CDOMElement::create('div','id:tutorslist'));
 				
@@ -189,13 +189,17 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmOnlyActiveSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di filtrare le istanze?')));
 				// question asked for tutor overlapping
 				$confirmTutorOverlap = CDOMElement::create('span','id:tutorOverlapquestion');
-				$confirmTutorOverlap->addChild(new CText(translateFN('Il tutor selezionato ha già un evento in data')));
+				$confirmTutorOverlap->addChild(new CText(translateFN('Il tutor').' '));
+				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapTutorName'));
+				$confirmTutorOverlap->addChild(new CText(' '.translateFN('ha già un evento per la classe').'<br/>'));
+				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapInstanceName'));
+				$confirmTutorOverlap->addChild(new CText('<br/>'.translateFN('in data').' '));
 				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapDate'));
 				$confirmTutorOverlap->addChild(new CText(' '.translateFN('dalle ore').' '));
 				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapStartTime'));
 				$confirmTutorOverlap->addChild(new CText(' '.translateFN('alle ore').' '));
 				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapEndTime'));
-				$confirmTutorOverlap->addChild(new CText(' '.translateFN('Vuoi mantenere la modifica fatta?')));
+				$confirmTutorOverlap->addChild(new CText('<br/>'.translateFN('Vuoi mantenere la modifica fatta?')));
 				// this shall become the ok button label inside the dialog
 				$confirmOK = CDOMElement::create('span','class:confirmOKLbl');
 				$confirmOK->setAttribute('style','display:none;');

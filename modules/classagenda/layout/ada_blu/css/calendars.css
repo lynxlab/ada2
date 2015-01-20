@@ -55,12 +55,27 @@ div#confirmDialog {
     text-align: center;
 }
 
-#questionMustSave
-    {
+#instancesListquestion,
+#venuesListquestion,
+#onlyActiveInstancesquestion,
+#tutorOverlapquestion {
     text-align: center;
     display: inline-block;
     margin-top: 15px;
     overflow: none;
+}
+
+#tutorOverlapquestion {
+	margin-top: 5px;
+	line-height: 1.4em;
+}
+
+#overlapInstanceName,
+#overlapDate,
+#overlapStartTime,
+#overlapEndTime,
+#overlapTutorName {
+	font-weight: bold;
 }
 
 #classcalendar a.selectedClassroomEvent { background: red; }

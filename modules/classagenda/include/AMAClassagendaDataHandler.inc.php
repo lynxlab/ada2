@@ -80,8 +80,10 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		
 		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true) {
 			require_once MODULES_CLASSROOM_PATH . '/include/AMAClassroomDataHandler.inc.php';
-			
-			$sql .= ' JOIN `'.AMAClassroomDataHandler::$PREFIX.'classrooms` AS CROOMS'.
+			/**
+			 * must get null classrooms and venues as well, so use a LEFT JOIN here
+			 */
+			$sql .= ' LEFT JOIN `'.AMAClassroomDataHandler::$PREFIX.'classrooms` AS CROOMS'.
 					' ON CAL.id_classroom = CROOMS.id_classroom';
 		}
 		
@@ -264,6 +266,29 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		
 		return $this->getAllPrepared($sql,array($id_student, $id_course_instance), AMA_FETCH_ASSOC);
 		
+	}
+	
+	/**
+	 * checks if the passed tutor has already an event scheduled between the passed timestamps
+	 * 
+	 * @param unknown $startTS start timestamp
+	 * @param unknown $endTS end timestamp
+	 * @param unknown $tutorID tutor ID
+	 * 
+	 * @return mixed
+	 * 
+	 * @access public
+	 */
+	public function checkTutorOverlap($startTS, $endTS, $tutorID) {
+
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'calendars` WHERE id_utente_tutor=? AND (
+						 `start`='.$startTS.' OR `end`='.$endTS.' OR '.
+						'`start`='.$endTS.' OR `end`='.$startTS.' OR '.
+						'('.$startTS.'<=`start` AND '.$endTS.'>=`start`) OR '.
+						'('.$startTS.'>=`start` AND '.$startTS.'<=`end`)'.
+						')';
+		
+		return $this->getRowPrepared($sql, $tutorID,AMA_FETCH_ASSOC);		
 	}
 
 	/**

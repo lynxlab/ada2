@@ -148,13 +148,18 @@ function initCalendar() {
 						calendar.fullCalendar('unselect');
 					}
 					
-					if (!checkTutorOverlap(newEvent)) {
-						placeEvent();
-					} else {
-						jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
-								function() { placeEvent(); },
-								function() { calendar.fullCalendar('unselect'); });
-					}
+					$j.when(checkTutorOverlap(newEvent)).done(function(overlaps) {
+						if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+							placeEvent();
+						} else {
+							jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+									function() { placeEvent(); },
+									function() { calendar.fullCalendar('unselect'); });
+						}						
+					}).fail(function() {
+						console.log ('error while checking overlapping events in select');
+						calendar.fullCalendar('unselect');
+					});
 				}
 			},
 			eventRender: function(event, element, view) {
@@ -162,34 +167,58 @@ function initCalendar() {
 				var htmlEl = ('month' != view.name) ? 'div' : 'span';
 				element.find(htmlEl+'.fc-title').html(element.find(htmlEl+'.fc-title').text());
 			},
-			eventDrop: function ( event, delta, revertFunc, jsEvent, ui, view ) {
+			eventDrop: function ( event, delta, revertFunc) {
+				
+				data = {
+						start: event.start.format(),
+						end  : event.end.format(),
+						tutorID: parseInt(event.tutorID)
+				};
 				
 				var placeEvent = function() {
 					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
 				}
 				
-				if (!checkTutorOverlap(event)) {
-					placeEvent();
-				} else {
-					jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
-							function() { placeEvent(); },
-							function() { revertFunc(); });
-				}
+				$j.when(checkTutorOverlap(data)).done(function(overlaps) {
+					if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+						placeEvent();
+					} else {
+						jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+								function() { placeEvent(); },
+								function() { revertFunc(); });
+					}						
+				}).fail(function() {
+					console.log ('error while checking overlapping events in eventDrop');
+					revertFunc();
+				});
+				
 			},
 			eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) {
+				
+				data = {
+						start: event.start.format(),
+						end  : event.end.format(),
+						tutorID: parseInt(event.tutorID)
+				};
 				
 				var placeEvent = function() {
 					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
 					updateAllocatedHours(delta.asMilliseconds(), 0);
 				}
 				
-				if (!checkTutorOverlap(event)) {
-					placeEvent();
-				} else {
-					jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
-							function() { placeEvent(); },
-							function() { revertFunc(); });
-				}
+				$j.when(checkTutorOverlap(data)).done(function(overlaps) {
+					if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+						placeEvent();
+					} else {
+						jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+								function() { placeEvent(); },
+								function() { revertFunc(); });
+					}						
+				}).fail(function() {
+					console.log ('error while checking overlapping events in eventResize');
+					revertFunc();
+				});
+				
 			},
 			header: {
 				left: 'prev,next today',
@@ -596,7 +625,7 @@ function reloadClassRoomEvents() {
 	var venueID = getSelectedVenue();
 	
 	/**
-	 * ajax-load events for the selected instance id
+	 * ajax-load events
 	 */
 	$j.ajax({
 		type	:	'GET',
@@ -616,7 +645,7 @@ function reloadClassRoomEvents() {
 			 * add all loaded events to the calendar
 			 */
 			for (var i=0; i<JSONObj.length; i++) {
-				if (JSONObj[i].venueID==venueID) {
+				if (JSONObj[i].venueID==null || JSONObj[i].venueID==venueID) {
 					JSONObj[i].title = buildEventTitle(JSONObj[i]);
 					
 					// set as editable only events of the selected course instance
@@ -671,34 +700,41 @@ function updateAllocatedHours(durationDelta, lessonsDelta) {
 	}
 }
 
+/**
+ * check if the passed events overlaps with some other event of the same tutor
+ * 
+ * @param event
+ * @returns {Boolean}
+ */
 function checkTutorOverlap(event) {
-	if (loadedEvents!=null) {
-		newStart = moment(event.start);
-		newEnd = moment(event.end);
-		
-		for (var i=0; i<loadedEvents.length; i++) {
-			
-			loadedStart = moment(loadedEvents[i].start);
-			loadedEnd = moment(loadedEvents[i].end);
-			
-			if (event.tutorID==loadedEvents[i].tutorID &&
-				   ( loadedStart.isSame(newStart) || loadedEnd.isSame(newEnd)   ||
-					 loadedStart.isSame(newEnd)   || loadedEnd.isSame(newStart) ||
-					(newStart.isBefore(loadedStart) && newEnd.isAfter(loadedStart)) ||
-					(newStart.isAfter(loadedStart)  && newStart.isBefore(loadedEnd))
-			   )) {
-				
-				$j('#overlapDate').text(newStart.format('L'));				
-				$j('#overlapStartTime').text(loadedStart.format('HH.mm'));
-				$j('#overlapEndTime').text(loadedEnd.format('HH.mm'));
-				
-				return true;
-				
-				// return !confirm ("Sovrapposizione");
-			}
-		}
-	}
-	return false;
+	return $j.ajax({
+				type	:	'GET',
+				url		:	'ajax/checkTutorOverlap.php',
+				data	:	event,
+				dataType:	'json'
+			}).done (function(JSONObj){
+						
+				if ('undefined' != typeof JSONObj.isOverlap) {
+					if (JSONObj.isOverlap==true) {
+						/**
+						 * Set dialog text with overlapping found event data
+						 */
+						$j('#overlapTutorName').text(getTutorRadioLabel(event.tutorID));
+						if ('undefined' != typeof JSONObj.data.id_istanza_corso) {
+							$j('#overlapInstanceName').text(($j('#instancesList').length>0) ? ($j('#instancesList option[value='+JSONObj.data.id_istanza_corso+']').text()) : '');
+						}
+						if ('undefined' != JSONObj.data.date)  {
+							$j('#overlapDate').text(JSONObj.data.date);
+						}
+						if ('undefined' != JSONObj.data.start)  {
+							$j('#overlapStartTime').text(JSONObj.data.start);
+						}
+						if ('undefined' != JSONObj.data.end)  {
+							$j('#overlapEndTime').text(JSONObj.data.end);
+						}
+					}
+				}
+			}).fail(function() {});
 }
 
 /**
@@ -771,8 +807,7 @@ function jQueryConfirm(id, questionId, OKcallback, CancelCallBack) {
 
 	$j(id).dialog({
 		resizable : false,
-		height : 160,
-		width: "25%",
+		width: "auto",
 		modal : true,
 		buttons : [ {
 			text : okLbl,

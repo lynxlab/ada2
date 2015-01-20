@@ -85,9 +85,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$retArray[$i]['classroomID'] = (int) $aResult['id_classroom'];
 			$retArray[$i]['tutorID'] = (int) $aResult['id_utente_tutor'];
 			$retArray[$i]['isSelected'] = false;
-			if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true) {
+			if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true && !is_null($aResult['id_venue'])) {
 				$retArray[$i]['venueID'] = (int) $aResult['id_venue'];
-			}
+			} else $retArray[$i]['venueID'] = null;
 			
 			list ($day, $month, $year) = explode ('/',ts2dFN($aResult['start']));
 			$retArray[$i]['start'] = $year.'-'.$month.'-'.$day.'T'.ts2tmFN($aResult['start']);
