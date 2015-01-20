@@ -141,7 +141,7 @@ if (!AMA_DB::isError($classroomsList)) {
 				$labels[5]=>$linksHtml);		
 	}
 	
-	$classroomsTable = BaseHtmlLib::tableElement('id:completeClassroomsList',$labels,$classroomsData,'',translateFN('Elenco delle alue'));
+	$classroomsTable = BaseHtmlLib::tableElement('id:completeClassroomsList',$labels,$classroomsData,'',translateFN('Elenco delle aule'));
 	$classroomsIndexDIV->addChild($classroomsTable);
 	
 	// if there are more than 10 rows, repeat the add new button below the table
