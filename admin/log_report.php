@@ -107,7 +107,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                     $span_label = CDOMElement::create('span');
                     $span_label->setAttribute('title', $title);
                     $span_label->setAttribute('class', 'tooltip');
-                    $span_label->addChild(new CText($tableInfo['label']));
+                    $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                     $thead_data[$key]=$span_label->getHtml();
                 }else{
                     switch($key){
@@ -116,7 +116,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'user_subscribed':
@@ -124,7 +124,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'course':
@@ -132,7 +132,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'sessions_started':
@@ -140,7 +140,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'sessions_closed':
@@ -148,7 +148,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_CompletedStatus_sessStarted_Rate':
@@ -156,7 +156,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_CompletedStatus_sessionEnd_Rate':
@@ -164,7 +164,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'tot_student_CompletedStatus_Rate':
@@ -172,7 +172,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'tot_Session':
@@ -180,7 +180,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_CompletedStatus_sessStarted':
@@ -188,7 +188,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_subscribedStatus_sessStarted':
@@ -196,7 +196,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_CompletedStatus_sessionEnd':
@@ -204,7 +204,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_subscribedStatus_sessEnd':
@@ -212,7 +212,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'tot_student_CompletedStatus':
@@ -220,7 +220,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'tot_student_subscribedStatus':
@@ -228,7 +228,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'visits':
@@ -236,7 +236,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'system_messages':
@@ -244,7 +244,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'chatrooms':
@@ -252,7 +252,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'videochatrooms':
@@ -260,7 +260,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
-                            $span_label->addChild(new CText($tableInfo['label']));
+                            $span_label->addChild(new CText(translateFN($tableInfo['label'])));
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         default:
