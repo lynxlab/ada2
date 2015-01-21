@@ -46,12 +46,27 @@ $data = CDOMElement::create('div');
 $thead_data=array();
 $testersData_Ar=array();
 $log_dataAr = array();
-
+    
 if($userObj->getType()==AMA_TYPE_ADMIN){
-    $log_dataAr =  Multiport::log_report();
+    $Services_TypeAr=$GLOBALS['dh']->get_service_type($userObj->getId());
+    if(!empty($Services_TypeAr) && !AMA_DB::isError($Services_TypeAr)){
+        foreach($Services_TypeAr as $service){
+            if(isset($service['livello_servizio']) && isset($service['nome_servizio'])){
+                $Services_Type[$service['livello_servizio']]=translateFN($service['nome_servizio']);
+
+            }
+        }
+    } 
+    else{
+        if(defined('DEFAULT_SERVICE_TYPE') && defined('DEFAULT_SERVICE_TYPE_NAME')){
+            $Services_Type[DEFAULT_SERVICE_TYPE]=translateFN(DEFAULT_SERVICE_TYPE_NAME);}
+    }
+    $log_dataAr =  Multiport::log_report(null,$Services_Type);
 }elseif($userObj->getType()==AMA_TYPE_SWITCHER){
-    $log_dataAr=Multiport::log_report($userObj->getDefaultTester());
+    $log_dataAr=Multiport::log_report($userObj->getDefaultTester(),null);
+    $Services_Type=$_SESSION['service_level'];
 }
+
 /* Set services level in $GLOBALS['LogReport_Array']*/
 if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) ){
     $service_position=0;
@@ -60,8 +75,8 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
         if(strpos($key,'service_level')===0){
             if($value['show']==true){
                 /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
-                if(isset($_SESSION['service_level'])){
-                    foreach($_SESSION['service_level'] as $key_service=>$value){
+                if(isset($Services_Type)){
+                    foreach($Services_Type as $key_service=>$value){
                         $arrayService['course_'.$key_service]=array('label'=>$value,'show'=>true);
                     }
                 }

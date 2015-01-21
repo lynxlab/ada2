@@ -264,8 +264,6 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   }
 
   $id_profile = $sess_userObj->getType();
-
-  loadServiceTypes();
   
   /*
    * Get needed object for this user from $neededObjAr 
@@ -758,8 +756,8 @@ function clear_dataFN($variableToClearAr=array()) {
 function loadServiceTypes(){
  
   if (!isset($_SESSION['service_level'])){
-    if($GLOBALS['common_dh'] instanceof AMA_Common_DataHandler) {
-        $servicesTypeAr =  $GLOBALS['common_dh']->get_service_type();
+    if($GLOBALS['dh'] instanceof AMA_Tester_DataHandler) {  //tester DataHandler e quello diventa dh
+        $servicesTypeAr =  $GLOBALS['dh']->get_service_type();
         if(!empty($servicesTypeAr) && !AMA_DB::isError($servicesTypeAr)){
             foreach($servicesTypeAr as $servicesType){
                 if(isset($servicesType['livello_servizio']) && isset($servicesType['nome_servizio'])){

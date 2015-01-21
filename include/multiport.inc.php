@@ -2144,7 +2144,7 @@ class MultiPort
   /*
    * Used by admin/log_report.php
    */
-    static public function log_report($pointer=NULL) {
+    static public function log_report($pointer=NULL,$Services_Type=NULL) {
     $log_dataAr = array();
     $common_dh = $GLOBALS['common_dh'];
     $filedArray = array('nome','ragione_sociale');
@@ -2156,7 +2156,7 @@ class MultiPort
             $tester_dsn = self::getDSN($tester);
             if ($tester_dsn != null) {
                 $tester_dh = AMA_DataHandler::instance($tester_dsn);
-                $result = $tester_dh->tester_log_report($tester_name);
+                $result = $tester_dh->tester_log_report($tester_name,null);
                 if (!AMA_DB::isError($result)) {
                     $result['provider']= $tester_name;
                     $log_dataAr[$tester] = $result;
@@ -2172,7 +2172,7 @@ class MultiPort
                 $tester_dsn = self::getDSN($tester);
                 if ($tester_dsn != null) {
                     $tester_dh = AMA_DataHandler::instance($tester_dsn);
-                    $result = $tester_dh->tester_log_report($tester_name);
+                    $result = $tester_dh->tester_log_report($tester_name,$Services_Type);
                     if (!AMA_DB::isError($result)) {
                         $result['provider']= $tester_name;
                         $log_dataAr[$tester] = $result;
