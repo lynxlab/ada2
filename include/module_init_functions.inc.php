@@ -756,7 +756,7 @@ function clear_dataFN($variableToClearAr=array()) {
 function loadServiceTypes(){
  
   if (!isset($_SESSION['service_level'])){
-    if($GLOBALS['dh'] instanceof AMA_Tester_DataHandler) {  //tester DataHandler e quello diventa dh
+    if($GLOBALS['dh'] instanceof AMA_Tester_DataHandler) {  
         $servicesTypeAr =  $GLOBALS['dh']->get_service_type();
         if(!empty($servicesTypeAr) && !AMA_DB::isError($servicesTypeAr)){
             foreach($servicesTypeAr as $servicesType){

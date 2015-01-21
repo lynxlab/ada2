@@ -11067,7 +11067,7 @@ public function get_updates_nodes($userObj, $pointer)
         return $resultAr;
     }
 
-    /*
+  /*
    * Get type of all services
    *
    * @access public

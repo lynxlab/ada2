@@ -74,7 +74,6 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
     foreach($GLOBALS['LogReport_Array'] as $key=>$value){
         if(strpos($key,'service_level')===0){
             if($value['show']==true){
-                /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
                 if(isset($Services_Type)){
                     foreach($Services_Type as $key_service=>$value){
                         $arrayService['course_'.$key_service]=array('label'=>$value,'show'=>true);
