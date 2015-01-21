@@ -192,9 +192,8 @@ if(isset($p_login)) {
 		$GLOBALS['sess_id_user_type']  = $userObj->getType();
 	    $_SESSION['sess_userObj'] = $userObj;
             
-            /* reload $_SESSION['service_level'] to allow the correct label translatation according to user language */
+            /* unset $_SESSION['service_level'] to allow the correct label translatation according to user language */
             unset($_SESSION['service_level']);
-            loadServiceTypes();
             
 		if($user_default_tester !== NULL) {
 					$_SESSION ['sess_selected_tester'] = $user_default_tester;
