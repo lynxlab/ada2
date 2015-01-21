@@ -287,7 +287,7 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		
 		if (!is_null($eventID)) {
 			$sql .= ' AND `'.self::$PREFIX.'calendars_id` != :eventID';
-			$params = array_merge($params, array(':enentID'=>$eventID)); 
+			$params = array_merge($params, array(':eventID'=>$eventID)); 
 		}
 		
 		$sql .=' AND (`start`= :startTS OR `end`= :endTS OR '.
