@@ -153,7 +153,17 @@ class calendarsManagement extends abstractClassAgendaManagement
 					 * venues html select element
 					 */
 					$venuesSELECT = BaseHtmlLib::selectElement2('id:venuesList,name:venuesList',$dataAr,key($dataAr));
-					unset($dataAr);					
+					unset($dataAr);
+					
+					/**
+					 * checkbox to filter selected venues only
+					 */
+					$onlySelectedVenueCHECK = CDOMElement::create('checkbox','id:onlySelectedVenue');
+					$onlySelectedVenueCHECK->setAttribute('value', 1);
+					$onlySelectedVenueCHECK->setAttribute('name', 'onlySelectedVenue');
+					$onlySelectedVenueLABEL = CDOMElement::create('label','for:onlySelectedVenue');
+					$onlySelectedVenueLABEL->addChild(new CText(translateFN('Mostra solo il luogo selezionato')));
+										
 					$venuesLABEL = CDOMElement::create('label','for:venuesList,class:venuesListLabel');
 					$venuesLABEL->addChild(new CText(translateFN('Seleziona un luogo').': '));
 					
@@ -166,6 +176,8 @@ class calendarsManagement extends abstractClassAgendaManagement
 					
 					$classroomsDIV->addChild ($venuesLABEL);
 					$classroomsDIV->addChild ($venuesSELECT);
+					$classroomsDIV->addChild ($onlySelectedVenueCHECK);
+					$classroomsDIV->addChild ($onlySelectedVenueLABEL);
 					$classroomsDIV->addChild($classroomSPAN);
 					$classroomsDIV->addChild($classroomlistDIV);
 				}

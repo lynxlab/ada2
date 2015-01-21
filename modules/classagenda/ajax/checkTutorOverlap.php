@@ -44,6 +44,8 @@ $retVal['isOverlap'] = false;
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	if (isset($start) && strlen($start)>0 && isset($end) && strlen($end)>0 && isset($tutorID) && intval($tutorID)>0) {
 		
+		$eventID = (isset($eventID) && intval($eventID)>0) ? intval($eventID) : null;
+		
 		list ($startDate, $startTime) = explode('T', $start);
 		list ($endDate, $endTime) = explode('T', $end);
 		
@@ -51,7 +53,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 		list ($endYear, $endMonth, $endDay) = explode('-', $endDate);
 		
 		$result = $dh->checkTutorOverlap($dh->date_to_ts($startDay.'/'.$startMonth.'/'.$startYear,$startTime),
-										 $dh->date_to_ts($endDay.'/'.$endMonth.'/'.$endYear,$endTime), intval($tutorID));
+										 $dh->date_to_ts($endDay.'/'.$endMonth.'/'.$endYear,$endTime),
+										 intval($tutorID), $eventID);
 		
 		if (!AMA_DB::isError($result) && $result!==false && count($result)>0) {
 			$retVal['isOverlap'] = true;

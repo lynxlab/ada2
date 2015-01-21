@@ -274,21 +274,30 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * @param unknown $startTS start timestamp
 	 * @param unknown $endTS end timestamp
 	 * @param unknown $tutorID tutor ID
+	 * @param unknown $eventID event ID
 	 * 
 	 * @return mixed
 	 * 
 	 * @access public
 	 */
-	public function checkTutorOverlap($startTS, $endTS, $tutorID) {
+	public function checkTutorOverlap($startTS, $endTS, $tutorID, $eventID) {
 
-		$sql = 'SELECT * FROM `'.self::$PREFIX.'calendars` WHERE id_utente_tutor=? AND (
-						 `start`='.$startTS.' OR `end`='.$endTS.' OR '.
-						'`start`='.$endTS.' OR `end`='.$startTS.' OR '.
-						'('.$startTS.'<=`start` AND '.$endTS.'>=`start`) OR '.
-						'('.$startTS.'>=`start` AND '.$startTS.'<=`end`)'.
-						')';
+		$params = array (':tutorID'=>$tutorID);
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'calendars` WHERE id_utente_tutor= :tutorID';
 		
-		return $this->getRowPrepared($sql, $tutorID,AMA_FETCH_ASSOC);		
+		if (!is_null($eventID)) {
+			$sql .= ' AND `'.self::$PREFIX.'calendars_id` != :eventID';
+			$params = array_merge($params, array(':enentID'=>$eventID)); 
+		}
+		
+		$sql .=' AND (`start`= :startTS OR `end`= :endTS OR '.
+					 '`start`= :endTS OR `end`= :startTS OR '.
+					 '(:startTS <=`start` AND :endTS >=`start`) OR '.
+					 '(:startTS >=`start` AND :startTS <=`end`))';
+		
+		$params = array_merge($params, array(':startTS'=>$startTS, ':endTS'=>$endTS));
+		
+		return $this->getRowPrepared($sql, $params, AMA_FETCH_ASSOC);		
 	}
 
 	/**

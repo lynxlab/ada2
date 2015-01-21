@@ -23,6 +23,7 @@ label.venuesListLabel { display: block; margin-bottom: 5px; }
 #instancesList { min-width: 40%; }
 .selectclassroomspan,
 .selecttutorspan { display: block; margin-bottom: 5px; }
+.selectclassroomspan { margin-top: 5px; }
 
 #tutorslist input[name="tutorradio"] { float:left; }
 #tutorslist .tutorradiotext { width:88%; float: left; margin-bottom: 2%; overflow: hidden; text-overflow: ellipsis; }
