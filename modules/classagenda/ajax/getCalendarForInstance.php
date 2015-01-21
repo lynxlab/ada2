@@ -54,7 +54,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 		 * we've been asked to get all instances
 		 */
 		// first of all, get the coure list
-		$courseList = $dh->get_courses_list(array());
+		$courseList = $dh->get_courses_list(array('id_corso'));
 		// first element of returned array is always the courseId, array is NOT assoc
 		if (!AMA_DB::isError($courseList)) {
 			// for each course in the list...

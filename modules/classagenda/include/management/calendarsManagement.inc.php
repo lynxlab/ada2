@@ -34,7 +34,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 		/* @var $html	string holds html code to be retuned */
 		$htmlObj = null;
 		/* @var $path	string  path var to render in the help message */
-		$help = translateFN('Da qui puoi inserire o modifcare il calendario delle lezioni di una classe');
+		$help = translateFN('Da qui puoi inserire o modificare il calendario degli eventi di una classe');
 		/* @var $status	string status var to render in the breadcrumbs */
 		$title= translateFN('Calendario');
 		
@@ -58,6 +58,15 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$buttonsDIV->addChild($cancelButton);
 				
 				/**
+				 * informational header div
+				 */
+				$infoHeaderDIV = CDOMElement::create('h2','id:infoHeader');
+				$infoHeaderSPAN = CDOMElement::create('span','class:infoHeaderContent');
+				$infoHeaderSPAN->addChild(new CText(translateFN('Calendario degli eventi della classe').': '));
+				$infoHeaderSPAN->addChild(CDOMElement::create('span','id:headerInstanceTitle'));
+				$infoHeaderDIV->addChild($infoHeaderSPAN);
+				
+				/**
 				 * courses instances list shall be obtained by the javascript,
 				 * build empty select item and a span to hold number of subscribed students
 				 * 
@@ -71,13 +80,14 @@ class calendarsManagement extends abstractClassAgendaManagement
 				 */
 				$filterInstanceState = array(
 						MODULES_CLASSAGENDA_ALL_INSTANCES => translateFN('Tutte'),
-						MODULES_CLASSAGENDA_STARTED_INSTANCES => translateFN('Solo iniziate'),
-						MODULES_CLASSAGENDA_NONSTARTED_INSTANCES => translateFN('Solo non iniziate')
+						MODULES_CLASSAGENDA_NONSTARTED_INSTANCES => translateFN('Non iniziate'),
+						MODULES_CLASSAGENDA_STARTED_INSTANCES => translateFN('In corso'),
+						MODULES_CLASSAGENDA_CLOSED_INSTANCES => translateFN('Chiuse')
 				);
 				$filterInstanceSELECT = BaseHtmlLib::selectElement2('id:filterInstanceState,name:filterInstanceState',
 						$filterInstanceState,MODULES_CLASSAGENDA_ALL_INSTANCES);
 				$filterInstanceLABEL = CDOMElement::create('label','for:filterInstanceState');
-				$filterInstanceLABEL->addChild(new CText(translateFN('Mostra le classi').': '));
+				$filterInstanceLABEL->addChild(new CText(translateFN('Filtra le classi').': '));
 				
 				/**
 				 * checkbox to filter selected instance only
@@ -86,7 +96,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$onlySelectedCHECK->setAttribute('value', 1);
 				$onlySelectedCHECK->setAttribute('name', 'onlySelectedInstance');
 				$onlySelectedLABEL = CDOMElement::create('label','for:onlySelectedInstance');
-				$onlySelectedLABEL->addChild(new CText(translateFN('Mostra solo la classe selezionata')));
+				$onlySelectedLABEL->addChild(new CText(translateFN('Mostra solo gli eventi della classe selezionata')));
 				
 				$selectClassDIV = CDOMElement::create('div','id:selectClassContainer');
 				$selectClassDIV->addChild($instancesLABEL);
@@ -250,6 +260,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				if (isset($selectClassDIV)) {
 					$htmlObj->addChild($selectClassDIV);
 				}
+				$htmlObj->addChild($infoHeaderDIV);
 				$htmlObj->addChild($calendarDIV);
 				$htmlObj->addChild($serviceTypeDIV);
 				if (isset($classroomsDIV)) {

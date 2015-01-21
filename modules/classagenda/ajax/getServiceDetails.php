@@ -79,7 +79,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 			
 			if (!AMA_DB::isError($courseInstanceObj)) {
 				$retArray['duration_hours'] = $courseInstanceObj->getDurationHours();
-				$eventsArr = $GLOBALS['dh']->getClassRoomEventsForCourseInstance($instanceID);
+				$eventsArr = $GLOBALS['dh']->getClassRoomEventsForCourseInstance($instanceID, null);
 				$retArray['allocated_hours'] = 0;
 				$retArray['lessons_count'] = 0;
 				if (!AMA_DB::isError($eventsArr) && is_array($eventsArr) && count($eventsArr)>0) {

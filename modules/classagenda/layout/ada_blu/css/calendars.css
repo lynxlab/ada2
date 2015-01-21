@@ -8,18 +8,22 @@
 #servicetypeContainer,
 #classrooms,
 #tutorsListContainer,
-#deleteButtonContainer { width: 26%; float: right; margin: 0 0 1% 1%; border: 1px dotted gray; padding: 1%; }
+#deleteButtonContainer,
+#buttonsContainer { width: 26%; float: right; margin: 0 0 1% 1%; border: 1px dotted gray; padding: 1%; }
 /**
  * #classrooms div starts hidden, it will
  * be shown by the javascript if needed
  */
 #classrooms { display: none; }
 
+#classcalendar .fc-custom { float: right; margin:5px 0 -10px 0; clear:both; }
+#classcalendar .fc-custom label { margin:0; }
+
 #deleteButtonContainer,
-#buttonsContainer { border:none; text-align: center; }
+#buttonsContainer { border:none; text-align: center; padding:0; }
 
 label.venuesListLabel { display: block; margin-bottom: 5px; }
-#venuesList { width: 100%; display: block; margin-bottom: 5px; }
+#venuesList, #tutorSelect { width: 100%; display: block; margin-bottom: 5px; }
 #instancesList { min-width: 40%; }
 .selectclassroomspan,
 .selecttutorspan { display: block; margin-bottom: 5px; }

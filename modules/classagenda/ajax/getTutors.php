@@ -51,15 +51,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$tutorlist = $GLOBALS['dh']->find_tutors_list(array('nome','cognome'),'id_utente_tutor IN('.implode(',',$result).')');
 			if (!AMA_DB::isError($tutorlist)) {
 				$htmlElement = CDOMElement::create('div');
+				$select = CDOMElement::create('select','name:tutorSelect,id:tutorSelect');
 				foreach ($tutorlist as $aTutor) {
-					$radioEL = CDOMElement::create('radio','name:tutorradio,class:tutorradio,value:'.$aTutor[0].',id:tutor'.$aTutor[0]);
-					$labelEL = CDOMElement::create('label','class:tutorradiotext,for:tutor'.$aTutor[0]);
-					$labelEL->addChild(new CText($aTutor[1].' '.$aTutor[2]));
-					
-					$htmlElement->addChild($radioEL);
-					$htmlElement->addChild($labelEL);
-					$htmlElement->addChild(CDOMElement::create('div','class:clearfix'));
+					$option = CDOMElement::create('option','value:'.$aTutor[0]);
+					$option->addChild(new CText($aTutor[1].' '.$aTutor[2]));
+					$select->addChild($option);
 				}
+				$htmlElement->addChild(CDOMElement::create('div','class:clearfix'));
+				$htmlElement->addChild($select);
 				$retVal = $htmlElement->getHtml();
 			}
 		}

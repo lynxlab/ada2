@@ -48,9 +48,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		if (isset($_POST['venueID']) && intval($_POST['venueID'])>0) {
 			$venueID = intval($venueID);
 		} else $venueID = null;
-				
+
+		if (isset($_POST['events']) && is_array($_POST['events']) && count($_POST['events'])>0) {
+			$postEvents = $_POST['events'];
+		} else $postEvents = null;
+		
 		$result = $GLOBALS['dh']->saveClassroomEvents(intval($_POST['instanceID']),$venueID,
-													  $_POST['events']);
+													  $postEvents);
 		
 		if (!AMA_DB::isError($result) && $result===true) {
 			$retArray = array("status"=>"OK", "msg"=>translateFN("Calendario salvato"));

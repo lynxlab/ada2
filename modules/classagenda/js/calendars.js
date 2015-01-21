@@ -41,13 +41,15 @@ function initDoc() {
 			 * reload course instances list only when #filterInstanceState changes 
 			 */
 			if ($j(this).attr('id')=='filterInstanceState') {
-				loadCourseInstances();
-			}
-			reloadClassRoomEvents();
+				$j.when(loadCourseInstances()).done(function() {
+					if (getSelectedCourseInstance()!=0) reloadClassRoomEvents();
+				});
+			} else reloadClassRoomEvents();
+			
 		});
 		
 		$j('#filterInstanceState, label[for="filterInstanceState"],'+
-		   '#onlySelectedInstance, label[for="onlySelectedInstance"]'+
+		   '#onlySelectedInstance, label[for="onlySelectedInstance"],'+
 		   '#onlySelectedVenue, label[for="onlySelectedVenue"]').on('mousedown',function() {
 			if (mustSave) {
 				event.preventDefault();
@@ -264,6 +266,8 @@ function initCalendar() {
 			if ($j('#instancesList').length>0) { $j('#instancesList').trigger('change'); } 
 			event.preventDefault();
 		});
+		
+		moveInsideCalendarHeader('onlySelectedInstance');
 	}
 }
 
@@ -282,7 +286,7 @@ function setSelectedClassroom(classroomid) {
  * @param tutorid the id of the tutor to be checked
  */
 function setSelectedTutor(tutorid) {
-	if ($j('input[name="tutorradio"]').length>0) $j('input[name="tutorradio"][value='+tutorid+']').prop('checked',true);
+	if ($j('#tutorSelect').length>0) $j('#tutorSelect option[value="'+tutorid+'"]').attr('selected','selected');
 }
 
 /**
@@ -319,7 +323,7 @@ function getSelectedClassroom() {
  * @returns selected tutor id or null
  */
 function getSelectedTutor() {
-	return ($j('input[name="tutorradio"]').length>0) ? $j('input[name="tutorradio"]:checked').val() : null;
+	return ($j('#tutorSelect').length>0) ? $j('#tutorSelect').val() : null;
 }
 
 /**
@@ -330,7 +334,7 @@ function getSelectedTutor() {
  * @returns string the retreived label
  */
 function getTutorRadioLabel(tutorid)  {
-	return $j('input[name="tutorradio"][value='+tutorid+'] + label').text();
+	return ($j('#tutorSelect').length>0) ? $j('#tutorSelect option[value="'+tutorid+'"]').text() : null;
 }
 
 /**
@@ -400,7 +404,7 @@ function buildEventTitle(event) {
 		title += '<span class="roomnameInEvent">' + roomName + '</span>';
 	}
 	
-	if ($j('input[name="tutorradio"]').length>0) {
+	if ($j('#tutorSelect').length>0) {
 		title += '<span class="tutornameInEvent">'+
 				 getTutorRadioLabel(event.tutorID)+'</span>';
 	}
@@ -445,6 +449,11 @@ function updateClassroomsOnVenueChange() {
 function updateServiceTypeOnInstanceChange() {
 	if ($j('#instancesList').length>0) {
 		$j('#instancesList').on('change', function(){
+			
+			if ($j('#headerInstanceTitle').length >0) {
+				$j('#headerInstanceTitle').text($j(this).find('option:selected').text());
+			}
+			
 			if ($j('#servicetype').length>0) {
 				$j.ajax({
 					type	:	'GET',
@@ -571,9 +580,9 @@ function updateTutorsListOnInstanceChange() {
 					// reload classroom events
 					if (typeof calendar != 'undefined') reloadClassRoomEvents();
 					// select the first radio button
-					if ($j('input[name="tutorradio"]').length>0) {
-						$j('input[name="tutorradio"]').first().prop('checked',true);
-						$j('input[name="tutorradio"]').on('change', function() {
+					if ($j('#tutorSelect').length>0) {
+						$j("#tutorSelect option:first").attr('selected','selected');
+						$j('#tutorSelect').on('change', function() {
 							updateEventOnTutorChange();
 						});
 					}
@@ -628,7 +637,7 @@ function loadCourseInstances() {
 		var oldSelectedInstance = getSelectedCourseInstance();
 		
 		$j('#instancesList').prop('disabled','disabled');
-		$j.ajax({
+		return $j.ajax({
 			type	:	'GET',
 			url		:	'ajax/getInstances.php',
 			data	:	{ filterInstanceState : getFilterInstanceState() },
@@ -646,9 +655,19 @@ function loadCourseInstances() {
 				} else {
 					$j('#instancesList option[value="'+oldSelectedInstance+'"]').attr('selected','selected');
 				}
-
-				// trigger onchange event to update number of students when page loads
-				$j('#instancesList').trigger('change');
+				if (getSelectedCourseInstance()!=0) {
+					// trigger onchange event to update number of students when page loads
+					$j('#instancesList').trigger('change');
+				} else {
+					$j('#servicetype').text('--');
+					$j('#studentcount').text('--');
+					$j('#tutorslist').text('--');
+					$j('#headerInstanceTitle').text('--');
+					$j('#classroomlist').html('');
+					$j('#classrooms').hide();
+					$j('#serviceduration').hide();
+					calendar.fullCalendar('removeEvents');
+				}
 			}
 		}).always(function() {
 			$j('#instancesList').prop('disabled',false);
@@ -831,6 +850,45 @@ function setModalDialogText (windowId, spanId) {
 	// shows the passed span that holds the message to be shown
 	$j(spanId).show();
 	$j(spanId).children().show();
+}
+
+function moveInsideCalendarHeader (elementID) {
+	var targetElement = '#classcalendar > .fc-toolbar';
+	var customClass = 'fc-custom';
+	
+	if ($j(targetElement).length>0 && $j('#'+elementID).length>0) {
+		
+		/**
+		 * add a customClass div to the calendar toolbar before last children
+		 */
+		if ($j(targetElement + ' > .' + customClass).length<=0) {
+			var childCount = $j(targetElement).children().length;
+			
+			$j(targetElement+' :nth-child('+childCount+')').before('<div class="'+customClass+'"></div>');
+		}
+		
+		/**
+		 * clone, inspect and remove passed element
+		 */
+		var cloned = $j('#'+elementID).clone(true);
+		
+		if ($j('#'+elementID).is('input')) {
+			// if passed ID is an input and has a label, clone and move the label as well
+			if ($j('label[for="'+elementID+'"]').length>0) {
+				var clonedLabel = $j('label[for="'+elementID+'"]').clone(true);
+				$j('label[for="'+elementID+'"]').remove();
+			}
+		}
+				
+		$j('#'+elementID).remove();
+		
+		targetElement += ' > .' + customClass;
+		$j(targetElement).html(cloned);
+		/**
+		 * add the clonedLabel if it's there
+		 */
+		if ('undefined' != typeof clonedLabel) $j(targetElement).append(clonedLabel);
+	}
 }
 
 /**

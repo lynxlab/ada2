@@ -38,7 +38,7 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
-$retVal = translateFN('Nessuna istanza trovata');
+$retVal = '<option value=0>'.translateFN('Nessuna istanza trovata').'</option>';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	$filterInstanceState =  (isset($filterInstanceState) && intval($filterInstanceState)>0) ?
@@ -49,25 +49,27 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	$returnHTML = '';
 	
 	// first of all, get the coure list
-	$courseList = $dh->get_courses_list(array('titolo'));
+	$courseList = $dh->find_courses_list(array('titolo'),'1 ORDER BY titolo ASC');
 	// first element of returned array is always the courseId, array is NOT assoc
 	if (!AMA_DB::isError($courseList)) {
 		// for each course in the list...
 		foreach ($courseList as $courseItem) {
 			// ... get the subscribeable course instance list...
 			if ($filterInstanceState == MODULES_CLASSAGENDA_STARTED_INSTANCES) {
-				$courseInstances = $dh->course_instance_find_list(array('title'), 'id_corso='.$courseItem[0].
-						' AND data_inizio>0 and durata>0');
+				$whereClause = 'id_corso='.$courseItem[0].' AND data_inizio>0 AND data_fine>='.time().' and durata>0 ORDER BY title ASC';
 			}
 			else if ($filterInstanceState == MODULES_CLASSAGENDA_NONSTARTED_INSTANCES) {
-				$courseInstances = $dh->course_instance_find_list(array('title'), 'id_corso='.$courseItem[0].
-						' AND data_inizio<=0');
+				$whereClause = 'id_corso='.$courseItem[0].' AND data_inizio<=0 ORDER BY title ASC';
+			}
+			else if ($filterInstanceState == MODULES_CLASSAGENDA_CLOSED_INSTANCES) {
+				$whereClause = 'id_corso='.$courseItem[0].' AND data_fine<'.time().' ORDER BY title ASC';
 			}
 			else {
-				$courseInstances = $dh->course_instance_get_list(array('title'), $courseItem[0]);
+				$whereClause = 'id_corso='.$courseItem[0].' ORDER BY title ASC';
 			}
+			$courseInstances = $dh->course_instance_find_list(array('title'), $whereClause);
 			// first element of returned array is always the instanceId, array is NOT assoc
-			if (!AMA_DB::isError($courseInstances)) {
+			if (!AMA_DB::isError($courseInstances) && count($courseInstances)>0) {
 				// ...and, for each subscribeable instance in the list...
 				foreach ($courseInstances as $courseInstanceItem) {
 					// ... put its ID and human readble course instance name, course title and course name as an <option> in the <select>

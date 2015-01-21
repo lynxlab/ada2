@@ -38,19 +38,21 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		$previousEvents = $this->getClassRoomEventsForCourseInstance ($course_instance_id, $venueID);
 		if (AMA_DB::isError($previousEvents)) $previousEvents = array();
 		
-		foreach ($eventsArray as $event) {
-			$eventID = $this->saveClassroomEvent($course_instance_id, $event);
-			if (!AMA_DB::isError($eventID) && intval($eventID)>0) {
-				// event has been updated, remove it from the previous events array
-				if (array_key_exists($eventID, $previousEvents)) unset ($previousEvents[$eventID]);
-			} else if (AMA_DB::isError($eventID)) {
-				// on error return right away
-				return $eventID;
+		if (!is_null($eventsArray)) {
+			foreach ($eventsArray as $event) {
+				$eventID = $this->saveClassroomEvent($course_instance_id, $event);
+				if (!AMA_DB::isError($eventID) && intval($eventID)>0) {
+					// event has been updated, remove it from the previous events array
+					if (array_key_exists($eventID, $previousEvents)) unset ($previousEvents[$eventID]);
+				} else if (AMA_DB::isError($eventID)) {
+					// on error return right away
+					return $eventID;
+				}
 			}
 		}
 
 		/**
-		 * what is left in the previous events array must be delete
+		 * what is left in the previous events array must be deleted
 		 */
 		foreach ($previousEvents as $eventID=>$anEvent) {
 		    $this->deleteClassroomEvent($eventID);
@@ -70,6 +72,9 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * @access public
 	 */
 	public function getClassRoomEventsForCourseInstance($course_instance_id, $venueID) {
+		
+		if (!isset($venueID)) $venueID=null;
+		
 		$sql = 'SELECT CAL.* ';
 		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true) {
 			$sql .= ',CROOMS.`id_venue` ';

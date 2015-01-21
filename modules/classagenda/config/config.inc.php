@@ -19,5 +19,6 @@ define('MODULES_CLASSAGENDA_DO_ROLLCALLHISTORY',	3); // roll call history action
 define('MODULES_CLASSAGENDA_ALL_INSTANCES',			1); // filter all course instances
 define('MODULES_CLASSAGENDA_STARTED_INSTANCES',		2); // filter started course instances
 define('MODULES_CLASSAGENDA_NONSTARTED_INSTANCES',	3); // filter non started course instances
+define('MODULES_CLASSAGENDA_CLOSED_INSTANCES',		4); // filter closed course instances
 
 ?>
