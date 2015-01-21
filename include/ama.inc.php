@@ -1994,28 +1994,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         return $service_result;
     }
 
-  /*
-   * Get type of all services
-   *
-   * @access public
-   *
-   * @ return an array: id_type_service, type_service(=service_level), name_service,description, custom fields
-   *
-   * @return an error if something goes wrong
-   *
-   */
-    public function get_service_type() {
-        $db =& $this->getConnection();
-        if (AMA_DB::isError($db)) return $db;
-
-        $service_sql = "SELECT id_tipo_servizio, livello_servizio,nome_servizio,descrizione_servizio,custom_1,custom_2,custom_3  FROM service_type";
-        $service_result = $db->getAll($service_sql,NULL,AMA_FETCH_ASSOC);
-        if(self::isError($service_result)) {
-            return new AMA_Error(AMA_ERR_GET);
-        }
-
-        return $service_result;
-    }
+  
     /*
    * Get all services
    *
@@ -11088,6 +11067,42 @@ public function get_updates_nodes($userObj, $pointer)
         return $resultAr;
     }
 
+  /*
+   * Get type of all services
+   *
+   * @access public
+   *
+   * @ return an array: id_type_service, type_service(=service_level), name_service,description, custom fields  
+   *
+   * @return an error if something goes wrong
+   *
+   */
+    public function get_service_type($id_user=NULL) {
+        
+    $service_sql = "SELECT id_tipo_servizio, livello_servizio,nome_servizio,descrizione_servizio,custom_1,custom_2,custom_3  FROM service_type";
+    $common_dh = AMA_Common_DataHandler::instance();
+    
+    /* if isset $id_user it means that the admin is asking data for log_report.php, and he have to take data from common db */
+    if(isset($id_user)){  
+        $db=array($common_dh);
+    }else{
+        $db=array($this,$common_dh);
+    }
+
+    foreach ($db as $dbToUse) {
+        $service_result = $dbToUse->getAllPrepared($service_sql, NULL, AMA_FETCH_ASSOC);
+        if (!AMA_DB::isError($service_result) && $service_result!==false && count($service_result)>0) {
+            break;
+        }
+    }
+
+    if(AMA_DB::isError($service_result)) {
+        return new AMA_Error(AMA_ERR_GET);
+    }
+
+    return $service_result;
+    }
+    
     public function get_number_of_tutored_users($id_tutor) {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
@@ -11311,93 +11326,97 @@ public function get_updates_nodes($userObj, $pointer)
    * get some log data for a given tester
    * @return  $res_ar array
    */
-    public function tester_log_report($tester = 'default') {
+    public function tester_log_report($tester = 'default',$Services_TypeAr=NULL) {
 
-        if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) ){
-            $res_ar = array();
-            $sql = array();
-            foreach($GLOBALS['LogReport_Array'] as $key=>$value){
-            /* if a case fails or a query return error, the corresponding column will not appear in log report table */
-                switch($key){
-                    
-                    case 'final_users':
-                        $sql[$key]="SELECT COUNT(`id_utente`) `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT;
-                        break;
-                    case 'user_subscribed':
-                        $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`))  FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED;
-                        break;
-                    case 'course':
-                        $sql[$key]="SELECT COUNT(`id_corso`) FROM `modello_corso`"; 
-                        break;
-                    case 'service_level':
-                        /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
-                        if(isset($_SESSION['service_level'])){
-                            foreach($_SESSION['service_level'] as $keyService_level=>$value){
-                                $sql['course_'.$keyService_level]="SELECT COUNT(`id_corso`) FROM `modello_corso` where `tipo_servizio`=$keyService_level"; 
-                            } 
-
-                        }
-                        break;
-                    case 'sessions_started':
-                        $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` >". time(); 
-                        break;
-                    case'student_subscribedStatus_sessStarted':
-                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_STATUS_SUBSCRIBED." AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
-                        break;
-                    case 'student_CompletedStatus_sessStarted':
-                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
-                        break; 
-                    case 'sessions_closed':
-                        $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_fine` <= " . time();  
-                        break; 
-                    case'student_subscribedStatus_sessEnd':
-                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_STATUS_SUBSCRIBED." AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
-                        break;
-                    case 'student_CompletedStatus_sessionEnd':
-                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
-                        break;
-                    case 'tot_student_subscribedStatus':
-                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`=".ADA_STATUS_SUBSCRIBED.' AND ic.`data_inizio` > 0' ;
-                        break;
-                    case 'tot_student_CompletedStatus': 
-                        $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`=".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED.' AND ic.`data_inizio` > 0' ;
-                        break;
-                    case 'tot_Session':
-                        $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso`";
-                        break;
-                    case 'visits':
-                        $sql[$key]="SELECT COUNT(`id_history`) FROM `history_nodi` AS hn JOIN `studente` AS st ON hn.id_utente_studente = st.id_utente_studente";
-                        break;
-                    case 'system_messages':
-                        $sql[$key]="SELECT COUNT(`id_messaggio`) FROM `messaggi` WHERE `tipo` = '". ADA_MSG_SIMPLE ."'"  ;
-                        break;
-                    case 'chatrooms':
-                        $sql[$key]="SELECT COUNT(`id_chatroom`) FROM `chatroom`";
-                        break;
-                    case 'videochatrooms':
-                        $sql[$key]="SELECT COUNT(`id`) FROM `openmeetings_room`";
-                        break;
-                /* Return array of this method must have this key otherwise the corresponding columns will not appear in log-report table */
-                    case 'student_CompletedStatus_sessStarted_Rate':
-                    case 'student_CompletedStatus_sessionEnd_Rate':
-                    case 'tot_student_CompletedStatus_Rate':
-                    $sql[$key]="SELECT -1";
-                        break;
-                }
-         
-            }
+    if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) ){
+        $res_ar = array();
+        $sql = array();
+        if(isset($Services_TypeAr)){
+            $Services_Type=$Services_TypeAr;
+        }elseif(isset($_SESSION['service_level'])){
+            $Services_Type=$_SESSION['service_level'];
         }
+        foreach($GLOBALS['LogReport_Array'] as $key=>$value){
+        /* if a case fails or a query return error, the corresponding column will not appear in log report table */
+            switch($key){
 
-$db =& $this->getConnection();
-	if ( AMA_DB::isError( $db ) ) return $db;
-        $res_ar['provider'] = $tester;
-	foreach ($sql as $type => $query){   
-	    $res =  $db->getOne($query);
-            if(!AMA_DataHandler::isError($res)) {
-                $res_ar[$type] = $res;
+                case 'final_users':
+                    $sql[$key]="SELECT COUNT(`id_utente`) `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT;
+                    break;
+                case 'user_subscribed':
+                    $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`))  FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED;
+                    break;
+                case 'course':
+                    $sql[$key]="SELECT COUNT(`id_corso`) FROM `modello_corso`"; 
+                    break;
+                case 'service_level':
+                    if(isset($Services_Type)){
+                        foreach($Services_Type as $keyService_level=>$value){
+                            $sql['course_'.$keyService_level]="SELECT COUNT(`id_corso`) FROM `modello_corso` where `tipo_servizio`=$keyService_level"; 
+                        } 
+
+                    }
+                    break;
+                case 'sessions_started':
+                    $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` >". time(); 
+                    break;
+                case'student_subscribedStatus_sessStarted':
+                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_STATUS_SUBSCRIBED." AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
+                    break;
+                case 'student_CompletedStatus_sessStarted':
+                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
+                    break; 
+                case 'sessions_closed':
+                    $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_fine` <= " . time();  
+                    break; 
+                case'student_subscribedStatus_sessEnd':
+                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_STATUS_SUBSCRIBED." AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
+                    break;
+                case 'student_CompletedStatus_sessionEnd':
+                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
+                    break;
+                case 'tot_student_subscribedStatus':
+                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`=".ADA_STATUS_SUBSCRIBED.' AND ic.`data_inizio` > 0' ;
+                    break;
+                case 'tot_student_CompletedStatus': 
+                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`=".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED.' AND ic.`data_inizio` > 0' ;
+                    break;
+                case 'tot_Session':
+                    $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso`";
+                    break;
+                case 'visits':
+                    $sql[$key]="SELECT COUNT(`id_history`) FROM `history_nodi` AS hn JOIN `studente` AS st ON hn.id_utente_studente = st.id_utente_studente";
+                    break;
+                case 'system_messages':
+                    $sql[$key]="SELECT COUNT(`id_messaggio`) FROM `messaggi` WHERE `tipo` = '". ADA_MSG_SIMPLE ."'"  ;
+                    break;
+                case 'chatrooms':
+                    $sql[$key]="SELECT COUNT(`id_chatroom`) FROM `chatroom`";
+                    break;
+                case 'videochatrooms':
+                    $sql[$key]="SELECT COUNT(`id`) FROM `openmeetings_room`";
+                    break;
+            /* Return array of this method must have this key otherwise the corresponding columns will not appear in log-report table */
+                case 'student_CompletedStatus_sessStarted_Rate':
+                case 'student_CompletedStatus_sessionEnd_Rate':
+                case 'tot_student_CompletedStatus_Rate':
+                $sql[$key]="SELECT -1";
+                    break;
             }
-	}
-        return $res_ar;
+
+        }
+    }
+
+    $db =& $this->getConnection();
+    if ( AMA_DB::isError( $db ) ) return $db;
+    $res_ar['provider'] = $tester;
+    foreach ($sql as $type => $query){   
+        $res =  $db->getOne($query);
+        if(!AMA_DataHandler::isError($res)) {
+            $res_ar[$type] = $res;
+        }
+    }
+    return $res_ar;
 }
 
 
