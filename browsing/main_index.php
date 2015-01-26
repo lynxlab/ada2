@@ -115,11 +115,11 @@ if (is_object($userObj) && (!AMA_DataHandler::isError($userObj))) {
 
 
       /* Static mode */
-     $cacheObj = New CacheManager($id_profile);
-     $cacheObj->checkCache($id_profile);
-     if ($cacheObj->getCachedData()){
-         exit();
-     }
+//      $cacheObj = New CacheManager($id_profile);
+//      $cacheObj->checkCache($id_profile);
+//      if ($cacheObj->getCachedData()){
+//          exit();
+//      }
 
     // dynamic mode:
     // ******************************************************
@@ -620,4 +620,4 @@ ARE::render($layout_dataAr, $content_dataAr);
  * now managed by the class Cache Manager
  * */
 
-$cacheObj->writeCachedData($id_profile,$layout_dataAr,$content_dataAr);
+// $cacheObj->writeCachedData($id_profile,$layout_dataAr,$content_dataAr);
