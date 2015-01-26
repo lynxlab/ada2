@@ -1,0 +1,46 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 26-gen-2015, 13.29.13
+    Author     : sara
+*/
+
+
+.tooltip {
+   background: transparent;
+   border-color: transparent;
+   cursor: default;
+ }
+ 
+.fg-toolbar.ui-widget-header {
+    background: repeat-x scroll 50% 50% #BCD6D7;
+    border: 1px solid #A3A99A;
+    color: #585857;
+    font-weight: bold;
+}
+
+/**
+ * DataTables styles
+ */
+.dataTables_wrapper { width: 100% !important; }
+.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; top: -10px; font-weight: bold;   color: #fff; }
+.dataTables_wrapper tbody td { height: 2.5em; border:none; vertical-align: middle; }
+.dataTables_wrapper thead th { padding-right: 5px; }
+.dataTables_wrapper .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.dataTables_wrapper .DataTables_sort_icon { float: right; margin-top: -20px; }
+.dataTables_wrapper .dataTables_paginate > a { margin:0; padding: 3px; }
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_paginate { padding: 5px; }
+.dataTables_wrapper .dataTables_info { padding: 8px 0 0 5px; }
+
+/**
+ * DataTables styles for action column
+ */ 
+.dataTables_wrapper ul.ulactions { list-style-type: none; display: table-cell; padding:0; }
+.dataTables_wrapper li.liactions { float: left; border: none !important; }
+.dataTables_wrapper button.editButton,
+.dataTables_wrapper button.deleteButton { height: 1.5em; }

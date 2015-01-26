@@ -7,8 +7,8 @@ var datatable;
 function initDoc()
 {
     createDataTable();
-  
-    displayDiv();  initToolTips();
+    initToolTips();
+    displayDiv();  
 }
 function createDataTable()
 {
@@ -140,14 +140,14 @@ function saveStatus(select)
     var indexColumn=null;
      
     $j.each(aData,function(i,val){
-        
-        if($j(val).attr('class')==='idUser'){
+    
+        if( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class')==='idUser'){
             idUser=$j(val).text();
         }
-        if($j(val).attr('class')==='id_instance'){
+        if('undefined' !== typeof $j(val).attr('class') && $j(val).attr('class')==='id_instance'){
             idInstance=$j(val).text();
         }
-        if($j(val).attr('class')==='hidden_status'){
+        if( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class')==='hidden_status'){
             indexColumn=i;
         }
     });
