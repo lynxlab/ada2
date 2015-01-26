@@ -116,14 +116,17 @@ else {
         $arrayUsers= array_merge($arrayUsers,$subscriptions);
       
         $dataAr=array();
+        $tooltipDiv=CDOMElement::create('div');
         
         $thead_data = array(
+            translateFN('Hidden_status'),
             translateFN('Id'),
             translateFN('Nome'),
             translateFN('Status'),
             translateFN('Id_istance'),
             translateFN('Data iscrizione'),
             translateFN('Livello')
+             
             );
         if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN)){
             array_push($thead_data,translateFN('Codice iscrizione')); 
@@ -142,7 +145,7 @@ else {
 
             if(!empty($UserInstances))
             {
-                $title = 'Studente iscritto ai seguenti corsi :'.'<br />';
+                $title = 'Studente id :'.$user->getSubscriberId().' iscritto ai seguenti corsi :'.'<br />';
 
                 foreach($UserInstances as $UserInstance)
                 {
@@ -151,12 +154,18 @@ else {
             }
 
             $span_label = CDOMElement::create('span');
-            $span_label->setAttribute('title', $title);
+           // $span_label->setAttribute('title', $title);
+           // $span_label->setAttribute('class', 'UserName tooltip');
             $span_label->setAttribute('class', 'UserName tooltip');
-            $span_label->setAttribute('id', $name);
+            $span_label->setAttribute('id', $user->getSubscriberId());
             $span_label->addChild(new CText($name));
             
-
+            $Tooltip=CDOMElement::create('div');
+            $Tooltip->setAttribute('title', $title);
+            //$Tooltip->setAttribute('class', 'UserName tooltip');
+            $Tooltip->setAttribute('id', 'user_tooltip_'.$user->getSubscriberId());
+            $tooltipDiv->addChild($Tooltip);
+            
             $title = '';
 
             /* select user status */
@@ -188,18 +197,37 @@ else {
 
                 case ADA_STATUS_PRESUBSCRIBED:
                     $option_Presubscribed->setAttribute('selected','selected');
+                    $span_selected = CDOMElement::create('span');
+                    $span_selected->setAttribute('class', 'hidden_status');
+                    $span_selected->addChild(new CText(translateFN("Preiscritto")));
                     break;
                 case ADA_STATUS_SUBSCRIBED:
                     $option_Subscribed->setAttribute('selected','selected');
+                    $span_selected = CDOMElement::create('span');
+                    $span_selected->setAttribute('class', 'hidden_status');
+                    $span_selected->addChild(new CText(translateFN("Iscritto")));
+                    
                     break;
                 case ADA_STATUS_REMOVED:
                     $option_Removed->setAttribute('selected','selected');
+                    $span_selected = CDOMElement::create('span');
+                    $span_selected->setAttribute('class', 'hidden_status');
+                    $span_selected->addChild(new CText(translateFN("Rimosso")));
+
                     break;
                 case ADA_STATUS_VISITOR:
                     $option_Visitor->setAttribute('selected','selected');
+                    $span_selected = CDOMElement::create('span');
+                    $span_selected->setAttribute('class', 'hidden_status');
+                    $span_selected->addChild(new CText(translateFN("in visita")));
+
                     break;
                 case ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED:
                     $option_Completed->setAttribute('selected','selected');
+                    $span_selected = CDOMElement::create('span');
+                    $span_selected->setAttribute('class', 'hidden_status');
+                    $span_selected->addChild(new CText(translateFN("Completato")));
+
                     break;
             }
 
@@ -221,7 +249,19 @@ else {
             {
                 $data_iscrizione = ts2dFN($user->getSubscriptionDate());
             }
-            $userArray = array(translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$instanceId,translateFN('Data iscrizione')=>$data_iscrizione,translateFN('Livello')=>$livello);
+            $span_idUser = CDOMElement::create('span');
+            $span_idUser->setAttribute('class', 'idUser');
+            $span_idUser->addChild(new CText($user->getSubscriberId()));
+            
+            $span_instance = CDOMElement::create('span');
+            $span_instance->setAttribute('class', 'id_instance');
+            $span_instance->addChild(new CText($instanceId));
+            
+            $span_data = CDOMElement::create('span');
+            $span_data->setAttribute('class', 'date');
+            $span_data->addChild(new CText($data_iscrizione));
+                    
+            $userArray = array(translateFN('Hidden_status')=>$span_selected->getHtml(),translateFN('Id')=>$span_idUser->getHtml(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$span_instance->getHtml(),translateFN('Data iscrizione')=>$span_data->getHtml(),translateFN('Livello')=>$livello);
 
             if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
             {
@@ -288,6 +328,7 @@ $content_dataAr = array(
 'help' => $help,
 'data' => isset($data) ? $data : '',
 'table'=>$table,
+'tooltip'=>$tooltipDiv->getHtml(),
 'edit_profile'=> $userObj->getEditProfilePage(),
 'buttonSubscription'=>$buttonSubscription->getHtml(),
 'buttonSubscriptions'=>$buttonSubscriptions->getHtml(),

@@ -72,6 +72,7 @@
                            <template_field class="template_field" name="buttonSubscription">buttonSubscription</template_field>
                            <template_field class="template_field" name="buttonSubscriptions">buttonSubscriptions</template_field>
                            <template_field class="template_field" name="table">table</template_field>
+                           <template_field class="template_field" name="tooltip">tooltip</template_field>
                            <div class="clearfix"></div>
                         </div> 
                        

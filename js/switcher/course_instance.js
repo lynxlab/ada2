@@ -7,8 +7,8 @@ var datatable;
 function initDoc()
 {
     createDataTable();
-    initToolTips();
-    displayDiv();
+  
+    displayDiv();  initToolTips();
 }
 function createDataTable()
 {
@@ -42,30 +42,37 @@ function createDataTable()
     "aoColumnDefs": [
         {
            "aTargets": [ 0 ], 
-           "sClass": "Id_Column",
+           "bVisible":false,
         },
         {
            "aTargets": [ 1 ], 
+           "sClass": "Id_Column",
+        },
+        {
+           "aTargets": [ 2 ], 
            "sClass": "Name_Column",
            "sType":"string",
         },
         {
-           "aTargets": [ 2 ], 
-           "sClass": "Status_Column",
-           "sType": "select"
-        },
-        {
            "aTargets": [ 3 ], 
-           "bVisible":false,
+           "sClass": "Status_Column",
+           "sType": "select",
+           "bSearchable":false
         },
         {
            "aTargets": [ 4 ], 
+           "bVisible":false,
+           "bSearchable":false
+        },
+        
+        {
+           "aTargets": [ 5 ], 
            "sClass": "Date_Column",
            "sType":"date-eu"
         },
         {
-           "aTargets": [ 5 ], 
-           "sClass": "Levell_Column",
+           "aTargets": [ 6 ], 
+           "sClass": "Level_Column",
         },
     ],
     "oLanguage": 
@@ -89,12 +96,11 @@ function createDataTable()
       } 
     });
 }
- 
- function  initToolTips()
+function  initToolTips()
  {
-    $j('.tooltip').tooltip({
-
-        show : {
+   $j(document).tooltip({
+        items:  'span[class="UserName tooltip"]',
+        show :     {
                 effect : "slideDown",
                 delay : 300,
                 duration : 100
@@ -108,42 +114,63 @@ function createDataTable()
                 my : "center bottom-5",
                 at : "center top"
         },
-        content: function() {
-        return $j(this).attr('title');
+        content: function(){
+            if ('undefined' != typeof $j(this).attr('id') && 'undefined' != $j('#user_tooltip_'+$j(this).attr('id'))) {
+                return $j('#user_tooltip_'+$j(this).attr('id')).attr('title');
+            }            
+            return null;
         }
-   });
+        
+    }); 
+}
  
- }
  function displayDiv()
- {
+{
     $j('.table_result').animate({"height": "toggle"});
     $j('.table_result').animate({'marginLeft':'0'},"slow");
-    
-   
-    
- }
-function saveStatus(selectedValue)
+}
+function saveStatus(select)
 {
-    var SelectRow = $j(selectedValue).parents('tr')[0];  
+   
+    var SelectRow = $j(select).parents('tr')[0];
+    var indexRow=datatable.fnGetPosition($j(select).parents('tr')[0]);
     var aData = datatable.fnGetData( SelectRow );
+    var idUser=null;
+    var idInstance=null;
+    var indexColumn=null;
+     
+    $j.each(aData,function(i,val){
+        
+        if($j(val).attr('class')==='idUser'){
+            idUser=$j(val).text();
+        }
+        if($j(val).attr('class')==='id_instance'){
+            idInstance=$j(val).text();
+        }
+        if($j(val).attr('class')==='hidden_status'){
+            indexColumn=i;
+        }
+    });
    
     var data = {
-        'status' : selectedValue.value,
-        'id_user': aData[0],
-        'id_instance': aData[3]
+        'status' : select.value,
+        'id_user': idUser,
+        'id_instance': idInstance
     }
      $j.ajax({
        type	: 'POST',
        url	: HTTP_ROOT_DIR+ '/switcher/ajax/updateSubscription.php',
        data	: data,
-       dataType :'json',
-       async	: false
+       dataType :'json'
        })
        .done   (function( JSONObj )
        {
            showHideDiv(JSONObj.title,JSONObj.msg);
+           var selectedText = $j(select).find('option[value="'+select.value+'"]').text();
+           var cloned = $j(aData[indexColumn]).text(selectedText).clone();
+           datatable.fnUpdate(cloned[0].outerHTML, indexRow,indexColumn);
            /* if user status is removed  it delets user column from datatable */
-           if(selectedValue.value == 3)  
+           if(select.value == 3)  
            {
                datatable.fnDeleteRow( SelectRow );
            }
