@@ -50,11 +50,11 @@ include_once 'include/cache_manager.inc.php';
 
 /* Static mode */
 
-$cacheObj = New CacheManager($id_profile);
-$cacheObj->checkCache($id_profile);
-if ($cacheObj->getCachedData()){
-	exit();
-}
+// $cacheObj = New CacheManager($id_profile);
+// $cacheObj->checkCache($id_profile);
+// if ($cacheObj->getCachedData()){
+// 	exit();
+// }
 
 
 /** DYNAMIC mode
@@ -240,4 +240,4 @@ ARE::render($layout_dataAR,$content_dataAr, ARE_PRINT_RENDER, $PRINT_optionsAr);
  *
  */
 
-$cacheObj->writeCachedData($id_profile,$layout_dataAR,$content_dataAr);
+// $cacheObj->writeCachedData($id_profile,$layout_dataAR,$content_dataAr);
