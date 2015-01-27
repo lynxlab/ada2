@@ -16,6 +16,17 @@ var hasVenues = false;
 var calendar  = undefined;
 var mustSave = false;
 var canDelete = false;
+/**
+ * events updated in the UI only,
+ * used to check for tutor overlap
+ */
+var UIEvents = [];
+
+/**
+ * events deleted from the UI only,
+ * used to check for tutor overlap
+ */
+var UIDeletedEvents = [];
 
 function initDoc() {
 	// hook instance select change to update number of students
@@ -150,10 +161,11 @@ function initCalendar() {
 					
 					var placeEvent = function() {
 						newEvent.title = buildEventTitle(newEvent);
+						if (newEvent.tutorID>0) newEvent.eventID = addToUIEvents(newEvent);
 						calendar.fullCalendar('renderEvent', newEvent, true);
+						calendar.fullCalendar('unselect');
 						if(!mustSave) setMustSave(true);
 						updateAllocatedHours(moment.duration(endDate.subtract(startDate)).asMilliseconds(), 1);
-						calendar.fullCalendar('unselect');
 					}
 					
 					/**
@@ -182,15 +194,21 @@ function initCalendar() {
 			},
 			eventDrop: function ( event, delta, revertFunc) {
 				
+				var theEventID = null;
+				if ('undefined' != typeof event.eventID) theEventID = event.eventID;
+				else if ('undefind' != typeof event.id) theEventID = event.id;
+				
 				data = {
 						start: event.start.format(),
 						end  : event.end.format(),
 						tutorID: parseInt(event.tutorID),
-						eventID : event.id
+						instanceID : getSelectedCourseInstance(),
+						eventID : theEventID
 				};
 				
 				var placeEvent = function() {
 					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
+					if (data.tutorID>0) addToUIEvents(data);
 				}
 				/**
 				 * do the checkTutorOverlap only if a tutor is there
@@ -213,16 +231,22 @@ function initCalendar() {
 			},
 			eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) {
 				
+				var theEventID = null;
+				if ('undefined' != typeof event.eventID) theEventID = event.eventID;
+				else if ('undefind' != typeof event.id) theEventID = event.id;
+				
 				data = {
 						start: event.start.format(),
 						end  : event.end.format(),
 						tutorID: parseInt(event.tutorID),
-						eventID : event.id
+						instanceID : getSelectedCourseInstance(),
+						eventID : theEventID
 				};
 				
 				var placeEvent = function() {
 					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
 					updateAllocatedHours(delta.asMilliseconds(), 0);
+					if (data.tutorID>0) addToUIEvents(data);
 				}
 				
 				/**
@@ -318,7 +342,7 @@ function getSelectedClassroom() {
 }
 
 /**
- * gets the selected tutor radio button
+ * gets the selected tutor ID from select element
  * 
  * @returns selected tutor id or null
  */
@@ -327,13 +351,13 @@ function getSelectedTutor() {
 }
 
 /**
- * gets the label of the radio button associated to the passed tutor id
+ * gets the text of the select option associated to the passed tutor id
  * 
  * @param tutorid
  * 
- * @returns string the retreived label
+ * @returns string the retreived label or null
  */
-function getTutorRadioLabel(tutorid)  {
+function getTutorFromSelect(tutorid)  {
 	return ($j('#tutorSelect').length>0) ? $j('#tutorSelect option[value="'+tutorid+'"]').text() : null;
 }
 
@@ -406,7 +430,7 @@ function buildEventTitle(event) {
 	
 	if ($j('#tutorSelect').length>0) {
 		title += '<span class="tutornameInEvent">'+
-				 getTutorRadioLabel(event.tutorID)+'</span>';
+				 getTutorFromSelect(event.tutorID)+'</span>';
 	}
 	
 	return title;
@@ -731,6 +755,8 @@ function reloadClassRoomEvents() {
 	}).fail(function() {}).always(function() {
 		setMustSave(false);
 		setCanDelete(false);
+		UIEvents = [];
+		UIDeletedEvents = [];
 	});
 }
 
@@ -763,39 +789,124 @@ function updateAllocatedHours(durationDelta, lessonsDelta) {
 
 /**
  * check if the passed events overlaps with some other event of the same tutor
+ * by looping the local UIEvents array
  * 
  * @param event
- * @returns {Boolean}
+ * @return boolean
+ */
+function checkTutorOverlapOnUIEvents(event) {
+	if (objectSize(UIEvents)>0) {
+		
+		newStart = moment(event.start);
+		newEnd = moment(event.end);
+		
+		for (var prop in UIEvents) {
+			if (UIEvents.hasOwnProperty(prop)) {
+				var currentEvent = UIEvents[prop];
+			} else continue;
+			
+			loadedStart = moment(currentEvent.start);
+			loadedEnd = moment(currentEvent.end);
+			
+			if (event.tutorID==currentEvent.tutorID && event.eventID != currentEvent.eventID &&
+				   ( loadedStart.isSame(newStart) || loadedEnd.isSame(newEnd)   ||
+					 loadedStart.isSame(newEnd)   || loadedEnd.isSame(newStart) ||
+					(newStart.isBefore(loadedStart) && newEnd.isAfter(loadedStart)) ||
+					(newStart.isAfter(loadedStart)  && newStart.isBefore(loadedEnd))
+			   )) {
+				
+				prepareTutorOverlapDialog({
+					instanceName : ($j('#instancesList').length>0) ? ($j('#instancesList option[value='+event.instanceID+']').text()) : '',
+					id_utente_tutor : event.tutorID,
+					date: newStart.format('L'),
+					start: loadedStart.format('HH:mm'),
+					end: loadedEnd.format('HH:mm')
+				});
+				
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/**
+ * check if the passed events overlaps with some other event of the same tutor
+ * by making an ajax call to the server and returing its promise
+ * 
+ * @param event
+ * @return jQuery promise
+ */
+function checkTutorOverlapOnServer(event) {
+	return $j.ajax({
+		type	:	'GET',
+		url		:	'ajax/checkTutorOverlap.php',
+		data	:	event,
+		dataType:	'json'
+	}).done (function(JSONObj){
+		if ('undefined' != typeof JSONObj.isOverlap) {
+			if (JSONObj.isOverlap==true) {
+				if (UIDeletedEvents.indexOf(JSONObj.data.module_classagenda_calendars_id)!=-1) {
+					/**
+					 * If the server reports an overlap on an event that has been
+					 * deleted but not saved yet, then force it not to be an overlap
+					 */
+					JSONObj.isOverlap = false;
+				} else if ('undefined' != typeof UIEvents[JSONObj.data.module_classagenda_calendars_id]) {
+					/**
+					 * If the server reports an overlap on an event that has been
+					 * moved or resized but not saved yet, then check it against the UIEvents array
+					 */
+					JSONObj.isOverlap = checkTutorOverlapOnUIEvents(event);
+				} else {
+					prepareTutorOverlapDialog(JSONObj.data);
+				}
+				
+			}
+		}
+	}).fail(function() {});
+}
+
+/**
+ * Set dialog text with overlapping found event data
+ * 
+ * @param event
+ */
+function prepareTutorOverlapDialog(event) {
+	$j('#overlapTutorName').text(getTutorFromSelect(event.id_utente_tutor));
+	if ('undefined' != typeof event.instanceName) {
+		$j('#overlapInstanceName').html(($j('#instancesList').length>0) ? event.instanceName : '');
+	}
+	if ('undefined' != event.date)  {
+		$j('#overlapDate').text(event.date);
+	}
+	if ('undefined' != event.start)  {
+		$j('#overlapStartTime').text(event.start);
+	}
+	if ('undefined' != event.end)  {
+		$j('#overlapEndTime').text(event.end);
+	}
+}
+
+/**
+ * check if the passed events overlaps with some other event of the same tutor
+ * in 2 steps:
+ * 1. first check on local UIEvents array and if no overlaps are found
+ * 2. ask the server to check against the events stored in the DB with an ajax call
+ * 
+ * @param event
+ * @returns jQuery promise
  */
 function checkTutorOverlap(event) {
-	return $j.ajax({
-				type	:	'GET',
-				url		:	'ajax/checkTutorOverlap.php',
-				data	:	event,
-				dataType:	'json'
-			}).done (function(JSONObj){
-						
-				if ('undefined' != typeof JSONObj.isOverlap) {
-					if (JSONObj.isOverlap==true) {
-						/**
-						 * Set dialog text with overlapping found event data
-						 */
-						$j('#overlapTutorName').text(getTutorRadioLabel(event.tutorID));
-						if ('undefined' != typeof JSONObj.data.instanceName) {
-							$j('#overlapInstanceName').html(($j('#instancesList').length>0) ? JSONObj.data.instanceName : '');
-						}
-						if ('undefined' != JSONObj.data.date)  {
-							$j('#overlapDate').text(JSONObj.data.date);
-						}
-						if ('undefined' != JSONObj.data.start)  {
-							$j('#overlapStartTime').text(JSONObj.data.start);
-						}
-						if ('undefined' != JSONObj.data.end)  {
-							$j('#overlapEndTime').text(JSONObj.data.end);
-						}
-					}
-				}
-			}).fail(function() {});
+	if (checkTutorOverlapOnUIEvents(event)) {
+		var aDeferred = $j.Deferred();
+		aDeferred.resolve({
+			isOverlap : true
+		});
+		return aDeferred.promise();
+	} else {
+		return checkTutorOverlapOnServer(event);
+	}
 }
 
 /**
@@ -803,19 +914,32 @@ function checkTutorOverlap(event) {
  */
 function deleteSelectedEvent() {
 	var selectedDuration = null;
+	var eventID = null;
 	calendar.fullCalendar('removeEvents', function (clEvent) {
 		if (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true) {
 			if (selectedDuration==null) {
 				selectedDuration = moment.duration();
 				selectedDuration.add(clEvent.end.subtract(clEvent.start));
-			}			
+			}
+			if (eventID == null) {
+				if ('undefined' != typeof clEvent.eventID) eventID = clEvent.eventID; 
+				else if ('undefined' != typeof clEvent.id) eventID = clEvent.id+'';
+			}
 			return true;
 		} else return false;
-		});
+	});
 	
 	setCanDelete(false);
 	if (!mustSave) setMustSave(true);
-	updateAllocatedHours(selectedDuration, -1);
+	if (selectedDuration != null) updateAllocatedHours(selectedDuration, -1);
+	if (eventID != null) {
+		/**
+		 * add event to UIDeletedEvents array only if
+		 * it was not a new event and has not been previously added
+		 */
+		if (eventID.search('tmp_')==-1 && UIDeletedEvents.indexOf(eventID)==-1) UIDeletedEvents.push(eventID);
+		if ('undefined' != typeof UIEvents[eventID]) delete UIEvents[eventID];
+	}
 }
 
 /**
@@ -891,6 +1015,22 @@ function moveInsideCalendarHeader (elementID) {
 	}
 }
 
+function addToUIEvents(event) {
+	if (event.eventID == null) {
+		/**
+		 * if it's a new event, generate a temporary ID
+		 * using an UTC timestamp.
+		 * Code is made compatibile with IE8 with the Date.now check
+		 */
+	    var timestamp = (!Date.now) ? new Date().getTime() : Date.now();
+		event.eventID = 'tmp_'+timestamp;
+	}
+	
+	UIEvents[event.eventID] = event;
+	
+	return event.eventID;
+}
+
 /**
  * shows a confirmation dialog and waits for user action
  * 
@@ -923,4 +1063,10 @@ function jQueryConfirm(id, questionId, OKcallback, CancelCallBack) {
 			}
 		} ]
 	});
+}
+
+function objectSize (obj) {
+	var size=0;
+	for (key in obj){ if (obj.hasOwnProperty(key)) size++; }
+	return size;
 }

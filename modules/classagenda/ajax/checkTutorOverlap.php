@@ -60,8 +60,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$retVal['isOverlap'] = true;
 			$retVal['data'] = $result;
 			$retVal['data']['date'] = ts2dFN($result['start']);
-			$retVal['data']['start'] = ts2tmFN($result['start']);
-			$retVal['data']['end'] = ts2tmFN($result['end']);
+			$retVal['data']['start'] = substr(ts2tmFN($result['start']),0,-3);
+			$retVal['data']['end'] = substr(ts2tmFN($result['end']),0,-3);
 			
 			$courseInstance = $dh->course_instance_get($result['id_istanza_corso']);
 			if (!AMA_DB::isError($courseInstance)) {

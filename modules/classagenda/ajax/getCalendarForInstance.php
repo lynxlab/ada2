@@ -92,6 +92,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	if(!AMA_DB::isError($result)) {
 		// convert return array to data structure needed by calendar component
 		$i=0;
+		$retArray = array();
 		foreach ($result as $eventID=>$aResult) {
 			$retArray[$i]['id'] = $eventID;
 			$retArray[$i]['instanceID'] = (int) $aResult['id_istanza_corso'];
