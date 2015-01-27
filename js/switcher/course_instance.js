@@ -192,23 +192,14 @@ function showHideDiv ( title, message)
     if (typeof reload != 'undefined' && reload) self.location.reload(true); });
     
 }
-function goToSubscription()
+function goToSubscription(path)
 {
     $j('.table_result').effect('drop', function() {
         $j('#course_instance_Table').effect('slide');
     });
     setTimeout( function(){
-        self.document.location.href = 'subscribe.php'+location.search;
+        self.document.location.href = path+'.php'+location.search;
    },220);
     
-}
-function goToSubscriptions()
-{
-    $j('.table_result').effect('drop', function() {
-        $j('#course_instance_Table').effect('slide');
-    });
-    setTimeout( function(){
-        self.document.location.href = 'subscriptions.php'+location.search;
-    },200);
 }
 

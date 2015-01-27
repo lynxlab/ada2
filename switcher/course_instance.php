@@ -305,11 +305,11 @@ else {
 $help = translateFN('Da qui il provider admin può gestire le iscrizioni alla classe selezionata: ').$courseInstanceObj->getTitle();
 
 $buttonSubscription = CDOMElement::create('button','class:Subscription_Button');
-$buttonSubscription->setAttribute('onclick', 'javascript:goToSubscription();');
+$buttonSubscription->setAttribute('onclick', 'javascript:goToSubscription(\'subscribe\');');
 $buttonSubscription->addChild (new CText(translateFN('Iscrivi studente')));
 
 $buttonSubscriptions = CDOMElement::create('button','class:Subscription_Button');
-$buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscriptions();');
+$buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscription(\'subscriptions\');');
 $buttonSubscriptions->addChild (new CText(translateFN('Upload file')));
 /*
 * OUTPUT
