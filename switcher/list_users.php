@@ -120,12 +120,14 @@ if(is_array($usersAr) && count($usersAr) > 0) {
      * 
      * if we're listing students, let's add the stato field as well
      */
+    
     if ($type!='authors' && $type!='tutors') array_push ($thead_data, translateFN('Confermato'));
     
     $tbody_data = array();
     $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
     $view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
     foreach($usersAr as $user) {
+        $userId = $user[0];
         $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
         $imgDetails->setAttribute('class', 'imgDetls tooltip');
         $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli dello studente'));
@@ -147,7 +149,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         $span_UserName = CDOMElement::create('span');
         $span_UserName->setAttribute('class', 'UserName');
         $span_UserName->addChild(new CText($user[3]));
-
+        
         $edit_link = BaseHtmlLib::link("edit_user.php?id_user=$userId&usertype=".$user[4], $edit_img->getHtml());
         $view_link = BaseHtmlLib::link("view_user.php?id_user=$userId", $view_img->getHtml());
         $delete_link = BaseHtmlLib::link("delete_user.php?id_user=$userId",
@@ -173,7 +175,8 @@ if(is_array($usersAr) && count($usersAr) > 0) {
     }
     $data = BaseHtmlLib::tableElement('id:table_users', $thead_data, $tbody_data);
 } else {
-    $data = new CText(translateFN('Non sono stati trovati utenti'));
+    $data = CDOMElement::create('span');
+    $data->addChild(new CText(translateFN('Non sono stati trovati utenti')));
 }
 
 $label = translateFN('Lista utenti');

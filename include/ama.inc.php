@@ -4903,10 +4903,13 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         return new AMA_Error(AMA_ERR_NOT_FOUND);
     }
 
-    public function get_course_instances_for_this_student($id_student) {
+    public function get_course_instances_for_this_student($id_student, $extra_fields=false) {
         $sql = 'SELECT C.id_corso, C.titolo, C.crediti, IC.id_istanza_corso,'
-             . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status'
-             . ' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
+             . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status';
+        if ($extra_fields) {
+            $sql .= ' ,IC.title,I.data_iscrizione';
+        }
+        $sql .=' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
              . ' WHERE I.id_utente_studente=?'
              . ' AND IC.id_istanza_corso = I.id_istanza_corso'
              . ' AND C.id_corso = IC.id_corso';

@@ -6,6 +6,7 @@
 
 function initDoc(){
     createDataTable();
+    initToolTips();
 }
 
 
@@ -13,14 +14,12 @@ function createDataTable() {
     
     var oTable = $j('#table_users').dataTable({
         "bJQueryUI": true,
-        'bLengthChange': false,
         "bFilter": true,
-        "bInfo": false,
+        "bInfo": true,
         "bSort": true,
         "bAutoWidth": true,
-        'bDeferRender': true,
         'aoColumnDefs': [{ "bSortable": false, "aTargets": [ 4 ] } ],
-        'bPaginate': false
+        
 
     });
     
@@ -36,7 +35,20 @@ function createDataTable() {
     {
         /* Open this row */
         this.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_close.png";
-        oTable.fnOpen( nTr, fnFormatDetails(nTr), 'details' );
+        
+        $j.when(fnFormatDetails(nTr))
+        .done   (function( JSONObj )
+       { 
+            oTable.fnOpen( nTr, JSONObj.html, 'details' );
+            if(JSONObj.status==='OK'){
+                $j('.User_table').dataTable({"bJQueryUI": true});
+            }
+       })
+       .fail   (function() { 
+            console.log("ajax call has failed"); 
+	} );
+        
+       
     }
    });
      
@@ -56,24 +68,36 @@ function createDataTable() {
     var data = {
         'id_user': idUser,
     }
-     $j.ajax({
-       type	: 'POST',
+    return $j.ajax({
+       type	: 'GET',
        url	: HTTP_ROOT_DIR+ '/switcher/ajax/get_studentDetails.php',
        data	: data,
        dataType :'json'
-       })
-       .done   (function( JSONObj )
-       {
-           
-       })
-       .fail   (function() { 
-            console.log("ajax call has failed"); 
-	} )
-    var sOut=null;
-//    var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-//    sOut += '<tr><td>'+aData[descriptionCol]+'</td></tr>';
-//    sOut += '</table>';
-    return sOut;
+       });
+       
+
 }
+}
+function  initToolTips()
+ {
+   $j('.tooltip').tooltip({
+        
+        show :     {
+                effect : "slideDown",
+                delay : 300,
+                duration : 100
+        },
+        hide : {
+                effect : "slideUp",
+                delay : 100,
+                duration : 100
+        },
+        position : {
+                my : "center bottom-5",
+                at : "center top"
+        }
+
+        
+    }); 
 }
 
