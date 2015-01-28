@@ -126,11 +126,12 @@ if(is_array($usersAr) && count($usersAr) > 0) {
     $tbody_data = array();
     $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
     $view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
+    
     foreach($usersAr as $user) {
         $userId = $user[0];
         $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
         $imgDetails->setAttribute('class', 'imgDetls tooltip');
-        $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli dello studente'));
+        $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli dell\'utente'));
         
         $span_idUser = CDOMElement::create('span');
         $span_idUser->setAttribute('class', 'id_user');
