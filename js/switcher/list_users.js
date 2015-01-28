@@ -11,7 +11,7 @@ function initDoc(){
 
 
 function createDataTable() {
-    
+    /* se non deve comparire il più per i tutor e gli autori fare a initDoc isstudent se è is studente a target[4] e non sercheable sennò target[3] */
     var oTable = $j('#table_users').dataTable({
         "bJQueryUI": true,
         "bFilter": true,
@@ -19,8 +19,11 @@ function createDataTable() {
         "bSort": true,
         "bAutoWidth": true,
         'aoColumnDefs': [{ "bSortable": false, "aTargets": [ 4 ] } ],
-        
-
+        "oLanguage": 
+        {
+            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+        }
+     
     });
     
     $j('.imgDetls').on('click', function () {
@@ -34,19 +37,29 @@ function createDataTable() {
     else
     {
         /* Open this row */
-        this.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_close.png";
-        
+        this.src = HTTP_ROOT_DIR+"/js/include/jquery/ui/images/ui-anim_basic_16x16.gif";
+        var imageReference=this;
         $j.when(fnFormatDetails(nTr))
         .done   (function( JSONObj )
        { 
             oTable.fnOpen( nTr, JSONObj.html, 'details' );
             if(JSONObj.status==='OK'){
-                $j('.User_table').dataTable({"bJQueryUI": true});
+                $j('.User_table').dataTable({
+                "bJQueryUI": true,
+                "oLanguage": 
+                {
+                      "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+                }
+                });
             }
        })
        .fail   (function() { 
             console.log("ajax call has failed"); 
-	} );
+	} )
+        .always(function (){
+            imageReference.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_close.png";
+        });
+        
         
        
     }
@@ -70,7 +83,7 @@ function createDataTable() {
     }
     return $j.ajax({
        type	: 'GET',
-       url	: HTTP_ROOT_DIR+ '/switcher/ajax/get_studentDetails.php',
+       url	: HTTP_ROOT_DIR+ '/switcher/ajax/get_userDetails.php',
        data	: data,
        dataType :'json'
        });

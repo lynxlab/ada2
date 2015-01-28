@@ -10,6 +10,15 @@ and open the template in the editor.
 
 @import url("../switcher/tooltips.css");
 
+
+#table_users.default_table ul.inline_menu li a:link{
+    background-color: transparent;
+    border: none;
+}
+ div.first  table#table_users.default_table.dataTable  ul.inline_menu li{
+    border: none;
+}
+
 .tooltip {
    background: transparent;
    border-color: transparent;
@@ -39,6 +48,7 @@ and open the template in the editor.
 .dataTables_wrapper .dataTables_filter,
 .dataTables_wrapper .dataTables_paginate { padding: 5px; }
 .dataTables_wrapper .dataTables_info { padding: 8px 0 0 5px; }
+
 
 /**
  * DataTables styles for action column

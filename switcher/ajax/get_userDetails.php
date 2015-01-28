@@ -38,6 +38,7 @@ include_once 'include/switcher_functions.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     $id_user=$_GET['id_user'];
+    /* verificare che tipo è , se tutor, autori, o studenti e a seconda del tipo fare opportuna query*/
     $CourseAr=$dh->get_course_instances_for_this_student($id_user,true);
     
     $total_results=array();
