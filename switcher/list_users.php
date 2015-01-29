@@ -63,49 +63,6 @@ switch($type) {
         break;
 }
 
-//retrieve data for tooltips
-$ids_users = array();
-if($type == 'tutors'){
-    $do_tooltips = true;
-    foreach($usersAr as $k=>$v) {
-            $ids_users[] = $v[0];
-    }
-    $tooltip_course_instances = $dh->get_tutors_assigned_course_instance($ids_users);
-    //create tooltips with tutor's assignments (html + javascript)
-    $tooltips = '';
-    $js = '<script type="text/javascript">';
-    foreach($tooltip_course_instances as $k=>$v) {
-            $ul = CDOMElement::create('ul');
-            if (!empty($v)) {
-                    foreach($v as $i=>$l) {
-                            $nome_corso = $l['titolo'].(!empty($l['title'])?' - '.$l['title']:'');
-                            $li = CDOMElement::create('li');
-                            $li->addChild(new CText($nome_corso));
-                            $ul->addChild($li);
-                    }
-            }
-            else {
-                    $nome_corso = translateFN('Nessun corso trovato');
-                    $li = CDOMElement::create('li');
-                    $li->addChild(new CText($nome_corso));
-                    $ul->addChild($li);
-            }
-
-            $tip = CDOMElement::create('div','id:tooltipContent'.$k);
-            $tip->addChild(new CText(translateFN('Tutor assegnato ai seguenti corsi:<br />')));
-            $tip->addChild($ul);
-            $tooltips.=$tip->getHtml();
-            $js.= 'new Tooltip("tooltip'.$k.'", "tooltipContent'.$k.'", {DOM_location: {parentId: "header"}, className: "tooltip", offset: {x:+15, y:0}, hook: {target:"rightMid", tip:"leftMid"}});'."\n";
-    }
-    $js.= '</script>';
-    $tooltips.=$js;
-    //end
-}else{
-    //for the others case, we don't need tooltips
-    $do_tooltips = false;
-    $tooltips = '';
-}
-
 if(is_array($usersAr) && count($usersAr) > 0) {
     $UserNum = count($usersAr);
     $thead_data = array(
@@ -136,17 +93,11 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         $span_idUser = CDOMElement::create('span');
         $span_idUser->setAttribute('class', 'id_user');
         $span_idUser->addChild(new CText($user[0]));
-       
-        if($do_tooltips){
-            $User_fullname = CDOMElement::create('a','id:tooltip'.$userId);
-            $User_fullname->setAttribute('class','User_tooltip');
-            $User_fullname->setAttribute('href','javascript:void(0);');
-            $User_fullname->addChild(new CText($user[1].' '.$user[2]));
-        }else{
-            $User_fullname = CDOMElement::create('span');
-            $User_fullname->setAttribute('class', 'fullname');
-            $User_fullname->addChild(new CText($user[1].' '.$user[2]));
-        }
+      
+        $User_fullname = CDOMElement::create('span');
+        $User_fullname->setAttribute('class', 'fullname');
+        $User_fullname->addChild(new CText($user[1].' '.$user[2]));
+        
         $span_UserName = CDOMElement::create('span');
         $span_UserName->setAttribute('class', 'UserName');
         $span_UserName->addChild(new CText($user[3]));
@@ -190,7 +141,7 @@ $content_dataAr = array(
     'status' => $status,
     'label' => $label,
     'help' => $help,
-    'data' => $data->getHtml().$tooltips,
+    'data' => $data->getHtml(),
     'edit_profile'=>$userObj->getEditProfilePage(),
     'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()

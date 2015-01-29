@@ -6535,7 +6535,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         $query = "select id_corso$more_fields from modello_corso $clause";
         // do the query
-        $courses_ar =  $db->getAll($query);
+        $courses_ar =  $db->getAll($query,null,AMA_FETCH_BOTH);
 
         if (AMA_DB::isError($courses_ar)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -10052,7 +10052,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql = "SELECT
 					ts.`id_utente_tutor`,
 					c.`id_corso`, c.`titolo`, c.`id_utente_autore`,
-					i.`id_istanza_corso`, i.`title`
+					i.`id_istanza_corso`, i.`title`,i.`data_inizio_previsto`,i.`data_fine`,i.`duration_hours`,
+                                        i.`durata`,i.`self_instruction`
 				FROM `tutor_studenti` ts
 				JOIN `istanza_corso` i ON (i.`id_istanza_corso`=ts.`id_istanza_corso`)
 				JOIN `modello_corso` c ON (c.`id_corso`=i.`id_corso`)";
@@ -10075,7 +10076,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 		}
 
         $tutors_ar =  $db->getAll($sql, null, AMA_FETCH_ASSOC);
-
+        
         if (AMA_DB::isError($tutors_ar)) {
             return new AMA_Error(AMA_ERR_GET);
         }
@@ -10417,7 +10418,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // no instance found
         return false;
     }
-
+    
     public function count_active_course_instances($timestamp) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
