@@ -145,7 +145,7 @@ else {
 
             if(!empty($UserInstances))
             {
-                $title = 'Studente id :'.$user->getSubscriberId().' iscritto ai seguenti corsi :'.'<br />';
+                $title = 'Studente iscritto ai seguenti corsi :'.'<br />';
 
                 foreach($UserInstances as $UserInstance)
                 {
