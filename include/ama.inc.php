@@ -6545,10 +6545,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // return nested array in the form
         //
         if (!$courses_ar) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            $retval = new AMA_Error(AMA_ERR_NOT_FOUND);
+            return $retval;
         }
         if (!is_array($courses_ar)) {
-            return new AMA_Error(AMA_ERR_INCONSISTENT_DATA);
+            $retval = new AMA_Error(AMA_ERR_INCONSISTENT_DATA);
+            return $retval;
         }
         return $courses_ar;
     }
