@@ -47,9 +47,11 @@ $fieldsAr = array('nome','cognome','username','tipo');
 switch($type) {
     case 'authors':
         $usersAr = $dh->get_authors_list($fieldsAr);
+        $profilelist = translateFN('lista degli autori');
         break;
     case 'tutors':
         $usersAr = $dh->get_tutors_list($fieldsAr);
+        $profilelist = translateFN('lista dei tutors');
         break;
     case 'students':
     default:
@@ -60,6 +62,7 @@ switch($type) {
     	 */
     	array_push($fieldsAr, 'stato');
         $usersAr = $dh->get_students_list($fieldsAr);
+        $profilelist = translateFN('lista degli studenti');
         break;
 }
 
@@ -83,6 +86,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
     $tbody_data = array();
     $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
     $view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
+    $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:view');
     
     foreach($usersAr as $user) {
         $userId = $user[0];
@@ -103,9 +107,17 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         $span_UserName->addChild(new CText($user[3]));
         
         $edit_link = BaseHtmlLib::link("edit_user.php?id_user=$userId&usertype=".$user[4], $edit_img->getHtml());
+        $edit_link->setAttribute('class', 'tooltip');
+        $edit_link->setAttribute('title', translateFN('Modifica dati utente'));
+        
         $view_link = BaseHtmlLib::link("view_user.php?id_user=$userId", $view_img->getHtml());
-        $delete_link = BaseHtmlLib::link("delete_user.php?id_user=$userId",
-                translateFN('Delete user'));
+        $view_link->setAttribute('class', 'tooltip');
+        $view_link->setAttribute('title', translateFN('Visualizza dati utente'));
+        
+        $delete_link = BaseHtmlLib::link("delete_user.php?id_user=$userId",$delete_img->getHtml());
+        $delete_link->setAttribute('class', 'tooltip');
+        $delete_link->setAttribute('title', translateFN('Cancella utente'));
+        
         $actions = BaseHtmlLib::plainListElement('class:inline_menu',array($edit_link, $view_link, $delete_link));
         /**
          * @author giorgio 29/mag/2013
@@ -131,8 +143,8 @@ if(is_array($usersAr) && count($usersAr) > 0) {
     $data->addChild(new CText(translateFN('Non sono stati trovati utenti')));
 }
 
-$label = translateFN('Lista utenti');
-$help = translateFN('Da qui il provider admin può vedere la lista degli utenti presenti sul provider');
+$label = $profilelist;
+$help = translateFN('Da qui il provider admin può vedere la '.$profilelist.' presenti sul provider');
 $help .= ' ' .translateFN('Numero utenti'). ': '. $UserNum;
 
 $content_dataAr = array(
