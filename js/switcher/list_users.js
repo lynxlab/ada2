@@ -44,7 +44,7 @@ function createDataTable() {
        { 
             oTable.fnOpen( nTr, JSONObj.html, 'details' );
             if(JSONObj.status==='OK'){
-                $j('.User_table').dataTable({
+                $j('.User_table').not('.dataTable').dataTable({
                 "bJQueryUI": true,
                 "oLanguage": 
                 {
