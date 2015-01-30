@@ -10,6 +10,9 @@ and open the template in the editor.
 
 @import url("../switcher/tooltips.css");
 
+.expandCol{width: 2%;}
+
+.actionCol{width: 27%;}
 
 #table_users.default_table ul.inline_menu li a:link{
     background-color: transparent;
@@ -42,7 +45,7 @@ and open the template in the editor.
 .dataTables_wrapper tbody td { height: 2.5em; border:none; vertical-align: middle; }
 .dataTables_wrapper thead th { padding-right: 5px; }
 .dataTables_wrapper .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
-.dataTables_wrapper .DataTables_sort_icon { float: right; margin-top: -20px; }
+.dataTables_wrapper .DataTables_sort_icon { float: right; margin-top: -20px;margin-left: 75px; }
 .dataTables_wrapper .dataTables_paginate > a { margin:0; padding: 3px; }
 .dataTables_wrapper .dataTables_length,
 .dataTables_wrapper .dataTables_filter,
