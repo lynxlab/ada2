@@ -11,14 +11,14 @@ function initDoc(){
 
 
 function createDataTable() {
-    /* se non deve comparire il più per i tutor e gli autori fare a initDoc isstudent se è is studente a target[4] e non sercheable sennò target[3] */
+    
     var oTable = $j('#table_users').dataTable({
         "bJQueryUI": true,
         "bFilter": true,
         "bInfo": true,
         "bSort": true,
         "bAutoWidth": true,
-        'aoColumnDefs': [{ "bSortable": false, "aTargets": [ 4 ] } ],
+        'aoColumnDefs': [{"aTargets": [ 0 ],"sClass":"expandCol"},{ "bSortable": false, "aTargets": [ 4 ],"sClass":"actionCol" } ],
         "oLanguage": 
         {
             "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
