@@ -5420,7 +5420,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *           array(ID3, 'field_3_1', 'field_3_2'))
      */
     public function &course_instance_started_get_list($field_list_ar, $id_corso='') {
-        return $this->course_instance_find_list($field_list_ar, "data_inizio is not null and durata is not null");
+        $clause = '';
+        if (isset($id_corso) && $id_corso != ''){
+            $clause = 'id_corso = '. $id_corso . ' AND ';
+        }
+        $clause .= 'data_inizio is not null AND durata is not null';
+        return $this->course_instance_find_list($field_list_ar, $clause);
     }
 
     /**
