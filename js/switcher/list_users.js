@@ -3,49 +3,37 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+var oTable = null;
 
 function initDoc(){
     createDataTable();
     initToolTips();
 }
 
-
-function createDataTable() {
-    
-    var oTable = $j('#table_users').dataTable({
-        "bJQueryUI": true,
-        "bFilter": true,
-        "bInfo": true,
-        "bSort": true,
-        "bAutoWidth": true,
-        'aoColumnDefs': [{"aTargets": [ 0 ],"sClass":"expandCol"},{ "bSortable": false, "aTargets": [ 4 ],"sClass":"actionCol" } ],
-        "oLanguage": 
-        {
-            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-        }
-     
-    });
-    
-    $j('.imgDetls').on('click', function () {
-    var nTr = $j(this).parents('tr')[0];    
+function toggleDetails(user_id,imgObj) {
+        
+//    }
+//    $j('.imgDetls').on('click', function () {
+    var nTr = $j(imgObj).parents('tr')[0];    
     if ( oTable.fnIsOpen(nTr) )
     {
         /* This row is already open - close it */
-        this.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_open.png";
+        imgObj.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_open.png";
         oTable.fnClose( nTr );
     }
     else
     {
         /* Open this row */
-        this.src = HTTP_ROOT_DIR+"/js/include/jquery/ui/images/ui-anim_basic_16x16.gif";
-        var imageReference=this;
-        $j.when(fnFormatDetails(nTr))
+        imgObj.src = HTTP_ROOT_DIR+"/js/include/jquery/ui/images/ui-anim_basic_16x16.gif";
+        var imageReference=imgObj;
+        $j.when(fnFormatDetails(user_id))
         .done   (function( JSONObj )
        { 
             oTable.fnOpen( nTr, JSONObj.html, 'details' );
             if(JSONObj.status==='OK'){
                 $j('.User_table').not('.dataTable').dataTable({
                 "bJQueryUI": true,
+                'aoColumnDefs': JSONObj.columnDefs,
                 "oLanguage": 
                 {
                       "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
@@ -69,38 +57,41 @@ function createDataTable() {
         .always(function (){
             imageReference.src = HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_close.png";
         });
-        
-        
-       
+   
     }
-   });
-     
-  function fnFormatDetails ( nTr )
-{
-    var aData = oTable.fnGetData( nTr );
-    var idUser=null;
+}
+
+
+function createDataTable() {
     
-    $j.each(aData,function(i,val){
-        
-        if('undefined' != typeof $j(val).attr('class') && $j(val).attr('class')==='id_user'){
-            idUser=$j(val).text();
+    oTable = $j('#table_users').dataTable({
+        "bJQueryUI": true,
+        "bFilter": true,
+        "bInfo": true,
+        "bSort": true,
+        "bAutoWidth": true,
+        'aoColumnDefs': [{"aTargets": [ 0 ],"sClass":"expandCol"},{ "bSortable": false, "aTargets": [ 4 ],"sClass":"actionCol" } ],
+        "oLanguage": 
+        {
+            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
         }
-        
+     
     });
-    
-    var data = {
-        'id_user': idUser,
-    }
+}    
+     
+  function fnFormatDetails ( idUser )
+{
     return $j.ajax({
        type	: 'GET',
        url	: HTTP_ROOT_DIR+ '/switcher/ajax/get_userDetails.php',
-       data	: data,
+       data	: {'id_user': idUser},
        dataType :'json'
        });
-       
 
 }
-}
+
+
+
 function  initToolTips()
  {
    $j('.tooltip').tooltip({

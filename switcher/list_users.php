@@ -93,10 +93,13 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
         $imgDetails->setAttribute('class', 'imgDetls tooltip');
         $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli dell\'utente'));
+        $imgDetails->setAttribute('onclick',"toggleDetails($userId,this);");
+        $imgDetails->setAttribute('style', 'cursor:pointer;');
         
-        $span_idUser = CDOMElement::create('span');
-        $span_idUser->setAttribute('class', 'id_user');
-        $span_idUser->addChild(new CText($user[0]));
+//        $span_idUser = $userId;
+//        $span_idUser = CDOMElement::create('span');
+//        $span_idUser->setAttribute('class', 'id_user');
+//        $span_idUser->addChild(new CText($user[0]));
       
         $User_fullname = CDOMElement::create('span');
         $User_fullname->setAttribute('class', 'fullname');
@@ -126,7 +129,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
          */
         if ($type!='authors' && $type!='tutors')  $isConfirmed = ($user[5] == ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No");
         
-        $tmpArray = array($imgDetails->getHtml(),$span_idUser->getHtml(), $User_fullname->getHtml(), $span_UserName->getHtml(), $actions);
+        $tmpArray = array($imgDetails->getHtml(),$userId, $User_fullname->getHtml(), $span_UserName->getHtml(), $actions);
         
         /**
          * @author giorgio 29/mag/2013

@@ -35,6 +35,7 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 include_once '../include/switcher_functions.inc.php';
+$retArray=array();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     $id_user=$_GET['id_user'];
@@ -69,7 +70,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $key = $id_user;
             $search_fields_ar = array('id_utente_autore');
             $DetailsAr = $dh->find_courses_list_by_key($field_list_ar, $key, $search_fields_ar);
-            
             break;
         case AMA_TYPE_TUTOR:
             $thead_data = array(
@@ -94,27 +94,51 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
     if(!empty($DetailsAr) && !AMA_DB::isError($DetailsAr)){
         foreach($DetailsAr as $course){
             
+            /*
+             * course data
+             */
             if(isset($course['titolo'])){
                 $course_title=$course['titolo'];}else{$course_title='';}
-
+                
             $span_course_title = CDOMElement::create('span');
             $span_course_title->setAttribute('class', 'courseTitle');
-            $span_course_title->addChild(new CText($course_title));
+            if (isset($course['id_corso'])) {
+                $linkCourse = CDOMElement::create('a');
+                if ($user_type == AMA_TYPE_AUTHOR) {
+                    $linkCourse->setAttribute('href', HTTP_ROOT_DIR.'/switcher/edit_course.php?id_course='.$course['id_corso']); 
+                } else {
+                    $linkCourse->setAttribute('href', HTTP_ROOT_DIR.'/switcher/list_instances.php?id_course='.$course['id_corso']); 
+                }
+                $linkCourse->addChild(new CText($course_title));
+            }
+            $span_course_title->addChild($linkCourse);
             
-            if(isset($course['title'])){
-                $istance_title=$course['title'];}else{$istance_title='';}
-
+            /*
+             * instance course data
+             */
             $span_istance_title = CDOMElement::create('span');
             $span_istance_title->setAttribute('class', 'istanceTitle');
-            $span_istance_title->addChild(new CText($istance_title));
+            if(isset($course['title'])){
+                $istance_title=$course['title'];
+                if (isset($course['id_istanza_corso'])) {
+                    $linkInstanceCourse = CDOMElement::create('a');
+//                    if ($user_type == AMA_TYPE_AUTHOR) {
+                        $linkInstanceCourse->setAttribute('href', HTTP_ROOT_DIR.'/switcher/edit_instance.php?id_course='.$course['id_corso'].'&id_course_instance='.$course['id_istanza_corso']);
+//                    } else {
+//                        
+//                    }    
+                    $linkInstanceCourse->addChild(new CText($istance_title));
+                }
+            }else { 
+                $istance_title='';
+                $linkInstanceCourse=new CText($istance_title);
+            }
+
+            $span_istance_title->addChild($linkInstanceCourse);
             
             
             if(isset($course['crediti'])){
-                $credits=$course['crediti'];}else{$credits='';}
-            
-            $span_credits = CDOMElement::create('span');
-            $span_credits->setAttribute('class', 'userCredits');
-            $span_credits->addChild(new CText($credits));
+                $credits=$course['crediti'];}else{$credits=0;}
             
             if($user_type == AMA_TYPE_STUDENT){
 
@@ -161,18 +185,21 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 if( isset($course['data_iscrizione']) && !is_null($course['data_iscrizione']) && intval($course['data_iscrizione'] > 0) ){
                     $date=ts2dFN($course['data_iscrizione']);}else{ $date = '-';}
                 
-                $span_date = CDOMElement::create('span');
-                $span_date->setAttribute('class', 'Inscription_date');
-                $span_date->addChild(new CText($date));
-
                 $dataAr=array($thead_data[0]=>$span_course_title->getHtml(),$thead_data[1]=>$span_istance_title->getHtml(),
-                        $thead_data[2]=>$span_date->getHtml(),$thead_data[3]=>$span_status->getHtml(),
-                        $thead_data[4]=>$span_credits->getHtml());
+                        $thead_data[2]=>$date,$thead_data[3]=>$span_status->getHtml(),
+                        $thead_data[4]=>$credits);
                 
                 $caption=translateFN('Dettaglio corsi dello studente');
-            }
-            
-            if($user_type == AMA_TYPE_TUTOR){
+
+                /*
+                 * Settings for Sort date columns in DataTable
+                 */
+                $retArray['columnDefs'][] = array(
+                    'sType'=>'date-eu',
+                    'aTargets'=>[2]
+                );
+                
+            } else if($user_type == AMA_TYPE_TUTOR){
                 
                 if(isset($course['id_istanza_corso'])){
                     $id_instance = $course['id_istanza_corso'];
@@ -187,40 +214,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                         }
                     }
                 
-                }else{$inscription='';}
-                
-                $span_inscription = CDOMElement::create('span');
-                $span_inscription->setAttribute('class', 'inscription');
-                $span_inscription->addChild(new CText($inscription));
+                }else{$inscription=0;}
                 
                 if( isset($course['data_inizio_previsto']) && !is_null($course['data_inizio_previsto']) && intval($course['data_inizio_previsto'] > 0)){
                     $startDate = ts2dFN($course['data_inizio_previsto']);}else{ $startDate = '-';}
                 
-                $span_startDate = CDOMElement::create('span');
-                $span_startDate->setAttribute('class', 'startDate');
-                $span_startDate->addChild(new CText($startDate));
-                
                 if( isset($course['data_fine']) && !is_null($course['data_fine']) && intval($course['data_fine'] > 0)){
                     $end_Date = ts2dFN($course['data_fine']);}else{ $end_Date = '-';}
                 
-                $span_end_Date = CDOMElement::create('span');
-                $span_end_Date->setAttribute('class', 'end_Date');
-                $span_end_Date->addChild(new CText($end_Date));
-                
                 if(isset($course['duration_hours'])){
-                    $hours = $course['duration_hours'];}else{$hours='';}
+                    $hours = $course['duration_hours'];}else{$hours=0;}
                   
-                $span_hours = CDOMElement::create('span');
-                $span_hours->setAttribute('class', 'hours');
-                $span_hours->addChild(new CText($hours));
-                
                 if(isset($course['durata'])){
-                    $duration_days = $course['durata'];}else{$duration_days='';}
+                    $duration_days = $course['durata'];}else{$duration_days=0;}
               
-                $span_duration_days = CDOMElement::create('span');
-                $span_duration_days->setAttribute('class', 'hours');
-                $span_duration_days->addChild(new CText($duration_days));
-                
                 if(isset($course['data_inizio_previsto']) && intval($course['data_inizio_previsto'] == 0)){
                     
                     $span_status = CDOMElement::create('span');
@@ -253,15 +260,27 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 $span_instruction->addChild(new CText($self_instruction));
                 
                 $dataAr=array($thead_data[0]=>$span_course_title->getHtml(),$thead_data[1]=>$span_istance_title->getHtml(),
-                        $thead_data[2]=>$span_startDate->getHtml(),$thead_data[3]=>$span_end_Date->getHtml(),
-                        $thead_data[4]=>$span_hours->getHtml(),$thead_data[5]=>$span_duration_days->getHtml(),
-                        $thead_data[6]=>$span_status->getHtml(),$thead_data[7]=>$span_inscription->getHtml(),
+                        $thead_data[2]=>$startDate,$thead_data[3]=>$end_Date,
+                        $thead_data[4]=>$hours,$thead_data[5]=>$duration_days,
+                        $thead_data[6]=>$span_status->getHtml(),$thead_data[7]=>$inscription,
                         $thead_data[8]=>$span_instruction->getHtml()
                     );
                 
                 $caption=translateFN('Dettaglio corsi tutor');
-            }
-            if($user_type == AMA_TYPE_AUTHOR){
+
+                /*
+                 * Settings for Sort date columns in DataTable
+                 */
+                $retArray['columnDefs'][] = array(
+                    'sType'=>'date-eu',
+                    'aTargets'=>[2]
+                );
+                $retArray['columnDefs'][] = array(
+                    'sType'=>'date-eu',
+                    'aTargets'=>[3]
+                );
+
+            } else if($user_type == AMA_TYPE_AUTHOR){
                 
                 if(isset($course['id_corso'])){
                     $id_course = $course['id_corso'];
@@ -270,7 +289,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                         $instanceNumber = count($InstanceAr);
                     }
                     $field_list_ar=array('tipo');
-                    $clause='(tipo ='. ADA_LEAF_TYPE.' OR  tipo ='. ADA_GROUP_WORD_TYPE.' OR  tipo ='.ADA_PERSONAL_EXERCISE_TYPE.')';
+                    $clause='(tipo ='. ADA_LEAF_TYPE.' OR  tipo ='. ADA_GROUP_TYPE.' OR  tipo ='.ADA_PERSONAL_EXERCISE_TYPE.')';
                     $clause .= " AND id_nodo LIKE '%$id_course%'";
                     $NodesAr=$dh->_find_nodes_list($field_list_ar,$clause);
                     if(!AMA_DB::isError($NodesAr)){
@@ -285,40 +304,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                         $nodeNumber = (count($NodesAr)-$countActivity);
                         $activitiesNumber = $countActivity;
                     }else{
-                        $nodeNumber = '';
-                        $activitiesNumber = '';
+                        $nodeNumber = 0;
+                        $activitiesNumber = 0;
                     }
                 }else{
-                    $instanceNumber = '';
-                    $nodeNumber = '';
-                    $activitiesNumber = '';
+                    $instanceNumber = 0;
+                    $nodeNumber = 0;
+                    $activitiesNumber = 0;
                 }
                
-                $span_instanceNumber = CDOMElement::create('span');
-                $span_instanceNumber->setAttribute('class', 'instanceNumber');
-                $span_instanceNumber->addChild(new CText($instanceNumber));
-                
-                $span_nodeNumber = CDOMElement::create('span');
-                $span_nodeNumber->setAttribute('class', 'nodeNumber');
-                $span_nodeNumber->addChild(new CText($nodeNumber));
-                
-                $span_activitiesNumber = CDOMElement::create('span');
-                $span_activitiesNumber->setAttribute('class', 'activitiesNumber');
-                $span_activitiesNumber->addChild(new CText($activitiesNumber));
-                
                 if( isset($course['data_creazione']) && !is_null($course['data_creazione']) && intval($course['data_creazione'] > 0)){
                     $creationDate = ts2dFN($course['data_creazione']);}else{ $creationDate = '-';}
                 
-                $span_creationDate = CDOMElement::create('span');
-                $span_creationDate->setAttribute('class', 'creationDate');
-                $span_creationDate->addChild(new CText($creationDate));
-                
                 if(isset($course['data_pubblicazione']) && !is_null($course['data_pubblicazione']) && intval($course['data_pubblicazione'] > 0)){
                     $publicationDate = ts2dFN($course['data_pubblicazione']);}else{ $publicationDate = '-';}
-                
-                $span_publicationDate = CDOMElement::create('span');
-                $span_publicationDate->setAttribute('class', 'publicationDate');
-                $span_publicationDate->addChild(new CText($publicationDate));
                 
                 if(isset($course['tipo_servizio']) && isset($_SESSION['service_level'])){
                     $serviceType = $_SESSION['service_level'][intval($course['tipo_servizio'])];
@@ -330,20 +329,28 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 $span_serviceType->addChild(new CText($serviceType));
                 
                 if(isset($course['duration_hours'])){
-                    $duration = $course['duration_hours'];}else{$duration = '';}
+                    $duration = $course['duration_hours'];}else{$duration = 0;}
                 
-                $span_duration = CDOMElement::create('span');
-                $span_duration->setAttribute('class', 'durationHours');
-                $span_duration->addChild(new CText($duration));
-                
-                $dataAr=array($thead_data[0]=>$span_course_title->getHtml(),$thead_data[1]=>$span_creationDate->getHtml(),
-                        $thead_data[2]=>$span_publicationDate->getHtml(),$thead_data[3]=>$span_serviceType->getHtml(),
-                        $thead_data[4]=>$span_duration->getHtml(),$thead_data[5]=>$span_credits->getHtml(),
-                        $thead_data[6]=>$span_nodeNumber->getHtml(),$thead_data[7]=>$span_activitiesNumber->getHtml(),
-                        $thead_data[8]=>$span_instanceNumber->getHtml()
+                $dataAr=array($thead_data[0]=>$span_course_title->getHtml(),$thead_data[1]=>$creationDate,
+                        $thead_data[2]=>$publicationDate,$thead_data[3]=>$span_serviceType->getHtml(),
+                        $thead_data[4]=>$duration,$thead_data[5]=>$credits,$thead_data[6]=>$nodeNumber,
+                        $thead_data[7]=>$activitiesNumber,$thead_data[8]=>$instanceNumber
                     );
                 
                 $caption=translateFN('Dettaglio corsi autore');
+
+                /*
+                 * Settings for Sort date columns in DataTable
+                 */
+                $retArray['columnDefs'][] = array(
+                    'sType'=>'date-eu',
+                    'aTargets'=>[1]
+                );
+                $retArray['columnDefs'][] = array(
+                    'sType'=>'date-eu',
+                    'aTargets'=>[2]
+                );
+
             }
             
             array_push($total_results,$dataAr);
@@ -351,14 +358,18 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             
             $result_table = BaseHtmlLib::tableElement('class:User_table', $thead_data, $total_results,null,$caption);
             $result=$result_table->getHtml();
-            $retArray=array("status"=>"OK","html"=>$result);
+//            $retArray=array("status"=>"OK","html"=>$result);
+            $retArray['status']='OK';
+            $retArray['html']=$result;
     }else{
 
         $span_error = CDOMElement::create('span');
         $span_error->setAttribute('class', 'ErrorSpan');
         $span_error->addChild(new CText(translateFN('Nessun dato trovato')));
+        $retArray['status']='ERROR';
+        $retArray['html']=$span_error->getHtml();
         
-        $retArray=array("status"=>"ERROR","html"=>$span_error->getHtml());
+//        $retArray=array("status"=>"ERROR","html"=>$span_error->getHtml());
     }
     echo json_encode($retArray);
 }
