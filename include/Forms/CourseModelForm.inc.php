@@ -43,9 +43,11 @@ class CourseModelForm extends FForm {
              ->setRequired()
              ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
 
+        $this->addHidden('data_creazione');
         //$this->addTextInput('data_creazione', translateFN('Data creazione'));
 
-        //$this->addTextInput('data_pubblicazione', translateFN('Data pubblicazione'));
+        $this->addTextInput('data_pubblicazione', translateFN('Data pubblicazione'));
+//             ->setValidator(FormValidator::DATE_VALIDATOR);
 
         $this->addTextarea('descrizione', translateFN('Descrizione'))
              ->setValidator(FormValidator::MULTILINE_TEXT_VALIDATOR);

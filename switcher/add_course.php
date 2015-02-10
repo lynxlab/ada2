@@ -166,5 +166,12 @@ $content_dataAr = array(
     'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
+$layout_dataAr['JS_filename'] = array(
+		JQUERY,
+		JQUERY_MASKEDINPUT,
+		JQUERY_NO_CONFLICT
+);
 
-ARE::render($layout_dataAr, $content_dataAr);
+$optionsAr['onload_func'] = 'initDateField();';
+
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);
