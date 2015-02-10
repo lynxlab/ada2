@@ -262,6 +262,10 @@ define('AMA_FETCH_OBJECT', PDO::FETCH_OBJ);
  * Default fetch mode.
  */
 define ('AMA_FETCH_DEFAULT', AMA_FETCH_ORDERED);
+/**
+ * Both fetch mode.
+ */
+define ('AMA_FETCH_BOTH', PDO::FETCH_BOTH);
 
 /**
  * Success
