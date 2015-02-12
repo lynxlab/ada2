@@ -131,7 +131,8 @@ function  initToolTips()
 }
 function saveStatus(select)
 {
-   
+    var myVal = select.value;
+    
     var SelectRow = $j(select).parents('tr')[0];
     var indexRow=datatable.fnGetPosition($j(select).parents('tr')[0]);
     var aData = datatable.fnGetData( SelectRow );
@@ -141,8 +142,8 @@ function saveStatus(select)
      
     $j.each(aData,function(i,val){
     
-        if( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class')==='idUser'){
-            idUser=$j(val).text();
+        if( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class').indexOf('UserName')!=-1){
+            idUser=$j(val).attr('id');// text();
         }
         if('undefined' !== typeof $j(val).attr('class') && $j(val).attr('class')==='id_instance'){
             idInstance=$j(val).text();
@@ -151,7 +152,7 @@ function saveStatus(select)
             indexColumn=i;
         }
     });
-   
+           
     var data = {
         'status' : select.value,
         'id_user': idUser,
@@ -166,10 +167,20 @@ function saveStatus(select)
        .done   (function( JSONObj )
        {
            showHideDiv(JSONObj.title,JSONObj.msg);
-           var selectedText = $j(select).find('option[value="'+select.value+'"]').text();
+           var selectedText = $j(select).find('option[value="'+myVal+'"]').text();
            var cloned = $j(aData[indexColumn]).text(selectedText).clone();
            datatable.fnUpdate(cloned[0].outerHTML, indexRow,indexColumn);
-           /* if user status is removed  it delets user column from datatable */
+           
+           $j(select).find('option').each(function(i,e){
+              $j(e).prop('selected', false).removeAttr('selected');
+           });
+           $j(select).val(myVal);
+           $j(select).find('option[value="'+myVal+'"]').prop('selected', true).attr('selected', 'selected');       
+           
+           datatable.fnUpdate($j(select)[0].outerHTML, indexRow, indexColumn+3);
+           // console.log($j(select)[0].outerHTML);
+           
+           /* if user status is removed  it deletes user row from datatable */
            if(select.value == 3)  
            {
                datatable.fnDeleteRow( SelectRow );
@@ -177,7 +188,7 @@ function saveStatus(select)
        })
        .fail   (function() { 
             console.log("ajax call has failed"); 
-	} )
+	} );
     
 }
 function showHideDiv ( title, message)

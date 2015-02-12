@@ -249,10 +249,10 @@ else {
             {
                 $data_iscrizione = ts2dFN($user->getSubscriptionDate());
             }
-            $span_idUser = CDOMElement::create('span');
-            $span_idUser->setAttribute('class', 'idUser');
-            $span_idUser->addChild(new CText($user->getSubscriberId()));
-            
+//            $span_idUser = CDOMElement::create('span');
+//            $span_idUser->setAttribute('class', 'idUser');
+//            $span_idUser->addChild(new CText($user->getSubscriberId()));
+//            
             $span_instance = CDOMElement::create('span');
             $span_instance->setAttribute('class', 'id_instance');
             $span_instance->addChild(new CText($instanceId));
@@ -261,7 +261,7 @@ else {
             $span_data->setAttribute('class', 'date');
             $span_data->addChild(new CText($data_iscrizione));
                     
-            $userArray = array(translateFN('Hidden_status')=>$span_selected->getHtml(),translateFN('Id')=>$span_idUser->getHtml(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$span_instance->getHtml(),translateFN('Data iscrizione')=>$span_data->getHtml(),translateFN('Livello')=>$livello);
+            $userArray = array(translateFN('Hidden_status')=>$span_selected->getHtml(),translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$span_instance->getHtml(),translateFN('Data iscrizione')=>$span_data->getHtml(),translateFN('Livello')=>$livello);
 
             if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
             {
