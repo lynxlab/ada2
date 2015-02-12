@@ -31,7 +31,7 @@ and open the template in the editor.
     text-align: center;
     height:40%;
 }
-.Levell_Column{
+.Level_Column{
     width: 10%;
     text-align: center;
     height:40%;
@@ -60,7 +60,6 @@ and open the template in the editor.
    cursor: default;
  }
 
- 
 table.dataTable tr.odd .linkCertificate
 {
   background:#CCC;
