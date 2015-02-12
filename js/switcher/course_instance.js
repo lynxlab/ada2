@@ -12,26 +12,6 @@ function initDoc()
 }
 function createDataTable()
 {
-    /* get lexicographical order */
-    $j.extend( $j.fn.dataTableExt.oSort, {
-    "string-pre": function ( selectHTML ) {
-    	var el = document.createElement('div');
-        el.innerHTML = selectHTML;  
-        var selectEl = el.getElementsByTagName("span")[0];
-        var valueId=$j(selectEl).attr('id');
-        if (valueId.length>0) {
-            return  valueId ;		
-        } else return 0;
-    },
- 
-    "string-asc": function ( a, b ) {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-    },
- 
-    "string-desc": function ( a, b ) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-    }
-    });
     datatable = $j('#course_instance_Table').dataTable({
     "bJQueryUI": true,
     "bFilter": true,
@@ -51,7 +31,6 @@ function createDataTable()
         {
            "aTargets": [ 2 ], 
            "sClass": "Name_Column",
-           "sType":"string",
         },
         {
            "aTargets": [ 3 ], 
@@ -84,16 +63,11 @@ function createDataTable()
             // put the sort icon outside of the DataTables_sort_wrapper div
             // for better display styling with CSS
             $j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
-            sortIcon = $j(this).find('span').clone();
-            $j(this).find('span').remove();
-
-            if(($j(this).text()!='Certificato'))
-            {
-                $j(this).parents('th').append(sortIcon);
-            }
-
-            });
-      } 
+	            sortIcon = $j(this).find('span').clone();
+	            $j(this).find('span').remove();
+	            $j(this).parents('th').append(sortIcon);
+	            });
+      	} 
     });
 }
 function  initToolTips()
@@ -139,16 +113,19 @@ function saveStatus(select)
     var idUser=null;
     var idInstance=null;
     var indexColumn=null;
-     
-    $j.each(aData,function(i,val){
+    var re = /\d{1,2}\/{1}\d{1,2}\/{1}\d{2,4}/; 
     
-        if( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class').indexOf('UserName')!=-1){
+    $j.each(aData,function(i,val){
+    	/**
+    	 * if val is a (sort of) date, skip to next iteration
+    	 */    	
+    	if (re.test(val)) {
+    		return;
+    	} else if( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class').indexOf('UserName')!=-1) {
             idUser=$j(val).attr('id');// text();
-        }
-        if('undefined' !== typeof $j(val).attr('class') && $j(val).attr('class')==='id_instance'){
+        } else if ( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class')==='id_instance') {
             idInstance=$j(val).text();
-        }
-        if( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class')==='hidden_status'){
+        } else if ( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class')==='hidden_status') {
             indexColumn=i;
         }
     });
