@@ -4903,10 +4903,13 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         return new AMA_Error(AMA_ERR_NOT_FOUND);
     }
 
-    public function get_course_instances_for_this_student($id_student) {
+    public function get_course_instances_for_this_student($id_student, $extra_fields=false) {
         $sql = 'SELECT C.id_corso, C.titolo, C.crediti, IC.id_istanza_corso,'
-             . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status'
-             . ' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
+             . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status';
+        if ($extra_fields) {
+            $sql .= ' ,IC.title,I.data_iscrizione';
+        }
+        $sql .=' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
              . ' WHERE I.id_utente_studente=?'
              . ' AND IC.id_istanza_corso = I.id_istanza_corso'
              . ' AND C.id_corso = IC.id_corso';
@@ -5420,12 +5423,11 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *           array(ID3, 'field_3_1', 'field_3_2'))
      */
     public function &course_instance_started_get_list($field_list_ar, $id_corso='') {
-        $clause = '';
-        if (isset($id_corso) && $id_corso != ''){
-            $clause = 'id_corso = '. $id_corso . ' AND ';
-        }
-        $clause .= 'data_inizio is not null AND durata is not null';
-        return $this->course_instance_find_list($field_list_ar, $clause);
+    	if (strlen($id_corso)<=0) {
+        	return $this->course_instance_find_list($field_list_ar, "data_inizio is not null and durata is not null");
+    	} else {
+    		return $this->course_instance_find_list($field_list_ar, "id__corso=$id_corso AND data_inizio is not null and durata is not null");
+    	}
     }
 
     /**
@@ -6537,7 +6539,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         $query = "select id_corso$more_fields from modello_corso $clause";
         // do the query
-        $courses_ar =  $db->getAll($query);
+        $courses_ar =  $db->getAll($query,null,AMA_FETCH_BOTH);
 
         if (AMA_DB::isError($courses_ar)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -6547,10 +6549,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // return nested array in the form
         //
         if (!$courses_ar) {
-            return new AMA_Error(AMA_ERR_NOT_FOUND);
+            $retval = new AMA_Error(AMA_ERR_NOT_FOUND);
+            return $retval;
         }
         if (!is_array($courses_ar)) {
-            return new AMA_Error(AMA_ERR_INCONSISTENT_DATA);
+            $retval = new AMA_Error(AMA_ERR_INCONSISTENT_DATA);
+            return $retval;
         }
         return $courses_ar;
     }
@@ -10054,7 +10058,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql = "SELECT
 					ts.`id_utente_tutor`,
 					c.`id_corso`, c.`titolo`, c.`id_utente_autore`,
-					i.`id_istanza_corso`, i.`title`
+					i.`id_istanza_corso`, i.`title`,i.`data_inizio_previsto`,i.`data_fine`,i.`duration_hours`,
+                                        i.`durata`,i.`self_instruction`
 				FROM `tutor_studenti` ts
 				JOIN `istanza_corso` i ON (i.`id_istanza_corso`=ts.`id_istanza_corso`)
 				JOIN `modello_corso` c ON (c.`id_corso`=i.`id_corso`)";
@@ -10077,7 +10082,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 		}
 
         $tutors_ar =  $db->getAll($sql, null, AMA_FETCH_ASSOC);
-
+        
         if (AMA_DB::isError($tutors_ar)) {
             return new AMA_Error(AMA_ERR_GET);
         }
@@ -10419,7 +10424,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // no instance found
         return false;
     }
-
+    
     public function count_active_course_instances($timestamp) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;

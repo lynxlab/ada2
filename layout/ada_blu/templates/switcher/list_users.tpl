@@ -8,7 +8,8 @@
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
-        </div> <!-- / testata -->
+        </div> 
+        <!-- / testata -->
         <!-- menu -->
             <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
         <!-- / menu --> 
@@ -18,7 +19,8 @@
             <div id="journey">
                 <i18n>dove sei: </i18n>
                 <span>
-                    <template_field class="template_field" name="course_title">course_title</template_field>
+                    <!--template_field class="template_field" name="course_title">course_title</template_field-->
+                    <template_field class="template_field" name="label">label</template_field>
                 </span>
             </div>
             <div id="user_wrap">
@@ -41,7 +43,7 @@
                     </div>
                     <!-- / dati utente -->
                     <!-- label -->
-                    <div id="label">
+                    <!--div id="label">
                         <div class="topleft">
                             <div class="topright">
                                 <div class="bottomleft">
@@ -68,14 +70,6 @@
                             <template_field class="template_field" name="help">help</template_field>
                         </div>
                         <template_field class="template_field" name="data">data</template_field>
-                        <div class="table_result">
-                           <template_field class="template_field" name="buttonSubscription">buttonSubscription</template_field>
-                           <template_field class="template_field" name="buttonSubscriptions">buttonSubscriptions</template_field>
-                           <template_field class="template_field" name="table">table</template_field>
-                           <template_field class="template_field" name="tooltip">tooltip</template_field>
-                           <div class="clearfix"></div>
-                        </div> 
-                       
                         
                     </div>
                 </div>

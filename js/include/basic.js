@@ -58,7 +58,10 @@ function close_page(message) {
 }
 
 function initDateField() {
+    if ($j("#birthdate").length>0)
 	$j("#birthdate").mask("99/99/9999");
+    if ($j("#data_pubblicazione").length>0)
+	$j("#data_pubblicazione").mask("99/99/9999");
 }
 
 function validateContent(elements, regexps, formName) {
