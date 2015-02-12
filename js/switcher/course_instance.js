@@ -12,26 +12,6 @@ function initDoc()
 }
 function createDataTable()
 {
-    /* get lexicographical order */
-    $j.extend( $j.fn.dataTableExt.oSort, {
-    "string-pre": function ( selectHTML ) {
-    	var el = document.createElement('div');
-        el.innerHTML = selectHTML;  
-        var selectEl = el.getElementsByTagName("span")[0];
-        var valueId=$j(selectEl).attr('id');
-        if (valueId.length>0) {
-            return  valueId ;		
-        } else return 0;
-    },
- 
-    "string-asc": function ( a, b ) {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-    },
- 
-    "string-desc": function ( a, b ) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-    }
-    });
     datatable = $j('#course_instance_Table').dataTable({
     "bJQueryUI": true,
     "bFilter": true,
@@ -51,7 +31,6 @@ function createDataTable()
         {
            "aTargets": [ 2 ], 
            "sClass": "Name_Column",
-           "sType":"string",
         },
         {
            "aTargets": [ 3 ], 
@@ -81,19 +60,13 @@ function createDataTable()
      },
      "fnDrawCallback":
         function () {
-            // put the sort icon outside of the DataTables_sort_wrapper div
-            // for better display styling with CSS
-            $j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
-            sortIcon = $j(this).find('span').clone();
-            $j(this).find('span').remove();
-
-            if(($j(this).text()!='Certificato'))
-            {
-                $j(this).parents('th').append(sortIcon);
-            }
-
-            });
-      } 
+	            // put the sort icon outside of the DataTables_sort_wrapper div
+	            // for better display styling with CSS
+	            $j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
+		            sortIcon = $j(this).find('span').clone();
+		            $j(this).find('span').remove();
+	            });
+      	} 
     });
 }
 function  initToolTips()

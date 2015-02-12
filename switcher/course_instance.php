@@ -257,11 +257,11 @@ else {
             $span_instance->setAttribute('class', 'id_instance');
             $span_instance->addChild(new CText($instanceId));
             
-            $span_data = CDOMElement::create('span');
-            $span_data->setAttribute('class', 'date');
-            $span_data->addChild(new CText($data_iscrizione));
+//             $span_data = CDOMElement::create('span');
+//             $span_data->setAttribute('class', 'date');
+//             $span_data->addChild(new CText($data_iscrizione));
                     
-            $userArray = array(translateFN('Hidden_status')=>$span_selected->getHtml(),translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$span_instance->getHtml(),translateFN('Data iscrizione')=>$span_data->getHtml(),translateFN('Livello')=>$livello);
+            $userArray = array(translateFN('Hidden_status')=>$span_selected->getHtml(),translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$span_instance->getHtml(),translateFN('Data iscrizione')=>$data_iscrizione,translateFN('Livello')=>$livello);
 
             if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
             {
@@ -328,7 +328,7 @@ $content_dataAr = array(
 'help' => $help,
 'data' => isset($data) ? $data : '',
 'table'=>$table,
-'tooltip'=>$tooltipDiv->getHtml(),
+'tooltip'=> isset($tooltipDiv) ? $tooltipDiv->getHtml() : '',
 'edit_profile'=> $userObj->getEditProfilePage(),
 'buttonSubscription'=>$buttonSubscription->getHtml(),
 'buttonSubscriptions'=>$buttonSubscriptions->getHtml(),
