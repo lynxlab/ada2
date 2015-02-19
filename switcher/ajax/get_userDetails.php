@@ -48,7 +48,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 translateFN('Edizione'),
                 translateFN('Data iscrizione'),
                 translateFN('Stato iscrizione'),
-                translateFN('Crediti')
+                translateFN('Crediti'),
+		translateFN('Ultimo accesso'),
+		translateFN('Ultimo nodo')
             );
             $DetailsAr=$dh->get_course_instances_for_this_student($id_user,true);
             
@@ -141,7 +143,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 $credits=$course['crediti'];}else{$credits=0;}
             
             if($user_type == AMA_TYPE_STUDENT){
-
+		$limit = 1;
+		$last_access = $dh->get_last_visited_nodes($id_user,$course['id_istanza_corso'],$limit);
+		$last_node = ' - ';
+		$last_date = ' - ';
+		if (count($last_access) > 0) {
+		    $last_node = $last_access[0]['id_nodo'];
+		    $last_date = ts2dFN($last_access[0]['data_uscita']);
+		}
+			
                 if(isset($course['status'])){
                     $status=$course['status'];}else{$status='';}
                 
@@ -187,7 +197,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 
                 $dataAr=array($thead_data[0]=>$span_course_title->getHtml(),$thead_data[1]=>$span_istance_title->getHtml(),
                         $thead_data[2]=>$date,$thead_data[3]=>$span_status->getHtml(),
-                        $thead_data[4]=>$credits);
+                        $thead_data[4]=>$credits,$thead_data[5]=>$last_date,$thead_data[6]=>$last_node);
                 
                 $caption=translateFN('Dettaglio corsi dello studente');
 
@@ -197,6 +207,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                 $retArray['columnDefs'][] = array(
                     'sType'=>'date-eu',
                     'aTargets'=>[2]
+                );
+                $retArray['columnDefs'][] = array(
+                    'sType'=>'date-eu',
+                    'aTargets'=>[5]
                 );
                 
             } else if($user_type == AMA_TYPE_TUTOR){
