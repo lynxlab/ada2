@@ -424,7 +424,7 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 					if (!AMA_DB::isError($venueresult)) {
 						$result['venuename'] = isset($venueresult['name']) ? $venueresult['name'] : '';
 						$result['venueaddress'] = isset($venueresult['addressline1']) ? $venueresult['addressline1'] : '';
-						$result['venueaddress'] .= isset($venueresult['addressline2']) ? '<br/>'.$venueresult['addressline2'] : '';
+						$result['venueaddress'] .= isset($venueresult['addressline2']) ? ' - '.$venueresult['addressline2'] : '';
 						$result['venuemaplink'] = isset($venueresult['map_url']) ? $venueresult['map_url'] : '';
 					}
 				}
