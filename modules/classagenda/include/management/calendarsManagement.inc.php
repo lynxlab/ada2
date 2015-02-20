@@ -21,6 +21,39 @@ class calendarsManagement extends abstractClassAgendaManagement
 {
 	
 	/**
+	 * returns the placeholders for the reminder html
+	 * 
+	 * @return array
+	 */
+	public static function reminderPlaceholders() {
+		
+		$placeHolders = array(
+				'coursename' => translateFN('Nome del corso'),
+				'instancename' => translateFN('Nome della classe'),
+				'name' => translateFN('Nome dello studente'),
+				'lastname'=> translateFN('Cognome dello studente'),
+				'e-mail' => translateFN('E-Mail dello studente'),
+				'tutorname' => translateFN('Nome del tutor').' ('.translateFN('se disponibile').')',
+				'tutorlastname' => translateFN('Cognome del tutor').' ('.translateFN('se disponibile').')',
+				'eventdate' => translateFN('Data dell\'evento'),
+				'eventstart' => translateFN('Ora di inizio dell\'evento'),
+				'eventend' => translateFN('Ora di fine dell\'evento')
+		);
+		
+		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM) {
+			$placeHolders = array_merge($placeHolders, array(
+					'classroomname' => translateFN('Nome dell\'aula').' ('.translateFN('se disponibile').')',
+					'venuename' => translateFN('Nome del luogo').' ('.translateFN('se disponibile').')',
+					'venueaddress' => translateFN('Indirizzo del luogo').' ('.translateFN('se disponibile').')',
+					'venuemaplink' => translateFN('Link alla mappa dell\'indirizzo del luogo').' ('.translateFN('se disponibile').')'
+				)
+			);
+		}
+		
+		return $placeHolders;
+	}
+	
+	/**
 	 * build, manage and display the module's pages
 	 *
 	 * @return array
@@ -49,7 +82,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				/**
 				 * bottom buttons div
 				 */
-				$buttonsDIV = CDOMElement::create('div','id:buttonsContainer');			
+				$buttonsDIV = CDOMElement::create('div','id:buttonsContainer');
 				$saveButton = CDOMElement::create('input_button','id:saveCalendar');
 				$saveButton->setAttribute('value', translateFN('Salva'));
 				$cancelButton = CDOMElement::create('input_button','id:cancelCalendar');
@@ -202,6 +235,47 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$tutorsDIV->addChild(CDOMElement::create('div','id:tutorslist'));
 				
 				/**
+				 * send event reminder button and div to hold the dialog
+				 */
+				$reminderButtonDIV = CDOMElement::create('div','id:reminderButtonContainer');
+				$reminderButton = CDOMElement::create('input_button','id:reminderButton');
+				$reminderButton->setAttribute('onclick', 'javascript:reminderSelectedEvent();');
+				$reminderButton->setAttribute('value', translateFN('Invia Promemoria agli iscritti'));
+				$reminderButtonDIV->addChild($reminderButton);
+				
+				$reminderDialog = CDOMElement::create('div','id:reminderDialog');
+				$reminderDialog->setAttribute('title', translateFN('Promemoria Evento'));
+				$reminderDialog->addChild (CDOMElement::create('div','id:reminderDialogContent'));
+
+				$reminderLegend = CDOMElement::create('div','id:reminderLegend');
+				$reminderLegendTitle = CDOMElement::create('span','class:legendTitle');
+				$reminderLegendTitle->addChild (new CText(translateFN('Campi valorizzati')));
+				$reminderLegend->addChild($reminderLegendTitle);
+				
+				$reminderLegendOL = CDOMElement::create('ol');
+				foreach (self::reminderPlaceholders() as $legendItem=>$legendDescription) {
+					$legendLI = CDOMElement::create('li','class:legendItem tooltip');
+					$legendLI->setAttribute('title',$legendDescription);
+					$legendLI->addChild (new CText('{'.$legendItem.'}'));
+					$reminderLegendOL->addChild($legendLI);
+				}
+				
+				$reminderLegend->addChild($reminderLegendOL);
+				$reminderDialog->addChild($reminderLegend);
+				
+				// this shall become the ok button label inside the dialog
+				$reminderOK = CDOMElement::create('span','class:confirmOKLbl');
+				$reminderOK->setAttribute('style','display:none;');
+				$reminderOK->addChild (new CText(translateFN('Invia')));
+				// this shall become the cancel button label inside the dialog
+				$reminderCancel = CDOMElement::create('span','class:confirmCancelLbl');
+				$reminderCancel->setAttribute('style', 'display:none;');
+				$reminderCancel->addChild (new CText(translateFN('Chiudi')));
+				// add the elements to the div
+				$reminderDialog->addChild($reminderOK);
+				$reminderDialog->addChild($reminderCancel);
+				
+				/**
 				 * delete classroom event button
 				 */
 				$deleteButtonDIV = CDOMElement::create('div','id:deleteButtonContainer');
@@ -216,16 +290,16 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmDIV = CDOMElement::create('div','id:confirmDialog');
 				$confirmDIV->setAttribute('title', translateFN('Conferma Azione'));
 				// question for not saved events (case instances list is clicked)
-				$confirmDelSPAN = CDOMElement::create('span','id:instancesListquestion');
+				$confirmDelSPAN = CDOMElement::create('span','id:instancesListquestion,class:dialogQuestion');
 				$confirmDelSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di cambiare istanza?')));
 				// question for not saved events (case venues list is clicked)
-				$confirmVenueDelSPAN = CDOMElement::create('span','id:venuesListquestion');
+				$confirmVenueDelSPAN = CDOMElement::create('span','id:venuesListquestion,class:dialogQuestion');
 				$confirmVenueDelSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di cambiare luogo?')));
 				// question for not saved events (case show active instances is clicked)
-				$confirmOnlyActiveSPAN = CDOMElement::create('span','id:filterInstanceStatequestion');
+				$confirmOnlyActiveSPAN = CDOMElement::create('span','id:filterInstanceStatequestion,class:dialogQuestion');
 				$confirmOnlyActiveSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, li salvo prima di filtrare le istanze?')));
 				// question asked for tutor overlapping
-				$confirmTutorOverlap = CDOMElement::create('span','id:tutorOverlapquestion');
+				$confirmTutorOverlap = CDOMElement::create('span','id:tutorOverlapquestion,class:dialogQuestion');
 				$confirmTutorOverlap->addChild(new CText(translateFN('Il tutor').' '));
 				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapTutorName'));
 				$confirmTutorOverlap->addChild(new CText(' '.translateFN('ha già un evento per la classe').'<br/>'));
@@ -237,6 +311,9 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmTutorOverlap->addChild(new CText(' '.translateFN('alle ore').' '));
 				$confirmTutorOverlap->addChild(CDOMElement::create('span','id:overlapEndTime'));
 				$confirmTutorOverlap->addChild(new CText('<br/>'.translateFN('Vuoi mantenere la modifica fatta?')));
+				// question asked when sending a reminder on a non saved event
+				$confirmReminderNonSavedEvent = CDOMElement::create('span','id:reminderNonSavedEventquestion,class:dialogQuestion');
+				$confirmReminderNonSavedEvent->addChild(new CText(translateFN('È necessario salvare il calendario prima di inviare un promemoria. Lo salvo?')));
 				// this shall become the ok button label inside the dialog
 				$confirmOK = CDOMElement::create('span','class:confirmOKLbl');
 				$confirmOK->setAttribute('style','display:none;');
@@ -252,6 +329,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmDIV->addChild($confirmVenueDelSPAN);
 				$confirmDIV->addChild($confirmOnlyActiveSPAN);
 				$confirmDIV->addChild($confirmTutorOverlap);
+				$confirmDIV->addChild($confirmReminderNonSavedEvent);
 				$confirmDIV->setAttribute('style','display:none;');
 				
 				/**
@@ -264,16 +342,18 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$htmlObj->addChild($calendarDIV);
 				$htmlObj->addChild($serviceTypeDIV);
 				if (isset($classroomsDIV)) {
-					$htmlObj->addChild($classroomsDIV);					
+					$htmlObj->addChild($classroomsDIV);
 				}
 				$htmlObj->addChild($tutorsDIV);
+				$htmlObj->addChild($reminderButtonDIV);
 				$htmlObj->addChild($deleteButtonDIV);
 				$htmlObj->addChild($buttonsDIV);
 				$htmlObj->addChild(CDOMElement::create('div','class:clearfix'));
 				
+				$htmlObj->addChild($reminderDialog);
 				$htmlObj->addChild($confirmDIV);
 				
-				break;				
+				break;
 			default:
 				/**
 				 * return an empty page as default action

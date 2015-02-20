@@ -44,6 +44,7 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 				if (!AMA_DB::isError($eventID) && intval($eventID)>0) {
 					// event has been updated, remove it from the previous events array
 					if (array_key_exists($eventID, $previousEvents)) unset ($previousEvents[$eventID]);
+					else $newSelectedID = $eventID;
 				} else if (AMA_DB::isError($eventID)) {
 					// on error return right away
 					return $eventID;
@@ -58,7 +59,7 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		    $this->deleteClassroomEvent($eventID);
 		}
 		
-		return true;
+		return (isset($newSelectedID) ? $newSelectedID : true);
 	}
 	
 	/**
@@ -178,8 +179,17 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		$result = $this->queryPrepared($sql,$values);
 		
 		if (!AMA_DB::isError($result)) {
+			/**
+			 * if we've just inserted the event that was selected in the UI,
+			 * return its ID in the database, so that the JS can re-select it
+			 */
+			if ($eventData['wasSelected']) {
+				$insertRetval = $this->db->lastInsertId();
+			} else {
+				$insertRetval = 0;
+			}
 			// not error, return last updated id or zero
-			return ($isInsert ? 0 : $eventData['id']);
+			return ($isInsert ? $insertRetval : $eventData['id']);
 		} else return $result;
 	}
 	
@@ -303,6 +313,124 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		$params = array_merge($params, array(':startTS'=>$startTS, ':endTS'=>$endTS));
 		
 		return $this->getRowPrepared($sql, $params, AMA_FETCH_ASSOC);		
+	}
+
+	/**
+	 * Save a reminder html for the passed event
+	 * 
+	 * @param number $eventID the eventID associated with the text
+	 * @param string $html the html to be saved
+	 * 
+	 * @return number last instert id|AMA_Error object on error
+	 * 
+	 * @access public
+	 */
+	public function saveReminderForEvent($eventID, $html) {
+		$sql = 'INSERT INTO `'.self::$PREFIX.'reminder_history` (`'.
+				self::$PREFIX.'calendars_id`, `html`, `creation_date`) VALUES (?,?,?)';
+		
+		$result = $this->queryPrepared($sql,array($eventID, $html, $this->date_to_ts('now')));
+		
+		if (!AMA_DB::isError($result)) {
+			// not error, return last updated id or zero
+			return $this->db->lastInsertID();
+		} else return $result;
+	}
+	
+	/**
+	 * gets a reminder table row for the passed eventid
+	 * 
+	 * @param number $eventID
+	 * 
+	 * @return mixed
+	 * 
+	 * @access public
+	 */
+	public function getReminderForEvent($eventID) {
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'reminder_history` WHERE `'.self::$PREFIX.'calendars_id`=?';
+		$retval = $this->getRowPrepared($sql,$eventID,AMA_FETCH_ASSOC);
+		
+		if (!AMA_DB::isError($retval) && $retval!==false) {
+			$retval['date'] = ts2dFN($retval['creation_date']);
+			$retval['time'] = substr(ts2tmFN($retval['creation_date']), 0, -3); // remove seconds from time
+		}
+		return $retval;
+	}
+	
+	/**
+	 * gets the html of the most recent reminder history row
+	 * 
+	 * @return mixed
+	 * 
+	 * @access public
+	 */
+	public function getLastEventReminderHMTL() {
+		$sql = 'SELECT `html` FROM `'.self::$PREFIX.'reminder_history` ORDER BY `creation_date` DESC';
+		return $this->getOnePrepared($sql);
+	}
+	
+	/**
+	 * gets all non-user related data to be used when
+	 * substituting the placeholders in the reminder html
+	 * 
+	 * @param number $reminderID
+	 * 
+	 * @return Ambigous <mixed, string, unknown>
+	 * 
+	 * @access public
+	 */
+	public function getReminderDataToEmail ($reminderID) {
+		/**
+		 * get first block of needed data:
+		 * - html of the reminder
+		 * - start timestamp
+		 * - end timestamp
+		 * - id_classroom
+		 * - instance title
+		 * - course title
+		 * - tutor name
+		 * - tutor lastname
+		 */
+		
+		$sql = 'SELECT RH.`html`, CAL.`start`, CAL.`end`, CAL.`id_classroom`,'.
+				' IST.`title` AS `instancename`, IST.`id_istanza_corso`, MCO.`titolo` AS `coursename`,'.
+			    ' USER.`nome` AS `tutorname`, USER.`cognome` AS `tutorlastname`'.
+			   	' FROM `'.self::$PREFIX.'reminder_history` RH '.
+				' JOIN `'.self::$PREFIX.'calendars` CAL ON RH.`'.self::$PREFIX.'calendars_id` = CAL.`'.self::$PREFIX.'calendars_id`'.
+				' JOIN `istanza_corso` IST ON CAL.`id_istanza_corso`=IST.`id_istanza_corso`'.
+				' JOIN `modello_corso` MCO ON IST.`id_corso`=MCO.`id_corso`'.
+				' JOIN `utente` AS USER ON CAL.`id_utente_tutor`=USER.`id_utente`'.
+				' WHERE RH.`'.self::$PREFIX.'reminder_history_id`=?';
+		
+		$result = $this->getRowPrepared($sql,$reminderID,AMA_FETCH_ASSOC);
+		
+		$result['eventdate'] = ts2dFN($result['start']);
+		$result['eventstart'] = substr(ts2tmFN($result['start']), 0, -3);
+		$result['eventend'] = substr(ts2tmFN($result['end']), 0, -3);
+		
+		if (!AMA_DB::isError($result) && defined('MODULES_CLASSROOM') && MODULES_CLASSROOM &&
+			!is_null($result['id_classroom']) && intval($result['id_classroom'])>0) {
+			/**
+			 * get data about classroom and venue
+			 */
+			require_once MODULES_CLASSROOM_PATH . '/include/classroomAPI.inc.php';
+			$classroomAPI = new classroomAPI();
+			$classroomresult = $classroomAPI->getClassroom(intval($result['id_classroom']));
+			
+			if (!AMA_DB::isError($classroomresult)) {
+				$result['classroomname'] = isset($classroomresult['name']) ? $classroomresult['name'] : '';
+				if (isset($classroomresult['id_venue']) && !is_null($classroomresult['id_venue'])) {
+					$venueresult = $classroomAPI->getVenue($classroomresult['id_venue']);
+					if (!AMA_DB::isError($venueresult)) {
+						$result['venuename'] = isset($venueresult['name']) ? $venueresult['name'] : '';
+						$result['venueaddress'] = isset($venueresult['addressline1']) ? $venueresult['addressline1'] : '';
+						$result['venueaddress'] .= isset($venueresult['addressline2']) ? '<br/>'.$venueresult['addressline2'] : '';
+						$result['venuemaplink'] = isset($venueresult['map_url']) ? $venueresult['map_url'] : '';
+					}
+				}
+			}
+		}		
+		return $result;
 	}
 
 	/**

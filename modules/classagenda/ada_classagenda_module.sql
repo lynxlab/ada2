@@ -62,3 +62,34 @@ ALTER TABLE `module_classagenda_rollcall`
 --
 ALTER TABLE `module_classagenda_rollcall`
 MODIFY `module_classagenda_rollcall_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+
+--
+-- Struttura della tabella `module_classagenda_reminder_history`
+--
+
+CREATE TABLE IF NOT EXISTS `module_classagenda_reminder_history` (
+  `module_classagenda_reminder_history_id` int(10) unsigned NOT NULL,
+  `module_classagenda_calendars_id` int(10) unsigned NOT NULL,
+  `html` text COLLATE utf8_unicode_ci NOT NULL,
+  `creation_date` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `module_classagenda_reminder_history`
+--
+ALTER TABLE `module_classagenda_reminder_history`
+ ADD PRIMARY KEY (`module_classagenda_reminder_history_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `module_classagenda_reminder_history`
+--
+ALTER TABLE `module_classagenda_reminder_history`
+MODIFY `module_classagenda_reminder_history_id` int(10) unsigned NOT NULL AUTO_INCREMENT;

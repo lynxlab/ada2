@@ -29,8 +29,17 @@ class classroomAPI {
 	/**
 	 * gets all available venues
 	 */
-	public function getAllVenues() {		
+	public function getAllVenues() {
 		return $this->_dh->classroom_getAllVenues();
+	}
+	
+	/**
+	 * gets data about a venue
+	 * 
+	 * @param number $id
+	 */
+	public function getVenue ($id) {
+		return $this->_dh->classroom_getVenue($id);
 	}
 	
 	/**
@@ -58,6 +67,15 @@ class classroomAPI {
 	 */
 	public function getClassroomsForVenue($id_venue) {
 		return $this->_dh->classroom_getClassroom(null,$id_venue);
+	}
+	
+	/**
+	 * gets data about a classroom
+	 * 
+	 * @param number $id_classroom
+	 */
+	public function getClassroom ($id_classroom) {
+		return $this->_dh->classroom_getClassroom($id_classroom);
 	}
 	
 	/**
@@ -98,7 +116,7 @@ class classroomAPI {
 		}
 	}
 	
-	public function __destruct() {		
+	public function __destruct() {
 		$this->_dh->disconnect();
 	}	
 } // class ends here

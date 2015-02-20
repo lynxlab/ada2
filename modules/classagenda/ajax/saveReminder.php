@@ -38,35 +38,32 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
+// MODULE's OWN IMPORTS
+require_once MODULES_CLASSAGENDA_PATH.'/config/config.inc.php';
+
 $GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $retArray = array();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-	if (isset($_POST['instanceID']) && intval($_POST['instanceID'])>0) {
-		
-		if (isset($_POST['venueID']) && intval($_POST['venueID'])>0) {
-			$venueID = intval($venueID);
-		} else $venueID = null;
-
-		if (isset($_POST['events']) && is_array($_POST['events']) && count($_POST['events'])>0) {
-			$postEvents = $_POST['events'];
-		} else $postEvents = null;
-		
-		$result = $GLOBALS['dh']->saveClassroomEvents(intval($_POST['instanceID']),$venueID,
-													  $postEvents);
-		
-		if (!AMA_DB::isError($result) && ($result===true || intval($result)>0)) {
-			$retArray = array("status"=>"OK", "msg"=>translateFN("Calendario salvato"));
-			if ($result!==true && intval($result)>0) $retArray['newSelectedID'] = $result;
+	if (isset($_POST['reminderEventID']) && intval($_POST['reminderEventID'])>0) {
+		if (isset($_POST['reminderEventHTML']) && strlen(trim($_POST['reminderEventHTML']))>0) {
+			
+			$result = $GLOBALS['dh']->saveReminderForEvent(intval($_POST['reminderEventID']),trim($_POST['reminderEventHTML']));
+			
+			if (!AMA_DB::isError($result) && intval($result)>0) {
+				$retArray = array("status"=>"OK", "reminderID"=>$result, "msg"=>translateFN("Promemoria salvato e inviato"));
+			} else {
+				$retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore nel salvataggio"));
+			}
+			
 		} else {
-			$retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore nel salvataggio"));
-		}
-		
+			$retArray = array("status"=>"ERROR", "msg"=>translateFN("Testo promemoria vuoto"));
+		} // if isset html
 	} else {
-		$retArray = array("status"=>"ERROR", "msg"=>translateFN("Selezionare un'istanza di corso"));
-	}	
-}
+		$retArray = array("status"=>"ERROR", "msg"=>translateFN("Selezionare un evento"));
+	} // if isset eventID
+} // if method is POST
 
 if (empty($retArray)) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore sconosciuto"));
 

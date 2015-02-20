@@ -10,12 +10,21 @@
  */
 
 /**
+ * include files
+ */
+document.write("<script type='text/javascript' src='"+HTTP_ROOT_DIR+"/external/fckeditor/fckeditor.js'></script>");
+
+/**
  * global vars
  */
 var hasVenues = false;
 var calendar  = undefined;
 var mustSave = false;
 var canDelete = false;
+var reminderDialog = null;
+var oFCKeditor = null;
+var isCheckingReminder = false;
+
 /**
  * events updated in the UI only,
  * used to check for tutor overlap
@@ -115,7 +124,7 @@ function initCalendar() {
 			 */
 			eventClick: function(calEvent, jsEvent, view) {
 				
-				if (!calEvent.editable) return;
+				if (!calEvent.editable || isCheckingReminder) return;
 				
 				var doSelection = true;
 				
@@ -125,22 +134,15 @@ function initCalendar() {
 				// unselect previously selected event
 				if (selEvent!=null) {
 					doSelection = selEvent._id != calEvent._id;
-					selEvent.isSelected = false;
-					selEvent.className = '';
-					calendar.fullCalendar('updateEvent', selEvent);
+					unselectSelectedEvent(!doSelection);
 				}
 				
 				// select clicked element if needed
 				if (doSelection) {
-					calEvent.className = 'selectedClassroomEvent';
-					calEvent.isSelected = true;
-					setSelectedClassroom(calEvent.classroomID);
-					setSelectedTutor(calEvent.tutorID);
-					if (!canDelete) setCanDelete(true);
-					calendar.fullCalendar('updateEvent', calEvent);
+					setSelectedEvent(calEvent);
 				} else {
 					if (canDelete) setCanDelete(false);
-					}
+				}
 			},
 			/**
 			 * creates a new event
@@ -394,11 +396,11 @@ function getShowSelectedInstance() {
 }
 
 /**
- * sets the selected calendar event
+ * update the selected calendar event data
  * 
  * @param event the clicked event to be set as selected
  */
-function setSelectedEvent(event) {
+function updateSelectedEvent(event) {
 	// get selected event
 	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
 		return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true);
@@ -406,6 +408,45 @@ function setSelectedEvent(event) {
 	if (selEvent.length > 0) {
 		selEvent[0] = event;
 		calendar.fullCalendar('updateEvent', event);
+	}
+}
+
+function unselectSelectedEvent(checkReminder) {
+	// get selected event
+	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
+		return (typeof clEvent.isSelected != "undefined" && clEvent.isSelected==true);
+		});
+	if (selEvent.length > 0) {
+		selEvent[0].isSelected = false;
+		selEvent[0].className = '';
+		calendar.fullCalendar('updateEvent', selEvent[0]);
+	}
+	
+	if (checkReminder) checkReminderSent();
+}
+
+/**
+ * sets the selected event to the passed event
+ * @param event
+ */
+function setSelectedEvent(event) {
+	// get selected event
+	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
+		return clEvent.id==event.id;
+		});
+	if (selEvent.length > 0) {
+		selEvent[0].className = 'selectedClassroomEvent';
+		selEvent[0].isSelected = true;
+		setSelectedClassroom(selEvent[0].classroomID);
+		setSelectedTutor(selEvent[0].tutorID);
+		if (!canDelete) setCanDelete(true);
+		calendar.fullCalendar('updateEvent', selEvent[0]);
+		/**
+		 * check if the selected event has a reminder
+		 */
+		$j.when(checkReminderSent()).always(function() {
+			$j('#reminderButton').button({ disabled: !canDelete });
+		});
 	}
 }
 
@@ -547,7 +588,7 @@ function updateEventOnClassRoomChange() {
 	if (event!=null && classroomid>0) {
 		event.classroomID = classroomid;
 		event.title = buildEventTitle(event);
-		setSelectedEvent(event);		
+		updateSelectedEvent(event);
 		if(!mustSave) setMustSave(true);
 	}
 }
@@ -560,7 +601,7 @@ function updateEventOnTutorChange() {
 	if (event!=null && tutorid>0) {
 		event.tutorID = tutorid;
 		event.title = buildEventTitle(event);
-		setSelectedEvent(event);
+		updateSelectedEvent(event);
 		if(!mustSave) setMustSave(true);
 	}
 }
@@ -629,6 +670,7 @@ function saveClassRoomEvents() {
 		if (calEvents[i].instanceID==selectedCourseInstance) {
 			eventsToPass[j++] = {
 					id : (typeof calEvents[i].id == 'undefined' || null == calEvents[i].id) ? null : calEvents[i].id,
+					wasSelected : (calEvents[i].isSelected ? 1 : 0),
 					start : calEvents[i].start.format(),
 					end : calEvents[i].end.format(),
 					classroomID : calEvents[i].classroomID,
@@ -648,6 +690,15 @@ function saveClassRoomEvents() {
 				dataType:	'json'
 			}).done (function(JSONObj){
 				if (JSONObj && JSONObj.status.length>0) {
+					if ('undefined' != typeof JSONObj.newSelectedID) {
+						// must look for the event having id==newSelectedID
+						// and set its isSelected to true, so it will be re-selected
+						var selEvent = getSelectedEvent();
+						if (selEvent!=null) {
+							selEvent.id = JSONObj.newSelectedID;
+							updateSelectedEvent(selEvent);
+						}
+					}
 					showHideDiv('',JSONObj.msg, JSONObj.status==='OK');
 				} else {
 					showHideDiv('','Unknow error', false);
@@ -725,6 +776,12 @@ function reloadClassRoomEvents() {
 		dataType:	'json'
 	}).done (function(JSONObj){
 		/**
+		 * save the selected event
+		 */
+		var selectedEvent = getSelectedEvent();
+		if (null != selectedEvent) unselectSelectedEvent(false);
+		
+		/**
 		 * remove all events
 		 */
 		calendar.fullCalendar('removeEvents');
@@ -733,7 +790,9 @@ function reloadClassRoomEvents() {
 			/**
 			 * add all loaded events to the calendar
 			 */
+			var selectedIndex = -1;
 			for (var i=0; i<JSONObj.length; i++) {
+				if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) selectedIndex = i;
 				if (venueID==null || (venueID!=null && JSONObj[i].venueID==venueID)) {
 					JSONObj[i].title = buildEventTitle(JSONObj[i]);
 					
@@ -746,15 +805,18 @@ function reloadClassRoomEvents() {
 				}
 			}
 			
+			if (selectedIndex>-1) {
+				if (JSONObj[selectedIndex].editable) setSelectedEvent(JSONObj[selectedIndex]);
+			}
+			
 			$j('a.noteditableClassroomEvent').on ('click', function(event){
 				event.preventDefault();
-				
 			});
 			
 		}
 	}).fail(function() {}).always(function() {
 		setMustSave(false);
-		setCanDelete(false);
+		if (getSelectedEvent()==null) setCanDelete(false);
 		UIEvents = [];
 		UIDeletedEvents = [];
 	});
@@ -943,6 +1005,219 @@ function deleteSelectedEvent() {
 }
 
 /**
+ * opens up the dialog to set and send the email
+ * reminder to subscribed students
+ */
+function reminderSelectedEvent() {
+	
+	var selectedEvent = getSelectedEvent();
+	
+	if ('undefined' == typeof selectedEvent.id || mustSave) {
+		// ask to save events if needed
+		jQueryConfirm('#confirmDialog', '#reminderNonSavedEventquestion',
+				function() {
+					$j.when(saveClassRoomEvents()).then(function() {
+						displayReminderDialog(getSelectedEvent());
+					});
+				},
+				function() { return null; }
+		);
+	} else displayReminderDialog(selectedEvent);
+}
+
+function displayReminderDialog(selectedEvent) {
+
+	if (reminderDialog == null) reminderDialog = prepareReminderDialog('#reminderDialog');
+	
+	$j.ajax({
+				type	:	'GET',
+				url		:	'ajax/getEventReminderForm.php',
+				dataType:	'json',
+				beforeSend : function() { $j('#reminderDialogContent').html(''); },
+				data : { eventID: selectedEvent.id }
+	}).
+	done (function(JSONObj){
+		if ('undefined' != typeof JSONObj) {
+			if (JSONObj.status=='OK') {
+				$j('#reminderDialogContent').html(JSONObj.html);
+				if (oFCKeditor==null) {
+					oFCKeditor = new FCKeditor( 'reminderEventHTML' );
+					oFCKeditor.BasePath = HTTP_ROOT_DIR+'/external/fckeditor/';
+					oFCKeditor.Width = '100%';
+					oFCKeditor.Height = '350';
+					oFCKeditor.ToolbarSet = 'Basic';
+				}
+				oFCKeditor.ReplaceTextarea();
+				setTimeout(function () {
+					if ('undefined' != typeof FCKeditorAPI) {
+						FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).Focus();
+					}
+				},350);
+				
+				$j('#reminderOkButton').show();
+				reminderDialog.dialog('open');
+				
+			} else {
+				showHideDiv('',JSONObj.html, false);
+			}
+		} else showHideDiv('','Unknow error', false); 
+	});	
+}
+/**
+ * prepares the remainder dialog to show the form
+ */
+function prepareReminderDialog(id) {
+	var okLbl = $j(id + ' .confirmOKLbl').html();
+	var cancelLbl = $j(id + ' .confirmCancelLbl').html();
+	
+	if ($j(id + ' li.tooltip').length>0) {
+		/**
+		 * set the tooltip on the legend
+		 */
+		$j(id + ' li.tooltip').tooltip();
+		/**
+		 * set the double click handler for the legend
+		 */
+		$j(id + ' li.tooltip').on('dblclick', function() {
+			if ('undefined' != typeof FCKeditorAPI && oFCKeditor!=null) {
+				FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).InsertHtml($j(this).text());
+			}
+		});
+	}
+	
+	return $j(id).dialog({
+		resizable : false,
+		autoOpen : false,
+		width: "80%",
+		modal : true,
+		show: {
+			effect: "fade",
+			easing: "easeInSine", 
+			duration: 250
+		},
+		hide: {
+			effect: "fade",
+			easing: "easeOutSine", 
+			duration: 250
+		},
+		buttons : [ {
+			text : okLbl,
+			id   : 'reminderOkButton',
+			click : function() {
+				/**
+				 * if there's a form inside the passed div id submit it
+				 */
+				if ($j(id + ' form').length>0) {
+					/**
+					 * run required fields validation before submit
+					 */
+					if ($j(id + ' form input[type="submit"]').length>0) {
+						// get form submit button onclick code
+						var onClickDefaultAction = $j(id + ' form input[type="submit"]').attr('onclick');
+						// execute it, to hava ADA's own form validator
+						var okToSubmit = (onClickDefaultAction.length > 0) ? new Function(onClickDefaultAction)() : false;
+						// and if ok submit the form
+						if (okToSubmit) {
+							var that = this;
+							$j('#reminderEventHTML').val(FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).GetHTML(true));
+							$j.when(saveAndSendReminder($j(id + ' form').serialize())).
+								done (function(JSONObj) {
+									if (JSONObj && JSONObj.status=='OK') {
+										$j(that).dialog("close");
+										/**
+										 * check if the selected event has a reminder
+										 */
+										$j.when(checkReminderSent()).always(function() {
+											$j('#reminderButton').button({ disabled: !canDelete });
+										});
+									}
+								});
+						}
+					}
+				}
+			}
+		}, {
+			text : cancelLbl,
+			id   : 'reminderCancelButton',
+			click : function() {
+				$j(this).dialog("close");
+			}
+		} ]
+	});	
+}
+
+/**
+ * handles reminder saving and sending with an ajax call
+ */
+function saveAndSendReminder(data) {
+	return $j.ajax({
+				type	:	'POST',
+				url		:	'ajax/saveReminder.php',
+				data	:	data,
+				dataType:	'json'
+	}).done (function(JSONObj){
+		if (JSONObj) {
+			showHideDiv('',JSONObj.msg,JSONObj.status=='OK');
+			if ('undefined' != typeof JSONObj.reminderID && parseInt(JSONObj.reminderID)>0) {
+				$j.ajax({
+					type	: 'POST',
+					url		: 'ajax/sendReminder.php',
+					data	: { reminderID : JSONObj.reminderID },
+					dataType: 'html'
+				}).done(function (html) {});
+			}
+		} else showHideDiv('','Unknown error', false);
+	});
+}
+
+/**
+ * checks (and possibly gets content) if a
+ * reminder for the selected event exists in the DB
+ */
+function checkReminderSent() {
+	var animDuration = 200;
+	
+	$j.when($j('.reminderDetailsContainer').slideUp(animDuration/2)).then(
+		function() {
+			var selectedEvent = getSelectedEvent();
+			if (!isCheckingReminder && selectedEvent != null) {
+				$j('.reminderDetailsContainer').remove();
+				return $j.ajax({
+					type	:	'GET',
+					url		:	'ajax/checkReminderSent.php',
+					data	:	{ reminderEventID: selectedEvent.id },
+					dataType:	'json',
+					beforeSend : function () { isCheckingReminder = true; }
+				}).done (function(JSONObj){			
+					if ('undefined' != typeof JSONObj && 'undefined' != typeof JSONObj.html) {
+						if ($j('#reminderButton').is(':visible')) $j('#reminderButton').slideUp(animDuration/2);
+						$j('#reminderButtonContainer').prepend(JSONObj.html);
+						$j('.reminderDetailsContainer').find('button').button();
+						$j('.reminderDetailsContainer').slideDown(animDuration, function() { isCheckingReminder = false; });
+						$j('.reminderDetailsContainer').append(JSONObj.content);
+					} else {
+						if (!$j('#reminderButton').is(':visible')) $j('#reminderButton').slideDown(animDuration);
+						isCheckingReminder = false;
+					}
+				}).fail(function() { isCheckingReminder = false; });
+			} else {
+				if (!$j('#reminderButton').is(':visible')) return $j('#reminderButton').slideDown(animDuration);
+			}
+		}
+	);
+}
+
+/**
+ * shows the reminder content loaded by checkReminderSent
+ */
+function openReminder(id) {	
+	if (reminderDialog == null) reminderDialog = prepareReminderDialog('#reminderDialog');	
+	$j('#reminderDialogContent').html($j(id).html());
+	$j('#reminderOkButton').hide();
+	reminderDialog.dialog('open');
+}
+
+/**
  * sets the mustSave variable
  * 
  * @param status boolean, true to enable save button
@@ -953,13 +1228,15 @@ function setMustSave (status) {
 }
 
 /**
- * sets the canDelete variable
+ * sets the canDelete variable, used for enable and disable
+ * the #deleteButton and #reminderButton
  * 
  * @param status boolean, true to enable delete button
  */
 function setCanDelete (status) {
 	canDelete = status;
 	$j('#deleteButton').button({ disabled: !canDelete });
+	$j('#reminderButton').button({ disabled: !canDelete });
 }
 
 /**
@@ -1049,6 +1326,16 @@ function jQueryConfirm(id, questionId, OKcallback, CancelCallBack) {
 		resizable : false,
 		width: "auto",
 		modal : true,
+		show: {
+			effect: "fade",
+			easing: "easeInSine", 
+			duration: 250
+		},
+		hide: {
+			effect: "fade",
+			easing: "easeOutSine", 
+			duration: 250
+		},
 		buttons : [ {
 			text : okLbl,
 			click : function() {

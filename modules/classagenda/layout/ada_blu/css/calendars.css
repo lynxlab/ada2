@@ -9,6 +9,7 @@
 #classrooms,
 #tutorsListContainer,
 #deleteButtonContainer,
+#reminderButtonContainer,
 #buttonsContainer { width: 26%; float: right; margin: 0 0 1% 1%; border: 1px dotted gray; padding: 1%; }
 /**
  * #classrooms div starts hidden, it will
@@ -20,7 +21,11 @@
 #classcalendar .fc-custom label { margin:0; }
 
 #deleteButtonContainer,
-#buttonsContainer { border:none; text-align: center; padding:0; }
+#reminderButtonContainer,
+#reminderButtonContainer .reminderDetailsContainer,
+#buttonsContainer { border:none; text-align: center; padding-top:0; padding-bottom:0; }
+
+#reminderButtonContainer .reminderDetailsContainer .reminderDetails { margin-bottom: 1%; display: inline-block; } 
 
 label.venuesListLabel { display: block; margin-bottom: 5px; }
 #venuesList, #tutorSelect { width: 100%; display: block; margin-bottom: 5px; }
@@ -60,17 +65,14 @@ div#confirmDialog {
     text-align: center;
 }
 
-#instancesListquestion,
-#venuesListquestion,
-#filterInstanceStatequestion,
-#tutorOverlapquestion {
+div#confirmDialog .dialogQuestion {
     text-align: center;
     display: inline-block;
     margin-top: 15px;
     overflow: none;
 }
 
-#tutorOverlapquestion {
+div#confirmDialog #tutorOverlapquestion {
 	margin-top: 5px;
 	line-height: 1.4em;
 }
@@ -84,3 +86,13 @@ div#confirmDialog {
 }
 
 #classcalendar a.selectedClassroomEvent { background: red; }
+#reminderDialog { display: none; } 
+#reminderDialogContent { width: 80%; float:left; }
+#reminderLegend { width: 19%; float:right; border: 1px dotted gray; position: relative; margin-top: 9px; }
+#reminderLegend ol { padding: 0 0 0 30px; margin: 5px 0 10px 10px; }
+#reminderLegend li { line-height: 1.5em;}
+#reminderLegend .legendTitle { position: relative; top: -8px; left: 5px; background: white; border: 1px dotted gray; padding: 2px 5px 2px 5px; } 
+#reminderDialogContent input[type=submit] { display: none; }
+#reminderDialogContent div.fform { width: 100%; padding:0; margin:0; }
+#reminderDialogContent div.fform label { display: block; width: 100%; }
+#reminderDialogContent div.fform form fieldset li { padding:0; border:none; cursor: pointer; }
