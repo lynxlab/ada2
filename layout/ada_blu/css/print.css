@@ -2,6 +2,10 @@
 @import url("exercises.css");
 @import url("form.css");
 
+body {
+	padding:1em;
+}
+
 .media.sound,
 .media.pronounce,
 .media.video,
@@ -9,13 +13,17 @@
 .media.lis,
 .media.finger-spelling,
 .meida.doc,
-#mainmenu,
-#com_toolscontent,
-#menuright,
-#rightpanel,
-#footer img,
-#index_in_text,
-#exercises_in_text
+div.ui,
+div#status_bar,
+div#user_data,
+div#labelview,
+div#rightpanelcontent,
+a[name=top],
+div#index_in_text,
+div#exercises_in_text,
+div#com_tools,
+div#footer img,
+hr
 	{
 	display: none;
 }
