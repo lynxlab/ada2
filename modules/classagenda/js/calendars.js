@@ -528,7 +528,11 @@ function updateServiceTypeOnInstanceChange() {
 				}).done (function(JSONObj){
 					if (JSONObj) {
 						$j('#servicetype').html(JSONObj.serviceTypeString);
-						if('undefined' != typeof JSONObj.isOnline && JSONObj.isOnline===true) {							
+						
+						if ('undefined' != typeof JSONObj.courseID) $j('#courseID').text(JSONObj.courseID);
+						else $j('#courseID').text('0');
+						
+						if('undefined' != typeof JSONObj.isOnline && JSONObj.isOnline===true) {
 							$j('#classroomlist').html('');
 							$j('#classrooms').hide();
 							$j('#serviceduration').hide();

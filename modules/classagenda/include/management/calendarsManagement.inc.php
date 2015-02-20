@@ -144,6 +144,9 @@ class calendarsManagement extends abstractClassAgendaManagement
 				 * an empty span to be filled in by javascript
 				 */
 				$serviceTypeDIV = CDOMElement::create('div','id:servicetypeContainer');
+				$courseIDSPAN = CDOMElement::create('span','id:courseID');
+				$courseIDSPAN->setAttribute('style', 'display:none');
+				$serviceTypeDIV->addChild($courseIDSPAN);				
 				$serviceSPANText = CDOMElement::create('span');
 				$serviceSPANText->addChild(new CText(translateFN('Corso di tipo').': '));
 				$serviceTypeDIV->addChild($serviceSPANText);

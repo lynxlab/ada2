@@ -78,6 +78,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 			$courseInstanceObj = read_course_instance_from_DB($instanceID);
 			
 			if (!AMA_DB::isError($courseInstanceObj)) {
+				$retArray['courseID'] = intval($courseID);
 				$retArray['duration_hours'] = $courseInstanceObj->getDurationHours();
 				$eventsArr = $GLOBALS['dh']->getClassRoomEventsForCourseInstance($instanceID, null);
 				$retArray['allocated_hours'] = 0;
