@@ -18,6 +18,12 @@
 
 abstract class abstractClassAgendaManagement
 {
+	/**
+	 * array of available export formats
+	 * 
+	 * @var array
+	 */
+	protected static $exportFormats = array ('pdf','csv');
 
 	/**
      * name constructor
