@@ -84,6 +84,20 @@ function initDoc() {
 	initCalendar();
 	// for the first load, classroom events are loaded by change
 	// events triggered on classroom and/or tutor change
+	
+	// handle export menu items
+	if ($j('li.calendarexportmenuitem a').length>0) {
+		$j('li.calendarexportmenuitem a').on ('click',function(){
+			aHref = $j(this).attr('href') + '&id_course='+$j('#courseID').text()+'&id_course_instance='+getSelectedCourseInstance();
+			
+			if ('undefined' != typeof $j(this).data('type') && $j(this).data('type')=='pdf') {
+				openNewWindow(aHref,0,0,'',true,true);
+			} else {
+				location.href = aHref;
+			}
+			return false;
+		});
+	}
 }
 
 /**

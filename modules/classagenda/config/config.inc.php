@@ -26,4 +26,6 @@ define('MODULES_CLASSAGENDA_REMINDER_HTML', MODULES_CLASSAGENDA_PATH.'/doc/remin
 
 define ('MODULES_CLASSAGENDA_LOGDIR' , ROOT_DIR.'/log/classagenda/');
 define ('MODULES_CLASSAGENDA_EMAILS_PER_HOUR' , 60); // numer of emails per hour to be sent out
+
+define ('PDF_EXPORT_FOOTER','ADA è un software opensource rilasciato sotto licenza GPL © Lynx s.r.l. - Roma');
 ?>

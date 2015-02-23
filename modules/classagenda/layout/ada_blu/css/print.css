@@ -1,0 +1,74 @@
+@page {
+	margin-top: 2em;
+	margin-left: 1.5em;
+	margin-bottom: 3em;
+	margin-right: 1.5em;
+}
+
+body {
+	font-size: 0.8em;
+	font-family: sans-serif;
+}
+
+.media.sound,
+.media.pronounce,
+.media.video,
+.media.labiale,
+.media.lis,
+.media.finger-spelling,
+.meida.doc,
+div.ui,
+div#status_bar,
+div#user_data,
+div#labelview,
+div#rightpanelcontent,
+a[name=top],
+div#index_in_text,
+div#exercises_in_text,
+div#com_tools,
+div#footer img,
+div#footer,
+hr {
+	display: none;
+}
+
+.content_small {
+	margin-right:0;
+}
+
+#container {
+	padding-top:0px;
+}
+
+h1 { font-size: 1.3em; }
+h2 { font-size: 1.2em; }
+h1, h2 { text-align: center; }
+
+/**
+ * PDF calendar styles
+ */
+table.pdfcalendar  {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.pdfcalendar thead th {
+	border-top: 1px solid #000000;
+}
+table.pdfcalendar thead th,
+table.pdfcalendar tbody td {
+    border-bottom: 1px solid #000000;
+    line-height: 2.5em;
+}
+
+table.pdfcalendar thead th {
+    background: lightblue;
+}
+table.pdfcalendar tbody tr.pdfcalendar_tr_odd {
+    background: lightgray;
+}
+
+table.pdfcalendar tbody tr.pdfcalendar_tr_even {
+    background: white;
+}

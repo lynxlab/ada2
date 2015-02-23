@@ -1,0 +1,31 @@
+@CHARSET "UTF-8";
+
+h1 { font-size: 1em; }
+h2 { font-size: 0.8em; }
+h1, h2 { text-align: center; }
+
+/**
+ * PDF calendar styles
+ */
+table.pdfcalendar  {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.pdfcalendar thead th,
+table.pdfcalendar tbody td {
+    border-bottom: 1px solid #000000;
+    line-height: 2.5em;
+}
+
+table.pdfcalendar thead th {
+    background: lightblue;
+}
+table.pdfcalendar tbody tr.pdfcalendar_tr_odd {
+    background: lightgray;
+}
+
+table.pdfcalendar tbody tr.pdfcalendar_tr_even {
+    background: white;
+}

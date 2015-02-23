@@ -371,6 +371,61 @@ class calendarsManagement extends abstractClassAgendaManagement
 		);
 	}
 	
+	/**
+	 * builds export calendar HTML or array data
+	 * if type is 'pdf', the HTML is built and converted to a pdf by the rendering engine
+	 * if type is 'csv', only the array of data is returned and the caller shall build the csv
+	 * 
+	 * @param Course $courseObj
+	 * @param Course_instance $courseInstanceObj
+	 * @param string $type 'pdf' or 'csv', defaults to pdf
+	 * 
+	 * @return multitype:Ambigous <NULL, CBaseElement, unknown>
+	 */
+	public function exportCalendar(Course $courseObj, Course_instance $courseInstanceObj, $type='pdf') {
+		
+		$dh = $GLOBALS['dh'];
+		
+		if (!in_array($type, self::$exportFormats)) $type = 'pdf';
+		
+		$result = $dh->getInstanceFullCalendar($courseInstanceObj->getId());
+		if (!AMA_DB::isError($result)) {
+			$head = array (
+					translateFN('Data'),
+					translateFN('Ora Inizio'),
+					translateFN('Ora Fine'),
+					translateFN('Tutor')
+			);
+			if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM) {
+				$head = array_merge ($head,array(
+						translateFN('Aula'),
+						translateFN('Luogo'),
+						translateFN('Indirizzo')
+				));
+			}
+			
+			if ($type=='pdf') {
+				// if type is pdf
+				$htmlObj = CDOMElement::create('div','id:pdfCalendar');
+				if (count($result)>0) {
+					$htmlObj->addChild(BaseHtmlLib::tableElement('class:pdfcalendar',$head,$result));
+				}				
+				return array('htmlObj'   => $htmlObj);
+			} else if ($type=='csv') {
+				if (count($result)>0) {
+					return (array_merge(array($head),$result));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * gets all venues with at least a classroom from the classroom API
+	 * 
+	 * @return array|NULL
+	 * 
+	 * @access private
+	 */
 	private function _getVenues() {
 		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM) {
 			require_once MODULES_CLASSROOM_PATH . '/include/classroomAPI.inc.php';

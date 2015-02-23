@@ -434,6 +434,62 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	}
 
 	/**
+	 * gets instance calendar export data
+	 * 
+	 * @param number $instanceID
+	 * 
+	 * @return array|AMA_Error
+	 * 
+	 * @access public
+	 */
+	public function getInstanceFullCalendar ($instanceID) {
+		
+		$sql =  'SELECT CAL.*, USER.`nome`,USER.`cognome`'.
+				' FROM  `'.self::$PREFIX.'calendars` AS CAL'.
+				' JOIN `utente` AS USER ON CAL.`id_utente_tutor`=USER.`id_utente`'.
+				' WHERE `id_istanza_corso`=?';
+		
+		$retres = $this->getAllPrepared($sql,$instanceID,AMA_FETCH_ASSOC);
+		$retval = array();
+		if (!AMA_DB::isError($retres)) {
+			foreach ($retres as $i=>$result) {
+				$retval[$i]['date'] = ts2dFN($result['start']);
+				$retval[$i]['eventstart'] = substr(ts2tmFN($result['start']), 0, -3);
+				$retval[$i]['eventend'] = substr(ts2tmFN($result['end']), 0, -3);
+				$retval[$i]['tutor'] = $result['nome'].' '.$result['cognome'];
+				
+				if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM) {
+					/**
+					 * get data about classroom and venue
+					 */
+					require_once MODULES_CLASSROOM_PATH . '/include/classroomAPI.inc.php';
+					$classroomAPI = new classroomAPI();
+					$classroomresult = $classroomAPI->getClassroom(intval($result['id_classroom']));
+					if (!is_null($result['id_classroom']) && intval($result['id_classroom'])>0) {
+						if (!AMA_DB::isError($classroomresult)) {
+							$retval[$i]['classroomname'] = isset($classroomresult['name']) ? $classroomresult['name'] : '';
+							if (isset($classroomresult['id_venue']) && !is_null($classroomresult['id_venue'])) {
+								$venueresult = $classroomAPI->getVenue($classroomresult['id_venue']);
+								if (!AMA_DB::isError($venueresult)) {
+									$retval[$i]['venuename'] = isset($venueresult['name']) ? $venueresult['name'] : '';
+									$retval[$i]['venueaddress'] = isset($venueresult['addressline1']) ? $venueresult['addressline1'] : '';
+									$retval[$i]['venueaddress'] .= isset($venueresult['addressline2']) ? ' - '.$venueresult['addressline2'] : '';
+								}
+							}
+						}
+					}
+					if (!isset($retval[$i]['classroomname'])) $retval[$i]['classroomname'] = '-';
+					if (!isset($retval[$i]['venuename'])) $retval[$i]['venuename'] = '-';
+					if (!isset($retval[$i]['venueaddress'])) $retval[$i]['venueaddress'] = '-';
+				}
+			}
+		}
+		
+		return ((count($retval)>0) ? $retval : new AMA_Error(AMA_ERR_GET));
+		
+	}
+
+	/**
 	 * Returns an instance of AMAClassagendaDataHandler.
 	 *
 	 * @param  string $dsn - optional, a valid data source name
