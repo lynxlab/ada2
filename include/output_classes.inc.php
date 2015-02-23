@@ -1054,7 +1054,7 @@ class  Generic_Html extends Output
       	
       			// Features
       			"enable_unicode"           => DOMPDF_UNICODE_ENABLED,
-      			"enable_php"               => DOMPDF_ENABLE_PHP,
+      			"enable_php"               => true,
       			"enable_remote"            => true,
       			"enable_css_float"         => true,
       			"enable_javascript"        => true,
