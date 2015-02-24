@@ -1,6 +1,7 @@
 @CHARSET "UTF-8";
 
 @import url("showHideDiv.css");
+@import url("loadingDiv.css");
 
 #classcalendar { width: 70%; float:left; }
 #saveCalendar  { margin: 10px auto; }

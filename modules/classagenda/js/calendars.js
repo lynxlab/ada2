@@ -444,9 +444,17 @@ function unselectSelectedEvent(checkReminder) {
  * @param event
  */
 function setSelectedEvent(event) {
-	// get selected event
+	// get event to be selected
 	var selEvent = calendar.fullCalendar('clientEvents', function (clEvent) {
-		return clEvent.id==event.id;
+			if ('undefined' != typeof event.id) {
+				return clEvent.id==event.id;
+			} else {
+				/**
+				 * it's a new (non saved) event, must
+				 * compare _id since id would be undefined
+				 */
+				return clEvent._id==event._id;
+			}		
 		});
 	if (selEvent.length > 0) {
 		selEvent[0].className = 'selectedClassroomEvent';
@@ -791,7 +799,8 @@ function reloadClassRoomEvents() {
 		type	:	'GET',
 		url		:	'ajax/getCalendarForInstance.php',
 		data	:	data,
-		dataType:	'json'
+		dataType:	'json',
+		beforeSend: showLoading(),
 	}).done (function(JSONObj){
 		/**
 		 * save the selected event
@@ -830,6 +839,7 @@ function reloadClassRoomEvents() {
 			$j('a.noteditableClassroomEvent').on ('click', function(event){
 				event.preventDefault();
 			});
+			hideLoading();
 			
 		}
 	}).fail(function() {}).always(function() {
@@ -837,6 +847,7 @@ function reloadClassRoomEvents() {
 		if (getSelectedEvent()==null) setCanDelete(false);
 		UIEvents = [];
 		UIDeletedEvents = [];
+		hideLoading();
 	});
 }
 
