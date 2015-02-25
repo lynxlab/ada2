@@ -46,6 +46,9 @@ function initDoc() {
 	askChangeInstanceOrVenueConfirm();
 	// hook instance select change to update tutors list
 	updateTutorsListOnInstanceChange();
+	// init buttons
+	initSaveButton();
+	initCancelButton();
 	
 	hasVenues = $j('#venuesList').length>0;
 	if (hasVenues) {
@@ -62,9 +65,9 @@ function initDoc() {
 			 */
 			if ($j(this).attr('id')=='filterInstanceState') {
 				$j.when(loadCourseInstances()).done(function() {
-					if (getSelectedCourseInstance()!=0) reloadClassRoomEvents();
+					if (getSelectedCourseInstance()!=0) calendar.fullCalendar( 'refetchEvents' );
 				});
-			} else reloadClassRoomEvents();
+			} else calendar.fullCalendar( 'refetchEvents' );
 			
 		});
 		
@@ -80,11 +83,6 @@ function initDoc() {
 		});
 	}
 	
-	loadCourseInstances();
-	initCalendar();
-	// for the first load, classroom events are loaded by change
-	// events triggered on classroom and/or tutor change
-	
 	// handle export menu items
 	if ($j('li.calendarexportmenuitem a').length>0) {
 		$j('li.calendarexportmenuitem a').on ('click',function(){
@@ -98,6 +96,19 @@ function initDoc() {
 			return false;
 		});
 	}
+	
+	/**
+	 * to initialize, call loadCourseInstances() that will fire
+	 * an #instancesList change event causing the execution of:
+	 * 1. updateStudentCountOnInstanceChange();
+	 * 2. updateServiceTypeOnInstanceChange();
+	 * 3. updateTutorsListOnInstanceChange();
+	 * 
+	 * the update tutor will cause fullcalendar events to be
+	 * loaded if the global calendar variable is not undefined
+	 * or the fullcalendar to be initialized.
+	 */
+	loadCourseInstances();
 }
 
 /**
@@ -210,17 +221,7 @@ function initCalendar() {
 			},
 			eventDrop: function ( event, delta, revertFunc) {
 				
-				var theEventID = null;
-				if ('undefined' != typeof event.eventID) theEventID = event.eventID;
-				else if ('undefind' != typeof event.id) theEventID = event.id;
-				
-				data = {
-						start: event.start.format(),
-						end  : event.end.format(),
-						tutorID: parseInt(event.tutorID),
-						instanceID : getSelectedCourseInstance(),
-						eventID : theEventID
-				};
+				var data = prepareDataForCheckTutorOverlap(event);
 				
 				var placeEvent = function() {
 					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
@@ -247,17 +248,7 @@ function initCalendar() {
 			},
 			eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) {
 				
-				var theEventID = null;
-				if ('undefined' != typeof event.eventID) theEventID = event.eventID;
-				else if ('undefind' != typeof event.id) theEventID = event.id;
-				
-				data = {
-						start: event.start.format(),
-						end  : event.end.format(),
-						tutorID: parseInt(event.tutorID),
-						instanceID : getSelectedCourseInstance(),
-						eventID : theEventID
-				};
+				data = prepareDataForCheckTutorOverlap(event);
 				
 				var placeEvent = function() {
 					if (parseInt(delta.as('minutes'))!=0 && !mustSave) setMustSave(true);
@@ -288,6 +279,15 @@ function initCalendar() {
 				left: 'prev,next today',
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
+			},
+			events: function(start, end, timezone, callback) {
+				$j.when(reloadClassRoomEvents()).done(function(events) {
+					callback(events);
+				});
+			},
+			loading: function (isLoading, view) {
+				if (isLoading) showLoading();
+				else hideLoading();
 			}
 		});
 		
@@ -295,20 +295,35 @@ function initCalendar() {
 		setMustSave(false);
 		// initialize delete button and set can delete to false
 		setCanDelete(false);
-		$j('#saveCalendar').on('click', function ( event ) {
-			saveClassRoomEvents();
-			event.preventDefault();
-		});
-		// initialize cancel button
-		$j('#cancelCalendar').button().on('click', function ( event ) {
-			// reloadClassRoomEvents();
-			// reload instance details by triggering an instance change
-			if ($j('#instancesList').length>0) { $j('#instancesList').trigger('change'); } 
-			event.preventDefault();
-		});
 		
 		moveInsideCalendarHeader('onlySelectedInstance');
 	}
+}
+
+function initSaveButton() {
+	$j('#saveCalendar').on('click', function ( event ) {
+		saveClassRoomEvents();
+		event.preventDefault();
+	});	
+}
+
+function initCancelButton() {
+	// initialize cancel button
+	$j('#cancelCalendar').button().on('click', function ( event ) {
+		event.preventDefault();
+		
+		var doReset = function() {
+			// refetch calendar events
+			if ('undefined' != typeof calendar) calendar.fullCalendar('refetchEvents');
+			setMustSave(false);
+		};
+		
+		if (mustSave) {
+			jQueryConfirm('#confirmDialog', '#'+$j(this).attr('id')+'question',
+					function() { doReset(); }, 
+					function() { event.preventDefault(); });
+		} else doReset();
+	});	
 }
 
 /**
@@ -406,7 +421,9 @@ function getFilterInstanceState() {
 }
 
 function getShowSelectedInstance() {
-	return ($j('#onlySelectedInstance').length>0) ? $j('#onlySelectedInstance').is(':checked') : false;
+	if (($j('#onlySelectedInstance-cloned').length>0)) return $j('#onlySelectedInstance-cloned').is(':checked');
+	else if (($j('#onlySelectedInstance').length>0)) return $j('#onlySelectedInstance').is(':checked');
+	else return false;
 }
 
 /**
@@ -499,6 +516,24 @@ function buildEventTitle(event) {
 	return title;
 }
 
+function rerenderAllEvents() {
+	// get event to be selected
+	var allEvents = calendar.fullCalendar('clientEvents');
+	
+	if (allEvents.length > 0) {
+		var selectedInstanceID = getSelectedCourseInstance();
+		for (var i=0; i<allEvents.length; i++) {
+			allEvents[i].title = buildEventTitle(allEvents[i]);
+			// set as editable only events of the selected course instance
+			allEvents[i].editable = (allEvents[i].instanceID==selectedInstanceID);
+			allEvents[i].className = (!allEvents[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
+			if (allEvents[i].isSelected) allEvents[i].className = 'selectedClassroomEvent';
+		}
+		calendar.fullCalendar( 'rerenderEvents' );
+	}
+	
+}
+
 /**
  * updates classroom radio buttons on venue change
  */
@@ -514,8 +549,8 @@ function updateClassroomsOnVenueChange() {
 				if (htmlcode && htmlcode.length>0) {
 					$j('#classroomlist').html(htmlcode);
 					initFacilitiesTooltips();
-					// reload classroom events for selected venue
-					reloadClassRoomEvents();
+					if (getSelectedVenue()==null) rerenderAllEvents();
+					else calendar.fullCalendar( 'refetchEvents' );
 					// select the first radio button
 					if ($j('input[name="classroomradio"]').length>0) {
 						$j('input[name="classroomradio"]').first().prop('checked',true);
@@ -624,12 +659,28 @@ function updateEventOnClassRoomChange() {
  */
 function updateEventOnTutorChange() {
 	var event = getSelectedEvent(), tutorid = getSelectedTutor();
-	if (event!=null && tutorid>0) {
+	var setTutor = function() {
 		event.tutorID = tutorid;
 		event.title = buildEventTitle(event);
 		updateSelectedEvent(event);
 		if(!mustSave) setMustSave(true);
-	}
+	};
+	
+	if (event!=null && tutorid>0) {
+		event.tutorID = tutorid;
+		data = prepareDataForCheckTutorOverlap(event);
+		$j.when(checkTutorOverlap(data)).done(function(overlaps) {
+			if ('undefined' != typeof overlaps.isOverlap && !overlaps.isOverlap) {
+				 setTutor();
+			} else {
+				jQueryConfirm('#confirmDialog', '#tutorOverlapquestion',
+						function() { setTutor(); },
+						function() { return null; });
+			}
+		}).fail(function() {
+			console.log ('error while checking overlapping events in updateEventOnTutorChange');
+		});
+	}	
 }
 
 /**
@@ -669,7 +720,8 @@ function updateTutorsListOnInstanceChange() {
 				if (htmlcode && htmlcode.length>0) {
 					$j('#tutorslist').html(htmlcode);
 					// reload classroom events
-					if (typeof calendar != 'undefined') reloadClassRoomEvents();
+					if (typeof calendar != 'undefined') rerenderAllEvents();
+					else initCalendar();
 					// select the first radio button
 					if ($j('#tutorSelect').length>0) {
 						$j("#tutorSelect option:first").attr('selected','selected');
@@ -715,6 +767,8 @@ function saveClassRoomEvents() {
 				},
 				dataType:	'json'
 			}).done (function(JSONObj){
+				var popupMsg = 'Unknown Error';
+				var popupErr = false;
 				if (JSONObj && JSONObj.status.length>0) {
 					if ('undefined' != typeof JSONObj.newSelectedID) {
 						// must look for the event having id==newSelectedID
@@ -725,11 +779,21 @@ function saveClassRoomEvents() {
 							updateSelectedEvent(selEvent);
 						}
 					}
-					showHideDiv('',JSONObj.msg, JSONObj.status==='OK');
-				} else {
-					showHideDiv('','Unknow error', false);
+					popupMsg = JSONObj.msg;
+					popupErr = JSONObj.status==='OK';
 				}
-			}).always(function() { reloadClassRoomEvents(); setMustSave(false); });
+				
+				/**
+				 * disable save button
+				 */
+				setMustSave(false);
+				/**
+				 * display popup message and reload calendar data
+				 */
+				$j.when(showHideDiv('',popupMsg, popupErr)).then(function() {
+					rerenderAllEvents();
+				});
+			});
 }
 
 function loadCourseInstances() {
@@ -752,7 +816,7 @@ function loadCourseInstances() {
 				 */
 				if (typeof $j('#instancesList option[value="'+oldSelectedInstance+'"]').val() == 'undefined') {
 					// mark the first option as selected
-					$j("#instancesList option:first").attr('selected','selected');					
+					$j("#instancesList option:first").attr('selected','selected');
 				} else {
 					$j('#instancesList option[value="'+oldSelectedInstance+'"]').attr('selected','selected');
 				}
@@ -795,40 +859,38 @@ function reloadClassRoomEvents() {
 	/**
 	 * ajax-load events
 	 */
+	var deferred = $j.Deferred();
+	
 	$j.ajax({
 		type	:	'GET',
 		url		:	'ajax/getCalendarForInstance.php',
 		data	:	data,
-		dataType:	'json',
-		beforeSend: showLoading(),
+		dataType:	'json'
 	}).done (function(JSONObj){
 		/**
-		 * save the selected event
+		 * store the selected event in a var
 		 */
 		var selectedEvent = getSelectedEvent();
 		if (null != selectedEvent) unselectSelectedEvent(false);
 		
-		/**
-		 * remove all events
-		 */
-		calendar.fullCalendar('removeEvents');
+		if (!mustSave) calendar.fullCalendar('removeEvents');
 		
 		if (JSONObj) {
 			/**
 			 * add all loaded events to the calendar
 			 */
 			var selectedIndex = -1;
+			var eventsToDraw = [];
 			for (var i=0; i<JSONObj.length; i++) {
-				if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) selectedIndex = i;
 				if (venueID==null || (venueID!=null && JSONObj[i].venueID==venueID)) {
+					if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) selectedIndex = i;
 					JSONObj[i].title = buildEventTitle(JSONObj[i]);
-					
 					// set as editable only events of the selected course instance
 					JSONObj[i].editable = (JSONObj[i].instanceID==selectedInstanceID);
 					JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
 					
-					calendar.fullCalendar('renderEvent', JSONObj[i], true);
 					calendar.fullCalendar('unselect');
+					eventsToDraw.push(JSONObj[i]);
 				}
 			}
 			
@@ -839,16 +901,20 @@ function reloadClassRoomEvents() {
 			$j('a.noteditableClassroomEvent').on ('click', function(event){
 				event.preventDefault();
 			});
-			hideLoading();
+			
+			/**
+			 * resolve the promise returning the events to be rendered
+			 */
+			deferred.resolve(eventsToDraw);
 			
 		}
-	}).fail(function() {}).always(function() {
-		setMustSave(false);
+	}).fail(deferred.reject).always(function() {
 		if (getSelectedEvent()==null) setCanDelete(false);
 		UIEvents = [];
 		UIDeletedEvents = [];
-		hideLoading();
 	});
+	
+	return deferred.promise();
 }
 
 function millisecondsToHourMin(millis) {
@@ -980,6 +1046,25 @@ function prepareTutorOverlapDialog(event) {
 }
 
 /**
+ * prepares the object needed by checkTutorOverlap
+ * 
+ * @param event
+ */
+function prepareDataForCheckTutorOverlap(event) {
+	var theEventID = null;
+	if ('undefined' != typeof event.eventID) theEventID = event.eventID;
+	else if ('undefind' != typeof event.id) theEventID = event.id;
+	
+	return ({
+			start: event.start.format(),
+			end  : event.end.format(),
+			tutorID: parseInt(event.tutorID),
+			instanceID : getSelectedCourseInstance(),
+			eventID : theEventID
+	});
+}
+
+/**
  * check if the passed events overlaps with some other event of the same tutor
  * in 2 steps:
  * 1. first check on local UIEvents array and if no overlaps are found
@@ -1093,7 +1178,7 @@ function displayReminderDialog(selectedEvent) {
 	});	
 }
 /**
- * prepares the remainder dialog to show the form
+ * prepares the reminder dialog to show the form
  */
 function prepareReminderDialog(id) {
 	var okLbl = $j(id + ' .confirmOKLbl').html();
@@ -1286,7 +1371,12 @@ function moveInsideCalendarHeader (elementID) {
 	var targetElement = '#classcalendar > .fc-toolbar';
 	var customClass = 'fc-custom';
 	
+	var moveElement = false;
+	
 	if ($j(targetElement).length>0 && $j('#'+elementID).length>0) {
+		
+		if ($j('label[for="'+elementID+'"]').length>0) $j('label[for="'+elementID+'"]').show();
+		if ($j('#'+elementID).length>0) $j('#'+elementID).show();
 		
 		/**
 		 * add a customClass div to the calendar toolbar before last children
@@ -1301,16 +1391,25 @@ function moveInsideCalendarHeader (elementID) {
 		 * clone, inspect and remove passed element
 		 */
 		var cloned = $j('#'+elementID).clone(true);
+		var clonedID = elementID+'-cloned';
+		// change cloned id attr
+		$j(cloned).attr('id',clonedID);
 		
 		if ($j('#'+elementID).is('input')) {
+			// change the cloned name attr
+			$j(cloned).attr('name',$j(cloned).attr('name')+'-cloned');
 			// if passed ID is an input and has a label, clone and move the label as well
 			if ($j('label[for="'+elementID+'"]').length>0) {
 				var clonedLabel = $j('label[for="'+elementID+'"]').clone(true);
-				$j('label[for="'+elementID+'"]').remove();
+				// change the cloned label for attr
+				$j(clonedLabel).attr('for',clonedID);
+				 if (moveElement) $j('label[for="'+elementID+'"]').remove();
+				 else $j('label[for="'+elementID+'"]').hide();
 			}
 		}
 				
-		$j('#'+elementID).remove();
+		if (moveElement) $j('#'+elementID).remove();
+		else $j('#'+elementID).hide();
 		
 		targetElement += ' > .' + customClass;
 		$j(targetElement).html(cloned);

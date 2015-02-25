@@ -317,6 +317,9 @@ class calendarsManagement extends abstractClassAgendaManagement
 				// question asked when sending a reminder on a non saved event
 				$confirmReminderNonSavedEvent = CDOMElement::create('span','id:reminderNonSavedEventquestion,class:dialogQuestion');
 				$confirmReminderNonSavedEvent->addChild(new CText(translateFN('È necessario salvare il calendario prima di inviare un promemoria. Lo salvo?')));
+				// question for not saved events (case #cancelCalendar button is clicked)
+				$confirmCancelCalendarSPAN = CDOMElement::create('span','id:cancelCalendarquestion,class:dialogQuestion');
+				$confirmCancelCalendarSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, ricaricare il calendario?')));
 				// this shall become the ok button label inside the dialog
 				$confirmOK = CDOMElement::create('span','class:confirmOKLbl');
 				$confirmOK->setAttribute('style','display:none;');
@@ -333,11 +336,12 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmDIV->addChild($confirmOnlyActiveSPAN);
 				$confirmDIV->addChild($confirmTutorOverlap);
 				$confirmDIV->addChild($confirmReminderNonSavedEvent);
+				$confirmDIV->addChild($confirmCancelCalendarSPAN);
 				$confirmDIV->setAttribute('style','display:none;');
 				
 				/**
 				 * add all generated elements to the container
-				 */				
+				 */
 				if (isset($selectClassDIV)) {
 					$htmlObj->addChild($selectClassDIV);
 				}
