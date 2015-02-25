@@ -88,7 +88,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 		$venueID = intval($venueID);
 	} else $venueID=null; // null means to get all classrooms
 	
-	$result = $GLOBALS['dh']->getClassRoomEventsForCourseInstance($instanceID, $venueID);
+	$start = (isset($_REQUEST['start']) && intval($_REQUEST['start'])>0) ? intval($_REQUEST['start']) :0;
+	$end = (isset($_REQUEST['end']) && intval($_REQUEST['end'])>0) ? intval($_REQUEST['end']) :0;
+	
+	$result = $GLOBALS['dh']->getClassRoomEventsForCourseInstance($instanceID, $venueID, $start, $end);
 	if(!AMA_DB::isError($result)) {
 		// convert return array to data structure needed by calendar component
 		$i=0;

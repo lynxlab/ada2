@@ -25,17 +25,19 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * 
 	 * @param number $course_instance_id
 	 * @param number $venueID
-	 * @param asrray $eventsArray
+	 * @param array $eventsArray
+	 * @param number $start save events with start timestamp >= $start
+	 * @param number $end save events with start timestamp >= $end 
 	 * 
 	 * @return AMA_Error on failure|boolean true on success
 	 * 
 	 * @access public
 	 */
-	public function saveClassroomEvents ($course_instance_id, $venueID, $eventsArray) {
+	public function saveClassroomEvents ($course_instance_id, $venueID, $eventsArray, $start, $end) {
 		/**
 		 * get all the classroom events for the passed instance
 		 */
-		$previousEvents = $this->getClassRoomEventsForCourseInstance ($course_instance_id, $venueID);
+		$previousEvents = $this->getClassRoomEventsForCourseInstance ($course_instance_id, $venueID, $start, $end);
 		if (AMA_DB::isError($previousEvents)) $previousEvents = array();
 		
 		if (!is_null($eventsArray)) {
@@ -67,12 +69,14 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * 
 	 * @param number $course_instance_id
 	 * @param number $venueID
+	 * @param number $start select events with start timestamp >= $start
+	 * @param number $end select events with start timestamp >= $end
 	 * 
 	 * @return array classroom events or empty
 	 * 
 	 * @access public
 	 */
-	public function getClassRoomEventsForCourseInstance($course_instance_id, $venueID) {
+	public function getClassRoomEventsForCourseInstance($course_instance_id, $venueID, $start=0, $end=0) {
 		
 		if (!isset($venueID)) $venueID=null;
 		
@@ -95,6 +99,11 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		
 		$sql .= ' WHERE 1';
 		
+		if ($start>0 && $end>0) {
+			$sql .= ' AND (start>=? AND end<=?)';
+			$params = array ($start, $end);
+		}
+		
 		if (!is_null($course_instance_id)) {
 			if (!is_array($course_instance_id)) $course_instance_id = array($course_instance_id);
 			$sql .= ' AND CAL.`id_istanza_corso` IN('.implode(',',$course_instance_id).')';
@@ -102,7 +111,8 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		
 		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true && !is_null($venueID)) {
 			$sql .= ' AND CROOMS.`id_venue`=?';
-			$params = intval($venueID);
+			if (is_null($params)) $params = array();
+			$params[] = intval($venueID);
 		}
 		
 		
