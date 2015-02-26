@@ -48,6 +48,16 @@ include_once("$root_dir/comunica/include/ChatRoom.inc.php");
  * YOUR CODE HERE
  */
 require_once ROOT_DIR . '/include/Forms/CourseInstanceForm.inc.php';
+if (defined('MODULES_CLASSBUDGET') && MODULES_CLASSBUDGET) {
+	$hasBudget = true;
+	require_once MODULES_CLASSBUDGET_PATH.'/include/form/formModuleBudgetCourseInstance.php';
+	require_once MODULES_CLASSBUDGET_PATH . '/include/management/budgetCourseInstanceManagement.inc.php';
+	require_once MODULES_CLASSBUDGET_PATH . '/include/classbudgetAPI.inc.php';
+	$form = new FormModuleBudgetCourseInstance();
+} else {
+	$hasBudget = false;
+	$form = new CourseInstanceForm();
+}
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
@@ -55,7 +65,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     } else if(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
         $data = new CText(translateFN('Classe non trovata'));
     } else {
-        $form = new CourseInstanceForm();
+        if (!isset($form)) $form = new CourseInstanceForm();
         $form->fillWithPostData();
         if($form->isValid()) {
 
@@ -83,6 +93,28 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             if(AMA_DataHandler::isError($result)) {
                 $data = new CText(translateFN("Si sono verificati degli errori durante l'aggiornamento") . '(1)');
             } else {
+            	
+            	/**
+            	 * save budget details if needed
+            	 */
+            	if ($hasBudget) {
+            		$dataAr['id_istanza_corso'] = $_POST['id_course_instance'];
+            		foreach ($_POST as $key=>$value) {
+            			/**
+            			 * remove $form->prefix from the passed _POST array keys
+            			 * and build array to be used as data for the instance budget
+            			 */
+            			if (strpos($key, $form->prefix)!==false) {
+            				$dataAr[str_ireplace($form->prefix, '', $key)] = $value;
+            			}
+            		}
+            		$budgetObj = new budgetCourseInstanceManagement($dataAr);
+            		$budgetAPI = new classbudgetAPI();
+            		$budget_id = $budgetAPI->saveBudgetCourseInstance($budgetObj);
+            		if (AMA_DB::isError($budget_id) || intval($budget_id)<=0) {
+            			// handle save budget error here if you wish
+            		}
+            	}
 
 
 
@@ -196,8 +228,23 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'open_subscription' => $courseInstanceObj->getOpenSubscription() ? 1 : 0,
         	'duration_hours' => $courseInstanceObj->getDurationHours()
         );
-        $data = new CourseInstanceForm();
-        $data->fillWithArrayData($formData);
+        
+        /**
+         * load budget details if needed
+         */
+        if ($hasBudget) {
+        	$budgetAPI = new classbudgetAPI();
+        	$budgetObj = $budgetAPI->getBudgetCourseInstance($courseInstanceObj->getId());
+        	if ($budgetObj instanceof budgetCourseInstanceManagement) {
+	        	foreach ($budgetObj->toArray() as $key=>$value) {
+	        		$formData[$form->prefix.$key] = $value;
+	        	}
+        	}
+        }
+        
+        if (!isset($form)) $form = new CourseInstanceForm();
+        $form->fillWithArrayData($formData);
+        $data = $form;
     }
 }
     $help = translateFN('Da qui il provider admin può modificare una istanza corso esistente');

@@ -106,3 +106,5 @@ div.fform form input[type=password],
 div.fform form select { width: 45%; border: 1px dotted gray; padding: 5px; }
 div.fform form fieldset fieldset { border: 1px dotted grey; margin-bottom: 10px; }
 div.fform form fieldset fieldset label { margin-left:0; width: 45%; display: inline-block; }
+div.fform form fieldset fieldset #module_classbudget_references,
+div.fform form fieldset fieldset #module_classbudget_notes { width: 95%; }

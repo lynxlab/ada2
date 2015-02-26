@@ -57,6 +57,18 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         $result = $dh->course_instance_remove($courseInstanceId);
                         if(!AMA_DataHandler::isError($result)) {
                            // fare unset di sess_courseInstanceObj se c'è
+                           
+                        	/**
+                        	 * delete budget details if needed
+                        	 */
+                        	if (defined('MODULES_CLASSBUDGET') && MODULES_CLASSBUDGET) {
+                        		require_once MODULES_CLASSBUDGET_PATH . '/include/classbudgetAPI.inc.php';
+                        		$budgetAPI = new classbudgetAPI();
+                        		if (AMA_DB::isError($budgetAPI->deleteBudgetCourseInstance($courseInstanceId))) {
+                        			// handle delete budget error here if you wish
+                        		}
+                        	}
+                        	
                             header('Location: list_instances.php?id_course='.$courseObj->getId());
                             exit();
                         } else {

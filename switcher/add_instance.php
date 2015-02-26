@@ -47,9 +47,19 @@ require_once ROOT_DIR . '/comunica/include/ChatDataHandler.inc.php';
  */
 
 require_once ROOT_DIR . '/include/Forms/CourseInstanceForm.inc.php';
+if (defined('MODULES_CLASSBUDGET') && MODULES_CLASSBUDGET) {
+	$hasBudget = true;
+	require_once MODULES_CLASSBUDGET_PATH.'/include/form/formModuleBudgetCourseInstance.php';
+	require_once MODULES_CLASSBUDGET_PATH . '/include/management/budgetCourseInstanceManagement.inc.php';
+	require_once MODULES_CLASSBUDGET_PATH . '/include/classbudgetAPI.inc.php';
+	$form = new FormModuleBudgetCourseInstance();
+} else {
+	$hasBudget = false;
+	$form = new CourseInstanceForm();
+}
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $form = new CourseInstanceForm();
+    if (!isset($form)) $form = new CourseInstanceForm();
     $form->fillWithPostData();
     if($form->isValid()) {
         $course_instanceAr = array(
@@ -88,6 +98,28 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // add chatroom_ha to the database
             $chatroom = Chatroom::add_chatroomFN($chatroom_ha);
+            
+            /**
+             * save budget details if needed
+             */
+            if ($hasBudget) {
+            	$dataAr['id_istanza_corso'] = $id_istanza_corso;
+            	foreach ($_POST as $key=>$value) {
+            		/**
+            		 * remove $form->prefix from the passed _POST array keys
+            		 * and build array to be used as data for the instance budget
+            		 */
+            		if (strpos($key, $form->prefix)!==false) {
+            			$dataAr[str_ireplace($form->prefix, '', $key)] = $value;
+            		}            		
+            	}
+            	$budgetObj = new budgetCourseInstanceManagement($dataAr);
+            	$budgetAPI = new classbudgetAPI();
+            	$budget_id = $budgetAPI->saveBudgetCourseInstance($budgetObj);
+            	if (AMA_DB::isError($budget_id) || intval($budget_id)<=0) {
+            		// handle save budget error here if you wish
+            	}           	
+            }
 
             header('Location: list_instances.php?id_course='.$_POST['id_course']);
             exit();
@@ -102,7 +134,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         	'duration_hours' => $courseObj->getDurationHours()
         );
         $course_title = $courseObj->getTitle();
-        $form = new CourseInstanceForm();
+        if (!isset($form)) $form = new CourseInstanceForm();
         $form->fillWithArrayData($formData);
     } else {
         $form = new CText(translateFN('Corso non trovato'));
