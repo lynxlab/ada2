@@ -82,6 +82,7 @@ $label = translateFN('Modifica dati utente');
 
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
+		JQUERY_UI,
 		JQUERY_MASKEDINPUT,
 		JQUERY_NO_CONFLICT,
 		ROOT_DIR.'/js/include/jquery/pekeUpload/pekeUpload.js'		
