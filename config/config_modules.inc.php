@@ -86,4 +86,17 @@
 	else {
 		define('MODULES_CLASSAGENDA', false);
 	}
+	
+	//defines for module classbudget
+	define ('MODULES_CLASSBUDGET_PATH', MODULES_DIR.'/classbudget');
+	if (file_exists(MODULES_CLASSBUDGET_PATH.'/index.php'))
+	{
+		require_once(MODULES_CLASSBUDGET_PATH.'/config/config.inc.php');
+	
+		define('MODULES_CLASSBUDGET', true);
+		define('MODULES_CLASSBUDGET_HTTP', HTTP_ROOT_DIR.'/modules/classbudget');
+	}
+	else {
+		define('MODULES_CLASSBUDGET', false);
+	}
 ?>
