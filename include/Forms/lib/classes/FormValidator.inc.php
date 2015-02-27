@@ -99,5 +99,5 @@ class FormValidator
     const DATE_VALIDATOR_REGEXP = '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/';
     const TIME_VALIDATOR_REGEXP = '/^[0-9]{2}\:[0-9]{2}\:[0-9]{2}$/';
     const MULTILINE_TEXT_VALIDATOR_REGEXP = '/^.*$/m'; // /m is equivalent to /s in javascript regex (multiline)
-    const NON_NEGATIVE_MONEY_VALIDATOR_REGEXP = '/0\.00|^[1-9][0-9]*\.[0-9]{2}$/'; // /^[0]|^[1-9][0-9]*\.[0-9]{2}$/';
+    const NON_NEGATIVE_MONEY_VALIDATOR_REGEXP = '/^[0-9]+(\.[0-9]{0,2})?$/'; // /^[0]|^[1-9][0-9]*\.[0-9]{2}$/';
 }
