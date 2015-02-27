@@ -59,7 +59,7 @@ INSERT INTO `amministratore_sistema` (`id_utente_amministratore_sist`) VALUES
 CREATE TABLE IF NOT EXISTS `autore` (
   `id_utente_autore` int(10) unsigned NOT NULL DEFAULT '0',
   `profilo` text COLLATE utf8_unicode_ci,
-  `tariffa` int(10) unsigned NOT NULL DEFAULT '0',
+  `tariffa` decimal(7,2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_utente_autore`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -624,7 +624,7 @@ INSERT INTO `studente` (`id_utente_studente`) VALUES
 CREATE TABLE IF NOT EXISTS `tutor` (
   `id_utente_tutor` int(10) unsigned NOT NULL DEFAULT '0',
   `profilo` text COLLATE utf8_unicode_ci,
-  `tariffa` int(10) unsigned NOT NULL DEFAULT '0',
+  `tariffa` decimal(7,2) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_utente_tutor`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
