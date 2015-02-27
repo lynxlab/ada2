@@ -31,6 +31,26 @@ if (!MULTIPROVIDER)
 	 */
 	define('HTTP_ROOT_DIR','http://sampleprovider.localhost/ada20'); // *js_import*
 	define('PORTAL_NAME','ADA 2.1 SAMPLE PROVIDER');
+	
+	/**
+	 * Currency symbol
+	 */
+	define ('ADA_CURRENCY_SYMBOL' , '&euro;');
+	
+	/**
+	 * How many decimal when formatting as currency
+	*/
+	define ('ADA_CURRENCY_DECIMALS', 2);
+	
+	/**
+	 * Thousands separator when formatting as currency
+	*/
+	define ('ADA_CURRENCY_THOUSANDS_SEP', '.');
+	
+	/**
+	 * Decimal point when formatting as currency
+	*/
+	define ('ADA_CURRENCY_DECIMAL_POINT', ',');
 }
 
 /**

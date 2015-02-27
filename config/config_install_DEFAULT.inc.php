@@ -49,6 +49,26 @@ if (MULTIPROVIDER) {
 	 * How many news to get from the above mentioned course
 	 */
 	define ('NEWS_COUNT', 3);
+	
+	/**
+	 * Currency symbol 
+	 */
+	define ('ADA_CURRENCY_SYMBOL' , '&euro;');
+	
+	/**
+	 * How many decimal when formatting as currency
+	 */
+	define ('ADA_CURRENCY_DECIMALS', 2);
+	
+	/**
+	 * Thousands separator when formatting as currency
+	 */
+	define ('ADA_CURRENCY_THOUSANDS_SEP', '.');
+	
+	/**
+	 * Decimal point when formatting as currency
+	 */
+	define ('ADA_CURRENCY_DECIMAL_POINT', ',');
 }
 
 /**
