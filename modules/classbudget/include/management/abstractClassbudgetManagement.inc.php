@@ -18,6 +18,13 @@
 
 abstract class abstractClassbudgetManagement
 {
+	/**
+	 * array of available export formats
+	 *
+	 * @var array
+	 */
+	public static $exportFormats = array ('pdf','csv');
+	
 	protected $_id_course_instance;
 	protected $_objType;
 	protected $_tableCaption;
@@ -195,6 +202,55 @@ abstract class abstractClassbudgetManagement
 			} // foreach $row
 		} // foreach $res
 		return $retval;
+	}
+	
+	/**
+	 * builds proper array to be exported in CSV format
+	 * 
+	 * @return array
+	 * 
+	 * @access public
+	 */
+	public function buildCostArrayForCSV() {
+		
+		// add a row with tile and all empty cells
+		// and the header row
+		foreach ($this->headerRowLabels as $index=>$headerVal) {
+			if ($index==0)
+				$retArray[0][$index] = $this->_tableCaption;
+			else
+				$retArray[0][$index] = '';
+			
+			$retArray[1][$index] = str_replace(ADA_CURRENCY_SYMBOL, 
+					html_entity_decode(ADA_CURRENCY_SYMBOL,ENT_COMPAT | ENT_HTML401, ADA_CHARSET ), 
+					$headerVal);
+		}
+		
+		// table body
+		$grandTotal = 0;
+		foreach ($this->dataCostsArr as $key=>$value) {
+			$total = ($value['totaltime'] / 3600) * $value['hourly_rate'];
+			$grandTotal += $total; 
+			$retArray[] = array ($value['displayname'],
+					$value['formattime'],
+					number_format($value['hourly_rate'], ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP),
+					number_format($total, ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP)
+			);
+		}
+		
+		$numRecord = count ($retArray);
+		$lastIndex = count ($retArray[0])-1;
+		
+		// add grand total and an empty row
+		foreach ($this->headerRowLabels as $index=>$notused) {
+			if ($index==0) $retArray[$numRecord][$index] = translateFN('Totale');
+			else if ($index==$lastIndex) $retArray[$numRecord][$index] = number_format($grandTotal, ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP);
+			else $retArray[$numRecord][$index] = '';
+						
+			$retArray[$numRecord+1][$index] = '';
+		}
+
+		return $retArray;
 	}
 			
 	/**

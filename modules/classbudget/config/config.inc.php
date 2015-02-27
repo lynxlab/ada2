@@ -11,6 +11,10 @@
  */
 
 define('MODULES_CLASSBUDGET_EDIT',			1); // edit budget action code
+define('MODULES_CLASSBUDGET_CSV_EXPORT',	2); // csv export budget action code
+
+if (!defined('PDF_EXPORT_FOOTER'))
+	define ('PDF_EXPORT_FOOTER','ADA è un software opensource rilasciato sotto licenza GPL © Lynx s.r.l. - Roma');
 
 /**
  * array for class budget components.
