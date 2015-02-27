@@ -18,7 +18,7 @@ class AMAClassbudgetDataHandler extends AMA_DataHandler {
 	 * 
 	 * @var string
 	 */
-	public static $PREFIX = 'module_classbudget_';	
+	public static $PREFIX = 'module_classbudget_';
 
 	/**
 	 * Saves a budget row for the course instance
@@ -44,8 +44,8 @@ class AMAClassbudgetDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function getBudgetCourseInstanceByInstanceID($course_instance_id) {
-		return $this->_getRecord($course_instance_id, 'budget_instance', 'id_istanza_corso');
+	public function getBudgetCourseInstanceByInstanceID($id_course_instance) {
+		return $this->_getRecord($id_course_instance, 'budget_instance', 'id_istanza_corso');
 	}
 	
 	/**
@@ -57,12 +57,138 @@ class AMAClassbudgetDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function deleteBudgetCourseInstanceByInstanceID($course_instance_id) {
+	public function deleteBudgetCourseInstanceByInstanceID($id_course_instance) {
 		$sql = 'DELETE FROM `'.self::$PREFIX.'budget_instance` WHERE `id_istanza_corso`=?';
-		return $this->executeCriticalPrepared($sql,$course_instance_id);
+		return $this->executeCriticalPrepared($sql,$id_course_instance);
 	}
 	
+	/**
+	 * Gets needed data for the Tutor Costs HTML-table
+	 *
+	 * @param number $id_course_instance
+	 *
+	 * @return mixed
+	 *
+	 * @access public
+	 */
+	public function getTutorCostForInstance($id_course_instance) {
+		$sql = 'SELECT SUM((CAL.end-CAL.start)) as `totaltime`, CAL.`id_utente_tutor` AS `id_tutor`, ' .
+				'USER.`nome` as `name`, USER.`cognome` AS `lastname`, TUTORS.`tariffa` AS `default_rate`, ' .
+				'TUTORCOST.`hourly_rate` AS `cost_rate`, TUTORCOST.`cost_tutor_id` '.
+				'FROM `module_classagenda_calendars` AS CAL '.
+				'JOIN `tutor` AS TUTORS ON CAL.`id_utente_tutor` = TUTORS.`id_utente_tutor` '.
+				'LEFT JOIN `module_classbudget_cost_tutor` AS TUTORCOST ON CAL.`id_utente_tutor` = TUTORCOST.`id_tutor` '.
+				'JOIN `utente` AS USER ON USER.`id_utente`= TUTORS.`id_utente_tutor` '.
+				'WHERE CAL.`id_istanza_corso` = ? '.
+				'GROUP BY (CAL.`id_utente_tutor`)';
 	
+		$res = $this->getAllPrepared($sql,$id_course_instance,AMA_FETCH_ASSOC);
+	
+		/**
+		 * if the number of returned rows is less than all rows in
+		 * the module_classbudget_cost_tutor table for the passed
+		 * instance, then delete the non returned rows, they're not needed
+		 * anymore and must be wiped off from the database.
+		*/
+		if (!AMA_DB::isError($res) && is_array($res) && count($res)>0) {
+			$this->_cleanCostTable($id_course_instance, 'tutor', count($res));
+		}
+		return $res;
+	}
+	
+	/**
+	 * Gets needed data for the Classroom Costs HTML-table
+	 * 
+	 * @param number $id_course_instance
+	 * 
+	 * @return mixed
+	 * 
+	 * @access public
+	 */
+	public function getClassroomCostForInstance($id_course_instance) {
+		$sql = 'SELECT SUM((CAL.end-CAL.start)) as `totaltime`, CAL.`id_classroom`, ' .
+		'VENUES.`name` as `venuename`, ROOMS.`name` AS `roomname`, ROOMS.`hourly_rate` AS `default_rate`, ' .
+		'ROOMCOST.`hourly_rate` AS `cost_rate`, ROOMCOST.`cost_classroom_id` '.
+		'FROM `module_classagenda_calendars` AS CAL '.
+		'JOIN `module_classroom_classrooms` AS ROOMS ON CAL.`id_classroom` = ROOMS.`id_classroom` '.
+		'LEFT JOIN `module_classbudget_cost_classroom` AS ROOMCOST ON CAL.`id_classroom` = ROOMCOST.`id_classroom` '.
+		'JOIN `module_classroom_venues` AS VENUES ON VENUES.`id_venue`= ROOMS.`id_venue` '.
+		'WHERE CAL.`id_istanza_corso` = ? '.
+		'GROUP BY (CAL.`id_classroom`)';
+		
+		$res = $this->getAllPrepared($sql,$id_course_instance,AMA_FETCH_ASSOC);
+		
+		/**
+		 * if the number of returned rows is less than all rows in
+		 * the module_classbudget_cost_classroom table for the passed
+		 * instance, then delete the non returned rows, they're not needed
+		 * anymore and must be wiped off from the database.
+		 */
+		if (!AMA_DB::isError($res) && is_array($res) && count($res)>0) {
+			$this->_cleanCostTable($id_course_instance, 'classroom', count($res));
+		}
+		return $res;
+	}
+	
+	public function saveCosts ($data,$type) {
+		if (is_array($data) && count($data)>0) {
+			$savedIDs = array();
+			foreach ($data as $index=>$element) {
+				/**
+				 * prepare the array keys to be saved
+				 */
+				$element['id_'.$type] = $element['id_type'];
+				unset ($element['id_type']);				
+				$element['cost_'.$type.'_id'] = $element['cost_type_id'];
+				unset($element['cost_type_id']);
+				/**
+				 * actually save
+				 */
+				$res = $this->_saveRecord('cost_'.$type, array_keys($element), 'cost_'.$type.'_id', $element);
+				if (AMA_DB::isError($res)) {
+					break;
+				} else $savedIDs[] = $res;
+			}
+			
+			if (AMA_DB::isError($res)) {
+				// delete inserted ids and return an error
+				$sql = 'DELETE FROM `'.self::$PREFIX.'cost_'.$type.'` WHERE `cost_'.$type.'_id` IN ('.
+						implode (',',$savedIDs).')';
+				$this->executeCritical($sql);
+				return $this->generateError(AMA_ERROR, __FUNCTION__, $res);
+			} else return $savedIDs;
+		}		
+		return null;
+	}
+	
+	/**
+	 * cleans up cost table
+	 * 
+	 * @param number $id_course_instance 
+	 * @param string $type which table to clean. Can be 'classroom', 'tutor'
+	 * @param number $recordcount number of records returned by the joined query
+	 * 
+	 * @access private
+	 */
+	private function _cleanCostTable ($id_course_instance, $type, $recordcount) {
+		$sql = 'SELECT COUNT(`cost_'.$type.'_id`) '.
+				'FROM `'.self::$PREFIX.'cost_'.$type.'` WHERE `id_istanza_corso`=?';
+		$numRes = $this->getOnePrepared($sql,$id_course_instance);
+		if (AMA_DB::isError($numRes)) $numtablerows = 0;
+		else $numtablerows = (int) $numRes;
+			
+		if ($numtablerows > $recordcount) {
+			$toDelArray = array();
+			foreach ($res as $aRow) {
+				$toDelArray[] = (int) $aRow['cost_'.$type.'_id'];
+			}
+			if (count($toDelArray)>0) {
+				$sql = 'DELETE FROM `'.self::$PREFIX.'cost_'.$type.'` '.
+						' WHERE `cost_'.$type.'_id` NOT IN ('.implode(',', $toDelArray).')';
+				$this->executeCritical($sql);
+			}
+		}		
+	}
 	/**
 	 * gets records from the DB
 	 *

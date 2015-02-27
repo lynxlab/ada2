@@ -19,7 +19,7 @@ require_once (realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
 /**
  * Clear node and layout variable in $_SESSION
 */
-$variableToClearAR = array('node', 'layout', 'course', 'user');
+$variableToClearAR = array('node', 'layout', 'user');
 /**
  * Users (types) allowed to access this module.
 */
@@ -29,7 +29,7 @@ $allowedUsersAr = array(AMA_TYPE_SWITCHER);
  * Get needed objects
 */
 $neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
+		AMA_TYPE_SWITCHER => array('layout', 'course', 'course_instance')
 );
 
 /**
@@ -49,6 +49,44 @@ $GLOBALS['dh'] = AMAClassbudgetDataHandler::instance(MultiPort::getDSN($_SESSION
 /**
  * TODO: Add your own code here
  */
+ 
+ $help = translateFN('Gestione Budget e Costi per il corso').': '.$courseObj->getTitle().' - '.
+ 	 	 translateFN('Classe').': '.$courseInstanceObj->getTitle();
+ 
+$data = '';
+$somethingFound = false;
+foreach ($classBudgetComponents as $component) {
+	$includeFileName = MODULES_CLASSBUDGET_PATH . '/include/management/'.$component['classname'].'.inc.php';
+	if (is_file($includeFileName) && is_readable($includeFileName)) {
+		require_once $includeFileName;
+		if (class_exists ($component['classname'])) {
+			// $id_course_instance is coming from get
+			$obj = new $component['classname']($courseInstanceObj->getId());
+			$html = $obj->run(MODULES_CLASSBUDGET_EDIT);
+			if (!is_null($html)) $data .= $html->getHtml();
+			$somethingFound = $somethingFound || (count($obj->dataCostsArr)>0);
+		}
+	} 
+}
+
+if (strlen($data)>0 && $somethingFound) {
+	// add buttons
+	$buttonDIV = CDOMElement::create('div','id:buttonswrapper');
+	$saveButton = CDOMElement::create('button','class:budgetsave');
+	$saveButton->setAttribute('onclick', 'javascript:saveBudgets();');
+	$saveButton->addChild(new CText(translateFN('salva')));
+	$cancelButton = CDOMElement::create('button','class:budgetcancel');
+	$cancelButton->setAttribute('onclick', 'javascript:self.document.location.reload();');
+	$cancelButton->addChild(new CText(translateFN('annulla')));
+	$buttonDIV->addChild($saveButton);
+	$buttonDIV->addChild($cancelButton);
+	$data .= $buttonDIV->getHtml();
+} else {
+	$div = CDOMElement::create('div','class:budgeterrorcontainer');
+	$div->addChild(new CText(translateFN('Prima di poter calcolare i costi bisogna creare almeno un evento per la classe')));
+	$data .= $div->getHtml();
+}
+
 
 $content_dataAr = array(
 		'user_name' => $user_name,
@@ -57,6 +95,7 @@ $content_dataAr = array(
 		'agenda' => $user_agenda->getHtml(),
 		'status' => $status,
 		'title' => '',
+		'help' => isset($help) ? $help : '',
 		'data' => isset($data) ? $data : '',
 );
 
@@ -64,6 +103,10 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT
+);
+
+$layout_dataAr['CSS_filename'] = array(
+		JQUERY_UI_CSS
 );
 
 $optionsAr['onload_func'] = 'initDoc();';

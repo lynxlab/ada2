@@ -36,6 +36,6 @@ class FormModuleBudgetCourseInstance extends CourseInstanceForm {
 		$fields[] = FormControl::create(FormControl::TEXTAREA, $this->prefix.'notes', translateFN('note'));
 		$fields[] = FormControl::create(FormControl::INPUT_HIDDEN, $this->prefix.'budget_instance_id');
 		
-		$this->addFieldset(translateFN('Budget Istanza'),$this->prefix.'instance_budget')->withData($fields);		
+		$this->addFieldset(translateFN('Budget Istanza'),$this->prefix.'instance_budget')->withData($fields);
 	}
 } // class ends here
