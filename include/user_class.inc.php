@@ -1450,7 +1450,7 @@ class ADAPractitioner extends ADALoggableUser {
     	if (!is_null($user_dataAr)) {
     		parent::fillWithArrayData($user_dataAr);
     		 
-    		$this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : null;
+    		$this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : 0;
     		$this->profilo = isset($user_dataAr['profilo']) ? $user_dataAr['profilo'] : null;
     	}
     }

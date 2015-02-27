@@ -48,6 +48,7 @@ require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
  * Check if the switcher is editing a student profile
  */
 $isEditingAStudent = (DataValidator::is_uinteger(isset($_GET['usertype']) ? $_GET['usertype'] : null) === AMA_TYPE_STUDENT);
+$isEditingATutor = (DataValidator::is_uinteger(isset($_GET['usertype']) ? $_GET['usertype'] : null) === AMA_TYPE_TUTOR);
 
 if (!$isEditingAStudent) {
 	/**
@@ -60,7 +61,7 @@ if (!$isEditingAStudent) {
 		 * 
 		 * added parameters to force allowEditConfirm
 		 */
-	    $form = new UserProfileForm(array(), false, true);
+	    $form = new UserProfileForm(array(), $isEditingATutor, true);
 	    $form->fillWithPostData();
 	    $password = trim($_POST['password']);
 	    $passwordcheck = trim($_POST['passwordcheck']);
@@ -120,7 +121,7 @@ if (!$isEditingAStudent) {
 	         *
 	         * added parameters to force allowEditConfirm
 	         */
-	        $data = new UserProfileForm(array(), false, true);
+	        $data = new UserProfileForm(array(), $isEditingATutor, true);
 	        $data->fillWithArrayData($formData);
 	    }    
 	}

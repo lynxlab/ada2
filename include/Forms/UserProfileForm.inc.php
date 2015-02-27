@@ -19,7 +19,7 @@ class UserProfileForm extends UserRegistrationForm {
 	 * added extra parameter to constructor to allow editing of student confirmed registration
 	 * 
 	 */
-    public function  __construct($languages=array(),$allowEditProfile=false,$allowEditConfirm=false,$action=null) {
+    public function  __construct($languages=array(),$isEditingATutor=false,$calledFromSwitcher=false,$action=null) {
         parent::__construct();
         $this->addHidden('id_utente')->withData(0);
         
@@ -47,7 +47,7 @@ class UserProfileForm extends UserRegistrationForm {
          * If the swithcer does not use this form to edit her own
          * profile, the avatar upload must be disabled
          */
-        if ($_SESSION['sess_userObj']->getType()!=AMA_TYPE_SWITCHER || !$allowEditConfirm) {
+        if ($_SESSION['sess_userObj']->getType()!=AMA_TYPE_SWITCHER || !$calledFromSwitcher) {
 			$this->addFileInput('avatarfile', translateFN ('Seleziona un file immagine per il tuo avatar'));
         	$this->addTextInput('avatar',NULL);
         }
@@ -89,7 +89,7 @@ class UserProfileForm extends UserRegistrationForm {
          * 
          * added select field to allow editing of user confirmed registration status
          */
-        if ($allowEditConfirm) {
+        if ($calledFromSwitcher) {
         	$this->addSelect(
         			'stato',
         			translateFN('Confermato'), 
@@ -100,8 +100,14 @@ class UserProfileForm extends UserRegistrationForm {
         			0);
         }
              //->setValidator(FormValidator::PASSWORD_VALIDATOR);
-        if ($allowEditProfile) {
+        if ($isEditingATutor && !$calledFromSwitcher) {
             $this->addTextarea('profilo', translateFN('Il tuo profilo utente'));
+            $this->addHidden('tariffa');
+        }
+        
+        if ($isEditingATutor && $calledFromSwitcher) {
+        	$this->addTextInput('tariffa', translateFN('tariffa'))
+        		  ->setValidator(FormValidator::NON_NEGATIVE_MONEY_VALIDATOR);
         }
 
         $layoutsAr = array(

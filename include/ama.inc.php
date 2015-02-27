@@ -10167,7 +10167,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $update_tutor_sql = 'UPDATE tutor SET tariffa=?, profilo=? WHERE id_utente_tutor=?';
         $valuesAr = array(
-                0,//$tutor_ha['tariffa'],
+                $tutor_ha['tariffa'],
                 $tutor_ha['profilo'],
                 $id
         );
