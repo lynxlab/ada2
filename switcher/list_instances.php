@@ -92,11 +92,22 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
              }
 
             $edit_link = BaseHtmlLib::link("edit_instance.php?id_course=$courseId&id_course_instance=$instanceId", $edit_img->getHtml());
+            $actionsArray[] = $edit_link;
           //  $view_link = BaseHtmlLib::link("view_instance.php?id=$instanceId", $view_img->getHtml());
             $delete_link = BaseHtmlLib::link("delete_instance.php?id_course=$courseId&id_course_instance=$instanceId",
                     translateFN('Delete instance')
                     );
-            $actions = BaseHtmlLib::plainListElement('class:inline_menu',array($edit_link/*,$view_link*/, $delete_link));
+            
+            if (defined('MODULES_CLASSBUDGET') && MODULES_CLASSBUDGET) {
+            	$budgetImg = CDOMElement::create('img','alt:'.translateFN('budget').',title:'.translateFN('budget'));
+            	$budgetImg->setAttribute('src', MODULES_CLASSBUDGET_HTTP.'/layout/'.$template_family.'/img/budget_icon.png');
+            	$budget_link = BaseHtmlLib::link(MODULES_CLASSBUDGET_HTTP."/index.php?id_course=$courseId&id_course_instance=$instanceId", $budgetImg->getHtml());
+            	$actionsArray[] = $budget_link;
+            }
+            
+            $actionsArray[] = $delete_link;
+            $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actionsArray);
+            // $actions = BaseHtmlLib::plainListElement('class:inline_menu',array($edit_link/*,$view_link*/, $delete_link));
 
             if($instance[1] > 0) {
                 $start_date = AMA_DataHandler::ts_to_date($instance[1]);
