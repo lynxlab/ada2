@@ -40,6 +40,7 @@ class classroomBudgetManagement extends abstractClassbudgetManagement {
 		if (!AMA_DB::isError($res)) {
 			$this->dataCostsArr = $this->_buildCostArrayFromRes($res);
 			if (count($this->dataCostsArr)>0) $htmlObj = parent::run($action);
+			else $htmlObj = null;
 		} else {
 			$htmlObj = CDOMElement::create('div','id:'.$this->_objType.'BudgetContainer,class:budgeterrorcontainer');
 			$errorSpan = CDOMElement::create('span','class:'.$this->_objType.' budgeterror');
