@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `module_classbudget_budget_instance` (
 -- Indexes for table `module_classbudget_budget_instance`
 --
 ALTER TABLE `module_classbudget_budget_instance`
- ADD PRIMARY KEY (`module_classbudget_budget_instance_id`);
+ ADD PRIMARY KEY (`budget_instance_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -30,7 +30,7 @@ ALTER TABLE `module_classbudget_budget_instance`
 -- AUTO_INCREMENT for table `module_classbudget_budget_instance`
 --
 ALTER TABLE `module_classbudget_budget_instance`
-MODIFY `module_classbudget_budget_instance_id` int(11) unsigned NOT NULL AUTO_INCREMENT;
+MODIFY `budget_instance_id` int(11) unsigned NOT NULL AUTO_INCREMENT;
 
 -- --------------------------------------------------------
 
