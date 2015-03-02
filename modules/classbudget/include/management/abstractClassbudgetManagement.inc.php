@@ -128,9 +128,11 @@ abstract class abstractClassbudgetManagement
 					null,
 					$grandTotal
 			);
-			foreach ($foot as $el) {
+			foreach ($foot as $index=>$el) {
 				$th = CDOMElement::create('th');
-				if (is_numeric($el)) {
+				if ($index==0) {
+					$th->setAttribute('class', 'caption grandtotal');
+				} else if (is_numeric($el)) {
 					$th->setAttribute('class', 'price grandtotal');
 					$th->setAttribute('data-grandtotal', $grandTotal);
 					$el = number_format($grandTotal,ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP);
