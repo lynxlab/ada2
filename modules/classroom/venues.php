@@ -53,7 +53,7 @@ $venuesIndexDIV = CDOMElement::create('div','id:venuesindex');
 
 $newButton = CDOMElement::create('button');
 $newButton->setAttribute('class', 'newButton top');
-$newButton->setAttribute('title', translateFN('Clicca per creare una nuovo luogo'));
+$newButton->setAttribute('title', translateFN('Clicca per creare un nuovo luogo'));
 $newButton->setAttribute('onclick', 'javascript:editVenue(null);');
 $newButton->addChild (new CText(translateFN('Nuovo Luogo')));
 $venuesIndexDIV->addChild($newButton);
