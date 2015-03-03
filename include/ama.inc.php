@@ -4152,7 +4152,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 				FROM `iscrizioni` i
 				JOIN `istanza_corso` ic ON (ic.`id_istanza_corso`=i.`id_istanza_corso`)
 				JOIN `modello_corso` c ON (c.`id_corso`=ic.`id_corso`)
-				WHERE i.`status` IN (".($presubscription?"1":"2,3,4").")";
+				WHERE i.`status` IN (".(implode(',', $status_Ar)).")";
 
 		if (is_array($id_user) AND !empty($id_user)) {
 			$sql.= " AND i.`id_utente_studente` IN (".implode(',',$id_user).")";
