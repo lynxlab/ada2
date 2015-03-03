@@ -62,6 +62,7 @@ class classbudgetAPI {
 	public function getBudgetCourseInstance($course_instance_id) {
 		$dataAr = $this->_dh->getBudgetCourseInstanceByInstanceID($course_instance_id);
 		if (!AMA_DB::isError($dataAr)) {
+			require_once MODULES_CLASSBUDGET_PATH . '/include/management/budgetCourseInstanceManagement.inc.php';
 			return new budgetCourseInstanceManagement($dataAr);
 		} else return $dataAr;
 	}

@@ -1,12 +1,15 @@
 @CHARSET "UTF-8";
 @import url("showHideDiv.css");
+@import url("moduleADAForm.css");
 
 div#buttonswrapper,
+div.buttonContainer,
 table.classbudgettable {
 	width: 90%;
 	margin: 0 auto;
 }
 
+div.buttonContainer,
 div#buttonswrapper {
 	margin-top: 10px;
 	text-align: right;
@@ -53,6 +56,7 @@ table.classbudgettable th {
 	text-align: center;
 }
 
+table.classbudgettable th.caption.grandtotal,
 table.classbudgettable td.displayname {
 	text-align: left;
 	padding-left: 1em;
@@ -61,10 +65,13 @@ table.classbudgettable td.displayname {
 table.classbudgettable input.price,
 table.classbudgettable td.price,
 table.classbudgettable td.total,
-table.classbudgettable th.grandtotal {
+table.classbudgettable th.price.grandtotal {
 	text-align: right;
 	padding-right: 1em;
 }
+
+table.classbudgettable td.actions button.editButton,
+table.classbudgettable td.actions button.deleteButton { height: 1.5em; }
 
 div.budgeterrorcontainer {
     width: 88%;
@@ -88,4 +95,20 @@ div.budgeterrorcontainer {
 .closeSpan:hover {
 	cursor: pointer;
 	color: #aaa;
+}
+
+#budgetresumeContainer h2 {
+	text-align: center;
+}
+
+#budgetresumeContainer  .balancegreen {
+	color: lime;
+}
+
+#budgetresumeContainer  .balancered {
+	color: red;
+}
+
+.ui-autocomplete-loading {
+	background: url("../img/ui-anim_basic_16x16.gif") 99% center no-repeat;
 }

@@ -28,6 +28,7 @@ abstract class abstractClassbudgetManagement
 	protected $_id_course_instance;
 	protected $_objType;
 	protected $_tableCaption;
+	protected $_grandTotal=0;
 
 	public $dataCostsArr;
 	public $headerRowLabels;
@@ -78,12 +79,15 @@ abstract class abstractClassbudgetManagement
 			$table->addChild($thead);
 	
 			$tbody = CDOMElement::create('tbody');
-			$grandTotal = 0;
+			$this->_grandTotal = 0;
 			$countRow = 0;
-			foreach ($this->dataCostsArr as $id_classroom=>$data) {
-				$tr = CDOMElement::create('tr','id:'.$this->_objType.$id_classroom);
+			foreach ($this->dataCostsArr as $id_object=>$data) {
+				$tr = CDOMElement::create('tr','id:'.$this->_objType.$id_object);
 				if (!is_null($data['cost_'.$this->_objType.'_id'])) {
 					$tr->setAttribute('data-cost-'.$this->_objType.'-id', $data['cost_'.$this->_objType.'_id']);
+				}
+				if (isset($data['applied-to-id']) && !is_null($data['applied-to-id'])) {
+					$tr->setAttribute('data-applied-to-id', $data['applied-to-id']);
 				}
 				$tr->setAttribute('class', ($countRow++%2) ? 'evenrow' : 'oddrow');
 	
@@ -92,54 +96,69 @@ abstract class abstractClassbudgetManagement
 				$td->addChild(new CText($data['displayname']));
 				$tr->addChild($td);
 				// time
-				$td = CDOMElement::create('td','class:totaltime');
-				$td->setAttribute('data-totaltime-millis', $data['totaltime']);
-				$td->addChild(new CText($data['formattime']));
+				$td = CDOMElement::create('td','class:totalqty');
+				$td->setAttribute('data-totalqty', $data['totalqty']);
+				$td->addChild(new CText($data['formatqty']));
 				$tr->addChild($td);
 				// hourly rate
 				$td = CDOMElement::create('td','class:price');
 				if ($action==MODULES_CLASSBUDGET_EDIT) {
-					$inputField = CDOMElement::create('text','id:'.$this->_objType.'_hourly_rate['.$id_classroom.']');
+					$inputField = CDOMElement::create('text','id:'.$this->_objType.'_unitprice['.$id_object.']');
 					$inputField->setAttribute('class', 'price');
-					$inputField->setAttribute('name', $this->_objType.'_hourly_rate['.$id_classroom.']');
-					$inputField->setAttribute('value', sprintf('%.02f',$data['hourly_rate']));
+					$inputField->setAttribute('name', $this->_objType.'_unitprice['.$id_object.']');
+					$inputField->setAttribute('value', sprintf('%.02f',$data['unitprice']));
 					$inputField->setAttribute('onchange', 'javascript:updateTotal(this);');
 					$td->addChild($inputField);
 				} else {
-					$td->addChild(new CText(number_format($data['hourly_rate'], ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP)));
+					$td->addChild(new CText(number_format($data['unitprice'], ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP)));
 				}
 				$tr->addChild($td);
 				// totale
 				$td = CDOMElement::create('td','class:price total');
-				$total = ($data['totaltime'] / 3600) * $data['hourly_rate'];
+				$total = $data['totalqty'] * $data['unitprice'];
 				$td->setAttribute('data-total', $total);
-				$grandTotal += $total;
+				$this->_grandTotal += $total;
 				$td->addChild(new CText(number_format($total, ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP)));
 				$tr->addChild($td);
-					
-				$tbody->addChild($tr);
+				
+				if ($action==MODULES_CLASSBUDGET_EDIT && property_exists($this, '_actions') && 
+					is_array($this->_actions) && count($this->_actions)>0) {
+					$td = CDOMElement::create('td','class:actions');
+					$buttonsHtml = '';
+					foreach ($this->_actions as $actionButton) {
+						$buttonsHtml .= $actionButton->getHtml();
+					}
+					$buttonsHtml = str_ireplace('<cost_'.$this->_objType.'_id>', $id_object, $buttonsHtml);
+					$td->addChild(new CText($buttonsHtml));
+					$tr->addChild($td);
+				}
+				
+				$tbody->addChild($tr);				
 			}
 			$table->addChild($tbody);
 			$tfoot = CDOMElement::create('tfoot');
 			$tr = CDOMElement::create('tr');
-			$foot = array (
-					translateFN('Totale'),
-					null,
-					null,
-					$grandTotal
-			);
-			foreach ($foot as $index=>$el) {
-				$th = CDOMElement::create('th');
-				if ($index==0) {
+
+			$totalColumn = count($this->headerRowLabels)-1;
+			if ($action==MODULES_CLASSBUDGET_EDIT && property_exists($this, '_actions') &&
+					is_array($this->_actions) && count($this->_actions)>0) {
+						$totalColumn--;
+			}
+			
+			foreach ($this->headerRowLabels as $index=>$el) {
+				$th = CDOMElement::create('th');				
+				if ($index == 0) {
+					$footerElement = translateFN('Totale');
 					$th->setAttribute('class', 'caption grandtotal');
-				} else if (is_numeric($el)) {
+				} else if ($index == $totalColumn) {
 					$th->setAttribute('class', 'price grandtotal');
-					$th->setAttribute('data-grandtotal', $grandTotal);
-					$el = number_format($grandTotal,ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP);
-				}
-				$th->addChild(new CText($el));
+					$th->setAttribute('data-grandtotal', $this->_grandTotal);
+					$footerElement = number_format($this->_grandTotal,ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP);					
+				} else $footerElement = null;				
+				$th->addChild(new CText($footerElement));
 				$tr->addChild($th);
 			}
+			
 			$tfoot->addChild($tr);
 			$table->addChild($tfoot);
 			$htmlObj->addChild($table);
@@ -148,14 +167,23 @@ abstract class abstractClassbudgetManagement
 	}
 	
 	/**
+	 * grandtotal getter
+	 * 
+	 * @return number
+	 */
+	public function getGrandTotal() {
+		return $this->_grandTotal;
+	}
+	
+	/**
 	 * Builds the cost array from the data returned by the db
 	 * each element of the returned array will have its key
 	 * set to the $this->_objType id for that row and the following fields:
 	 *
-	 * 'totaltime' => total time in milliseconds (int type)
-	 * 'formattime' => total time formatted as a string in hour:minutes format (string type)
+	 * 'totalqty' => total time in milliseconds (int type)
+	 * 'formatqty' => total time formatted as a string in hour:minutes format (string type)
 	 * 'displayname' => string to be displayed (string type)
-	 * 'hourly_rate' => hourly rate for the classroom (float type)
+	 * 'unitprice' => hourly rate for the classroom (float type)
 	 * 'cost_'.$this->_objType.'_id' => unique row id (if present: int type or null)
 	 *
 	 * @param array $res
@@ -178,8 +206,8 @@ abstract class abstractClassbudgetManagement
 					case 'totaltime':
 						$hours = floor($value / 3600);
 						$minutes = floor(($value / 60) % 60);
-						$retval[$id][$field] = (int) $value;
-						$retval[$id]['formattime'] = sprintf("%02d:%02d",$hours,$minutes);
+						$retval[$id]['totalqty'] = (int) $value/3600;
+						$retval[$id]['formatqty'] = sprintf("%02d:%02d",$hours,$minutes);
 						break;
 					case 'venuename':
 						$retval[$id]['displayname'] = $value . ' - '.$row['roomname'];
@@ -193,10 +221,10 @@ abstract class abstractClassbudgetManagement
 						 * use it, else use the default coming from the classroom table
 						 */
 						if (!is_null($row['cost_rate']) && floatval($row['cost_rate'])>0) {
-							$retval[$id]['hourly_rate'] = floatval($row['cost_rate']);
+							$retval[$id]['unitprice'] = floatval($row['cost_rate']);
 						} else if (!is_null($value) && floatval($value)>0) {
-							$retval[$id]['hourly_rate'] = floatval($value);
-						} else $retval[$id]['hourly_rate'] = floatval(0);
+							$retval[$id]['unitprice'] = floatval($value);
+						} else $retval[$id]['unitprice'] = floatval(0);
 						break;
 					default:
 						break;
@@ -229,13 +257,13 @@ abstract class abstractClassbudgetManagement
 		}
 		
 		// table body
-		$grandTotal = 0;
+		$this->_grandTotal = 0;
 		foreach ($this->dataCostsArr as $key=>$value) {
-			$total = ($value['totaltime'] / 3600) * $value['hourly_rate'];
-			$grandTotal += $total; 
+			$total = $value['totalqty'] * $value['unitprice'];
+			$this->_grandTotal += $total; 
 			$retArray[] = array ($value['displayname'],
-					$value['formattime'],
-					number_format($value['hourly_rate'], ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP),
+					$value['formatqty'],
+					number_format($value['unitprice'], ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP),
 					number_format($total, ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP)
 			);
 		}
@@ -246,7 +274,7 @@ abstract class abstractClassbudgetManagement
 		// add grand total and an empty row
 		foreach ($this->headerRowLabels as $index=>$notused) {
 			if ($index==0) $retArray[$numRecord][$index] = translateFN('Totale');
-			else if ($index==$lastIndex) $retArray[$numRecord][$index] = number_format($grandTotal, ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP);
+			else if ($index==$lastIndex) $retArray[$numRecord][$index] = number_format($this->_grandTotal, ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP);
 			else $retArray[$numRecord][$index] = '';
 						
 			$retArray[$numRecord+1][$index] = '';
@@ -271,12 +299,23 @@ abstract class abstractClassbudgetManagement
 	/**
 	 * returns object properties as an array
 	 * 
+	 * @param boolean $withPrivate if true, returns private properties as well
+	 * 
 	 * @return array
 	 * 
 	 * @access public
 	 */
-	public function toArray() {
-		return (array) $this;
+	public function toArray($withPrivate=false) {
+		$filter = ReflectionProperty::IS_PUBLIC;
+		if ($withPrivate===true) $filter = $filter | ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED;			
+		$retArray = array();
+		$refclass = new ReflectionClass( $this );
+		foreach ($refclass->getProperties($filter) as $property) {
+			if (!$property->isStatic()) {
+				$retArray[$property->getName()] = $this->{$property->getName()};
+			}
+		}
+		return empty($retArray) ? null : $retArray;
 	}
 	
 } // class ends here

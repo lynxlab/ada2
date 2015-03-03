@@ -42,15 +42,12 @@ require_once(ROOT_DIR.'/switcher/include/switcher_functions.inc.php');
 require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
 require_once MODULES_CLASSBUDGET_PATH.'/include/AMAClassbudgetDataHandler.inc.php';
 require_once MODULES_CLASSBUDGET_PATH.'/include/management/abstractClassbudgetManagement.inc.php';
+require_once MODULES_CLASSBUDGET_PATH . '/include/classbudgetAPI.inc.php';
 
 $self = 'classbudget';
 
 $GLOBALS['dh'] = AMAClassbudgetDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-/**
- * TODO: Add your own code here
- */
- 
  if (isset($_GET['export']) && in_array($_GET['export'], abstractClassbudgetManagement::$exportFormats)) {
  	$export = $_GET['export'];
  } else $export = false;
@@ -59,6 +56,7 @@ $GLOBALS['dh'] = AMAClassbudgetDataHandler::instance(MultiPort::getDSN($_SESSION
  	 	 translateFN('Classe').': '.$courseInstanceObj->getTitle();
  
 $data = '';
+$totalcost = 0;
 $somethingFound = false;
 if ($export !== false) {
 	if ($export === 'pdf') {
@@ -85,6 +83,7 @@ foreach ($classBudgetComponents as $component) {
 			// $id_course_instance is coming from get
 			$obj = new $component['classname']($courseInstanceObj->getId());
 			$html = $obj->run($action);
+			$totalcost += $obj->getGrandTotal();
 			$somethingFound = $somethingFound || (count($obj->dataCostsArr)>0);
 
 			if ($export===false || $render == ARE_PDF_RENDER) {
@@ -111,6 +110,7 @@ if ($render!=ARE_PDF_RENDER) {
 		$buttonDIV->addChild($saveButton);
 		$buttonDIV->addChild($cancelButton);
 		$data .= $buttonDIV->getHtml();
+		$data .= CDOMElement::create('div','class:clearfix')->getHtml();
 	} else {
 		$div = CDOMElement::create('div','class:budgeterrorcontainer');
 		$div->addChild(new CText(translateFN('Prima di poter calcolare i costi bisogna creare almeno un evento per la classe')));
@@ -118,6 +118,16 @@ if ($render!=ARE_PDF_RENDER) {
 	}
 }
 
+$budgetAPI = new classbudgetAPI();
+$budgetObj = $budgetAPI->getBudgetCourseInstance($courseInstanceObj->getId());
+$budget = (isset($budgetObj->budget)) ? floatval($budgetObj->budget) : 0.00;
+$balance = $budget - $totalcost;
+
+$balanceclass = ($balance>=0) ? 'balancegreen' : 'balancered';
+
+$budgetStr = number_format($budget,ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP);
+$totalcostStr = number_format($totalcost,ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP);
+$balanceStr = number_format($balance,ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP);
 
 $content_dataAr = array(
 		'user_name' => $user_name,
@@ -128,6 +138,14 @@ $content_dataAr = array(
 		'title' => '',
 		'help' => isset($help) ? $help : '',
 		'data' => isset($data) ? $data : '',
+		'currency' => ADA_CURRENCY_SYMBOL,
+		'budgetStr' => $budgetStr,
+		'totalcostStr' => $totalcostStr,
+		'balanceStr' => $balanceStr,
+		'balanceclass' => $balanceclass,
+		'budget' => $budget,
+		'totalcost' => $totalcost,
+		'balance' => $balance
 );
 
 $layout_dataAr['JS_filename'] = array(
@@ -146,8 +164,21 @@ if ($render === ARE_FILE_RENDER && $export==='csv') {
 	// output headers so that the file is downloaded rather than displayed
 	header('Content-Type: text/csv; charset='.strtolower(ADA_CHARSET));
 	header('Content-Disposition: attachment; filename=Budget-'.$courseInstanceObj->getTitle().'.csv');
-	$out = fopen('php://output', 'w');	
+	// build a resume array
+	$resumeArr = array (
+			array (translateFN('Budget'), $budgetStr),
+			array (translateFN('Costo totale'), $totalcostStr),
+			array (translateFN('Differenza'), $balanceStr),
+			array()
+	);
+	// put it as first exported data element
+	array_unshift($exportData, $resumeArr);
+	$out = fopen('php://output', 'w');
 	foreach ($exportData as $section) foreach ($section as $row) fputcsv($out, $row);
 	fclose($out); 
-} else ARE::render($layout_dataAr, $content_dataAr, $render, $optionsAr);
+} else {
+	$menuOptions['id_course'] = $courseObj->getId();
+	$menuOptions['id_course_instance'] = $courseInstanceObj->getId();
+	ARE::render($layout_dataAr, $content_dataAr, $render, $optionsAr, $menuOptions);
+}
 ?>

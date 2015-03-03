@@ -108,6 +108,18 @@ if ( isset($pdf) ) {
                         <div id="help">
                             <template_field class="template_field" name="help">help</template_field>
                         </div>
+                        <div id="budgetresumeContainer">
+                            <h2>
+                            <i18n>Il budget per questa classe &egrave; di</i18n> <template_field class="template_field" name="currency">currency</template_field>
+                            <span id="instance-budget" data-instance-budget='<template_field class="template_field" name="budget">budget</template_field>'><template_field class="template_field" name="budgetStr">budgetStr</template_field></span>
+                            &nbsp;<i18n>le spese ammontano a</i18n>:
+                            &nbsp;<template_field class="template_field" name="currency">currency</template_field>&nbsp;
+                            <span id="instance-cost" data-instance-totalcost='<template_field class="template_field" name="totalcost">totalcost</template_field>'><template_field class="template_field" name="totalcostStr">totalcostStr</template_field></span>
+                            <br/>(<i18n>differenza</i18n>: 
+                            <template_field class="template_field" name="currency">currency</template_field>
+                            <span id="instance-balance" class='<template_field class="template_field" name="balanceclass">balanceclass</template_field>' data-instance-balance='<template_field class="template_field" name="balance">balance</template_field>'><template_field class="template_field" name="balanceStr">balanceStr</template_field></span>)
+                            </h2>
+                        </div>
                         <template_field class="template_field" name="data">data</template_field>
                     </div>
                 </div>

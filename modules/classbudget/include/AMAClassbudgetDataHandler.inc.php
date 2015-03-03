@@ -129,7 +129,31 @@ class AMAClassbudgetDataHandler extends AMA_DataHandler {
 		}
 		return $res;
 	}
+
+	/**
+	 * Gets needed data for the Item Costs HTML-table
+	 *
+	 * @param number $id_course_instance
+	 *
+	 * @return mixed
+	 *
+	 * @access public
+	 */
+	public function getItemCostForInstance($id_course_instance) {		
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'cost_item` WHERE `id_istanza_corso`=?';
+		return $this->getAllPrepared($sql,$id_course_instance,AMA_FETCH_ASSOC);
+	}
 	
+	/**
+	 * saves the costs data for tables named self::PREFIX_cost_*
+	 * 
+	 * @param array $data
+	 * @param string $type type of record to be saved. Can be 'classroom', 'tutor', 'item'
+	 * 
+	 * @return AMA_Error|array of saved ids
+	 * 
+	 * @access public
+	 */
 	public function saveCosts ($data,$type) {
 		if (is_array($data) && count($data)>0) {
 			$savedIDs = array();
@@ -137,14 +161,19 @@ class AMAClassbudgetDataHandler extends AMA_DataHandler {
 				/**
 				 * prepare the array keys to be saved
 				 */
-				$element['id_'.$type] = $element['id_type'];
-				unset ($element['id_type']);				
-				$element['cost_'.$type.'_id'] = $element['cost_type_id'];
-				unset($element['cost_type_id']);
+				if (isset($element['id_type'])) {
+					$element['id_'.$type] = $element['id_type'];
+					unset ($element['id_type']);									
+				}
+				
+				if (isset($element['cost_type_id'])) {
+					$element['cost_'.$type.'_id'] = $element['cost_type_id'];
+					unset($element['cost_type_id']);
+				}
 				/**
 				 * actually save
 				 */
-				$res = $this->_saveRecord('cost_'.$type, array_keys($element), 'cost_'.$type.'_id', $element);
+				$res = $this->_saveRecord('cost_'.$type, array_keys($element), 'cost_'.$type.'_id', $element);			
 				if (AMA_DB::isError($res)) {
 					break;
 				} else $savedIDs[] = $res;
@@ -159,6 +188,68 @@ class AMAClassbudgetDataHandler extends AMA_DataHandler {
 			} else return $savedIDs;
 		}		
 		return null;
+	}
+		
+	/**
+	 * gets a cost item record
+	 * 
+	 * @param number $course_instance_id the instance id to load row for
+	 * 
+	 * @return AMA_Error|number inserted or updated id
+	 * 
+	 * @access public
+	 */
+	public function getCostItem($cost_item_id) {
+		return $this->_getRecord($cost_item_id, 'cost_item', 'cost_item_id');
+	}
+
+	/**
+	 * deletes a cost item record
+	 *
+	 * @param number $course_instance_id the instance id to delete row for
+	 *
+	 * @return AMA_Error|number of affected rows
+	 *
+	 * @access public
+	 */
+	public function deleteCostItem ($cost_item_id) {
+		return $this->executeCriticalPrepared('DELETE FROM `'.self::$PREFIX.'cost_item` WHERE `cost_item_id`=?',$cost_item_id);
+	}
+	
+	/**
+	 * Performs the serach for the autocomplete form fields
+	 *
+	 * @param string $tableName  the table to be searched
+	 * @param string $fieldName  the field to be searched
+	 * @param string $term       the search term
+	 * @param string $primaryKey the table primaryKey to get the ids if needed, defaults to null
+	 *
+	 * @return NULL|array
+	 *
+	 * @access public
+	 */
+	public function doSearchForAutocomplete ($tableName, $fieldName, $term, $primaryKey=null) {
+		$retArray = null;
+	
+		$sql = 'SELECT `'.$fieldName.'` ';
+		if (!is_null($primaryKey) && strlen($primaryKey)>0) {
+			$sql .= ', `'.$primaryKey.'` ';
+		}
+	
+		$sql .= 'FROM `'.self::$PREFIX.$tableName.'` WHERE `'.$fieldName."` LIKE ?";
+	
+		$result = $this->getAllPrepared($sql, array('%'.$term.'%'), AMA_FETCH_ASSOC);
+	
+		if (!AMA_DB::isError($result)) {
+			$count=-1;
+			foreach ($result as $res) {
+				$retArray[++$count]['label'] = $res[$fieldName];
+				if (!is_null($primaryKey) && strlen($primaryKey)>0) {
+					$retArray[$count]['value'] = $res[$primaryKey];
+				}
+			}
+		}
+		return $retArray;
 	}
 	
 	/**
