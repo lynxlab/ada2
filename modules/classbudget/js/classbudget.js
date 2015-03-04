@@ -69,15 +69,16 @@ function updateInstanceTotalCost(delta) {
  */
 function saveBudgets() {
 
-	var budgetsToSave = ['item', 'classroom', 'tutor'];
+	var budgetsToSave = [];
 	var doCallBack = true;
-	var itemsToSave = $j('table.classbudgettable').length;
 	
-	if (budgetsToSave != null && itemsToSave>0) {
-		for (var i=0; i<itemsToSave; i++) {
-			if ($j('table#'+budgetsToSave[i]+'BudgetTable').length>0) {
-				ajaxSaveBudget(budgetsToSave[i], doCallBack && itemsToSave==(i+1));
-			}
+	$j('table.classbudgettable').each(function(){
+		  budgetsToSave.push ($j(this).attr('id').replace('BudgetTable',''));
+		});
+	
+	for (var i=0; i<budgetsToSave.length; i++) {
+		if ($j('table#'+budgetsToSave[i]+'BudgetTable').length>0) {
+			ajaxSaveBudget(budgetsToSave[i], doCallBack && budgetsToSave.length==(i+1));
 		}
 	}
 }
