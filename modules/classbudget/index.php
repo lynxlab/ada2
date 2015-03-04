@@ -171,7 +171,7 @@ $optionsAr['onload_func'] = 'initDoc();';
 if ($render === ARE_FILE_RENDER && $export==='csv') {
 	// output headers so that the file is downloaded rather than displayed
 	header('Content-Type: text/csv; charset='.strtolower(ADA_CHARSET));
-	header('Content-Disposition: attachment; filename=Budget-'.$courseInstanceObj->getTitle().'.csv');
+	header('Content-Disposition: attachment; filename=Budget-'.urlencode($courseInstanceObj->getTitle()).'.csv');
 	// build a resume array
 	$resumeArr = array (
 			array (translateFN('Budget'), $budgetStr),
