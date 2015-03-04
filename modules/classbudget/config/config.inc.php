@@ -19,12 +19,13 @@ if (!defined('PDF_EXPORT_FOOTER'))
 
 /**
  * array for class budget components.
- * NOTE: title are to be translated in the script using the array 
+ * costitem is the basic cost management class
+ * the script using this module is responsible for
+ * checking wich modules are installed and possibily
+ * add the classroom and tutor cost management 
  */
 $classBudgetComponents = array (
-		array ('classname'=>'costitemBudgetManagement'),
-		array ('classname'=>'classroomBudgetManagement'),
-		array ('classname'=>'tutorBudgetManagement')
+		array ('classname'=>'costitemBudgetManagement')
 );
 
 define ('MODULES_CLASSBUDGET_COST_ITEM_UNA_TANTUM',		10); // one-shot cost item

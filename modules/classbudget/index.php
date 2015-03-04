@@ -64,15 +64,23 @@ if ($export !== false) {
 		$render = ARE_PDF_RENDER;
 		$GLOBALS['adafooter'] = translateFN(PDF_EXPORT_FOOTER);
 		$self .= 'PDF';
-	}
-	else if ($export === 'csv') {
+	} else if ($export === 'csv') {
 		$action = MODULES_CLASSBUDGET_CSV_EXPORT; 
 		$render = ARE_FILE_RENDER;
-	}
-	else die (translateFN('Formato non supportato'));
+	} else die (translateFN('Formato non supportato'));
 } else {
 	$action = MODULES_CLASSBUDGET_EDIT;
 	$render = null;
+}
+
+/**
+ * add classroom and tutor cost management as needed
+ */
+if (defined('MODULES_CLASSAGENDA') && MODULES_CLASSAGENDA) {
+	if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM) {
+		$classBudgetComponents[] = array ('classname'=>'classroomBudgetManagement'); 
+	}
+	$classBudgetComponents[] = array ('classname'=>'tutorBudgetManagement');	
 }
 
 foreach ($classBudgetComponents as $component) {
@@ -98,7 +106,7 @@ foreach ($classBudgetComponents as $component) {
 }
 
 if ($render!=ARE_PDF_RENDER) {
-	if (strlen($data)>0 && $somethingFound) {
+	if (strlen($data)>0 || $somethingFound) {
 		// add buttons
 		$buttonDIV = CDOMElement::create('div','id:buttonswrapper');
 		$saveButton = CDOMElement::create('button','class:budgetsave');
@@ -113,7 +121,7 @@ if ($render!=ARE_PDF_RENDER) {
 		$data .= CDOMElement::create('div','class:clearfix')->getHtml();
 	} else {
 		$div = CDOMElement::create('div','class:budgeterrorcontainer');
-		$div->addChild(new CText(translateFN('Prima di poter calcolare i costi bisogna creare almeno un evento per la classe')));
+		$div->addChild(new CText(translateFN('Problemi nella generazione delle voci di costo, controllare l\'installazione del modulo')));
 		$data .= $div->getHtml();
 	}
 }
