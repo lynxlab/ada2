@@ -48,13 +48,6 @@ if ( isset($pdf) ) {
         <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
-            <!-- PERCORSO -->
-            <div id="journey">
-                <i18n>dove sei: </i18n>
-                <span>
-                    <template_field class="template_field" name="title">title</template_field>
-                </span>
-            </div>
             <div id="user_wrap">
             <!--dati utente-->
                 <div id="status_bar">
