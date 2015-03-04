@@ -71,11 +71,12 @@ function saveBudgets() {
 
 	var budgetsToSave = ['item', 'classroom', 'tutor'];
 	var doCallBack = true;
-		
-	if (budgetsToSave != null) {
-		for (var i=0; i<budgetsToSave.length; i++) {
+	var itemsToSave = $j('table.classbudgettable').length;
+	
+	if (budgetsToSave != null && itemsToSave>0) {
+		for (var i=0; i<itemsToSave; i++) {
 			if ($j('table#'+budgetsToSave[i]+'BudgetTable').length>0) {
-				ajaxSaveBudget(budgetsToSave[i], doCallBack && budgetsToSave.length==(i+1));
+				ajaxSaveBudget(budgetsToSave[i], doCallBack && itemsToSave==(i+1));
 			}
 		}
 	}
