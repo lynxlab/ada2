@@ -212,15 +212,15 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	public function findClosestClassroomEvent ($tutor_id) {
 		if (strlen($tutor_id)>0 && is_numeric($tutor_id)) {
 			
-			$sql = 'SELECT *,TIMESTAMPDIFF(SECOND,NOW(),FROM_UNIXTIME(start)) AS startseconds'.
+			$sql = 'SELECT *,TIMESTAMPDIFF(SECOND,NOW(),FROM_UNIXTIME(end)) AS endseconds'.
 					' FROM `'.self::$PREFIX.'calendars` WHERE `id_utente_tutor`=?'.
 					// date is today
 					' AND DATE(FROM_UNIXTIME(start))=CURDATE() AND'.
-					// start time is in the future
-					' (TIMESTAMPDIFF(SECOND,NOW(),FROM_UNIXTIME(start)))>0'.
-					// order by startseconds ASC and get the first
-					// row only to get the event starting before any other
-					' ORDER BY startseconds ASC';
+					// end time is less than now
+					' (TIMESTAMPDIFF(SECOND,NOW(),FROM_UNIXTIME(end)))>=0'.
+					// order by endseconds ASC and get the first
+					// row only to get the event that ends closest to now
+					' ORDER BY endseconds ASC';
 
 			return $this->getRowPrepared($sql,$tutor_id,AMA_FETCH_ASSOC);
 			
