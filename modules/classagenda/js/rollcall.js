@@ -73,7 +73,14 @@ function toggleStudentEnterExit (jQueryObj, id_student, classagenda_calendars_id
 	}).always(function() {
 		jQueryObj.hide();
 		var className = (isEntering) ? '.exitbutton' : '.enterbutton' ; 
-		jQueryObj.parents('div').first().find(className).first().show();
+		var visibleButton = jQueryObj.parents('div').first().find(className).first();
+		visibleButton.button( "option", "disabled", true );
+		visibleButton.show();
+		/**
+		 * enable visible button after 30 seconds to avoid
+		 * enter/exit toggle by accidental double click
+		 */
+		window.setTimeout (function(){ visibleButton.button( "option", "disabled", false ); }, 30*1000);
 	});
 }
 
