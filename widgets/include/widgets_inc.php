@@ -72,20 +72,20 @@ class Widget {
 	 */
 	var $asyncMode;
 	
+	/**
+	 * the widget module name
+	 * 
+	 * @var string
+	 */
+	private $_widgetModule;
+	
 	function __construct($widget) {
 		$this->templateField = $widget ['field'];
 		$this->generatedDIVId = $widget ['id'];
+		$this->_widgetModule = $widget ['module'];
 		$this->isActive = isset ( $widget ['active'] ) ? $widget ['active'] : 1;
 		$this->asyncMode = isset ( $widget ['async'] ) ? $widget ['async'] : ADA_WIDGET_ASYNC_MODE;
 		$this->optionsArr = array ();
-		
-		if (is_file ( ADA_WIDGET_AJAX_ROOTDIR . '/' . $widget ['module'] )) {
-			if ($this->asyncMode == ADA_WIDGET_ASYNC_MODE)
-				$this->ajaxModule = ADA_WIDGET_AJAX_HTTPDIR . '/' . $widget ['module'];
-			else if ($this->asyncMode == ADA_WIDGET_SYNC_MODE)
-				$this->ajaxModule = ADA_WIDGET_AJAX_ROOTDIR . '/' . $widget ['module'];
-		} else
-			$this->ajaxModule = false;
 		
 		if (isset ( $widget ['param'] ) && ! empty ( $widget ['param'] )) {
 			foreach ( $widget ['param'] as $paramElement ) {
@@ -105,7 +105,25 @@ class Widget {
 	 * @param string $value	value of the param to be set
 	 */
 	public function setParam($name, $value) {
-		$this->optionsArr [$name] = $value;
+		if (property_exists($this, $name)) $this->$name = $value;
+		else $this->optionsArr [$name] = $value;
+	}
+	
+	/**
+	 * sets the async mode and put in the ajaModule property the
+	 * proper filename to be executed
+	 * 
+	 * @param number $asyncMode
+	 */
+	private function _setAsyncMode ($asyncMode) {
+		$this->setParam ( "widgetMode", $asyncMode );
+		if (is_file ( ADA_WIDGET_AJAX_ROOTDIR . '/' .$this->_widgetModule )) {
+			if ($this->asyncMode == ADA_WIDGET_ASYNC_MODE)
+				$this->ajaxModule = ADA_WIDGET_AJAX_HTTPDIR . '/' . $this->_widgetModule;
+			else if ($this->asyncMode == ADA_WIDGET_SYNC_MODE)
+				$this->ajaxModule = ADA_WIDGET_AJAX_ROOTDIR . '/' . $this->_widgetModule;
+		} else
+			$this->ajaxModule = false;		
 	}
 	
 	/**
@@ -116,7 +134,7 @@ class Widget {
 	public function getWidget() {
 		if (! $this->isActive) return '';
 		
-		$this->setParam ( "widgetMode", $this->asyncMode );
+		$this->_setAsyncMode( $this->asyncMode );
 		
 		switch ($this->asyncMode) {
 			case ADA_WIDGET_ASYNC_MODE :
