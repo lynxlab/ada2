@@ -4376,7 +4376,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
       WHERE H.id_utente_studente=$id_student
       AND H.id_istanza_corso=$id_course_instance
       AND H.data_visita >= $period
-      ORDER BY H.data_uscita DESC";
+      ORDER BY H.data_uscita DESC, H.data_visita DESC";
         $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
 
         if (AMA_DB::isError($result)) {
@@ -4402,7 +4402,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
       FROM history_nodi AS H LEFT JOIN nodo AS N ON (N.id_nodo=H.id_nodo)
       WHERE H.id_utente_studente=$id_student
       AND H.id_istanza_corso=$id_course_instance
-      ORDER BY H.data_uscita DESC LIMIT $num_visits";
+      ORDER BY H.data_uscita DESC, H.data_visita DESC LIMIT $num_visits";
         $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
 
         if(AMA_DB::isError($result)) {

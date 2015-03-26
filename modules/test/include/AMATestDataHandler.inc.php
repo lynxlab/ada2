@@ -1185,6 +1185,45 @@ class AMATestDataHandler extends AMA_DataHandler {
     }
     
     /**
+     * Deletes all nodes that are NOT surveys and are
+     * associated to the passed courseId
+     *
+     * @param number $courseId course to delete all nodes for
+     *
+     * @return AMA_Error|true on success
+     *
+     * @access public
+     *
+     * @author giorgio 04/mar/2015
+     */
+    public function test_removeCourseNodes($courseId) {
+    	$clause = array('id_nodo_riferimento'=>'LIKE '.$courseId.'\_%');
+    	 
+    	$nodeTypes = array(ADA_TYPE_TEST);
+    	 
+    	$nodesToDel = array();
+    	foreach ($nodeTypes as $nodeType) {
+    		$res = $this->test_getNodes(array_merge($clause,array('tipo'=>'LIKE '.$nodeType.'%')));
+    		if (!AMA_DB::isError($res)) $nodesToDel = array_merge($nodesToDel, $res);
+    		else return $res;
+    	}
+    
+    	if (count($nodesToDel)>0) {
+    		foreach ($nodesToDel as $nodeToDel) {
+    			$res = $this->test_deleteNodeTest($nodeToDel['id_nodo']);
+    			if (AMA_DB::isError($res)) return $res;
+    		}
+    	}
+    	 
+    	if (!AMA_DB::isError($res)) {
+    		$res = $this->queryPrepared('DELETE FROM `'.self::$PREFIX.'course_survey` WHERE `id_corso`=?', $courseId);
+    		if (AMA_DB::isError($res)) return $res;
+    	}
+    	 
+    	return true;
+    }
+    
+    /**
      * @author giorgio 30/ott/2014
      * 
      * methods for accessing and manipulating the history_esercizi table

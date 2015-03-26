@@ -1297,6 +1297,9 @@ EOT;
   	$retArray = array();
   	
   	foreach ( $widgets as $widget ) {
+  		// if widget is not active skip the current iteration
+  		if ((isset($widget['active']) && intval($widget['active'])===0) ||
+  			(isset($widget[$widget['id']]) && intval($widget[$widget['id']['isActive']])===0)) continue;
   		$wobj = new Widget ( $widget );
   		/**
 		 * if there are some params passed in, tell it to the widget
