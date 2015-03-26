@@ -60,6 +60,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             if(AMA_DataHandler::isError($result)) {
                                 $data = new CText(translateFN('Si sono verificati degli errori durante la cancellazione del corso.') . '(1)');
                             } else {
+                            	if (defined('MODULES_TEST') && MODULES_TEST) {
+                            		require_once MODULES_TEST_PATH . '/include/AMATestDataHandler.inc.php';
+                            		$test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                            		if (AMA_DB::isError($test_db->test_removeCourseNodes($courseId))) {
+                            			// handle error here if needed
+                            		}
+                            	}
                                 unset($_SESSION['sess_courseObj']);
                                 unset($_SESSION['sess_id_course']);
                                 header('Location: list_courses.php');

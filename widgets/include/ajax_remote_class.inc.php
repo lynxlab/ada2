@@ -28,7 +28,7 @@ class AjaxRemoteContent {
 	 */
 	private static $placeholder = '[CONTENTPLACEHOLDER]';
 	function __construct(Widget $widgetObj) {
-		$content = "<div id='$widgetObj->generatedDIVId' class='ADAwidget'>" . self::$placeholder . "</div>";
+		$content = "<div id='$widgetObj->generatedDIVId' class='ADAwidget loading'>" . self::$placeholder . "</div>";
 		
 		if ($widgetObj->ajaxModule) {
 			$replacement = translateFN ( 'Loading' ) . '...';
@@ -36,7 +36,9 @@ class AjaxRemoteContent {
 			if (JQUERY_SUPPORT) {
 				$ajax_content = "<script type='text/javascript'>\$j.get('$widgetObj->ajaxModule'";				
 				if (!empty( $widgetObj->optionsArr )) $ajax_content .= ' ,' . json_encode ( $widgetObj->optionsArr );				
-				$ajax_content .= ").done( function(html){ \$j('#$widgetObj->generatedDIVId').html(html);  } );</script>";
+				$ajax_content .= ").done( function(html){ 				
+				\$j('#$widgetObj->generatedDIVId').removeClass('loading');
+				\$j('#$widgetObj->generatedDIVId').html(html);  } );</script>";
 			} else {
 				// prototype 1.6 version
 				$ajax_content = "<script type='text/javascript'>
@@ -44,6 +46,7 @@ class AjaxRemoteContent {
 								method: 'get',";				
 				if (! empty ( $widgetObj->optionsArr )) $ajax_content .= 'parameters: ' . json_encode ( $widgetObj->optionsArr ) . ',';				
 				$ajax_content .= "  onComplete: function(response) {
+						$('" . $widgetObj->generatedDIVId . "').removeClassName('loading');
 						$('" . $widgetObj->generatedDIVId . "').update (response.responseText);
 			  }
 			});

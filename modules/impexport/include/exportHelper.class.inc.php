@@ -478,18 +478,18 @@ class exportHelper
 	{
 		// make filePath leading slash agnostic
 		if ($filePath{0}!=='/') $filePath = '/' . $filePath;
-		$filePath = html_entity_decode ($filePath, ENT_COMPAT | ENT_HTML401 , ADA_CHARSET);
-		$this->_logMessage(__METHOD__.'really adding to media array: '.ROOT_DIR.$filePath);
+		$filePath = html_entity_decode (urldecode($filePath), ENT_COMPAT | ENT_HTML401 , ADA_CHARSET);		
 		if (is_file(ROOT_DIR.$filePath) || is_file ($filePath))
 		{
+			$this->_logMessage(__METHOD__.' really adding to media array: '.ROOT_DIR.$filePath);
 			if (!isset($this->mediaFilesArray[$course_id]))
 				$this->mediaFilesArray[$course_id] = array();
 			if (!in_array($filePath, $this->mediaFilesArray[$course_id]))
 				array_push ($this->mediaFilesArray[$course_id], $filePath);
+		} else {
+			$this->_logMessage(__METHOD__.' NOT ADDED to media array: '.ROOT_DIR.$filePath);
 		}
-		if (isset($this->mediaFilesArray[$course_id])) {
-			$this->_logMessage(__METHOD__.'size of array IS: '.count($this->mediaFilesArray[$course_id]));
-		}
+		$this->_logMessage(__METHOD__.'size of array IS: '.count($this->mediaFilesArray[$course_id]));
 		
 	}
 
