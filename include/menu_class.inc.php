@@ -435,8 +435,8 @@ class Menu
     	}
     	
     	// do not send out without an href
-    	if (strlen($DOMitem->getAttribute('href'))<=0 && strlen($DOMitem->getAttribute('onclick'))<=0) {
-    		$DOMitem->setAttribute('href','#');
+    	if (strlen($DOMitem->getAttribute('href'))<=0) {
+    		$DOMitem->setAttribute('href','javascript:void(0);');
     	}
     	
     	// build common elements

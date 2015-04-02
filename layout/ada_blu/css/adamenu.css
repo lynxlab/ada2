@@ -1,5 +1,5 @@
 @CHARSET "UTF-8";
-.ui.menu.ada { 
+div.ui.menu.ada { 
 	font-family: "Helvetica Neue", "Helvetica", Arial;
 	border-radius:0;
 	border-bottom: 1px solid #009F98;
@@ -22,19 +22,24 @@
 .ui.menu.ada > ul.menu > li.item.searchItem { margin-right: .95em; }
 .ui.menu.ada > ul.menu > li.item.searchItem.active { background: none; }
 .ui.menu.ada > ul.menu > li.item.searchItem > div.search,
-.ui.menu.ada > ul.menu > li.item > a { padding: .83em .95em .83em .95em; display: inline-block; }
-.ui.menu.ada > ul.menu > li.item.dropdown > a { padding-right:0; }
+.ui.menu.ada > ul.menu > li.item > a { padding: .83em .95em .83em .95em; display: inline-block; outline:0; }
+.ui.menu.ada > ul.menu > li.item.dropdown > a { padding-right:0;  outline:0; }
 .ui.menu.ada > ul.menu > li.item.dropdown > .dropdown.icon { padding-right: .95em; }
 
 .ui.menu.ada > ul.menu > li.item.dropdown > ul.menu { margin-top: 1px !important; /* match .ui.menu.ada border-bottom */ }
 .ui.menu.ada > ul.menu > li.item.dropdown > ul.menu > li.item { padding:0 !important; }
-.ui.menu.ada > ul.menu > li.item.dropdown > ul.menu > li.item > a { width: 100%; padding: .85em; display: inline-block; }
+.ui.menu.ada > ul.menu > li.item.dropdown > ul.menu > li.item > a { width: 100%;  display: inline-block; }
+.ui.menu.ada > ul.menu > li.item.dropdown > ul.menu > li.item > a .icon { margin-left: .85em; margin-right:0; }
+.ui.menu.ada > ul.menu > li.item.dropdown > ul.menu > li.item > a .menulabel { padding: .85em; display: inline-block; }
+.ui.menu.ada > ul.menu > li.item.dropdown > ul.menu > li.item.menuseparator > a .menulabel { font-weight: bold; background-color: lightgray; }
 
-.ui.menu.ada  a,
-.ui.menu.ada  a.item,
-.ui.menu.ada .dropdown.item,
-.ui.menu.ada .dropdown.item a.item,
-.ui.mobile.ada.menu  .dropdown {
+div.ui.menu.ada  a .menulabel,
+div.ui.menu.ada  a i.icon,
+div.ui.menu.ada  a,
+div.ui.menu.ada  a.item,
+div.ui.menu.ada .dropdown.item,
+div.ui.menu.ada .dropdown.item a.item,
+div.ui.mobile.ada.menu  .dropdown {
 	text-transform: capitalize;
 	text-decoration: none;
 	cursor: pointer;
@@ -44,6 +49,9 @@
 .ui.menu.ada .dropdown.item a.item:hover {
 	background-color: #F5F5F5;
 }
+
+.ui.menu.ada .dropdown.item li.item.menuseparator:hover,
+.ui.menu.ada .dropdown.item li.item.menuseparator a:hover { background-color: inherit; cursor: default;}
 
 .ui.menu.ada div.ui.search.input,
 .ui.menu.ada i.search.link.icon { background-color: transparent;  }
