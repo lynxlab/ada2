@@ -39,14 +39,19 @@ $courseInstances = array();
 $serviceProviders = $userObj->getTesters();
 
 $courseInstances = array();
+/**
+ * change the two below call to active to let the close 
+ * instances completely disappear from the HTML table
+ */
 if (count($serviceProviders) == 1) {
     $provider_dh = AMA_DataHandler::instance(MultiPort::getDSN($serviceProviders[0]));
-    $courseInstances = $provider_dh->get_course_instances_active_for_this_student($userObj->getId());
-//    $courseInstances = $provider_dh->get_course_instances_for_this_student($userObj->getId());
+//     $courseInstances = $provider_dh->get_course_instances_active_for_this_student($userObj->getId());
+    $courseInstances = $provider_dh->get_course_instances_for_this_student($userObj->getId(), true);
 } else {
     foreach ($serviceProviders as $Provider) {
         $provider_dh = AMA_DataHandler::instance(MultiPort::getDSN($Provider));
-        $courseInstances_provider = $provider_dh->get_course_instances_active_for_this_student($userObj->getId());
+//         $courseInstances_provider = $provider_dh->get_course_instances_active_for_this_student($userObj->getId());
+        $courseInstances_provider = $provider_dh->get_course_instances_for_this_student($userObj->getId(), true);
         $courseInstances = array_merge($courseInstances, $courseInstances_provider);
     }
 }
@@ -111,32 +116,42 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            }
 	             *
 	             */
-	            if ($subscription_status != ADA_STATUS_SUBSCRIBED && $subscription_status != ADA_STATUS_VISITOR && $subscription_status!= ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+	            if (!in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED))) {
 	               $access_link = BaseHtmlLib::link("#", translateFN('Abilitazione in corso...'));
-	            } elseif ($isStarted && !$isEnded) {
+	            } elseif ($isStarted) {
+	            	/**
+	            	 * @author giorgio 03/apr/2015
+	            	 *
+	            	 * if user is subscribed and the subscription date + subscription_duration
+	            	 * falls after 'now', must set the subscription status to terminated
+	            	 */
+	            	if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
+	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione'])) $c['data_iscrizione']=time();
+	            		if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
+	            		$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
+	            		if ($isEnded || time()>=$subscritionEndDate) {
+	            			$userObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
+	            			$subscription_status = ADA_STATUS_TERMINATED;
+	            		}
+	            	}
 	            		            	
 					$access_link = CDOMElement::create('div');
 					$link = CDOMElement::create('a','href:view.php?id_node='.$nodeId.'&id_course='.$courseId.'&id_course_instance='.$courseInstanceId);
-					$link->addChild(new CText(translateFN('Accedi')));
+					if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED) $link->addChild(new CText(translateFN('Rivedi il corso')));
+					else if ($isStarted && !$isEnded) $link->addChild(new CText(translateFN('Accedi')));					
 					$access_link->addChild($link);
 					
 					// @author giorgio 24/apr/2013
 					// adds whats new link if needed
-					if (MultiPort::checkWhatsNew($userObj, $courseInstanceId, $courseId))
-					{				
+					if (!$isEnded && $subscription_status != ADA_STATUS_TERMINATED && MultiPort::checkWhatsNew($userObj, $courseInstanceId, $courseId)) {		
 						$link = CDOMElement::create('a','href:user.php?id_node='.$nodeId.
 																	 '&id_course='.$courseId.
 																	 '&id_course_instance='.$courseInstanceId);
 						$link->setAttribute("class", "whatsnewlink");
 						$link->addChild(new CText(translateFN('Novit&agrave;')));
 						$access_link->addChild($link);												
-					}
-					
+					}					
 	            }
-	            if ($isEnded) {
-	                $access_link = BaseHtmlLib::link("#",
-	                        translateFN('Corso terminato'));
-	            }	            
 	
 	            $tbody_dataAr[] = array(
 	                $c['titolo'],
@@ -168,7 +183,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	
 	        $navigationHistoryObj = $_SESSION['sess_navigation_history'];
 	        if(ADA_USER_AUTOMATIC_ENTER && $navigationHistoryObj->userComesFromLoginPage() && $isStarted && !$isEnded
-	                && ($subscription_status != ADA_STATUS_SUBSCRIBED && $subscription_status != ADA_STATUS_VISITOR)) {
+	                && !in_array($subscription_status,array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_STATUS_TERMINATED))) {
 	            header("Location: view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId");
 	            exit();
 	        }
@@ -190,9 +205,25 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            }
 	             *
 	             */
-	            if ($subscription_status != ADA_STATUS_SUBSCRIBED && $subscription_status != ADA_STATUS_VISITOR && $subscription_status!= ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+	            if (!in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED))) {
 	               $access_link = BaseHtmlLib::link("#", translateFN('Abilitazione in corso...'));
-	            } else if ($isStarted && !$isEnded) {
+	            } else if ($isStarted) {
+	            	/**
+	            	 * @author giorgio 03/apr/2015
+	            	 *
+	            	 * if user is subscribed and the subscription date + subscription_duration
+	            	 * falls after 'now', must set the subscription status to terminated
+	            	 */
+	            	if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
+	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione'])) $c['data_iscrizione']=time();
+	            		if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
+	            		$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
+	            		if ($isEnded || time()>=$subscritionEndDate) {
+	            			$userObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
+	            			$subscription_status = ADA_STATUS_TERMINATED;
+	            		}
+	            	}
+	            	
 	            	/*
 	            	 * @author giorgio 24/apr/2013
 	            	 * 
@@ -202,21 +233,18 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            	 * NOTE: user.php with appropriate parameters is a kind of "whats new" page
 	            	 * 
 	            	 */
-					 if (MultiPort::checkWhatsNew($userObj, $courseInstanceId, $courseId)) {
+					 if (!$isEnded && $subscription_status != ADA_STATUS_TERMINATED && MultiPort::checkWhatsNew($userObj, $courseInstanceId, $courseId)) {
 					 	$displayWhatsNew = true;
 					 }  
 					 else {
 					 	// resume 'normal' behaviour
 					 	$access_link = CDOMElement::create('div');
 					 	$link = CDOMElement::create('a','href:view.php?id_node='.$nodeId.'&id_course='.$courseId.'&id_course_instance='.$courseInstanceId);
-					 	$link->addChild(new CText(translateFN('Accedi')));
+					 	if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED) $link->addChild(new CText(translateFN('Rivedi il corso')));
+						else if ($isStarted && !$isEnded) $link->addChild(new CText(translateFN('Accedi')));
 					 	$access_link->addChild($link);
-					 }          	
+					 }
 	            }
-	            if ($isEnded) {
-	                $access_link = BaseHtmlLib::link("#", translateFN('Corso terminato'));
-	            }
-	
 	
 	            $tbody_dataAr[] = array(
 	                $c['titolo'],
@@ -297,6 +325,7 @@ else {
 	
 	$isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 	$isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
+	$self_instruction = isset($c['self_instruction']) ? $c['self_instruction'] : 0;
 	$subscription_status = $c['status'];	
 	
 	// @author giorgio 24/apr/2013 students link
@@ -383,15 +412,33 @@ else {
 	//	    Graphical disposition:
 	
 	$gostart_link = translateFN('Il corso non è ancora iniziato');
-	if ($subscription_status != ADA_STATUS_SUBSCRIBED && $subscription_status != ADA_STATUS_VISITOR && $subscription_status!= ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+	if (!in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED))) {
 		$gostart = BaseHtmlLib::link("#",
 				translateFN('Abilitazione in corso...'));
 		$gostart_link = $gostart->getHtml();
 		$last_node_visited_link = '';
 	
 	} elseif ($isStarted && !$isEnded) {
+		/**
+		 * @author giorgio 03/apr/2015
+		 *
+		 * if user is subscribed and the subscription date + subscription_duration
+		 * falls after 'now', must set the subscription status to terminated
+		 */
+		if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
+			if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione'])) $c['data_iscrizione']=time();
+			if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
+			$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
+			if ($isEnded || time()>=$subscritionEndDate) {
+				$userObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
+				$subscription_status = ADA_STATUS_TERMINATED;
+			}
+		}
+		
+		if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED) $startLabel = translateFN('Rivedi il corso');
+		else if ($isStarted && !$isEnded) $startLabel = translateFN('Inizia');
 	
-		$gostart = BaseHtmlLib::link("view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId",translateFN('Inizia'));
+		$gostart = BaseHtmlLib::link("view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId",$startLabel);
 		$gostart_link = $gostart->getHtml();
 		$goindex  = BaseHtmlLib::link("main_index.php?id_course=$courseId&id_course_instance=$courseInstanceId",translateFN('Indice'));
 		$goindex_link = $goindex->getHtml();
@@ -401,23 +448,16 @@ else {
 	
 		if ($self_instruction) {
 			if (($subscription_stopUT+AMA_SECONDS_IN_A_DAY) < time()) {
-				$gostart = BaseHtmlLib::link("#",
-						translateFN('Corso terminato...'));
-				$gostart_link = $gostart->getHtml();
+// 				$gostart = BaseHtmlLib::link("#", translateFN('Corso terminato...'));
+// 				$gostart_link = $gostart->getHtml();
 				$last_node_visited_link = '';
 				$goindex_link = '';
 			}
 		}
 	}
 		
-	if ($isEnded) {
-		$gostart_link = translateFN('Il corso è terminato');
-		$last_node_visited_link = '';
-	}
-	
-	 
 	$gochat_link = "";
-        $content_dataAr['edit_profile'] = $userObj->getEditProfilePage();
+   	$content_dataAr['edit_profile'] = $userObj->getEditProfilePage();
 	$content_dataAr['gostart'] = $gostart_link;
 	$content_dataAr['gocontinue'] = $last_node_visited_link;
 	$content_dataAr['goindex'] = $goindex_link;		
@@ -430,13 +470,13 @@ else {
 	$content_dataAr['goforum'] = $goforum_link;
 	$content_dataAr['gochat'] = $gochat_link;
 		
-	$content_dataAr['banner'] = $banner;
+	$content_dataAr['banner'] = isset($banner) ? $banner : null;
 	$content_dataAr['today'] = $ymdhms;
 	$content_dataAr['user_name'] = $user_name;
 	$content_dataAr['user_type'] = $user_type;
 	//$content_dataAr['last_visit'] = $userObj->get_last_accessFN();
-        $content_dataAr['last_visit'] = $last_access;
-	$content_dataAr['message'] = $message;
+    $content_dataAr['last_visit'] = $last_access;
+	$content_dataAr['message'] = isset($message) ? $message : null;
 	$content_dataAr['course_title'] = translateFN("Home dell'utente"). " &gt; ".translateFN("Novità");
 	$content_dataAr['status'] = $status;
 }
