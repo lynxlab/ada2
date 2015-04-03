@@ -475,6 +475,10 @@ class Menu
      * check if a menu item is enabled by looking at the enabledON field:
      * - if it's always enabled, return true
      * - if it's never  enabled, return false
+     * - if the field starts with a dollar sign, checks if a global exists with the given
+     *   index and return its boolval, or return true if it does not. 
+     *   e.g.
+     *   	enabledON = '$com_enabled' checks for $GLOBALS['com_enabled']
      * - else checks if the constant enclosed in the percent signs is defined and true
      * 
      * @param array $item array item to check
@@ -486,7 +490,22 @@ class Menu
     private function _isEnabled($item) {
     	if ($item['enabledON']===self::ALWAYS_ENABLED) return true;
     	else if ($item['enabledON']===self::NEVER_ENABLED) return false;
-    	else {
+    	else if ($item['enabledON']{0}==='$') {
+    		/**
+    		 * 01. remove the dollar sign at first position of string
+    		 */
+    		$globalToCheck = substr($item['enabledON'], 1);
+    		/**
+    		 * 02. check if it's a valid php variable name using the regexp found at:
+    		 * http://php.net/manual/en/language.variables.basics.php
+    		 */
+    		if (preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $globalToCheck)) {
+    			/**
+    			 * 03. check if a global by the $globalToCheck name exists,return its boolval
+    			 */
+    			return (isset($GLOBALS[$globalToCheck]) ? boolval($GLOBALS[$globalToCheck]) : true);
+    		} else return true;
+    	} else {
     		/**
     		 * must put into a var because of a limitation with PHP<5.5
     		 * see Note at http://php.net/manual/en/function.empty.php
