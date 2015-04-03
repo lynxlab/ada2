@@ -140,10 +140,11 @@ else {
             $name = $user->getSubscriberFullname();
            
             /* add tooltip */
-            $UserInstances = array();
-            $UserInstances = $student_subscribed_course_instance[$user->getSubscriberId()];
+            if (isset($student_subscribed_course_instance[$user->getSubscriberId()])) {
+            	$UserInstances = $student_subscribed_course_instance[$user->getSubscriberId()];
+            } else $UserInstances = null;
 
-            if(!empty($UserInstances))
+            if(!is_null($UserInstances) && is_array($UserInstances) && count($UserInstances)>0)
             {
                 $title = 'Studente iscritto ai seguenti corsi :'.'<br />';
 
@@ -192,6 +193,10 @@ else {
             $option_Completed = CDOMElement::create('option');
             $option_Completed->setAttribute('value', ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
             $option_Completed->addChild(new CText(translateFN("Completato")));
+            
+            $option_Terminated = CDOMElement::create('option');
+            $option_Terminated->setAttribute('value', ADA_STATUS_TERMINATED);
+            $option_Terminated->addChild(new CText(translateFN("Terminato")));
 
             switch ($user->getSubscriptionStatus()){
 
@@ -229,6 +234,13 @@ else {
                     $span_selected->addChild(new CText(translateFN("Completato")));
 
                     break;
+                case ADA_STATUS_TERMINATED:
+                	$option_Terminated->setAttribute('selected','selected');
+                	$span_selected = CDOMElement::create('span');
+                	$span_selected->setAttribute('class', 'hidden_status');
+                	$span_selected->addChild(new CText(translateFN("Terminato")));
+                	
+                	break;
             }
 
             $select->addChild($option_Presubscribed);
@@ -236,6 +248,7 @@ else {
             $select->addChild($option_Removed);
             $select->addChild($option_Visitor);
             $select->addChild($option_Completed);
+            $select->addChild($option_Terminated);
 
             $select->setAttribute('onchange', 'saveStatus(this)');
 
