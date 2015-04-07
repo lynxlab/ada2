@@ -206,7 +206,8 @@ else {
 
 
 // history:
-	if ((( $id_profile == AMA_TYPE_STUDENT ) || ($id_profile == AMA_TYPE_VISITOR)
+	if ((( $id_profile == AMA_TYPE_STUDENT && !in_array($user_status, array(ADA_STATUS_COMPLETED, ADA_STATUS_TERMINATED)) ) 
+		|| ($id_profile == AMA_TYPE_VISITOR)
 		|| ($id_profile == AMA_TYPE_TUTOR)
 		)
 		/* && (!empty($sess_id_course_instance)) */
