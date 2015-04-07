@@ -100,6 +100,15 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	
 	            $started = ($c['data_inizio'] > 0 && $c['data_inizio'] < time()) ? translateFN('Si') : translateFN('No');
 	            $start_date = ($c['data_inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
+	            
+	            if (isset($c['data_iscrizione']) && intval($c['data_iscrizione'])>0) $start_date = intval($c['data_iscrizione']);
+	            if (isset($c['duration_subscription']) && intval($c['duration_subscription'])>0) {
+	            	$duration = $c['duration_subscription'];
+	            	$end_date = $common_dh->add_number_of_days($duration, $start_date);
+	            } else {
+	            	$duration = $c['duration_subscription'];
+	            	$end_date = $c['data_fine'];
+	            }
 	
 	            $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 	            $isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
@@ -126,7 +135,9 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            	 * falls after 'now', must set the subscription status to terminated
 	            	 */
 	            	if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
-	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione'])) $c['data_iscrizione']=time();
+	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione'])) {
+	            			$c['data_iscrizione']=time();
+	            		}
 	            		if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 	            		$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
 	            		if ($isEnded || time()>=$subscritionEndDate) {
@@ -137,8 +148,11 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            		            	
 					$access_link = CDOMElement::create('div');
 					$link = CDOMElement::create('a','href:view.php?id_node='.$nodeId.'&id_course='.$courseId.'&id_course_instance='.$courseInstanceId);
-					if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED) $link->addChild(new CText(translateFN('Rivedi il corso')));
-					else if ($isStarted && !$isEnded) $link->addChild(new CText(translateFN('Accedi')));					
+					if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED || $subscription_status == ADA_STATUS_COMPLETED) {
+						$link->addChild(new CText(translateFN('Rivedi il corso')));
+					} else if ($isStarted && !$isEnded) {
+						$link->addChild(new CText(translateFN('Accedi')));
+					}
 					$access_link->addChild($link);
 					
 					// @author giorgio 24/apr/2013
@@ -157,8 +171,8 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	                $c['titolo'],
 	                $started,
 	                ts2dFN($start_date),
-	                sprintf(translateFN('%d giorni'), $c['durata']),
-	                ts2dFN($c['data_fine']),
+	                sprintf(translateFN('%d giorni'), $duration),
+	                ts2dFN($end_date),
 	                $access_link
 	            );
 	        }
@@ -191,6 +205,15 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            $started = ($c['data_inizio'] > 0 && $c['data_inizio'] < time()) ? translateFN('Si') : translateFN('No');
 	            $start_date = ($c['data_inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
 	
+	            if (isset($c['data_iscrizione']) && intval($c['data_iscrizione'])>0) $start_date = intval($c['data_iscrizione']);
+	            if (isset($c['duration_subscription']) && intval($c['duration_subscription'])>0) {
+	            	$duration = $c['duration_subscription'];
+	            	$end_date = $common_dh->add_number_of_days($duration, $start_date);
+	            } else {
+	            	$duration = $c['duration_subscription'];
+	            	$end_date = $c['data_fine'];
+	            }
+	            
 	            $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 	            $isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
 	            $access_link = BaseHtmlLib::link("#", translateFN('Attendi apertura corso'));
@@ -240,8 +263,11 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 					 	// resume 'normal' behaviour
 					 	$access_link = CDOMElement::create('div');
 					 	$link = CDOMElement::create('a','href:view.php?id_node='.$nodeId.'&id_course='.$courseId.'&id_course_instance='.$courseInstanceId);
-					 	if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED) $link->addChild(new CText(translateFN('Rivedi il corso')));
-						else if ($isStarted && !$isEnded) $link->addChild(new CText(translateFN('Accedi')));
+					 	if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED || $subscription_status == ADA_STATUS_COMPLETED) {
+					 		$link->addChild(new CText(translateFN('Rivedi il corso')));
+					 	} else if ($isStarted && !$isEnded) {
+					 		$link->addChild(new CText(translateFN('Accedi')));
+					 	}
 					 	$access_link->addChild($link);
 					 }
 	            }
@@ -250,8 +276,8 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	                $c['titolo'],
 	                $started,
 	                ts2dFN($start_date),
-	                sprintf(translateFN('%d giorni'), $c['durata']),
-	                ts2dFN($c['data_fine']),
+	                sprintf(translateFN('%d giorni'), $duration),
+	                ts2dFN($end_date),
 	                $access_link
 	            );
 	            $data = BaseHtmlLib::tableElement('', $thead_dataAr, $tbody_dataAr);
@@ -435,8 +461,11 @@ else {
 			}
 		}
 		
-		if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED) $startLabel = translateFN('Rivedi il corso');
-		else if ($isStarted && !$isEnded) $startLabel = translateFN('Inizia');
+		if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED || $subscription_status == ADA_STATUS_COMPLETED) {
+			$startLabel = translateFN('Rivedi il corso');
+		} else if ($isStarted && !$isEnded) {
+			$startLabel = translateFN('Inizia');
+		}
 	
 		$gostart = BaseHtmlLib::link("view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId",$startLabel);
 		$gostart_link = $gostart->getHtml();
