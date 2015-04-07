@@ -37,10 +37,8 @@ require_once 'include/browsing_functions.inc.php';
 
 $courseInstances = array();
 $serviceProviders = $userObj->getTesters();
-
-$courseInstances = array();
 /**
- * change the two below call to active to let the close 
+ * change the two below call to active to let the closed
  * instances completely disappear from the HTML table
  */
 if (count($serviceProviders) == 1) {

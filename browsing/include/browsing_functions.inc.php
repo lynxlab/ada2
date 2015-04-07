@@ -279,7 +279,7 @@ $com_enabled = true;  // links to comunicate among users  enabled
 
 if ($user_status == ADA_STATUS_VISITOR || $user_status == ADA_STATUS_TERMINATED || $user_status == ADA_STATUS_COMPLETED) {
   $reg_enabled = false; // links to bookmarks disabled
-  $log_enabled = false; // links to history disabled
+  $log_enabled = ($user_status != ADA_STATUS_VISITOR); // links to history disabled
   $mod_enabled = false; // links to modify nodes  disabled
   $com_enabled = false;  // links to comunicate among users  disabled
 }
