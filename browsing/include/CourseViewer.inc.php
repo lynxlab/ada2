@@ -384,10 +384,10 @@ class CourseViewer
     $dh = $GLOBALS['dh'];
     $node_info = $dh->get_node_info($id_toc);
     if(!AMA_DataHandler::isError($node_info)) {
-      $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona'=> $node_info['icon']/*'group.png'*/);
+      $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona'=> $node_info['icon']/*'group.png'*/, 'livello'=>$node_info['level']);
     }
     else {
-      $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona'=> 'group.png');
+      $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona'=> 'group.png', 'livello'=>0);
     }
 
     if (($r = self::$callback(array('node'=>$principale, 'show_hide_span' => FALSE), $callback_params)) != NULL) {
@@ -427,10 +427,10 @@ class CourseViewer
     $dh = $GLOBALS['dh'];
     $node_info = $dh->get_node_info($id_toc);
     if(!AMA_DataHandler::isError($node_info)) {
-      $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona'=> $node_info['icon']/*'group.png'*/,'root'=>true);
+      $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona'=> $node_info['icon']/*'group.png'*/,'root'=>true, 'livello'=>$node_info['level']);
     }
     else {
-      $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona'=> 'group.png','root'=>true);
+      $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => translateFN('Principale'), 'tipo' => ADA_GROUP_TYPE, 'icona'=> 'group.png','root'=>true, 'livello'=>0);
     }
       // vito 13 gennaio 2009
     if (isset($lda[$id_toc]) && count($lda[$id_toc]) > 0 ) {
