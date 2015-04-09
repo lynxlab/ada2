@@ -503,7 +503,7 @@ class Menu
     			/**
     			 * 03. check if a global by the $globalToCheck name exists,return its boolval
     			 */
-    			return (isset($GLOBALS[$globalToCheck]) ? boolval($GLOBALS[$globalToCheck]) : true);
+    			return (isset($GLOBALS[$globalToCheck]) ? (bool)($GLOBALS[$globalToCheck]) : true);
     		} else return true;
     	} else {
     		/**
