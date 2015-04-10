@@ -1798,8 +1798,8 @@ class Student_class {
             $av_exercises = ($tot_exercises_score / $tot_students) ." ".translateFN("su")." ".floor($tot_exercises_number*ADA_MAX_SCORE/$tot_students) ;
 
 			if (MODULES_TEST) {
-				$av_exercises_test = ($tot_exercises_score_test / $tot_students).' '.translateFN('su').' '.floor($tot_exercises_number_test/$tot_students) ;
-				$av_exercises_survey = ($tot_exercises_score_survey / $tot_students).' '.translateFN('su').' '.floor($tot_exercises_number_survey/$tot_students) ;
+				$av_exercises_test = round($tot_exercises_score_test / $tot_students,2).' '.translateFN('su').' '.floor($tot_exercises_number_test/$tot_students) ;
+				$av_exercises_survey = round($tot_exercises_score_survey / $tot_students,2).' '.translateFN('su').' '.floor($tot_exercises_number_survey/$tot_students) ;
 			}
             $av_added_notes = ($tot_added_notes / $tot_students);
             $av_read_notes = ($tot_read_notes / $tot_students);
