@@ -7,6 +7,7 @@ function get_courses_tutorFN($id_user) {
 
     $all_instance = array();
     $sub_course_dataHa = array();
+    $dati_corso = array();
     $today_date = $dh->date_to_ts("now");
     $all_instance = $dh->course_tutor_instance_get($id_user); // Get the instance courses monitorated by the tutor
 
