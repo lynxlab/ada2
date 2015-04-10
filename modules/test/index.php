@@ -55,6 +55,39 @@ $self = whoami();
 
 $test = NodeTest::readTest($_GET['id_test']);
 if (!AMATestDataHandler::isError($test)) {
+	/**
+	 * If user has completed or has a terminated status for the instance,
+	 * redirect to $test->id_nodo_riferimento or its parent depending on 
+	 * ADA_REDIRECT_TO_TEST being true or false
+	 */
+	if ($userObj->getType()==AMA_TYPE_STUDENT && isset($sess_id_course_instance) && intval($sess_id_course_instance)>0 &&
+			in_array($userObj->get_student_status($userObj->getId(),$sess_id_course_instance), 
+					 array(ADA_STATUS_COMPLETED, ADA_STATUS_TERMINATED)) ) {
+				/**
+				 * @author giorgio 07/apr/2015
+				 *
+				 * if user has the terminated status for the course instance, redirect to view
+				 */
+				$id_node = $sess_id_course.'_0'; // if nothing better is found, redirect to course root node
+				if (!ADA_REDIRECT_TO_TEST) {
+					/**
+					 * if !ADA_REDIRECT_TO_TEST, redirecting to $test->id_nodo_riferimento
+					 * shall not cause a redirection loop 
+					 */
+					$id_node = $test->id_nodo_riferimento;
+				} else {
+					/**
+					 * else redirect to the parent of $test->id_nodo_riferimento
+					 */
+					$nodeInfo = $GLOBALS['dh']->get_node_info($test->id_nodo_riferimento);
+					if (!AMA_DB::isError($nodeInfo) && isset($nodeInfo['parent_id']) && strlen($nodeInfo['parent_id'])>0) {
+						$id_node = $nodeInfo['parent_id'];
+					}
+				}
+				redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node='.$id_node.'&id_course='.$sess_id_course.
+						'&id_course_instance='.$sess_id_course_instance);
+	}
+	
 	$test->run();
 	$text = $test->render(true);
 	$title = $test->titolo;

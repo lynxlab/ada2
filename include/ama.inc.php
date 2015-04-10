@@ -4136,13 +4136,13 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
         if ($both) {
-			$status_Ar = array(ADA_STATUS_PRESUBSCRIBED,ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR);
+			$status_Ar = array(ADA_STATUS_PRESUBSCRIBED,ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR, ADA_STATUS_TERMINATED);
 		}
 		else if ($presubscription) {
 			$status_Ar = array(ADA_STATUS_PRESUBSCRIBED);
 		}
 		else {
-			$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR);
+			$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR, ADA_STATUS_TERMINATED);
 		}
 
         $sql = "SELECT
@@ -4189,7 +4189,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-	$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
+	$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
 
         $sql = 'SELECT U.*, I.status,I.data_iscrizione';
         
@@ -4414,10 +4414,11 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $sql = 'SELECT count(id_utente_studente) FROM iscrizioni WHERE id_istanza_corso=? AND status=?';
+        $sql = 'SELECT count(id_utente_studente) FROM iscrizioni WHERE id_istanza_corso=? AND (status=? OR status=?)';
         $values = array(
           $id_istanza_corso,
-          ADA_STATUS_SUBSCRIBED
+          ADA_STATUS_SUBSCRIBED,
+          ADA_STATUS_TERMINATED
         );
 
         $result = $this->getOnePrepared($sql, $values);
@@ -4562,7 +4563,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $sql = 'SELECT count(id_utente_studente) FROM iscrizioni'
              . " WHERE id_istanza_corso=$id_istanza_corso"
-             . ' AND status = ' . ADA_STATUS_SUBSCRIBED;
+             . ' AND status IN (' . ADA_STATUS_SUBSCRIBED.','.ADA_STATUS_TERMINATED.')';
 
         $res = $db->getOne($sql);
         if (AMA_DB::isError($res)) {
@@ -4644,7 +4645,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if ($status=="") {
             $clause = "";  // 1 OR 2
         } elseif ($status == ADA_STATUS_SUBSCRIBED) { 
-            $clause = 'and (status = '. ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED . ' OR status = '. ADA_STATUS_SUBSCRIBED .')';
+            $clause = 'and (status IN ('.ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED.','.
+            		   ADA_STATUS_SUBSCRIBED.','.ADA_STATUS_TERMINATED.'))'; 
         } else {
             $clause = "and status = $status";
         }
@@ -4902,7 +4904,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql = 'SELECT C.id_corso, C.titolo, C.crediti, IC.id_istanza_corso,'
              . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status';
         if ($extra_fields) {
-            $sql .= ' ,IC.title,I.data_iscrizione';
+            $sql .= ' ,IC.title,I.data_iscrizione,IC.duration_subscription';
         }
         $sql .=' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
              . ' WHERE I.id_utente_studente=?'
@@ -4922,7 +4924,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     public function get_course_instances_active_for_this_student($id_student) {
         $currentTime = time();
         $sql = 'SELECT C.id_corso, C.titolo, IC.id_istanza_corso, IC.self_instruction,'
-             . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status, C.crediti'
+             . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status, C.crediti,'
+             . ' I.data_iscrizione, IC.duration_subscription'
              . ' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
              . ' WHERE I.id_utente_studente=?'
              . ' AND IC.id_istanza_corso = I.id_istanza_corso'
@@ -5491,9 +5494,48 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $res = $db->query($sql);
         if (AMA_DB::isError($res)) {
             return new AMA_Error(AMA_ERR_UPDATE);
+        } else {
+        	if (intval($data_inizio)>0) {
+        		$this->_update_students_subscription_after_course_instance_set($id, intval($duration_subscription));
+        	}
         }
 
         return true;
+    }
+    
+    /**
+     * update students subscription status in the passed instance to
+     * either SUBSCRIBED or TERMINATED as appropriate, checking if
+     * $duration_subscription + student subscription date is in the past or not
+     * 
+     * @param number $instance_id
+     * @param number $duration_subscription
+     * 
+     * @author giorgio 02/apr/2015
+     */
+    private function _update_students_subscription_after_course_instance_set ($instance_id, $duration_subscription) {
+    	require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
+    	$subscriptions = Subscription::findSubscriptionsToClassRoom($instance_id);
+    	if (!AMA_DB::isError($subscriptions) && is_array($subscriptions) && count($subscriptions)>0) {
+    		foreach ($subscriptions as $subscription) {
+    			$updateSubscription = false;
+    			$subscritionEndDate = $this->add_number_of_days($duration_subscription, intval($subscription->getSubscriptionDate()));
+    			if ($subscription->getSubscriptionStatus() == ADA_STATUS_SUBSCRIBED &&
+    				$subscritionEndDate<=time()) {
+    					$subscription->setSubscriptionStatus(ADA_STATUS_TERMINATED);
+    					$updateSubscription = true;
+    			} else if ($subscription->getSubscriptionStatus() == ADA_STATUS_TERMINATED &&
+    				$subscritionEndDate>time()) {
+    					$subscription->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
+    					$updateSubscription = true;
+    			}
+    			
+    			if ($updateSubscription) {
+    				$subscription->setStartStudentLevel(null); // null means no level update
+    				subscription::updateSubscription($subscription);
+    			}
+    		}
+    	}
     }
 
     /**
@@ -11349,7 +11391,7 @@ public function get_updates_nodes($userObj, $pointer)
                     $sql[$key]="SELECT COUNT(`id_utente`) `tipo` FROM `utente` WHERE `tipo` = ". AMA_TYPE_STUDENT;
                     break;
                 case 'user_subscribed':
-                    $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`))  FROM `iscrizioni` WHERE `status` = ". ADA_STATUS_SUBSCRIBED;
+                    $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`))  FROM `iscrizioni` WHERE `status` IN (". ADA_STATUS_SUBSCRIBED.",".ADA_STATUS_TERMINATED.")";
                     break;
                 case 'course':
                     $sql[$key]="SELECT COUNT(`id_corso`) FROM `modello_corso`"; 
@@ -11366,7 +11408,7 @@ public function get_updates_nodes($userObj, $pointer)
                     $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` >". time(); 
                     break;
                 case'student_subscribedStatus_sessStarted':
-                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_STATUS_SUBSCRIBED." AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
+                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status` IN (".ADA_STATUS_SUBSCRIBED.",".ADA_STATUS_TERMINATED.") AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
                     break;
                 case 'student_CompletedStatus_sessStarted':
                     $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
@@ -11375,13 +11417,13 @@ public function get_updates_nodes($userObj, $pointer)
                     $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_fine` <= " . time();  
                     break; 
                 case'student_subscribedStatus_sessEnd':
-                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_STATUS_SUBSCRIBED." AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
+                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status` IN(".ADA_STATUS_SUBSCRIBED.",".ADA_STATUS_TERMINATED.") AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
                     break;
                 case 'student_CompletedStatus_sessionEnd':
                     $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
                     break;
                 case 'tot_student_subscribedStatus':
-                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`=".ADA_STATUS_SUBSCRIBED.' AND ic.`data_inizio` > 0' ;
+                    $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status` IN (".ADA_STATUS_SUBSCRIBED.','.ADA_STATUS_TERMINATED.') AND ic.`data_inizio` > 0' ;
                     break;
                 case 'tot_student_CompletedStatus': 
                     $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`=".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED.' AND ic.`data_inizio` > 0' ;

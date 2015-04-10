@@ -407,5 +407,41 @@ class ADAUser extends ADAAbstractUser
 		}
 		else return parent::getDefaultTester();
 	}
+	
+	/**
+	 * Sets the terminated status for the passed courseId and courseInstanceId
+	 * It is usually called from user.php when the user has a subscried status
+	 * and the subscription_date + duration_subscription is in the past.
+	 *
+	 * @param number $courseId
+	 * @param number $courseInstanceId
+	 *
+	 * @return AMA_Error on error or true on success
+	 *
+	 * @access public
+	 *
+	 * @author giorgio 03/apr/2015
+	 */
+	public function setTerminatedStatusForInstance ($courseId, $courseInstanceId) {
+		$common_dh = $GLOBALS['common_dh'];
+		require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
+		$s = new Subscription($this->getId(), $courseInstanceId);
+		$s->setSubscriptionStatus(ADA_STATUS_TERMINATED);
+		$s->setStartStudentLevel(null); // null means no level update
+		// search the provider of the current iteration course
+		$courseProv = $common_dh->get_tester_info_from_id_course($courseId);
+		if (!AMA_DB::isError($courseProv) && is_array($courseProv) && isset($courseProv['puntatore'])) {
+			// save the datahandler
+			$savedDH = $GLOBALS['dh'];
+			// set the datahandler to be used
+			$GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($courseProv['puntatore']));
+			// update the subscription
+			$retval = Subscription::updateSubscription($s);
+			// restore the datahandler
+			$GLOBALS['dh'] = $savedDH;
+			$GLOBALS['dh']->disconnect();
+		}
+		return (isset($retval) ? $retval : null);
+	}
 }
 ?>
