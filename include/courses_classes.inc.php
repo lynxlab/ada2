@@ -1611,7 +1611,7 @@ class Student_class {
                         }
                         $read_notes_count= $studentObj->total_visited_notesFN($id_student,$id_course);
                         if ($read_notes_count>0) {
-                            $read_nodes_count_norm = str_pad($read_nodes_count,5, "0", STR_PAD_LEFT);
+                            $read_nodes_count_norm = str_pad($read_notes_count,5, "0", STR_PAD_LEFT);
                             $read_notes = "<!-- $read_nodes_count_norm -->$read_notes_count";
                         } else {
                             $read_notes = "<!-- 0 -->-";
