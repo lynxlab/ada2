@@ -9971,7 +9971,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         // return the tutor id
-        return $id;
+        return $tutor_ha['id_utente'];
     }
 
     /**
@@ -10022,7 +10022,27 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @see find_tutors_list
      */
     public function &get_tutors_list($field_list_ar) {
-        return $this->find_tutors_list($field_list_ar);
+        return $this->find_tutors_list($field_list_ar,'',false);
+    }
+    
+    /**
+     * Get a list of super tutor' fields from the DB
+     *
+     * @access public
+     *
+     * @param $field_list_ar an array containing the desired fields' names
+     *        possible values are: nome, cognome, e-mail, username, password, telefono, profilo, tariffa
+     *
+     * @return a nested array containing the list, or an AMA_Error object or a DB_Error object if something goes wrong
+     * The form of the nested array is:
+     *     array(array(ID1, 'field_1_1', 'field_1_2'),
+     *           array(ID2, 'field_2_1', 'field_2_2'),
+     *           array(ID3, 'field_3_1', 'field_3_2'))
+     *
+     * @see find_tutors_list
+     */
+    public function &get_supertutors_list($field_list_ar) {
+    	return $this->find_tutors_list($field_list_ar,'',true);
     }
 
     /**
@@ -10054,7 +10074,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *           array(ID2, 'field_2_1', 'field_2_2'),
      *           array(ID3, 'field_3_1', 'field_3_2'))
      */
-    public function &find_tutors_list($field_list_ar, $clause='') {
+    public function &find_tutors_list($field_list_ar, $clause='', $supertutors=false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
@@ -10068,7 +10088,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         // do the query
-        $sql_query="select id_utente$more_fields from utente, tutor where  tipo=".AMA_TYPE_TUTOR ." and id_utente=id_utente_tutor$clause";
+        $sql_query="select id_utente$more_fields from utente, tutor where  tipo=".
+        ($supertutors ? AMA_TYPE_SUPERTUTOR : AMA_TYPE_TUTOR) ." and id_utente=id_utente_tutor$clause";
         $tutors_ar =  $db->getAll($sql_query);
         if (AMA_DB::isError($tutors_ar)) {
             return new AMA_Error(AMA_ERR_GET);
