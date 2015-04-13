@@ -329,8 +329,9 @@ class AdminModuleHtmlLib
 
     $user_typeAr = array(
       'none'                => translateFN("--Seleziona il tipo di utente--"),
-      AMA_TYPE_STUDENT         => translateFN('Utente'),
-      AMA_TYPE_TUTOR => translateFN('Tutor'),
+      AMA_TYPE_STUDENT      => translateFN('Utente'),
+      AMA_TYPE_TUTOR        => translateFN('Tutor'),
+      AMA_TYPE_SUPERTUTOR   => translateFN('Super Tutor'),
       AMA_TYPE_SWITCHER     => translateFN('Switcher'),
       AMA_TYPE_AUTHOR       => translateFN('Autore'),
       AMA_TYPE_ADMIN        => translateFN('Amministratore')
