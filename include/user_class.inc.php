@@ -107,7 +107,7 @@ abstract class ADAGenericUser {
             case AMA_TYPE_AUTHOR:
                 return translateFN('Autore');
             case AMA_TYPE_TUTOR:
-                return translateFN('Tutor');
+                return ($this->isSuper) ? translateFN('Super Tutor') : translateFN('Tutor');
             case AMA_TYPE_STUDENT:
                 return translateFN('Studente');
             default:
@@ -428,6 +428,7 @@ abstract class ADAGenericUser {
         );
 
 
+        if ($this instanceof ADAPractitioner && $this->isSuper) $user_dataAr['tipo'] = AMA_TYPE_SUPERTUTOR;
 
         return $user_dataAr;
     }
@@ -454,14 +455,12 @@ abstract class ADAGenericUser {
                 break;
 
             case AMA_TYPE_TUTOR:
-            case AMA_TYPE_TUTOR:
                 $user_type = translateFN('tutor');
                 break;
             case AMA_TYPE_SWITCHER:
                 $user_type = translateFN('switcher');
                 break;
 
-            case AMA_TYPE_STUDENT:
             case AMA_TYPE_STUDENT:
             default:
             // FIXME: trovare dove controlliamo $user_type == 'studente' e sostituire con $user_type == 'utente'
@@ -715,7 +714,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
                                         $id_profile = $userObj->getType(); //$userObj->tipo;
                                         if ($id_profile == AMA_TYPE_TUTOR) {
                                             $online_usersAr[]= $userObj->username. " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |"
-                                                . " <a href=\"view.php?id_node=$sess_id_node&guide_user_id=".$userObj->id."\"> ".translateFN("segui")."</a> |";
+                                                . " <a href=\"view.php?id_node=$sess_id_node&guide_user_id=".$userObj->getId()."\"> ".translateFN("segui")."</a> |";
                                             //$online_usersAr[$user_id]['user']= "<img src=\"img/_tutor.png\" border=\"0\"> ".$userObj->username. " |<a href=\"$http_root_dir/comunica/send_message.php?destinatari=". $userObj->username."\"  target=\"_blank\">".translateFN("scrivi un messaggio")."</a> |";
                                             //$online_usersAr[$user_id]['user'].= " <a href=\"view.php?id_node=$sess_id_node&guide_user_id=".$userObj->id."\"> ".translateFN("segui")."</a> |";
                                         } else {    // STUDENT
@@ -1410,13 +1409,20 @@ abstract class ADAAbstractUser extends ADALoggableUser {
 class ADAPractitioner extends ADALoggableUser {
     protected $tariffa;
     protected $profilo;
+    protected $isSuper;
 
     public function __construct($user_dataAr=array()) {
         parent::__construct($user_dataAr);
 
         $this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : null;
         $this->profilo = isset($user_dataAr['profilo']) ? $user_dataAr['profilo'] : null;
-
+        $this->isSuper = isset($user_dataAr['tipo']) && $user_dataAr['tipo']==AMA_TYPE_SUPERTUTOR;
+        /**
+         * @author giorgio 10/apr/2015
+         * 
+         * a supertutor is a tutor with the isSuper property set to true
+         */
+        if ($this->isSuper && $this->tipo==AMA_TYPE_SUPERTUTOR) $this->tipo = AMA_TYPE_TUTOR;
         $this->setHomePage(HTTP_ROOT_DIR.'/tutor/tutor.php');
         $this->setEditProfilePage('tutor/edit_tutor.php');
     }
@@ -1429,6 +1435,10 @@ class ADAPractitioner extends ADALoggableUser {
 
     public function getProfile() {
         return $this->profilo;
+    }
+    
+    public function isSuper() {
+    	return (bool) $this->isSuper;
     }
 
     /*

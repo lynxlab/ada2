@@ -490,8 +490,8 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   			$instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
   			break;
   		case AMA_TYPE_TUTOR:
-  			$tutorInstances = $dh->get_tutors_assigned_course_instance($sess_userObj->getId(),$_SESSION['sess_id_course']);
-  			if (!AMA_DB::isError($tutorInstances)) {  				
+  			$tutorInstances = $dh->get_tutors_assigned_course_instance($sess_userObj->getId(),$_SESSION['sess_id_course'],$sess_userObj->isSuper());
+  			if (!AMA_DB::isError($tutorInstances) && is_array($tutorInstances) && count($tutorInstances)>0) {  				
   				/**
   				 * the returned array is array[id_tutor]=>array[key]=>array['id_istanza_corso']
   				 * and needs to be converted to reflect the structre returned in student case
@@ -570,12 +570,14 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
                       }
                       break;
                   case AMA_TYPE_TUTOR:
-                      $tutorsInstance = $dh->course_instance_tutor_get($id_course_instance,$number=2);
-                      if (AMA_DataHandler::isError($tutorsInstance)) {
-                          $invalid_course_instance = TRUE;
-                      } elseif (!in_array($sess_id_user, $tutorsInstance)) {
-                          $invalid_course_instance = TRUE;
-                      }
+                  	  if (!$sess_userObj->isSuper()) {
+	                      $tutorsInstance = $dh->course_instance_tutor_get($id_course_instance,$number=2);
+	                      if (AMA_DataHandler::isError($tutorsInstance)) {
+	                          $invalid_course_instance = TRUE;
+	                      } elseif (!in_array($sess_id_user, $tutorsInstance)) {
+	                          $invalid_course_instance = TRUE;
+	                      }
+                  	  }
                       break;
                   default:    
     //                  $invalid_course_instance = TRUE;

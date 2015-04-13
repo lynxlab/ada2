@@ -10107,34 +10107,39 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *
      * @param $id_tutor pass a single/array tutor id or use "false" to retrieve all tutors
      * @param $id_course if passed as int, select only instances of the passed course id
+     * @param $isSuper true if the tutor is a supertutor
      *
      *
      * @return a nested array containing the list, or an AMA_Error object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array('tutor id'=>array('course_instance', 'course_instance', 'course_instance'));
      */
-    public function &get_tutors_assigned_course_instance($id_tutor = false, $id_course = false) {
+    public function &get_tutors_assigned_course_instance($id_tutor = false, $id_course = false, $isSuper = false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
         // do the query
-        $sql = "SELECT
-					ts.`id_utente_tutor`,
-					c.`id_corso`, c.`titolo`, c.`id_utente_autore`,
+        $sql = "SELECT ".
+					(($isSuper) ? $id_tutor." AS `id_utente_tutor`" : "ts.`id_utente_tutor`") .",".
+					"c.`id_corso`, c.`titolo`, c.`id_utente_autore`,
 					i.`id_istanza_corso`, i.`title`,i.`data_inizio_previsto`,i.`data_fine`,i.`duration_hours`,
                                         i.`durata`,i.`self_instruction`
-				FROM `tutor_studenti` ts
-				JOIN `istanza_corso` i ON (i.`id_istanza_corso`=ts.`id_istanza_corso`)
-				JOIN `modello_corso` c ON (c.`id_corso`=i.`id_corso`)";
+				FROM ".
+				(($isSuper) ? "" : "`tutor_studenti` ts JOIN ").
+				"`istanza_corso` i ".
+				(($isSuper) ? "" : "ON (i.`id_istanza_corso`=ts.`id_istanza_corso`)").
+				" JOIN `modello_corso` c ON (c.`id_corso`=i.`id_corso`)";
 
-		if (is_array($id_tutor) AND !empty($id_tutor))
-		{
-			$sql .= " WHERE id_utente_tutor IN (".implode(',',$id_tutor).")";
-		}
-		else if ($id_tutor)
-		{
-			$sql .= " WHERE id_utente_tutor = ".$id_tutor;
-		}
+        if (!$isSuper) {
+			if (is_array($id_tutor) AND !empty($id_tutor))
+			{
+				$sql .= " WHERE id_utente_tutor IN (".implode(',',$id_tutor).")";
+			}
+			else if ($id_tutor)
+			{
+				$sql .= " WHERE id_utente_tutor = ".$id_tutor;
+			}
+        }
 		
 		if (is_numeric($id_course) && intval($id_course)>0) {
 			
@@ -10147,7 +10152,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $tutors_ar =  $db->getAll($sql, null, AMA_FETCH_ASSOC);
         
         if (AMA_DB::isError($tutors_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        	$retval = new AMA_Error(AMA_ERR_GET); 
+            return $retval;
         }
         else {
 			$tutors = array();
@@ -10466,16 +10472,20 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @access public
      *
      * @param $id_tutor    - tutor id
-     * @param $id_corso    - course instance id
+     * @param $isSuper     - true if tutor is a supertutor
      *
      * @return
      */
-    public function course_tutor_instance_get($id_tutor) {
+    public function course_tutor_instance_get($id_tutor, $isSuper=false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
         // select row into table tuto_studenti
-        $sql =  "select id_istanza_corso,id_utente_tutor from tutor_studenti where id_utente_tutor='$id_tutor'";
+        if (!$isSuper) {
+	        $sql =  "select id_istanza_corso,id_utente_tutor from tutor_studenti where id_utente_tutor='$id_tutor'";
+        } else {
+	        $sql =  "select id_istanza_corso, $id_tutor AS id_utente_tutor FROM istanza_corso";        	
+        }
         $res =  $db->getAll($sql);
         if(AMA_DB::isError($res)) {
             return new AMA_Error(AMA_ERR_GET);
