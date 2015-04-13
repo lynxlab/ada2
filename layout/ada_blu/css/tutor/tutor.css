@@ -7,10 +7,7 @@
 #container table.doDataTable tbody td { height: 2.5em; border:none; vertical-align: middle; }
 #container table.doDataTable thead th { padding-right: 5px; border-bottom: 1px solid #999; }
 #container table.doDataTable .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; }
-#listCourses_previous,
-#listCourses_next,
-#table_Report_previous,
-#table_Report_next { margin:0; padding: 3px; }
+#container .dataTables_wrapper div.dataTables_paginate > a { margin:0; padding: 3px; }
 .dataTables_length,
 .dataTables_filter,
 .dataTables_paginate { padding: 5px; }
@@ -21,10 +18,14 @@
  * end table.doDataTable jQuery dataTable
  */
 
-#listCourses td.actionCol { text-align: center; }
+table.doDataTable td.actionCol,
+table.doDataTable td.centerAlign { text-align: center; }
 #listCourses td.actionCol a { margin-right: 10px; }
+#listTutors .DataTables_sort_icon,
 #listCourses .DataTables_sort_icon { float: right; margin-top: -20px; }
+#listTutors caption,
 #listCourses caption { width: 65%; margin: -25px auto 0 auto; position: relative; top: -4px; font-weight: bold;   color: #fff; }
+table#listTutors.dataTable td.details { padding-left: 3%; padding-right: 1%; background: darkgray; }
 /*
  * table.doDataTable actions
  */ 
