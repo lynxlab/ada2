@@ -11,21 +11,32 @@ function initDoc(id_course, id_course_instance){
     id_Course=id_course;
     id_Course_instance=id_course_instance;
     
-    var lastCol = $j('#table_Report thead th').length;
+    var lastCol = $j('table.doDataTable thead th').length;
+        
+    var colDefs = [{
+        	"aTargets": [lastCol-1],
+        	"bSortable":false
+        }]; 
     
-    datatable = $j('#table_Report').dataTable({
+    if ($j('#listCourses').length>0) {
+    	// column definitions for list courses table
+    	var moreColDefs = [
+    	                   {"aTargets" : [4], "sType":"date-eu" },
+    	                   {"aTargets" : [5], "sType":"formatted-num" },
+    	                   {"aTargets" : [lastCol-1], "sClass" : "actionCol" }
+    	                   ];
+    	for (var x=0; x<moreColDefs.length; x++) colDefs.push(moreColDefs[x]);
+    	initToolTips();    	
+    }
+    
+    datatable = $j('table.doDataTable').dataTable({
 		"bJQueryUI": true,
         "bFilter": true,
         "bInfo": true,
         "bSort": true,
         "bAutoWidth": true,
         "bPaginate" : true,
-        "aoColumnDefs": [
-            {
-            	"aTargets": [lastCol-1],
-            	"bSortable":false
-            }
-        ],
+        "aoColumnDefs": colDefs,
         "oLanguage": {
            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
         },
@@ -119,4 +130,30 @@ function showHideDiv ( title, message)
     theDiv.remove(); 
     if (typeof reload != 'undefined' && reload) self.location.reload(true); });
     
+}
+
+/**
+ * inits the tooltips
+ */
+function initToolTips() {
+	// inizializzo i tooltip sul title di ogni elemento!
+	if ($j('.tooltip').length>0) {
+		$j('.tooltip').tooltip(
+				{
+					show : {
+						effect : "slideDown",
+						delay : 300,
+						duration : 100
+					},
+					hide : {
+						effect : "slideUp",
+						delay : 100,
+						duration : 100
+					},
+					position : {
+						my : "center bottom-5",
+						at : "center top"
+					}
+				});
+	}
 }

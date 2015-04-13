@@ -93,6 +93,7 @@ switch ($op) {
         	$thead = array_shift($courses_student);
         	$tfoot = array_pop($courses_student);
         	$tObj = BaseHtmlLib::tableElement('id:table_Report',$thead,$courses_student,$tfoot,null);
+        	$tObj->setAttribute('class', 'default_table doDataTable');
         	$data = $tObj->getHtml();
         } else {
         	if ($mode=='update') {
@@ -371,7 +372,8 @@ switch ($op) {
         if (!isset($status) || empty($status)) {
             $data['status'] = translateFN('lista dei corsi tutorati');
         }
-        $data = get_courses_tutorFN($_SESSION['sess_id_user']);
+        $isSuper = (isset($userObj) && $userObj instanceof ADAPractitioner && $userObj->isSuper());
+        $data = get_courses_tutorFN($_SESSION['sess_id_user'], $isSuper);
         $help = translateFN("Da qui il Tutor può visualizzare l'elenco dei corsi di cui è attualmente tutor.");
         $online_users_listing_mode = 2;
         if (!isset($id_course_instance)) $id_course_instance=null;
@@ -442,6 +444,8 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
 		JQUERY_DATATABLE,
+		JQUERY_DATATABLE_DATE,
+		ROOT_DIR.'/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
 		JQUERY_NO_CONFLICT
 );
 $menuOptions = array();

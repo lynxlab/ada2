@@ -1,6 +1,6 @@
 <?php
 
-function get_courses_tutorFN($id_user) {
+function get_courses_tutorFN($id_user, $isSuper=false) {
     $dh = $GLOBALS['dh'];
     $ymdhms= $GLOBALS['ymdhms'];
     $http_root_dir= $GLOBALS['http_root_dir'];
@@ -9,7 +9,7 @@ function get_courses_tutorFN($id_user) {
     $sub_course_dataHa = array();
     $dati_corso = array();
     $today_date = $dh->date_to_ts("now");
-    $all_instance = $dh->course_tutor_instance_get($id_user); // Get the instance courses monitorated by the tutor
+    $all_instance = $dh->course_tutor_instance_get($id_user, $isSuper); // Get the instance courses monitorated by the tutor
 
     $num_courses = 0;
     $id_corso_key    = translateFN('Corso');
@@ -18,8 +18,7 @@ function get_courses_tutorFN($id_user) {
     $nome_key      = translateFN('Nome classe');
     $data_inizio_key = translateFN('Inizio');
     $durata_key      = translateFN('Durata');
-    $naviga_key      = translateFN('Naviga');
-    $valuta_key      = translateFN('Valuta');
+    $azioni_key      = translateFN('Azioni');
     $msg = "";
     if (is_array($all_instance)) {
         foreach ($all_instance as $one_instance) {
@@ -29,40 +28,43 @@ function get_courses_tutorFN($id_user) {
             if  (AMA_DataHandler::isError($instance_course_ha)) {
                 $msg .= $instance_course_ha->getMessage()."<br />";
             } else {
-                $dati_corso[$num_courses][$id_corso_key]= $instance_course_ha['id_corso'];
                 $id_course = $instance_course_ha['id_corso'];
                 if (!empty($id_course)) {
                     $info_course = $dh->get_course($id_course); // Get title course
                     if  (AMA_DataHandler::isError($dh)) {
                         $msg .= $dh->getMessage()."<br />";
                     }
-                    $titolo = $info_course['titolo'];
-                    $id_toc = $info_course['id_nodo_toc'];
-                    $durata_corso = sprintf(translateFN('%d giorni'), $instance_course_ha['durata']);
-                    $naviga = '<a href="'.$http_root_dir.'/browsing/view.php?id_node='.$id_course.'_'.$id_toc.'&id_course='.$id_course.'&id_course_instance='.$id_instance.'"><img src="img/timon.png"  alt="'.translateFN('naviga').'" border="0"></a>';
-                    $valuta = '<a href="'.$http_root_dir.'/tutor/tutor.php?op=student&id_instance='.$id_instance.'&id_course='.$id_course.'"><img src="img/magnify.png"  alt="'.translateFN('valuta').'" border="0"></a>';
-
-                    $data_inizio = AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], "%d/%m/%Y");
-
-					$dati_corso[$num_courses][$titolo_key] = $titolo;
-                    $dati_corso[$num_courses][$id_classe_key] =  $id_instance;
-                    $dati_corso[$num_courses][$nome_key] =  $instance_course_ha['title'];
-                    $dati_corso[$num_courses][$data_inizio_key] = $data_inizio;
-                    $dati_corso[$num_courses][$durata_key] = $durata_corso;
-                    $dati_corso[$num_courses][$naviga_key] = $naviga;
-                    $dati_corso[$num_courses][$valuta_key] = $valuta;
+                    if(!AMA_DB::isError($info_course)) {
+	                    $titolo = $info_course['titolo'];
+	                    $id_toc = $info_course['id_nodo_toc'];
+	                    $durata_corso = sprintf(translateFN('%d giorni'), $instance_course_ha['durata']);
+	                    $naviga = '<a href="'.$http_root_dir.'/browsing/view.php?id_node='.$id_course.'_'.$id_toc.'&id_course='.$id_course.'&id_course_instance='.$id_instance.'">'.
+	                    	'<img src="img/timon.png"  alt="'.translateFN('naviga').'" title="'.translateFN('naviga').'" class="tooltip" border="0"></a>';
+	                    $valuta = '<a href="'.$http_root_dir.'/tutor/tutor.php?op=student&id_instance='.$id_instance.'&id_course='.$id_course.'">'.
+	                    	'<img src="img/magnify.png"  alt="'.translateFN('valuta').'" title="'.translateFN('valuta').'" class="tooltip" border="0"></a>';
+	
+	                    $data_inizio = AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], "%d/%m/%Y");
+	
+		                $dati_corso[$num_courses][$id_corso_key]= $instance_course_ha['id_corso'];
+						$dati_corso[$num_courses][$titolo_key] = $titolo;
+	                    $dati_corso[$num_courses][$id_classe_key] =  $id_instance;
+	                    $dati_corso[$num_courses][$nome_key] =  $instance_course_ha['title'];
+	                    $dati_corso[$num_courses][$data_inizio_key] = $data_inizio;
+	                    $dati_corso[$num_courses][$durata_key] = $durata_corso;
+	                    $dati_corso[$num_courses][$azioni_key] = $naviga;
+	                    $dati_corso[$num_courses][$azioni_key] .= $valuta;
+                    }
                 }
             }
         }
 
         $courses_list = "";
         if ((count($dati_corso) > 0) &&(empty($msg))) {
-            $tObj = new Table();
-            $tObj->initTable('0','center','0','1','','','','','','1');
             $caption = translateFN("Corsi monitorati al")." $ymdhms";
-            $summary = translateFN("Elenco dei corsi monitorati");
-            $tObj->setTable($dati_corso,$caption,$summary);
-            $courses_list = $tObj->getTable();
+        	$tObj = BaseHtmlLib::tableElement('id:listCourses,class:doDataTable',
+        			array(	$id_corso_key, $titolo_key, $id_classe_key,
+        					$nome_key, $data_inizio_key, $durata_key, $azioni_key) ,$dati_corso,null,$caption);
+        	$courses_list = $tObj->getHtml();
         } else {
             $courses_list = $msg;
         }
