@@ -2235,9 +2235,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $courses_sql = 'SELECT S.id_servizio, S.nome, S.descrizione, S.durata_servizio FROM servizio AS S, (SELECT distinct(id_servizio) FROM servizio_tester';
-        if (!is_null($id_tester) && intval($id_tester)>0) $courses_sql .= ' WHERE id_tester='.intval($id_tester); 
-        $courses_sql .= ') AS ST WHERE S.id_servizio = ST.id_servizio';
+        $courses_sql = 'SELECT S.id_servizio, S.nome, S.descrizione, S.durata_servizio FROM servizio AS S '.
+        		'JOIN `service_type` AS STYPE ON STYPE.`livello_servizio`=S.`livello` AND STYPE.`hiddenFromInfo`!=1 '.
+        		'JOIN `servizio_tester` AS ST ON ST.`id_servizio`=S.`id_servizio`';
+        if (!is_null($id_tester) && intval($id_tester)>0) $courses_sql .= ' WHERE id_tester='.intval($id_tester);
 
         $result = $db->getAll($courses_sql, null, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {

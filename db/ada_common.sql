@@ -8236,6 +8236,7 @@ CREATE TABLE IF NOT EXISTS `service_type` (
   `custom_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `custom_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `custom_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hiddenFromInfo` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',  
   PRIMARY KEY (`id_tipo_servizio`),
   UNIQUE KEY `livello_servizio` (`livello_servizio`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
