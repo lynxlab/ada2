@@ -108,6 +108,7 @@ define('ADA_COURSEINSTANCE_STATUS_PUBLIC',   2);
  * ADA generic services types
  */
 define('DEFAULT_SERVICE_TYPE', 1);
+define('ADA_SERVICE_TUTORCOMMUNITY', 2);
 
 /**
  * ADA token
