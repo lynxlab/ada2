@@ -510,7 +510,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   			 * Set the $target_course_instance var and proceed
   			 */
   			$target_course_instance = $instances[0]['id_istanza_corso'];
-  		} else if (count($instances)>1) {
+  		} else if (count($instances)>1 && !isset($_REQUEST['id_course_instance'])) {
   			/**
   			 * If there's more than one instance, must build an array of
   			 * found instances to ask the user to select one.
@@ -525,7 +525,9 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   				$invalid_course[] = $instance['id_istanza_corso'];
   				$invalid_node = $_SESSION['sess_id_node'];
   			}
-  		}  	
+  		} else if (isset($_REQUEST['id_course_instance'])) {
+  			$target_course_instance = $_REQUEST['id_course_instance'];
+  		}
   	} else {
   		/**
   		 * Mark the course as invalid, and unset session var
@@ -570,7 +572,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
                       }
                       break;
                   case AMA_TYPE_TUTOR:
-                  	  if (!$sess_userObj->isSuper()) {
+                  	  if (!$sess_userObj->isSuper() && $sess_courseObj->getServiceLevel()!=ADA_SERVICE_TUTORCOMMUNITY) {
 	                      $tutorsInstance = $dh->course_instance_tutor_get($id_course_instance,$number=2);
 	                      if (AMA_DataHandler::isError($tutorsInstance)) {
 	                          $invalid_course_instance = TRUE;
@@ -763,7 +765,15 @@ function loadServiceTypes(){
         if(!empty($servicesTypeAr) && !AMA_DB::isError($servicesTypeAr)){
             foreach($servicesTypeAr as $servicesType){
                 if(isset($servicesType['livello_servizio']) && isset($servicesType['nome_servizio'])){
-                    $_SESSION['service_level'][$servicesType['livello_servizio']]=translateFN($servicesType['nome_servizio']);
+                	$serviceLevel = $servicesType['livello_servizio'];
+                	unset($servicesType['livello_servizio']);
+                    $_SESSION['service_level'][$serviceLevel]=translateFN($servicesType['nome_servizio']);
+                    unset($servicesType['nome_servizio']);
+                    if (is_array($servicesType) && count($servicesType)>0) {
+                    	foreach ($servicesType as $key=>$val) {
+                    		$_SESSION['service_level_info'][$serviceLevel][$key] = $val;
+                    	}
+                    }
                     
                 }
             }
