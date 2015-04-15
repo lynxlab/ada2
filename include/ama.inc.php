@@ -11163,7 +11163,7 @@ public function get_updates_nodes($userObj, $pointer)
    */
     public function get_service_type($id_user=NULL) {
         
-    $service_sql = "SELECT id_tipo_servizio, livello_servizio,nome_servizio,descrizione_servizio,custom_1,custom_2,custom_3  FROM service_type";
+    $service_sql = "SELECT id_tipo_servizio, livello_servizio,nome_servizio,descrizione_servizio,custom_1,custom_2,custom_3,hiddenFromInfo,isPublic  FROM service_type";
     $common_dh = AMA_Common_DataHandler::instance();
     
     /* if isset $id_user it means that the admin is asking data for log_report.php, and he have to take data from common db */
