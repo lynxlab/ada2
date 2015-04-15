@@ -20,7 +20,8 @@
 
 table.doDataTable td.actionCol,
 table.doDataTable td.centerAlign { text-align: center; }
-#listCourses td.actionCol a { margin-right: 10px; }
+table.doDataTable td.actionCol a { margin-right: 10px; background-color:transparent; display: inline-block; }
+#tutorCommunitiesTable .DataTables_sort_icon,
 #listTutors .DataTables_sort_icon,
 #listCourses .DataTables_sort_icon { float: right; margin-top: -20px; }
 #listTutors caption,

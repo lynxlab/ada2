@@ -1563,6 +1563,15 @@ class Student_class {
                         $err_msg =$studentObj->error_msg;
                     } else {
 
+                    	if ($studentObj instanceof ADAPractitioner) {
+                    		/**
+                    		 * @author giorgio 14/apr/2015
+                    		 * 
+                    		 * If student is actually a tutor, build a new student
+                    		 * object for history and evaluation purposes
+                    		 */
+                    		$studentObj = $studentObj->toStudent();
+                    	}
                         $student_name = $studentObj->getFullname();//$studentObj->nome." ".$studentObj->cognome;
 
                         // vito

@@ -61,9 +61,10 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
         $courses_list = "";
         if ((count($dati_corso) > 0) &&(empty($msg))) {
             $caption = translateFN("Corsi monitorati al")." $ymdhms";
-        	$tObj = BaseHtmlLib::tableElement('id:listCourses,class:doDataTable',
+        	$tObj = BaseHtmlLib::tableElement('id:listCourses',
         			array(	$id_corso_key, $titolo_key, $id_classe_key,
         					$nome_key, $data_inizio_key, $durata_key, $azioni_key) ,$dati_corso,null,$caption);
+        	$tObj->setAttribute('class', 'default_table doDataTable');
         	$courses_list = $tObj->getHtml();
         } else {
             $courses_list = $msg;

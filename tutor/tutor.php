@@ -506,6 +506,7 @@ if (isset($id_student))  $menuOptions['id_student'] =$id_student;
  * add a define for the supertutor menu item to appear
  */
 if ($userObj instanceof ADAPractitioner && $userObj->isSuper()) define ('IS_SUPERTUTOR', true);
+else define ('NOT_SUPERTUTOR', true);
 
 $optionsAr['onload_func'] = 'initDoc(';
 if (isset($id_course) && intval($id_course)>0 && isset($id_instance) && intval($id_instance)>0)

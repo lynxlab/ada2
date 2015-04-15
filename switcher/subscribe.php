@@ -70,6 +70,16 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (!AMA_DataHandler::isError($result) && $result !== false) {
                     $canSubscribeUser = true;
                 }                
+            } else if ($subscriberObj instanceof ADAPractitioner) {
+            	/**
+            	 * @author giorgio 14/apr/2015
+            	 * 
+            	 * If the switcher is trying to subscribe a tutor, do it only
+            	 * if the course instance belongs to a service of type 
+            	 * ADA_SERVICE_TUTORCOMMUNITY
+            	 */
+            	$canSubscribeUser = $courseObj instanceof Course && $courseObj->isFull() &&
+            						$courseObj->getServiceLevel() == ADA_SERVICE_TUTORCOMMUNITY;
             }
             
             if ($canSubscribeUser && $courseObj instanceof Course && $courseObj->isFull()) {

@@ -68,6 +68,8 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         $imgDetails->setAttribute('title', translateFN('visualizza/nasconde la descrizione del corso'));
                 
         $courseId = $course[0];
+        $x = new Course($courseId);
+        var_dump ($x->getIsPublic());
         $edit_link = BaseHtmlLib::link("edit_course.php?id_course=$courseId", $edit_img->getHtml());
         
         if(isset($edit_link)){

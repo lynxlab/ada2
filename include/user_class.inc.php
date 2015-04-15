@@ -1426,6 +1426,16 @@ class ADAPractitioner extends ADALoggableUser {
         $this->setHomePage(HTTP_ROOT_DIR.'/tutor/tutor.php');
         $this->setEditProfilePage('tutor/edit_tutor.php');
     }
+    
+    /**
+     * converts the Practitioner to an ADAUser
+     * 
+     * @return ADAUser
+     */
+    public function toStudent() {
+    	return new ADAUser(array_merge(array('id'=>$this->getId()),$this->toArray()));
+    }
+    
     /*
    * getters
     */

@@ -13,6 +13,7 @@ function initDoc(id_course, id_course_instance){
     
     var lastCol = $j('table.doDataTable thead th').length;
     var colDefs = null;
+    var moreColDefs = null;
     
     /**
      * listTutors table must have the last column as sortable
@@ -34,16 +35,23 @@ function initDoc(id_course, id_course_instance){
     
     if ($j('#listCourses').length>0) {
     	// column definitions for list courses table
-    	var moreColDefs = [
+    	moreColDefs = [
     	                   {"aTargets" : [4], "sType":"date-eu" },
     	                   {"aTargets" : [5], "sType":"formatted-num" },
     	                   {"aTargets" : [lastCol-1], "sClass" : "actionCol" }
     	                   ];
-    	if (colDefs == null) colDefs=[];
-    	for (var x=0; x<moreColDefs.length; x++) colDefs.push(moreColDefs[x]);
+    } else if ($j('#tutorCommunitiesTable').length>0) {
+    	// column definitions for tutor communities table
+    	moreColDefs = [
+    	                   {"aTargets" : [2,4], "sType":"date-eu" },
+    	                   {"aTargets" : [3], "sType":"formatted-num" },
+    	                   {"aTargets" : [lastCol-1], "sClass" : "actionCol" }
+    	                   ];
     }
     initToolTips();
     
+    if (colDefs == null) colDefs=[];
+    if (moreColDefs != null) for (var x=0; x<moreColDefs.length; x++) colDefs.push(moreColDefs[x]);
     datatable = $j('table.doDataTable').dataTable({
 		"bJQueryUI": true,
         "bFilter": true,
