@@ -358,8 +358,7 @@ if($op !== false && $op == 'course_info') {
             }
         }
     }
-}
-else {
+} else {
 	/**
 	 * giorgio 13/ago/2013
 	 * if it's not a multiprovider environment, must load only published course
@@ -398,76 +397,61 @@ else {
 	}
 	
     if(!AMA_Common_DataHandler::isError($publishedServices)) {
-//        $thead_data = array('nome', 'descrizione', 'durata (giorni)', 'informazioni');
+//      $thead_data = array('nome', 'descrizione', 'durata (giorni)', 'informazioni');
         $thead_data = array(translateFN('nome'), translateFN('descrizione'), translateFN('crediti'), translateFN('informazioni'));
         $tbody_data = array();
 
         foreach($publishedServices as $service) {
-            // $serviceId = $service['id_servizio'];
-
                $serviceId = $service['id_servizio'];
                $coursesAr = $common_dh-> get_courses_for_service($serviceId); 
-               if (!AMA_DataHandler::isError($coursesAr)) {
+               if(!AMA_DB::isError($coursesAr)) {
                     $currentTesterId = 0;
                     $currentTester = '';
                     $tester_dh = null;
                     foreach($coursesAr as $courseData) {
                         $courseId = $courseData['id_corso'];
                         $Flag_course_has_instance=false;
-                        if ($courseId != PUBLIC_COURSE_ID_FOR_NEWS) {
-                            $newTesterId = $courseData['id_tester'];
-                            if($newTesterId != $currentTesterId) { // stesso corso su altro tester ?
-                                $testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId); 
-                              if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
-                                    $tester = $testerInfoAr[10];
-                                    $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester)); 
-                                    $currentTesterId = $newTesterId;
-                                    $course_dataHa = $tester_dh->get_course($courseId);
-                                    $instancesAr = $tester_dh->course_instance_subscribeable_get_list(
-                                    array('data_inizio_previsto', 'durata', 'data_fine', 'title'),
-                                    $courseId);
-                                    if(is_array($instancesAr) && count($instancesAr) > 0)
-                                    {
-                                        $Flag_course_has_instance=true;
-                                    }
-                                    if (!AMA_DataHandler::isError($course_dataHa)) {
-                                        $credits =  $course_dataHa['crediti']; 
-                                        // supponiamo che tutti i corsi di un servizio (su tester diversi) abbiano lo stesso numero di crediti
-                                        // quindi prendiamo solo l'ultimo
-                                    } else {
-                                        $credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
-                                    }    
+                        $newTesterId = $courseData['id_tester'];
+                        if($newTesterId != $currentTesterId) { // stesso corso su altro tester ?
+                        	$testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId);
+                        	if(!AMA_DB::isError($testerInfoAr)) {
+                        		$tester = $testerInfoAr[10];
+                        		$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+                        		$currentTesterId = $newTesterId;
+                        		$course_dataHa = $tester_dh->get_course($courseId);
+                        		$instancesAr = $tester_dh->course_instance_subscribeable_get_list(
+                        				array('data_inizio_previsto', 'durata', 'data_fine', 'title'),
+                        				$courseId);
+                        		if(is_array($instancesAr) && count($instancesAr) > 0) {
+                        			$Flag_course_has_instance=true;
+                        		}
+                                if (!AMA_DB::isError($course_dataHa)) {
+                                	$credits =  $course_dataHa['crediti'];
+                                	// supponiamo che tutti i corsi di un servizio (su tester diversi) abbiano lo stesso numero di crediti
+                                	// quindi prendiamo solo l'ultimo
+                                } else {
+                                	$credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
                                 }
-                            }
-                            if($Flag_course_has_instance)
-                             {
-                                 $more_info_link = BaseHtmlLib::link("info.php?op=course_info&id=$serviceId",translateFN('More info'));
-                             }
-                             else
-                             {
-                                 $more_info_link = BaseHtmlLib::link("info.php",translateFN('No instances available')); 
-                             }
-                             // giorgio 13/ago/2013 if it's not the news course, add it to the displayed results
-                             if (defined ('PUBLIC_COURSE_ID_FOR_NEWS') && intval(PUBLIC_COURSE_ID_FOR_NEWS)>0 &&
-                             PUBLIC_COURSE_ID_FOR_NEWS!=$courseData['id_corso'])
-                             {
-                                     $tbody_data[] = array(
-                                         $service['nome'],
-                                         $service['descrizione'],
-                                         $credits,
-                         //                $service['durata_servizio'],
-                                         $more_info_link
-                                     );
-                             }                            
+                        	}
+                        }
+                        if($Flag_course_has_instance) {
+                        	$more_info_link = BaseHtmlLib::link("info.php?op=course_info&id=$serviceId",translateFN('More info'));
+                        } else {
+                        	$more_info_link = BaseHtmlLib::link("info.php",translateFN('No instances available'));
                         }
                         
-                    }   
+                        $tbody_data[] = array(
+                        	$service['nome'],
+                        	$service['descrizione'],
+                        	$credits,
+                        	// $service['durata_servizio'],
+                        	$more_info_link
+                        );
+                    }
                } else {
-                    $credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
+               		$credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
                }
- 
         }
-   
         $data = BaseHtmlLib::tableElement('', $thead_data, $tbody_data);
     } else {
         $data = new CText(translateFN('Non sono stati pubblicati corsi'));

@@ -65,14 +65,25 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if($form->isValid()) {
             $courseInstanceId = $_POST['id_course_instance'];
             $subscriberObj = MultiPort::findUserByUsername($_POST['username']);
+            $canSubscribeUser = false;
             if ($subscriberObj instanceof ADAUser) {
                 $result = $dh->student_can_subscribe_to_course_instance($subscriberObj->getId(), $courseInstanceId);
                 if (!AMA_DataHandler::isError($result) && $result !== false) {
-                    $canSubscribeUser = true;
+                    $canSubscribeUser = $courseObj instanceof Course && $courseObj->isFull() &&
+                    					$courseObj->getServiceLevel() != ADA_SERVICE_TUTORCOMMUNITY;
                 }                
-            }
-            
-            if ($canSubscribeUser && $courseObj instanceof Course && $courseObj->isFull()) {
+            } else if ($subscriberObj instanceof ADAPractitioner) {
+            	/**
+            	 * @author giorgio 14/apr/2015
+            	 * 
+            	 * If the switcher is trying to subscribe a tutor, do it only
+            	 * if the course instance belongs to a service of type 
+            	 * ADA_SERVICE_TUTORCOMMUNITY
+            	 */
+            	$canSubscribeUser = $courseObj instanceof Course && $courseObj->isFull() &&
+            						$courseObj->getServiceLevel() == ADA_SERVICE_TUTORCOMMUNITY;
+            } else $canSubscribeUser = false;
+            if ($canSubscribeUser) {
             	$courseProviderAr = $common_dh->get_tester_info_from_id_course($courseObj->getId());
                 if (!AMA_DB::isError($courseProviderAr) && is_array($courseProviderAr) && isset($courseProviderAr['puntatore'])) {            		
             		if (!in_array($courseProviderAr['puntatore'], $subscriberObj->getTesters())) {

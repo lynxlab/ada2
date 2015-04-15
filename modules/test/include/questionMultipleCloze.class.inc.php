@@ -327,6 +327,7 @@ public function countSpanAndRemoveClozeMarker($params) {
 				}
 				else {
 					$answer = false;
+					$correttezza = null;
 				}
 
 				$showItEmpty = false;

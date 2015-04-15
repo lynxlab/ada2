@@ -1563,6 +1563,15 @@ class Student_class {
                         $err_msg =$studentObj->error_msg;
                     } else {
 
+                    	if ($studentObj instanceof ADAPractitioner) {
+                    		/**
+                    		 * @author giorgio 14/apr/2015
+                    		 * 
+                    		 * If student is actually a tutor, build a new student
+                    		 * object for history and evaluation purposes
+                    		 */
+                    		$studentObj = $studentObj->toStudent();
+                    	}
                         $student_name = $studentObj->getFullname();//$studentObj->nome." ".$studentObj->cognome;
 
                         // vito
@@ -1611,7 +1620,7 @@ class Student_class {
                         }
                         $read_notes_count= $studentObj->total_visited_notesFN($id_student,$id_course);
                         if ($read_notes_count>0) {
-                            $read_nodes_count_norm = str_pad($read_nodes_count,5, "0", STR_PAD_LEFT);
+                            $read_nodes_count_norm = str_pad($read_notes_count,5, "0", STR_PAD_LEFT);
                             $read_notes = "<!-- $read_nodes_count_norm -->$read_notes_count";
                         } else {
                             $read_notes = "<!-- 0 -->-";
@@ -1798,8 +1807,8 @@ class Student_class {
             $av_exercises = ($tot_exercises_score / $tot_students) ." ".translateFN("su")." ".floor($tot_exercises_number*ADA_MAX_SCORE/$tot_students) ;
 
 			if (MODULES_TEST) {
-				$av_exercises_test = ($tot_exercises_score_test / $tot_students).' '.translateFN('su').' '.floor($tot_exercises_number_test/$tot_students) ;
-				$av_exercises_survey = ($tot_exercises_score_survey / $tot_students).' '.translateFN('su').' '.floor($tot_exercises_number_survey/$tot_students) ;
+				$av_exercises_test = round($tot_exercises_score_test / $tot_students,2).' '.translateFN('su').' '.floor($tot_exercises_number_test/$tot_students) ;
+				$av_exercises_survey = round($tot_exercises_score_survey / $tot_students,2).' '.translateFN('su').' '.floor($tot_exercises_number_survey/$tot_students) ;
 			}
             $av_added_notes = ($tot_added_notes / $tot_students);
             $av_read_notes = ($tot_read_notes / $tot_students);

@@ -53,7 +53,56 @@ if (!isset($_GET['mode'])) {
 
 if (!isset($op)) $op = null;
 
+/**
+ * check if it's not a supertutor asking for op='tutor'
+ * then set $op to make the default action
+ */
+if (!$userObj->isSuper() && $op=='tutor') $op=null;
+
 switch ($op) {
+	case 'tutor':
+		$help = '';
+		$fieldsAr = array('nome','cognome','username');
+		$tutorsAr = $dh->get_tutors_list($fieldsAr);
+		if (!AMA_DB::isError($tutorsAr) && is_array($tutorsAr) && count($tutorsAr)>0) {
+			$tableDataAr = array();
+			$imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
+			$imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli del tutor'));
+			$imgDetails->setAttribute('style', 'cursor:pointer;');
+			$imgDetails->setAttribute('class', 'tooltip');
+			
+			$mh = MessageHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+			
+			foreach ($tutorsAr as $aTutor) {
+				// open details button
+				$imgDetails->setAttribute('onclick',"toggleTutorDetails(".$aTutor[0].",this);");
+				// received messages
+				$receivedMessages = 0;
+				$msgs_ha = $mh->get_messages($aTutor[0],ADA_MSG_SIMPLE);
+				if (!AMA_DataHandler::isError($msgs_ha)) {
+					$receivedMessages = count($msgs_ha);
+				}
+				// sent messages				
+				$sentMessages = 0;
+				$msgs_ha = $mh->get_sent_messages($aTutor[0], ADA_MSG_SIMPLE);
+				if (!AMA_DataHandler::isError($msgs_ha)) {
+					$sentMessages = count($msgs_ha);
+				}
+				$tableDataAr[] = array_merge(array($imgDetails->getHtml()),$aTutor,array($receivedMessages,$sentMessages));
+			}
+		}
+		$thead = array(null,
+				translateFN('Id'),
+				translateFN('Nome'),
+				translateFN('Cognome'),
+				translateFN('username'),
+				translateFN('Msg Ric'),
+				translateFN('Msg Inv')
+		);		
+		$tObj = BaseHtmlLib::tableElement('id:listTutors',$thead,$tableDataAr,null,translateFN('Elenco dei tutors'));
+        $tObj->setAttribute('class', 'default_table doDataTable');
+        $data = $tObj->getHtml();
+		break;
     case 'student_level':
         $studenti_ar = array($id_student);
         $info_course = $dh->get_course($id_course);
@@ -93,6 +142,7 @@ switch ($op) {
         	$thead = array_shift($courses_student);
         	$tfoot = array_pop($courses_student);
         	$tObj = BaseHtmlLib::tableElement('id:table_Report',$thead,$courses_student,$tfoot,null);
+        	$tObj->setAttribute('class', 'default_table doDataTable');
         	$data = $tObj->getHtml();
         } else {
         	if ($mode=='update') {
@@ -371,7 +421,8 @@ switch ($op) {
         if (!isset($status) || empty($status)) {
             $data['status'] = translateFN('lista dei corsi tutorati');
         }
-        $data = get_courses_tutorFN($_SESSION['sess_id_user']);
+        $isSuper = (isset($userObj) && $userObj instanceof ADAPractitioner && $userObj->isSuper());
+        $data = get_courses_tutorFN($_SESSION['sess_id_user'], $isSuper);
         $help = translateFN("Da qui il Tutor può visualizzare l'elenco dei corsi di cui è attualmente tutor.");
         $online_users_listing_mode = 2;
         if (!isset($id_course_instance)) $id_course_instance=null;
@@ -442,6 +493,8 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
 		JQUERY_DATATABLE,
+		JQUERY_DATATABLE_DATE,
+		ROOT_DIR.'/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
 		JQUERY_NO_CONFLICT
 );
 $menuOptions = array();
@@ -449,6 +502,11 @@ if (isset($id_course))   $menuOptions['id_course'] = $id_course;
 if (isset($id_instance)) $menuOptions['id_instance'] = $id_instance;
 if (isset($id_instance)) $menuOptions['id_course_instance'] = $id_instance;
 if (isset($id_student))  $menuOptions['id_student'] =$id_student;
+/**
+ * add a define for the supertutor menu item to appear
+ */
+if ($userObj instanceof ADAPractitioner && $userObj->isSuper()) define ('IS_SUPERTUTOR', true);
+else define ('NOT_SUPERTUTOR', true);
 
 $optionsAr['onload_func'] = 'initDoc(';
 if (isset($id_course) && intval($id_course)>0 && isset($id_instance) && intval($id_instance)>0)

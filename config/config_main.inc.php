@@ -108,6 +108,7 @@ define('ADA_COURSEINSTANCE_STATUS_PUBLIC',   2);
  * ADA generic services types
  */
 define('DEFAULT_SERVICE_TYPE', 1);
+define('ADA_SERVICE_TUTORCOMMUNITY', 2);
 
 /**
  * ADA token
@@ -150,6 +151,7 @@ define('AMA_TYPE_STUDENT',      3);
 define('AMA_TYPE_TUTOR',        4);
 define('AMA_TYPE_VISITOR',      5);
 define('AMA_TYPE_SWITCHER',     6);
+define('AMA_TYPE_SUPERTUTOR',   7);
 
 /**
  * Message types

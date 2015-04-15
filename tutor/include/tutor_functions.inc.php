@@ -93,7 +93,7 @@ $user_name    = $userObj->nome;
 $user_surname = $userObj->cognome;
 $user_family  = $userObj->template_family;
 $id_profile   = $userObj->getType();
-$user_type    = $userObj->convertUserTypeFN($id_profile);
+$user_type    = $userObj->getTypeAsString();
 $user_mail    = $userObj->email;
 
 /*
