@@ -51,6 +51,7 @@ switch($type) {
         break;
     case 'tutors':
         $usersAr = $dh->get_tutors_list($fieldsAr);
+        if (defined('AMA_TYPE_SUPERTUTOR')) $usersAr = array_merge($usersAr,$dh->get_supertutors_list($fieldsAr));
         $profilelist = translateFN('lista dei tutors');
         break;
     case 'students':
@@ -90,11 +91,17 @@ if(is_array($usersAr) && count($usersAr) > 0) {
     
     foreach($usersAr as $user) {
         $userId = $user[0];
-        $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
+        if ($user[4]==AMA_TYPE_SUPERTUTOR) {
+        	$imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/supertutoricon.png');
+        	$imgDetails->setAttribute('title', translateFN('Super Tutor'));
+        } else {
+	        $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');	        
+	        $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli dell\'utente'));
+	        $imgDetails->setAttribute('onclick',"toggleDetails($userId,this);");
+	        $imgDetails->setAttribute('style', 'cursor:pointer;');
+        }
         $imgDetails->setAttribute('class', 'imgDetls tooltip');
-        $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli dell\'utente'));
-        $imgDetails->setAttribute('onclick',"toggleDetails($userId,this);");
-        $imgDetails->setAttribute('style', 'cursor:pointer;');
+        
         
 //        $span_idUser = $userId;
 //        $span_idUser = CDOMElement::create('span');

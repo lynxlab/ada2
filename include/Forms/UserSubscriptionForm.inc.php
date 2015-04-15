@@ -32,7 +32,8 @@ class UserSubscriptionForm extends UserRegistrationForm {
                     0 => translateFN('Scegli il tipo...'),
                     AMA_TYPE_AUTHOR => translateFN('Autore'),
                     AMA_TYPE_STUDENT => translateFN('Studente'),
-                    AMA_TYPE_TUTOR => translateFN('Tutor')
+                    AMA_TYPE_TUTOR => translateFN('Tutor'),
+                	AMA_TYPE_SUPERTUTOR => translateFN('Super Tutor')
                     ),
                 0)
              ->setRequired()

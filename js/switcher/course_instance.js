@@ -182,12 +182,14 @@ function showHideDiv ( title, message)
 }
 function goToSubscription(path)
 {
-    $j('.table_result').effect('drop', function() {
-        $j('#course_instance_Table').effect('slide');
-    });
-    setTimeout( function(){
-        self.document.location.href = path+'.php'+location.search;
-   },220);
-    
+	$j.when(
+	    $j('.table_result').effect('drop', function() {
+	        $j('#course_instance_Table').effect('slide');
+	    })
+	).done(
+		function() {
+			self.document.location.href = path+'.php'+location.search;
+		}
+	);
 }
 

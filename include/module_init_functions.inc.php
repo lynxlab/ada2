@@ -490,8 +490,8 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   			$instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
   			break;
   		case AMA_TYPE_TUTOR:
-  			$tutorInstances = $dh->get_tutors_assigned_course_instance($sess_userObj->getId(),$_SESSION['sess_id_course']);
-  			if (!AMA_DB::isError($tutorInstances)) {  				
+  			$tutorInstances = $dh->get_tutors_assigned_course_instance($sess_userObj->getId(),$_SESSION['sess_id_course'],$sess_userObj->isSuper());
+  			if (!AMA_DB::isError($tutorInstances) && is_array($tutorInstances) && count($tutorInstances)>0) {  				
   				/**
   				 * the returned array is array[id_tutor]=>array[key]=>array['id_istanza_corso']
   				 * and needs to be converted to reflect the structre returned in student case
@@ -510,7 +510,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   			 * Set the $target_course_instance var and proceed
   			 */
   			$target_course_instance = $instances[0]['id_istanza_corso'];
-  		} else if (count($instances)>1) {
+  		} else if (count($instances)>1 && !isset($_REQUEST['id_course_instance'])) {
   			/**
   			 * If there's more than one instance, must build an array of
   			 * found instances to ask the user to select one.
@@ -525,7 +525,9 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   				$invalid_course[] = $instance['id_istanza_corso'];
   				$invalid_node = $_SESSION['sess_id_node'];
   			}
-  		}  	
+  		} else if (isset($_REQUEST['id_course_instance'])) {
+  			$target_course_instance = $_REQUEST['id_course_instance'];
+  		}
   	} else {
   		/**
   		 * Mark the course as invalid, and unset session var
@@ -570,12 +572,14 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
                       }
                       break;
                   case AMA_TYPE_TUTOR:
-                      $tutorsInstance = $dh->course_instance_tutor_get($id_course_instance,$number=2);
-                      if (AMA_DataHandler::isError($tutorsInstance)) {
-                          $invalid_course_instance = TRUE;
-                      } elseif (!in_array($sess_id_user, $tutorsInstance)) {
-                          $invalid_course_instance = TRUE;
-                      }
+                  	  if (!$sess_userObj->isSuper() && $sess_courseObj->getServiceLevel()!=ADA_SERVICE_TUTORCOMMUNITY) {
+	                      $tutorsInstance = $dh->course_instance_tutor_get($id_course_instance,$number=2);
+	                      if (AMA_DataHandler::isError($tutorsInstance)) {
+	                          $invalid_course_instance = TRUE;
+	                      } elseif (!in_array($sess_id_user, $tutorsInstance)) {
+	                          $invalid_course_instance = TRUE;
+	                      }
+                  	  }
                       break;
                   default:    
     //                  $invalid_course_instance = TRUE;
@@ -761,7 +765,15 @@ function loadServiceTypes(){
         if(!empty($servicesTypeAr) && !AMA_DB::isError($servicesTypeAr)){
             foreach($servicesTypeAr as $servicesType){
                 if(isset($servicesType['livello_servizio']) && isset($servicesType['nome_servizio'])){
-                    $_SESSION['service_level'][$servicesType['livello_servizio']]=translateFN($servicesType['nome_servizio']);
+                	$serviceLevel = $servicesType['livello_servizio'];
+                	unset($servicesType['livello_servizio']);
+                    $_SESSION['service_level'][$serviceLevel]=translateFN($servicesType['nome_servizio']);
+                    unset($servicesType['nome_servizio']);
+                    if (is_array($servicesType) && count($servicesType)>0) {
+                    	foreach ($servicesType as $key=>$val) {
+                    		$_SESSION['service_level_info'][$serviceLevel][$key] = $val;
+                    	}
+                    }
                     
                 }
             }

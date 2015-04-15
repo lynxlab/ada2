@@ -338,9 +338,17 @@ class MessagesAddressBook extends ADAAddressBook
       AMA_TYPE_ADMIN       => array(AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER),
       AMA_TYPE_SWITCHER    => array(AMA_TYPE_TUTOR, AMA_TYPE_STUDENT),
       AMA_TYPE_AUTHOR      => array(),
-      AMA_TYPE_TUTOR => array(AMA_TYPE_SWITCHER, AMA_TYPE_STUDENT),
-      AMA_TYPE_STUDENT        => array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR)
+      AMA_TYPE_TUTOR 	   => array(AMA_TYPE_SWITCHER, AMA_TYPE_STUDENT),
+      AMA_TYPE_STUDENT     => array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR)
     );
+    /**
+     * @author giorgio 13/apr/2015
+     * 
+     * if userObj is a superTutor, add AMA_TYPE_TUTOR to the addressbook
+     */
+    if ($userObj->getType()==AMA_TYPE_TUTOR && $userObj->isSuper()) {
+    	$user_types_Ar[AMA_TYPE_TUTOR][] = AMA_TYPE_TUTOR;
+    }
 
     $users_Ar = parent::fillAddressBook($userObj,$user_types_Ar);
     if($users_Ar == FALSE) {

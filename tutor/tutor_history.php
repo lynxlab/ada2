@@ -73,6 +73,14 @@ $studentObj = MultiPort::findUser($id_student);
 if(AMA_DataHandler::isError($studentObj)) {
     header('Location: tutor.php');
     exit();
+} else if ($studentObj instanceof ADAPractitioner) {
+	/**
+	 * @author giorgio 14/apr/2015
+	 *
+	 * If student is actually a tutor, build a new student
+	 * object for history and evaluation purposes
+	 */
+	$studentObj = $studentObj->toStudent();
 }
 $student_name = $studentObj->getFullName();
 
