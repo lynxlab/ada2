@@ -95,71 +95,73 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 			$added_nodes_count = 0;
 			$read_notes_count = 0;
 			$chatlines_count = 0;
-			if (isset($course['id_corso'])) {
+			if (isset($course['id_corso']) && isset($course['id_istanza_corso'])) {
+				
 				$out_fields_ar = array();
-				// count read and written (aka added) forum notes
-				$clause = "tipo = '".ADA_NOTE_TYPE."' AND id_utente = ".$id_tutor;
+				// count written (aka added) forum notes
+				$clause =  "tipo = '".ADA_NOTE_TYPE."' AND id_utente = ".$id_tutor.
+						   " AND id_nodo LIKE '".$course['id_corso']."\_%'".
+						   " AND id_istanza=".$course['id_istanza_corso'];
 				$nodes = $dh->find_course_nodes_list($out_fields_ar, $clause,$course['id_corso']);
 				$added_nodes_count = count($nodes);
 				
-				if (isset($course['id_istanza_corso'])) {
-					/**
-					 * get tutor visit for course instance
-					 * the method name refers to student, but works ok for a tutor as well
-					 */
-					$visits = $GLOBALS['dh']->get_student_visits_for_course_instance($id_tutor, $course['id_corso'], $course['id_istanza_corso']);
-					$visitedNodes = array();
+				/**
+				 * get tutor visit for course instance (to count read notes)
+				 * the method name refers to student, but works ok for a tutor as well
+				 */
+				$visits = $GLOBALS['dh']->get_student_visits_for_course_instance($id_tutor, $course['id_corso'], $course['id_istanza_corso']);				
+				if (!AMA_DB::isError($visits) && is_array($visits) && count($visits)>0) {
 					foreach ($visits as $visit) {
-						if (!in_array($visit['id_nodo'], $visitedNodes)) {
-							$visitedNodes[] = $visit['id_nodo'];
-							if ($visit['tipo']==ADA_NOTE_TYPE) $read_notes_count++;
-						}
+ 						if ($visit['tipo']==ADA_NOTE_TYPE && 
+ 							$visit['id_utente']!=$id_tutor && 
+ 							intval($visit['numero_visite'])>0) $read_notes_count++;
 					}
-					/**
-					 * count class chat messages written by the tutor
-					 */
-					$class_chatrooms = ChatRoom::get_all_class_chatroomsFN($course['id_istanza_corso']);
-					if (!AMA_DB::isError($class_chatrooms) && is_array($class_chatrooms) && count($class_chatrooms)>0) {
-						foreach ($class_chatrooms as $aChatRoom) {
-							$mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
-							$chat_data = $mh->find_chat_messages($id_tutor, ADA_MSG_CHAT, $aChatRoom[0], '', 'id_mittente='.$id_tutor);
-							if (!AMA_DB::isError($chat_data) && is_array($chat_data) && count($chat_data)>0) {
-								$chatlines_count = count($chat_data);
-							}
-						}
-					}
-					
-					/**
-					 * count files uploaded, for each course
-					 */
-					$courseObj = new Course($course['id_corso']);
-					$uploadedFiles = 0;
-					if ($courseObj->isFull()) {
-						// 01. find the course media path
-						if($courseObj->media_path != "") {
-							$media_path = $courseObj->media_path;
-						} else {
-							$media_path = MEDIA_PATH_DEFAULT . $courseObj->id_autore;
-						}
-						$download_path = $root_dir . $media_path;
-						$elencofile = leggidir($download_path);
-						// 02. loop the $media_path dir looking for files
-						// uploaded by $id_tutor in the current course and course instance
-						if (!is_null($elencofile)) {
-							foreach ($elencofile as $singleFile) {
-								$complete_file_name = $singleFile['file'];
-								$filenameAr = explode('_',$complete_file_name);
-								$course_instance = isset($filenameAr[0]) ? $filenameAr[0] : null;
-								$id_sender  = isset($filenameAr[1]) ? $filenameAr[1] : null;
-								$id_course = isset($filenameAr[2]) ? $filenameAr[2] : null;
-								if ($id_course==$course['id_corso'] &&
-										$course_instance==$course['id_istanza_corso'] &&
-										$id_sender==$id_tutor) $uploadedFiles++;
-							}
-						}
-					}
-					
 				}
+				
+				/**
+				 * count class chat messages written by the tutor
+				 */
+				$class_chatrooms = ChatRoom::get_all_class_chatroomsFN($course['id_istanza_corso']);
+				if (!AMA_DB::isError($class_chatrooms) && is_array($class_chatrooms) && count($class_chatrooms)>0) {
+					foreach ($class_chatrooms as $aChatRoom) {
+						$mh = MessageHandler::instance($_SESSION['sess_selected_tester_dsn']);
+						$chat_data = $mh->find_chat_messages($id_tutor, ADA_MSG_CHAT, $aChatRoom[0], '', 'id_mittente='.$id_tutor);
+						if (!AMA_DB::isError($chat_data) && is_array($chat_data) && count($chat_data)>0) {
+							$chatlines_count = count($chat_data);
+						}
+					}
+				}
+				
+				/**
+				 * count files uploaded, for each course
+				 */
+				$courseObj = new Course($course['id_corso']);
+				$uploadedFiles = 0;
+				if ($courseObj->isFull()) {
+					// 01. find the course media path
+					if($courseObj->media_path != "") {
+						$media_path = $courseObj->media_path;
+					} else {
+						$media_path = MEDIA_PATH_DEFAULT . $courseObj->id_autore;
+					}
+					$download_path = $root_dir . $media_path;
+					$elencofile = leggidir($download_path);
+					// 02. loop the $media_path dir looking for files
+					// uploaded by $id_tutor in the current course and course instance
+					if (!is_null($elencofile)) {
+						foreach ($elencofile as $singleFile) {
+							$complete_file_name = $singleFile['file'];
+							$filenameAr = explode('_',$complete_file_name);
+							$course_instance = isset($filenameAr[0]) ? $filenameAr[0] : null;
+							$id_sender  = isset($filenameAr[1]) ? $filenameAr[1] : null;
+							$id_course = isset($filenameAr[2]) ? $filenameAr[2] : null;
+							if ($id_course==$course['id_corso'] &&
+								$course_instance==$course['id_istanza_corso'] &&
+								$id_sender==$id_tutor) $uploadedFiles++;
+						}
+					}
+				}
+					
 			}
 			$totalAddedNotes += $added_nodes_count;
 			$totalReadNotes += $read_notes_count;
