@@ -50,6 +50,15 @@ $history = '';
 
 $studentObj = read_user_from_DB($id_student);
 if ((is_object($studentObj)) && (!AMA_dataHandler::isError($studentObj))) {
+	if ($studentObj instanceof ADAPractitioner) {
+		/**
+		 * @author giorgio 14/apr/2015
+		 *
+		 * If student is actually a tutor, build a new student
+		 * object for history and evaluation purposes
+		 */
+		$studentObj = $studentObj->toStudent();
+	}
     $id_profile_student = $studentObj->getType();
     $student_type = $studentObj->convertUserTypeFN($id_profile_student);
     $user_name_student =  $studentObj->getUserName();

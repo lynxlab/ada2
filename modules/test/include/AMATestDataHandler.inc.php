@@ -495,7 +495,7 @@ class AMATestDataHandler extends AMA_DataHandler {
 				WHERE ha.`id_answer` = ?";
         $res =  $this->getAllPrepared($sql, array($id_answer), AMA_FETCH_ASSOC);
 
-        if(self::isError($tmp_res)) {
+        if(self::isError($res)) {
             return new AMA_Error(AMA_ERR_GET);
         }
         else {

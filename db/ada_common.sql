@@ -8080,7 +8080,7 @@ CREATE TABLE IF NOT EXISTS `servizio` (
 --
 
 INSERT INTO `servizio` (`id_servizio`, `nome`, `descrizione`, `livello`, `durata_servizio`, `min_incontri`, `max_incontri`, `durata_max_incontro`) VALUES
-(1, 'Manuale  ADA', '', 1, 0, 0, 0, 0);
+(1, 'Manuale  ADA', '', 99, 0, 0, 0, 0);
 
 
 -- --------------------------------------------------------
@@ -8236,6 +8236,8 @@ CREATE TABLE IF NOT EXISTS `service_type` (
   `custom_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `custom_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `custom_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hiddenFromInfo` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
+  `isPublic` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_tipo_servizio`),
   UNIQUE KEY `livello_servizio` (`livello_servizio`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -8244,8 +8246,10 @@ CREATE TABLE IF NOT EXISTS `service_type` (
 -- Dump dei dati per la tabella `service_type`
 --
 
-INSERT INTO `service_type` (`id_tipo_servizio`, `livello_servizio`, `nome_servizio`, `descrizione_servizio`, `custom_1`, `custom_2`, `custom_3`) VALUES
-(1, 1, 'Corso Online', '', '', '', '');
+INSERT INTO `service_type` (`id_tipo_servizio`, `livello_servizio`, `nome_servizio`, `descrizione_servizio`, `custom_1`, `custom_2`, `custom_3`, `hiddenFromInfo`, `isPublic`) VALUES
+(1, 1, 'Corso Online', '', '', '', '', 0, 0),
+(2, 2, 'Comunità di Tutor', '', '', '', '', 1, 0),
+(3, 99, 'Corso Pubblico', '', '', '', '', 1, 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

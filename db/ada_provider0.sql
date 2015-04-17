@@ -416,8 +416,8 @@ CREATE TABLE IF NOT EXISTS `modello_corso` (
 -- Dump dei dati per la tabella `modello_corso`
 --
 
-INSERT INTO `modello_corso` (`id_corso`, `id_utente_autore`, `id_layout`, `nome`, `titolo`, `data_creazione`, `data_pubblicazione`, `descrizione`, `id_nodo_iniziale`, `id_nodo_toc`, `media_path`, `static_mode`, `id_lingua`, `crediti`, `id_servizio`) VALUES
-(1, 3, 0, 'pub-01', 'Manuale  ADA', NULL, NULL, NULL, '0', '0', NULL, 0, 1, 1, 0);
+INSERT INTO `modello_corso` (`id_corso`, `id_utente_autore`, `id_layout`, `nome`, `titolo`, `data_creazione`, `data_pubblicazione`, `descrizione`, `id_nodo_iniziale`, `id_nodo_toc`, `media_path`, `static_mode`, `id_lingua`, `crediti`, `duration_hours`, `tipo_servizio`) VALUES
+(1, 3, 0, 'pub-01', 'Manuale  ADA', NULL, NULL, NULL, '0', '0', NULL, 0, 1, 1, 0, 99);
 
 -- --------------------------------------------------------
 

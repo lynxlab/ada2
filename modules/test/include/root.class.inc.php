@@ -984,7 +984,7 @@ abstract class RootTest extends NodeTest
 
 
 			//test di sbarramento
-			if (is_a($this,TestTest)) {
+			if (is_a($this,'TestTest')) {
 				$sbarramento = ($this->barrier)?translateFN('Si'):translateFN('No');
 				$lis[++$i] = CDOMElement::create('li','class:li_test_info');
 				$lis[$i]->addChild(new CText('<b>'.translateFN('Test di sbarramento').'</b>: '.$sbarramento));

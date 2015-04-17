@@ -2235,9 +2235,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $courses_sql = 'SELECT S.id_servizio, S.nome, S.descrizione, S.durata_servizio FROM servizio AS S, (SELECT distinct(id_servizio) FROM servizio_tester';
-        if (!is_null($id_tester) && intval($id_tester)>0) $courses_sql .= ' WHERE id_tester='.intval($id_tester); 
-        $courses_sql .= ') AS ST WHERE S.id_servizio = ST.id_servizio';
+        $courses_sql = 'SELECT S.id_servizio, S.nome, S.descrizione, S.durata_servizio FROM servizio AS S '.
+        		'JOIN `service_type` AS STYPE ON STYPE.`livello_servizio`=S.`livello` AND STYPE.`hiddenFromInfo`!=1 '.
+        		'JOIN `servizio_tester` AS ST ON ST.`id_servizio`=S.`id_servizio`';
+        if (!is_null($id_tester) && intval($id_tester)>0) $courses_sql .= ' WHERE id_tester='.intval($id_tester);
 
         $result = $db->getAll($courses_sql, null, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
@@ -9966,7 +9967,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         // return the tutor id
-        return $id;
+        return $tutor_ha['id_utente'];
     }
 
     /**
@@ -10017,7 +10018,27 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @see find_tutors_list
      */
     public function &get_tutors_list($field_list_ar) {
-        return $this->find_tutors_list($field_list_ar);
+        return $this->find_tutors_list($field_list_ar,'',false);
+    }
+    
+    /**
+     * Get a list of super tutor' fields from the DB
+     *
+     * @access public
+     *
+     * @param $field_list_ar an array containing the desired fields' names
+     *        possible values are: nome, cognome, e-mail, username, password, telefono, profilo, tariffa
+     *
+     * @return a nested array containing the list, or an AMA_Error object or a DB_Error object if something goes wrong
+     * The form of the nested array is:
+     *     array(array(ID1, 'field_1_1', 'field_1_2'),
+     *           array(ID2, 'field_2_1', 'field_2_2'),
+     *           array(ID3, 'field_3_1', 'field_3_2'))
+     *
+     * @see find_tutors_list
+     */
+    public function &get_supertutors_list($field_list_ar) {
+    	return $this->find_tutors_list($field_list_ar,'',true);
     }
 
     /**
@@ -10049,7 +10070,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *           array(ID2, 'field_2_1', 'field_2_2'),
      *           array(ID3, 'field_3_1', 'field_3_2'))
      */
-    public function &find_tutors_list($field_list_ar, $clause='') {
+    public function &find_tutors_list($field_list_ar, $clause='', $supertutors=false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
@@ -10063,7 +10084,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         // do the query
-        $sql_query="select id_utente$more_fields from utente, tutor where  tipo=".AMA_TYPE_TUTOR ." and id_utente=id_utente_tutor$clause";
+        $sql_query="select id_utente$more_fields from utente, tutor where  tipo=".
+        ($supertutors ? AMA_TYPE_SUPERTUTOR : AMA_TYPE_TUTOR) ." and id_utente=id_utente_tutor$clause";
         $tutors_ar =  $db->getAll($sql_query);
         if (AMA_DB::isError($tutors_ar)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -10081,34 +10103,39 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *
      * @param $id_tutor pass a single/array tutor id or use "false" to retrieve all tutors
      * @param $id_course if passed as int, select only instances of the passed course id
+     * @param $isSuper true if the tutor is a supertutor
      *
      *
      * @return a nested array containing the list, or an AMA_Error object or a DB_Error object if something goes wrong
      * The form of the nested array is:
      *     array('tutor id'=>array('course_instance', 'course_instance', 'course_instance'));
      */
-    public function &get_tutors_assigned_course_instance($id_tutor = false, $id_course = false) {
+    public function &get_tutors_assigned_course_instance($id_tutor = false, $id_course = false, $isSuper = false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
         // do the query
-        $sql = "SELECT
-					ts.`id_utente_tutor`,
-					c.`id_corso`, c.`titolo`, c.`id_utente_autore`,
+        $sql = "SELECT ".
+					(($isSuper) ? $id_tutor." AS `id_utente_tutor`" : "ts.`id_utente_tutor`") .",".
+					"c.`id_corso`, c.`titolo`, c.`id_utente_autore`,
 					i.`id_istanza_corso`, i.`title`,i.`data_inizio_previsto`,i.`data_fine`,i.`duration_hours`,
                                         i.`durata`,i.`self_instruction`
-				FROM `tutor_studenti` ts
-				JOIN `istanza_corso` i ON (i.`id_istanza_corso`=ts.`id_istanza_corso`)
-				JOIN `modello_corso` c ON (c.`id_corso`=i.`id_corso`)";
+				FROM ".
+				(($isSuper) ? "" : "`tutor_studenti` ts JOIN ").
+				"`istanza_corso` i ".
+				(($isSuper) ? "" : "ON (i.`id_istanza_corso`=ts.`id_istanza_corso`)").
+				" JOIN `modello_corso` c ON (c.`id_corso`=i.`id_corso`)";
 
-		if (is_array($id_tutor) AND !empty($id_tutor))
-		{
-			$sql .= " WHERE id_utente_tutor IN (".implode(',',$id_tutor).")";
-		}
-		else if ($id_tutor)
-		{
-			$sql .= " WHERE id_utente_tutor = ".$id_tutor;
-		}
+        if (!$isSuper) {
+			if (is_array($id_tutor) AND !empty($id_tutor))
+			{
+				$sql .= " WHERE id_utente_tutor IN (".implode(',',$id_tutor).")";
+			}
+			else if ($id_tutor)
+			{
+				$sql .= " WHERE id_utente_tutor = ".$id_tutor;
+			}
+        }
 		
 		if (is_numeric($id_course) && intval($id_course)>0) {
 			
@@ -10121,7 +10148,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $tutors_ar =  $db->getAll($sql, null, AMA_FETCH_ASSOC);
         
         if (AMA_DB::isError($tutors_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        	$retval = new AMA_Error(AMA_ERR_GET); 
+            return $retval;
         }
         else {
 			$tutors = array();
@@ -10440,16 +10468,20 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @access public
      *
      * @param $id_tutor    - tutor id
-     * @param $id_corso    - course instance id
+     * @param $isSuper     - true if tutor is a supertutor
      *
      * @return
      */
-    public function course_tutor_instance_get($id_tutor) {
+    public function course_tutor_instance_get($id_tutor, $isSuper=false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
         // select row into table tuto_studenti
-        $sql =  "select id_istanza_corso,id_utente_tutor from tutor_studenti where id_utente_tutor='$id_tutor'";
+        if (!$isSuper) {
+	        $sql =  "select id_istanza_corso,id_utente_tutor from tutor_studenti where id_utente_tutor='$id_tutor'";
+        } else {
+	        $sql =  "select id_istanza_corso, $id_tutor AS id_utente_tutor FROM istanza_corso";        	
+        }
         $res =  $db->getAll($sql);
         if(AMA_DB::isError($res)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -11126,7 +11158,7 @@ public function get_updates_nodes($userObj, $pointer)
    */
     public function get_service_type($id_user=NULL) {
         
-    $service_sql = "SELECT id_tipo_servizio, livello_servizio,nome_servizio,descrizione_servizio,custom_1,custom_2,custom_3  FROM service_type";
+    $service_sql = "SELECT id_tipo_servizio, livello_servizio,nome_servizio,descrizione_servizio,custom_1,custom_2,custom_3,hiddenFromInfo,isPublic  FROM service_type";
     $common_dh = AMA_Common_DataHandler::instance();
     
     /* if isset $id_user it means that the admin is asking data for log_report.php, and he have to take data from common db */

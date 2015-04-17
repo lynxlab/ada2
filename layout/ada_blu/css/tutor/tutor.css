@@ -1,32 +1,40 @@
 @CHARSET "UTF-8";
-
+@import url("../switcher/tooltips.css");
 /*
- * #table_Report jQuery dataTable
+ * table.doDataTable jQuery dataTable
  */
-#table_Report { width: 100% !important; }
-#table_Report tbody td { height: 2.5em; border:none; vertical-align: middle; }
-#table_Report thead th { padding-right: 5px; border-bottom: 1px solid #999; }
-#table_Report .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; }
-#table_Report_previous,
-#table_Report_next { margin:0; padding: 3px; }
-#table_Report_length,
-#table_Report_filter,
-#table_Report_paginate { padding: 5px; }
-#table_Report_info { padding: 8px 0 0 5px; }
-#table_Report .dontwrap { white-space: nowrap; }
-#table_Report tfoot th { font-weight: 100; padding: 10px 0 10px 0; text-align: center; border-top: 1px solid #999; }
+#container table.doDataTable { width: 100% !important; }
+#container table.doDataTable tbody td { height: 2.5em; border:none; vertical-align: middle; }
+#container table.doDataTable thead th { padding-right: 5px; border-bottom: 1px solid #999; }
+#container table.doDataTable .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; }
+#container .dataTables_wrapper div.dataTables_paginate > a { margin:0; padding: 3px; }
+.dataTables_length,
+.dataTables_filter,
+.dataTables_paginate { padding: 5px; }
+.dataTables_info { padding: 8px 0 0 5px; }
+#container table.doDataTable .dontwrap { white-space: nowrap; }
+#container table.doDataTable tfoot th { font-weight: 100; padding: 10px 0 10px 0; text-align: center; border-top: 1px solid #999; }
 /*
- * end #table_Report jQuery dataTable
+ * end table.doDataTable jQuery dataTable
  */
 
+table.doDataTable td.actionCol,
+table.doDataTable td.centerAlign { text-align: center; }
+table.doDataTable td.actionCol a { margin-right: 10px; background-color:transparent; display: inline-block; }
+#tutorCommunitiesTable .DataTables_sort_icon,
+#listTutors .DataTables_sort_icon,
+#listCourses .DataTables_sort_icon { float: right; margin-top: -20px; }
+#listTutors caption,
+#listCourses caption { width: 65%; margin: -25px auto 0 auto; position: relative; top: -4px; font-weight: bold;   color: #fff; }
+table#listTutors.dataTable td.details { padding-left: 3%; padding-right: 1%; background: darkgray; }
 /*
- * #table_Report actions
+ * table.doDataTable actions
  */ 
-#table_Report .ulactions { list-style-type: none; display: block; padding:0; margin:0; }
-#table_Report .liactions { text-align:center; border: none !important; margin-bottom: 5px; }
-#table_Report .button_Increase, #table_Report .button_Decrease { height: 1.5em; }
+table.doDataTable .ulactions { list-style-type: none; display: block; padding:0; margin:0; }
+table.doDataTable .liactions { text-align:center; border: none !important; margin-bottom: 5px; }
+table.doDataTable .button_Increase, table.doDataTable .button_Decrease { height: 1.5em; }
 /*
- * end #table_Report actions
+ * end table.doDataTable actions
  */
 
 .saveResults {

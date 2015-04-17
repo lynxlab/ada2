@@ -110,6 +110,7 @@ define('ADA_COURSEINSTANCE_STATUS_PUBLIC',   2);
 define('ADA_SERVICE_ONLINECOURSE', 1);
 define('ADA_SERVICE_PRESENCECOURSE', 2);
 define('ADA_SERVICE_MIXEDCOURSE', 3);
+define('ADA_SERVICE_TUTORCOMMUNITY', 4);
 
 /**
  * ADA token
@@ -152,6 +153,7 @@ define('AMA_TYPE_STUDENT',      3);
 define('AMA_TYPE_TUTOR',        4);
 define('AMA_TYPE_VISITOR',      5);
 define('AMA_TYPE_SWITCHER',     6);
+define('AMA_TYPE_SUPERTUTOR',   7);
 
 /**
  * Message types

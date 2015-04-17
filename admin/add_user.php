@@ -180,6 +180,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
       case AMA_TYPE_AUTHOR:
         $userObj = new ADAAuthor($user_dataAr);
         break;
+      case AMA_TYPE_SUPERTUTOR:
       case AMA_TYPE_TUTOR:
         $userObj = new ADAPractitioner($user_dataAr);
         break;        
