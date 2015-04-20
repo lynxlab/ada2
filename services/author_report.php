@@ -82,14 +82,22 @@ switch ($mode) {
                         // etc etc
                 );
             }
-            $tObj = new Table();
-            $tObj->initTable('0','right','1','0','90%','','','','','1','0');
-
-            $caption = translateFN('Dettaglio');
-            $summary = translateFN('Dettaglio delle visite al nodo').$id_node;
-            $tObj->setTable($visits_dataHa,$caption,$summary);
-            $tabled_visits_dataHa = $tObj->getTable();
-
+            $caption = translateFN('Dettaglio delle visite al nodo').' '.$id_node;
+            $tObj = BaseHtmlLib::tableElement('id:authorZoom',array_keys(reset($visits_dataHa)),$visits_dataHa,null,$caption);
+            $tObj->setAttribute('class', 'default_table doDataTable');
+            $tabled_visits_dataHa = $tObj->getHtml();
+            $optionsAr['onload_func'] = 'initDoc();';
+            $layout_dataAr['CSS_filename'] = array (
+            		JQUERY_UI_CSS,
+            		JQUERY_DATATABLE_CSS,
+            );
+            $layout_dataAr['JS_filename'] = array(
+            		JQUERY,
+            		JQUERY_UI,
+            		JQUERY_DATATABLE,
+            		JQUERY_DATATABLE_DATE,
+            		JQUERY_NO_CONFLICT
+            );            
         }
         else {
             $tabled_visits_dataHa = translateFN('Nessun dato disponibile');
@@ -192,6 +200,7 @@ switch ($mode) {
             		JQUERY,
             		JQUERY_UI,
             		JQUERY_DATATABLE,
+            		ROOT_DIR . '/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
             		JQUERY_NO_CONFLICT
             );
         }
