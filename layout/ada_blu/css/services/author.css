@@ -1,0 +1,21 @@
+@CHARSET "UTF-8";
+@import url("../switcher/tooltips.css");
+/*
+ * table.doDataTable jQuery dataTable
+ */
+#container table.doDataTable { width: 100% !important; }
+#container table.doDataTable tbody td { height: 2.5em; border:none; vertical-align: middle; }
+#container table.doDataTable thead th { padding-right: 5px; border-bottom: 1px solid #999; }
+#container table.doDataTable .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; }
+#container .dataTables_wrapper div.dataTables_paginate > a { margin:0; padding: 3px; }
+.dataTables_length,
+.dataTables_filter,
+.dataTables_paginate { padding: 5px; }
+.dataTables_info { padding: 8px 0 0 5px; }
+#container table.doDataTable .dontwrap { white-space: nowrap; }
+#container table.doDataTable tfoot th { font-weight: 100; padding: 10px 0 10px 0; text-align: center; border-top: 1px solid #999; }
+table.doDataTable td.actionCol,
+table.doDataTable td.centerAlign { text-align: center; }
+table.doDataTable td.actionCol a { margin-right: 10px; background-color:transparent; display: inline-block; }
+#container table.doDataTable .DataTables_sort_icon { float: right; margin-top: -20px; }
+#container table.doDataTable caption { width: 65%; margin: -25px auto 0 auto; position: relative; top: -4px; font-weight: bold;   color: #fff; }

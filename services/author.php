@@ -111,12 +111,22 @@ else {
     );
     array_push($course_dataHa,$row);
   }
-  $tObj = new Table();
-  $tObj->initTable('0',"center",'2','1','60%','','','','',1,0);
   $caption = translateFN("Corsi inviati e attivi il")." $ymdhms";
-  $summary = translateFN("Elenco dei corsi");
-  $tObj->setTable($course_dataHa,$caption,$summary);
-  $total_course_data = $tObj->getTable();
+  $tObj = BaseHtmlLib::tableElement('id:authorTable, class:doDataTable',array_keys(reset($course_dataHa)),$course_dataHa,null,$caption);
+  $tObj->setAttribute('class', 'default_table doDataTable');
+  $total_course_data = $tObj->getHtml();
+  $optionsAr['onload_func'] = 'initDoc();';
+  $layout_dataAr['CSS_filename'] = array (
+  		JQUERY_UI_CSS,
+  		JQUERY_DATATABLE_CSS,
+  );
+  $layout_dataAr['JS_filename'] = array(
+  		JQUERY,
+  		JQUERY_UI,
+  		JQUERY_DATATABLE,
+  		JQUERY_DATATABLE_DATE,
+  		JQUERY_NO_CONFLICT
+  );
 }
 
 if (isset($err_msg)) {
@@ -165,4 +175,4 @@ $content_dataAr = array(
 /**
  * Sends data to the rendering engine
  */
-ARE::render($layout_dataAr,$content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr, null, (isset($optionsAr) ? $optionsAr : null));
