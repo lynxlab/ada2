@@ -82,20 +82,21 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 	
 		$started = ($c['data_inizio'] > 0 && $c['data_inizio'] < time()) ? translateFN('Si') : translateFN('No');
 		$start_date = ($c['data_inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
-		 
+		
 		if (isset($c['data_iscrizione']) && intval($c['data_iscrizione'])>0) $start_date = intval($c['data_iscrizione']);
-		if (isset($c['duration_subscription']) && intval($c['duration_subscription'])>0) {
-			$duration = $c['duration_subscription'];
-			$end_date = $common_dh->add_number_of_days($duration, $start_date);
-		} else {
-			$duration = $c['duration_subscription'];
-			$end_date = $c['data_fine'];
-		}
-	
+		
 		$isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 		$isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
 		$access_link = BaseHtmlLib::link("#",
 				translateFN('Attendi apertura corso'));
+		
+		if (!$isEnded && isset($c['duration_subscription']) && intval($c['duration_subscription'])>0) {
+			$duration = $c['duration_subscription'];
+			$end_date = $common_dh->add_number_of_days($duration, $start_date);
+		} else {
+			$duration = $c['durata'];
+			$end_date = $c['data_fine'];
+		}
 
 		if (!in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED))) {
 			$access_link = BaseHtmlLib::link("#", translateFN('Abilitazione in corso...'));
@@ -113,14 +114,15 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 				if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 				$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
 				if ($isEnded || time()>=$subscritionEndDate) {
-					$userObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
+					$tmpUserObj = new ADAUser($userObj->toArray());
+					$tmpUserObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
 					$subscription_status = ADA_STATUS_TERMINATED;
 				}
 			}
 	
 			$link = CDOMElement::create('a','href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$nodeId.'&id_course='.$courseId.'&id_course_instance='.$courseInstanceId);
 			if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED || $subscription_status == ADA_STATUS_COMPLETED) {
-				$link->addChild(new CText(translateFN('Rivedi il corso')));
+				$link->addChild(new CText(translateFN('Rivedi i contenuti')));
 			} else if ($isStarted && !$isEnded) {
 				$link->addChild(new CText(translateFN('Accedi')));
 			}
