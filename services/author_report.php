@@ -28,7 +28,7 @@ $allowedUsersAr = array(AMA_TYPE_AUTHOR);
  * Performs basic controls before entering this module
  */
 $neededObjAr = array(
-        AMA_TYPE_AUTHOR => array('layout')
+        AMA_TYPE_AUTHOR => array('layout','course')
 );
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
@@ -117,40 +117,7 @@ switch ($mode) {
 
         $status = translateFN('elenco dei nodi');
         $help = translateFN("Da qui l'Autore del corso può vedere la lista dei nodi di cui è autore.");
-
-
-        //$dh = new AMA_DataHandler();
-        $course_listaHa = $dh->find_courses_list_by_key(array('id_corso','nome','titolo','data_pubblicazione'),$sess_id_user, array('id_utente_autore'));
-        /* FIXME:
-     * Se course_listaHa e' un errore di tipo AMA_ERR_NOT_FOUND tutto ok, semplicemente non ci sono
-     * corsi, altimenti ADA_Error
-        */
-        if ((AMA_DataHandler::isError($course_listaHa)) || (!is_array($course_listaHa))) {
-            $total_course_data = '';
-        }
-        else {
-            $course_dataHa = array();
-            foreach ($course_listaHa as $course) {
-                $course_id = $course[1];
-                $course_name = $course[2];
-                $course_title = $course[3];
-                $course_date = getdate($course[4]);
-                $course_dataHa [] ="<a href=\"author_report.php?id_course=$course_id\">$course_name</a>"
-                        .$course_date['mday'].'/'.$course_date['mon'].'/'.$course_date['year'];
-            }
-            $lObj = new Ilist();
-            $lObj->setList($course_dataHa);
-            $total_course_data = $lObj->getList();
-        }
-
-        //$sent_courses = $total_course_data;
-
-//        if (!isset($id_course)) {
-//            if (is_array($course)) {
-//                $id_course = $course[0]; //??
-//            }
-//        }
-
+		$course_id = isset($_GET['id_course']) ? intval($_GET['id_course']) : null;
         $courseHa = $dh->get_course($course_id);
         if (AMA_DataHandler::isError($courseHa)) {
             $err_msg = $courseHa->getMessage();
@@ -159,7 +126,7 @@ switch ($mode) {
         }
         else {
             $course_title = $courseHa['titolo'];
-            $clause = "id_nodo LIKE '{$course_id}_%' AND ";
+            $clause = "id_nodo LIKE '{$course_id}\_%' AND ";
             $field_list_ar = array('nome','id_utente');
             $clause .= "id_utente='$sess_id_user'";
             $dataHa = $dh->_find_nodes_list($field_list_ar, $clause);
@@ -208,16 +175,25 @@ switch ($mode) {
             }
         }
 
-        if (isset($err_msg)) {
+        if (isset($err_msg) || !is_array($visits_dataHa) || count($visits_dataHa)<=0) {
             $tabled_visits_dataHa = translateFN("Nessun corso assegnato all'autore.");
         }
         else {
-            $tObj = new Table();
-            $tObj->initTable('0','center','1','0','90%','','','','','1','0');
-            $caption = translateFN('Corso:')." <strong>$course_title</strong> ".translateFN('- Report al ')." <strong>$ymdhms</strong>";
-            $summary = translateFN('Elenco dei nodi visitati');
-            $tObj->setTable($visits_dataHa,$caption,$summary);
-            $tabled_visits_dataHa = $tObj->getTable();
+            $caption = translateFN('Corso:')." <strong>$course_title</strong> ".translateFN('- Report al ')." <strong>$ymdhms</strong>";            
+            $tObj = BaseHtmlLib::tableElement('id:authorReport, class: doDataTable',array_keys($visits_dataHa[0]),$visits_dataHa,null,$caption);
+            $tObj->setAttribute('class', 'default_table doDataTable');
+            $tabled_visits_dataHa = $tObj->getHtml();
+            $optionsAr['onload_func'] = 'initDoc();';
+            $layout_dataAr['CSS_filename'] = array (
+            		JQUERY_UI_CSS,
+            		JQUERY_DATATABLE_CSS,
+            );
+            $layout_dataAr['JS_filename'] = array(
+            		JQUERY,
+            		JQUERY_UI,
+            		JQUERY_DATATABLE,
+            		JQUERY_NO_CONFLICT
+            );
         }
 }
 
@@ -238,4 +214,4 @@ $content_dataAr = array(
         'messages'     => $user_messages->getHtml()
 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr, null, (isset($optionsAr) ? $optionsAr : null));

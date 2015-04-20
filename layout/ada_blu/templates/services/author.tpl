@@ -70,7 +70,9 @@
             <div id="content">
                 <div id="contentcontent" class="contentcontent_default">
                     <div class="first">
-                        <template_field class="template_field" name="help">help</template_field>
+                        <div class="help">
+                            <template_field class="template_field" name="help">help</template_field>
+                        </div>
                         <template_field class="template_field" name="head">head</template_field>
                         <template_field class="template_field" name="form">form</template_field>
                     </div>
