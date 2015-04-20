@@ -16,16 +16,17 @@ function initDoc(){
     	"sClass" : "actionCol"
     }];
     /**
-     * authorReport table must have the last 2 columns as non sortable
+     * authorTable table must have the last 3 columns as non sortable
      */
     if ($j('#authorTable').length>0) {
-    	moreColDefs = [{
-	    	"aTargets": [lastCol-3],
-	    	"sWidth" : "1%",
-	    	"bSortable":false,
-	    	"sClass" : "actionCol"
-    	},
-    	{"aTargets" : [2], "sType":"date-eu" }]
+    	moreColDefs = [{"aTargets": [lastCol-3], "sWidth" : "1%", "bSortable":false, "sClass" : "actionCol" },
+    	               {"aTargets": [2], "sType":"date-eu" }];
+    } else if ($j('#authorReport').length>0) {
+    	moreColDefs = [{"aTargets": [lastCol-3], "sWidth" : "7%", "sClass":"centerAlign" },
+    	               {"aTargets": [0], "sType":"formatted-num" }];
+    } else if ($j('#authorZoom').length>0) {
+    	colDefs = [{"aTargets": [lastCol-1], "sWidth" : "15%", "sClass" : "centerAlign" },
+    	           {"aTargets": [0], "sType":"date-eu" }];
     }
     
     if (colDefs == null) colDefs=[];
