@@ -100,18 +100,20 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            $start_date = ($c['data_inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
 	            
 	            if (isset($c['data_iscrizione']) && intval($c['data_iscrizione'])>0) $start_date = intval($c['data_iscrizione']);
-	            if (isset($c['duration_subscription']) && intval($c['duration_subscription'])>0) {
-	            	$duration = $c['duration_subscription'];
-	            	$end_date = $common_dh->add_number_of_days($duration, $start_date);
-	            } else {
-	            	$duration = $c['duration_subscription'];
-	            	$end_date = $c['data_fine'];
-	            }
 	
 	            $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 	            $isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
 	            $access_link = BaseHtmlLib::link("#",
 	                        translateFN('Attendi apertura corso'));
+	            
+	            if (!$isEnded && isset($c['duration_subscription']) && intval($c['duration_subscription'])>0) {
+	            	$duration = $c['duration_subscription'];
+	            	$end_date = $common_dh->add_number_of_days($duration, $start_date);
+	            } else {
+	            	$duration = $c['durata'];
+	            	$end_date = $c['data_fine'];
+	            }
+	            
 	            /*
 	            if ($isStarted && !$isEnded) {
 	                $access_link = BaseHtmlLib::link("view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId",
