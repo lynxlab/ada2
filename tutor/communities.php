@@ -114,7 +114,8 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 				if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 				$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
 				if ($isEnded || time()>=$subscritionEndDate) {
-					$tmpUserObj = new ADAUser($userObj->toArray());
+					if ($userObj instanceof ADAPractitioner) $tmpUserObj = $userObj->toStudent();
+					else $tmpUserObj = $userObj;
 					$tmpUserObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
 					$subscription_status = ADA_STATUS_TERMINATED;
 				}
