@@ -43,7 +43,7 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
 	                    $valuta = '<a href="'.$http_root_dir.'/tutor/tutor.php?op=student&id_instance='.$id_instance.'&id_course='.$id_course.'">'.
 	                    	'<img src="img/magnify.png"  alt="'.translateFN('valuta').'" title="'.translateFN('valuta').'" class="tooltip" border="0"></a>';
 	                    if(defined('MODULES_CLASSAGENDA') && (MODULES_CLASSAGENDA)) {
-                        	$presenze = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcall.php"><img src="img/badge.png"  alt="'.translateFN('presenze').'"  title="'.translateFN('presenze').'" class="tooltip" border="0"></a>';
+                        	$presenze = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcall.php?id_course_instance='.$id_instance.'"><img src="img/badge.png"  alt="'.translateFN('presenze').'"  title="'.translateFN('presenze').'" class="tooltip" border="0"></a>';
                         	$registro = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcallhistory.php?id_course_instance='.$id_instance.'"><img src="img/registro.png"  alt="'.translateFN('registro').'" title="'.translateFN('registro').'" class="tooltip" border="0"></a>';
                     	}
 	                    $data_inizio = AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], "%d/%m/%Y");

@@ -29,7 +29,7 @@ class rollcallManagement extends abstractClassAgendaManagement
 		
 		$this->_userObj = $_SESSION['sess_userObj'];
 		
-		if ($this->_userObj instanceof ADALoggableUser && is_null($id_course_instance)) {
+		if ($this->_userObj instanceof ADALoggableUser) {
 			$this->eventData = $this->_findClosestCourseInstance();
 			
 			if (!is_null($this->eventData)) {
@@ -367,7 +367,7 @@ class rollcallManagement extends abstractClassAgendaManagement
 	
 	private function _findClosestCourseInstance() {
 		$dh = $GLOBALS['dh'];
-		$result = $dh->findClosestClassroomEvent ($this->_userObj->getId());
+		$result = $dh->findClosestClassroomEvent ($this->_userObj->getId(), $this->id_course_instance);
 		
 		if (AMA_DB::isError($result)) return null;
 		else {

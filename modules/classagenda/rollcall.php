@@ -53,7 +53,7 @@ $GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION
  * the course instance having a class event
  * with minimum time distance from now
  */
-$rollcallManager = new rollcallManagement();
+$rollcallManager = new rollcallManagement(isset($id_course_instance) ? $id_course_instance : null);
 $data = $rollcallManager->run(MODULES_CLASSAGENDA_DO_ROLLCALL);
 
 $content_dataAr = array(

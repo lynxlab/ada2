@@ -204,25 +204,30 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	}
 	
 	/**
-	 * find the closest class room event for the passed tutor.
+	 * find the closest class room event for the passed tutor and instance.
 	 * Used to make the roll call page
 	 * 
 	 * @param number $tutor_id
+	 * @param number $course_instance_id
 	 */
-	public function findClosestClassroomEvent ($tutor_id) {
+	public function findClosestClassroomEvent ($tutor_id,$course_instance_id=null) {
 		if (strlen($tutor_id)>0 && is_numeric($tutor_id)) {
-			
+			$params = array ($tutor_id);
 			$sql = 'SELECT *,TIMESTAMPDIFF(SECOND,NOW(),FROM_UNIXTIME(end)) AS endseconds'.
-					' FROM `'.self::$PREFIX.'calendars` WHERE `id_utente_tutor`=?'.
+					' FROM `'.self::$PREFIX.'calendars` WHERE `id_utente_tutor`=?';
+					if (!is_null($course_instance_id) && strlen($course_instance_id)>0 && is_numeric($course_instance_id)) {
+						$sql .= ' AND `id_istanza_corso`=?';
+						$params[] = $course_instance_id;
+					}
 					// date is today
-					' AND DATE(FROM_UNIXTIME(start))=CURDATE() AND'.
+					$sql .= ' AND DATE(FROM_UNIXTIME(start))>=CURDATE() AND'.
 					// end time is less than now
 					' (TIMESTAMPDIFF(SECOND,NOW(),FROM_UNIXTIME(end)))>=0'.
 					// order by endseconds ASC and get the first
 					// row only to get the event that ends closest to now
 					' ORDER BY endseconds ASC';
 
-			return $this->getRowPrepared($sql,$tutor_id,AMA_FETCH_ASSOC);
+			return $this->getRowPrepared($sql,$params,AMA_FETCH_ASSOC);
 			
 		} else return null;
 	}
