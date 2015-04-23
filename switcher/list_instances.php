@@ -74,6 +74,7 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
 
         foreach($instancesAr as $instance) {
             $instanceId = $instance[0];
+            $actionsArray = array();
 
             /*
              * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
