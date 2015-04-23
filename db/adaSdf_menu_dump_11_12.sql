@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dic 11, 2014 alle 10:33
+-- Generation Time: Apr 23, 2015 alle 12:34
 -- Versione del server: 5.5.38-cll-lve
 -- PHP Version: 5.4.29
 
@@ -23,6 +23,165 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `menu_items`
+--
+
+CREATE TABLE IF NOT EXISTS `menu_items` (
+`item_id` int(11) NOT NULL,
+  `label` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `extraHTML` text COLLATE utf8_unicode_ci,
+  `icon` text COLLATE utf8_unicode_ci,
+  `icon_size` text COLLATE utf8_unicode_ci,
+  `href_properties` text COLLATE utf8_unicode_ci,
+  `href_prefix` text COLLATE utf8_unicode_ci,
+  `href_path` text COLLATE utf8_unicode_ci,
+  `href_paramlist` text COLLATE utf8_unicode_ci,
+  `extraClass` text COLLATE utf8_unicode_ci,
+  `groupRight` int(1) NOT NULL DEFAULT '0',
+  `specialItem` int(1) NOT NULL DEFAULT '0',
+  `order` int(3) unsigned NOT NULL DEFAULT '0',
+  `enabledON` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%'
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+
+--
+-- Dump dei dati per la tabella `menu_items`
+--
+
+INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, `href_properties`, `href_prefix`, `href_path`, `href_paramlist`, `extraClass`, `groupRight`, `specialItem`, `order`, `enabledON`) VALUES
+(1, 'home', NULL, 'home', 'large', NULL, '%HTTP_ROOT_DIR%/browsing', 'user.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(2, 'Comunica', '<div class="ui label" id="msglabel" style="display:none;">             <i class="mail small icon"></i><span id="unreadmsgbadge"></span>         </div>', 'comment', 'large', NULL, NULL, NULL, NULL, NULL, 0, 0, 10, '%ALWAYS%'),
+(3, 'Messaggeria', NULL, 'mail', NULL, '{"onclick":"openMessenger(''../comunica/list_messages.php'',800,600);"}', NULL, NULL, NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(4, 'Forum', NULL, 'community basic', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'main_index.php?op=forum', '', NULL, 0, 0, 10, '%ALWAYS%'),
+(9, 'Esci', NULL, 'sign out', 'large', NULL, '%HTTP_ROOT_DIR%', NULL, NULL, NULL, 1, 0, 500, '$sess_id_user'),
+(10, 'cerca', '<div class="ui search small icon input">\r\n<span><i18n>Cerca</i18n></span>\r\n<input type="text" placeholder="<i18n>Cerca</i18n>...">\r\n        <i class="search link icon"></i>\r\n</div>', NULL, NULL, NULL, NULL, NULL, NULL, 'searchItem', 1, 1, 0, '%ALWAYS%'),
+(11, 'Naviga', NULL, 'globe', 'large', '{"onclick":"javascript: navigationPanelToggle();"}', NULL, NULL, NULL, '', 0, 0, 25, '%ALWAYS%'),
+(14, 'registrati', NULL, 'sign in', 'large', NULL, '%HTTP_ROOT_DIR%/browsing', 'registration.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(15, 'corsi', NULL, 'book', 'large', NULL, '%HTTP_ROOT_DIR%', 'info.php', NULL, NULL, 0, 0, 20, '%ALWAYS%'),
+(16, 'help', NULL, 'question', 'large', NULL, NULL, NULL, NULL, NULL, 1, 0, 0, '%ALWAYS%'),
+(17, 'informazioni', NULL, 'info', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%', 'help.php', '', NULL, 0, 0, 0, '%ALWAYS%'),
+(18, 'credits', NULL, 'trophy', NULL, NULL, '%HTTP_ROOT_DIR%', 'credits.php', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(20, 'strumenti', NULL, 'wrench', 'large', NULL, NULL, NULL, NULL, NULL, 0, 0, 10, '%ALWAYS%'),
+(21, 'agenda', NULL, 'calendar', NULL, '{"onclick":"openMessenger(''../comunica/list_events.php'',800,600);"}', NULL, NULL, NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(22, 'agisci', NULL, 'pencil', 'large', NULL, NULL, NULL, NULL, NULL, 0, 0, 15, '%ALWAYS%'),
+(23, 'modifica profilo', NULL, 'user', NULL, NULL, NULL, '<template_field class="template_field" name="edit_profile">edit_profile</template_field>', 'self_instruction', NULL, 0, 0, 0, '%ALWAYS%'),
+(24, '<template_field class="template_field" name="user_name">user_name</template_field>', NULL, 'user', 'large', NULL, NULL, NULL, NULL, 'userpopup', 1, 0, 495, '$sess_id_user'),
+(25, 'chat', NULL, 'chat', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/comunica', 'chat.php', 'id_room,id_course', NULL, 0, 0, 15, '$com_enabled'),
+(26, 'video conference', NULL, 'facetime video', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/comunica', 'videochat.php', NULL, NULL, 0, 0, 20, '$com_enabled'),
+(27, 'collabora', NULL, 'share', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'download.php', NULL, NULL, 0, 0, 25, '%ALWAYS%'),
+(28, 'diario', NULL, 'empty calendar', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'mylog.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
+(29, 'cronologia', NULL, 'time basic', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'history.php', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
+(30, 'storico esercizi', NULL, 'chart basic', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'exercise_history.php', 'id_course_instance', NULL, 0, 0, 20, '%ALWAYS%'),
+(31, 'storico test', NULL, 'bar chart', NULL, NULL, '%MODULES_TEST_HTTP%', 'history.php', '<template_field class="template_field" name="test_history">test_history</template_field>', NULL, 0, 0, 25, '%MODULES_TEST%'),
+(32, 'storico sondaggi', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'history.php?op=survey', 'id_course, id_course_instance', NULL, 0, 0, 30, '%MODULES_TEST%'),
+(33, 'stampa', NULL, 'print', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/browsing', 'print.php', 'id_node', NULL, 0, 0, 35, '%ALWAYS%'),
+(34, 'invia un file', NULL, 'upload disk', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'upload.php', NULL, NULL, 0, 0, 10, '$com_enabled'),
+(35, 'codici iscrizione studenti', NULL, 'code', NULL, NULL, '%MODULES_CODEMAN_HTTP%', NULL, NULL, NULL, 0, 0, 30, '%MODULES_CODEMAN%'),
+(102, 'lista tutor', NULL, 'basic users', '', NULL, '%HTTP_ROOT_DIR%/switcher', 'list_users.php?list=tutors', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
+(37, 'indietro', NULL, 'circle left', 'large', NULL, NULL, '<template_field class="template_field" name="go_back">go_back</template_field>', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(38, 'modifica <template_field class="template_field" name="what">what</template_field>', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php', '<template_field class="template_field" name="edit_test">edit_test</template_field>', NULL, 0, 0, 5, '%MODULES_TEST%'),
+(39, 'cancella <template_field class="template_field" name="what">what</template_field>', NULL, 'trash', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php', '<template_field class="template_field" name="delete_test">delete_test</template_field>', NULL, 0, 0, 10, '%MODULES_TEST%'),
+(40, 'aggiorna report', NULL, 'refresh', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=student&mode=update', 'id_instance, id_course', NULL, 0, 0, 5, '%ALWAYS%'),
+(41, 'indice del corso', NULL, 'info letter', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'main_index.php?order=struct&hide_visits=0&expand=10', 'id_course_instance,id_course', NULL, 0, 0, 10, '%ALWAYS%'),
+(61, 'indice del forum', NULL, 'basic community', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'main_index.php?op=forum&order=struct&hide_visits=0&expand=10', 'id_course_instance,id_course', NULL, 0, 0, 15, '%ALWAYS%'),
+(42, 'chiudi', NULL, 'off', 'large', '{"onclick":"closeMeAndReloadParent();"}', NULL, NULL, NULL, NULL, 1, 0, 500, '%ALWAYS%'),
+(43, 'scrivi', NULL, 'pencil', 'large', '', '%HTTP_ROOT_DIR%/comunica', 'send_message.php', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(44, 'messaggi inviati', NULL, 'forward mail', 'large', NULL, '%HTTP_ROOT_DIR%/comunica', 'list_messages.php?messages=sent', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(45, 'messaggi', NULL, 'mail', 'large', NULL, '%HTTP_ROOT_DIR%/comunica', 'list_messages.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(46, 'crea appuntamento', NULL, 'opne folder', 'large', NULL, ' %HTTP_ROOT_DIR%/comunica', 'send_event.php', '', NULL, 0, 0, 0, '%ALWAYS%'),
+(47, 'appuntamenti', NULL, 'open folder', 'large', NULL, ' %HTTP_ROOT_DIR%/comunica', 'list_events.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(48, 'chiudi', NULL, 'off', 'large', '{"onclick":"exitChat();"}', NULL, NULL, NULL, NULL, 1, 0, 500, '%ALWAYS%'),
+(49, 'Messaggeria\r\n', NULL, 'mail', NULL, '{"onclick":"openMessenger(''../../comunica/list_messages.php'',800,600);"}', NULL, NULL, NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(50, 'chatrooms', NULL, 'chat', NULL, NULL, ' %HTTP_ROOT_DIR%/comunica', 'list_chatrooms.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
+(51, 'agenda', NULL, 'calendar', NULL, '{"onclick":"openMessenger(''../../comunica/list_events.php'',800,600);"}', NULL, NULL, NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(52, 'messaggi ricevuti', NULL, 'reply mail', 'large', NULL, '%HTTP_ROOT_DIR%/comunica', 'list_messages.php?messages=received', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(60, 'crea chatroom', NULL, 'chat', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'create_chat.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(54, 'chiudi', NULL, 'off', 'large', '{"onclick":"<template_field class=\\"template_field\\" name=\\"onclick\\">onclick</template_field>"}', NULL, NULL, NULL, NULL, 1, 0, 500, '%ALWAYS%'),
+(55, 'annulla', NULL, 'remove', 'large', '{"onclick":"<template_field class=\\"template_field\\" name=\\"cancel\\">cancel</template_field>"} ', NULL, NULL, NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(56, 'indietro', NULL, 'circle left', 'large', '{"onclick": "javascript:history.go(-1);"}', NULL, NULL, NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(57, 'modifica', NULL, 'edit', 'large', NULL, '%HTTP_ROOT_DIR%/services', '<template_field class="template_field" name="edit_link">edit_link</template_field>', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(58, 'salva', '', 'archive', 'large', NULL, '%HTTP_ROOT_DIR%/services', '<template_field class="template_field" name="save_link">save_link</template_field>', '', NULL, 0, 0, 10, '%ALWAYS%'),
+(101, 'lista autori', '', 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'list_users.php?list=authors', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(62, 'report della chat', NULL, 'basic docs', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'report_chat.php?op=index', 'id_instance,id_course', NULL, 0, 0, 20, '%ALWAYS%'),
+(63, 'lista chatrooms', NULL, 'chat outline', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'list_chatrooms.php', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(64, 'esporta report (XLS)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=export&type=xls', 'id_instance,id_course', NULL, 0, 0, 25, '%ALWAYS%'),
+(65, 'esporta report (PDF)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=export&type=pdf', 'id_instance,id_course', NULL, 0, 0, 30, '%ALWAYS%'),
+(66, 'esporta testo', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'report_chat.php?op=export', 'id_chatroom', NULL, 0, 0, 20, '%ALWAYS%'),
+(67, 'esporta foglio', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'report_chat.php?op=exportTable', 'id_chatroom', NULL, 0, 0, 25, '%ALWAYS%'),
+(68, 'elenco studenti', NULL, 'list', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=student', 'id_instance', NULL, 0, 0, 5, '%ALWAYS%'),
+(69, 'cronologia completa', NULL, 'basic content', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php', 'id_course_instance,id_student,id_course', NULL, 0, 0, 15, '%ALWAYS%'),
+(70, 'scheda corsista', NULL, 'building', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=zoom_student', 'id_student,id_instance', NULL, 0, 0, 0, '%ALWAYS%'),
+(71, 'punteggio', NULL, 'flag', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php?mode=score', 'id_student,id_course_instance', NULL, 0, 0, 5, '%ALWAYS%'),
+(72, 'interazione', NULL, 'users', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php?mode=writings', 'id_student,id_course_instance', NULL, 0, 0, 15, '%ALWAYS%'),
+(73, 'indice attività', NULL, 'info letter', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php?mode=summary', 'id_student,id_course_instance', NULL, 0, 0, 30, '%ALWAYS%'),
+(74, 'esporta report corsista', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php?op=export', 'id_student,id_course_instance', NULL, 0, 0, 35, '%ALWAYS%'),
+(75, 'Nodi visitati recentemente', '<label>Nodi visitati recentemente :</label>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 40, '%ALWAYS%'),
+(76, '1 giorno', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=1', 'id_student,id_course_instance,id_course', NULL, 0, 0, 45, '%ALWAYS%'),
+(77, '5 giorni', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=5', 'id_student,id_course_instance,id_course', NULL, 0, 0, 50, '%ALWAYS%'),
+(78, '15 giorni', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=15', 'id_student,id_course_instance,id_course', NULL, 0, 0, 55, '%ALWAYS%'),
+(79, '30 giorni', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=30', 'id_student,id_course_instance,id_course', NULL, 0, 0, 60, '%ALWAYS%'),
+(80, 'tutto', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=all', 'id_student,id_course_instance,id_course', NULL, 0, 0, 65, '%ALWAYS%'),
+(81, 'esercizi svolti', NULL, 'attachment', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_exercise.php', 'id_student,id_course_instance', NULL, 0, 0, 20, '%ALWAYS%'),
+(82, 'note', NULL, 'pencil', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=student_notes', 'id_student,id_instance', NULL, 0, 0, 20, '%ALWAYS%'),
+(83, 'esporta note corsista', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=student_notes_export', 'id_student,id_instance', NULL, 0, 0, 40, '%ALWAYS%'),
+(84, 'esporta report corsista (XLS)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?op=export', 'id_student,id_course_instance,id_course,period', NULL, 0, 0, 10, '%ALWAYS%'),
+(85, 'esporta report corsista (PDF)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?op=export&type=pdf', 'id_student,id_course_instance,id_course,period', NULL, 0, 0, 15, '%ALWAYS%'),
+(86, 'riepilogo cronologia', NULL, 'basic book', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php', 'id_course_instance,id_student', NULL, 0, 0, 40, '%ALWAYS%'),
+(100, 'aggiungi sondaggio', NULL, 'basic chart', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php?mode=survey&action=add', 'id_node', NULL, 0, 0, 25, '%MODULES_TEST%'),
+(99, 'aggiungi test', NULL, 'question', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php?mode=test&action=add', 'id_node', NULL, 0, 0, 20, '%MODULES_TEST%'),
+(97, 'aggiungi termine', NULL, 'basic asterisk', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=WORD', 'id_parent,id_course', NULL, 0, 0, 10, '$mod_enabled'),
+(98, 'aggiungi esercizio', NULL, 'basic edit', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'add_exercise.php?', 'id_node', NULL, 0, 0, 10, '$mod_enabled'),
+(95, 'report', NULL, 'basic docs', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'author_report.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(96, 'aggiungi nodo', NULL, 'basic doc', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=LEAF', 'id_parent,id_course', NULL, 0, 0, 0, '$mod_enabled'),
+(113, 'torna', '\r\n<a id="torna" href="translation.php" class="item"><i class="circle left icon large"></i>\r\n<span  class="menulabel">Indietro</span>\r\n</a>\r\n \r\n\r\n', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 0, '%ALWAYS%'),
+(103, 'lista studenti', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'list_users.php?list=students', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
+(104, 'aggiungi utente', NULL, 'basic add user', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'add_user.php', NULL, NULL, 0, 0, 20, '%ALWAYS%'),
+(105, 'lista corsi', NULL, 'browser', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'list_courses.php', NULL, NULL, 0, 0, 25, '%ALWAYS%'),
+(106, 'aggiungi corso', NULL, 'book', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'add_course.php', NULL, NULL, 0, 0, 30, '%ALWAYS%'),
+(107, 'traduci messaggi', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'translation.php', NULL, NULL, 0, 0, 30, '%ALWAYS%'),
+(108, 'applicazioni', NULL, 'settings', NULL, NULL, '%MODULES_APPS_HTTP%', '', NULL, NULL, 0, 0, 40, '%MODULES_APPS%'),
+(109, 'importa corso', NULL, 'download disk', NULL, NULL, '%MODULES_IMPEXPORT_HTTP%', 'import.php', NULL, NULL, 0, 0, 45, '%MODULES_IMPEXPORT%'),
+(110, 'esporta corso', NULL, 'upload disk', NULL, NULL, '%MODULES_IMPEXPORT_HTTP%', 'export.php', NULL, NULL, 0, 0, 45, '%MODULES_IMPEXPORT%'),
+(111, 'condizioni di completamento', NULL, 'basic pin', NULL, NULL, '%MODULES_SERVICECOMPLETE_HTTP%', 'index.php', NULL, NULL, 0, 0, 45, '%MODULES_SERVICECOMPLETE%'),
+(112, 'newsletter', NULL, 'mail outline', '', NULL, '%MODULES_NEWSLETTER_HTTP%', NULL, NULL, NULL, 0, 0, 15, '%MODULES_NEWSLETTER%'),
+(114, 'aggiungi provider', NULL, 'archive', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'add_tester.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(115, 'aggiungi servizio', NULL, 'tags', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'add_service.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
+(116, 'aggiungi utente', NULL, 'basic add user', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'add_user.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
+(117, 'importa una lingua', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'import_language.php', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
+(118, 'edit news content', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_content.php?type=news', NULL, NULL, 0, 0, 25, '%ALWAYS%'),
+(119, 'edit info content', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_content.php?type=info', NULL, NULL, 0, 0, 30, '%ALWAYS%'),
+(120, 'edit help content', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_content.php?type=help', NULL, NULL, 0, 0, 30, '%ALWAYS%'),
+(121, 'modifica il profilo del provider', NULL, 'pencil', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_tester.php', 'id_tester', NULL, 0, 0, 0, '%ALWAYS%'),
+(122, 'gestisci associazione corsi', NULL, 'unlink', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'manage_provider_courses.php', 'id_tester', NULL, 0, 0, 5, '%ALWAYS%'),
+(123, 'lista utenti', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php', 'id_tester', NULL, 0, 0, 15, '%ALWAYS%'),
+(124, 'admins list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=2', 'id_tester', NULL, 0, 0, 0, '%ALWAYS%'),
+(125, 'switcher list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=6', 'id_tester', NULL, 0, 0, 10, '%ALWAYS%'),
+(126, 'authors list', NULL, 'basic users', NULL, '', '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=1', 'id_tester', NULL, 0, 0, 15, '%ALWAYS%'),
+(127, 'tutors list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=4', 'id_tester', NULL, 0, 0, 20, '%ALWAYS%'),
+(128, 'students list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=3', 'id_tester', NULL, 0, 0, 25, '%ALWAYS%'),
+(129, 'all users list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php', 'id_tester', NULL, 0, 0, 30, '%ALWAYS%'),
+(130, 'rispondi', NULL, 'forward mail', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'send_message.php?op=replay', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(131, 'rispondi a tutti', NULL, 'forward mail', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'send_message.php?op=replay_all', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
+(132, 'cancella', NULL, 'trash', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'read_message.php', 'del_msg_id', NULL, 0, 0, 20, '%ALWAYS%'),
+(133, 'modifica domanda', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_question.php', '<template_field class="template_field" name="edit_question">edit_question</template_field>', NULL, 0, 0, 0, '%MODULES_TEST%'),
+(134, 'cancella domanda', NULL, 'trash', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_question.php', '<template_field class="template_field" name="delete_question">delete_question</template_field>', NULL, 0, 0, 0, '%MODULES_TEST%'),
+(135, 'elimina esercizio', NULL, 'trash', NULL, '{"onclick":"<template_field class=\\"template_field\\" name=\\"onclick\\">onclick</template_field>"}', NULL, NULL, NULL, NULL, 0, 0, 10, '%ALWAYS%'),
+(147, 'comunità di tutor', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'communities.php', NULL, NULL, 0, 0, 10, '%NOT_SUPERTUTOR%'),
+(136, 'Modifica esercizio', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'edit_exercise.php?op=edit', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
+(137, 'Edit home page contents', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_content.php', NULL, NULL, 0, 0, 40, '%NON_MULTIPROVIDER_MENU%'),
+(138, 'Gestione luoghi', NULL, 'building', NULL, NULL, '%MODULES_CLASSROOM_HTTP%', 'venues.php', NULL, NULL, 0, 0, 20, '%MODULES_CLASSROOM%'),
+(139, 'Gestione Aule', NULL, 'grid layout', NULL, NULL, '%MODULES_CLASSROOM_HTTP%', 'classrooms.php\r\n\r\n', NULL, NULL, 0, 0, 20, '%MODULES_CLASSROOM%'),
+(140, 'Calendario corsi', NULL, 'calendar outline', NULL, NULL, '%MODULES_CLASSAGENDA_HTTP%', 'calendars.php', NULL, NULL, 0, 0, 30, '%MODULES_CLASSAGENDA%'),
+(141, 'report provider', NULL, 'basic docs', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'log_report.php', NULL, NULL, 0, 0, 30, '%ALWAYS%'),
+(142, 'esporta', NULL, 'basic export', 'large', NULL, NULL, NULL, NULL, NULL, 0, 0, 0, '%MODULES_CLASSAGENDA%'),
+(143, 'File PDF', NULL, 'file outline', '', '{"data-type":"pdf"}', '%MODULES_CLASSAGENDA_HTTP%', 'exportCalendar.php?type=pdf', NULL, 'calendarexportmenuitem', 0, 0, 0, '%MODULES_CLASSAGENDA%'),
+(144, 'File CSV', NULL, 'file', '', '{"data-type":"csv"}', '%MODULES_CLASSAGENDA_HTTP%', 'exportCalendar.php?type=csv', NULL, 'calendarexportmenuitem', 0, 0, 0, '%MODULES_CLASSAGENDA%'),
+(145, 'File PDF', NULL, 'file outline', NULL, '{"target":"_blank"}', '%MODULES_CLASSBUDGET_HTTP%', 'index.php?export=pdf', 'id_course, id_course_instance', NULL, 0, 0, 0, '%MODULES_CLASSBUDGET%'),
+(146, 'File CSV', NULL, 'file', NULL, NULL, '%MODULES_CLASSBUDGET_HTTP%', 'index.php?export=csv', 'id_course, id_course_instance', NULL, 0, 0, 0, '%MODULES_CLASSBUDGET%'),
+(148, 'lista tutor', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=tutor', NULL, NULL, 0, 0, 10, '%IS_SUPERTUTOR%');
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `menu_page`
 --
 
@@ -34,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `menu_page` (
   `self_instruction` int(1) NOT NULL DEFAULT '0' COMMENT 'nonzero if course is in self instruction mode',
   `isVertical` int(1) NOT NULL DEFAULT '0' COMMENT 'nonzero if it''s a vertical menu',
   `linked_tree_id` int(11) DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=161 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `menu_page`
@@ -189,248 +348,10 @@ INSERT INTO `menu_page` (`tree_id`, `module`, `script`, `user_type`, `self_instr
 (157, 'comunica', 'videochat.php', 4, 0, 0, 156),
 (158, 'modules/classroom', 'default', 6, 0, 0, 124),
 (159, 'modules/classagenda', 'default', 6, 0, 0, 124),
-(160, 'modules/classagenda', 'default', 4, 0, 0, 124);
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `menu_page`
---
-ALTER TABLE `menu_page`
- ADD PRIMARY KEY (`tree_id`), ADD UNIQUE KEY `module` (`module`,`script`,`user_type`,`self_instruction`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `menu_page`
---
-ALTER TABLE `menu_page`
-MODIFY `tree_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id of the menu tree for the given module, script, user_type and self instruction',AUTO_INCREMENT=161;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
--- phpMyAdmin SQL Dump
--- version 4.2.5
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Dic 11, 2014 alle 10:33
--- Versione del server: 5.5.38-cll-lve
--- PHP Version: 5.4.29
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Database: `ada_sdf_common`
---
-
--- --------------------------------------------------------
-
---
--- Struttura della tabella `menu_items`
---
-
-CREATE TABLE IF NOT EXISTS `menu_items` (
-`item_id` int(11) NOT NULL,
-  `label` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `extraHTML` text COLLATE utf8_unicode_ci,
-  `icon` text COLLATE utf8_unicode_ci,
-  `icon_size` text COLLATE utf8_unicode_ci,
-  `href_properties` text COLLATE utf8_unicode_ci,
-  `href_prefix` text COLLATE utf8_unicode_ci,
-  `href_path` text COLLATE utf8_unicode_ci,
-  `href_paramlist` text COLLATE utf8_unicode_ci,
-  `extraClass` text COLLATE utf8_unicode_ci,
-  `groupRight` int(1) NOT NULL DEFAULT '0',
-  `specialItem` int(1) NOT NULL DEFAULT '0',
-  `order` int(3) unsigned NOT NULL DEFAULT '0',
-  `enabledON` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%'
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=141 ;
-
---
--- Dump dei dati per la tabella `menu_items`
---
-
-INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, `href_properties`, `href_prefix`, `href_path`, `href_paramlist`, `extraClass`, `groupRight`, `specialItem`, `order`, `enabledON`) VALUES
-(1, 'home', NULL, 'home', 'large', NULL, '%HTTP_ROOT_DIR%/browsing', 'user.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(2, 'Comunica', '<div class="ui label" id="msglabel" style="display:none;">             <i class="mail small icon"></i><span id="unreadmsgbadge"></span>         </div>', 'comment', 'large', NULL, NULL, NULL, NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(3, 'Messaggeria', NULL, 'mail', NULL, '{"onclick":"openMessenger(''../comunica/list_messages.php'',800,600);"}', NULL, NULL, NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(4, 'Forum', NULL, 'community basic', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'main_index.php?op=forum', '', NULL, 0, 0, 10, '%ALWAYS%'),
-(9, 'Esci', NULL, 'sign out', 'large', NULL, '%HTTP_ROOT_DIR%', NULL, NULL, NULL, 1, 0, 500, '%ALWAYS%'),
-(10, 'cerca', '<div class="ui search small icon input">\r\n<span><i18n>Cerca</i18n></span>\r\n<input type="text" placeholder="<i18n>Cerca</i18n>...">\r\n        <i class="search link icon"></i>\r\n</div>', NULL, NULL, NULL, NULL, NULL, NULL, 'searchItem', 1, 1, 0, '%ALWAYS%'),
-(11, 'Naviga', NULL, 'globe', 'large', '{"onclick":"javascript: navigationPanelToggle();"}', NULL, NULL, NULL, '', 0, 0, 25, '%ALWAYS%'),
-(14, 'registrati', NULL, 'sign in', 'large', NULL, '%HTTP_ROOT_DIR%/browsing', 'registration.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(15, 'corsi', NULL, 'book', 'large', NULL, '%HTTP_ROOT_DIR%', 'info.php', NULL, NULL, 0, 0, 20, '%ALWAYS%'),
-(16, 'help', NULL, 'question', 'large', NULL, NULL, NULL, NULL, NULL, 1, 0, 0, '%ALWAYS%'),
-(17, 'informazioni', NULL, 'info', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%', 'help.php', '', NULL, 0, 0, 0, '%ALWAYS%'),
-(18, 'credits', NULL, 'trophy', NULL, NULL, '%HTTP_ROOT_DIR%', 'credits.php', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(20, 'strumenti', NULL, 'wrench', 'large', NULL, NULL, NULL, NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(21, 'agenda', NULL, 'calendar', NULL, '{"onclick":"openMessenger(''../comunica/list_events.php'',800,600);"}', NULL, NULL, NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(22, 'agisci', NULL, 'pencil', 'large', NULL, NULL, NULL, NULL, NULL, 0, 0, 15, '%ALWAYS%'),
-(23, 'modifica profilo', NULL, 'user', NULL, NULL, NULL, '<template_field class="template_field" name="edit_profile">edit_profile</template_field>', 'self_instruction', NULL, 0, 0, 0, '%ALWAYS%'),
-(24, '<template_field class="template_field" name="user_name">user_name</template_field>', NULL, 'user', 'large', NULL, NULL, NULL, NULL, 'userpopup', 1, 0, 495, '%ALWAYS%'),
-(25, 'chat', NULL, 'chat', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/comunica', 'chat.php', 'id_room,id_course', NULL, 0, 0, 15, '%ALWAYS%'),
-(26, 'video conference', NULL, 'facetime video', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/comunica', 'videochat.php', NULL, NULL, 0, 0, 20, '%ALWAYS%'),
-(27, 'collabora', NULL, 'share', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'download.php', NULL, NULL, 0, 0, 25, '%ALWAYS%'),
-(28, 'diario', NULL, 'empty calendar', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'mylog.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(29, 'cronologia', NULL, 'time basic', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'history.php', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
-(30, 'storico esercizi', NULL, 'chart basic', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'exercise_history.php', 'id_course_instance', NULL, 0, 0, 20, '%ALWAYS%'),
-(31, 'storico test', NULL, 'bar chart', NULL, NULL, '%MODULES_TEST_HTTP%', 'history.php', '<template_field class="template_field" name="test_history">test_history</template_field>', NULL, 0, 0, 25, '%MODULES_TEST%'),
-(32, 'storico sondaggi', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'history.php?op=survey', 'id_course, id_course_instance', NULL, 0, 0, 30, '%MODULES_TEST%'),
-(33, 'stampa', NULL, 'print', NULL, '{"target":"_blank"}', '%HTTP_ROOT_DIR%/browsing', 'print.php', 'id_node', NULL, 0, 0, 35, '%ALWAYS%'),
-(34, 'invia un file', NULL, 'upload disk', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'upload.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(102, 'lista tutor', NULL, 'basic users', '', NULL, '%HTTP_ROOT_DIR%/switcher', 'list_users.php?list=tutors', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(37, 'indietro', NULL, 'circle left', 'large', NULL, NULL, '<template_field class="template_field" name="go_back">go_back</template_field>', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(38, 'modifica <template_field class="template_field" name="what">what</template_field>', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php', '<template_field class="template_field" name="edit_test">edit_test</template_field>', NULL, 0, 0, 5, '%MODULES_TEST%'),
-(39, 'cancella <template_field class="template_field" name="what">what</template_field>', NULL, 'trash', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php', '<template_field class="template_field" name="delete_test">delete_test</template_field>', NULL, 0, 0, 10, '%MODULES_TEST%'),
-(40, 'aggiorna report', NULL, 'refresh', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=student&mode=update', 'id_instance, id_course', NULL, 0, 0, 5, '%ALWAYS%'),
-(41, 'indice del corso', NULL, 'info letter', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'main_index.php?order=struct&hide_visits=0&expand=10', 'id_course_instance,id_course', NULL, 0, 0, 10, '%ALWAYS%'),
-(61, 'indice del forum', NULL, 'basic community', NULL, NULL, '%HTTP_ROOT_DIR%/browsing', 'main_index.php?op=forum&order=struct&hide_visits=0&expand=10', 'id_course_instance,id_course', NULL, 0, 0, 15, '%ALWAYS%'),
-(42, 'chiudi', NULL, 'off', 'large', '{"onclick":"closeMeAndReloadParent();"}', NULL, NULL, NULL, NULL, 1, 0, 500, '%ALWAYS%'),
-(43, 'scrivi', NULL, 'pencil', 'large', '', '%HTTP_ROOT_DIR%/comunica', 'send_message.php', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(44, 'messaggi inviati', NULL, 'forward mail', 'large', NULL, '%HTTP_ROOT_DIR%/comunica', 'list_messages.php?messages=sent', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(45, 'messaggi', NULL, 'mail', 'large', NULL, '%HTTP_ROOT_DIR%/comunica', 'list_messages.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(46, 'crea appuntamento', NULL, 'opne folder', 'large', NULL, ' %HTTP_ROOT_DIR%/comunica', 'send_event.php', '', NULL, 0, 0, 0, '%ALWAYS%'),
-(47, 'appuntamenti', NULL, 'open folder', 'large', NULL, ' %HTTP_ROOT_DIR%/comunica', 'list_events.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(48, 'chiudi', NULL, 'off', 'large', '{"onclick":"exitChat();"}', NULL, NULL, NULL, NULL, 1, 0, 500, '%ALWAYS%'),
-(49, 'Messaggeria\r\n', NULL, 'mail', NULL, '{"onclick":"openMessenger(''../../comunica/list_messages.php'',800,600);"}', NULL, NULL, NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(50, 'chatrooms', NULL, 'chat', NULL, NULL, ' %HTTP_ROOT_DIR%/comunica', 'list_chatrooms.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(51, 'agenda', NULL, 'calendar', NULL, '{"onclick":"openMessenger(''../../comunica/list_events.php'',800,600);"}', NULL, NULL, NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(52, 'messaggi ricevuti', NULL, 'reply mail', 'large', NULL, '%HTTP_ROOT_DIR%/comunica', 'list_messages.php?messages=received', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(60, 'crea chatroom', NULL, 'chat', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'create_chat.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(54, 'chiudi', NULL, 'off', 'large', '{"onclick":"<template_field class=\\"template_field\\" name=\\"onclick\\">onclick</template_field>"}', NULL, NULL, NULL, NULL, 1, 0, 500, '%ALWAYS%'),
-(55, 'annulla', NULL, 'remove', 'large', '{"onclick":"<template_field class=\\"template_field\\" name=\\"cancel\\">cancel</template_field>"} ', NULL, NULL, NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(56, 'indietro', NULL, 'circle left', 'large', '{"onclick": "javascript:history.go(-1);"}', NULL, NULL, NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(57, 'modifica', NULL, 'edit', 'large', NULL, '%HTTP_ROOT_DIR%/services', '<template_field class="template_field" name="edit_link">edit_link</template_field>', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(58, 'salva', '', 'archive', 'large', NULL, '%HTTP_ROOT_DIR%/services', '<template_field class="template_field" name="save_link">save_link</template_field>', '', NULL, 0, 0, 10, '%ALWAYS%'),
-(101, 'lista autori', '', 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'list_users.php?list=authors', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(62, 'report della chat', NULL, 'basic docs', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'report_chat.php?op=index', 'id_instance,id_course', NULL, 0, 0, 20, '%ALWAYS%'),
-(63, 'lista chatrooms', NULL, 'chat outline', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'list_chatrooms.php', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(64, 'esporta report (XLS)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=export&type=xls', 'id_instance,id_course', NULL, 0, 0, 25, '%ALWAYS%'),
-(65, 'esporta report (PDF)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=export&type=pdf', 'id_instance,id_course', NULL, 0, 0, 30, '%ALWAYS%'),
-(66, 'esporta testo', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'report_chat.php?op=export', 'id_chatroom', NULL, 0, 0, 20, '%ALWAYS%'),
-(67, 'esporta foglio', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'report_chat.php?op=exportTable', 'id_chatroom', NULL, 0, 0, 25, '%ALWAYS%'),
-(68, 'elenco studenti', NULL, 'list', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=student', 'id_instance', NULL, 0, 0, 5, '%ALWAYS%'),
-(69, 'cronologia completa', NULL, 'basic content', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php', 'id_course_instance,id_student,id_course', NULL, 0, 0, 15, '%ALWAYS%'),
-(70, 'scheda corsista', NULL, 'building', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=zoom_student', 'id_student,id_instance', NULL, 0, 0, 0, '%ALWAYS%'),
-(71, 'punteggio', NULL, 'flag', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php?mode=score', 'id_student,id_course_instance', NULL, 0, 0, 5, '%ALWAYS%'),
-(72, 'interazione', NULL, 'users', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php?mode=writings', 'id_student,id_course_instance', NULL, 0, 0, 15, '%ALWAYS%'),
-(73, 'indice attività', NULL, 'info letter', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php?mode=summary', 'id_student,id_course_instance', NULL, 0, 0, 30, '%ALWAYS%'),
-(74, 'esporta report corsista', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php?op=export', 'id_student,id_course_instance', NULL, 0, 0, 35, '%ALWAYS%'),
-(75, 'Nodi visitati recentemente', '<label>Nodi visitati recentemente :</label>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 40, '%ALWAYS%'),
-(76, '1 giorno', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=1', 'id_student,id_course_instance,id_course', NULL, 0, 0, 45, '%ALWAYS%'),
-(77, '5 giorni', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=5', 'id_student,id_course_instance,id_course', NULL, 0, 0, 50, '%ALWAYS%'),
-(78, '15 giorni', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=15', 'id_student,id_course_instance,id_course', NULL, 0, 0, 55, '%ALWAYS%'),
-(79, '30 giorni', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=30', 'id_student,id_course_instance,id_course', NULL, 0, 0, 60, '%ALWAYS%'),
-(80, 'tutto', NULL, 'circle', 'small', NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?period=all', 'id_student,id_course_instance,id_course', NULL, 0, 0, 65, '%ALWAYS%'),
-(81, 'esercizi svolti', NULL, 'attachment', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_exercise.php', 'id_student,id_course_instance', NULL, 0, 0, 20, '%ALWAYS%'),
-(82, 'note', NULL, 'pencil', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=student_notes', 'id_student,id_instance', NULL, 0, 0, 20, '%ALWAYS%'),
-(83, 'esporta note corsista', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor.php?op=student_notes_export', 'id_student,id_instance', NULL, 0, 0, 40, '%ALWAYS%'),
-(84, 'esporta report corsista (XLS)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?op=export', 'id_student,id_course_instance,id_course,period', NULL, 0, 0, 10, '%ALWAYS%'),
-(85, 'esporta report corsista (PDF)', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history_details.php?op=export&type=pdf', 'id_student,id_course_instance,id_course,period', NULL, 0, 0, 15, '%ALWAYS%'),
-(86, 'riepilogo cronologia', NULL, 'basic book', NULL, NULL, '%HTTP_ROOT_DIR%/tutor', 'tutor_history.php', 'id_course_instance,id_student', NULL, 0, 0, 40, '%ALWAYS%'),
-(100, 'aggiungi sondaggio', NULL, 'basic chart', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php?mode=survey&action=add', 'id_node', NULL, 0, 0, 25, '%MODULES_TEST%'),
-(99, 'aggiungi test', NULL, 'question', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_test.php?mode=test&action=add', 'id_node', NULL, 0, 0, 20, '%MODULES_TEST%'),
-(97, 'aggiungi termine', NULL, 'basic asterisk', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=WORD', 'id_parent,id_course', NULL, 0, 0, 10, '%ALWAYS%'),
-(98, 'aggiungi esercizio', NULL, 'basic edit', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'add_exercise.php?', 'id_node', NULL, 0, 0, 10, '%ALWAYS%'),
-(95, 'report', NULL, 'basic docs', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'author_report.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(96, 'aggiungi nodo', NULL, 'basic doc', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=LEAF', 'id_parent,id_course', NULL, 0, 0, 0, '%ALWAYS%'),
-(113, 'torna', '\r\n<a id="torna" href="translation.php" class="item"><i class="circle left icon large"></i>\r\n<span  class="menulabel">Indietro</span>\r\n</a>\r\n \r\n\r\n', '', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 0, '%ALWAYS%'),
-(103, 'lista studenti', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'list_users.php?list=students', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
-(104, 'aggiungi utente', NULL, 'basic add user', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'add_user.php', NULL, NULL, 0, 0, 20, '%ALWAYS%'),
-(105, 'lista corsi', NULL, 'browser', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'list_courses.php', NULL, NULL, 0, 0, 25, '%ALWAYS%'),
-(106, 'aggiungi corso', NULL, 'book', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'add_course.php', NULL, NULL, 0, 0, 30, '%ALWAYS%'),
-(107, 'traduci messaggi', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/switcher', 'translation.php', NULL, NULL, 0, 0, 30, '%ALWAYS%'),
-(108, 'applicazioni', NULL, 'settings', NULL, NULL, '%MODULES_APPS_HTTP%', '', NULL, NULL, 0, 0, 40, '%MODULES_APPS%'),
-(109, 'importa corso', NULL, 'download disk', NULL, NULL, '%MODULES_IMPEXPORT_HTTP%', 'import.php', NULL, NULL, 0, 0, 45, '%MODULES_IMPEXPORT%'),
-(110, 'esporta corso', NULL, 'upload disk', NULL, NULL, '%MODULES_IMPEXPORT_HTTP%', 'export.php', NULL, NULL, 0, 0, 45, '%MODULES_IMPEXPORT%'),
-(111, 'condizioni di completamento', NULL, 'basic pin', NULL, NULL, '%MODULES_SERVICECOMPLETE_HTTP%', 'index.php', NULL, NULL, 0, 0, 45, '%MODULES_SERVICECOMPLETE%'),
-(112, 'newsletter', NULL, 'mail outline', '', NULL, '%MODULES_NEWSLETTER_HTTP%', NULL, NULL, NULL, 0, 0, 15, '%MODULES_NEWSLETTER%'),
-(114, 'aggiungi provider', NULL, 'archive', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'add_tester.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(115, 'aggiungi servizio', NULL, 'tags', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'add_service.php', NULL, NULL, 0, 0, 0, '%ALWAYS%'),
-(116, 'aggiungi utente', NULL, 'basic add user', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'add_user.php', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(117, 'importa una lingua', NULL, 'download disk', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'import_language.php', NULL, NULL, 0, 0, 15, '%ALWAYS%'),
-(118, 'edit news content', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_content.php?type=news', NULL, NULL, 0, 0, 25, '%ALWAYS%'),
-(119, 'edit info content', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_content.php?type=info', NULL, NULL, 0, 0, 30, '%ALWAYS%'),
-(120, 'edit help content', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_content.php?type=help', NULL, NULL, 0, 0, 30, '%ALWAYS%'),
-(121, 'modifica il profilo del provider', NULL, 'pencil', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_tester.php', 'id_tester', NULL, 0, 0, 0, '%ALWAYS%'),
-(122, 'gestisci associazione corsi', NULL, 'unlink', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'manage_provider_courses.php', 'id_tester', NULL, 0, 0, 5, '%ALWAYS%'),
-(123, 'lista utenti', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php', 'id_tester', NULL, 0, 0, 15, '%ALWAYS%'),
-(124, 'admins list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=2', 'id_tester', NULL, 0, 0, 0, '%ALWAYS%'),
-(125, 'switcher list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=6', 'id_tester', NULL, 0, 0, 10, '%ALWAYS%'),
-(126, 'authors list', NULL, 'basic users', NULL, '', '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=1', 'id_tester', NULL, 0, 0, 15, '%ALWAYS%'),
-(127, 'tutors list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=4', 'id_tester', NULL, 0, 0, 20, '%ALWAYS%'),
-(128, 'students list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php?user_type=3', 'id_tester', NULL, 0, 0, 25, '%ALWAYS%'),
-(129, 'all users list', NULL, 'basic users', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'list_users.php', 'id_tester', NULL, 0, 0, 30, '%ALWAYS%'),
-(130, 'rispondi', NULL, 'forward mail', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'send_message.php?op=replay', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(131, 'rispondi a tutti', NULL, 'forward mail', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'send_message.php?op=replay_all', NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(132, 'cancella', NULL, 'trash', NULL, NULL, '%HTTP_ROOT_DIR%/comunica', 'read_message.php', 'del_msg_id', NULL, 0, 0, 20, '%ALWAYS%'),
-(133, 'modifica domanda', NULL, 'edit', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_question.php', '<template_field class="template_field" name="edit_question">edit_question</template_field>', NULL, 0, 0, 0, '%MODULES_TEST%'),
-(134, 'cancella domanda', NULL, 'trash', NULL, NULL, '%MODULES_TEST_HTTP%', 'edit_question.php', '<template_field class="template_field" name="delete_question">delete_question</template_field>', NULL, 0, 0, 0, '%MODULES_TEST%'),
-(135, 'elimina esercizio', NULL, 'trash', NULL, '{"onclick":"<template_field class=\\"template_field\\" name=\\"onclick\\">onclick</template_field>"}', NULL, NULL, NULL, NULL, 0, 0, 10, '%ALWAYS%'),
-(136, 'Modifica esercizio', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'edit_exercise.php?op=edit', NULL, NULL, 0, 0, 5, '%ALWAYS%'),
-(137, 'Edit home page contents', NULL, 'edit', NULL, NULL, '%HTTP_ROOT_DIR%/admin', 'edit_content.php', NULL, NULL, 0, 0, 40, '%NON_MULTIPROVIDER_MENU%'),
-(138, 'Gestione luoghi', NULL, 'building', NULL, NULL, '%MODULES_CLASSROOM_HTTP%', 'venues.php', NULL, NULL, 0, 0, 20, '%MODULES_CLASSROOM%'),
-(139, 'Gestione Aule', NULL, 'grid layout', NULL, NULL, '%MODULES_CLASSROOM_HTTP%', 'classrooms.php\r\n\r\n', NULL, NULL, 0, 0, 20, '%MODULES_CLASSROOM%'),
-(140, 'Calendario corsi', NULL, 'calendar outline', NULL, NULL, '%MODULES_CLASSAGENDA_HTTP%', 'calendars.php', NULL, NULL, 0, 0, 30, '%MODULES_CLASSAGENDA%');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `menu_items`
---
-ALTER TABLE `menu_items`
- ADD PRIMARY KEY (`item_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `menu_items`
---
-ALTER TABLE `menu_items`
-MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=141;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
--- phpMyAdmin SQL Dump
--- version 4.2.5
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Dic 11, 2014 alle 10:34
--- Versione del server: 5.5.38-cll-lve
--- PHP Version: 5.4.29
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Database: `ada_sdf_common`
---
+(160, 'modules/classagenda', 'default', 4, 0, 0, 124),
+(161, 'modules/classagenda', 'calendars.php', 6, 0, 0, NULL),
+(162, 'modules/classbudget', 'default', 6, 0, 0, NULL),
+(163, 'modules/code_man', 'default', 6, 0, 0, 124);
 
 -- --------------------------------------------------------
 
@@ -845,6 +766,7 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 (79, 22, 102, ''),
 (79, 22, 101, ''),
 (79, 22, 23, ''),
+(79, 22, 35, ''),
 (79, 0, 20, ''),
 (79, 16, 18, ''),
 (79, 16, 17, ''),
@@ -957,7 +879,7 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 (132, 0, 16, ''),
 (132, 16, 17, ''),
 (132, 16, 18, ''),
-(132, 22, 122, ''),
+(79, 22, 141, ''),
 (132, 22, 123, ''),
 (133, 0, 1, ''),
 (133, 0, 22, ''),
@@ -1030,11 +952,46 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 (142, 0, 24, ''),
 (79, 20, 138, ''),
 (79, 20, 139, ''),
-(79, 20, 140, '');
+(79, 20, 140, ''),
+(130, 22, 141, ''),
+(161, 0, 1, ''),
+(161, 0, 9, ''),
+(161, 0, 16, ''),
+(161, 0, 24, ''),
+(161, 0, 56, ''),
+(161, 16, 17, ''),
+(161, 16, 18, ''),
+(161, 0, 142, ''),
+(161, 142, 143, ''),
+(161, 142, 144, ''),
+(162, 0, 1, ''),
+(162, 0, 9, ''),
+(162, 0, 16, ''),
+(162, 0, 24, ''),
+(162, 0, 56, ''),
+(162, 0, 142, ''),
+(162, 16, 17, ''),
+(162, 16, 18, ''),
+(162, 142, 145, ''),
+(162, 142, 146, ''),
+(34, 22, 148, ''),
+(34, 20, 147, '');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `menu_items`
+--
+ALTER TABLE `menu_items`
+ ADD PRIMARY KEY (`item_id`);
+
+--
+-- Indexes for table `menu_page`
+--
+ALTER TABLE `menu_page`
+ ADD PRIMARY KEY (`tree_id`), ADD UNIQUE KEY `module` (`module`,`script`,`user_type`,`self_instruction`);
 
 --
 -- Indexes for table `menu_tree`
@@ -1042,6 +999,20 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 ALTER TABLE `menu_tree`
  ADD PRIMARY KEY (`tree_id`,`parent_id`,`item_id`);
 
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `menu_items`
+--
+ALTER TABLE `menu_items`
+MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=149;
+--
+-- AUTO_INCREMENT for table `menu_page`
+--
+ALTER TABLE `menu_page`
+MODIFY `tree_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id of the menu tree for the given module, script, user_type and self instruction',AUTO_INCREMENT=163;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
