@@ -54,6 +54,17 @@ if (count($serviceProviders) == 1) {
     }
 }
 if(!AMA_DataHandler::isError($courseInstances)) {
+	/**
+	 * @author giorgio 23/apr/2015
+	 * 
+	 *  filter course instance that are associated to a level of service having nonzero
+	 *  value in isPublic, so that all instances of public courses will not be shown here
+	 */
+	$courseInstances = array_filter($courseInstances, function($courseInstance) {
+		if (is_null($courseInstance['tipo_servizio'])) $courseInstance['tipo_servizio'] = DEFAULT_SERVICE_TYPE;
+		return (intval($_SESSION['service_level_info'][$courseInstance['tipo_servizio']]['isPublic'])===0);
+	});
+	
     $found = count($courseInstances);
     $thead_dataAr = array(
            translateFN('Titolo'),
