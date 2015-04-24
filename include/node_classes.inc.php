@@ -283,8 +283,9 @@ class Node
         $linked_ha = array();
         if (!empty($id_child)){
           $child_dataHa = $dh->get_node_info($id_child);
-          // Vengono mostrati nella mappa solo i nodi di tipo pagina (0) e gruppo (1)
-          if (($child_dataHa['type'] == ADA_LEAF_TYPE) || ($child_dataHa['type'] == ADA_GROUP_TYPE) || ($child_dataHa['type'] == ADA_LEAF_WORD_TYPE) || ($child_dataHa['type'] == ADA_GROUP_WORD_TYPE)) {
+          // Vengono mostrati nella mappa solo i nodi dei tipi che sono nel seguente array
+          $nodeTypesToShow = array(ADA_LEAF_TYPE, ADA_GROUP_TYPE, ADA_LEAF_WORD_TYPE, ADA_GROUP_WORD_TYPE, ADA_PERSONAL_EXERCISE_TYPE);
+          if (in_array($child_dataHa['type'], $nodeTypesToShow)) {
             //mydebug(__LINE__,__FILE__,$child_dataHa);
             $linksAr = array();
 
@@ -304,6 +305,12 @@ class Node
                 }
               }
             }
+            
+            $children_count = 0;
+            $children_count_res = $dh->get_node_children($id_child);
+            if(!AMA_DB::isError($children_count_res) && is_array($children_count_res)) {
+            	$children_count = count($children_count_res);
+            }
 
             if (file_exists($course_icons_media_path.$child_dataHa['icon'])) {
               $icon_child = $course_icons_media_path.$child_dataHa['icon'];
@@ -320,8 +327,8 @@ class Node
                                                       'level_child'=> $child_dataHa['level'],
                                                       'bgcolor_child'=>$child_dataHa['bgcolor'],
                                                       'color_child'=>$child_dataHa['color'],
-                                                      'linked'=>$linked_ha);
-
+                                                      'linked'=>$linked_ha,
+            										  'children_count'=>$children_count);
             array_push($children_ha, $array_child);
             //mydebug(__LINE__,__FILE__,$array_child);
           }
