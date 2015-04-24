@@ -415,7 +415,7 @@ width: 700px;
 
 #logo_title {
     position: relative;
-    top: 0;
+    top: 10px;
 	float:left;
 
 }
