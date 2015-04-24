@@ -112,8 +112,13 @@ div.right.sidebar .close.icon { background-image: none; padding:0; }
 div.right.sidebar .accordion .content.field #show_index { padding: 10px; }
 div.right.sidebar .accordion .content.field #show_index #structIndex ul { padding:0; }
 div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul { padding-left:20px; }
-div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li a { line-height: 30px; }
-div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span.ADA_LEAF_TYPE { background-position-x: -3px; }
+/* div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li a { line-height: 30px; } */
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span.ADA_LEAF_TYPE { background-position-x: -3px; line-height: 35px; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span.ADA_EXERCISE { line-height: 35px; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span.ADA_GROUP_TYPE { display: inline-block; padding-bottom: 0;padding-top: 0;min-height: 35px; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>ul>li>span.ADA_EXERCISE { display: inline-block; padding: 2px 0 12px 35px; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span>span.viewNodeChildren,
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span>span.hideNodeChildren { display: block; float: left; padding:0; }
 div.right.sidebar .accordion .loader-wrapper { text-align: center; }
 div.right.sidebar .accordion .icon { float: right; }
 div.right.sidebar .accordion .title,
@@ -129,7 +134,7 @@ div.right.sidebar .accordion .content.field>a {
     background: transparent;
  }
 div.right.sidebar .accordion .content.field table tbody td { vertical-align: middle; }
-div.right.sidebar .accordion .content.field table.default_table tbody td div { padding: 0 0 0 30px; } 
+div.right.sidebar .accordion .content.field table.default_table tbody td div { padding: 0 0 0 30px; line-height: 50px; } 
 div.right.sidebar .accordion .content.field table tbody td a {
 	background: transparent;
     line-height: 50px; 
