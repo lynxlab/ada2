@@ -250,19 +250,31 @@ class rollcallManagement extends abstractClassAgendaManagement
 	 */
 	private function _buildEnterExitButtons($id_student, $isEnterButtonVisibile=true) {
 		
-		$enterButton = CDOMElement::create('button','class:enterbutton');
-		if (!$isEnterButtonVisibile) $enterButton->setAttribute('style', 'display:none');
-		$enterButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',true);');
-		$enterButton->addChild(new CText(translateFN('Entra')));
-		
-		$exitButton = CDOMElement::create('button','class:exitbutton');
-		if ($isEnterButtonVisibile) $exitButton->setAttribute('style', 'display:none');
-		$exitButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',false);');
-		$exitButton->addChild(new CText(translateFN('Esce')));
+		list ($startDate,$starTime) = explode(' ', $this->eventData['start']);
+		// compare dates without times to determine if event has started
+		$started = dt2tsFN(date('d/m/Y')) >= dt2tsFN($startDate);
 		
 		$buttonsDIV = CDOMElement::create('div','class:buttonsContainer');
-		$buttonsDIV->addChild($enterButton);
-		$buttonsDIV->addChild($exitButton);
+		
+		if ($started) {
+			$enterButton = CDOMElement::create('button','class:enterbutton');
+			if (!$isEnterButtonVisibile) $enterButton->setAttribute('style', 'display:none');
+			$enterButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',true);');
+			$enterButton->addChild(new CText(translateFN('Entra')));
+			
+			$exitButton = CDOMElement::create('button','class:exitbutton');
+			if ($isEnterButtonVisibile) $exitButton->setAttribute('style', 'display:none');
+			$exitButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',false);');
+			$exitButton->addChild(new CText(translateFN('Esce')));
+			
+			$buttonsDIV->addChild($enterButton);
+			$buttonsDIV->addChild($exitButton);			
+		} else {
+			$msgSPAN = CDOMElement::create('span','class:notStartedMsg');
+			$msgSPAN->addChild(new CText(translateFN('Potrai registrare le entrate e le uscite degli studenti a partire dal ').$startDate));
+			
+			$buttonsDIV->addChild($msgSPAN);
+		}
 		
 		return $buttonsDIV->getHtml();
 	}
