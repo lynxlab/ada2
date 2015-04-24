@@ -74,7 +74,7 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 
 #content_view {
     min-height: 410px;
-    padding-top: 40px;
+    padding-top: 10px;
 }
 
 .content_small { margin-right: 365px;}
