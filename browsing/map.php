@@ -125,7 +125,9 @@ if (!AMA_DB::isError($nodeList) && is_array($nodeList) && count($nodeList)>0) {
 	             	else $linkFile = HTTP_ROOT_DIR.'/browsing/view.php';
 	                 $data .= '<a href="'.$linkFile.'?id_node='.$key['id_child'].'&map_type=lemma">'.$key['name_child'].'</a>';
 	             }else {
-	                 $data .= '<a href="'.HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$key['id_child'].'">'.$key['name_child'].'</a>';
+	             	if ($key['type_child']{0} == ADA_STANDARD_EXERCISE_TYPE) $linkFile = 'exercise';
+	             	else $linkFile = 'view';
+	             	$data .= '<a href="'.HTTP_ROOT_DIR.'/browsing/'.$linkFile.'.php?id_node='.$key['id_child'].'">'.$key['name_child'].'</a>';
 	             }
 	            // hidden div whit information for javascript
 	            $data .= '<div style="display:none">'.returnAdaNodeLink($key['linked']).'</div>';

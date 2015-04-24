@@ -10,7 +10,7 @@ function returnAdaNodeType($t)
 
     else if($t == ADA_GROUP_WORD_TYPE) return "gruppo_lemmi";
     
-    else if($t == ADA_PERSONAL_EXERCISE_TYPE) return "test";
+    else if($t == ADA_PERSONAL_EXERCISE_TYPE || $t{0} == ADA_STANDARD_EXERCISE_TYPE) return "test";
 };
 
 
