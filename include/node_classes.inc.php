@@ -284,8 +284,9 @@ class Node
         if (!empty($id_child)){
           $child_dataHa = $dh->get_node_info($id_child);
           // Vengono mostrati nella mappa solo i nodi dei tipi che sono nel seguente array
-          $nodeTypesToShow = array(ADA_LEAF_TYPE, ADA_GROUP_TYPE, ADA_LEAF_WORD_TYPE, ADA_GROUP_WORD_TYPE, ADA_PERSONAL_EXERCISE_TYPE);
-          if (in_array($child_dataHa['type'], $nodeTypesToShow)) {
+          $nodeTypesToShow = array(ADA_LEAF_TYPE, ADA_GROUP_TYPE, ADA_LEAF_WORD_TYPE, 
+          		ADA_GROUP_WORD_TYPE, ADA_PERSONAL_EXERCISE_TYPE, ADA_STANDARD_EXERCISE_TYPE);
+          if (in_array($child_dataHa['type']{0}, $nodeTypesToShow)) {
             //mydebug(__LINE__,__FILE__,$child_dataHa);
             $linksAr = array();
 
