@@ -4905,7 +4905,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql = 'SELECT C.id_corso, C.titolo, C.crediti, IC.id_istanza_corso,'
              . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status';
         if ($extra_fields) {
-            $sql .= ' ,IC.title,I.data_iscrizione,IC.duration_subscription';
+            $sql .= ' ,IC.title,I.data_iscrizione,IC.duration_subscription, C.tipo_servizio';
         }
         $sql .=' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
              . ' WHERE I.id_utente_studente=?'
@@ -4926,7 +4926,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $currentTime = time();
         $sql = 'SELECT C.id_corso, C.titolo, IC.id_istanza_corso, IC.self_instruction,'
              . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status, C.crediti,'
-             . ' I.data_iscrizione, IC.duration_subscription'
+             . ' I.data_iscrizione, IC.duration_subscription, C.tipo_servizio'
              . ' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
              . ' WHERE I.id_utente_studente=?'
              . ' AND IC.id_istanza_corso = I.id_istanza_corso'
@@ -10613,107 +10613,107 @@ public function get_updates_nodes($userObj, $pointer)
     		if ( AMA_DB::isError( $db ) ) return $db;
     		
     		$instancesArray = $this->get_course_instances_active_for_this_student ($userId);
-    		
     		$result = array();
     		
-    		foreach ($instancesArray as $instance)
-    		{
-    			// check if course instance has been visited
-    			$temp = $this->get_last_visited_nodes ($userId, $instance['id_istanza_corso'],1);
-    			$hasbeenvisited = !empty($temp);
-    			
-    			if ($hasbeenvisited)
-    			{    				
-    				$last_time_visited_class = $temp[0]['data_uscita'];
-    				// get student level
-    				$studentlevel = $this->_get_student_level($userId, $instance['id_istanza_corso']);
-    				/**
-    				 * new nodes are:
-    				 * 1. nodes the user has never visited
-    				 * 2. ndoes with data creazione > of the maximum data_visita for that node
-    				 * 
-    				 *     so:			
-    				 */
-    				
-    				$sql = 'SELECT id_nodo, ID_ISTANZA, nome from nodo where data_creazione >= '. $last_time_visited_class .
-    				' AND id_nodo LIKE \''.$instance['id_corso'].'\_%\' AND livello <=' . $studentlevel . 
-    				' AND tipo IN (' . implode (", ", $nodeTypesArray) .') ORDER BY data_creazione
-    						 DESC LIMIT '. $maxNodes;
-    				
-    				$tmpresults = $db->getAll($sql, null, AMA_FETCH_ASSOC );
-    				
-    				if (!empty($tmpresults)) foreach ($tmpresults as $tempresult) array_push ($result, $tempresult);
-    				
-    				
-    				// return ($db->getAll($sql, null, AMA_FETCH_ASSOC ));
-    				
-    				// 1. get nodes user has never visited
-    				
-//     				$sql = "SELECT DISTINCT(B.`id_nodo`) AS `id_nodo` , B.`id_istanza`, B.`nome` 
-//     						FROM `nodo` B LEFT JOIN `history_nodi` A ON A.`id_nodo` = B.`id_nodo`
-// 							WHERE B.`tipo` IN (". implode (", ", $nodeTypesArray) .")
-// 							AND ISNULL (`data_visita`)";
-// 					// $sql .= " AND (A.`id_utente_studente` =".$userId ." OR ISNULL(A.`id_utente_studente`))"; 				 
-//     				$sql .= " AND B.`id_nodo` LIKE '".$instance[id_corso]."_%'";
-//     				$sql .= " AND B.`livello`<=" . $studentlevel;
-// 					$sql .= " ORDER BY `data_creazione` DESC";
-
-// 					$nevervisitednodes = $db->getAll($sql, null, AMA_FETCH_ASSOC );
-					
-// 					print_r ($nevervisitednodes);
-					
-// 					$sql= "SELECT HN.id_nodo AS 'id_nodo', HN.data_visita AS 'max_data_visita'
-// 						FROM history_nodi HN
-// 						INNER JOIN (					
-// 							SELECT id_nodo, MAX( data_visita ) AS maxdatetime
-// 							FROM history_nodi
-// 							GROUP BY id_nodo
-// 							)	GROUPEDHN ON HN.id_nodo = GROUPEDHN.id_nodo
-// 						AND HN.data_visita = GROUPEDHN.maxdatetime
-// 						AND HN.`id_nodo` LIKE '".$instance[id_corso]."_%'		
-// 						AND HN.id_utente_studente =".$userId."
-// 						ORDER BY id_nodo ASC";
-					
-// 					$sql  = "SELECT `id_nodo`, `data_visita` AS `max_data_visita` FROM `history_nodi`";
-// 					$sql .= " WHERE `id_utente_studente`=".$userId;
-// 					$sql .= " AND `id_nodo` LIKE '".$instance[id_corso]."_%'";
-// 					$sql .= " GROUP BY `id_nodo` HAVING MAX(`data_visita`) ";
-// 					$sql .= " ORDER BY max_data_visita DESC";
-					
-// 					$maximumdatas = $db->getAll($sql, null, AMA_FETCH_ASSOC );
-					
-// 					print_r($nevervisitednodes);
-					
-// 					$othernewnodes = array();
-// 					foreach ($maximumdatas as $maxdatafornode)
-// 					{
-// 						$nodeId = $maxdatafornode['id_nodo'];
-// 						$maxData = $maxdatafornode['max_data_visita'];
+    		if (!AMA_DB::isError($instancesArray) && is_array($instancesArray) && count($instancesArray)>0) {
+	    		foreach ($instancesArray as $instance) {
+	    			// check if course instance has been visited
+	    			$temp = $this->get_last_visited_nodes ($userId, $instance['id_istanza_corso'],1);
+	    			$hasbeenvisited = !empty($temp);
+	    			
+	    			if ($hasbeenvisited)
+	    			{    				
+	    				$last_time_visited_class = $temp[0]['data_uscita'];
+	    				// get student level
+	    				$studentlevel = $this->_get_student_level($userId, $instance['id_istanza_corso']);
+	    				/**
+	    				 * new nodes are:
+	    				 * 1. nodes the user has never visited
+	    				 * 2. ndoes with data creazione > of the maximum data_visita for that node
+	    				 * 
+	    				 *     so:			
+	    				 */
+	    				
+	    				$sql = 'SELECT id_nodo, ID_ISTANZA, nome from nodo where data_creazione >= '. $last_time_visited_class .
+	    				' AND id_nodo LIKE \''.$instance['id_corso'].'\_%\' AND livello <=' . $studentlevel . 
+	    				' AND tipo IN (' . implode (", ", $nodeTypesArray) .') ORDER BY data_creazione
+	    						 DESC LIMIT '. $maxNodes;
+	    				
+	    				$tmpresults = $db->getAll($sql, null, AMA_FETCH_ASSOC );
+	    				
+	    				if (!empty($tmpresults)) foreach ($tmpresults as $tempresult) array_push ($result, $tempresult);
+	    				
+	    				
+	    				// return ($db->getAll($sql, null, AMA_FETCH_ASSOC ));
+	    				
+	    				// 1. get nodes user has never visited
+	    				
+	//     				$sql = "SELECT DISTINCT(B.`id_nodo`) AS `id_nodo` , B.`id_istanza`, B.`nome` 
+	//     						FROM `nodo` B LEFT JOIN `history_nodi` A ON A.`id_nodo` = B.`id_nodo`
+	// 							WHERE B.`tipo` IN (". implode (", ", $nodeTypesArray) .")
+	// 							AND ISNULL (`data_visita`)";
+	// 					// $sql .= " AND (A.`id_utente_studente` =".$userId ." OR ISNULL(A.`id_utente_studente`))"; 				 
+	//     				$sql .= " AND B.`id_nodo` LIKE '".$instance[id_corso]."_%'";
+	//     				$sql .= " AND B.`livello`<=" . $studentlevel;
+	// 					$sql .= " ORDER BY `data_creazione` DESC";
+	
+	// 					$nevervisitednodes = $db->getAll($sql, null, AMA_FETCH_ASSOC );
 						
-// // 						print_r ("$nodeId - $maxData\r\n<br>"); 
+	// 					print_r ($nevervisitednodes);
 						
-// 						// execute the query to get new nodes
-// 						$sql ="SELECT DISTINCT(B.`id_nodo`) AS `id_nodo` , B.`id_istanza`, B.`nome`
-// 						FROM `nodo` B LEFT JOIN `history_nodi` A ON A.`id_nodo` = B.`id_nodo`
-// 						WHERE B.`tipo` IN (". implode (", ", $nodeTypesArray) .")";
-// 						$sql .= " AND `data_creazione`>" . $maxData  ;						
-// 						$sql .= " AND A.`id_utente_studente` =".$userId;
-// 						$sql .= " AND B.`id_nodo` = '".$nodeId."'";
-// 						$sql .= " AND B.`livello`<=" . $studentlevel;
-
-// //  						print_r("<hr/>".$sql."<hr/>");
+	// 					$sql= "SELECT HN.id_nodo AS 'id_nodo', HN.data_visita AS 'max_data_visita'
+	// 						FROM history_nodi HN
+	// 						INNER JOIN (					
+	// 							SELECT id_nodo, MAX( data_visita ) AS maxdatetime
+	// 							FROM history_nodi
+	// 							GROUP BY id_nodo
+	// 							)	GROUPEDHN ON HN.id_nodo = GROUPEDHN.id_nodo
+	// 						AND HN.data_visita = GROUPEDHN.maxdatetime
+	// 						AND HN.`id_nodo` LIKE '".$instance[id_corso]."_%'		
+	// 						AND HN.id_utente_studente =".$userId."
+	// 						ORDER BY id_nodo ASC";
 						
+	// 					$sql  = "SELECT `id_nodo`, `data_visita` AS `max_data_visita` FROM `history_nodi`";
+	// 					$sql .= " WHERE `id_utente_studente`=".$userId;
+	// 					$sql .= " AND `id_nodo` LIKE '".$instance[id_corso]."_%'";
+	// 					$sql .= " GROUP BY `id_nodo` HAVING MAX(`data_visita`) ";
+	// 					$sql .= " ORDER BY max_data_visita DESC";
 						
-// 						$tempresults = $db->getAll($sql, null, AMA_FETCH_ASSOC );
-// 						if (!empty($tempresults)) foreach ($tempresults as $tempresult)  array_push ($othernewnodes,$tempresult);
-
-//  						print_r ($othernewnodes); 
-// 					}
-// 					die();
-					
-// 					$retarray = array_merge ($nevervisitednodes, $othernewnodes);
-    			} // if hasbeenvisited
-    		} // foreach instancesarray
+	// 					$maximumdatas = $db->getAll($sql, null, AMA_FETCH_ASSOC );
+						
+	// 					print_r($nevervisitednodes);
+						
+	// 					$othernewnodes = array();
+	// 					foreach ($maximumdatas as $maxdatafornode)
+	// 					{
+	// 						$nodeId = $maxdatafornode['id_nodo'];
+	// 						$maxData = $maxdatafornode['max_data_visita'];
+							
+	// // 						print_r ("$nodeId - $maxData\r\n<br>"); 
+							
+	// 						// execute the query to get new nodes
+	// 						$sql ="SELECT DISTINCT(B.`id_nodo`) AS `id_nodo` , B.`id_istanza`, B.`nome`
+	// 						FROM `nodo` B LEFT JOIN `history_nodi` A ON A.`id_nodo` = B.`id_nodo`
+	// 						WHERE B.`tipo` IN (". implode (", ", $nodeTypesArray) .")";
+	// 						$sql .= " AND `data_creazione`>" . $maxData  ;						
+	// 						$sql .= " AND A.`id_utente_studente` =".$userId;
+	// 						$sql .= " AND B.`id_nodo` = '".$nodeId."'";
+	// 						$sql .= " AND B.`livello`<=" . $studentlevel;
+	
+	// //  						print_r("<hr/>".$sql."<hr/>");
+							
+							
+	// 						$tempresults = $db->getAll($sql, null, AMA_FETCH_ASSOC );
+	// 						if (!empty($tempresults)) foreach ($tempresults as $tempresult)  array_push ($othernewnodes,$tempresult);
+	
+	//  						print_r ($othernewnodes); 
+	// 					}
+	// 					die();
+						
+	// 					$retarray = array_merge ($nevervisitednodes, $othernewnodes);
+	    			} // if hasbeenvisited
+	    		} // foreach instancesarray
+    		}
 					
 					return $result;
     		
