@@ -301,16 +301,17 @@ if ($id_profile == AMA_TYPE_AUTHOR) {
 
 	$mod_enabled = TRUE;
 }
-
-if ($node_type == ADA_GROUP_TYPE)  {
-	$go_map = '<a href="map.php?id_node=' . $sess_id_node . '">'
-			. translateFN('mappa') . '</a>';
-} elseif ($node_type == ADA_GROUP_WORD_TYPE) {
-	$go_map = '<a href="map.php?id_node=' . $sess_id_node . '&map_type=lemma">'
-			. translateFN('mappa') . '</a>';
-}else {
-				$go_map = '';
-}
+if (is_array($nodeObj->children) && count($nodeObj->children)>0) {
+	if ($node_type == ADA_GROUP_TYPE)  {
+		$go_map = '<a href="map.php?id_node=' . $sess_id_node . '">'
+				. translateFN('mappa') . '</a>';
+	} elseif ($node_type == ADA_GROUP_WORD_TYPE) {
+		$go_map = '<a href="map.php?id_node=' . $sess_id_node . '&map_type=lemma">'
+				. translateFN('mappa') . '</a>';
+	}else {
+					$go_map = '';
+	}	
+} else $go_map = '';
 
 switch($id_profile) {
 	case AMA_TYPE_STUDENT:

@@ -111,15 +111,19 @@ if (!AMA_DB::isError($nodeList) && is_array($nodeList) && count($nodeList)>0) {
 	            //settings style, id etc etc etc for javascript
 	        $thisNodeStyle = 'left:'.$nodeChildPos[0].'px;top:'.$nodeChildPos[1].'px;width:'.$nodeChildPos[2].'px;height:auto;';
 	        $node_type = returnAdaNodeType($key['type_child']);
-	        if((($node_type == "lemma" || $node_type == 'gruppo_lemmi') && $tipo_mappa == "lemma")|| (($node_type == "gruppo" || $node_type == 'nodo') && $tipo_mappa != "lemma") ){
+	        if((($node_type == "lemma" || $node_type == 'gruppo_lemmi') && $tipo_mappa == "lemma")|| (($node_type == "gruppo" || $node_type == 'nodo' || $node_type == 'test') && $tipo_mappa != "lemma") ){
 	            $data .= '<div class="newNodeMap" style="position:absolute;'.$thisNodeStyle.'" id="'.$key['id_child'].'">';
 	            $data .= '<img src="'.returnAdaNodeIcon($key['icon_child'], $key['type_child']).'"/>';
 	
 	            // setting icon
 	             if( $key['type_child'] == ADA_GROUP_TYPE) {
-	                 $data .= '<a href="?id_node='.$key['id_child'].'">'.$key['name_child'].'</a>';
+	             	if (isset($key['children_count']) && $key['children_count']>0) $linkFile = '';
+	             	else $linkFile = HTTP_ROOT_DIR.'/browsing/view.php';
+	                 $data .= '<a href="'.$linkFile.'?id_node='.$key['id_child'].'">'.$key['name_child'].'</a>';
 	             }elseif ($key['type_child'] == ADA_GROUP_WORD_TYPE ) {
-	                 $data .= '<a href="?id_node='.$key['id_child'].'&map_type=lemma">'.$key['name_child'].'</a>';
+	             	if (isset($key['children_count']) && $key['children_count']>0) $linkFile = '';
+	             	else $linkFile = HTTP_ROOT_DIR.'/browsing/view.php';
+	                 $data .= '<a href="'.$linkFile.'?id_node='.$key['id_child'].'&map_type=lemma">'.$key['name_child'].'</a>';
 	             }else {
 	                 $data .= '<a href="'.HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$key['id_child'].'">'.$key['name_child'].'</a>';
 	             }
@@ -148,7 +152,7 @@ if($userObj-> tipo == AMA_TYPE_AUTHOR ){
  
  
  
- 
+$help = BaseHtmlLib::link(HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$nodeObj->id, translateFN('Torna al contenuto del nodo'))->getHtml();
  
 $label = translateFN('mappa');
 

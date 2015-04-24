@@ -109,6 +109,9 @@
                             <template_field class="template_field" name="bookmark">bookmark</template_field>
                         </span>
                     </div>
+                    <div id="help">
+                            <template_field class="template_field" name="help">help</template_field>
+                    </div>
                     <div class="firstnode">
                          <template_field class="template_field" name="data">data</template_field>
                     </div>

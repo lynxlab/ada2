@@ -6,9 +6,11 @@ function returnAdaNodeType($t)
 	
 	else if($t == ADA_GROUP_TYPE) return "gruppo";
 
-        else if($t == ADA_LEAF_WORD_TYPE) return "lemma";
+    else if($t == ADA_LEAF_WORD_TYPE) return "lemma";
 
-        else if($t == ADA_GROUP_WORD_TYPE) return "gruppo_lemmi";
+    else if($t == ADA_GROUP_WORD_TYPE) return "gruppo_lemmi";
+    
+    else if($t == ADA_PERSONAL_EXERCISE_TYPE) return "test";
 };
 
 
@@ -72,7 +74,7 @@ function returnAdaNodeLink($t){
 	
 	$d = array();
 	
-	foreach($t as $lin) array_push($d, $lin[id_node_to]);
+	foreach($t as $lin) array_push($d, $lin['id_node_to']);
 	
 	return implode(",",$d);
 	
