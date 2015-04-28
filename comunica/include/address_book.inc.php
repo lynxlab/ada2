@@ -290,7 +290,13 @@ class ADAAddressBook
         $optgroup = CDOMElement::create('optgroup');
         $optgroup->setAttribute('label', $tester_name);
         foreach($user_data_Ar as $user) {
-          if($user['tipo'] == AMA_TYPE_STUDENT) {
+         /**
+           * @author giorgio 28/apr/2015
+           * 
+           * tutors are students for an ADA_SERVICE_TUTORCOMMUNITY type of course,
+           * so add them to the address book if they're returned in the $result_Ar
+           */
+          if($user['tipo'] == AMA_TYPE_STUDENT || ($user['tipo'] == AMA_TYPE_TUTOR && $user['id_utente']!=$userObj->getId())) {
             $option = CDOMElement::create('option','value:'.$user['username']);
             if (isset($user['cognome']) || isset($user['nome'])) $displayname = $user['cognome'].' '.$user['nome'];
             else $displayname = $user['username']; 
