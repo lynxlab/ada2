@@ -104,7 +104,7 @@ document.observe('dom:loaded', function() {
 			    html: $j('#status_bar').html(),
 			    on: 'click',
 			    onHide: function() {
-		    		$j('a.item.active').removeClass('active');
+		    		$j('.ada.menu .item.active').removeClass('active');
 			    }
 			  });
 		}
