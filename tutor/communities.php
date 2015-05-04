@@ -127,6 +127,9 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 			} else if ($isStarted && !$isEnded) {
 				$link->addChild(new CText(translateFN('Accedi')));
 			}
+		} else {
+			// skip to next iteration if tutor community has not been started by the switcher
+			continue;
 		}
 	
 		$tbody_dataAr[] = array(

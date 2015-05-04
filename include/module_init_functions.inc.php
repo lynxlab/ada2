@@ -572,7 +572,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
                       }
                       break;
                   case AMA_TYPE_TUTOR:
-                  	  if (!$sess_userObj->isSuper() && $sess_courseObj->getServiceLevel()!=ADA_SERVICE_TUTORCOMMUNITY) {
+                  	  if (!$sess_userObj->isSuper() && $course_instanceObj->getServiceLevel()!=ADA_SERVICE_TUTORCOMMUNITY) {
 	                      $tutorsInstance = $dh->course_instance_tutor_get($id_course_instance,$number=2);
 	                      if (AMA_DataHandler::isError($tutorsInstance)) {
 	                          $invalid_course_instance = TRUE;

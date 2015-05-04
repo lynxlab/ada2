@@ -63,11 +63,14 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
     $delete_img= CDOMElement::create('img', 'src:img/trash.png,alt:view');
             
     foreach($coursesAr as $course) {
+    	$isPublicCourse = isset($_SESSION['service_level_info'][$course['tipo_servizio']]['isPublic']) &&     	
+    					  ($_SESSION['service_level_info'][$course['tipo_servizio']]['isPublic']!=0);
         $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
         $imgDetails->setAttribute('class', 'imgDetls tooltip');
         $imgDetails->setAttribute('title', translateFN('visualizza/nasconde la descrizione del corso'));
                 
         $courseId = $course[0];
+        $actions = array();
         $edit_link = BaseHtmlLib::link("edit_course.php?id_course=$courseId", $edit_img->getHtml());
         
         if(isset($edit_link)){
@@ -76,6 +79,7 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
             $div_edit->setAttribute('title', $title);
             $div_edit->setAttribute('class', 'tooltip');
             $div_edit->addChild(($edit_link));
+            $actions[] = $div_edit;
         }
         
         $view_link = BaseHtmlLib::link("view_course.php?id_course=$courseId", $view_img->getHtml());
@@ -86,9 +90,10 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
             $div_view->setAttribute('title', $title);
             $div_view->setAttribute('class', 'tooltip');
             $div_view->addChild(($view_link));
+            $actions[] = $div_view;
         }
         
-        $instances_link = BaseHtmlLib::link("list_instances.php?id_course=$courseId", $instances_img->getHtml());
+        if(!$isPublicCourse) $instances_link = BaseHtmlLib::link("list_instances.php?id_course=$courseId", $instances_img->getHtml());
         
         if(isset($instances_link)){
             $title=translateFN('Gestione classi');
@@ -96,18 +101,20 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
             $div_instances->setAttribute('title', $title);
             $div_instances->setAttribute('class', 'tooltip');
             $div_instances->addChild(($instances_link));
+            $actions[] = $div_instances;
         }
         
-        if (MODULES_TEST) {
+        if (!$isPublicCourse && MODULES_TEST) {
             $survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP.'/switcher.php?id_course='.$courseId, $survey_img->getHtml());
             $title=translateFN('Sondaggi');
             $div_survey = CDOMElement::create('div');
             $div_survey->setAttribute('title', $title);
             $div_survey->setAttribute('class', 'tooltip');
             $div_survey->addChild(($survey_link));
+            $actions[] = $div_survey;
         }
 
-        $add_instance_link = BaseHtmlLib::link("add_instance.php?id_course=$courseId", $add_instance_img->getHtml());
+        if(!$isPublicCourse) $add_instance_link = BaseHtmlLib::link("add_instance.php?id_course=$courseId", $add_instance_img->getHtml());
         
         if(isset($add_instance_link)){
             $title=translateFN('Aggiungi classe');
@@ -115,6 +122,7 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
             $div_AddInstances->setAttribute('title', $title);
             $div_AddInstances->setAttribute('class', 'tooltip');
             $div_AddInstances->addChild(($add_instance_link));
+            $actions[] = $div_AddInstances;
         }
         
         $delete_course_link = BaseHtmlLib::link("delete_course.php?id_course=$courseId", $delete_img->getHtml());
@@ -125,14 +133,9 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
             $div_delete->setAttribute('title', $title);
             $div_delete->setAttribute('class', 'tooltip');
             $div_delete->addChild(($delete_course_link));
+            $actions[] = $div_delete;
         }
         
-        $actions = array($div_edit,$div_view,$div_instances);
-        if (MODULES_TEST) {
-            $actions[] = $div_survey;
-        }
-        
-        $actions = array_merge($actions,array($div_AddInstances,$div_delete));
         $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actions);
         $servicelevel=null;
          /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
