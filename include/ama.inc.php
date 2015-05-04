@@ -5072,6 +5072,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $start_level_student = $this->or_zero($istanza_ha['start_level_student']);
         $open_subscription = $istanza_ha['open_subscription'];
         $duration_hours = $this->or_zero($istanza_ha['duration_hours']);
+        $tipo_servizio = $this->or_null($istanza_ha['service_level']);
 
         // check value of supposed starting date (cannot be empty)
         if (empty($data_inizio_previsto)) {
@@ -5101,8 +5102,14 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         // add the record
         // vito, 17 apr 2009, added data_fine
-        $sql  = "insert into istanza_corso (id_corso, data_inizio, durata, data_inizio_previsto,id_layout,data_fine, price, self_instruction, self_registration, title, duration_subscription, start_level_student, open_subscription, duration_hours)";
-        $sql .= " values ($id_corso, $data_inizio, $durata, $data_inizio_previsto,$id_layout, $data_fine, $price, $self_instruction, $self_registration, $title, $duration_subscription, $start_level_student, $open_subscription, $duration_hours)";
+        $sql  = "insert into istanza_corso (id_corso, data_inizio, durata, ".
+        		"data_inizio_previsto,id_layout,data_fine, price, self_instruction, ".
+        		"self_registration, title, duration_subscription, start_level_student, ".
+        		"open_subscription, duration_hours, tipo_servizio)";
+        $sql .= " values ($id_corso, $data_inizio, $durata, ".
+        		"$data_inizio_previsto,$id_layout, $data_fine, $price, $self_instruction, ".
+        		"$self_registration, $title, $duration_subscription, $start_level_student, ".
+        		"$open_subscription, $duration_hours, $tipo_servizio)";
         $res = $this->executeCritical( $sql );
         if (AMA_DB::isError($res)) {
             return $res;
@@ -5235,7 +5242,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         // get a row from table istanza_corso
         $sql = "select id_corso, data_inizio, durata, data_inizio_previsto, id_layout, data_fine, status, " .
-               "price, self_instruction, self_registration, title, duration_subscription, start_level_student, open_subscription, duration_hours ".
+               "price, self_instruction, self_registration, title, duration_subscription, start_level_student, ".
+               "open_subscription, duration_hours, tipo_servizio as `service_level` ".
                "from istanza_corso where id_istanza_corso=$id";
         $result = $db->getRow($sql,NULL, AMA_FETCH_ASSOC);
 //        print_r($result);
@@ -5461,6 +5469,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $start_level_student = $this->or_zero($istanza_ha['start_level_student']);
         $open_subscription = $istanza_ha['open_subscription'];
         $duration_hours = $this->or_zero($istanza_ha['duration_hours']);
+        $tipo_servizio = $this->or_null($istanza_ha['service_level']);
 
 
         // check value of supposed starting date (cannot be empty)
@@ -5491,7 +5500,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql  = "update istanza_corso set data_inizio=$data_inizio, durata=$durata, data_inizio_previsto=$data_inizio_previsto, ";
         $sql .= "data_fine=$data_fine, self_instruction=$self_instruction, title=$title, self_registration=$self_registration, ";
         $sql .= "price=$price, duration_subscription=$duration_subscription, start_level_student=$start_level_student, open_subscription=$open_subscription, ";
-        $sql .= "duration_hours=$duration_hours where id_istanza_corso=$id";
+        $sql .= "duration_hours=$duration_hours, tipo_servizio=$tipo_servizio where id_istanza_corso=$id";
         $res = $db->query($sql);
         if (AMA_DB::isError($res)) {
             return new AMA_Error(AMA_ERR_UPDATE);

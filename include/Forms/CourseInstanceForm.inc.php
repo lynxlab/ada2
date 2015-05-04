@@ -71,7 +71,26 @@ class CourseInstanceForm extends FForm {
 
         $this->addTextInput('start_level_student', translateFN('Livello assegnato agli studenti (0 - 99)'))
              ->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR);
-
-
+        
+        /* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+         
+        if(isset($_SESSION['service_level'])){
+        	/**
+        	 * @author giorgio 04/mag/2015
+        	 *
+        	 * course instances of a non public course cannot be public,
+        	 * so remove the 'public course' choice from service type select field 
+        	 */
+        	$shownServiceTypes = array();
+        	foreach ($_SESSION['service_level'] as $key=>$val) {
+        		if (!(bool)$_SESSION['service_level_info'][$key]['isPublic']) {
+        			$shownServiceTypes[$key]=$val;
+        		}
+        	}
+        	
+        	$desc = translateFN('Tipo').':';
+        	$this->addSelect('service_level',$desc,$shownServiceTypes,reset($shownServiceTypes))
+        	->setRequired();
+        }        
     }
 }

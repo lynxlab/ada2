@@ -69,8 +69,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($subscriberObj instanceof ADAUser) {
                 $result = $dh->student_can_subscribe_to_course_instance($subscriberObj->getId(), $courseInstanceId);
                 if (!AMA_DataHandler::isError($result) && $result !== false) {
-                    $canSubscribeUser = $courseObj instanceof Course && $courseObj->isFull() &&
-                    					$courseObj->getServiceLevel() != ADA_SERVICE_TUTORCOMMUNITY;
+                    $canSubscribeUser = $courseInstanceObj instanceof Course_instance &&
+                    					$courseInstanceObj->isFull() &&
+                    					$courseInstanceObj->getServiceLevel() != ADA_SERVICE_TUTORCOMMUNITY;
                 }                
             } else if ($subscriberObj instanceof ADAPractitioner) {
             	/**
@@ -80,8 +81,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             	 * if the course instance belongs to a service of type 
             	 * ADA_SERVICE_TUTORCOMMUNITY
             	 */
-            	$canSubscribeUser = $courseObj instanceof Course && $courseObj->isFull() &&
-            						$courseObj->getServiceLevel() == ADA_SERVICE_TUTORCOMMUNITY;
+            	$canSubscribeUser = $courseInstanceObj instanceof Course_instance &&
+            						$courseInstanceObj->isFull() &&
+            						$courseInstanceObj->getServiceLevel() == ADA_SERVICE_TUTORCOMMUNITY;
             } else $canSubscribeUser = false;
             if ($canSubscribeUser) {
             	$courseProviderAr = $common_dh->get_tester_info_from_id_course($courseObj->getId());

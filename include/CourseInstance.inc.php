@@ -101,5 +101,8 @@ class Course_instance extends Course_instance_Old
     public function getDurationHours() {
     	return $this->duration_hours;
     }
+    public function getServiceLevel() {
+    	return $this->service_level;
+    }
 
 }
