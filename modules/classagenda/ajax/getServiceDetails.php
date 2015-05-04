@@ -54,10 +54,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 		if (!AMA_DB::isError($serviceArr)) {
 			// 3 is service level, get it as int and string
 			
-			$retArray['isOnline'] = $serviceArr[3]==ADA_SERVICE_ONLINECOURSE;
-			
-			$retArray['isPresence'] = ($serviceArr[3]==ADA_SERVICE_PRESENCECOURSE) || 
-									  ($serviceArr[3]==ADA_SERVICE_MIXEDCOURSE);
+			$retArray['isOnline']   = in_array($serviceArr[3], $GLOBALS['onLineServiceTypes']);
+			$retArray['isPresence'] = in_array($serviceArr[3], $GLOBALS['presenceServiceTypes']);
                         
 			if(isset($_SESSION['service_level'][$serviceArr[3]])){
 			    $retArray['serviceTypeString'] = $_SESSION['service_level'][$serviceArr[3]];
