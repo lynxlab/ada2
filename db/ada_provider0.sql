@@ -262,6 +262,7 @@ CREATE TABLE IF NOT EXISTS `istanza_corso` (
   `duration_subscription` int(3) NOT NULL,
   `open_subscription` tinyint(1) NOT NULL,
   `duration_hours` int unsigned NOT NULL DEFAULT '0',
+  `tipo_servizio` TINYINT(3) UNSIGNED NULL DEFAULT NULL,
   PRIMARY KEY (`id_istanza_corso`),
   KEY `id_istanza_corso` (`id_istanza_corso`,`id_corso`),
   KEY `id_corso` (`id_corso`)

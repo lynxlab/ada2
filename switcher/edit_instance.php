@@ -77,7 +77,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 'duration_subscription' => $_POST['duration_subscription'],
                 'start_level_student' => $_POST['start_level_student'],
                 'open_subscription' => $_POST['open_subscription'],
-            	'duration_hours' => $_POST['duration_hours']
+            	'duration_hours' => $_POST['duration_hours'],
+            	'service_level' => $_POST['service_level']
             );
             $result = $dh->course_instance_set($_POST['id_course_instance'], $course_instanceAr);
             if(AMA_DataHandler::isError($result)) {
@@ -181,6 +182,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     } else if(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
         $data = new CText(translateFN('Classe non trovata'));
     } else {
+    	
+    	if (is_null($courseInstanceObj->getServiceLevel())) {
+    		$courseInstanceObj->service_level = $courseObj->getServiceLevel();
+    	}
+    	
         $formData = array(
             'id_course' => $courseObj->getId(),
             'id_course_instance' => $courseInstanceObj->getId(),
@@ -194,7 +200,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             'duration_subscription' => $courseInstanceObj->getDurationSubscription(),
             'start_level_student' => $courseInstanceObj->getStartLevelStudent(),
             'open_subscription' => $courseInstanceObj->getOpenSubscription() ? 1 : 0,
-        	'duration_hours' => $courseInstanceObj->getDurationHours()
+        	'duration_hours' => $courseInstanceObj->getDurationHours(),
+        	'service_level' => $courseInstanceObj->getServiceLevel()
         );
         $data = new CourseInstanceForm();
         $data->fillWithArrayData($formData);

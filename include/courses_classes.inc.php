@@ -597,6 +597,7 @@ class Course_instance_Old {
     var $start_level_student;
     var $open_subscription;
     var $duration_hours;
+    var $service_level;
 
 
 
