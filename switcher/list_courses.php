@@ -142,10 +142,10 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         if(isset($_SESSION['service_level'][$course[4]])){
             $servicelevel=$_SESSION['service_level'][$course[4]];
         }
-        if(!isset($servicelevel)){$servicelevel='Corso Online';}
+        if(!isset($servicelevel)){$servicelevel=DEFAULT_SERVICE_TYPE_NAME;}
         
         
-        $tbody_data[] = array($imgDetails,$courseId, $course[1],$servicelevel,  $course[2], $course[3], $actions);
+        $tbody_data[] = array($imgDetails,$courseId, $course[1],translateFN($servicelevel),  $course[2], $course[3], $actions);
     }
     $data = BaseHtmlLib::tableElement('id:table_list_courses', $thead_data, $tbody_data);
 } else {
