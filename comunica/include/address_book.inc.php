@@ -98,7 +98,7 @@ class ADAAddressBook
 	        }
         } else $tutors_Ar = array();
 
-        if (in_array(AMA_TYPE_STUDENT, $user_types_Ar[$user_type])) {
+        if (in_array(AMA_TYPE_SWITCHER, $user_types_Ar[$user_type])) {
 	        /*
 	         * SWITCHERS
 	         */
