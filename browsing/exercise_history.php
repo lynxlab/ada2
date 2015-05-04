@@ -99,7 +99,7 @@ $banner = include ("$root_dir/include/banner.inc.php");
 // Costruzione del link per la chat.
 // per la creazione della stanza prende solo la prima parola del corso (se piu' breve di 24 caratteri)
 // e ci aggiunge l'id dell'istanza corso
-$help = translateFN("Da qui il tutor del corso può vedere e correggere gli esercizi degli studenti. Può anche inviare un commento e/o decidere di far ripetere l'esercizio allo studente.");
+$help = translateFN("Da qui lo studente può rivedere i propri esercizi.");
 
 if (!isset($status)) {
     $status = '';
