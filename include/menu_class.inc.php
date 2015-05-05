@@ -193,9 +193,23 @@ class Menu
 	    		}
 	    	} else {
 	    		/**
-	    		 * item has children, it's a dropdown
+	    		 * item has children, it's a dropdown if one of its children is enabled
 	    		 */
-	    		$DOMitem = $this->buildDropDownItem($item, $firstLevel);
+	    		$isDropDown = false;
+	    		if (is_array($item['children']) && count($item['children'])>0) {
+	    			foreach ($item['children'] as $index=>$child) {
+	    				if (!$this->_isEnabled($child)) {
+	    					$isDropDown = $isDropDown || false;
+	    					// unset disabled children for proper rendering
+	    					unset ($item['children'][$index]);
+	    				} else {
+	    					$isDropDown = $isDropDown || true;
+	    				}
+	    			}
+	    		}
+	    		 
+	    		if ($isDropDown) $DOMitem = $this->buildDropDownItem($item, $firstLevel);
+	    		else $DOMitem = $this->buildHREFItem($item);
 	    	}
 	    	
 	    	if (isset($DOMitem)) $container->addChild($DOMitem);
@@ -437,6 +451,10 @@ class Menu
     	// do not send out without an href
     	if (strlen($DOMitem->getAttribute('href'))<=0) {
     		$DOMitem->setAttribute('href','javascript:void(0);');
+    		// if element has no link and no children, add disabled class
+    		if (!$item['specialItem'] && (is_null($item['children']) || !isset($item['children']) || count($item['children'])<=0)) {
+    			$item['extraClass'] .= ' disabled';
+    		}
     	}
     	
     	// build common elements
@@ -444,7 +462,7 @@ class Menu
     	
     	$LIitem = CDOMElement::create('li');
     	// set class attribute
-    	$LIitem->setAttribute('class', trim('item '.$item['extraClass']));
+    	$LIitem->setAttribute('class', trim('item '.trim($item['extraClass'])));
     	$LIitem->addChild($DOMitem);
     	
     	if (!is_null($item['extraHTML'])) $LIitem->addChild(new CText($item['extraHTML']));
