@@ -69,8 +69,10 @@ class DFSNavigationBar
         	 * must check if computed $this->_previousNode points to a test
         	 * and get last topic if it does.
         	 */
+        	if (!is_null($this->_previousNode)) {
+	        	$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$this->_previousNode));        		
+        	} else $res = array();
         	
-        	$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$this->_previousNode));
         	if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
         		$node = array_shift($res);
         		$test = NodeTest::readTest($node['id_nodo'], $test_db);
