@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `amministratore_sistema` (
 CREATE TABLE IF NOT EXISTS `autore` (
   `id_utente_autore` int(10) unsigned NOT NULL DEFAULT '0',
   `profilo` text COLLATE utf8_unicode_ci,
-  `tariffa` int(10) unsigned NOT NULL DEFAULT '0'
+  `tariffa` decimal(7,2) unsigned NOT NULL DEFAULT '0.00'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `banner` (
   `a_impressions` int(11) NOT NULL DEFAULT '0',
   `date_from` int(11) DEFAULT NULL,
   `date_to` int(11) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `bookmark` (
   `data` int(11) NOT NULL DEFAULT '0',
   `descrizione` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ordering` smallint(5) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `chatroom` (
   `tempo_fine` int(11) NOT NULL DEFAULT '0',
   `msg_benvenuto` text COLLATE utf8_unicode_ci NOT NULL,
   `max_utenti` int(10) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=17 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `clienti` (
   `name` varchar(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `address` varchar(80) COLLATE utf8_unicode_ci DEFAULT NULL,
   `notes` text COLLATE utf8_unicode_ci
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -169,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `history_esercizi` (
   `CORREZIONE_RISPOSTA_LIBERA` text COLLATE utf8_unicode_ci,
   `RIPETIBILE` smallint(1) NOT NULL DEFAULT '0',
   `ALLEGATO` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=115 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `history_nodi` (
   `remote_address` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `installation_path` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `access_from` smallint(5) unsigned DEFAULT '0'
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2554 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -228,7 +228,7 @@ CREATE TABLE IF NOT EXISTS `istanza_corso` (
   `open_subscription` tinyint(1) NOT NULL,
   `duration_hours` int(10) unsigned NOT NULL DEFAULT '0',
   `tipo_servizio` tinyint(3) unsigned DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=17 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `link` (
   `stile` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `significato` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `azione` tinyint(3) unsigned DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=55 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -272,7 +272,7 @@ CREATE TABLE IF NOT EXISTS `log_classi` (
   `bookmarks` int(10) unsigned NOT NULL DEFAULT '0',
   `indice_att` int(10) unsigned NOT NULL DEFAULT '0',
   `level` tinyint(3) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `messaggi` (
   `priorita` tinyint(3) unsigned DEFAULT NULL,
   `testo` text COLLATE utf8_unicode_ci,
   `flags` int(10) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=31 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -315,7 +315,7 @@ CREATE TABLE IF NOT EXISTS `modello_corso` (
   `crediti` tinyint(3) NOT NULL DEFAULT '1',
   `duration_hours` int(10) unsigned NOT NULL DEFAULT '0',
   `tipo_servizio` tinyint(3) unsigned DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `module_newsletter_history` (
   `datesent` int(11) NOT NULL,
   `recipientscount` int(6) unsigned NOT NULL,
   `status` tinyint(2) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -346,7 +346,7 @@ CREATE TABLE IF NOT EXISTS `module_newsletter_newsletters` (
   `htmltext` text COLLATE utf8_unicode_ci,
   `plaintext` text COLLATE utf8_unicode_ci,
   `draft` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -380,7 +380,7 @@ CREATE TABLE IF NOT EXISTS `module_test_history_answer` (
   `correzione_risposta` text COLLATE utf8_unicode_ci,
   `allegato` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `data` int(10) NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=299 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -403,7 +403,7 @@ CREATE TABLE IF NOT EXISTS `module_test_history_test` (
   `consegnato` tinyint(1) NOT NULL DEFAULT '0',
   `tempo_scaduto` tinyint(1) NOT NULL DEFAULT '0',
   `domande` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=36 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -438,7 +438,7 @@ CREATE TABLE IF NOT EXISTS `module_test_nodes` (
   `didascalia` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `durata` int(10) DEFAULT NULL,
   `titolo_dragdrop` text COLLATE utf8_unicode_ci
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=716 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -485,7 +485,7 @@ CREATE TABLE IF NOT EXISTS `openmeetings_room` (
   `descrizione_videochat` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `tempo_avvio` int(11) NOT NULL,
   `tempo_fine` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -499,7 +499,7 @@ CREATE TABLE IF NOT EXISTS `posizione` (
   `y0` int(11) NOT NULL DEFAULT '0',
   `x1` int(11) NOT NULL DEFAULT '0',
   `y1` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=28 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -518,7 +518,7 @@ CREATE TABLE IF NOT EXISTS `risorsa_esterna` (
   `descrizione` text COLLATE utf8_unicode_ci NOT NULL,
   `pubblicato` tinyint(1) NOT NULL,
   `lingua` tinyint(3) NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=37 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -580,7 +580,7 @@ CREATE TABLE IF NOT EXISTS `sessione_eguidance` (
   `m_2` tinyint(3) unsigned DEFAULT '0',
   `m_comments` text COLLATE utf8_unicode_ci,
   `other_comments` text COLLATE utf8_unicode_ci
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -646,7 +646,7 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `avatar` varchar(90) COLLATE utf8_unicode_ci NOT NULL,
   `birthcity` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `birthprovince` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=109 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -709,7 +709,7 @@ CREATE TABLE IF NOT EXISTS `utente_messaggio_log` (
   `lingua` char(2) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'it',
   `id_riceventi` int(10) unsigned DEFAULT NULL,
   `flags` int(10) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --
 -- Indexes for dumped tables
@@ -955,7 +955,7 @@ MODIFY `id_bookmark` int(10) unsigned NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `chatroom`
 --
 ALTER TABLE `chatroom`
-MODIFY `id_chatroom` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
+MODIFY `id_chatroom` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `clienti`
 --
@@ -965,37 +965,37 @@ MODIFY `id_client` int(10) unsigned NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `history_esercizi`
 --
 ALTER TABLE `history_esercizi`
-MODIFY `ID_HISTORY_EX` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=115;
+MODIFY `ID_HISTORY_EX` int(10) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `history_nodi`
 --
 ALTER TABLE `history_nodi`
-MODIFY `id_history` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2554;
+MODIFY `id_history` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `istanza_corso`
 --
 ALTER TABLE `istanza_corso`
-MODIFY `id_istanza_corso` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
+MODIFY `id_istanza_corso` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `link`
 --
 ALTER TABLE `link`
-MODIFY `id_link` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=55;
+MODIFY `id_link` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `log_classi`
 --
 ALTER TABLE `log_classi`
-MODIFY `id_log` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+MODIFY `id_log` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `messaggi`
 --
 ALTER TABLE `messaggi`
-MODIFY `id_messaggio` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=31;
+MODIFY `id_messaggio` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `modello_corso`
 --
 ALTER TABLE `modello_corso`
-MODIFY `id_corso` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=27;
+MODIFY `id_corso` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `module_newsletter_history`
 --
@@ -1005,22 +1005,22 @@ MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `module_newsletter_newsletters`
 --
 ALTER TABLE `module_newsletter_newsletters`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `module_test_history_answer`
 --
 ALTER TABLE `module_test_history_answer`
-MODIFY `id_answer` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=299;
+MODIFY `id_answer` int(10) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `module_test_history_test`
 --
 ALTER TABLE `module_test_history_test`
-MODIFY `id_history_test` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=36;
+MODIFY `id_history_test` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `module_test_nodes`
 --
 ALTER TABLE `module_test_nodes`
-MODIFY `id_nodo` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=716;
+MODIFY `id_nodo` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `openmeetings_room`
 --
@@ -1030,12 +1030,12 @@ MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `posizione`
 --
 ALTER TABLE `posizione`
-MODIFY `id_posizione` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=28;
+MODIFY `id_posizione` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `risorsa_esterna`
 --
 ALTER TABLE `risorsa_esterna`
-MODIFY `id_risorsa_ext` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;
+MODIFY `id_risorsa_ext` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `sessione_eguidance`
 --
@@ -1045,7 +1045,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `utente`
 --
 ALTER TABLE `utente`
-MODIFY `id_utente` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=109;
+MODIFY `id_utente` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `utente_messaggio_log`
 --
