@@ -67,109 +67,110 @@ switch ($id_profile) {
     case AMA_TYPE_SWITCHER:
         // gets an array with all the chatrooms
         $all_chatrooms_ar = Chatroom::get_all_chatroomsFN();
+        if (!AMA_DB::isError($all_chatrooms_ar)) {
+            //initialize an array
+            $list_chatrooms = array();
+            // sort the chatrooms in reverse order, so we can visualize first the most recent chatrooms
+            rsort($all_chatrooms_ar);
+            $tbody_data = array();
+            foreach ($all_chatrooms_ar as $id_chatroom) {
+                //initialize a chatroom Object
+                $chatroomObj = new ChatRoom($id_chatroom);
+                //get the array with all the current info of the chatoorm
+                $chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
+                $id_course_instance = $chatroom_ha['id_istanza_corso'];
+                $id_course = $dh->get_course_id_for_course_instance($chatroom_ha['id_istanza_corso']);
+                $courseObj = read_course($id_course);
+                if (is_object($courseObj) && !AMA_DB::isError($courseObj))  {
+                        $course_title = $courseObj->titolo; //title
+                        $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
+                }
 
-
-        //initialize an array
-        $list_chatrooms = array();
-        // sort the chatrooms in reverse order, so we can visualize first the most recent chatrooms
-        rsort($all_chatrooms_ar);
-        $tbody_data = array();
-        foreach ($all_chatrooms_ar as $id_chatroom) {
-            //initialize a chatroom Object
-            $chatroomObj = new ChatRoom($id_chatroom);
-            //get the array with all the current info of the chatoorm
-            $chatroom_ha = $chatroomObj->get_info_chatroomFN($id_chatroom);
-            $id_course_instance = $chatroom_ha['id_istanza_corso'];
-            $id_course = $dh->get_course_id_for_course_instance($chatroom_ha['id_istanza_corso']);
-            $courseObj = read_course($id_course);
-            if (is_object($courseObj) && !AMA_DB::isError($courseObj))  {
-                    $course_title = $courseObj->titolo; //title
-                    $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
-            }
-
-            // get the title of the chatroom
-            $chat_title = $chatroom_ha['titolo_chat'];
-            // get the type of the chatroom
-            $c_type = $chatroom_ha['tipo_chat'];
-            switch ($c_type) {
-                case PUBLIC_CHAT:
-                    $chat_type = translateFN("pubblica");
-                    break;
-                case CLASS_CHAT:
-                    $chat_type = translateFN("classe");
-                    break;
-                case INVITATION_CHAT:
-                    $chat_type = translateFN("privata");
-                    break;
-                default:
-            } // switch $c_type
-            // verifiy the status of the chatroom
-            $started = $chatroomObj->is_chatroom_startedFN($id_chatroom);
-            $running = $chatroomObj->is_chatroom_activeFN($id_chatroom);
-            //$not_expired = $chatroomObj->is_chatroom_not_expiredFN($id_chatroom);
-            if ($running) {
-                $chatroom_status = translateFN('in corso');
+                // get the title of the chatroom
+                $chat_title = $chatroom_ha['titolo_chat'];
+                // get the type of the chatroom
+                $c_type = $chatroom_ha['tipo_chat'];
                 switch ($c_type) {
                     case PUBLIC_CHAT:
-                        $enter = "<a href=\"chat.php?id_room=$id_chatroom&id_course=$id_course\" target=\"_blank\"><img src=\"img/_chat.png\" alt=\"$chat_label\" border=\"0\"></a>";
+                        $chat_type = translateFN("pubblica");
                         break;
                     case CLASS_CHAT:
-                        $enter = translateFN("- - - ");
+                        $chat_type = translateFN("classe");
                         break;
                     case INVITATION_CHAT:
-                        $present = $chatroomObj->get_user_statusFN($sess_id_user, $id_chatroom);
-                        if (($present == STATUS_OPERATOR) or ($present == STATUS_ACTIVE) or
-                                ($present == STATUS_MUTE) or ($present == STATUS_BAN)
-                                or ($present == STATUS_INVITED) or ($present == STATUS_EXIT)) {
-                            $enter = "<a href=\"chat.php?id_room=$id_chatroom\" target=\"_blank\"><img src=\"img/_chat.png\" alt=\"$chat_label\" border=\"0\"></a>";
-                        } else {
-                            $enter = translateFN("- - - ");
-                        }
+                        $chat_type = translateFN("privata");
                         break;
                     default:
                 } // switch $c_type
-            } elseif (!$started) {
-                $chatroom_status = translateFN('non avviata');
-                $enter = translateFN("- - - ");
-            } else {
-                $chatroom_status = translateFN('terminata');
-                $enter = translateFN("- - - ");
-            }
-            if ($c_type == INVITATION_CHAT) {
-                $add_users = "<a href=\"add_users_chat.php?id_room=$id_chatroom\"><img src=\"img/add_user.png\" alt=\"$add_users_label\" border=\"0\"></a>";
-            } else {
-                $add_users = translateFN("- - -");
+                // verifiy the status of the chatroom
+                $started = $chatroomObj->is_chatroom_startedFN($id_chatroom);
+                $running = $chatroomObj->is_chatroom_activeFN($id_chatroom);
+                //$not_expired = $chatroomObj->is_chatroom_not_expiredFN($id_chatroom);
+                if ($running) {
+                    $chatroom_status = translateFN('in corso');
+                    switch ($c_type) {
+                        case PUBLIC_CHAT:
+                            $enter = "<a href=\"chat.php?id_room=$id_chatroom&id_course=$id_course\" target=\"_blank\"><img src=\"img/_chat.png\" alt=\"$chat_label\" border=\"0\"></a>";
+                            break;
+                        case CLASS_CHAT:
+                            $enter = translateFN("- - - ");
+                            break;
+                        case INVITATION_CHAT:
+                            $present = $chatroomObj->get_user_statusFN($sess_id_user, $id_chatroom);
+                            if (($present == STATUS_OPERATOR) or ($present == STATUS_ACTIVE) or
+                                    ($present == STATUS_MUTE) or ($present == STATUS_BAN)
+                                    or ($present == STATUS_INVITED) or ($present == STATUS_EXIT)) {
+                                $enter = "<a href=\"chat.php?id_room=$id_chatroom\" target=\"_blank\"><img src=\"img/_chat.png\" alt=\"$chat_label\" border=\"0\"></a>";
+                            } else {
+                                $enter = translateFN("- - - ");
+                            }
+                            break;
+                        default:
+                    } // switch $c_type
+                } elseif (!$started) {
+                    $chatroom_status = translateFN('non avviata');
+                    $enter = translateFN("- - - ");
+                } else {
+                    $chatroom_status = translateFN('terminata');
+                    $enter = translateFN("- - - ");
+                }
+                if ($c_type == INVITATION_CHAT) {
+                    $add_users = "<a href=\"add_users_chat.php?id_room=$id_chatroom\"><img src=\"img/add_user.png\" alt=\"$add_users_label\" border=\"0\"></a>";
+                } else {
+                    $add_users = translateFN("- - -");
+                }
+
+                // create the entries for the table
+                $tbody_data[] = array(
+                    isset($course_title) ? $course_title : '',
+                    isset($id_course_instance) ? $id_course_instance : '',
+                    isset($chat_title) ? $chat_title : '',
+                    isset($chatroom_status) ? $chatroom_status : '',
+                    isset($chat_type) ? $chat_type : '',
+                    isset($enter) ? $enter : '',
+                    "<a href=\"edit_chat.php?id_room=$id_chatroom\"><img src=\"img/edit.png\" alt=\"$edit_label\" border=\"0\"></a>",
+                    "<a href=\"delete_chat.php?id_room=$id_chatroom\"><img src=\"img/delete.png\" alt=\"$delete_label\" border=\"0\"></a>"
+                  );
             }
 
-            // create the entries for the table
-            $tbody_data[] = array(
-                isset($course_title) ? $course_title : '',
-                isset($id_course_instance) ? $id_course_instance : '',
-                isset($chat_title) ? $chat_title : '',
-                isset($chatroom_status) ? $chatroom_status : '',
-                isset($chat_type) ? $chat_type : '',
-                isset($enter) ? $enter : '',
-                "<a href=\"edit_chat.php?id_room=$id_chatroom\"><img src=\"img/edit.png\" alt=\"$edit_label\" border=\"0\"></a>",
-                "<a href=\"delete_chat.php?id_room=$id_chatroom\"><img src=\"img/delete.png\" alt=\"$delete_label\" border=\"0\"></a>"
-              );
+            // initialize a new Table object that will visualize the list of the chatrooms
+            $thead_data = array(
+                    translateFN('corso'),
+                    translateFN('classe'),
+                    translateFN('titolo'),
+                    translateFN('stato'),
+                    translateFN('tipo'),
+                    translateFN('entra'),
+                    translateFN('modifica'),
+                    translateFN('cancella')
+    //                translateFN('aggiungi utenti') => $add_users
+             );
+            $table_room = BaseHtmlLib::tableElement('class:sortable', $thead_data, $tbody_data);
+            $list_chatrooms_table = $table_room->getHtml();
+            
+        } else {
+            $list_chatrooms_table = translateFN('Nessuna chat room trovata!');
         }
-
-        // initialize a new Table object that will visualize the list of the chatrooms
-        $thead_data = array(
-                translateFN('corso'),
-                translateFN('classe'),
-                translateFN('titolo'),
-                translateFN('stato'),
-                translateFN('tipo'),
-                translateFN('entra'),
-                translateFN('modifica'),
-                translateFN('cancella')
-//                translateFN('aggiungi utenti') => $add_users
-         );
-        $table_room = BaseHtmlLib::tableElement('class:sortable', $thead_data, $tbody_data);
-        $list_chatrooms_table = $table_room->getHtml();
-
-
         break;
     case AMA_TYPE_TUTOR: // TUTOR
         // get the pubblic chatroom
