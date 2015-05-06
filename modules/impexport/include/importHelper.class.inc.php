@@ -80,10 +80,16 @@ class importHelper
 	private $_logFile;
 
 	/**
-	 * the course_id select by the user to import into. If null means new course
+	 * the course_id selected by the user to import into. If null means new course
 	 * @var int
 	 */
 	private $_selectedCourseID;
+
+	/**
+	 * the service_level selected by the user for the imported course. Only used if import in new course
+	 * @var int
+	 */
+	private $_selectedServiceLevel;
 
 	/**
 	 * the node id selected by the user to import the imported nodes as if they where its children
@@ -140,6 +146,7 @@ class importHelper
 
 		$this->_selectedCourseID = (isset ($postDatas['courseID']) && intval($postDatas['courseID'])>0) ? intval($postDatas['courseID']) : null;
 		$this->_selectedNodeID =  (isset ($postDatas['nodeID']) && trim($postDatas['nodeID'])!=='') ? trim($postDatas['nodeID']) : null;
+		$this->_selectedServiceLevel = (isset ($postDatas['serviceLevel']) && intval($postDatas['serviceLevel'])>0) ? intval($postDatas['serviceLevel']) : DEFAULT_SERVICE_TYPE;
 
         /**
          * if the selected node does not contain the course separator character,
@@ -941,6 +948,7 @@ class importHelper
 		$courseArr['id_autore'] = $this->_assignedAuthorID;
 		$courseArr['d_create'] = ts2dFN(time());
 		$courseArr['d_publish'] = NULL;
+		$courseArr['service_level'] = $this->_selectedServiceLevel;
 
 		$this->_logMessage('Adding course model by calling data handler add_course with the following datas:');
 		$this->_logMessage(print_r($courseArr, true));
