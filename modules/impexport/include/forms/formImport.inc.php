@@ -52,6 +52,30 @@ class FormSelectDatasForImport extends FForm {
 			->setRequired()
 			->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR);
 		
+		if(isset($_SESSION['service_level'])){
+			/**
+			 * @author giorgio 06/mag/2015
+			 *
+			 * switcher can add public courses only if:
+			 * - it's a multiprovider having session tester equals to PUBLIC tester
+			 * - it's not multiprovider
+			 */
+			$shownServiceTypes = array();
+			foreach ($_SESSION['service_level'] as $key=>$val) {
+				if ((bool)$_SESSION['service_level_info'][$key]['isPublic']) {
+					// this coud have been an OR, but looks more readable this way
+					if (MULTIPROVIDER && $_SESSION['sess_selected_tester']==ADA_PUBLIC_TESTER) {
+						$shownServiceTypes[$key]=$val;
+					} else if (!MULTIPROVIDER) {
+						$shownServiceTypes[$key]=$val;
+					}
+				} else $shownServiceTypes[$key]=$val;
+			}
+			 
+			$desc = translateFN('Tipo di corso').':';
+			$this->addSelect('service_level',$desc,$shownServiceTypes,reset($shownServiceTypes));
+		}		
+		
 		$this->setSubmitValue(translateFN('Avanti')."&nbsp;&gt;&gt;");
 		
 		$this->setOnSubmit('return goToImportSelectNode();');

@@ -42,6 +42,13 @@ function initDoc(maxSize) {
 	tree = $j('#courseTree');
 	$j('.importSN2buttons').css('display','none');
 	tree.css ('display','none');
+	
+	if ($j('#courseID').length>0 && $j('#service_level').length>0) {
+		$j('#courseID').on('change', function() {
+			var opacity = (parseInt($j(this).val())==0) ? 1 : 0; 
+			$j('#service_level').parents('li').first().fadeTo(200,opacity);
+		});
+	}
 }
 
 /**
@@ -117,6 +124,7 @@ function goToImportStepThree ()
 		
 		postData.importFileName = fileName;
 		postData.author = authorID;
+		postData.serviceLevel = ($j('#service_level').length>0) ? $j('#service_level').val() : 0;
 		postData.op = 'ajaximport';
 		
 		if (courseID!='') postData.courseID = parseInt (courseID);
