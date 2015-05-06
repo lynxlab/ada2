@@ -402,7 +402,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     $id_course      = isset($_REQUEST['id_course']) ? DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/) : false;
     $sess_id_course = isset ($_SESSION['sess_id_course']) ? DataValidator::is_uinteger($_SESSION['sess_id_course']) : false;
     /* extracting the course id from node id, if given */
-    if (isset($_SESSION['sess_id_node']) && !$invalid_node) {
+    if (isset($_SESSION['sess_id_node']) && !$invalid_node && $id_course === false) {
 //    if ($nodeObj instanceof Node){
       $courseIdFromNodeId =  substr($_SESSION['sess_id_node'], 0, strpos($_SESSION['sess_id_node'], '_'));
       $sess_courseObj = read_course($courseIdFromNodeId);  
