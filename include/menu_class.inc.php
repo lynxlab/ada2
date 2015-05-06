@@ -419,6 +419,7 @@ class Menu
     private function buildHREFItem($item) {
     	
     	$DOMitem = CDOMElement::create('a');
+    	$hasOnClick = false;
     	
     	// set href prefix
     	if (!is_null($item['href_prefix'])) {
@@ -443,6 +444,7 @@ class Menu
     		$properties = json_decode($item['href_properties'],true);
     		if (is_array($properties) && count($properties)>0) {
 	    		foreach ($properties as $name=>$value) {
+	    			if (stripos($name, 'onclick') !== false) $hasOnClick = true;
 	    			$DOMitem->setAttribute($name,$this->constSubstitute($value));
 	    		}
     		}
@@ -452,7 +454,7 @@ class Menu
     	if (strlen($DOMitem->getAttribute('href'))<=0) {
     		$DOMitem->setAttribute('href','javascript:void(0);');
     		// if element has no link and no children, add disabled class
-    		if (!$item['specialItem'] && (is_null($item['children']) || !isset($item['children']) || count($item['children'])<=0)) {
+    		if (!$item['specialItem'] && !$hasOnClick && (is_null($item['children']) || !isset($item['children']) || count($item['children'])<=0)) {
     			$item['extraClass'] .= ' disabled';
     		}
     	}
