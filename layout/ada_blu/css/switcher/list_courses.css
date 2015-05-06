@@ -26,7 +26,7 @@ and open the template in the editor.
  }
 .action_Column{width: 32%;}
 
-#table_list_courses a,li{
+#table_list_courses a,#table_list_courses li{
     background: transparent !important;
     text-decoration: none;
 }
