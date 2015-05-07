@@ -34,6 +34,11 @@ define('ADA_DEFAULT_TESTER_DB_NAME',  'ada2.0_provider0');
 define('ADA_DEFAULT_TESTER_DB_USER',  'root');
 define('ADA_DEFAULT_TESTER_DB_PASS',  '');
 define('ADA_DEFAULT_TESTER_DB_HOST',  'localhost');
+/*
+ * Session Cookie Lifetime in days
+ * If 0 the session end when the browser is closed
+ */
+define('ADA_SESSION_LIFE_TIME',0);
 
 if (MULTIPROVIDER) {
 	/**

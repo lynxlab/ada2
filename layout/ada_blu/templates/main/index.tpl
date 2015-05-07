@@ -51,10 +51,13 @@
             </div>
             <div class="dx">
                 <div class="column">
-                <div class="login portlet">
+                <div class="login portlet" id="loginform">
                     <div class="portlet-header"><i18n>login</i18n></div>
                     <div class="portlet-content">
                         <template_field class="template_field" name="form">form</template_field>
+                        <!--dati utente-->            
+                            <template_field class="microtemplate_field" name="user_data_micro_index">user_data_micro_index</template_field>
+                        <!-- / dati utente -->
                     </div>
     		</div>
                 </div>    

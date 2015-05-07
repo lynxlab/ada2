@@ -1,4 +1,6 @@
-function initDoc() {
+logged = false;
+
+function initDoc(logged) {
     $j(function() {
         $j( ".column" ).sortable({
             connectWith: ".column",
@@ -17,4 +19,7 @@ function initDoc() {
 //        $j( ".column" ).disableSelection();
 //        $j("select, input, a.button, button").uniform();
     });
+    if (logged) {
+        $j("#loginform").parent().remove();
+    }
 }

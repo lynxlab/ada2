@@ -19,7 +19,7 @@
 /**
  * Destroy session
  */
-session_start();
+// session_start();
 /*
  * Redirect the user to the module he/she used to login
  */
@@ -43,9 +43,6 @@ if (isset($_SESSION['ada_access_from'])) {
   }
 }
 
-session_unset();
-session_destroy();
-
 /**
  * Base config file
  */
@@ -66,7 +63,6 @@ include_once 'include/'.$self.'_functions.inc.php';
 
 // non serve più...
 // require_once ROOT_DIR.'/include/aut/login.inc.php';
-//
 
 $lang_get = isset($_GET['lang']) ? $_GET['lang']: null;
 
@@ -264,7 +260,7 @@ $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_
   	}
   } else  {
   	$testers = $_SESSION['sess_userObj']->getTesters();
-  	$testerName = $testers[0];
+  	$testerName = (!is_null($testers) && count($testers)>0) ? $testers[0] : null;
   } // end if (!MULTIPROVIDER)
 
   $forget_div  = CDOMElement::create('div');
@@ -297,6 +293,33 @@ $content_dataAr = array(
 	'message' => $message->getHtml()
 );
 
+if (isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj']-> getType() != AMA_TYPE_VISITOR) {
+    $userObj = $_SESSION['sess_userObj'];
+    $user_type = $userObj->getTypeAsString();
+    $user_name = $userObj->nome;
+    $user_full_name = $userObj->getFullName();
+	 
+    $imgAvatar = $userObj->getAvatar();
+    $avatar = CDOMElement::create('img','src:'.$imgAvatar);
+    $avatar->setAttribute('class', 'img_user_avatar');
+
+    $content_dataAr['user_modprofilelink'] = $userObj->getHomePage(); //getEditProfilePage();
+    $content_dataAr['user_avatar'] = $avatar->getHtml();	  
+    $content_dataAr['status'] = translateFN('logged in');
+    $content_dataAr['user_name'] = $user_name;
+    $content_dataAr['user_full_name'] = $user_full_name;
+    $content_dataAr['user_type'] = $user_type;
+
+    unset($content_dataAr['form']);
+    $onload_function = 'initDoc(true);';
+} else {
+    $onload_function = 'initDoc();';
+    $content_dataAr['form'] = $login->getHtml().$forget_link;
+    unset($content_dataAr['user_modprofilelink']);
+    unset($content_dataAr['user_avatar']);	  
+    unset($content_dataAr['user_name']);
+    unset($content_dataAr['user_type']);
+}
 /**
  * @author giorgio 26/set/2013
  * 
@@ -329,7 +352,7 @@ $content_dataAr = array(
 				JQUERY_UI_CSS
 		);
 			
-		$optionsAr['onload_func'] = 'initDoc();';
+		$optionsAr['onload_func'] = $onload_function;
 		
 ARE::render($layout_dataAr, $content_dataAr, NULL, (isset($optionsAr) ? $optionsAr : NULL) );
 ?>
