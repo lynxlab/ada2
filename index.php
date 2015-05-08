@@ -17,33 +17,6 @@
  */
 
 /**
- * Destroy session
- */
-// session_start();
-/*
- * Redirect the user to the module he/she used to login
- */
-if (isset($_SESSION['ada_access_from'])) {
-  $access_from =  $_SESSION['ada_access_from'];
-  /*
-   * Accessed from kiosk
-   * ADA_KIOSK_ACCESS = 1
-   */
-  if($access_from == 1) {
-    header('Location: kiosk.php');
-    exit();
-  }
-  /*
-   * Accessed from the reserved area
-   * ADA_RESERVED_ACCESS = 3
-   */
-  if($access_from == 3) {
-    header('Location: reserved/index.php');
-    exit();
-  }
-}
-
-/**
  * Base config file
  */
 require_once realpath(dirname(__FILE__)).'/config_path.inc.php';

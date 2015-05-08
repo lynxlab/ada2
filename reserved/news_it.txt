@@ -1,3 +1,0 @@
-<p>
-<h3>Welcome to the reserved area<h3>
-</p>
