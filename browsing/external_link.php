@@ -63,9 +63,48 @@ if($external_link_id != false) {
 elseif ($filename != false) {
   if (basename($filename) == $filename) {
     $address = '';
-    $http_path_to_file = HTTP_ROOT_DIR . '/docs/' . $filename;
-    if(is_readable(ROOT_DIR . '/docs/' . $filename)) {
-      $exploded_filename = explode('.', $filename);
+    
+    /**
+     * @author giorgio 07/mag/2015
+     *
+     * look for possible translations of passed file
+     * e.g.: file=privacy.html will look for privacy_en.html, privacy_it.html...
+     *       file=guest_it.html will look for
+     */
+    $foundFile = is_readable(ROOT_DIR . '/docs/' . $filename);
+    /**
+     * NOTE: it's safe to assume that $filename has a dot, the
+     * validate_local_filename would have returned false if it had not
+     */
+    $exploded_filename = explode('.', $filename);
+    
+    if (!$foundFile) {
+	    $extension = '.'.end($exploded_filename);
+	    $underscoreDelimited = explode ('_',reset($exploded_filename));
+	    /**
+	     * If the last piece of $underscoreDelimited has length 2
+	     * it's assumed to be lang part of the file name, remove it
+	     */
+	    if (strlen(end($underscoreDelimited))===2) {
+	    	unset($underscoreDelimited[count($underscoreDelimited)-1]);
+	    }
+	    /**
+	     * build the array of candidate languages
+	     */
+	    $tryLangs = array($login_page_language_code = Translator::negotiateLoginPageLanguage());
+	    if (!in_array(ADA_LOGIN_PAGE_DEFAULT_LANGUAGE, $tryLangs)) $tryLangs[] = ADA_LOGIN_PAGE_DEFAULT_LANGUAGE;
+	    /**
+	     * loop the array until a file has been found
+	     * or end of array has been reached
+	     */
+	    for ($currentLang = reset($tryLangs); ((current($tryLangs)!==false) && !$foundFile) ; $currentLang = next($tryLangs)) {
+	    	$filename = implode('_', $underscoreDelimited).'_'.$currentLang.$extension;
+	    	$foundFile = is_file(ROOT_DIR . '/docs/' . $filename) && is_readable(ROOT_DIR . '/docs/' . $filename);
+	    }
+    }
+    
+    if($foundFile) {
+      $http_path_to_file = HTTP_ROOT_DIR . '/docs/' . $filename;
       $pdf_filename = $exploded_filename[0] . '.pdf';
       if (is_readable(ROOT_DIR . '/docs/' . $pdf_filename)) {
         $href = HTTP_ROOT_DIR . '/docs/' . $pdf_filename;
