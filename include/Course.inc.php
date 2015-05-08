@@ -30,8 +30,8 @@ class Course extends Course_Old
         
     public function __construct($courseId) {
         parent::__construct($courseId);
-        if (isset($_SESSION['service_level_info'][$this->service_level]['isPublic'])) {
-        	$this->publicCourse = $_SESSION['service_level_info'][$this->service_level]['isPublic'] == 1;
+        if (isset($_SESSION['service_level_info'][$this->getServiceLevel()]['isPublic'])) {
+        	$this->publicCourse = $_SESSION['service_level_info'][$this->getServiceLevel()]['isPublic'] == 1;
         } else if ($this->id == PUBLIC_COURSE_ID_FOR_NEWS) {
             $this->publicCourse = true;
         } else {

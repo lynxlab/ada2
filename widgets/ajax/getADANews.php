@@ -1,7 +1,7 @@
 <?php
 /**
- * RSS Feed reader
- * uses: simplepie.inc.php
+ * ADA last course's node reader
+ * will dysplay the newest nodes content from the passed course id
  *
  * @package		widget
  * @author		Stefano Penge <steve@lynxlab.com>
@@ -68,91 +68,108 @@ if (!isset($count) || !is_numeric($count)) $count=NEWS_COUNT;
 /**
  * get the correct testername
  */
-if (!MULTIPROVIDER)
-{
-	if (isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider']))
-	{
+if (!MULTIPROVIDER) {
+	if (isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider'])) {
 		$testerName = $GLOBALS['user_provider'];
 	} else {
 		$errsmsg = translateFN ('Nessun fornitore di servizi &egrave; stato configurato');
 	}
-} else  {
-	$testers = $_SESSION['sess_userObj']->getTesters();
-	$testerName = $testers[0];
+} else {
+	$testerInfo = $GLOBALS['common_dh']->get_tester_info_from_id_course($course_id);
+	if (!AMA_DB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo['puntatore'])) {
+		$testerName = $testerInfo['puntatore'];
+	}
 } // end if (!MULTIPROVIDER)
 
-if (isset($testerName))
-{
+if (isset($testerName)) {
 	$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($testerName));
-	// select nome or empty string (whoever is not null) as title to diplay for the news
-	$newscontent = $tester_dh->find_course_nodes_list(
-			array ( "COALESCE(if(nome='NULL' OR ISNULL(nome ),NULL, nome), '')", "testo" ) ,
-			"tipo IN (". ADA_LEAF_TYPE .",". ADA_GROUP_TYPE .") ORDER BY data_creazione DESC LIMIT ".$count,
-			$course_id);
+	// setting of the global is needed to load the course object
+	$GLOBALS['dh'] = $tester_dh;
 	
-	// watch out: $newscontent is NOT associative
-	$output = '';
-	$maxLength = 600;
-	if (!AMA_DB::isError($newscontent) && count($newscontent)>0)
-	{
-		foreach ( $newscontent as $num=>$aNews )
-		{
-			$aNewsDIV = CDOMElement::create('div','class:news,id:news-'.($num+1));
-			$aNewsTitle = CDOMElement::create('a', 'class:newstitle,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
-					$course_id.'&id_node='.$aNews[0]);
-			$aNewsTitle->addChild (new CText($aNews[1]));
-			$aNewsDIV->addChild ($aNewsTitle);
-
-			// @author giorgio 01/ott/2013
-			// remove unwanted div ids: tabs
-			// NOTE: slider MUST be removed BEFORE tabs because tabs can contain slider and not viceversa
-			$removeIds = array ('slider','tabs');
-				
-			$html = new DOMDocument('1.0', ADA_CHARSET);
-			/**
-			 * HTML uses the ISO-8859-1 encoding (ISO Latin Alphabet No. 1) as default per it's specs.
-			 * So add a meta the should do the encoding hint, and output some PHP warings as well that
-			 * are being suppressed with the @
-			 */
-			@$html->loadHTML('<meta http-equiv="content-type" content="text/html; charset='.ADA_CHARSET.'">'.$aNews[2]);
-
-			foreach ($removeIds as $removeId)
-			{
-				$removeElement = $html->getElementById($removeId);
-				if (!is_null($removeElement)) $removeElement->parentNode->removeChild($removeElement);
+	// load course
+	$courseObj = new Course($course_id);
+	$courseOK = false;
+	if ($courseObj instanceof Course && $courseObj->isFull()) {
+		// it it's public, go on and show contents
+		$courseOK = $courseObj->getIsPublic();
+		if (!$courseOK && isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj'] instanceof ADALoggableUser) {
+			// if it's not public, check if user is subscribed to course
+			$instanceCheck = $tester_dh->get_course_instance_for_this_student_and_course_model($_SESSION['sess_userObj']->getId(),$courseObj->getId(), true);
+			if (!AMA_DB::isError($instanceCheck) && is_array($instanceCheck) && count($instanceCheck)>0) {
+				$goodStatuses = array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
+				$instance = reset($instanceCheck);
+				do {
+					$courseOK = in_array($instance['status'], $goodStatuses);
+				} while ((($instance = next($instanceCheck))!== false) && !$courseOK);
 			}
-				
-			// output in newstext only the <body> of the generated html
-			if ($showDescription) {
-				$newstext = '';
-				foreach ($html->getElementsByTagName('body')->item(0)->childNodes as $child)
-				{
-					$newstext .= $html->saveXML($child);
-				}
-				// strip off html tags
-				$newstext = strip_tags($newstext);
-				// check if content is too long...
-				if (strlen($newstext) > $maxLength)
-				{
-					// cut the content to the first $maxLength characters of words (the $ in the regexp does the trick)
-					$newstext = preg_replace('/\s+?(\S+)?$/', '', substr($newstext, 0, $maxLength+1));
-					$addContinueLink = true;
-				}
-				else $addContinueLink = false;
-	
-				$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
-			}
-
-			if ($addContinueLink)
-			{
-				$contLink = CDOMElement::create('a', 'class:continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
-						$course_id.'&id_node='.$aNews[0]);
-				$contLink->addChild (new CText(translateFN('Continua...')));
-				$aNewsDIV->addChild ($contLink);
-			}
-			$output .= $aNewsDIV->getHtml();
 		}
-	} else $output = translateFN('Spiacente, non ci sono corsi che hanno l\'id richiesto');
+	}
+	// courseOK is true either if course is public or the user is subscribed to it
+	if ($courseOK) {
+		// select nome or empty string (whoever is not null) as title to diplay for the news
+		$newscontent = $tester_dh->find_course_nodes_list(
+				array ( "COALESCE(if(nome='NULL' OR ISNULL(nome ),NULL, nome), '')", "testo" ) ,
+				"tipo IN (". ADA_LEAF_TYPE .",". ADA_GROUP_TYPE .") ORDER BY data_creazione DESC LIMIT ".$count,
+				$course_id);
+		
+		// watch out: $newscontent is NOT associative
+		$output = '';
+		$maxLength = 600;
+		if (!AMA_DB::isError($newscontent) && count($newscontent)>0) {
+			foreach ( $newscontent as $num=>$aNews ) {
+				$aNewsDIV = CDOMElement::create('div','class:news,id:news-'.($num+1));
+				$aNewsTitle = CDOMElement::create('a', 'class:newstitle,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+						$course_id.'&id_node='.$aNews[0]);
+				$aNewsTitle->addChild (new CText($aNews[1]));
+				$aNewsDIV->addChild ($aNewsTitle);
+	
+				// @author giorgio 01/ott/2013
+				// remove unwanted div ids: tabs
+				// NOTE: slider MUST be removed BEFORE tabs because tabs can contain slider and not viceversa
+				$removeIds = array ('slider','tabs');
+					
+				$html = new DOMDocument('1.0', ADA_CHARSET);
+				/**
+				 * HTML uses the ISO-8859-1 encoding (ISO Latin Alphabet No. 1) as default per it's specs.
+				 * So add a meta the should do the encoding hint, and output some PHP warings as well that
+				 * are being suppressed with the @
+				 */
+				@$html->loadHTML('<meta http-equiv="content-type" content="text/html; charset='.ADA_CHARSET.'">'.$aNews[2]);
+	
+				foreach ($removeIds as $removeId) {
+					$removeElement = $html->getElementById($removeId);
+					if (!is_null($removeElement)) $removeElement->parentNode->removeChild($removeElement);
+				}
+					
+				// output in newstext only the <body> of the generated html
+				if ($showDescription) {
+					$newstext = '';
+					foreach ($html->getElementsByTagName('body')->item(0)->childNodes as $child) {
+						$newstext .= $html->saveXML($child);
+					}
+					// strip off html tags
+					$newstext = strip_tags($newstext);
+					// check if content is too long...
+					if (strlen($newstext) > $maxLength) {
+						// cut the content to the first $maxLength characters of words (the $ in the regexp does the trick)
+						$newstext = preg_replace('/\s+?(\S+)?$/', '', substr($newstext, 0, $maxLength+1));
+						$addContinueLink = true;
+					}
+					else $addContinueLink = false;
+		
+					$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
+				}
+	
+				if ($addContinueLink) {
+					$contLink = CDOMElement::create('a', 'class:continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+							$course_id.'&id_node='.$aNews[0]);
+					$contLink->addChild (new CText(translateFN('Continua...')));
+					$aNewsDIV->addChild ($contLink);
+				}
+				$output .= $aNewsDIV->getHtml();
+			}
+		} else $output = translateFN('Spiacente, non ci sono corsi che hanno l\'id richiesto');
+	} else $output = translateFN('Corso non valido o utente non iscritto al corso specificato');
 }  else $output = translateFN('Spiacente, non so a che fornitore di servizi sei collegato');
 
 /**
