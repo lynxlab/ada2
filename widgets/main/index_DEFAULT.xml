@@ -32,6 +32,18 @@
 -->
 <widgets>
 <widget>
+<!-- NOTE: This widget only works in sync mode -->
+    <active>1</active>
+    <async>0</async>
+    <field>bottomnews</field>
+    <id>newswidget</id>
+    <module>getADANews.php</module>
+    <param name="showDescription" value="1" />
+    <!-- OPTIONAL, if omitted will show PUBLIC_COURSE_ID_FOR_NEWS -->
+    <param name="course_id" value="COURSE_ID_HERE" />
+</widget>
+
+<widget>
 	<!-- <active>1</active> -->
 	<!-- <async>1</async> -->
 	<field>lynxRSS</field>
