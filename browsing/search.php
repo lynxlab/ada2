@@ -73,17 +73,17 @@ else {
     $submit=null;
 }
 
-if(isset($_POST['s_node_name']))
+if(isset($_REQUEST['s_node_name']))
 {
-	$s_node_name=$_POST['s_node_name'];
+	$s_node_name=$_REQUEST['s_node_name'];
 } else $s_node_name = '';
-if(isset($_POST['s_node_title']))
+if(isset($_REQUEST['s_node_title']))
 {
-	$s_node_title=$_POST['s_node_title'];
+	$s_node_title=$_REQUEST['s_node_title'];
 } else $s_node_title = '';
-if(isset($_POST['s_node_text']))
+if(isset($_REQUEST['s_node_text']))
 {
-	$s_node_text=$_POST['s_node_text'];
+	$s_node_text=$_REQUEST['s_node_text'];
 } else $s_node_text = '';
 
 if (!is_null($submit)) {
@@ -305,8 +305,10 @@ $online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance,$on
 
 // CHAT, BANNER etc
 $banner = include (ROOT_DIR."/include/banner.inc.php");
-$Simple_searchLink="<a href='#'onClick=simpleSearch()>Ricerca semplice</a>";
-$advanced_searchLink="<a href='#'onClick=advancedSearch()>Ricerca avanzata</a>";
+$SimpleSearchlabel = translateFN('Ricerca semplice');
+$AdvanceSearchlabel = translateFN('Ricerca avanzata');
+$Simple_searchLink="<a href='#'onClick=simpleSearch()>$SimpleSearchlabel</a>";
+$advanced_searchLink="<a href='#'onClick=advancedSearch()>$AdvanceSearchlabel</a>";
 /* 8.
 costruzione della pagina HTML
 */
