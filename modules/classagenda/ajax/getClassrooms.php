@@ -23,13 +23,15 @@ $variableToClearAR = array();
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_STUDENT);
 
 /**
  * Get needed objects
 */
 $neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
+		AMA_TYPE_SWITCHER => array('layout'),
+		AMA_TYPE_TUTOR => array('layout'),
+		AMA_TYPE_STUDENT => array('layout')
 );
 
 /**
@@ -42,8 +44,28 @@ $retVal = translateFN('Nessuna classe trovata');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM && isset($venueID) && intval($venueID)>0) {
+		
+		$selTester = null;
+		if (isset($_SESSION['sess_selected_tester'])) {
+			$selTester = $_SESSION['sess_selected_tester'];
+		} else {
+			switch ($_SESSION['sess_userObj']->getType()) {
+				case AMA_TYPE_STUDENT:
+					if (isset($courseID) && intval($courseID)>0) {
+						$selTesterArr = $GLOBALS['common_dh']->get_tester_info_from_id_course($courseID);
+						if (!AMA_DB::isError($selTesterArr) && is_array($selTesterArr) && isset($selTesterArr['puntatore'])) {
+							$selTester = $selTesterArr['puntatore'];
+						}
+					}
+					break;
+				default:
+					$selTester = $_SESSION['sess_userObj']->getDefaultTester();
+					break;
+			}
+		}
+		
 		require_once MODULES_CLASSROOM_PATH . '/include/classroomAPI.inc.php';
-		$classroomAPI = new classroomAPI();
+		$classroomAPI = new classroomAPI($selTester);
 		$result = $classroomAPI->getClassroomsForVenue(intval($venueID));
 		
 		if(!AMA_DB::isError($result)) {

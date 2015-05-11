@@ -23,13 +23,14 @@ $variableToClearAR = array();
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR);
 
 /**
  * Get needed objects
 */
 $neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
+		AMA_TYPE_SWITCHER => array('layout'),
+		AMA_TYPE_TUTOR => array('layout')
 );
 
 /**

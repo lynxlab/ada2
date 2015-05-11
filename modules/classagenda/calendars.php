@@ -23,13 +23,15 @@ $variableToClearAR = array('node', 'layout', 'course', 'user');
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_STUDENT);
 
 /**
  * Get needed objects
 */
 $neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
+		AMA_TYPE_SWITCHER => array('layout'),
+		AMA_TYPE_TUTOR => array('layout'),
+		AMA_TYPE_STUDENT => array('layout')
 );
 
 /**
@@ -74,7 +76,7 @@ array_push($layout_dataAr['CSS_filename'], MODULES_CLASSAGENDA_PATH . '/js/fullc
 
 //	$optionsAr ['onload_func'] = 'initDoc(\''.htmlentities(json_encode($datetimesAr)).'\',\''.htmlentities(json_encode($inputProposalNames)).'\','.MAX_PROPOSAL_COUNT.');';
 
-$optionsAr['onload_func'] = 'initDoc();';
+$optionsAr['onload_func'] = 'initDoc('.$userObj->getType().');';
 
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
 ?>

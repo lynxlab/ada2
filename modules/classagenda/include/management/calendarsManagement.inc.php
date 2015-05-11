@@ -80,15 +80,29 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$calendarDIV = CDOMElement::create('div','id:classcalendar');
 				
 				/**
-				 * bottom buttons div
+				 * stuff needed only if user's a switcher
 				 */
-				$buttonsDIV = CDOMElement::create('div','id:buttonsContainer');
-				$saveButton = CDOMElement::create('input_button','id:saveCalendar');
-				$saveButton->setAttribute('value', translateFN('Salva'));
-				$cancelButton = CDOMElement::create('input_button','id:cancelCalendar');
-				$cancelButton->setAttribute('value', translateFN('Annulla'));
-				$buttonsDIV->addChild($saveButton);
-				$buttonsDIV->addChild($cancelButton);
+				if ($_SESSION['sess_userObj']->getType()==AMA_TYPE_SWITCHER) {
+					/**
+					 * bottom buttons div
+					 */
+					$buttonsDIV = CDOMElement::create('div','id:buttonsContainer');
+					$saveButton = CDOMElement::create('input_button','id:saveCalendar');
+					$saveButton->setAttribute('value', translateFN('Salva'));
+					$cancelButton = CDOMElement::create('input_button','id:cancelCalendar');
+					$cancelButton->setAttribute('value', translateFN('Annulla'));
+					$buttonsDIV->addChild($saveButton);
+					$buttonsDIV->addChild($cancelButton);
+					
+					/**
+					 * delete classroom event button
+					 */
+					$deleteButtonDIV = CDOMElement::create('div','id:deleteButtonContainer');
+					$deleteButton = CDOMElement::create('input_button','id:deleteButton');
+					$deleteButton->setAttribute('onclick', 'javascript:deleteSelectedEvent();');
+					$deleteButton->setAttribute('value', translateFN('Cancella Elemento Selezionato'));
+					$deleteButtonDIV->addChild($deleteButton);
+				}
 				
 				/**
 				 * informational header div
@@ -130,6 +144,11 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$onlySelectedCHECK->setAttribute('name', 'onlySelectedInstance');
 				$onlySelectedLABEL = CDOMElement::create('label','for:onlySelectedInstance');
 				$onlySelectedLABEL->addChild(new CText(translateFN('Mostra solo gli eventi della classe selezionata')));
+				if ($_SESSION['sess_userObj']->getType() != AMA_TYPE_SWITCHER) {
+					$onlySelectedCHECK->setAttribute('checked', 'checked');
+					$onlySelectedCHECK->setAttribute('style', 'display:none;');
+					$onlySelectedLABEL->setAttribute('style', 'display:none;');
+				}
 				
 				$selectClassDIV = CDOMElement::create('div','id:selectClassContainer');
 				$selectClassDIV->addChild($instancesLABEL);
@@ -185,21 +204,13 @@ class calendarsManagement extends abstractClassAgendaManagement
 				/**
 				 * get Venues, build select item
 				 * and needed empty div to hold classroom list for selected venue
+				 * must be there for js reason, but hide it if user's not a switcher
 				 */
 				$venues = $this->_getVenues();
 				if (!is_null($venues)) {
 					$classroomsDIV = CDOMElement::create('div','id:classrooms');
-					
-					foreach ($venues as $venue) {
-						$dataAr[$venue['id_venue']] = $venue['name'];
-					}
-					reset($dataAr);
-					
-					/**
-					 * venues html select element
-					 */
-					$venuesSELECT = BaseHtmlLib::selectElement2('id:venuesList,name:venuesList',$dataAr,key($dataAr));
-					unset($dataAr);
+					// prepare an empty select to be filled by calendars.js
+					$venuesSELECT = CDOMElement::create('select','id:venuesList,name:venuesList');
 					
 					/**
 					 * checkbox to filter selected venues only
@@ -226,25 +237,32 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$classroomsDIV->addChild ($onlySelectedVenueLABEL);
 					$classroomsDIV->addChild($classroomSPAN);
 					$classroomsDIV->addChild($classroomlistDIV);
+					if ($_SESSION['sess_userObj']->getType()!=AMA_TYPE_SWITCHER) {
+						$classroomsDIV->setAttribute('style', 'display:none;');
+					}
 				}
 				
 				/**
 				 * build a DIV to hold the tutor list of the selected instance
+				 * must be there for js reason, but hide it if user's not a switcher
 				 */
 				$tutorsDIV = CDOMElement::create('div', 'id:tutorsListContainer');
 				$tutorsSPAN = CDOMElement::create('span','class:selecttutorspan');
 				$tutorsSPAN->addChild(new CText(translateFN('Seleziona un tutor').': '));
 				$tutorsDIV->addChild($tutorsSPAN);
 				$tutorsDIV->addChild(CDOMElement::create('div','id:tutorslist'));
+				if ($_SESSION['sess_userObj']->getType()!=AMA_TYPE_SWITCHER) $tutorsDIV->setAttribute('style','display:none;');
 				
 				/**
 				 * send event reminder button and div to hold the dialog
 				 */
-				$reminderButtonDIV = CDOMElement::create('div','id:reminderButtonContainer');
-				$reminderButton = CDOMElement::create('input_button','id:reminderButton');
-				$reminderButton->setAttribute('onclick', 'javascript:reminderSelectedEvent();');
-				$reminderButton->setAttribute('value', translateFN('Invia Promemoria agli iscritti'));
-				$reminderButtonDIV->addChild($reminderButton);
+				if (in_array($_SESSION['sess_userObj']->getType(), array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR))) {
+					$reminderButtonDIV = CDOMElement::create('div','id:reminderButtonContainer');
+					$reminderButton = CDOMElement::create('input_button','id:reminderButton');
+					$reminderButton->setAttribute('onclick', 'javascript:reminderSelectedEvent();');
+					$reminderButton->setAttribute('value', translateFN('Invia Promemoria agli iscritti'));
+					$reminderButtonDIV->addChild($reminderButton);
+				}
 				
 				$reminderDialog = CDOMElement::create('div','id:reminderDialog');
 				$reminderDialog->setAttribute('title', translateFN('Promemoria Evento'));
@@ -277,15 +295,6 @@ class calendarsManagement extends abstractClassAgendaManagement
 				// add the elements to the div
 				$reminderDialog->addChild($reminderOK);
 				$reminderDialog->addChild($reminderCancel);
-				
-				/**
-				 * delete classroom event button
-				 */
-				$deleteButtonDIV = CDOMElement::create('div','id:deleteButtonContainer');
-				$deleteButton = CDOMElement::create('input_button','id:deleteButton');
-				$deleteButton->setAttribute('onclick', 'javascript:deleteSelectedEvent();');
-				$deleteButton->setAttribute('value', translateFN('Cancella Elemento Selezionato'));
-				$deleteButtonDIV->addChild($deleteButton);
 				
 				/**
 				 * confirm dialog box
@@ -348,13 +357,11 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$htmlObj->addChild($infoHeaderDIV);
 				$htmlObj->addChild($calendarDIV);
 				$htmlObj->addChild($serviceTypeDIV);
-				if (isset($classroomsDIV)) {
-					$htmlObj->addChild($classroomsDIV);
-				}
-				$htmlObj->addChild($tutorsDIV);
-				$htmlObj->addChild($reminderButtonDIV);
-				$htmlObj->addChild($deleteButtonDIV);
-				$htmlObj->addChild($buttonsDIV);
+				if (isset($classroomsDIV)) $htmlObj->addChild($classroomsDIV);
+				if (isset($tutorsDIV)) $htmlObj->addChild($tutorsDIV);
+				if (isset($reminderButtonDIV)) $htmlObj->addChild($reminderButtonDIV);
+				if (isset($deleteButtonDIV)) $htmlObj->addChild($deleteButtonDIV);
+				if (isset($buttonsDIV)) $htmlObj->addChild($buttonsDIV);
 				$htmlObj->addChild(CDOMElement::create('div','class:clearfix'));
 				
 				$htmlObj->addChild($reminderDialog);

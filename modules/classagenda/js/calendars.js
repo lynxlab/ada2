@@ -24,6 +24,7 @@ var canDelete = false;
 var reminderDialog = null;
 var oFCKeditor = null;
 var isCheckingReminder = false;
+var userType = null;
 
 /**
  * events updated in the UI only,
@@ -37,7 +38,9 @@ var UIEvents = [];
  */
 var UIDeletedEvents = [];
 
-function initDoc() {
+function initDoc(passedUserType) {
+	// save passed user type in its own global
+	userType = passedUserType;
 	// hook instance select change to update number of students
 	updateStudentCountOnInstanceChange();
 	// hook instance select change to update service (aka course) type
@@ -52,6 +55,8 @@ function initDoc() {
 	
 	hasVenues = $j('#venuesList').length>0;
 	if (hasVenues) {
+		// hook instance select change to update venues list
+		updateVenuesListOnInstanceChange();
 		// hook venues select change to update classroom list
 		updateClassroomsOnVenueChange();
 		// trigger onchange event to update classroom list when page loads
@@ -138,9 +143,11 @@ function initCalendar() {
 			weekends : false,	// hide weekends
 			defaultEventMinutes: 60,
 			height : 564,
-			editable : true,
-			selectable : true,
-			selectHelper : true,
+			editable : (userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR),
+			eventStartEditable : (userType == AMA_TYPE_SWITCHER),
+			eventDurationEditable : (userType == AMA_TYPE_SWITCHER),
+			selectable : (userType == AMA_TYPE_SWITCHER),
+			selectHelper : (userType == AMA_TYPE_SWITCHER),
 			allDaySlot : false,
 			slotEventOverlap : false,
 			defaultView : 'agendaWeek',
@@ -364,6 +371,15 @@ function getSelectedCourseInstance() {
 }
 
 /**
+ * gets the selected course instance 'data-idcourse' property if set
+ * 
+ * @returns selected course id or null
+ */
+function getSelectedCourseFromInstance() {
+	return ($j('#instancesList').find(':selected').data('idcourse')>0) ? $j('#instancesList').find(':selected').data('idcourse') : null;
+}
+
+/**
  * gets the selected classroom radio button
  * 
  * @returns selected classroom id or null
@@ -525,7 +541,9 @@ function rerenderAllEvents() {
 		for (var i=0; i<allEvents.length; i++) {
 			allEvents[i].title = buildEventTitle(allEvents[i]);
 			// set as editable only events of the selected course instance
-			allEvents[i].editable = (allEvents[i].instanceID==selectedInstanceID);
+			if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
+				allEvents[i].editable = (allEvents[i].instanceID==selectedInstanceID);
+			} else allEvents[i].editable = false;
 			allEvents[i].className = (!allEvents[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
 			if (allEvents[i].isSelected) allEvents[i].className = 'selectedClassroomEvent';
 		}
@@ -543,7 +561,8 @@ function updateClassroomsOnVenueChange() {
 			$j.ajax({
 				type	:	'GET',
 				url		:	'ajax/getClassrooms.php',
-				data	:	{ venueID: $j(this).val() },
+				data	:	{ venueID: $j(this).val(),
+							  courseID: getSelectedCourseFromInstance() },
 				dataType:	'html'
 			}).done (function(htmlcode){
 				if (htmlcode && htmlcode.length>0) {
@@ -580,7 +599,8 @@ function updateServiceTypeOnInstanceChange() {
 				$j.ajax({
 					type	:	'GET',
 					url		:	'ajax/getServiceDetails.php',
-					data	:	{ instanceID: $j(this).val() },
+					data	:	{ instanceID: $j(this).val(), 
+								  courseID: getSelectedCourseFromInstance() },
 					dataType:	'json'
 				}).done (function(JSONObj){
 					if (JSONObj) {
@@ -596,7 +616,7 @@ function updateServiceTypeOnInstanceChange() {
 						} else if('undefined' != typeof JSONObj.isPresence && JSONObj.isPresence===true) {
 							// show classrooms div
 							if ($j('#classrooms').length>0 && !$j('#classrooms').is(':visible')) {
-								$j('#classrooms').show();
+								if (userType==AMA_TYPE_SWITCHER) $j('#classrooms').show();
 								// trigger venues change to update classroom list
 								if (hasVenues) $j('#venuesList').trigger('change');
 							}
@@ -629,7 +649,8 @@ function updateStudentCountOnInstanceChange() {
 				$j.ajax({
 					type	:	'GET',
 					url		:	'ajax/getStudentsCount.php',
-					data	:	{ instanceID: $j(this).val() },
+					data	:	{ instanceID: $j(this).val(),
+								  courseID: getSelectedCourseFromInstance() },
 					dataType:	'json'
 				}).done (function(JSONObj){
 					if (JSONObj) {
@@ -706,6 +727,27 @@ function askChangeInstanceOrVenueConfirm() {
 }
 
 /**
+ * set instancesList select dropdown to update venues list
+ */
+function updateVenuesListOnInstanceChange() {
+	if (hasVenues) {
+		$j('#instancesList').on('change', function(){
+			$j.ajax({
+				type	:	'GET',
+				url		:	'ajax/getVenues.php',
+				data	:	{ instanceID: $j(this).val(),
+							  courseID: getSelectedCourseFromInstance() },
+				dataType:	'html'
+			}).done (function(htmlcode){
+				if (htmlcode && htmlcode.length>0) {
+					$j('#venuesList').html($j(htmlcode).html());
+				}
+			});
+		});
+	}	
+}
+
+/**
  * set instancesList select dropdown to update tutors list
  */
 function updateTutorsListOnInstanceChange() {
@@ -714,14 +756,20 @@ function updateTutorsListOnInstanceChange() {
 			$j.ajax({
 				type	:	'GET',
 				url		:	'ajax/getTutors.php',
-				data	:	{ instanceID: $j(this).val() },
+				data	:	{ instanceID: $j(this).val(),
+							  courseID: getSelectedCourseFromInstance() },
 				dataType:	'html'
 			}).done (function(htmlcode){
 				if (htmlcode && htmlcode.length>0) {
 					$j('#tutorslist').html(htmlcode);
 					// reload classroom events
-					if (typeof calendar != 'undefined') rerenderAllEvents();
-					else initCalendar();
+					if (typeof calendar != 'undefined'){
+						if (getShowSelectedInstance()) {
+							calendar.fullCalendar( 'refetchEvents' );
+						} else {
+							rerenderAllEvents();
+						}
+					} else initCalendar();
 					// select the first radio button
 					if ($j('#tutorSelect').length>0) {
 						$j("#tutorSelect option:first").attr('selected','selected');
@@ -852,7 +900,8 @@ function reloadClassRoomEvents() {
 	
 	if (getShowSelectedInstance()) {
 		$j.extend (data, {
-			instanceID: selectedInstanceID
+			instanceID: selectedInstanceID,
+			courseID: getSelectedCourseFromInstance()
 		});
 	}
 	
@@ -886,7 +935,9 @@ function reloadClassRoomEvents() {
 					if (null != selectedEvent && JSONObj[i].id == selectedEvent.id) selectedIndex = i;
 					JSONObj[i].title = buildEventTitle(JSONObj[i]);
 					// set as editable only events of the selected course instance
-					JSONObj[i].editable = (JSONObj[i].instanceID==selectedInstanceID);
+					if ((userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR)) {
+						JSONObj[i].editable = (JSONObj[i].instanceID==selectedInstanceID);
+					} else JSONObj[i].eidtable = false;
 					JSONObj[i].className = (!JSONObj[i].editable) ? 'noteditableClassroomEvent' : 'editableClassroomEvent';
 					
 					calendar.fullCalendar('unselect');
@@ -1126,7 +1177,7 @@ function reminderSelectedEvent() {
 	
 	var selectedEvent = getSelectedEvent();
 	
-	if ('undefined' == typeof selectedEvent.id || mustSave) {
+	if (userType==AMA_TYPE_SWITCHER && ('undefined' == typeof selectedEvent.id || mustSave)) {
 		// ask to save events if needed
 		jQueryConfirm('#confirmDialog', '#reminderNonSavedEventquestion',
 				function() {
@@ -1374,9 +1425,6 @@ function moveInsideCalendarHeader (elementID) {
 	var moveElement = false;
 	
 	if ($j(targetElement).length>0 && $j('#'+elementID).length>0) {
-		
-		if ($j('label[for="'+elementID+'"]').length>0) $j('label[for="'+elementID+'"]').show();
-		if ($j('#'+elementID).length>0) $j('#'+elementID).show();
 		
 		/**
 		 * add a customClass div to the calendar toolbar before last children

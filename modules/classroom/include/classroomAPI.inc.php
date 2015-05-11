@@ -21,9 +21,10 @@ class classroomAPI {
 	
 	private $_dh;
 	
-	public function __construct() {
+	public function __construct($tester=null) {
+		if (is_null($tester)) $tester = $_SESSION['sess_selected_tester'];
 		if (isset($GLOBALS['dh'])) $GLOBALS['dh']->disconnect();
-		$this->_dh = AMAClassroomDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+		$this->_dh = AMAClassroomDataHandler::instance(MultiPort::getDSN($tester));
 	}
 	
 	/**

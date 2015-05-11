@@ -40,7 +40,7 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
-$retVal = translateFN('Nessun tutor trovato');
+// MODULE's OWN IMPORTS
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	
@@ -65,27 +65,21 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	
 	$GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($selTester));
 	
-	if (isset($instanceID) && intval($instanceID)>0) {
-		$result = $GLOBALS['dh']->course_instance_tutor_get(intval($instanceID),'ALL');
-		
-		if(!AMA_DB::isError($result) && is_array($result) && count($result)>0) {
-			/**
-			 * get tutors first and last name
-			 */
-			$tutorlist = $GLOBALS['dh']->find_tutors_list(array('nome','cognome'),'id_utente_tutor IN('.implode(',',$result).')');
-			if (!AMA_DB::isError($tutorlist)) {
-				$htmlElement = CDOMElement::create('div');
-				$select = CDOMElement::create('select','name:tutorSelect,id:tutorSelect');
-				foreach ($tutorlist as $aTutor) {
-					$option = CDOMElement::create('option','value:'.$aTutor[0]);
-					$option->addChild(new CText($aTutor[1].' '.$aTutor[2]));
-					$select->addChild($option);
-				}
-				$htmlElement->addChild(CDOMElement::create('div','class:clearfix'));
-				$htmlElement->addChild($select);
-				$retVal = $htmlElement->getHtml();
+	if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM) {
+		require_once MODULES_CLASSROOM_PATH . '/include/classroomAPI.inc.php';
+		$classroomAPI = new classroomAPI($selTester);
+		$venues = $classroomAPI->getAllVenues();
+		if (!AMA_DB::isError($venues) && is_array($venues) && count($venues)>0) {
+			foreach ($venues as $venue) {
+				$dataAr[$venue['id_venue']] = $venue['name'];
 			}
+			reset($dataAr);
+				
+			/**
+			 * venues html select element
+			*/
+			$venuesSELECT = BaseHtmlLib::selectElement2('id:venuesList,name:venuesList',$dataAr,key($dataAr));
+			die($venuesSELECT->getHtml());
 		}
-	}
+	}	
 }
-die ($retVal);
