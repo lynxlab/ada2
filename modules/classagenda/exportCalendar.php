@@ -23,13 +23,15 @@ $variableToClearAR = array('layout',  'course', 'course_instance');
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_STUDENT);
 
 /**
  * Get needed objects
 */
 $neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout', 'course', 'course_instance')
+		AMA_TYPE_SWITCHER => array('layout', 'course', 'course_instance'),
+		AMA_TYPE_TUTOR =>    array('layout', 'course', 'course_instance'),
+		AMA_TYPE_STUDENT =>  array('layout', 'course', 'course_instance')
 );
 
 /**
