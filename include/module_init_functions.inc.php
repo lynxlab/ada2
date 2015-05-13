@@ -21,8 +21,6 @@
 function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $trackPageToNavigationHistory = true) {
   //ADALogger::log('session control FN');
   
-  ini_set('session.cookie_lifetime', 60 * 60 * 24 * ADA_SESSION_LIFE_TIME);  // day cookie lifetime
-
   if(!session_start()) {
     /*
      * As of PHP 5.3.0 if session fails to star for some reason,
