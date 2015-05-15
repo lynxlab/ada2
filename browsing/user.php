@@ -188,7 +188,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            );
 	        }
 	
-	        $data = BaseHtmlLib::tableElement('', $thead_dataAr, $tbody_dataAr);
+	        $data = BaseHtmlLib::tableElement('class:doDataTable', $thead_dataAr, $tbody_dataAr);
 	    } elseif ($found == 1) {
 	    		    		    		    	
 	        $c = $courseInstances[0];
@@ -291,7 +291,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	                ts2dFN($end_date),
 	                $access_link
 	            );
-	            $data = BaseHtmlLib::tableElement('', $thead_dataAr, $tbody_dataAr);
+	            $data = BaseHtmlLib::tableElement('class:doDataTable', $thead_dataAr, $tbody_dataAr);
 	        }
 	    } else {
 	        $data = new CText(translateFN('Non sei iscritto a nessuna classe'));
@@ -521,5 +521,20 @@ else {
 	$content_dataAr['status'] = $status;
 }
 
-ARE::render($layout_dataAr,$content_dataAr);
+$layout_dataAr['CSS_filename'] = array (
+		JQUERY_UI_CSS,
+		JQUERY_DATATABLE_CSS,
+		'user.css' // this file may use different templates, force user.css inclusion here
+);
+$layout_dataAr['JS_filename'] = array(
+		JQUERY,
+		JQUERY_UI,
+		JQUERY_DATATABLE,
+		JQUERY_DATATABLE_DATE,
+		ROOT_DIR.'/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
+		JQUERY_NO_CONFLICT,
+		'user.js' // this file may use different templates, force user.js inclusion here
+);
+
+ARE::render($layout_dataAr,$content_dataAr,NULL,array('onload_func'=>'initDoc();'));
 

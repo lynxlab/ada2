@@ -113,3 +113,12 @@ html,body {
   float: left;
   margin-right: 5px;
 }
+
+#span_remindme {
+	float: left;
+	margin-top:  4px;
+}
+#label_remindme label {
+	cursor: pointer;	
+	display: inline-block;
+}

@@ -306,8 +306,8 @@ class ADAAddressBook
            * tutors are students for an ADA_SERVICE_TUTORCOMMUNITY type of course,
            * so add them to the address book if they're returned in the $result_Ar
            */
-          if($user['tipo'] == AMA_TYPE_STUDENT || 
-          	($user['tipo'] == AMA_TYPE_TUTOR && !$userObj->isSuper() && $user['id_utente']!=$userObj->getId())) {
+          if($user['tipo'] == AMA_TYPE_STUDENT ||
+          	($user['tipo'] == AMA_TYPE_TUTOR && $userObj->getType()==AMA_TYPE_TUTOR && !$userObj->isSuper() && $user['id_utente']!=$userObj->getId())) {          		
             $option = CDOMElement::create('option','value:'.$user['username']);
             if (isset($user['cognome']) || isset($user['nome'])) $displayname = $user['cognome'].' '.$user['nome'];
             else $displayname = $user['username']; 

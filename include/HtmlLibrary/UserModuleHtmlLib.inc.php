@@ -48,6 +48,17 @@ class UserModuleHtmlLib {
     $div_password->addChild($span_label_pwd);
     $div_password->addChild($span_password);
 
+    $div_remindme = CDOMElement::create('div','id:remindme');
+    $span_label_remindme = CDOMElement::create('span','id:label_remindme, class:page_text');
+    $label_remindme = CDOMElement::create('label','for:p_remindme');
+    $label_remindme->addChild(new CText(translateFN('Resta collegato')));
+    $span_label_remindme->addChild($label_remindme);
+    $span_remindme = CDOMElement::create('span','id:span_remindme, class:page_input');
+    $remindme_input = CDOMElement::create('checkbox','id:p_remindme,name:p_remindme,value:1');
+    $span_remindme->addChild($remindme_input);
+    $div_remindme->addChild($span_remindme);
+    $div_remindme->addChild($span_label_remindme);
+
     $div_select = CDOMElement::create('div','id:language_selection');
     $select = CDOMElement::create('select','id:p_selected_language, name:p_selected_language');
     foreach($supported_languages as $language)
@@ -70,6 +81,7 @@ class UserModuleHtmlLib {
 
     $form->addChild($div_username);
     $form->addChild($div_password);
+    $form->addChild($div_remindme);
     $form->addChild($div_select);
 
     if ($login_error_message != '') {
