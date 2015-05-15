@@ -101,6 +101,8 @@ if ($headerLink) {
 
 $rss_items = array();
 $i=0;
+$clearfix = CDOMElement::create('div','class:clearfix')->getHtml();
+
 foreach($spObj->get_items() as $item) {
 	$title = $item->get_title() ;
 	if ($title=='' && !$showDescription) continue;
@@ -113,7 +115,7 @@ foreach($spObj->get_items() as $item) {
 
 	if ($showDescription)
 	{
-		$rssCONTENT->addChild(new CText('<br class="clearfix" />'));
+		$rssCONTENT->addChild(new CText($clearfix));
 		$rssCONTENT->addChild(new CText($item->get_description()));
 	}
 
@@ -125,9 +127,9 @@ foreach($spObj->get_items() as $item) {
 
 $output = '';
 
-if ($headerLink) $output = $headerHREF->getHtml()."<br class='clearfix' />";
+if ($headerLink) $output = $headerHREF->getHtml().$clearfix;
 
-$output .= implode("<br class='clearfix' />", $rss_items);
+$output .= implode($clearfix, $rss_items);
 
 /**
  * Common output in sync or async mode

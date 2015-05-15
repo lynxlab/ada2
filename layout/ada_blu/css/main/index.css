@@ -122,3 +122,7 @@ html,body {
 	cursor: pointer;	
 	display: inline-block;
 }
+
+.RSSContent a { margin-top: 10px; display: inline-block; }
+.facebookContainer,
+.twitterContainer { margin-bottom: 15px; overflow: hidden; text-overflow: ellipsis; }
