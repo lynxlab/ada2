@@ -190,13 +190,14 @@ foreach($twDatas as $k=>$twitterAr) {
 /**
  * Common output in sync or async mode
  */
+$clearfix = CDOMElement::create('div','class:clearfix')->getHtml();
  switch ($widgetMode) {
 		case ADA_WIDGET_SYNC_MODE:
-			return implode('<br class="clearfix" />', $items);
+			return implode($clearfix, $items);
 			break;
 		case ADA_WIDGET_ASYNC_MODE:
 		default:
-			echo implode('<br class="clearfix" />', $items);
+			echo implode($clearfix, $items);
 		
 }
 ?>
