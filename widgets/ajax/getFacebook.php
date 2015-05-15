@@ -72,6 +72,7 @@ $spObj->init();
 // $spObj->enable_cache(true);
 $rss_items = array();
 $i = 0;
+$clearfix = CDOMElement::create('div','class:clearfix')->getHtml();
 foreach($spObj->get_items() as $item) {
 	$title = html_entity_decode($item->get_title() );
 	if ($title=='' && !$showDescription) continue;
@@ -84,7 +85,7 @@ foreach($spObj->get_items() as $item) {
 	
 	if ($showDescription)
 	{
-		$facebookDIV->addChild(new CText('<br class="clearfix" />'));
+		$facebookDIV->addChild(new CText($clearfix));
 		$facebookDIV->addChild(new CText($item->get_description()));
 	}
 	
@@ -97,11 +98,11 @@ foreach($spObj->get_items() as $item) {
  */
  switch ($widgetMode) {
 		case ADA_WIDGET_SYNC_MODE:
-			return implode('<br class="clearfix" />', $rss_items);
+			return implode($clearfix, $rss_items);
 			break;
 		case ADA_WIDGET_ASYNC_MODE:
 		default:
-			echo implode('<br class="clearfix" />', $rss_items);
+			echo implode($clearfix, $rss_items);
 		
 }
 ?>
