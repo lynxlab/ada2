@@ -135,7 +135,10 @@ if(isset($p_login)) {
       	 * when a user sucessfully logs in, regenerate her session id.
       	 * this fixes a quite big problem in the 'history_nodi' table
       	 */
-      	session_regenerate_id();
+      	if (isset($p_remindme) && intval($p_remindme)>0) {
+	      	ini_set('session.cookie_lifetime', 60 * 60 * 24 * ADA_SESSION_LIFE_TIME);  // day cookie lifetime
+      	}
+      	session_regenerate_id(true);
       	
       	$user_default_tester = $userObj->getDefaultTester();
       	

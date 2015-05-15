@@ -64,21 +64,28 @@ class NavigationHistory
    * @param string $item - the absolute path of the page added
    */
   public function addItem($item) {
-    //$this->free_ptr = $this->free_ptr % $this->items_max_size;
-    $arguments = '';
-    foreach ($_GET as $argument=>$value) {
-      $arguments .= "$argument=$value&";
-    }
-
-    // vito 5 giugno 2009
-    if($this->free_ptr>0 && $this->items[($this->free_ptr-1) % $this->items_max_size] != $item) {
-      $this->last_page = $this->items[($this->free_ptr-1) % $this->items_max_size];
-      $this->arguments_for_last_page = $this->arguments_for_item[($this->free_ptr-1) % $this->items_max_size];
-    }
-
-    $this->items[$this->free_ptr % $this->items_max_size] = $item;
-    $this->arguments_for_item[$this->free_ptr % $this->items_max_size] = $arguments;
-    $this->free_ptr++;
+  	/**
+  	 * @author giorgio 13/mag/2015
+  	 * 
+  	 * if it's an unload request (i.e. with the unload requ. variable set) don't add the passed item
+  	 */
+  	if (!isset($_REQUEST['unload'])) {
+	    //$this->free_ptr = $this->free_ptr % $this->items_max_size;
+	    $arguments = '';
+	    foreach ($_GET as $argument=>$value) {
+	      $arguments .= "$argument=$value&";
+	    }
+	
+	    // vito 5 giugno 2009
+	    if($this->free_ptr>0 && $this->items[($this->free_ptr-1) % $this->items_max_size] != $item) {
+	      $this->last_page = $this->items[($this->free_ptr-1) % $this->items_max_size];
+	      $this->arguments_for_last_page = $this->arguments_for_item[($this->free_ptr-1) % $this->items_max_size];
+	    }
+	
+	    $this->items[$this->free_ptr % $this->items_max_size] = $item;
+	    $this->arguments_for_item[$this->free_ptr % $this->items_max_size] = $arguments;
+	    $this->free_ptr++;
+  	}
   }
     public function removeLastItem()
     {
