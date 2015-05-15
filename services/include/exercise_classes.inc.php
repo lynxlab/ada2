@@ -1504,7 +1504,7 @@ class OpenManual_ExerciseViewer extends ExerciseViewer {
 
         $div_rating = CDOMElement::create('div','id:exercise_rating');
         $label = CDOMElement::create('label','for:punteggio');
-        $label->addChild(new CText('Punteggio:').' ');
+        $label->addChild(new CText(translateFN('Punteggio:').' '));
         $div_rating->addChild($label);
         $div_rating->addChild(CDOMElement::create('text',"id:punteggio,name:punteggio,value:{$exercise->getRating()}"));
         $form->addChild($div_rating);
