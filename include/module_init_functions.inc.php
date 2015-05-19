@@ -392,6 +392,18 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     else {
       $invalid_node = TRUE;
     }
+    
+    /**
+     * @author giorgio 18/mag/2015
+     * 
+     * Could be that a non-student has request a node from
+     * the default tester in a multiprovider environment
+     * Check this before giving up an marking the node as invalid
+     */
+    if (MULTIPROVIDER && $id_profile != AMA_TYPE_STUDENT && $invalid_node === true && $id_node!==false) {
+    	$invalid_node = checkAndSetPublicTester('node',$id_node);
+    }
+
   }
 
   /*
@@ -449,6 +461,21 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
       unset($_SESSION['sess_courseObj']);
       $invalid_course = TRUE;
     }
+    
+    /**
+     * @author giorgio 18/mag/2015
+     *
+     * Could be that a non-student has request a course from
+     * the default tester in a multiprovider environment
+     * Check this before giving up an marking the course as invalid
+     */
+    if (MULTIPROVIDER && $id_profile != AMA_TYPE_STUDENT && $invalid_course === true && ($id_course!==false || $sess_id_course!==false)) {
+    	$invalid_course = checkAndSetPublicTester('course',($id_course!==false) ? $id_course : $sess_id_course);
+    	if ($invalid_course === false) {
+    		$invalid_node = false;
+    		$sess_courseObj = $_SESSION['sess_courseObj']; // SESSION set by checkAndSetPublicTester
+    	}
+    }    
   }
   else {
     unset($_SESSION['sess_courseObj']);
@@ -490,6 +517,8 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   			$instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
   			break;
   		case AMA_TYPE_TUTOR:
+  			$instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
+  			if (AMA_DB::isError($instances) || !is_array($instances) || count($instances)<=0) $instances = array();
   			$tutorInstances = $dh->get_tutors_assigned_course_instance($sess_userObj->getId(),$_SESSION['sess_id_course'],$sess_userObj->isSuper());
   			if (!AMA_DB::isError($tutorInstances) && is_array($tutorInstances) && count($tutorInstances)>0) {  				
   				/**
@@ -499,7 +528,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   				foreach($tutorInstances[$sess_userObj->getId()] as $tutorInstance) {
   					$instances[]['id_istanza_corso'] = $tutorInstance['id_istanza_corso'];
   				}
-  			} else $instances = null;
+  			}
   			break;
   	}
   	
@@ -785,4 +814,73 @@ function loadServiceTypes(){
      }
   }
 }
+
+/**
+ * checks if the passed object type and id are coming from the public tester.
+ * If true sets the needed GLOBALS['dh'] session variables accordingly.
+ * 
+ * @param string $objType either 'course' or 'node'
+ * @param string $objID object id to be checked and loaded if need be
+ * 
+ * return true if invalid has to be set to true on the caller
+ */
+function checkAndSetPublicTester($objType, $objID) {
+	$common_dh = $GLOBALS['common_dh'];
+	if ($objType !== 'course' || is_null($objID)) {
+		$tmp_id_course = isset($_REQUEST['id_course']) ? DataValidator::is_uinteger($_REQUEST['id_course']) : false;
+		if ($tmp_id_course === false) $tmp_id_course =  (isset($_REQUEST['id_node'])) ? substr($_REQUEST['id_node'], 0, strpos($_REQUEST['id_node'], '_')) : false;
+		if ($tmp_id_course === false) $tmp_id_course = isset ($_SESSION['sess_id_course']) ? DataValidator::is_uinteger($_SESSION['sess_id_course']) : false;
+		if ($tmp_id_course === false) $tmp_id_course =  (isset($_SESSION['sess_id_node'])) ? substr($_SESSION['sess_id_node'], 0, strpos($_SESSION['sess_id_node'], '_')) : false;		
+	} else $tmp_id_course = $objID;
+	
+	if ($tmp_id_course !== false) {
+		// get the tester for the passed id_course
+		$tester_infoAr = $common_dh->get_tester_info_from_id_course($tmp_id_course);
+		// get the service info for the passed id_course
+		$service_inforAr = $common_dh->get_service_type_info_from_course($tmp_id_course);
+		// check that the tester is valid and is the public one and
+		// check that the service is valid and is a public one
+		if (!AMA_DB::isError($tester_infoAr) && is_array($tester_infoAr) &&
+				isset($tester_infoAr['puntatore']) && $tester_infoAr['puntatore'] == ADA_PUBLIC_TESTER &&
+				!AMA_DB::isError($service_inforAr) && is_array($service_inforAr) &&
+				isset($service_inforAr['isPublic']) && intval($service_inforAr['isPublic']) !== 0) {
+			// save the dh, if a restrore is needed afterwards
+			$olddh = $GLOBALS['dh'];
+			// load the dh
+			$dh = AMA_Tester_DataHandler::instance(MultiPort::getDSN($tester_infoAr['puntatore']));
+			if (!AMA_DB::isError($dh)) {
+				// check the object
+				if ($objType=='node') {
+					$dataHa = $dh->get_node_info($objID);					
+					if (AMA_DB::isError($dataHa) || !is_array($dataHa)) {
+						$retval = true;
+						// restore the saved datahandler
+						$GLOBALS['dh'] = $olddh;
+					} else {
+						$retval = false;
+						// set the datahandler
+						$GLOBALS['dh'] = $dh;
+						$_SESSION['sess_id_node'] = $objID;
+						$_SESSION['sess_id_course'] = $tmp_id_course;
+					}
+				} else if ($objType=='course') {
+					// set the datahandler
+					$GLOBALS['dh'] = $dh;
+					$sess_courseObj = read_course($objID);
+					if (AMA_DB::isError($sess_courseObj) || !$sess_courseObj instanceof Course) {
+						$retval = true;
+						// restore the saved datahandler
+						$GLOBALS['dh'] = $olddh;						
+					} else {
+						$retval = false;
+						$_SESSION['sess_courseObj'] = $sess_courseObj;
+						$_SESSION['sess_id_course'] = $objID;					
+					}
+				}
+			}
+		}
+	}
+	return (isset($retval) ? $retval: true);
+}
+
 ?>
