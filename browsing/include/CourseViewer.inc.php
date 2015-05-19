@@ -624,7 +624,7 @@ class CourseViewer
     if ( isset($show_visits) && $show_visits == TRUE ) {
       $visits = 0;
 
-      if ($params['node']['numero_visite'] > 0) {
+      if (isset($params['node']['numero_visite']) && $params['node']['numero_visite'] > 0) {
         $visits = $params['node']['numero_visite'];
       }
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));

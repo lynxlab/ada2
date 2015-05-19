@@ -2135,6 +2135,32 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         return $service_result;
     }
+    
+    /**
+     * Get informations about the course service type
+     *
+     * @access public
+     *
+     * @param $id_course
+     *
+     *
+     * @return an error if something goes wrong
+     *
+     */
+    public function get_service_type_info_from_course($id_course) {
+    	
+    	$sql = "SELECT STYPE.* FROM `service_type` as STYPE, " .
+    		   "servizio_tester as ST, servizio as S " .
+    		   "WHERE ST.id_corso=? " .
+    		   "AND S.id_servizio = ST.id_servizio AND S.livello = STYPE.`livello_servizio`";
+    	
+    	$result = $this->getRowPrepared($sql, $id_course, AMA_FETCH_ASSOC);
+    	if(self::isError($result)) {
+    		return new AMA_Error(AMA_ERR_GET);
+    	}
+    	
+    	return $result;
+    }
 
     public function add_service($service_dataAr=array()) {
 

@@ -26,7 +26,7 @@ div.ui.menu.ada {
 .ui.menu.ada > ul.menu > li.item.dropdown > a { padding-right:0;  outline:0; }
 .ui.menu.ada > ul.menu > li.item.dropdown > .dropdown.icon { padding-right: .95em; }
 
-.ui.menu.ada > ul.menu > li.item.dropdown > ul.menu { margin-top: 1px !important; /* match .ui.menu.ada border-bottom */ }
+.ui.menu.ada > ul.menu > li.item.dropdown > ul.menu { margin-top: 1px !important; z-index:999; /* match .ui.menu.ada border-bottom */ }
 .ui.menu.ada > ul.menu > li.item.dropdown > ul.menu > li.item { padding:0 !important; }
 .ui.menu.ada > ul.menu > li.item.dropdown > ul.menu > li.item > a { width: 100%;  display: inline-block; }
 .ui.menu.ada > ul.menu > li.item.dropdown > ul.menu > li.item > a .icon { margin-left: .85em; margin-right:0; }
