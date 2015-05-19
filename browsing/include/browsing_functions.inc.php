@@ -277,7 +277,8 @@ $log_enabled = true; // links to history enabled
 $mod_enabled = true; // links to modify nodes  enabled
 $com_enabled = true;  // links to comunicate among users  enabled
 
-if ($user_status == ADA_STATUS_VISITOR || $user_status == ADA_STATUS_TERMINATED || $user_status == ADA_STATUS_COMPLETED) {
+if ($id_profile == AMA_TYPE_STUDENT && (
+	$user_status == ADA_STATUS_VISITOR || $user_status == ADA_STATUS_TERMINATED || $user_status == ADA_STATUS_COMPLETED)) {
   $reg_enabled = false; // links to bookmarks disabled
   $log_enabled = ($user_status != ADA_STATUS_VISITOR); // links to history disabled
   $mod_enabled = false; // links to modify nodes  disabled
@@ -364,6 +365,14 @@ if ($id_profile == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MOD
  * end service completeness
  */
 
+/**
+ * Authors can edit public courses of their own tester only
+ */
+if ($id_profile == AMA_TYPE_AUTHOR && $courseObj instanceof Course) {
+	$userTesters = $userObj->getDefaultTester();
+	if (!is_array($userTesters)) $userTesters = array($userTesters);
+	if ($courseObj->getIsPublic()) $mod_enabled = in_array(ADA_PUBLIC_TESTER, $userTesters);
+}
 
 /**
  * Template Family

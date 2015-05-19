@@ -288,7 +288,7 @@ $eportal = PORTAL_NAME;
 // $banner = include_once("../include/banner.inc.php"); TO BE COMPLETED
 $banner = "";
 
-if ($id_profile == AMA_TYPE_AUTHOR) {
+if ($id_profile == AMA_TYPE_AUTHOR && $mod_enabled) {
 	
 	$edit_node = "<a href=\"$http_root_dir/services/edit_node.php?op=edit&id_node=$sess_id_node&id_course=$sess_id_course&type=$node_type\">" .
 			translateFN('modifica nodo') . "</a>";
@@ -299,7 +299,6 @@ if ($id_profile == AMA_TYPE_AUTHOR) {
 	$add_exercise = "<a href=\"$http_root_dir/services/add_exercise.php?id_node=$sess_id_node\">" .
 			translateFN('aggiungi esercizio') . "</a>";
 
-	$mod_enabled = TRUE;
 }
 if (is_array($nodeObj->children) && count($nodeObj->children)>0) {
 	if ($node_type == ADA_GROUP_TYPE)  {
@@ -574,6 +573,9 @@ switch ($op){
         $menuOptions['id_course_instance'] = $sess_id_course_instance;
         $menuOptions['id_node'] = $sess_id_node;
         $menuOptions['id_parent'] = $sess_id_node;
+        
+        // define to enable author menu items
+        define ('MODULES_TEST_MOD_ENABLED' , defined('MODULES_TEST') && MODULES_TEST && $mod_enabled);
         
         /**
          * this is modified here to test parameters passing on new menu

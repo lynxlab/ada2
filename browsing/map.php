@@ -140,7 +140,7 @@ if (!AMA_DB::isError($nodeList) && is_array($nodeList) && count($nodeList)>0) {
 $data .= '</div>';
 
 //form button to save data (only for author)
-if($userObj-> tipo == AMA_TYPE_AUTHOR ){
+if($userObj-> tipo == AMA_TYPE_AUTHOR && $mod_enabled){
     $id_node_parent = $nodeObj->id;
     $data .= '<form method="POST" action="map.php?map_type='.$tipo_mappa.'&id_node='.$id_node_parent.'" id="form_map"><input type="hidden" name="mod_map"/></form>';
 };
