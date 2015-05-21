@@ -15,10 +15,10 @@ class MediaViewingHtmlLib {
 	private static $count=0;
 	
 	private static function getNextDivID() {
-		return ++self::$count;
+		return (isset($_REQUEST['isAjax']) ? 'ajax_' : '') . ++self::$count;
 	}
 	
-	private function jplayerCommonJS($format, $divID, $url, $title=null, $width=null, $height=null) {
+	private static function jplayerCommonJS($format, $divID, $url, $title=null, $width=null, $height=null) {
 		$jplayerCode = '<script type="text/javascript">
 						var jplayerNoConflict;
 				
@@ -35,7 +35,7 @@ class MediaViewingHtmlLib {
 		 * format is checked against string 'never' to never display a poster
 		 * the following line is here just in case you need to enable a poster
 		 */
-		if ($format=='never') $jplayerCode .= 'poster: "http://www.localada.com/layout/ada_blu/img/header-logo.png",';
+		if ($format=='never') $jplayerCode .= 'poster: "'.HTTP_ROOT_DIR.'/layout/"+ADA_TEMPLATE_FAMILY+"/img/header-logo.png",';
 		$jplayerCode .= $format.': "'.$url.'"
 									});
 								},
@@ -55,7 +55,8 @@ class MediaViewingHtmlLib {
 								smoothPlayBar: true,
 								keyEnabled: true,
 								remainingDuration: true,
-								toggleDuration: true
+								toggleDuration: true,
+								useStateClassSkin: true
 							});
 						});
 					</script>';
@@ -66,113 +67,203 @@ class MediaViewingHtmlLib {
 	public static function jplayerMp4Viewer($url, $title=null, $width=null, $height=null) {
 		
 		$divID = self::getNextDivID();
+		$isAudio = false;
 		
-		$jplayerCode = self::jplayerCommonJS('m4v', $divID, $url, $title, $width, $height);
+		$jpContainer  = self::buildJPElement('container',$isAudio, $divID);
+		$jpContainer->setAttribute('style', 'width :'.$width.'px');
 		
-		$styleHeightWidth = '';
-		$styleMarginTop = '';
+		$jpTypeSingle = self::buildJPElement('single');
+		$jpTypeSingle->addChild(self::buildJPElement('jplayer',  $isAudio, $divID));
 		
-		if (!is_null($width) || !is_null($height)) {
-			$styleHeightWidth .= ' style="';
-			if (!is_null($width)) $styleHeightWidth .= 'width:'.$width.'px; ';
-			// 70px is the needed room for the interface
-			if (!is_null($height)) {
-				$styleHeightWidth .= 'height:'.($height+70).'px; ';
-				$styleMarginTop .= $styleHeightWidth .'height:'.$height.'px; margin-top:-'.$height.'px;"';
-			}
-			$styleHeightWidth .= '"';
-		}
+		$jpGUI = self::buildJPElement('gui',$isAudio);
+		$jpInterface = self::buildJPElement('interface', $isAudio);
 		
+		$jpInterface->addChild(self::buildJPElement('progress'));
+		$jpInterface->addChild(self::buildJPElement('current-time'));
+		$jpInterface->addChild(self::buildJPElement('duration'));
+		$jpInterface->addChild(self::buildJPElement('controls-holder', $isAudio));
+		$jpInterface->addChild(self::buildJPElement('details'));
+
+		$jpGUI->addChild($jpInterface);
+		$jpTypeSingle->addChild($jpGUI);
+		$jpTypeSingle->addChild(self::buildJPElement('nosolution'));
 		
-		
-		$jplayerCode .= '<div id="jp_container_'.$divID.'" class="jp-video"';
-		$jplayerCode .= $styleHeightWidth;
-		$jplayerCode .= '>
-			<div class="jp-type-single">
-				<div id="jquery_jplayer_'.$divID.'" class="jp-jplayer"></div>
-				<div class="jp-gui">
-					<div id="outer-video-play-icon" class="jp-video-play"'.$styleMarginTop.'>
-  						<div id="middle-video-play-icon">
-							<a href="javascript:;" class="jp-video-play-icon" tabindex="1">play</a>
-  						</div>
-					</div>
-					<div class="jp-interface">
-						<div class="jp-progress">
-							<div class="jp-seek-bar">
-								<div class="jp-play-bar"></div>
-							</div>
-						</div>
-						<div class="jp-current-time"></div>
-						<div class="jp-duration"></div>
-						<div class="jp-controls-holder">
-							<ul class="jp-controls">
-								<li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
-								<li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
-								<li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
-								<li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
-								<li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
-								<li><div class="jp-volume-bar"><div class="jp-volume-bar-value"></div></div></li>
-								<li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
-							</ul>
-							<ul class="jp-toggles">
-								<li><a href="javascript:;" class="jp-full-screen" tabindex="1" title="full screen">full screen</a></li>
-								<li><a href="javascript:;" class="jp-restore-screen" tabindex="1" title="restore screen">restore screen</a></li>
-							</ul>
-						</div>
-						<div class="jp-details">
-							<ul>
-								<li><span class="jp-title"></span></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<div class="jp-no-solution">
-					<span>Update Required</span>
-					To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
-				</div>
-			</div>
-		</div>';
-		
-		return $jplayerCode;
+ 		$jpContainer->addChild($jpTypeSingle);
+
+		return self::jplayerCommonJS('m4v', $divID, $url, $title, $width, $height) . $jpContainer->getHtml();
 	}
 	
 	public static function jplayerMp3Viewer ($url, $title=null) {
-		
+	
 		$divID = self::getNextDivID();
-		
-		$jplayerCode = self::jplayerCommonJS('mp3', $divID, $url, $title);
-		
-		$jplayerCode .= '<div id="jquery_jplayer_'.$divID.'" class="jp-jplayer"></div>		
-		<div id="jp_container_'.$divID.'" class="jp-audio">
-			<div class="jp-type-single">
-				<div class="jp-gui jp-interface">
-					<ul class="jp-controls">
-						<li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
-						<li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
-						<li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
-						<li style="width:50%;">
-							<div class="jp-progress"><div class="jp-seek-bar"><div class="jp-play-bar"></div></div></div>
-							<div class="jp-time-holder"><div class="jp-current-time"></div><div class="jp-duration"></div></div>
-						</li>				
-						<li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
-						<li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
-						<li style="width:12%;"><div class="jp-volume-bar"><div class="jp-volume-bar-value"></div></div></li>
-						<li style="width:18px;"><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
-					</ul>
-				</div>
-				<div class="jp-details">
-					<ul>
-						<li><span class="jp-title"></span></li>
-					</ul>
-				</div>
-				<div class="jp-no-solution">
-					<span>Update Required</span>
-					To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
-				</div>
-			</div>
-		</div>';
-		
-		return $jplayerCode;
+		$isAudio = true;
+	
+		$jpPlayer     = self::buildJPElement('jplayer',  $isAudio, $divID);
+		$jpContainer  = self::buildJPElement('container',$isAudio, $divID);
+		$jpTypeSingle = self::buildJPElement('single');
+		$jpInterface  = self::buildJPElement('interface');
+	
+		$jpInterface->addChild(self::buildJPElement('controls'));
+		$jpInterface->addChild(self::buildJPElement('progress'));
+		$jpInterface->addChild(self::buildJPElement('volume'));
+		$jpInterface->addChild(self::buildJPElement('time'));
+	
+		$jpTypeSingle->addChild($jpInterface);
+		$jpTypeSingle->addChild(self::buildJPElement('details'));
+		$jpTypeSingle->addChild(self::buildJPElement('nosolution'));
+	
+		$jpContainer->addChild($jpTypeSingle);
+	
+		return self::jplayerCommonJS('mp3', $divID, $url, $title) . $jpPlayer->getHtml()  . $jpContainer->getHtml();
 	}
 	
+	private static function buildJPElement ($type, $isAudio=true, $divID=null) {
+		switch ($type) {
+			case 'jplayer':
+					return CDOMElement::create('div','id:jquery_jplayer_'.$divID.',class:jp-jplayer');		
+				break;
+			case 'container':
+					$jpContainer = CDOMElement::create('div','id:jp_container_'.$divID.',class:jp-'.(($isAudio) ? 'audio' : 'video'));
+					$jpContainer->setAttribute('role', 'application');
+					$jpContainer->setAttribute('aria-label', 'media player');
+					
+					return $jpContainer;
+				break;
+			case 'single':
+				return CDOMElement::create('div','class:jp-type-single');
+				break;
+			case 'gui':
+				if ($isAudio) return null;
+				else {					
+					$outer = CDOMElement::create('div','id:outer-video-play-icon,class:jp-video-play');
+					$middle = CDOMElement::create('div','id:middle-video-play-icon');
+					$playButton = CDOMElement::create('button','class:jp-video-play-icon');
+					$playButton->setAttribute('role', 'button');
+					$playButton->setAttribute('tabindex', '0');
+					$playButton->addChild(new CText(translateFN('Avvia')));
+					$middle->addChild($playButton);
+					$outer->addChild($middle);
+					$gui = CDOMElement::create('div','class:jp-gui');
+					$gui->addChild($outer);
+					
+					return $gui;
+				}
+				break;
+			case 'interface':
+				return CDOMElement::create('div','class:'.(($isAudio) ? 'jp-gui ' : '').'jp-interface');
+				break;
+			case 'controls-holder':
+					$jpControlsHolder = CDOMElement::create('div','class:jp-controls-holder');
+					$jpControlsHolder->addChild(self::buildJPElement('controls'));
+					$jpControlsHolder->addChild(self::buildJPElement('volume'));
+					$jpControlsHolder->addChild(self::buildJPElement('toggles', $isAudio));
+					
+					return $jpControlsHolder;
+				break;
+			case 'controls':
+					$jpControls = CDOMElement::create('div','class:jp-controls');
+					
+					$playButton = CDOMElement::create('button','class:jp-play');
+					$playButton->setAttribute('role', 'button');
+					$playButton->setAttribute('tabindex', '0');
+					$playButton->addChild(new CText(translateFN('Avvia')));
+					$jpControls->addChild($playButton);
+					
+					$stopButton = CDOMElement::create('button','class:jp-stop');
+					$stopButton->setAttribute('role', 'button');
+					$stopButton->setAttribute('tabindex', '0');
+					$stopButton->addChild(new CText(translateFN('Arresta')));
+					$jpControls->addChild($stopButton);
+					
+					return $jpControls;
+				break;
+			case 'progress':
+					$jpProgress = CDOMElement::create('div','class:jp-progress');
+					$jpSeekBar = CDOMElement::create('div','class:jp-seek-bar');
+					$jpSeekBar->addChild(CDOMElement::create('div','class:jp-play-bar'));
+					$jpProgress->addChild($jpSeekBar);
+					
+					return $jpProgress;
+				break;
+			case 'volume':
+					$jpVolumeControls = CDOMElement::create('div','class:jp-volume-controls');
+					$muteButton = CDOMElement::create('button','class:jp-mute');
+					$muteButton->setAttribute('role', 'button');
+					$muteButton->setAttribute('tabindex', '0');
+					$muteButton->addChild(new CText(translateFN('Silenzia')));
+					$jpVolumeControls->addChild($muteButton);
+					
+					$maxButton = CDOMElement::create('button','class:jp-volume-max');
+					$maxButton->setAttribute('role', 'button');
+					$maxButton->setAttribute('tabindex', '0');
+					$maxButton->addChild(new CText(translateFN('Massimo')));
+					$jpVolumeControls->addChild($maxButton);
+					
+					$jpVolumeBar = CDOMElement::create('div','class:jp-volume-bar');
+					$jpVolumeBar->addChild(CDOMElement::create('div','class:jp-volume-bar-value'));
+					$jpVolumeControls->addChild($jpVolumeBar);
+					
+					return $jpVolumeControls;
+				break;
+			case 'current-time' :
+					$jpCurrentTime = CDOMElement::create('div','class:jp-current-time');
+					$jpCurrentTime->setAttribute('role', 'timer');
+					$jpCurrentTime->setAttribute('aria-label', 'time');
+					$jpCurrentTime->addChild(new CText('&nbsp;'));
+					return $jpCurrentTime;
+				break;
+			case 'duration':
+					$jpDuration = CDOMElement::create('div','class:jp-duration');
+					$jpDuration->setAttribute('role', 'timer');
+					$jpDuration->setAttribute('aria-label', 'duration');
+					$jpDuration->addChild(new CText('&nbsp;'));
+					return $jpDuration;
+				break;
+			case 'toggles':
+					$jpToggles = CDOMElement::create('div','class:jp-toggles');
+					$repeatButton = CDOMElement::create('button','class:jp-repeat');
+					$repeatButton->setAttribute('role', 'button');
+					$repeatButton->setAttribute('tabindex', '0');
+					$repeatButton->addChild(new CText(translateFN('Ripeti')));
+					$jpToggles->addChild($repeatButton);
+					if (!$isAudio) {
+						$fullscreenButton = CDOMElement::create('button','class:jp-full-screen');
+						$fullscreenButton->setAttribute('role', 'button');
+						$fullscreenButton->setAttribute('tabindex', '0');
+						$fullscreenButton->addChild(new CText(translateFN('Schermo Intero')));
+						$jpToggles->addChild($fullscreenButton);
+					}
+					
+					return $jpToggles;
+				break;
+			case 'time':
+					$jpTimeHolder = CDOMElement::create('div','class:jp-time-holder');
+					$jpTimeHolder->addChild(self::buildJPElement('current-time'));
+					$jpTimeHolder->addChild(self::buildJPElement('duration'));
+					$jpTimeHolder->addChild(self::buildJPElement('toggles'));
+					
+					return $jpTimeHolder;
+				break;
+			case 'details':
+					$jpDetails = CDOMElement::create('div','class:jp-details');
+					$jpTitle = CDOMElement::create('div','class:jp-title');
+					$jpTitle->setAttribute('aria-label','title');
+					$jpTitle->addChild(new CText('&nbsp;'));
+					$jpDetails->addChild($jpTitle);
+					
+					return $jpDetails;
+				break;
+			case 'nosolution':
+					$jpNosolution = CDOMElement::create('div','class:jp-no-solution');
+					$jpNoSolSpan = CDOMElement::create('span');
+					$jpNoSolSpan->addChild(new CText(translateFN('Aggiornamento Richiesto')));
+					$jpNosolution->addChild($jpNoSolSpan);
+					$jpNosolution->addChild(new CText(translateFN('Per riprodurre il media devi aggiornare alla '.
+							'versione più recente il tuo borwser oppure il '.
+							'<a href="http://get.adobe.com/flashplayer/" target="_blank">plugin Flash</a>.')));
+					
+					return $jpNosolution;
+				break;
+		}
+	}
 }
