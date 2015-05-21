@@ -355,3 +355,5 @@ define('SEMANTICUI_CSS',		ROOT_DIR.'/js/include/semantic/css/semantic.min.css');
 define('SEMANTICUI_JS',	 		ROOT_DIR.'/js/include/semantic/javascript/semantic.min.js');
 define('SMARTMENUS_CSS',		ROOT_DIR.'/js/include/smartmenus/css/sm-core-css.css');
 define('SMARTMENUS_JS',	 		ROOT_DIR.'/js/include/smartmenus/jquery.smartmenus.min.js');
+define('JQUERY_JPLAYER',		ROOT_DIR.'/js/include/jquery/jplayer/jquery.jplayer.min.js');
+define('JQUERY_JPLAYER_CSS',	ROOT_DIR.'/js/include/jquery/jplayer/skin/blue.monday/jplayer.blue.monday.css');

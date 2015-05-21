@@ -528,6 +528,7 @@ switch ($op){
 				JQUERY,
 				JQUERY_UI,
 				JQUERY_NIVOSLIDER,
+				JQUERY_JPLAYER,
 				JQUERY_NO_CONFLICT,
 				ROOT_DIR. '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js'
 		);		
@@ -552,6 +553,7 @@ switch ($op){
 		array_push ($layout_dataAR['CSS_filename'],ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css');
 		array_push ($layout_dataAR['CSS_filename'], JQUERY_NIVOSLIDER_CSS);
 		array_push ($layout_dataAR['CSS_filename'],ROOT_DIR.'/js/include/jquery/nivo-slider/themes/default/default.css');
+		array_push ($layout_dataAR['CSS_filename'], JQUERY_JPLAYER_CSS);
 		
 		$optionsAr['onload_func'] = 'initDoc();';
 		
