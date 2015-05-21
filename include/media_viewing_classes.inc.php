@@ -279,7 +279,13 @@ class AudioPlayer {
      * @return string
      */
     public static function view( $http_file_path, $file_name, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
-        $http_root_dir = $GLOBALS['http_root_dir'];
+    	$http_root_dir = $GLOBALS['http_root_dir'];    	
+    	
+    	require_once ROOT_DIR.'/include/getid3/getid3.php';
+    	$getID3 = new getID3();
+    	$toAnalyze = ( !empty($http_file_path) ? $http_file_path : ROOT_DIR).$file_name;
+    	$fileInfo = $getID3->analyze(urldecode(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze)));
+
         if ($audioTitle == NULL || !isset($audioTitle)) {
             $audioTitle = $file_name;
         }
@@ -291,16 +297,23 @@ class AudioPlayer {
             case 1:
             case 2:
             default:
-                $url = $http_root_dir. "/external/mediaplayer/1pixelout/1pixelout.swf";
-                $exploded_audio = '
+            	
+            	if ($fileInfo['fileformat']=='mp3') // use jplayer if mp3
+            	{
+            		require_once ROOT_DIR . '/include/HtmlLibrary/MediaViewingHtmlLib.inc.php';
+            		$exploded_audio = MediaViewingHtmlLib::jplayerMp3Viewer($http_file_path.$file_name, $audioTitle);
+            	} else {
+					$url = $http_root_dir. "/external/mediaplayer/1pixelout/1pixelout.swf";
+					$exploded_audio = '
 					<object type="application/x-shockwave-flash" data="'.$url.'" width="290" height="24" >
-					  <param name="movie" value="'.$url.'" />
-					  <param name="wmode" value="transparent" />
-					  <param name="menu" value="false" />
-					  <param name="quality" value="high" />
-					  <param name="FlashVars" value="soundFile='.$http_file_path.$file_name.'" />
-					  <embed src="'.$url.'" flashvars="soundFile='.$http_file_path.$file_name.'" width="290" height="24" />
+						<param name="movie" value="'.$url.'" />
+						<param name="wmode" value="transparent" />
+						<param name="menu" value="false" />
+						<param name="quality" value="high" />
+						<param name="FlashVars" value="soundFile='.$http_file_path.$file_name.'" />
+						<embed src="'.$url.'" flashvars="soundFile='.$http_file_path.$file_name.'" width="290" height="24" />
 					</object>';
+            	}
 			break;
         }
         return $exploded_audio;
@@ -388,16 +401,24 @@ class VideoPlayer {
                             $file_name = Media::getPathForFile($file_name);
                         }
                         
-                        if (!$_SESSION['mobile-detect']->isMobile()) $playerAttr = ' data-engine="flash" ';
-                        else $playerAttr = '';
+                        /**
+                         * old code to be used for flowplayer
+                         */
+                        // if (!$_SESSION['mobile-detect']->isMobile()) $playerAttr = ' data-engine="flash" ';
+                        // else $playerAttr = '';
                         
-                        if ($extension=='mp4')
+                        if ($fileInfo['fileformat']=='mp4')
                         {
-                        	$exploded_video = '<div class="ADAflowplayer color-light no-background" style="width:'.$width.'px; height:'.$height.'px;"'.
-                        						$playerAttr.'data-swf="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/flowplayer.swf" data-embed="false">
-                        			<video>
-                        				<source src="'.$http_file_path.$file_name.'" type="video/mp4" />
-                        			</video></div>';                        
+                        	/**
+                        	 * old code to be used for flowplayer
+                        	 */
+                        	// $exploded_video = '<div class="ADAflowplayer color-light no-background" style="width:'.$width.'px; height:'.$height.'px;"'.
+                        	// 		$playerAttr.'data-swf="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/flowplayer.swf" data-embed="false">
+                        	//		<video>
+                        	//			<source src="'.$http_file_path.$file_name.'" type="video/mp4" />
+                        	//		</video></div>';
+                        	require_once ROOT_DIR . '/include/HtmlLibrary/MediaViewingHtmlLib.inc.php';
+                        	$exploded_video = MediaViewingHtmlLib::jplayerMp4Viewer($http_file_path. $file_name, $file_name, $width, $height);                       
                         }
                         else {                        
 						$exploded_video = '

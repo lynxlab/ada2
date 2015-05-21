@@ -41,7 +41,7 @@ abstract class CBaseElement extends CBase
     	 * The data attribute name must be at least one character long and must be prefixed with 'data-'.
     	 * It should not contain any uppercase letters. 
     	 */
-        if (property_exists($this, $attribute_name) || (preg_match('/data\-[a-z0-9]{1}[a-z0-9\-]*/', $attribute_name) === 1))
+        if (property_exists($this, $attribute_name) || (preg_match('/(data|aria)\-[a-z0-9]{1}[a-z0-9\-]*/', $attribute_name) === 1))
         {
             $this->$attribute_name = $attribute_value;
             return TRUE;
@@ -100,6 +100,7 @@ abstract class CBaseAttributesElement extends CBaseElement
     protected $onkeypress;
     protected $onkeydown;
     protected $onkeyup;
+    protected $role;
 
     public function __construct() {
 
@@ -319,7 +320,7 @@ abstract class CElement extends CBaseAttributesElement
             {
             	 
 				if (!property_exists($this, $attr) || $this->$attr === false) {
-					$this->$attr = 'false';
+					if ($attr!== 'datas') $this->$attr = 'false';
 				}
 				else if ($this->$attr === true) {
 					$this->$attr = 'true';

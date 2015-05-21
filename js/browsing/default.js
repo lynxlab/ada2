@@ -73,7 +73,7 @@ function openInRightPanel(httpFilePath, fileExtension) {
     	$j.ajax({
     		type	:	'GET',
     		url		:	'ajax/videoplayer_panel_code.php',
-    		data	:	{ media_url: httpFilePath, width: 500, height: 370 },
+    		data	:	{ media_url: httpFilePath, width: 500, height: 370, isAjax: true },
     		dataType:	'html'
     	})
     	.done(function (htmlcode){
