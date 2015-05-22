@@ -10,24 +10,6 @@ require_once(ROOT_DIR.'/include/ama.inc.php');
 class AMAImpExportDataHandler extends AMA_DataHandler {
 
 	/**
-	 * Returns an instance of AMA_DataHandler.
-	 *
-	 * @param  string $dsn - optional, a valid data source name
-	 *
-	 * @return an instance of AMA_DataHandler
-	 */
-	static function instance($dsn = null) {
-		if(self::$instance === NULL) {
-			self::$instance = new AMAImpExportDataHandler($dsn);
-		}
-		else {
-			self::$instance->setDSN($dsn);
-		}
-		//return null;
-		return self::$instance;
-	}
-
-	/**
 	 * Get the children of a given node.
 	 *
 	 * FOR EXPORT PURPOSES THIS METHOD IS OVERRIDDEN TO EXCLUDE

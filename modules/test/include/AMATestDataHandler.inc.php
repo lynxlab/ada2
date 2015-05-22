@@ -13,24 +13,6 @@ class AMATestDataHandler extends AMA_DataHandler {
 	public static $PREFIX = 'module_test_';
 
     /**
-     * Returns an instance of AMA_DataHandler.
-     *
-     * @param  string $dsn - optional, a valid data source name
-	 *
-     * @return an instance of AMA_DataHandler
-     */
-    static function instance($dsn = null) {
-        if(self::$instance === NULL) {
-            self::$instance = new AMATestDataHandler($dsn);
-        }
-        else {
-            self::$instance->setDSN($dsn);
-        }
-        //return null;
-        return self::$instance;
-    }
-
-    /**
      * get the available test/survey list
      *
      * @access public
