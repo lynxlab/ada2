@@ -789,7 +789,7 @@ function clear_dataFN($variableToClearAr=array()) {
 function loadServiceTypes(){
  
   if (!isset($_SESSION['service_level'])){
-    if($GLOBALS['dh'] instanceof AMA_Tester_DataHandler) {  
+    if($GLOBALS['dh'] instanceof AMA_DataHandler) {  
         $servicesTypeAr =  $GLOBALS['dh']->get_service_type();
         if(!empty($servicesTypeAr) && !AMA_DB::isError($servicesTypeAr)){
             foreach($servicesTypeAr as $servicesType){
@@ -847,7 +847,7 @@ function checkAndSetPublicTester($objType, $objID) {
 			// save the dh, if a restrore is needed afterwards
 			$olddh = $GLOBALS['dh'];
 			// load the dh
-			$dh = AMA_Tester_DataHandler::instance(MultiPort::getDSN($tester_infoAr['puntatore']));
+			$dh = AMA_DataHandler::instance(MultiPort::getDSN($tester_infoAr['puntatore']));
 			if (!AMA_DB::isError($dh)) {
 				// check the object
 				if ($objType=='node') {
