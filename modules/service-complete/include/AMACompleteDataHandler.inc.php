@@ -350,22 +350,5 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 		return true;
 	}
 
-	/**
-	 * Returns an instance of AMACompleteDataHandler.
-	 *
-	 * @param  string $dsn - optional, a valid data source name
-	 *
-	 * @return an instance of AMACompleteDataHandler
-	 */
-	static function instance($dsn = null) {
-		if(self::$instance === NULL) {
-			self::$instance = new AMACompleteDataHandler($dsn);
-		}
-		else {
-			self::$instance->setDSN($dsn);
-		}
-		//return null;
-		return self::$instance;
-	}
 }
 ?>
