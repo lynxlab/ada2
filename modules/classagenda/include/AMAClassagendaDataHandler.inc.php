@@ -503,24 +503,6 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		return ((count($retval)>0) ? $retval : new AMA_Error(AMA_ERR_GET));
 		
 	}
-
-	/**
-	 * Returns an instance of AMAClassagendaDataHandler.
-	 *
-	 * @param  string $dsn - optional, a valid data source name
-	 *
-	 * @return an instance of AMAClassagendaDataHandler
-	 */
-	static function instance($dsn = null) {
-		if(self::$instance === NULL) {
-			self::$instance = new AMAClassagendaDataHandler($dsn);
-		}
-		else {
-			self::$instance->setDSN($dsn);
-		}
-		//return null;
-		return self::$instance;
-	}
 	
 }
 ?>

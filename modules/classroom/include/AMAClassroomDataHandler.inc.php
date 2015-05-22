@@ -399,24 +399,6 @@ class AMAClassroomDataHandler extends AMA_DataHandler {
 		if (AMA_DB::isError($res)) $errStr .= ":".AMA_SEP.$res->getMessage();
 		return new AMA_Error($errorCode, $errStr);
 	}
-
-	/**
-	 * Returns an instance of AMAClassroomDataHandler.
-	 *
-	 * @param  string $dsn - optional, a valid data source name
-	 *
-	 * @return an instance of AMAClassroomDataHandler
-	 */
-	static function instance($dsn = null) {
-		if(self::$instance === NULL) {
-			self::$instance = new AMAClassroomDataHandler($dsn);
-		}
-		else {
-			self::$instance->setDSN($dsn);
-		}
-		//return null;
-		return self::$instance;
-	}
 	
 } // class ends here
 ?>
