@@ -53,15 +53,5 @@ class AMAAppsDataHandler extends AMA_Common_DataHandler {
 		return null;
 	}	
 
-	/**
-	 * Returns an instance of AMAAppsDataHandler.
-	 *
-	 * @param  string $dsn - optional, a valid data source name
-	 *
-	 * @return an instance of AMAAppsDataHandler
-	 */
-	public static function instance($dsn=null) {            
-        return new AMAAppsDataHandler();
-	}
 }
 ?>
