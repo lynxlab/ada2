@@ -233,7 +233,7 @@ class MultiPort
   	 */
   	if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider'])>0) {
   		
-  		$tester_dh = AMA_Tester_DataHandler::instance(self::getDSN($GLOBALS['user_provider']));
+  		$tester_dh = AMA_DataHandler::instance(self::getDSN($GLOBALS['user_provider']));
   		if (!is_null($tester_dh)) {
   			/**
              * check if a user with the passed username
