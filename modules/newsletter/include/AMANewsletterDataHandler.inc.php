@@ -26,23 +26,6 @@ class AMANewsletterDataHandler extends AMA_DataHandler {
 	 */
 	private static  $_DEBUG = false;
 
-	/**
-	 * Returns an instance of AMA_DataHandler.
-	 *
-	 * @param  string $dsn - optional, a valid data source name
-	 *
-	 * @return an instance of AMA_DataHandler
-	 */
-	static function instance($dsn = null) {
-		if(self::$instance === NULL) {
-			self::$instance = new AMANewsletterDataHandler($dsn);
-		}
-		else {
-			self::$instance->setDSN($dsn);
-		}
-		//return null;
-		return self::$instance;
-	}
 	
 	/**
 	 * Gets all the fields of the given table in an array, EXCLUDING the id field
