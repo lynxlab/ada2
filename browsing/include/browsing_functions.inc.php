@@ -366,12 +366,10 @@ if ($id_profile == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MOD
  */
 
 /**
- * Authors can edit public courses of their own tester only
+ * Authors can edit public courses assigned to themselves
  */
-if ($id_profile == AMA_TYPE_AUTHOR && $courseObj instanceof Course) {
-	$userTesters = $userObj->getDefaultTester();
-	if (!is_array($userTesters)) $userTesters = array($userTesters);
-	if ($courseObj->getIsPublic()) $mod_enabled = in_array(ADA_PUBLIC_TESTER, $userTesters);
+if ($id_profile == AMA_TYPE_AUTHOR && $courseObj instanceof Course && $courseObj->getIsPublic()) {
+	$mod_enabled = ($userObj->getId() == $courseObj->getAuthorId());
 }
 
 /**
