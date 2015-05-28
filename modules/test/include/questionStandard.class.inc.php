@@ -40,6 +40,7 @@ class QuestionStandardTest extends QuestionTest
 	 * @return an object of CDOMElement
 	 */
 	protected function renderingHtml(&$ref = null,$feedback=false,$rating=false,$rating_answer=false) {
+		
 		if (!$this->display) return new CText(''); //if we don't have to display this question, let's return an empty item
 		$out = parent::renderingHtml($ref,$feedback,$rating,$rating_answer);
 
@@ -49,8 +50,24 @@ class QuestionStandardTest extends QuestionTest
 		if (!empty($this->_children)) {
 			$_children = $this->_children;
 			if ($this->searchParent('RootTest')->shuffle_answers) {
-				// giorgio 04/lug/2014 bugfix: was shuffle($this->_children);
-				shuffle($_children);
+				// giorgio 23/gen/2014 bugfix: was shuffle($this->_children);
+				// giorgio 24/gen/2014 shuffle is not wanted for this kind of exercise 
+				// shuffle($_children);
+			}
+			
+			/**
+			 * @author giorgio 02/feb/2015
+			 * 
+			 * add a fake hidden radio button to submit something
+			 * if the user confirms to send a non-answered question
+			 */
+			if (!$feedback) {
+				$li = CDOMElement::create('li');
+				$input = CDOMElement::create('radio');
+				$input->setAttributes('value:null,checked:checked,name:'.$name.'['.self::POST_ANSWER_VAR.']');
+				$input->setAttribute('style', 'display:none;');
+				$li->addChild($input);
+				$ref->addChild($li);
 			}
 
 			while (!empty($_children)) {
@@ -58,37 +75,74 @@ class QuestionStandardTest extends QuestionTest
 					if ($v->extra_answer && count($_children)>1) {
 						continue;
 					}
+
+					$hasImage = preg_match('/<MEDIA([^>]*)TYPE=\"'._IMAGE.'\"([^>]*)>/i',$v->testo) >0;
+					if (!$hasImage) $hasMedia = preg_match('/<MEDIA([^>]*)>/i',$v->testo) >0;
+					else $hasMedia = false;
 					
 					$inputId = $name.'['.$k.']';
 					$answer = CDOMElement::create('label','for:'.$inputId);
-					$answer->addChild(new CText($v->testo));
-					$input = CDOMElement::create('radio','id:'.$inputId);
-					$input->setAttribute('class','radio_standard_test');
-					$input->setAttribute('style','vertical-align:middle; margin-top:0px;');
-					$input->setAttribute('name',$name.'['.self::POST_ANSWER_VAR.']');
-					$input->setAttribute('value',$v->id_nodo);
+					
+					$outText = $v->testo;
+					
+					$answer->addChild(new CText($this->replaceInternalLinkMedia($outText)));
+					if ($hasImage) $answer->setAttribute('class',$answer->getAttribute('class').' isimage');
+					$checkInput = CDOMElement::create('radio','id:'.$inputId);
+					$checkInput->setAttribute('class','radio_standard_test');
+					if ($hasMedia) $checkInput->setAttribute('class',$checkInput->getAttribute('class').' media');					
+					$checkInput->setAttribute('style','vertical-align:middle; margin-top:0px;');
+					$parentActivity = $this->searchParent('ActivityTest');
+					if (is_null($parentActivity) || !$parentActivity->isTutorEvaluating()) {
+						$checkInput->setAttribute('name',$name.'['.self::POST_ANSWER_VAR.']');
+					}
+					$checkInput->setAttribute('value',$v->id_nodo);
+					
+					if ($hasMedia) {
+						/**
+						 * if has a media, checkInput must be
+						 * wrapped around a div for proper styling
+						 */
+						$input = CDOMElement::create('div','class:mediainputwrapper');
+						$input->addChild($checkInput);
+					} else {
+						$input = $checkInput;
+					}
+					
 					//feedback section
 
-
 					if ($feedback) {
+						$class = '';
 						$input->setAttribute('disabled','');
-						if ($this->givenAnswer['risposta'][self::POST_ANSWER_VAR] == $v->id_nodo) {
+						/**
+						 * @author giorgio 19/mag/2015
+						 * 
+						 * for some unknow reason, when the student submits a blank
+						 * radio button, the givenAnswer field is 'null' (string)
+						 */
+						if ($this->givenAnswer['risposta'][self::POST_ANSWER_VAR]==='null') $this->givenAnswer['risposta'][self::POST_ANSWER_VAR] = null;
+						if ($v->correttezza > 0 && strlen($this->givenAnswer['risposta'][self::POST_ANSWER_VAR])<=0) {
+							// giorgio 14/mag/2015, highlight the correct (ungiven) answer
+							$class = 'unanswered_answer_test';
+						} else if ($this->givenAnswer['risposta'][self::POST_ANSWER_VAR] == $v->id_nodo) {
 							$input->setAttribute('checked', '');
-							if ($this->givenAnswer['punteggio']>0) {
-								$answer->setAttribute('class', 'right_answer_test');
-							}
-							else {
-								$answer->setAttribute('class', 'wrong_answer_test');
-							}
+							$class = ($this->givenAnswer['punteggio']>0) ? 'right_answer_test' : 'wrong_answer_test';
+						} else if ($v->correttezza > 0 && strlen($this->givenAnswer['risposta'][self::POST_ANSWER_VAR])>0) {
+							// giorgio 23/gen/2014, highlight the correct answer
+							$class = 'right_answer_test';
 						}
+						
+						$clonedinput = clone $input;
+						$input = CDOMElement::create('span','class:answer_test '.$class);
+						$input->addChild($clonedinput);
+						
+						if ($hasMedia) $answer->setAttribute('class',$answer->getAttribute('class').' media');
+						if ($hasImage) $answer->setAttribute('class',$answer->getAttribute('class').' isimage');
 					}
 
-					if ($post_data[self::POST_ANSWER_VAR] == $v->id_nodo) {
-						$input->setAttribute('checked','');
-					}
 
 					$li = CDOMElement::create('li');
 					$class = 'answer_standard_test';
+					if ($hasMedia) $class .= ' media';
 					switch($this->variation) {
 						case ADA_ERASE_TEST_VARIATION:
 							$class.= ' erase_variation_test';
@@ -103,16 +157,19 @@ class QuestionStandardTest extends QuestionTest
 					$li->addChild($answer);
 
 					$string = $answer->getAttribute('class');
-					if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
+					if (RootTest::isSessionUserAStudent()) {
 						if ($feedback && $rating_answer && !strstr($string,'right_answer_test')) {
-							$correctAnswer = $this->getMostCorrectAnswer();
+							$correctAnswer = $this->getMostCorrectAnswer(null);
 							if ($correctAnswer) {
 								$popup = CDOMElement::create('div','id:popup_'.$this->id_nodo);
 								$popup->setAttribute('style','display:none;');
 								$popup->addChild(new CText($correctAnswer->testo));
 
-								$answer->setAttribute('class', $string.' answerPopup');
-								$answer->setAttribute('title',$this->id_nodo);
+								/**
+								 * feedback is given with red and green colors, don't want any popup
+								 */
+								// $answer->setAttribute('class', $string.' answerPopup');
+								// $answer->setAttribute('title',$this->id_nodo);
 								$li->addChild(new CText($popup->getHtml()));
 							}
 						}
@@ -135,7 +192,7 @@ class QuestionStandardTest extends QuestionTest
 						$li->addChild($answer);
 					}
 
-					if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+					if (!RootTest::isSessionUserAStudent()) {
 						$v->correttezza = is_null($v->correttezza)?0:$v->correttezza;
 						$li->addChild(new CText(' ('.$v->correttezza.' '.translateFN('punti').')'));
 					}

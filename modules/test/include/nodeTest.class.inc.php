@@ -83,7 +83,7 @@ abstract class NodeTest
 	 */
     public function __get($name)
     {
-		if (!property_exists(get_class($this),$name) || !isset($this->{$name})) {
+    	if (!property_exists(get_class($this),$name) || !isset($this->{$name})) {
             return null;
         }
 		else return $this->{$name};
@@ -174,6 +174,10 @@ abstract class NodeTest
 					require_once(MODULES_TEST_PATH.'/include/test.class.inc.php');
 					return new TestTest($data,$parent);
 				break;
+				case ADA_TYPE_ACTIVITY:
+					require_once(MODULES_TEST_PATH.'/include/activity.class.inc.php');
+					return new ActivityTest($data,$parent);
+					break;
 				case ADA_TYPE_SURVEY:
 					require_once(MODULES_TEST_PATH.'/include/survey.class.inc.php');
 					return new SurveyTest($data,$parent);
@@ -286,7 +290,7 @@ abstract class NodeTest
 						$id = $v['id_nodo'];
 
 						//this search the root
-						if (is_null($root) && ($tipo == ADA_TYPE_TEST || $tipo == ADA_TYPE_SURVEY)) {
+						if (is_null($root) && ($tipo == ADA_TYPE_TEST || $tipo == ADA_TYPE_SURVEY || $tipo == ADA_TYPE_ACTIVITY)) {
 							$objects[$id] = NodeTest::readNode($v);
 							$root = $objects[$id];
 							self::$nodesArray[$root->id_nodo] = $root;

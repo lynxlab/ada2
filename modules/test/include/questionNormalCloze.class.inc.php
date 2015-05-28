@@ -50,11 +50,23 @@ class QuestionNormalClozeTest extends QuestionClozeTest
 		$obj = CDOMElement::create('text');
 		$obj->setAttribute('name', $name.'['.self::POST_ANSWER_VAR.']['.$ordine.']');
 		$obj->setAttribute('value', $post_data[self::POST_ANSWER_VAR][$ordine]);
+		
+		$answerMaxLen = $GLOBALS['dh']->getClozeAnswerMaxLen ($this->searchParent('TopicTest')->id_nodo, strlen($this->tipo));
+		
+		/**
+		 * giorgio 20/dic/2013
+		 * 
+		 * if a maxlength is found, the width of all inputs is going to
+		 * be the found length + 4 characters.
+		 * if not, defaults to 20 char
+		 */
+		$obj->setAttribute('size', ($answerMaxLen>0) ? $answerMaxLen+4 : 20 );
+		
 		if ($this->feedback) {
 			$obj->setAttribute('readonly', '');
 			$risposta = $this->givenAnswer['risposta'][self::POST_ANSWER_VAR][$ordine];
 			if (!empty($risposta)) {				
-				$obj->setAttribute('value', $risposta);
+				$obj->setAttribute('value', htmlentities($risposta, ENT_COMPAT | ENT_HTML401, ADA_CHARSET));
 				if (!empty($this->_children)) {
 					foreach($this->_children as $answer) {
 						if ($this->isAnswerCorrect($answer, $ordine, $risposta)) {
@@ -76,8 +88,8 @@ class QuestionNormalClozeTest extends QuestionClozeTest
 			$correctAnswer = $this->getMostCorrectAnswer($ordine);
 			if ($correctAnswer) {
 				$popup = CDOMElement::create('div','id:popup_'.$this->id_nodo.'_'.$ordine);
-				$popup->setAttribute('style','display:none;');
-				$popup->addChild(new CText($correctAnswer->testo));
+				$popup->setAttribute('style','display:none;');				
+				$popup->addChild(new CText( (strlen($correctAnswer->testo)<=0) ? '&nbsp;' : $correctAnswer->testo ));
 				if ($this->rating) {
 					$popup->addChild(new CText(' ('.$correctAnswer->correttezza.' '.translateFN('Punti').')'));
 				}
@@ -93,7 +105,7 @@ class QuestionNormalClozeTest extends QuestionClozeTest
 			$html = $obj->getHtml();
 		}
 		
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {		
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {		
 			$span = CDOMElement::create('span','class:clozePopup,title:'.$this->id_nodo.'_'.$ordine);
 			$html.= $span->getHtml();
 

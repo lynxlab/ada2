@@ -19,6 +19,10 @@ abstract class QuestionTest extends NodeTest
 	protected $feedback = false;
 	protected $rating = false;
 	protected $rating_answer = false;
+	protected $shuffledChildren;
+
+	static $attemptsCounter = array();
+	static $lastShownAttempt = 0;
 
 	/**
 	 * used to configure object with database's data options
@@ -96,9 +100,32 @@ abstract class QuestionTest extends NodeTest
 
 		$name = $this->getPostFieldName();
 		$post_data = $this->getPostData();
+		$parentActivity = $this->searchParent('ActivityTest');
 
-		$out = CDOMElement::create('li','id:liQuestion'.$this->id_nodo);
+		$out = CDOMElement::create('li');
+
+		if (!is_null($parentActivity) && $parentActivity->isTutorEvaluating()) {
+// 			$out->setAttribute('id', 'liQuestion'.$this->id_nodo);			
+// 		} else {
+			if (!isset(self::$attemptsCounter[$this->id_nodo])) {
+				self::$attemptsCounter[$this->id_nodo] = 1;
+			}
+			else ++self::$attemptsCounter[$this->id_nodo];
+			
+			if (self::$lastShownAttempt != self::$attemptsCounter[$this->id_nodo]) {
+				$h3el = CDOMElement::create('h3','class:attemptsCounter');
+				$h3el->addChild(new CText(translateFN('Tentativo').' #'.self::$attemptsCounter[$this->id_nodo]));
+				$out->addChild($h3el);
+				self::$lastShownAttempt = self::$attemptsCounter[$this->id_nodo];
+			}
+			
+			if ($this->_parent->_children[count($this->_parent->_children)-1] == $this) {
+				self::$lastShownAttempt = 0;
+			}
+		}
+
 		$class = 'question_test';
+		$out->setAttribute('id', 'liQuestion'.$this->id_nodo);		
 		if ($this->_parent->_children[0] == $this) {
 			$class.= ' first';
 		}
@@ -106,7 +133,11 @@ abstract class QuestionTest extends NodeTest
 			$class.= ' last';
 		}
 		$out->setAttribute('class', $class);
-		$out->addChild(new CText($this->titolo));		
+		
+		$spanTitleClass = 'questiontitle';
+		$spanTitle = CDOMElement::create('span');
+		$spanTitle->addChild(new CText($this->titolo));
+		$out->addChild($spanTitle);
 
 		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			if (!empty($this->_children)) {
@@ -128,8 +159,8 @@ abstract class QuestionTest extends NodeTest
 			$out->addChild($span);
 		}
 		else if ($rating) {
-			$points = (is_null($this->givenAnswer['punteggio']))?0:$this->givenAnswer['punteggio'];			
-			$text = '('.translateFN('punteggio ottenuto').' '.$points.'/'.$this->getMaxScore().')';
+			$points = (is_null($this->givenAnswer['punteggio']))?'0.00':$this->givenAnswer['punteggio'];
+			$text = '('.translateFN('punteggio ottenuto').' '.sprintf("%01.2f", $points).'/'.sprintf("%01.2f", $this->getMaxScore()).')';
 			
 			$span = CDOMElement::create('span');
 			$span->setAttribute('class', 'rating_question_test');
@@ -197,7 +228,7 @@ abstract class QuestionTest extends NodeTest
 					$div->addChild($span);
 				}
 
-				if ((is_a($this, QuestionMultipleClozeTest) && !$this->isAnswersTableDataEmpty())) {
+				if ((is_a($this, 'QuestionMultipleClozeTest') && !$this->isAnswersTableDataEmpty())) {
 					$span = CDOMElement::create('span','class:wrong_answer_test');
 					$span->addChild(new CText(translateFN('Attenzione! Non sono state associate le risposte ai campi della tabella!')));
 					$div->addChild($span);
@@ -247,9 +278,9 @@ abstract class QuestionTest extends NodeTest
 		}
 
 		if ($feedback) {
-			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR) {
+			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR && !is_null($parentActivity) && !$parentActivity->_forceFeedback) {
 				$span = CDOMElement::create('span','class:tutor_comment_test');
-				$span->addChild(new CText(translateFN('Commento del Tutor per l\'esercizio')));
+				$span->addChild(new CText(translateFN('Commento del Tutor per la domanda')));
 				$span->setAttribute('onclick','toggleDiv(\'tutor_comment_div_'.$this->givenAnswer['id_answer'].'\');');
 				$out->addChild($span);
 
@@ -274,7 +305,7 @@ abstract class QuestionTest extends NodeTest
 				$button = CDOMElement::create('input_button');
 				$button->setAttribute('class', 'test_button');
 				$button->setAttribute('onclick','saveCommentAnswer('.$this->givenAnswer['id_answer'].');');
-				$button->setAttribute('value',translateFN('Salva commento all\'esercizio'));
+				$button->setAttribute('value',translateFN('Salva commento alla domanda'));
 				$extraArea->addChild($button);
 
 				$out->addChild($extraArea);
@@ -386,7 +417,7 @@ abstract class QuestionTest extends NodeTest
 	 *
 	 * @see getMaxScore
 	 */
-	public function getMostCorrectAnswer($ordine=null) {
+	public function getMostCorrectAnswer($ordine) {
 		$score = 0;
 		$mostCorrectAnswer = null;
 
@@ -406,7 +437,7 @@ abstract class QuestionTest extends NodeTest
 			return false;
 		}
 	}
-
+	
 	/**
 	 * Serialize answer data
 	 *

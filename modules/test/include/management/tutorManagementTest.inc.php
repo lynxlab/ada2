@@ -10,6 +10,7 @@
 class TutorManagementTest {
 	
 	protected $student;
+	protected $id_student;
 	protected $test;
 	protected $history_test;
 	protected $action;
@@ -75,6 +76,7 @@ class TutorManagementTest {
 					$this->returnError = true;
 				}
 				$this->student = $student;
+				$this->id_student = $id_student;
 
 			break;
 		}
@@ -82,12 +84,12 @@ class TutorManagementTest {
 		if ($this->what == 'test') {
 			$this->singolare = translateFN('Test');
 			$this->plurale = translateFN('Test');
-			$this->tipo = '1%';
+			$this->tipo = ADA_TYPE_TEST.'%';
 		}
 		else {
 			$this->singolare = translateFN('Sondaggio');
 			$this->plurale = translateFN('Sondaggi');
-			$this->tipo = '2%';
+			$this->tipo = ADA_TYPE_SURVEY.'%';
 		}
 	}
 
@@ -139,7 +141,7 @@ class TutorManagementTest {
 			}
 
 			$caption = sprintf(translateFN('Studenti che hanno effettuato %s'),$this->plurale);
-			$table = BaseHtmlLib::tableElement('', $thead, $tbody, $thead, $caption);
+			$table = BaseHtmlLib::tableElement('', $thead, $tbody, null, $caption);
 			$html = $table->getHtml();
 		}
 		else {
@@ -162,10 +164,14 @@ class TutorManagementTest {
 	 *
 	 * @return array an array composed of 'html', 'path' and 'title' keys
 	 */
+        
 	protected function list_tests($student = false) {
 		$dh = $GLOBALS['dh'];
 
-		$historyTest = $dh->test_getHistoryTestJoined(array('id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id),$this->tipo);
+		$params = array('id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id); 		
+		if ($student || $this->student) $params['id_utente'] = $this->id_student;
+		
+		$historyTest = $dh->test_getHistoryTestJoined($params,$this->tipo);
 		if ($dh->isError($historyTest)) {
 			$this->returnError = true;
 			return;
@@ -198,21 +204,28 @@ class TutorManagementTest {
 				if (!isset($tests[$r['id_nodo']]['count'])) {
 					$tests[$r['id_nodo']]['count'] = 0;
 				}
+				
+				if (!isset($tests[$r['id_nodo']]['max_possible_score'])) {
+					$tests[$r['id_nodo']]['max_possible_score'] = $dh->test_getMaxiumPointsForTest($r['id_nodo']);
+				}
+				
 				$tests[$r['id_nodo']]['count']++;
 			}
 		}
 
 		$thead = array(
-			translateFN('Id'),
+			'&nbsp;',
+// 			translateFN('Id'),
 			translateFN('Titolo'),
-			translateFN('Ripetibile'),
-			translateFN('Punteggio Medio'),
-			translateFN('Punteggio Min'),
-			translateFN('Punteggio Max'),
-			translateFN('Punteggio Barriera'),
-			translateFN('Tentativi Consegnati'),
-			translateFN('Tentativi Scaduti'),
-			translateFN('Visualizza'),
+			translateFN('Tentativi'),
+// 			translateFN('Ripetibile'),
+// 			translateFN('Punteggio Medio'),
+// 			translateFN('Punteggio Min'),
+			translateFN('Somma Punteggi'),
+			translateFN('Massimo Punteggio Realizzabile'),
+// 			translateFN('Punteggio Barriera'),
+			//translateFN('Tentativi Consegnati'),
+			//translateFN('Tentativi Scaduti'),	
 		);
 
 		$tbody = array();
@@ -220,20 +233,31 @@ class TutorManagementTest {
 			foreach($tests as $k=>$r) {
 				$nome_istanza = (empty($r['nome_istanza'])?$r['nome_corso']:$r['nome_istanza'].' ('.translateFN('corso').' '.$r['nome_corso'].')');
 
-				$tbody[$k][] = $r['id_test'];
+// 				$tbody[$k][] = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course='.$r['id_course'].'&id_course_instance='.$r['id_instance'].'&id_student='.$r['id_utente'].'&id_test='.$r['id_test'].'"><img src="img/magnify.png" /></a>';
+				
+				$url = $this->filepath.'?op='.$this->what.'&id_course='.$r['id_course'].'&id_course_instance='.$r['id_instance'].'&id_student='.$r['id_utente'].'&id_test='.$r['id_test'];
+				
+				$expandButton = CDOMElement::create('img','src:img/details_open.png,class:noPopup');
+				$expandButton->setAttribute('style','cursor:pointer');
+				$expandButton->setAttribute('data-testid', $r['id_test'].'_'.$r['id_utente']);
+				$expandButton->setAttribute('onclick', 'javascript:expandListTestsRow(this,\''.urldecode($url).'\');');
+				
+				$tbody[$k][] = $expandButton->getHtml();
+// 				$tbody[$k][] = $r['id_test'];
 				$tbody[$k][] = $r['titolo'];
-				$tbody[$k][] = ($r['ripetibile'])?translateFN('Si'):translateFN('No');
-				$tbody[$k][] = round(array_sum($r['punteggio'])/$r['count'],2);
-				$tbody[$k][] = min($r['punteggio']);
-				$tbody[$k][] = max($r['punteggio']);
-				$tbody[$k][] = ($r['punteggio_barriera'])?$r['punteggio_barriera']:translateFN('Nessuna');
-				$tbody[$k][] = $r['count_consegnato'].' '.translateFN('su').' '.$r['count'];
-				$tbody[$k][] = $r['count_scaduto'].' '.translateFN('su').' '.$r['count'];
-				$tbody[$k][] = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course='.$r['id_course'].'&id_course_instance='.$r['id_instance'].'&id_student='.$r['id_utente'].'&id_test='.$r['id_test'].'"><img src="img/magnify.png" /></a>';
+				$tbody[$k][] = $r['count'];
+// 				$tbody[$k][] = ($r['ripetibile'])?translateFN('Si'):translateFN('No');
+// 				$tbody[$k][] = round(array_sum($r['punteggio'])/$r['count'],2);
+// 				$tbody[$k][] = min($r['punteggio']);
+				$tbody[$k][] = array_sum($r['punteggio']);
+				$tbody[$k][] = $r['max_possible_score'];
+// 				$tbody[$k][] = ($r['punteggio_barriera'])?$r['punteggio_barriera']:translateFN('Nessuna');
+				//$tbody[$k][] = $r['count_consegnato'].' '.translateFN('su').' '.$r['count'];
+				//$tbody[$k][] = $r['count_scaduto'].' '.translateFN('su').' '.$r['count'];
 			}
-
-			$caption = sprintf(translateFN('%s effettuati dallo studente %s %s per il corso "%s"'),$this->plurale,$this->student['cognome'],$this->student['nome'],$nome_istanza);
-			$table = BaseHtmlLib::tableElement('', $thead, $tbody, $thead, $caption);
+                       
+            $caption = sprintf(translateFN('%s effettuati dallo studente %s %s per il corso "%s"'),$this->plurale,$this->student['cognome'],$this->student['nome'],$nome_istanza);
+			$table = BaseHtmlLib::tableElement('', $thead, $tbody, null, $caption);
 			$html = $table->getHtml();
 		}
 		else {
@@ -245,7 +269,11 @@ class TutorManagementTest {
 			}
 		}
 
-		$path = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'">'.translateFN('Valutazione').' '.ucfirst($this->plurale).'</a> &gt; '.$this->student['cognome'].' '.$this->student['nome'];
+		// $path = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'">'.translateFN('Valutazione').' '.ucfirst($this->plurale).'</a> &gt; '.$this->student['cognome'].' '.$this->student['nome'];
+		/**
+		 * Valutazione test no longer links
+		 */
+		$path = translateFN('Valutazione').' '.ucfirst($this->plurale).' &gt; '.$this->student['cognome'].' '.$this->student['nome'];
 
 		return array(
 			'html' => $html,
@@ -266,7 +294,10 @@ class TutorManagementTest {
 	protected function list_history_tests($student = false) {
 		$dh = $GLOBALS['dh'];
 
-		$historyTest = $dh->test_getHistoryTestJoined(array('id_nodo'=>$this->test['id_nodo'],'id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id),$this->tipo);
+		$params = array('id_nodo'=>$this->test['id_nodo'],'id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id);
+		if ($student || $this->student) $params['id_utente'] = $this->id_student;
+		
+		$historyTest = $dh->test_getHistoryTestJoined($params,$this->tipo);
 		if ($dh->isError($historyTest)) {
 			$this->returnError = true;
 			return;
@@ -274,12 +305,12 @@ class TutorManagementTest {
 
 		$thead = array(
 			sprintf(translateFN('%s Id'),$this->singolare),
-			translateFN('Titolo'),
+// 			translateFN('Titolo'),
 			translateFN('Punteggio'),
-			translateFN('Punteggio Barriera'),
-			translateFN('Consegnato'),
-			translateFN('Tempo scaduto'),
-			translateFN('Ripetibile'),
+// 			translateFN('Punteggio Barriera'),
+// 			translateFN('Consegnato'),
+// 			translateFN('Tempo scaduto'),
+// 			translateFN('Ripetibile'),
 			translateFN('Data inizio'),
 			translateFN('Data fine'),
 			translateFN('Visualizza'),
@@ -289,21 +320,30 @@ class TutorManagementTest {
 		if (!empty($historyTest)) {
 			foreach($historyTest as $k=>$r) {
 				$id_student = $r['id_utente'];
+				
+				$expandLink = CDOMElement::create('a');
+				$expandLink->setAttribute('href', $this->filepath.'?op='.$this->what.'&id_course='.$r['id_corso'].'&id_course_instance='.$r['id_istanza_corso'].'&id_student='.$r['id_utente'].'&id_test='.$r['id_nodo'].'&id_history_test='.$r['id_history_test']);
+				$expandLink->addChild(CDOMElement::create('img','src:../../layout/'.ADA_TEMPLATE_FAMILY.'/img/magnify.png,class:noPopup'));
 
 				$tbody[$k][] = $k+1;
-				$tbody[$k][] = $r['titolo'];
+// 				$tbody[$k][] = $r['titolo'];
 				$tbody[$k][] = $r['punteggio_realizzato'];
-				$tbody[$k][] = $r['punteggio_minimo_barriera'];
-				$tbody[$k][] = ($r['consegnato'])?translateFN('Si'):translateFN('No');
-				$tbody[$k][] = ($r['tempo_scaduto'])?translateFN('Si'):translateFN('No');
-				$tbody[$k][] = ($r['ripetibile'])?translateFN('Si'):translateFN('No');
+// 				$tbody[$k][] = $r['punteggio_minimo_barriera'];
+// 				$tbody[$k][] = ($r['consegnato'])?translateFN('Si'):translateFN('No');
+// 				$tbody[$k][] = ($r['tempo_scaduto'])?translateFN('Si'):translateFN('No');
+// 				$tbody[$k][] = ($r['ripetibile'])?translateFN('Si'):translateFN('No');
 				$tbody[$k][] = AMA_DataHandler::ts_to_date($r['data_inizio'], "%d/%m/%Y %H:%M:%S");
 				$tbody[$k][] = ($r['data_fine']>0)?AMA_DataHandler::ts_to_date($r['data_fine'], "%d/%m/%Y %H:%M:%S"):'---';
-				$tbody[$k][] = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course='.$r['id_corso'].'&id_course_instance='.$r['id_istanza_corso'].'&id_student='.$r['id_utente'].'&id_test='.$r['id_nodo'].'&id_history_test='.$r['id_history_test'].'"><img src="img/magnify.png" /></a>';
+				$tbody[$k][] = $expandLink->getHtml();
+// 				$tbody[$k][] = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course='.$r['id_corso'].'&id_course_instance='.$r['id_istanza_corso'].'&id_student='.$r['id_utente'].'&id_test='.$r['id_nodo'].'&id_history_test='.$r['id_history_test'].'"><img src="img/magnify.png" /></a>';
 			}
 
-			$caption = sprintf(translateFN('Tentativi effettuati dallo studente %s %s per il %s "%s"'),$this->student['cognome'],$this->student['nome'],$this->singolare,$this->test['titolo']);
-			$table = BaseHtmlLib::tableElement('', $thead, $tbody, $thead, $caption);
+			if (isset($_REQUEST['isAjax']) && intval($_REQUEST['isAjax'])===1) {
+				$caption = translateFN('Tentativi');
+			} else {
+				$caption = sprintf(translateFN('Tentativi effettuati dallo studente %s %s per il %s "%s"'),$this->student['cognome'],$this->student['nome'],$this->singolare,$this->test['titolo']);
+			}
+			$table = BaseHtmlLib::tableElement('', $thead, $tbody, null, $caption);
 			$html = $table->getHtml();
 		}
 		else {
@@ -315,7 +355,11 @@ class TutorManagementTest {
 			}
 		}
 
-		$path = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'">'.translateFN('Valutazione').' '.ucfirst($this->plurale).'</a> &gt; <a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'&id_student='.$id_student.'">'.$this->student['cognome'].' '.$this->student['nome'].'</a> &gt; '.$this->test['titolo'];
+// 		$path = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'">'.translateFN('Valutazione').' '.ucfirst($this->plurale).'</a> &gt; <a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'&id_student='.$id_student.'">'.$this->student['cognome'].' '.$this->student['nome'].'</a> &gt; '.$this->test['titolo'];
+		/**
+		 * Valutazione test no longer links
+		 */
+		$path = translateFN('Valutazione').' '.ucfirst($this->plurale).' &gt; <a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'&id_student='.$id_student.'">'.$this->student['cognome'].' '.$this->student['nome'].'</a> &gt; '.$this->test['titolo'];
 
 		return array(
 			'html' => $html,
@@ -339,11 +383,26 @@ class TutorManagementTest {
 			$html = sprintf(translateFN('%s non trovato'),$this->singolare);
 		}
 		else {
+			/**
+			 * giorgio 13/feb/2014
+			 * 
+			 * if it's an activity force feedback to be 
+			 * ADA_FEEDBACK_TEST_INTERACTION for
+			 * proper history details display
+			 */
+			if (is_a($test,'ActivityTest')) {
+				$test->setFeedBackForHistory();
+				$test->setTutorEvaluating($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR);
+			}
 			$test->run($this->history_test['id_history_test'],true);
 			$html = $test->render(true);
 		}
 
-		$path = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'">'.translateFN('Valutazione').' '.ucfirst($this->plurale).'</a> &gt; <a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'&id_student='.$this->history_test['id_utente'].'">'.$this->student['cognome'].' '.$this->student['nome'].'</a> &gt; <a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'&id_student='.$this->history_test['id_utente'].'&id_test='.$this->test['id_nodo'].'">'.$this->test['titolo'].'</a> &gt; '.translateFN('Tentativo'). ' #'.$this->history_test['id_history_test'];
+// 		$path = '<a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'">'.translateFN('Valutazione').' '.ucfirst($this->plurale).'</a> &gt; <a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'&id_student='.$this->history_test['id_utente'].'">'.$this->student['cognome'].' '.$this->student['nome'].'</a> &gt; <a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'&id_student='.$this->history_test['id_utente'].'&id_test='.$this->test['id_nodo'].'">'.$this->test['titolo'].'</a> &gt; '.translateFN('Tentativo'). ' #'.$this->history_test['id_history_test'];
+		/**
+		 * Valutazione test no longer links
+		 */
+		$path = translateFN('Valutazione').' '.ucfirst($this->plurale).' &gt; <a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'&id_student='.$this->history_test['id_utente'].'">'.$this->student['cognome'].' '.$this->student['nome'].'</a> &gt; <a href="'.$this->filepath.'?op='.$this->what.'&id_course_instance='.$this->course_instanceObj->id.'&id_course='.$this->courseObj->id.'&id_student='.$this->history_test['id_utente'].'&id_test='.$this->test['id_nodo'].'">'.$this->test['titolo'].'</a> &gt; '.translateFN('Tentativo'). ' #'.$this->history_test['id_history_test'];
 
 		return array(
 			'html' => $html,

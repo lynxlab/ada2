@@ -13,6 +13,7 @@ class AnswerHeaderControlTest extends FormControl {
 	protected $open_answer = false;
 	protected $show_case_sensitive = false;
 	protected $modifiable = true;
+	protected $isDragDrop = false;
 
 	/**
 	 * Answer Header Control Test
@@ -22,7 +23,7 @@ class AnswerHeaderControlTest extends FormControl {
 	 * @param boolean $show_case_sensitive
 	 * @param boolean $checked
 	 */
-	public function __construct($open_answer,$show_case_sensitive,$modifiable = true) {
+	public function __construct($open_answer,$show_case_sensitive,$modifiable = true,$isDragDrop=false) {
         $this->_controlData = array();
         $this->_selected = FALSE;
         $this->_isRequired = FALSE;
@@ -34,6 +35,7 @@ class AnswerHeaderControlTest extends FormControl {
 		$this->open_answer = $open_answer;
 		$this->show_case_sensitive = $show_case_sensitive;
 		$this->modifiable = $modifiable;
+		$this->isDragDrop = $isDragDrop;
     }
 
 	/**
@@ -69,6 +71,15 @@ class AnswerHeaderControlTest extends FormControl {
 		$cell->addChild(new CText(translateFN('Punteggio')));
 		$div->addChild($cell);
 		$i++;
+		
+		if ($this->isDragDrop == ADA_DRAGDROP_TEST_SIMPLICITY)
+		{
+			$cell = CDOMElement::create('div');
+			$cell->setAttribute('class','cell titolo_dragdrop');
+			$cell->addChild(new CText(translateFN('Box num.')));
+			$div->addChild($cell);
+			$i++;
+		}
 
 		if ($this->show_case_sensitive) {
 			$cell = CDOMElement::create('div');

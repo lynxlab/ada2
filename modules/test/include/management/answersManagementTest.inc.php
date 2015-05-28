@@ -96,6 +96,7 @@ class AnswersManagementTest {
 					'case_sensitive' => $v['tipo']{2},
 					'record' => $v['id_nodo'],
 					'ordine' => $v['ordine'],
+					'titolo_dragdrop' => $v['titolo_dragdrop'] // giorgio, used for table num in drag'n'drop
 				);
 			}
 		}		
@@ -130,11 +131,13 @@ class AnswersManagementTest {
 				foreach($_POST['answer'] as $k=>$v) {
 					$post[] = array(
 						'answer'=> $_POST['answer'][$k],
-						'value'=> intval($_POST['value'][$k]),
+						'value'=> $_POST['value'][$k],
 						'case_sensitive'=> ($_POST['case_sensitive'][$k]==1)?true:false,
 						'other_answer'=> ($_POST['other_answer'][$k]==1)?true:false,
 						'record'=> $_POST['record'][$k],
 						'ordine'=> $_POST['ordine'][$k],
+						'titolo_dragdrop' => ( isset( $_POST['titolo_dragdrop'][$k]) && trim($_POST['titolo_dragdrop'][$k])!=='' 
+													? trim($_POST['titolo_dragdrop'][$k]) : null ),
 					);
 				}
 
@@ -156,6 +159,7 @@ class AnswersManagementTest {
 						'id_nodo_parent'=>$this->question['id_nodo'],
 						'id_nodo_radice'=>$this->test['id_nodo'],
 						'ordine'=>($v['ordine'])?$v['ordine']:$k+1,
+ 						'titolo_dragdrop'=>$v['titolo_dragdrop'],
 					);
 
 					if (intval($v['record']) > 0) {
@@ -187,25 +191,26 @@ class AnswersManagementTest {
 			$html = $form->getHtml();
 			$div = CDOMElement::create('div','id:insertImage,class:hide');
 			$div->setAttribute('title',translateFN('Inserisci Immagine'));
-			$div->setAttribute('style','text-align:right;');
+			$div->setAttribute('style','text-align:right;line-height:35px;');
 			
-			$labelUrl = CDOMElement::create('label','for:inputUrl');
+			$labelUrl = CDOMElement::create('label','for:inputUrl,style:width:20%;');
 			$labelUrl->addChild(new CText(translateFN('Url').':'));
-			$inputUrl = CDOMElement::create('text','id:inputUrl');
+			$inputUrl = CDOMElement::create('text','id:inputUrl,style:width:47%;');
 			$div->addChild($labelUrl);
 			$div->addChild($inputUrl);
-			$div->addChild(new CText('<br />'));
-
 			
+			$browseButton = CDOMElement::create('span','id:browseserver,style:font-size:0.85em;width:30%;margin-bottom:6px;');
+			$browseButton->addChild(new CText('Sfoglia'));
+			$div->addChild($browseButton);
+			
+			//$div->addChild(new CText('<br />'));
 
-			$labelTitle = CDOMElement::create('label','for:inputTitle');
+			$labelTitle = CDOMElement::create('label','for:inputTitle, style:width:20%;');
 			$labelTitle->addChild(new CText(translateFN('Titolo').':'));
-			$inputTitle = CDOMElement::create('text','id:inputTitle');
+			$inputTitle = CDOMElement::create('text','id:inputTitle,style:width:80%;');
 			$div->addChild($labelTitle);
 			$div->addChild($inputTitle);
 			$div->addChild(new CText('<br />'));
-
-
 
 			$labelRadio = CDOMElement::create('label');
 			$labelRadio->addChild(new CText(translateFN('Permetti zoom').':'));

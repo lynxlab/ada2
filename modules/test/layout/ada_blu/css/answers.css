@@ -135,7 +135,8 @@ div.show_error {
 	cursor: pointer;
 }
 
-.answers_cell input.value {
+.answers_cell input.value,
+.answers_cell input.titolo_dragdrop {
 	width:100%;
 }
 
@@ -173,4 +174,27 @@ div.show_error {
 .colButton {
 	text-align: center;
 	vertical-align: middle;
+}
+
+.multipleClozeResetButtonDiv,
+.multipleClozeFirstColDiv {
+	width: 48%;
+	padding: 1%;
+}
+
+.multipleClozeActionsContainer {
+	float: left;
+	background: #ececea;
+	border-top: 1px solid #afafaf;
+	width: 100%;
+}
+
+.multipleClozeFirstColDiv {
+	float: left;
+	text-align: left;
+}
+
+.multipleClozeResetButtonDiv {
+	float: right;
+	text-align: right;	
 }

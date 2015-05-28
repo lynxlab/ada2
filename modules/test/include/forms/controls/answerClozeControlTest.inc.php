@@ -16,6 +16,7 @@ class AnswerClozeControlTest extends FormControl {
 	protected $show_case_sensitive = false;
 	protected $clonable = false;
 	protected $modifiable  = false;
+	protected $isDragDrop = false;
 
 	/**
 	 * Answer Cloze Control constructor
@@ -25,7 +26,7 @@ class AnswerClozeControlTest extends FormControl {
 	 * @param string $id tag id
 	 * @param boolean $clonable if true, the control will be used as subject to clone (javascript)
 	 */
-	public function __construct($show_case_sensitive, $id = null, $clonable = null, $modifiable = false) {
+	public function __construct($show_case_sensitive, $id = null, $clonable = null, $modifiable = false, $isDragDrop = false) {
 		$this->id = $id;
 		$this->_controlId = self::$i++;
         $this->_controlData = array();
@@ -47,6 +48,7 @@ class AnswerClozeControlTest extends FormControl {
 		}
 
 		$this->modifiable = $modifiable;
+		$this->isDragDrop = $isDragDrop;
     }
 
 	/**
@@ -58,6 +60,14 @@ class AnswerClozeControlTest extends FormControl {
 	public function constructComponents() {
 		$this->_controlData['answer'] = Node::prepareInternalLinkMediaForEditor($this->_controlData['answer']);
 
+		/**
+		 * @author giorgio 18/ott/2013
+		 * 
+		 * if there are no answers, make the first row editable
+		 * so that the user (i.e. the logged author) will fill it in.
+		 */
+		if (empty($this->_controlData['answer'])) $this->modifiable = true;
+			
 		$this->item['answer'] = CDOMElement::create('span');
 
 		$input = CDOMElement::create('text','name:answer[]');
@@ -79,7 +89,14 @@ class AnswerClozeControlTest extends FormControl {
 		
 		$this->item['value'] = CDOMElement::create('text','name:value[]');
 		$this->item['value']->setAttribute('class', 'value');
-		$this->item['value']->setAttribute('value', intval($this->_controlData['value']));
+		$this->item['value']->setAttribute('value', $this->_controlData['value']);
+		
+		if ($this->isDragDrop == ADA_DRAGDROP_TEST_SIMPLICITY) {
+			$this->item['titolo_dragdrop'] = CDOMElement::create('text','name:titolo_dragdrop[]');
+			$this->item['titolo_dragdrop']->setAttribute('class', 'titolo_dragdrop');
+			if (!is_null($this->_controlData['titolo_dragdrop']))
+					$this->item['titolo_dragdrop']->setAttribute('value', intval($this->_controlData['titolo_dragdrop']));			
+		}
 
 		if ($this->show_case_sensitive) {
 			$span = CDOMElement::create('span');
@@ -182,6 +199,7 @@ class AnswerClozeControlTest extends FormControl {
 			'case_sensitive' => null,
 			'record' => null,
 			'ordine' => null,
+			'titolo_dragdrop' => null
 		);
 
 		if (is_array($data) && !empty($data)) {

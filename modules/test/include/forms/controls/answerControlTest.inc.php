@@ -96,7 +96,7 @@ class AnswerControlTest extends FormControl {
 
 		$this->item['value'] = CDOMElement::create('text','name:value[]');
 		$this->item['value']->setAttribute('class', 'value');
-		$this->item['value']->setAttribute('value', intval($this->_controlData['value']));
+		$this->item['value']->setAttribute('value', $this->_controlData['value']);
 
 		if ($this->show_case_sensitive) {
 			$span = CDOMElement::create('span');

@@ -9,6 +9,7 @@ var sortableClass = '.sortable';
 var inputAnswersClass = 'inputAnswers';
 var rowsLabelClass = '.rows_label';
 var colsLabelClass = '.cols_label';
+var firstColTypeClass = '.multipleClozeFirstColDiv';
 var typing = [];
 
 function confirmExit() {
@@ -157,7 +158,8 @@ function emptyTable() {
 function saveMultipleClozeAnswers() {
 	$j.ajax({
 		url: window.location.href,
-		data: postVariable+"[operation]=save&"+$j(classTable).find('.'+inputAnswersClass).serialize(),
+		data: postVariable+"[operation]=save&"+$j(classTable).find('.'+inputAnswersClass).serialize()+
+			  "&"+$j(firstColTypeClass).find("select").serialize(),
 		type: 'POST',
 		dataType: 'text',
 		async: true,
@@ -203,5 +205,9 @@ $j(function () {
 			}
 		},
 		delay: 250
+	});
+	
+	$j(firstColTypeClass).find("select").on('change',function() {
+		saveMultipleClozeAnswers();
 	});
 });

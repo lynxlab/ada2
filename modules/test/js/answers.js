@@ -1,3 +1,5 @@
+document.write('<script type="text/javascript" src="../../external/fckeditor/browseserver.js"></script>');
+
 function move(e,direction) {
 	var li = $j(e).closest('li');
 	var index = li.closest('ol').children().has('.answers_cell:visible').index(li);
@@ -112,6 +114,13 @@ function insertImage(e) {
 
 var inputAnswer = null;
 function insertImage(e) {
+	
+	$j('#browseserver').button({
+	      icons: {
+	          primary: "ui-icon-image"	       
+	        }
+	      }).click(function() { BrowseServer('inputUrl'); });
+	
 	var input = $j(e).siblings('input.answer');
 	inputAnswer = input[0];
 	$j('#insertImage').dialog('open');
@@ -122,24 +131,54 @@ dialog_img_buttons[i18n['confirm']] = function() {
 	if (inputAnswer != null && inputAnswer != undefined) {
 		var inputUrl = $j('#inputUrl').val();
 		if (inputUrl.length > 0) {
-			var img = '<img src="'+inputUrl+'"';
-			var inputTitle = $j('#inputTitle').val();
-			if (inputTitle.length > 0) {
-				img+= ' title="'+inputTitle+'" alt="'+inputTitle+'"';
+			/**
+			 * giorgio 15/gen/2014
+			 * 
+			 * check if the file is an audio and produce appropriate tag
+			 * valid audio extensions are in the allowedAudioExtensions array
+			 */
+			var extension =  inputUrl.split('.').pop();
+			var allowedAudioExtensions = new Array ("mp3", "ogg", "MP3", "OGG") ;
+			var allowedImageExtensions = new Array ("jpg", "png", "gif", "JPG", "PNG", "GIF") ;
+			
+			if ($j.inArray (extension, allowedAudioExtensions) !=-1) {
+				/**
+				 * giorgio 28/ott/2014
+				 * 
+				 * check if inputUrl contains HTTP_ROOT_DIR and
+				 * if it does, remove it so that the generated media
+				 * will have the correct file address
+				 */
+				inputUrl = inputUrl.replace(new RegExp(HTTP_ROOT_DIR,"i"),"");
+				var media =  '<MEDIA TYPE="'+MEDIA_SOUND+'"';
+					media += ' VALUE="'+inputUrl+'">';
+				$j(inputAnswer).val(media);
+			} else if ($j.inArray (extension, allowedImageExtensions) !=-1) {						
+				// var img = '<img src="'+inputUrl+'"';
+				var img = '<MEDIA TYPE="'+MEDIA_IMAGE+'"';
+					img += ' VALUE="'+inputUrl+'"';
+				
+				var inputTitle = $j('#inputTitle').val();
+				if (inputTitle.length > 0) {
+					img+= ' title="'+inputTitle+'" alt="'+inputTitle+'"';
+				}
+				if ($j('#radioPopupNo').prop('checked')) {
+					img+= ' class="noPopup"';
+				}
+				var width = $j('#inputWidth').val();
+				if (!isNaN(parseInt(width))) {
+					img+= ' width="'+width+'"';
+				}
+				var height = $j('#inputHeight').val();
+				if (!isNaN(parseInt(height))) {
+					img+= ' height="'+height+'"';
+				}
+				img+='>';
+				$j(inputAnswer).val(img);
+			} else {
+				alert ("Unsupported file format: " + extension );
+				$j(inputAnswer).val('');
 			}
-			if ($j('#radioPopupNo').prop('checked')) {
-				img+= ' class="noPopup"';
-			}
-			var width = $j('#inputWidth').val();
-			if (!isNaN(parseInt(width))) {
-				img+= ' width="'+width+'"';
-			}
-			var height = $j('#inputHeight').val();
-			if (!isNaN(parseInt(height))) {
-				img+= ' height="'+height+'"';
-			}
-			img+='>';
-			$j(inputAnswer).val(img);			
 		}
 	}
 	$j(this).dialog('close');

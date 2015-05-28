@@ -15,6 +15,7 @@ abstract class QuestionClozeTest extends QuestionTest
 	protected $rating_answer = false;
 
 	const regexpCloze = '#<cloze[^>]*title="([0-9]+)"[^>]*>(.*)</cloze>#mU';
+	const regexpTableCloze = '#<cloze[^>]*table="([0-9]+)"[^>]*>(.*)</cloze>#mU';
 
 	/**
 	 * used to configure object with database's data options
@@ -128,7 +129,7 @@ abstract class QuestionClozeTest extends QuestionTest
 	 *
 	 * @see getMaxScore
 	 */
-	public function getMostCorrectAnswer($ordine=null) {
+	public function getMostCorrectAnswer($ordine) {
 		$score = 0;
 		$mostCorrectAnswer = null;
 
@@ -168,6 +169,8 @@ abstract class QuestionClozeTest extends QuestionTest
 				$old_answers[$v['ordine']][$v['id_nodo']] = $v;
 			}
 		}
+		
+		$passedTipo = $data['tipo'];
 
 		$tipo = ADA_LEAF_ANSWER.ADA_NO_OPEN_TEST_ANSWER.ADA_CASE_SENSITIVE_TEST.'000';
 		if ($data['tipo']{5}) {
@@ -190,8 +193,8 @@ abstract class QuestionClozeTest extends QuestionTest
 				else {
 					$insert = true;
 					$delete = true;
-					foreach($old_answers[$ordine] as $k=>$v) {
-						if ($v['testo'] == $answer) {
+					foreach($old_answers[$ordine] as $k1=>$v1) {
+						if ($v1['testo'] == $answer) {
 							$delete = false;
 							$insert = false;
 							break;
@@ -200,11 +203,31 @@ abstract class QuestionClozeTest extends QuestionTest
 				}
 
 				if ($delete) {
-					foreach($old_answers[$ordine] as $k=>$v) {
-						$dh->test_deleteNodeTest($k);
+					foreach($old_answers[$ordine] as $k2=>$v2) {
+						$dh->test_deleteNodeTest($k2);
 					}
 				}
 
+				/**
+				 * @author giorgio 18/ott/2013
+				 * 
+				 * if it's a dropdown list with a default value to be shown
+				 * it means it's a synonym and NO default answer must be generated
+				 * 
+				 * if the execution has reached this point, it should be 100% failsafe
+				 * to assume that is a ADA_GROUP_QUESTION -> ADA_CLOZE_TEST_TYPE node 
+				 * For instance, a 'tipo' string in the case of a drop down select with
+				 * a predefined value to show is like: 460210, so 
+				 * $tipo{0} is 4 => ADA_GROUP_QUESTION
+				 * $tipo{1} is 6 => ADA_CLOZE_TEST_TYPE
+				 * $tipo{2} is the 3rd character and it refers to open comment that is of no interest here
+				 * $tipo{3} is the 4th character and if refers to test semplification and is to be investigated!
+				 * $tipo{4} is the 5th character and if refers to test semplification mode and is to be investigated!
+				 * every other character folloing the 5th is of no interest for this purpose.
+				 */
+				
+				if ($data['tipo']{3} == ADA_SELECT_TEST_SIMPLICITY && $data['tipo']{4} == ADA_SYNONYM_SELECT_TEST) $insert = false;
+				
 				if ($insert)
 				{
 					$data = array(
@@ -219,6 +242,17 @@ abstract class QuestionClozeTest extends QuestionTest
 						'id_nodo_radice'=>$test['id_nodo'],
 						'ordine'=>$ordine,
 					);
+					/**
+					 * @author giorgio 11/nov/2013
+					 * if it's a drag and drop, must extract table num from cloze tag
+					 * and save it as answer's titolo_dragdrop field
+					 */	
+					if ($passedTipo{3} == ADA_DRAGDROP_TEST_SIMPLICITY)
+					{
+						preg_match_all(self::regexpTableCloze, $v[0], $tableMatches, PREG_SET_ORDER);
+						if (!empty($tableMatches)) $data['titolo_dragdrop'] = $tableMatches[0][1];
+					}
+					
 					$dh->test_addNode($data);
 				}
 			}

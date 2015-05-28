@@ -51,12 +51,21 @@ class RootManagementTest extends ManagementTest {
 
 		if ($_POST) {
 			$data = $_POST;
-		} else $data = null;
+		}
 
 		require_once(MODULES_TEST_PATH.'/include/forms/rootFormTest.inc.php');
 		if(get_class($this) == 'TestManagementTest') {
 			require_once(MODULES_TEST_PATH.'/include/forms/testFormTest.inc.php');
 			$form = new TestFormTest($data);
+		}
+		/**
+		 * @author giorgio 24/ott/2013
+		 * added else if for activity
+		 */
+		else if (get_class($this) == 'ActivityManagementTest') {
+			require_once(MODULES_TEST_PATH.'/include/forms/testFormTest.inc.php');
+			// giorgio, added parameter to say if it's an activity
+			$form = new TestFormTest($data, true);
 		}
 		else if (get_class($this) == 'SurveyManagementTest') {
 			require_once(MODULES_TEST_PATH.'/include/forms/surveyFormTest.inc.php');
@@ -65,7 +74,25 @@ class RootManagementTest extends ManagementTest {
 
 		if ($_POST) {
 
-			$_POST['consegna'] = Node::prepareInternalLinkMediaForDatabase($_POST['consegna']);
+			/**
+			 * @author giorgio 30/gen/2015
+			 *
+			 * prepare final message, that is stored in consegna field
+			 */
+			$consegna = '';
+			if (isset($_POST['consegna_success']) && strlen($_POST['consegna_success'])>0) {
+				$consegna .= '<div class="final_success">'.
+						Node::prepareInternalLinkMediaForDatabase($_POST['consegna_success'])
+				.'</div>'; 
+			}
+			
+			if (isset($_POST['consegna_error']) && strlen($_POST['consegna_error'])>0) {
+				$consegna .= '<div class="final_error">'.
+						Node::prepareInternalLinkMediaForDatabase($_POST['consegna_error'])
+						.'</div>';
+			}
+			
+// 			$_POST['consegna'] = Node::prepareInternalLinkMediaForDatabase($_POST['consegna']);
 			$_POST['testo'] = Node::prepareInternalLinkMediaForDatabase($_POST['testo']);
 
 			if ($form->isValid()) {
@@ -79,7 +106,7 @@ class RootManagementTest extends ManagementTest {
 					'id_istanza'=>$nodo->instance,
 					'nome'=>$_POST['nome'],
 					'titolo'=>$_POST['titolo'],
-					'consegna'=>$_POST['consegna'],
+					'consegna'=>$consegna,
 					'testo'=>$_POST['testo'],
 					'tipo'=>$this->getTipo(),
 					'livello'=>$_POST['livello'],
@@ -177,6 +204,24 @@ class RootManagementTest extends ManagementTest {
 
 		if ($_POST) {
 			$data = $_POST;
+			
+			/**
+			 * @author giorgio 30/gen/2015
+			 * 
+			 * prepare final message, that is stored in consegna field
+			 */
+			$data['consegna'] = '';
+			if (isset($_POST['consegna_success']) && strlen($_POST['consegna_success'])>0) {
+				$data['consegna'] .= '<div class="final_success">'.
+						Node::prepareInternalLinkMediaForDatabase($_POST['consegna_success'])
+						.'</div>';
+			}
+			if (isset($_POST['consegna_error']) && strlen($_POST['consegna_error'])>0) {
+				$data['consegna'] .= '<div class="final_error">'.
+						Node::prepareInternalLinkMediaForDatabase($_POST['consegna_error'])
+						.'</div>';
+			}
+			
 		}
 		else {
 			$data = array(
@@ -201,6 +246,15 @@ class RootManagementTest extends ManagementTest {
 			require_once(MODULES_TEST_PATH.'/include/forms/testFormTest.inc.php');
 			$form = new TestFormTest($data);
 		}
+		/**
+		 * @author giorgio 24/ott/2013
+		 * added else if for activity
+		 */
+		else if (get_class($this) == 'ActivityManagementTest') {
+			require_once(MODULES_TEST_PATH.'/include/forms/testFormTest.inc.php');
+			// giorgio, added parameter to say if it's an activity
+			$form = new TestFormTest($data, true);
+		}		
 		else if (get_class($this) == 'SurveyManagementTest') {
 			require_once(MODULES_TEST_PATH.'/include/forms/surveyFormTest.inc.php');
 			$form = new SurveyFormTest($data);
@@ -210,10 +264,32 @@ class RootManagementTest extends ManagementTest {
 			if ($form->isValid()) {
 				//crea nuovo test con i dati del form
 				$this->setTipo();
+				
+				/**
+				 * @author giorgio 30/gen/2015
+				 *
+				 * prepare final message, that is stored in consegna field
+				 */
+				$consegna = '';
+				if (isset($_POST['consegna_success']) && strlen($_POST['consegna_success'])>0) {
+					$consegna .= '<div class="final_success">'.
+							Node::prepareInternalLinkMediaForDatabase($_POST['consegna_success'])
+							.'</div>';
+				}
+					
+				if (isset($_POST['consegna_error']) && strlen($_POST['consegna_error'])>0) {
+					$consegna .= '<div class="final_error">'.
+							Node::prepareInternalLinkMediaForDatabase($_POST['consegna_error'])
+							.'</div>';
+				}
+				
+// 				$_POST['consegna'] = Node::prepareInternalLinkMediaForDatabase($_POST['consegna']);
+				$_POST['testo'] = Node::prepareInternalLinkMediaForDatabase($_POST['testo']);
+				
 				$data = array(
 					'nome'=>$_POST['nome'],
 					'titolo'=>$_POST['titolo'],
-					'consegna'=>$_POST['consegna'],
+					'consegna'=>$consegna,
 					'testo'=>$_POST['testo'],
 					'tipo'=>$this->getTipo(),
 					'livello'=>$_POST['livello'],

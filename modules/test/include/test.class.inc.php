@@ -82,7 +82,7 @@ class TestTest extends RootTest
 					if ($dh->set_student_level($this->id_istanza, array($_SESSION['sess_id_user']), $level)) {
 						$level_gained = $level;
 						$res = $dh->test_saveTest($r['id_history_test'],$r['tempo_scaduto'],$r['points'],$r['repeatable'],$r['min_barrier_points'],$level_gained);
-						if (is_object($res) && (get_class($res) == 'AMA_Error')) {
+						if ((is_object($value) && AMA_DB::isError($value))) {
 							$this->_onSaveError = true;
 							$this->rollBack();
 							return false;
@@ -92,15 +92,11 @@ class TestTest extends RootTest
 						//Set course subscription to complete
 						$userObj = read_user($_SESSION['sess_id_user']);
 						$max_level = $dh->get_course_max_level($sess_id_course);
-						if ($level >= $max_level) {
+						if (false && $level >= $max_level) {
 							// se è l'ultimo esercizio (ovvero se il livello dello studente è il massimo possibile)
 							// e l'esercizio è di tipo sbarramento
 							// 1. cambia lo stato dell'iscrizione dello studente all'istanza corso
-							/**
-							 * @author giorgio disabled on 12/nov/2014 completion is now
-							 * handled using modules/service-complete module
-							 */
-							// $dh->course_instance_student_subscribe($_SESSION['sess_id_course_instance'], $_SESSION['sess_id_user'], ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, $level);
+							$dh->course_instance_student_subscribe($_SESSION['sess_id_course_instance'], $_SESSION['sess_id_user'], ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, $level);
 							/*
 							// 2. genera il messaggio da inviare allo switcher
 							$tester = $userObj->getDefaultTester();

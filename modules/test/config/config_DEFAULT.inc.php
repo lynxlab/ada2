@@ -2,7 +2,7 @@
 /*
  * Test and Survey constants (tables: test, history_test, history_answer )
  */
-define('ADA_CUSTOM_EXERCISE_TEST',				9); //MUST MATCH ADA_PERSONAL_EXERCISE_TYPE!!!!!!!
+define('ADA_CUSTOM_EXERCISE_TEST',				ADA_PERSONAL_EXERCISE_TYPE); //MUST MATCH ADA_PERSONAL_EXERCISE_TYPE!!!!!!!
 
 //test node type (first character of column "tipo")
 define('ADA_TYPE_TEST',							1); //applies only to test and survey
@@ -10,6 +10,7 @@ define('ADA_TYPE_SURVEY',						2); //applies only to test and survey
 define('ADA_GROUP_TOPIC',						3); //(deve avere un padre di tipo test o survey)
 define('ADA_GROUP_QUESTION',					4); //(deve avere un padre di tipo Topic)
 define('ADA_LEAF_ANSWER',						5); // risposta
+define('ADA_TYPE_ACTIVITY',						6); //like test and survey but with free topic navigation
 
 //return flag (second character of column "tipo") applies to ADA_TYPE_TEST/ADA_TYPE_SURVEY node
 define('ADA_NO_TEST_RETURN',					0); // no link
@@ -22,6 +23,7 @@ define('ADA_RATING_TEST_INTERACTION',			0); // with feedback, show rating and po
 define('ADA_FEEDBACK_TEST_INTERACTION',			1); // with feedback
 define('ADA_BLIND_TEST_INTERACTION',			2); // no feedback
 define('ADA_CORRECT_TEST_INTERACTION',			3); // with feedback, show only most correct answer
+define('ADA_IMMEDIATE_TEST_INTERACTION',		4); // feedback after user has answered, show rating and points (as in 0). ONLY FOR ADA_TYPE_ACTIVITY!
 
 //presentation flag (fourth character of column "tipo") applies to ADA_TYPE_TEST/ADA_TYPE_SURVEY node
 define('ADA_ONEPAGE_TEST_MODE',					0); // All Answer of the group test in one page
@@ -85,6 +87,11 @@ define('ADA_HIGHLIGHT_TEST_ERASE',				1); //Highlight mode
 //Multiple Cloze Question mode (sixth character of column "tipo") applies to ADA_GROUP_QUESTION -> ADA_CLOZE_TEST_TYPE -> ADA_MULTIPLE_TEST_SIMPLICITY node
 define('ADA_NO_APOSTROPHE_TEST_MULTIPLE',		0); //Multiple Cloze mode
 define('ADA_APOSTROPHE_TEST_MULTIPLE',			1); //Multiple Cloze mode (consider apostrophe)
+
+//correct answer can be in any row of the matching column (seventh character of column "tipo", if any)
+//applies to ADA_GROUP_QUESTION -> ADA_CLOZE_TEST_TYPE -> ADA_MULTIPLE_TEST_SIMPLICITY node
+define ('ADA_MULTIPLE_TEST_OK_SINGLE_CELL',		0);
+define ('ADA_MULTIPLE_TEST_OK_WHOLE_COL',		1);
 
 //Extra blank answer (second character of column "tipo") applies to ADA_LEAF_ANSWER
 define('ADA_NO_OPEN_TEST_ANSWER',				0); //don't show the extra answer

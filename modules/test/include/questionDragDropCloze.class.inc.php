@@ -48,7 +48,15 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
 
 		$preparedText = $this->getPreparedText($feedback,$rating,$rating_answer);
 
-		if (!$feedback) {
+		/**
+		 * @author giorgio 18/set/2014
+		 *
+		 * Do the drag drop box if $this->testo has
+		 * some <cloze> tag inside.
+		 */
+		$doDragDropBox = (preg_match(self::regexpCloze, $this->testo)!==0);
+		
+		if (!$feedback && $doDragDropBox) {
 			$this->buildDragDropElements($li,$preparedText);
 		}
 		else {
@@ -57,6 +65,39 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
 
 		$ref->addChild($li);
 		return $out;
+	}
+
+	/**
+	 * builds an array of box titles from the xml
+	 * inside the DB field: titolo_dragdrop 
+	 * 
+	 * @author giorgio 11/nov/2013
+	 * 
+	 * @param string $xmlTitles xml from wich to extract
+	 * @return multitype:string NULL if $xmlTitle is null | array of titles with key as table num
+	 * 
+	 * @access public
+	 */
+	public static function extractTitlesFromData($xmlTitles=null)
+	{
+		$dragdropTitles = array ();
+		if (!is_null($xmlTitles) && !empty($xmlTitles))
+		{
+			$xmldoc = new DOMDocument ( "1.0", "UTF-8" );
+			if (@$xmldoc->loadXML ($xmlTitles)) 
+			{
+				$titleElements = $xmldoc->getElementsByTagName ('titolo');
+				foreach ($titleElements as $titleElement) 
+				{
+					$tablenum = intval ($titleElement->getAttribute ('table'));
+					$dragdropTitles [$tablenum] = $titleElement->nodeValue;
+				}
+			}
+		}
+		
+		if (empty($dragdropTitles)) $dragdropTitles[1] = '';
+		
+		return $dragdropTitles;
 	}
 
 	/**
@@ -70,69 +111,113 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
 	 * @see getPreparedText
 	 */
 	public function buildDragDropElements(CBase $html,$preparedText,$showAnswers = false) {
-		$ulBox = CDOMElement::create('ul');
-		$ulBox->setAttribute('id', 'ulBox'.$this->id_nodo);
-		$ulBox->setAttribute('class', 'dragdropBox sortable drop'.$this->id_nodo);
+//      giorgio: MOVED INSIDE THE FOREACH
+// 		$ulBox = CDOMElement::create('ul');
+// 		$ulBox->setAttribute('id', 'ulBox'.$this->id_nodo);
+// 		$ulBox->setAttribute('class', 'dragdropBox sortable drop'.$this->id_nodo);
+		
+		$dragdropTitles = self::extractTitlesFromData($this->titolo_dragdrop);
 
-		$box = CDOMElement::create('div');
-		if (!empty($this->titolo_dragdrop)) {
-			$span = CDOMElement::create('span','class:title_dragdrop');
-			$span->addChild(new CText($this->titolo_dragdrop));
-			$box->addChild($span);
-		}
-		$box->addChild($ulBox);
+		$this->shuffledChildren = $this->_children;
+		shuffle($this->shuffledChildren);
 
-		$children = $this->_children;
-		if (!empty($children)) {
-			shuffle($children);
-			foreach($children as $c) {
-				$item = CDOMElement::create('li');
-				$item->setAttribute('class','draggable drag'.$this->id_nodo);
-				$item->setAttribute('id', 'answer'.$c->id_nodo);
-				if ($showAnswers) {
-					$item->setAttribute('onclick',"showAnswers('ordine".$c->ordine."');");
-				}
-				$item->addChild(new CText($c->testo));
+		/**
+		 * @author giorgio 08/nov/2013
+		 * boolean to check if box in $text var (i.e. the droppable)
+		 * has been added already
+		 */
+		$textAdded = false;
+		// must get last element key to output a clearfix div
+		end ($dragdropTitles);
+		$lastKey = key ($dragdropTitles);
+		foreach ($dragdropTitles as $dndKey=>$dndTitle)
+		{
+			$ulBox = CDOMElement::create('ul');
+			$ulBox->setAttribute('id', 'ulBox'.$this->id_nodo.'_'.$dndKey);
+			$ulBox->setAttribute('class', 'dragdropBox sortable drop'.$this->id_nodo);
 
-				$ulBox->addChild($item);
+			$box = CDOMElement::create('div');
+			if (!empty($dndTitle)) {
+				$span = CDOMElement::create('span','class:title_dragdrop');
+				$span->addChild(new CText($dndTitle));
+				$box->addChild($span);
 			}
-		}
+			$box->addChild($ulBox);
 
-		$text = CDOMElement::create('div');
-		$text->addChild(new CText($preparedText));
+		if (!empty($this->_children)) {
+			foreach($this->shuffledChildren as $c) {
+					/*
+					 * @author giorgio 08/nov/2013
+					 * 
+					 * NOTE: in the answer object titolo_dragdrop there is the
+					 * id of the table in which to put the answer that therefore
+					 * must be euqal to the current cycle key of the dragdropTitles array
+					 */
+					if (is_null($c->titolo_dragdrop) || $dndKey==$c->titolo_dragdrop)
+					{
+						$item = CDOMElement::create('li');
+						$item->setAttribute('class',$dndKey.' draggable drag'.$this->id_nodo);
+						$item->setAttribute('id', 'answer'.$c->id_nodo);
+						if ($showAnswers) {
+							$item->setAttribute('onclick',"showAnswers('ordine".$c->ordine."');");
+						}
+						
+						$outText = $c->testo;
+						
+						$item->addChild(new CText($outText));
+						$ulBox->addChild($item);
+					}
+				}
+			}
 
-		//switch per gestire la stampa del box delle risposte
-		$boxClass = 'divDragDropBox ';
-		$textClass = 'textDragDrop';
-		switch($this->boxPosition) {
-			case ADA_TOP_TEST_DRAGDROP:
-				$html->addChild($box);
-				$html->addChild($text);
-				$boxClass.= 'top';
-			break;
-			case ADA_RIGHT_TEST_DRAGDROP:
-				$html->addChild($box);
-				$html->addChild($text);
-				$boxClass.= 'right';
-				$textClass.= 'Left';
-			break;
-			case ADA_BOTTOM_TEST_DRAGDROP:
-				$html->addChild($text);
-				$html->addChild($box);
-				$boxClass.= 'bottom';
-			break;
-			case ADA_LEFT_TEST_DRAGDROP:
-				$html->addChild($box);
-				$html->addChild($text);
-				$boxClass.= 'left';
-				$textClass.= 'Right';
-			break;
-		}
-		$divclear = CDOMElement::create('div','class:clear');
-		$html->addChild($divclear);
-		$box->setAttribute('class', $boxClass);
-		$text->setAttribute('class', $textClass);
+			$text = CDOMElement::create('div');
+			$text->addChild(new CText($preparedText));
 
+			//switch per gestire la stampa del box delle risposte
+			$boxClass = 'divDragDropBox ';
+			$textClass = 'textDragDrop';
+			switch($this->boxPosition) {
+				case ADA_TOP_TEST_DRAGDROP:
+					$html->addChild($box);
+					if (!$textAdded && $dndKey==$lastKey) {
+						$html->addChild($text);
+						$textAdded = true;
+					}
+					$boxClass.= 'top';
+				break;
+				case ADA_RIGHT_TEST_DRAGDROP:
+					$html->addChild($box);
+					if (!$textAdded) {
+						$html->addChild($text);
+						$textAdded = true;
+					}
+					$boxClass.= 'right';
+					$textClass.= 'Left';
+				break;
+				case ADA_BOTTOM_TEST_DRAGDROP:
+					if (!$textAdded) {
+						$html->addChild($text);
+						$textAdded = true;
+					}
+					$html->addChild($box);
+					$boxClass.= 'bottom';
+				break;
+				case ADA_LEFT_TEST_DRAGDROP:
+					$html->addChild($box);
+					if (!$textAdded && $dndKey==$lastKey) {
+						$html->addChild($text);
+						$textAdded = true;
+					}
+					$boxClass.= 'left';
+					$textClass.= 'Right';
+				break;
+			}
+			if ($dndKey == $lastKey) $html->addChild(CDOMElement::create('div','class:clear'));
+			$box->setAttribute('class', $dndKey.' '.$boxClass);
+			$text->setAttribute('class', $textClass);
+						
+		} // end foreach ($dragdropTitles);
+		
 		return $html;
 	}
 
@@ -162,6 +247,7 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
 						else {
 							$class.= ' wrong_answer_test';
 						}
+						break;
 					}
 				}
 			}
@@ -211,7 +297,7 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
 			$html.= $ddUl->getHtml();
 		}
 
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			$span = CDOMElement::create('span','class:clozePopup,title:'.$this->id_nodo.'_'.$ordine);
 			$html.= $span->getHtml();
 
@@ -279,7 +365,7 @@ class QuestionDragDropClozeTest extends QuestionClozeTest
 				$givenAnswer = $this->searchChild($value);
 				if (is_object($givenAnswer)) {
 					$return = (strcasecmp($answer->testo, $givenAnswer->testo) == 0 && $answer->correttezza > 0);
-				} else $return = false;
+				}
 			}
 			return $return;
 		}

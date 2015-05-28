@@ -44,7 +44,8 @@ class QuestionLikertTest extends QuestionTest
 
 		if (!empty($this->_children)) {
 			foreach($this->_children as $k=>$v) {
-				$answer = new CText($v->testo);
+				$outText = $v->testo;
+				$answer = new CText($outText);
 				$input = CDOMElement::create('radio');
 				$input->setAttribute('class','radio_liker_test');
 				$input->setAttribute('style','vertical-align:top;');
@@ -88,7 +89,7 @@ class QuestionLikertTest extends QuestionTest
 					$li->addChild($answer);
 				}
 
-				if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+				if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 					$v->correttezza = is_null($v->correttezza)?0:$v->correttezza;
 					$li->addChild(new CText(' ('.$v->correttezza.' '.translateFN('punti').')'));
 				}

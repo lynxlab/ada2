@@ -46,31 +46,56 @@ class QuestionMediumClozeTest extends QuestionClozeTest
 
 		$name = $this->getPostFieldName();
 		$post_data = $this->getPostData();
-
+		
+		/**
+         * @author giorgio 16/ott/2013
+         * 
+         * must check if most correct answer is empty string.
+         * If it is, shall set a 'data-must' html attribute
+         * that will mean to the index.js that the field must not
+         * be checked for an empty answer, but will be considered
+         * as already answered.
+		 */
+		
+		$mostCorrect = $this->getMostCorrectAnswer($ordine);
+		
 		$class = 'normal_cloze_question_test';
 		$obj = CDOMElement::create('text');
 		$obj->setAttribute('name', $name.'['.self::POST_ANSWER_VAR.']['.$ordine.']');
 		$obj->setAttribute('value', $post_data[self::POST_ANSWER_VAR][$ordine]);
-		$obj->setAttribute('maxlength', strlen($value));
-		$obj->setAttribute('size', strlen($value));
+		if (empty($mostCorrect->testo)) {
+			/**
+			 * the javascript must only check if this attr exists, its
+			 * value is set to a random number to not let the user try
+			 * to guess that this is a question with an empty answer.
+			 */
+			$obj->setAttribute('data-must', rand(1,100) );
+		}
+		
+		$obj->setAttribute('maxlength', (strlen($value)>0) ? strlen($value) : '1' );
+		$obj->setAttribute('size',      (strlen($value)>0) ? strlen($value) : '1' );
+		
 		if ($this->feedback) {
 			$obj->setAttribute('readonly', '');
 			$risposta = $this->givenAnswer['risposta'][self::POST_ANSWER_VAR][$ordine];
-			if (!empty($risposta)) {
-				$obj->setAttribute('value', $risposta);
-				if (!empty($this->_children)) {
-					foreach($this->_children as $answer) {
-						if ($this->isAnswerCorrect($answer, $ordine, $risposta)) {
-							$class.=' right_answer_test';
-						}
-						else {
-							$class.=' wrong_answer_test';
-						}
+			
+			/**
+			 * @author giorgio 15/ott/2013
+			 * 
+			 * modifications for having blank answer to work
+			 * 
+			 * if no answer is given, it is assumed to be wrong!
+			 */
+			$obj->setAttribute('value', $risposta);
+			if (!empty($this->_children)) {
+				foreach($this->_children as $answer) {
+					if ($this->isAnswerCorrect($answer, $ordine, $risposta)) {
+						$class.=' right_answer_test';
+					}
+					else {
+						$class.=' wrong_answer_test';
 					}
 				}
-			}
-			else {
-				$class.= ' empty_answer_test';
 			}
 		}
 
@@ -80,7 +105,17 @@ class QuestionMediumClozeTest extends QuestionClozeTest
 			if ($correctAnswer) {
 				$popup = CDOMElement::create('div','id:popup_'.$this->id_nodo.'_'.$ordine);
 				$popup->setAttribute('style','display:none;');
-				$popup->addChild(new CText($correctAnswer->testo));
+				
+				/**
+				 * @author giorgio 15/ott/2013
+				 *
+				 * Proposal of modifications for having blank answer to work
+				 *
+				 * Substitution to have the popupdiv 
+				 * showing in case of blank correct answer.
+				 */
+				$popup->addChild(new CText( (strlen($correctAnswer->testo)<=0) ? '&nbsp;' : $correctAnswer->testo ));
+// 				$popup->addChild(new CText($correctAnswer->testo));
 				if ($this->rating) {
 					$popup->addChild(new CText(' ('.$correctAnswer->correttezza.' '.translateFN('Punti').')'));
 				}
@@ -96,7 +131,7 @@ class QuestionMediumClozeTest extends QuestionClozeTest
 			$html = $obj->getHtml();
 		}
 
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			$span = CDOMElement::create('span','class:clozePopup,title:'.$this->id_nodo.'_'.$ordine);
 			$html.= $span->getHtml();
 			

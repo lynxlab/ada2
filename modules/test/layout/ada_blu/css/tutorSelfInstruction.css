@@ -1,0 +1,6 @@
+@CHARSET "UTF-8";
+@import url("tutor.css");
+
+table.default_table thead th {
+	padding-right :0;
+}

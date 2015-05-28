@@ -7,7 +7,7 @@ $j(document).ready(function() {
 	function resetEraseItemTest($span,$parent) {
 		var rel = $span.attr('rel');
 		var value = $span.attr('value');
-		$j('input[name="'+rel+'"]',$parent).remove();
+		$j('input[name="'+rel+'"][value="'+value+'"]',$parent).remove();
 		$span.removeClass('clicked');
 	}
 

@@ -79,6 +79,12 @@ $content_dataAr = array(
 $content_dataAr['notes'] = $other_node_data['notes'];
 $content_dataAr['personal'] = $other_node_data['private_notes'];
 
+
+if ($log_enabled)
+    $content_dataAr['go_history'] = $go_history;
+else
+    $content_dataAr['go_history'] = translateFN("cronologia");
+
 if ($reg_enabled) {
     $content_dataAr['add_bookmark'] = $add_bookmark;
 } else {
@@ -88,6 +94,28 @@ if ($reg_enabled) {
 $content_dataAr['bookmark'] = $bookmark;
 $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
 $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+
+if ($mod_enabled) {
+    $content_dataAr['add_node'] = $add_node;
+    $content_dataAr['edit_node'] = $edit_node;
+    $content_dataAr['delete_node'] = $delete_node;
+    $content_dataAr['send_media'] = $send_media;
+    $content_dataAr['add_exercise'] = $add_exercise;
+    $content_dataAr['add_note'] = $add_note;
+    $content_dataAr['add_private_note'] = $add_private_note;
+    $content_dataAr['edit_note'] = $edit_note;
+    $content_dataAr['delete_note'] = $delete_note;
+    $content_dataAr['import_exercise'] = $import_exercise;
+} else {
+    $content_dataAr['add_node'] = '';
+    $content_dataAr['edit_node'] = '';
+    $content_dataAr['delete_node'] = '';
+    $content_dataAr['send_media'] = '';
+    $content_dataAr['add_note'] = '';
+    $content_dataAr['add_private_note'] = '';
+    $content_dataAr['edit_note'] = '';
+    $content_dataAr['delete_note'] = '';
+}
 
 if ($com_enabled) {
     $content_dataAr['ajax_chat_link'] = $ajax_chat_link;
@@ -104,7 +132,15 @@ if ($com_enabled) {
 
 $layout_dataAr['JS_filename'] = array(
 	JQUERY,
-	JQUERY_NO_CONFLICT
+	JQUERY_NO_CONFLICT,
+	MODULES_TEST_PATH .'/js/edit_question.js'
 );
+
+$imgAvatar = $userObj->getAvatar();
+$avatar = CDOMElement::create('img','src:'.$imgAvatar);
+$avatar->setAttribute('class', 'img_user_avatar');
+
+$content_dataAr['user_modprofilelink'] = $userObj->getEditProfilePage();
+$content_dataAr['user_avatar'] = $avatar->getHtml();
 
 ARE::render($layout_dataAr, $content_dataAr);

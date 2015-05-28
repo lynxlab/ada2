@@ -55,7 +55,7 @@ class QuestionOpenAutomaticTest extends QuestionTest
 		}
 		$li->addChild($textArea);
 
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			$span = CDOMElement::create('span','class:clozePopup,title:'.$this->id_nodo);
 			$html.= $span->getHtml();
 

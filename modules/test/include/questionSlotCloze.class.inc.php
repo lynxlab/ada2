@@ -53,7 +53,7 @@ class QuestionSlotClozeTest extends QuestionClozeTest
 	protected function renderingHtml(&$ref = null,$feedback=false,$rating=false,$rating_answer=false) {
 		if (!$this->display) return new CText(''); //if we don't have to display this question, let's return an empty item
 
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			$rating = true;
 			$rating_answer = true;
 		}
@@ -64,8 +64,16 @@ class QuestionSlotClozeTest extends QuestionClozeTest
 		$li->setAttribute('class', 'answer_cloze_slot_test');
 
 		$preparedText = $this->getPreparedText($feedback,$rating,$rating_answer);
-
-		if (!$feedback) {
+		
+		/**
+		 * @author giorgio 19/set/2014
+		 *
+		 * Do the drag drop elements if $this->testo has
+		 * some <cloze> tag inside.
+		 */
+		$doDragDropBox = (preg_match(self::regexpCloze, $this->testo)!==0);
+		
+		if (!$feedback && $doDragDropBox) {
 			$this->buildDragDropElements($li,$preparedText);
 		}
 		else {
@@ -100,17 +108,21 @@ class QuestionSlotClozeTest extends QuestionClozeTest
 		}
 		$box->addChild($ulBox);
 
-		$children = $this->_children;
-		if (!empty($children)) {
-			shuffle($children);
-			foreach($children as $c) {
+		if (!empty($this->_children)) {
+			
+			$this->shuffledChildren = $this->_children;
+			shuffle($this->shuffledChildren);
+			
+			foreach($this->shuffledChildren as $c) {
 				$item = CDOMElement::create('li');
 				$item->setAttribute('class','draggable drag'.$this->id_nodo);
 				$item->setAttribute('id', 'answer'.$c->id_nodo);
 				if ($showAnswers) {
 					$item->setAttribute('onclick',"showAnswers('ordine".$c->ordine."');");
 				}
-				$item->addChild(new CText($c->testo));
+				
+				$outText = $c->testo;
+				$item->addChild(new CText($outText));
 
 				$ulBox->addChild($item);
 			}
@@ -307,16 +319,13 @@ class QuestionSlotClozeTest extends QuestionClozeTest
 			*/
 			$answer = $this->searchChild($ordine, 'ordine', true);
 
-			if (isset($this->givenAnswer['risposta'][self::POST_ANSWER_VAR][$ordine])) {
-				$risposta = $this->givenAnswer['risposta'][self::POST_ANSWER_VAR][$ordine];
-			} else $risposta = '';
-			
+			$risposta = $this->givenAnswer['risposta'][self::POST_ANSWER_VAR][$ordine];
 			if (empty($answer) && empty($risposta)) {
 				return ' ';
 			}
 			$obj = CDOMElement::create('div');
 			$risposta = $this->searchChild($risposta);
-			if(is_object($risposta)) $obj->addChild(new CText($risposta->testo));
+			$obj->addChild(new CText($risposta->testo));
 			$class = 'answer_slot_test';
 			if (!empty($risposta) && !empty($answer)) {
 				$tmp_class = '';
@@ -377,14 +386,14 @@ class QuestionSlotClozeTest extends QuestionClozeTest
 			$ddUl->setAttribute('class', 'sortable drop'.$this->id_nodo);
 			$html.= $ddUl->getHtml();
 
-			if ($this->feedback && $_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
+			if ($this->feedback && RootTest::isSessionUserAStudent()) {
 				$html = str_replace('answer_cloze_item_test', '', $html);
 			}
 
 			$html = str_replace("\n",'',$html);
 		}
 
-		if (!$this->feedback && $_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT && $isCloze) {
+		if (!$this->feedback && $_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR && $isCloze) {
 			$span = CDOMElement::create('span','class:clozePopup,title:'.$this->id_nodo.'_'.$ordine);
 			$html.= $span->getHtml();
 
@@ -431,7 +440,7 @@ class QuestionSlotClozeTest extends QuestionClozeTest
 		$value = '<cloze title="'.$ordine.'">'.$value.'</cloze>';
 		$html = $value;
 
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			$span = CDOMElement::create('span','class:clozePopup,title:'.$this->id_nodo.'_'.$ordine);
 			$html.= $span->getHtml();
 
@@ -507,9 +516,7 @@ class QuestionSlotClozeTest extends QuestionClozeTest
 			$return = ($answer->id_nodo == $value && $answer->correttezza > 0);
 			if (!$return) {
 				$givenAnswer = $this->searchChild($value);
-				if (is_object($givenAnswer)) {
-					$return = (strcasecmp($answer->testo, $givenAnswer->testo) == 0 && $answer->correttezza > 0);
-				} else $return = false;				
+				$return = (strcasecmp($answer->testo, $givenAnswer->testo) == 0 && $answer->correttezza > 0);
 			}
 			return $return;
 		}

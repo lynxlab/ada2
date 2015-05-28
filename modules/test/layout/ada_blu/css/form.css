@@ -1,4 +1,4 @@
- div.fform.form {
+div.fform.form {
     width: 80%;
     padding: 10px;
     margin-left: auto;
@@ -73,7 +73,6 @@ textarea.form {
 select.form {
 	display:block;
 	float:right;
-	max-width:100%;
 }
 
 .error.form {

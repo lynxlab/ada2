@@ -40,16 +40,39 @@ class QuestionMultipleCheckTest extends QuestionTest
 	 * @return an object of CDOMElement
 	 */
 	protected function renderingHtml(&$ref = null,$feedback=false,$rating=false,$rating_answer=false) {
+		
 		if (!$this->display) return new CText(''); //if we don't have to display this question, let's return an empty item
 		$out = parent::renderingHtml($ref,$feedback,$rating,$rating_answer);
 
 		$name = $this->getPostFieldName();
 		$post_data = $this->getPostData();
+		/**
+		 * giorgio 24/gen/2014
+		 * variable needed to add an hidden span containing 
+		 * the number of answer a student must give
+		 */
+		$neededAnswers = 0;
 
 		if (!empty($this->_children)) {
 			$_children = $this->_children;
 			if ($this->searchParent('RootTest')->shuffle_answers) {
-				shuffle($_children);
+				// giorgio 24/gen/2014 shuffle is not wanted for this kind of exercise
+				// shuffle($_children);
+			}
+			
+			/**
+			 * @author giorgio 03/feb/2015
+			 *
+			 * add a fake hidden checkbox to submit something
+			 * if the user confirms to send a non-answered question
+			 */
+			if (!$feedback) {
+				$li = CDOMElement::create('li');
+				$input = CDOMElement::create('checkbox');
+				$input->setAttributes('value:null,checked:checked,name:'.$name.'['.self::POST_ANSWER_VAR.'][]');
+				$input->setAttribute('style', 'display:none;');
+				$li->addChild($input);
+				$ref->addChild($li);
 			}
 
 			while (!empty($_children)) {
@@ -57,29 +80,61 @@ class QuestionMultipleCheckTest extends QuestionTest
 					if ($v->extra_answer && count($_children)>1) {
 						continue;
 					}
+					
+					$hasImage = preg_match('/<MEDIA([^>]*)TYPE=\"'._IMAGE.'\"([^>]*)>/i',$v->testo) >0;
+					if (!$hasImage) $hasMedia = preg_match('/<MEDIA([^>]*)>/i',$v->testo) >0;
+					else $hasMedia = false;
 
 					$inputId = $name.'['.$k.']';
 					$answer = CDOMElement::create('label','for:'.$inputId);
-					$answer->addChild(new CText($v->testo));
-					$input = CDOMElement::create('checkbox','id:'.$inputId);
-					$input->setAttribute('class','radio_multiple_test');
-					$input->setAttribute('style','vertical-align:middle; margin-top:0px;');
-					$input->setAttribute('name',$name.'['.self::POST_ANSWER_VAR.'][]');
-					$input->setAttribute('value',$v->id_nodo);
+
+					$outText = $v->testo;
+					
+					$answer->addChild(new CText($this->replaceInternalLinkMedia($outText)));
+					if ($hasImage) $answer->setAttribute('class',$answer->getAttribute('class').' isimage');
+					$checkInput = CDOMElement::create('checkbox','id:'.$inputId);
+					$checkInput->setAttribute('class','radio_multiple_test');
+					if ($hasMedia) $checkInput->setAttribute('class',$checkInput->getAttribute('class').' media');
+					$checkInput->setAttribute('style','vertical-align:middle; margin-top:0px;');
+					$checkInput->setAttribute('name',$name.'['.self::POST_ANSWER_VAR.'][]');
+					$checkInput->setAttribute('value',$v->id_nodo);
+					
+					if ($hasMedia) {
+						/**
+						 * if has a media, checkInput must be
+						 * wrapped around a div for proper styling
+						 */
+						$input = CDOMElement::create('div','class:mediainputwrapper');
+						$input->addChild($checkInput);
+					} else {
+						$input = $checkInput;
+					}
+					
+					/**
+					 * giorgio 24/gen/2014
+					 * if is correct answer, increment neededAnswers counter
+					 */
+					if ($v->correttezza > 0) $neededAnswers++;
+					
 					//feedback section
 					if ($feedback) {
 						$input->setAttribute('disabled','');
-
-						if ($this->givenAnswer['risposta'][self::POST_ANSWER_VAR]
-						&& in_array($v->id_nodo,$this->givenAnswer['risposta'][self::POST_ANSWER_VAR])) {
-							$input->setAttribute('checked', '');
-							if ($v->correttezza>0) {
-								$answer->setAttribute('class', 'right_answer_test');
-							}
-							else {
-								$answer->setAttribute('class', 'wrong_answer_test');
-							}
+						$checked = $this->givenAnswer['risposta'][self::POST_ANSWER_VAR] && in_array($v->id_nodo,$this->givenAnswer['risposta'][self::POST_ANSWER_VAR]);
+						if ($checked) $input->setAttribute('checked', '');
+						
+						if ($v->correttezza>0) {
+							$class = ($checked) ? 'right_answer_test' : 'unanswered_answer_test';
+						} else {
+							$class = ($checked) ? 'wrong_answer_test' : '';							
 						}
+						
+						$clonedinput = clone $input;
+						$input = CDOMElement::create('span','class:answer_test '.$class);
+						$input->addChild($clonedinput);
+												
+// 						$answer->setAttribute('class', $class);
+						if ($hasMedia) $answer->setAttribute('class',$answer->getAttribute('class').' media');
+						if ($hasImage) $answer->setAttribute('class',$answer->getAttribute('class').' isimage');
 					}
 					else if ($post_data[self::POST_ANSWER_VAR] == $v->id_nodo) {
 						$input->setAttribute('checked','');
@@ -87,6 +142,7 @@ class QuestionMultipleCheckTest extends QuestionTest
 
 					$li = CDOMElement::create('li');
 					$class = 'answer_multiple_test';
+					if ($hasMedia) $class .= ' media';
 					switch($this->variation) {
 						case ADA_ERASE_TEST_VARIATION:
 							$class.= ' erase_variation_test';
@@ -101,8 +157,11 @@ class QuestionMultipleCheckTest extends QuestionTest
 					$li->addChild($answer);
 
 					$string = $answer->getAttribute('class');
-					if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
-						if ($feedback && $rating_answer && !strstr($string,'right_answer_test')) {
+					if (RootTest::isSessionUserAStudent()) {
+						/**
+						 * giorgio added false to the if to not display the popup
+						 */
+						if (false && $feedback && $rating_answer && !strstr($string,'right_answer_test')) {
 							$correctAnswer = $this->getMostCorrectAnswer();
 							if ($correctAnswer) {
 								$popup = CDOMElement::create('div','id:popup_'.$this->id_nodo);
@@ -137,7 +196,7 @@ class QuestionMultipleCheckTest extends QuestionTest
 						$li->addChild($answer);
 					}
 
-					if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+					if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 						$v->correttezza = is_null($v->correttezza)?0:$v->correttezza;
 						$li->addChild(new CText(' ('.$v->correttezza.' '.translateFN('punti').')'));
 					}
@@ -149,7 +208,18 @@ class QuestionMultipleCheckTest extends QuestionTest
 				$ref->addChild(CDOMElement::create('li','class:clear'));
 			}
 		}
-
+		
+		/**
+		 * Add a span to hold the value of the answers
+		 * a user must give when she is taking the test
+		 */
+		if (isset($neededAnswers) && $neededAnswers>=0)
+		{
+			$neededAnswersSpan = CDOMElement::create('span','id:must-data_'.$this->id_nodo);
+			$neededAnswersSpan->setAttribute('style', 'display:none');
+			$neededAnswersSpan->addChild (new CText($neededAnswers));
+			$out->addChild ($neededAnswersSpan);
+		}
 		return $out;
 	}
 

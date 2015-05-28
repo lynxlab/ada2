@@ -12,19 +12,24 @@ function hide_correttezza(disable) {
 	var li = $j('#'+correttezza_field).closest('li');
 	if (disable) {
 		li.removeClass('hidden');
-		$j('#'+correttezza_field).val(0);
+//		$j('#'+correttezza_field).val(0);
 		$j('#l_'+correttezza_field).removeClass('error');
-		for(i=0;i<validateContentFields_topicForm.length;i++) {
-			if (validateContentFields_topicForm[i] == correttezza_field) {
-				validateContentFields_topicForm.splice(i,1);
-				validateContentRegexps_topicForm.splice(i,1);
+		if ('undefined' != typeof validateContentFields_topicForm) {
+			for(i=0;i<validateContentFields_topicForm.length;i++) {
+				if (validateContentFields_topicForm[i] == correttezza_field) {
+					validateContentFields_topicForm.splice(i,1);
+					validateContentRegexps_topicForm.splice(i,1);
+				}
 			}
 		}
 	}
 	else {
 		li.addClass('hidden');
-		validateContentFields_topicForm.push(correttezza_field);
-		validateContentRegexps_topicForm.push(correttezza_regexp);
+		$j('#'+correttezza_field).val('0.00');
+		if ('undefined' != typeof validateContentFields_topicForm) {
+			validateContentFields_topicForm.push(correttezza_field);
+			validateContentRegexps_topicForm.push(correttezza_regexp);
+		}
 	}
 }
 

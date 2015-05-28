@@ -28,6 +28,24 @@ class QuestionMultipleClozeFormTest extends QuestionFormTest {
 			$defaultValue = ADA_NO_APOSTROPHE_TEST_MULTIPLE;
 		}
         $this->addSelect($cloze_apostrophe,translateFN('Tipologia di esercizio').':',$options,$defaultValue);
+        
+        /**
+         * giorgio 02/gen/2014
+         * select to choose if correct answer is single cell or whole column
+         */
+        $cloze_colAnswerMode = 'colAnswerMode';
+        $options = array(
+        	ADA_MULTIPLE_TEST_OK_SINGLE_CELL => translateFN('Risposta corretta nella casella'),
+        	ADA_MULTIPLE_TEST_OK_WHOLE_COL => translateFN('Risposta corretta nella colonna')
+        );
+        
+        if (isset($this->data[$cloze_colAnswerMode])) {
+        	$defaultValue = $this->data[$cloze_colAnswerMode];
+        } else {
+        	$defaultValue = ADA_MULTIPLE_TEST_OK_SINGLE_CELL;
+        }
+        $this->addSelect($cloze_colAnswerMode, translateFN('Posizione risposta corretta').':', $options, $defaultValue);
+        
 
 		//posizione box
 		$box = 'box_position';

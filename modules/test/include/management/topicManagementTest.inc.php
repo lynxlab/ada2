@@ -25,7 +25,7 @@ class TopicManagementTest extends ManagementTest {
 			$this->what = translateFN('sessione');
 		}
 		else {
-			$this->what = translateFN('argomento');
+			$this->what = translateFN('attivit&agrave;');
 		}
 		$this->id_test = $id_test;
 	}
@@ -81,13 +81,32 @@ class TopicManagementTest extends ManagementTest {
 
 				//crea nuovo topic con i dati del form
 				$this->setTipo();
+				
+				/**
+                 * @author giorgio 09/ott/2013
+                 * must glue together the pieces coming from didascalia and stimolo into testo
+				 */
+				
+				$testo = Node::prepareInternalLinkMediaForDatabase(trim($_POST['testo']));
+				
+				if (isset($_POST['didascalia-field']) && trim($_POST['didascalia-field'])!=='') {
+					$testo .="<div class='didascalia-field'>"
+						   . Node::prepareInternalLinkMediaForDatabase(trim($_POST['didascalia-field']))
+					       ."</div>";
+				}
+				if (isset($_POST['stimolo-field']) && trim($_POST['stimolo-field'])!=='') {
+					$testo .="<div class='stimolo-field'>"
+							. Node::prepareInternalLinkMediaForDatabase(trim($_POST['stimolo-field']))
+							."</div>";
+				}
+				
 				$data = array(
 					'id_corso'=>$test['id_corso'],
 					'id_utente'=>$_SESSION['sess_id_user'],
 					'id_istanza'=>$test['id_istanza'],
 					'nome'=>$_POST['nome'],
 					'titolo'=>$_POST['titolo'],
-					'testo'=>Node::prepareInternalLinkMediaForDatabase($_POST['testo']),
+					'testo'=>$testo,
 					'tipo'=>$this->getTipo(),
 					'livello'=>$_POST['random_number'],
 					'id_nodo_parent'=>$_POST['id_nodo_parent'],
@@ -163,10 +182,29 @@ class TopicManagementTest extends ManagementTest {
 			if ($form->isValid()) {
 				//crea nuovo test con i dati del form
 				$this->setTipo();
+				
+				/**
+				 * @author giorgio 09/ott/2013
+				 * must glue together the pieces coming from didascalia and stimolo into testo
+				 */
+				
+				$testo = Node::prepareInternalLinkMediaForDatabase(trim($_POST['testo']));
+				
+				if (isset($_POST['didascalia-field']) && trim($_POST['didascalia-field'])!=='') {
+					$testo .="<div class='didascalia-field'>"
+							. Node::prepareInternalLinkMediaForDatabase(trim($_POST['didascalia-field']))
+							."</div>";
+				}
+				if (isset($_POST['stimolo-field']) && trim($_POST['stimolo-field'])!=='') {
+					$testo .="<div class='stimolo-field'>"
+							. Node::prepareInternalLinkMediaForDatabase(trim($_POST['stimolo-field']))
+							."</div>";
+				}
+				
 				$data = array(
 					'nome'=>$_POST['nome'],
 					'titolo'=>$_POST['titolo'],
-					'testo'=>Node::prepareInternalLinkMediaForDatabase($_POST['testo']),
+					'testo'=>$testo,
 					'id_nodo_parent'=>$_POST['id_nodo_parent'],
 					'tipo'=>$this->getTipo(),
 					'livello'=>$_POST['random_number'],
@@ -255,13 +293,13 @@ class TopicManagementTest extends ManagementTest {
 	public function status() {
 		switch ($this->action) {
 			case 'add':
-				return sprintf(translateFN('Aggiunta di un %s'),$this->what);
+				return sprintf(translateFN('Aggiunta %s'),$this->what);
 			break;
 			case 'mod':
-				return sprintf(translateFN('Modifica di un %s'),$this->what);
-			break;
+				return sprintf(translateFN('Modifica %s'),$this->what);
+			break;		
 			case 'del':
-				return sprintf(translateFN('Cancellazione di un %s'),$this->what);
+				return sprintf(translateFN('Cancellazione %s'),$this->what);
 			break;
 		}
 	}

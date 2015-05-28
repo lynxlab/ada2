@@ -34,15 +34,28 @@ class RootFormTest extends FormTest {
         $this->addTextarea('testo', translateFN('Descrizione').':')
              ->withData(Node::prepareInternalLinkMediaForEditor($this->data['testo']));
 
+		$finalSuccess = '';
+		$finalError = '';
+		
 		//consegna (message showed on test / survey ending)
-		if (!empty($this->data['nome'])) {
-			$defaultValue = Node::prepareInternalLinkMediaForEditor($this->data['consegna']);
+		if (!empty($this->data['consegna'])) {
+			require_once MODULES_TEST_PATH.'/include/forms/topicFormTest.inc.php';
+			$splitted = TopicFormTest::extractFieldsFromTesto($this->data['consegna'], array('final_success', 'final_error'));
+			if (isset($splitted['final_success']) && strlen($splitted['final_success'])>0) {
+				$finalSuccess = Node::prepareInternalLinkMediaForEditor($splitted['final_success']);
+			} else if (isset($splitted['testo']) && strlen($splitted['testo'])>0) {
+				$finalSuccess = Node::prepareInternalLinkMediaForEditor($splitted['testo']);
+			}
+			
+			if (isset($splitted['final_error']) && strlen($splitted['final_error'])>0) {
+				$finalError = Node::prepareInternalLinkMediaForEditor($splitted['final_error']);
+			}
 		}
-		else {
-			$defaultValue = translateFN('Dati inviati correttamente.');
-		}
-        $this->addTextarea('consegna', translateFN('Messaggio finale').':')
-             ->withData($defaultValue);
+		
+        $this->addTextarea('consegna_success', translateFN('Messaggio finale').' '.translateFN('se test superato').' :')
+             ->withData($finalSuccess);
+        $this->addTextarea('consegna_error', translateFN('Messaggio finale').' '.translateFN('se test non superato').' :')
+        	 ->withData($finalError);
 
 		//return
 		$options = array(
@@ -81,7 +94,8 @@ class RootFormTest extends FormTest {
 			$defaultValue = $this->data['suddivisione'];
 		}
 		else {
-			$defaultValue = ADA_ONEPAGE_TEST_MODE;
+// 			$defaultValue = ADA_ONEPAGE_TEST_MODE;
+			$defaultValue = ADA_SEQUENCE_TEST_MODE;
 		}
 		$this->addRadios('suddivisione',translateFN('Suddividi per sessioni').':',$radios,$defaultValue);
 
@@ -92,11 +106,26 @@ class RootFormTest extends FormTest {
 			ADA_FEEDBACK_TEST_INTERACTION => translateFN('Correzioni risposte'),
 			ADA_BLIND_TEST_INTERACTION => translateFN('Nessun feedback'),
 		);
+		/**
+		 * @author giorgio 28/ott/2013
+		 * 
+		 * if this is a TestFormTest AND is an activity, add an option to the possible types feedback
+		 */
+		if (is_a($this,'TestFormTest') && $this->_isActivity)
+		{
+			$options[ADA_IMMEDIATE_TEST_INTERACTION]=translateFN('Subito dopo l\'invio della risposta');
+		}
+		
 		if (isset($this->data['feedback'])) {
 			$defaultValue = $this->data['feedback'];
 		}
 		else {
-			$defaultValue = ADA_RATING_TEST_INTERACTION;
+			/**
+             * @author giorgio 28/ott/2013
+             * 
+             * if this is a TestFormTest AND is an activity, set a different default value
+			 */
+			$defaultValue = (is_a($this,'TestFormTest') && $this->_isActivity) ? ADA_IMMEDIATE_TEST_INTERACTION : ADA_CORRECT_TEST_INTERACTION;
 		}
         $this->addSelect('feedback',translateFN('Feedback all\'utente').':',$options,$defaultValue);
 

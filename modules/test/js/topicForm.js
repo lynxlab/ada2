@@ -45,3 +45,11 @@ if (random_value == 1) {
 else {
 	disable_random_number(true);
 }
+
+function FCKeditor_OnComplete( fckEditor )
+{
+		template_file = module_http+'/template/template.css';
+		fckEditor.Config.EditorAreaCSS += ','+template_file;
+		css = '<link rel="stylesheet" type="text/css" href="'+template_file+'">';
+		fckEditor.EditorDocument.head.innerHTML+= css;
+}

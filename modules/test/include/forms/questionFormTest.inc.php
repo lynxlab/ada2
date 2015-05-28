@@ -88,13 +88,14 @@ class QuestionFormTest extends FormTest {
 
 		//consegna
         $this->addTextarea('consegna', translateFN('Consegna').':')
-             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['consegna']));
+             ->withData(Node::prepareInternalLinkMediaForEditor($this->data['consegna']))
+        	 ->setHidden();
 
 		//importazione template
 		$this->addTemplateEditor($injectTemplate, translateFN('Importare un template (opzionale):'));
 
 		//descrizione
-        $this->addTextarea('testo', translateFN('Descrizione').':')
+        $this->addTextarea('testo', translateFN('Item').':')
              ->withData(Node::prepareInternalLinkMediaForEditor($this->data['testo']));
 
 		//commento a fine domanda
@@ -170,13 +171,13 @@ class QuestionFormTest extends FormTest {
 
 		//tipologia domanda cloze
 		$options = array(
-			ADA_NORMAL_TEST_SIMPLICITY		=> translateFN('Riempimento di spazi vuoti'),
-			ADA_MEDIUM_TEST_SIMPLICITY		=> translateFN('Riempimento di spazi vuoti con limitazione dei caratteri'),
-			ADA_SELECT_TEST_SIMPLICITY		=> translateFN('Riempimento di spazi con tendina'),
-			ADA_DRAGDROP_TEST_SIMPLICITY	=> translateFN('Riempimento di spazi con Drag\'n\'Drop'),
-			ADA_ERASE_TEST_SIMPLICITY		=> translateFN('Eliminazione / Evidenziazione di parole nel testo'),
-			ADA_SLOT_TEST_SIMPLICITY		=> translateFN('Incastro di parole nel testo'),
-			ADA_MULTIPLE_TEST_SIMPLICITY	=> translateFN('Riempimento multiplo di spazi con Drag\'n\'Drop'),
+			ADA_NORMAL_TEST_SIMPLICITY		=> translateFN('Scrittura'),
+			ADA_MEDIUM_TEST_SIMPLICITY		=> translateFN('Scrittura (limite caratteri)'),
+			ADA_SELECT_TEST_SIMPLICITY		=> translateFN('Menu a discesa'),
+			ADA_DRAGDROP_TEST_SIMPLICITY	=> translateFN('Drag\'n\'Drop'),
+			ADA_ERASE_TEST_SIMPLICITY		=> translateFN('Evidenziazione / Eliminazione'),
+			ADA_SLOT_TEST_SIMPLICITY		=> translateFN('Incastro'),
+			ADA_MULTIPLE_TEST_SIMPLICITY	=> translateFN('Griglia / Incastro Drag\'n\'Drop con testo'),
 		);
 
 		if (isset($this->data[$cloze])) {

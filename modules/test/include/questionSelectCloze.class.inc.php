@@ -93,6 +93,8 @@ class QuestionSelectClozeTest extends QuestionClozeTest
 				$first_option->setAttribute('value', '');
 				$first_option->addChild(new CText('---'));
 			}
+			// @author giorgio 21/ott/2013 comment/uncomment below if first option is to be disabled
+			// $first_option->setAttribute('disabled', 'true');			
 			$obj->addChild($first_option);
 		}
 		
@@ -132,8 +134,9 @@ class QuestionSelectClozeTest extends QuestionClozeTest
 						if ($ordine == $v->ordine) {
 							$option = CDOMElement::create('option');
 							$option->setAttribute('value', $v->id_nodo);
-							$option->addChild(new CText($v->testo));
-							if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+							$outText = $v->testo;
+							$option->addChild(new CText($outText));
+							if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 								$v->correttezza = is_null($v->correttezza)?0:$v->correttezza;
 								$option->addChild(new CText(' ('.$v->correttezza.' '.translateFN('punti').')'));
 							}
@@ -167,7 +170,7 @@ class QuestionSelectClozeTest extends QuestionClozeTest
 			$html = $obj->getHtml();
 		}
 
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			$span = CDOMElement::create('span','class:clozePopup,title:'.$this->id_nodo.'_'.$ordine);
 			$html.= $span->getHtml();
 

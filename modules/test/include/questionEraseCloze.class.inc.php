@@ -53,9 +53,10 @@ class QuestionEraseClozeTest extends QuestionClozeTest
 	 * @return an object of CDOMElement
 	 */
 	protected function renderingHtml(&$ref = null,$feedback=false,$rating=false,$rating_answer=false) {
+		
 		if (!$this->display) return new CText(''); //if we don't have to display this question, let's return an empty item
 
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			$feedback = true;
 			$rating = true;
 			$rating_answer = true;
@@ -77,6 +78,42 @@ class QuestionEraseClozeTest extends QuestionClozeTest
 		$li->setAttribute('class', $class);
 		$li->addChild(new CText($this->getPreparedText($feedback,$rating,$rating_answer)));
 		$ref->addChild($li);
+
+		/**
+		 * giorgio 27/gen/2014
+		 * if is correct answer, increment neededAnswers counter
+		 */
+		$neededAnswers = 0;
+		if (!empty($this->_children)) {
+			foreach ($this->_children as $k=>$v) {
+				if ($v->correttezza > 0) $neededAnswers++;
+			}
+		}
+		
+		/**
+		 * Add a span to hold the value of the answers
+		 * a user must give when she is taking the test
+		 */
+		if (isset($neededAnswers) && $neededAnswers>=0)
+		{
+			$neededAnswersSpan = CDOMElement::create('span','style:display:none;');
+			$neededAnswersSpan->setAttribute('class', 'must-data-'.$this->getPostFieldName());
+			$neededAnswersSpan->addChild (new CText($neededAnswers));
+			$out->addChild ($neededAnswersSpan);
+		}
+		
+		/**
+		 * @author giorgio 03/feb/2015
+		 *
+		 * add a fake hidden input to submit something
+		 * if the user confirms to send a non-answered question
+		 */
+		if (!$feedback) {
+			$input = CDOMElement::create('hidden');
+			$input->setAttributes('value:null,name:'.$this->getPostFieldName().'['.self::POST_ANSWER_VAR.'][]');
+			$input->setAttribute('style', 'display:none;');
+			$out->addChild($input);
+		}
 
 		return $out;
 	}
@@ -112,7 +149,6 @@ class QuestionEraseClozeTest extends QuestionClozeTest
 				$regexpWords = '#[\w\xC0-\xFF]*#mu';
 			break;
 		}
-
 		$html = $this->replaceInternalLinkMedia($this->testo);
 		$html = preg_replace_callback(QuestionClozeTest::regexpCloze, array($this,'putClozePlaceholder'), $html);
 		$html = preg_replace_callback($regexpPutHtmlPlaceholder, array($this,'putHtmlPlaceholder'), $html);
@@ -248,7 +284,15 @@ class QuestionEraseClozeTest extends QuestionClozeTest
 			else if ($this->givenAnswer && in_array($ordine,$this->givenAnswer['risposta'][self::POST_ANSWER_VAR])) {
 				$class = 'wrong_answer_test';
 			}
-
+			/**
+			 * giorgio 20/dic/2013
+			 * if it's an activity of type:
+			 * 	ADA_TYPE_ACTIVITY with feedback of type ADA_IMMEDIATE_TEST_INTERACTION
+			 * do not show the popup AT ALL
+			 */
+			$parentActivity = $this->searchParent('ActivityTest');			
+			if ($parentActivity->tipo{0}==ADA_TYPE_ACTIVITY && $parentActivity->tipo{2}==ADA_IMMEDIATE_TEST_INTERACTION) $popup = false;
+			
 			if (!is_null($class)) {				
 				if ($popup && $answer && ($this->rating || $this->rating_answer)) {
 					$ref = $this->id_nodo.'_'.$answer->ordine;
@@ -264,7 +308,7 @@ class QuestionEraseClozeTest extends QuestionClozeTest
 		$rel = $this->getPostFieldName().'['.self::POST_ANSWER_VAR.'][]';
 		$html = substr(self::spanHeader,0,-2).$class.'"'.$title.' rel="'.$rel.'" value="'.$ordine.'">'.$value.self::spanFooter.$popup;
 
-		if ($this->feedback && $_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
+		if ($this->feedback && RootTest::isSessionUserAStudent()) {
 			$html = str_replace('answer_erase_item_test', '', $html);
 		}
 
@@ -286,7 +330,7 @@ class QuestionEraseClozeTest extends QuestionClozeTest
 		$value = '<cloze title="'.$ordine.'">'.$value.'</cloze>';
 		$html = $value;
 		
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {	
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {	
 			$span = CDOMElement::create('span','class:clozePopup,title:'.$this->id_nodo.'_'.$ordine);
 			$html.= $span->getHtml();
 

@@ -11,6 +11,21 @@
 
 class TestFormTest extends RootFormTest {
 	
+	/**
+	 * @author giorgio 28/ott/2013
+	 * added isActivity field
+	 */
+	protected $_isActivity;
+	
+	/**
+	 * @author giorgio 28/ott/2013
+	 * added constructor to set isActivity
+	 */
+    public function __construct($data, $isActivity = false) {
+    	$this->_isActivity = $isActivity;
+    	parent::__construct($data);
+    }
+	
 	protected function content() {
 		parent::content();
 
@@ -46,8 +61,8 @@ class TestFormTest extends RootFormTest {
 		}
         $this->addTextInput('correttezza', translateFN('Punteggio minimo necessario per superare il test').': ')
 			 ->setRequired()
-			 ->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR)
-			 ->withData($defaultValue)
+			 ->setValidator(FormValidator::NON_NEGATIVE_MONEY_VALIDATOR)
+			 ->withData(sprintf("%01.2f",$defaultValue))
 			 ->setHidden();
 
 

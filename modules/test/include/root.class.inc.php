@@ -25,9 +25,17 @@ abstract class RootTest extends NodeTest
 
 	const EOT = 'endOfTest';
 	//topic variables used to separate test/survey in multiple pages
-	private $_currentTopic = 0;
+	protected  $_currentTopic = 0;
 	private $_onSaveError = false;
 	protected $shuffle_answers = false;
+	
+	/**
+	 * @author giorgio 10/ott/2013
+	 * sets if the node is in preview mode.
+	 *
+	 * @var boolean
+	 */
+	protected $previewMode = false;	
 
 	/**
 	 * this function contains (and execute) all object logic
@@ -42,7 +50,7 @@ abstract class RootTest extends NodeTest
 			$this->_currentTopic = self::EOT;
 			$this->_id_history_test = $id_history_test;
 		}
-		else if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
+		else if (self::isSessionUserAStudent() && !$this->previewMode) {
 			if (!$this->checkStudentLevel()) {
 				$this->noLevel = true;
 			}
@@ -102,7 +110,23 @@ abstract class RootTest extends NodeTest
 			$i = 0;
 			foreach($_POST[self::POST_TOPIC_VAR] as $topic_id=>$question_array) {
 				foreach($question_array as $question_id=>$answer_data) {
-					if (isset(self::$nodesArray[$question_id])) {
+					/**
+					 * @author giorgio 27/feb/2014
+					 * 
+					 * the $_POST[self::POST_TOPIC_VAR] often contains empty variables
+					 * representing answers of previous topics and that are not even
+					 * passed in the POST request and nobody knows where they're coming
+					 * from. Anyway, I'm not saving them using the !empty condition below.
+					 * 
+					 * MUST USE A VARIABLE TO CHECK BECAUSE:
+					 * Prior to PHP 5.5, empty() only supports variables; 
+					 * anything else will result in a parse error. In other words, the following
+					 * will not work: empty(trim($name)). Instead, use trim($name) == false.
+					 * And saying !empty(reset($answer_data)) will generate a 
+					 * Can't use function return value in write context Fatal error.
+					 */
+					$tempVar = reset($answer_data);
+					if (isset(self::$nodesArray[$question_id]) && !empty($tempVar)) {
 						$question = self::$nodesArray[$question_id];
 						$correction = $question->exerciseCorrection($answer_data);
 						if (is_array($correction)) {
@@ -133,7 +157,30 @@ abstract class RootTest extends NodeTest
 				}
 				$this->rollBack();
 			}
-			else redirect($_SERVER['REQUEST_URI']);
+			else {
+				$url = $_SERVER['REQUEST_URI'];
+				/**
+				 * @author giorgio 28/ott/2013
+				 * 
+				 * if test is of type ADA_TYPE_ACTIVITY
+				 * topic must be set in the query string
+				 * AND, if feedback type is ADA_IMMEDIATE_TEST_INTERACTION
+				 * next page after submitting answers must be 'error checking'
+				 * therefore the forcefeedback param is passed via GET
+				 */
+				if ($this->tipo{0} == ADA_TYPE_ACTIVITY) {
+					$dh->test_recalculateHistoryTestPoints($this->_id_history_test);
+					$url = preg_replace('/&topic=\d*/', '', $url);
+					$url = preg_replace('/&forcefeedback=\d*/', '', $url);
+					$url .= '&topic='.$this->_currentTopic;
+					if ($this->tipo{2} == ADA_IMMEDIATE_TEST_INTERACTION) {
+						$url .= '&forcefeedback=1';
+						$_SESSION[$this->getSessionKey()]['forcefeedback'] = true;
+					}
+				}
+				
+				redirect($url);
+			}
 		}
 	}
 
@@ -244,6 +291,7 @@ abstract class RootTest extends NodeTest
 	 *
 	 * @access protected
 	 *
+	 * @param boolean $setTopic if true or omitted, will set _currentTopic from the session vars.
 	 */
 	protected function setSession() {
 		$key = $this->getSessionKey();
@@ -266,7 +314,7 @@ abstract class RootTest extends NodeTest
 	protected function recordAttempt() {
 		$dh = $GLOBALS['dh'];
 
-		if (isset($_GET['unload']) && $_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT)  {
+		if (isset($_GET['unload']) && self::isSessionUserAStudent())  {
 			if (!empty($this->_id_history_test) && intval($this->_id_history_test) > 0) {
 				$dh->test_updateEndTestDate($this->_id_history_test);
 			}
@@ -345,7 +393,7 @@ abstract class RootTest extends NodeTest
 	protected function pickRandomQuestion() {
 		$dh = $GLOBALS['dh'];
 
-		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
+		if (self::isSessionUserAStudent()) {
 			$changeState = true;
 			if (!is_array($this->_randomQuestion) || empty($this->_randomQuestion)) {
 				$res = $dh->test_getHistoryTest(array('id_utente '=>$_SESSION['sess_id_user'],'id_nodo'=>$this->id_nodo,'consegnato'=>0,'tempo_scaduto'=>0));
@@ -471,6 +519,8 @@ abstract class RootTest extends NodeTest
 				$this->rating_answer = false;
 			break;
 			case ADA_CORRECT_TEST_INTERACTION:
+			// giorgio, added case for ADA_IMMEDIATE_TEST_INTERACTION
+			case ADA_IMMEDIATE_TEST_INTERACTION:				
 				$this->feedback = true;
 				$this->rating = false;
 				$this->rating_answer = true;
@@ -513,17 +563,8 @@ abstract class RootTest extends NodeTest
 	 *
 	 * @param $return_html choose the return type
 	 * @return an object of CDOMElement or a string containing html
-	 * 
-	 * (non-PHPdoc)
-	 * @see NodeTest::render()
-	 * 
-	 * @author giorgio 20/ott/2014
-	 * 
-	 * added feedback, rating and rating_answer parameters
-	 * that are not used here, but are needed to make the
-	 * declaration compatible with NodeTest::render()
-	 */	
-	public function render($return_html=true,$feedback=false,$rating=false,$rating_answer=false) {
+	 */
+	public function render($return_html = true, $feedback = false, $rating = false, $rating_answer = false) {
 		$html = $this->renderingHtml($ref);
 
 		if (is_null($ref)) $ref = $html;
@@ -536,6 +577,16 @@ abstract class RootTest extends NodeTest
 		}
 		else if ($this->_currentTopic === self::EOT) {
 			return $this->renderEndTest($this->_id_history_test);
+		}		
+		/**
+		 * @author giorgio 28/ott/2013
+		 * if it's an activity with an immediate answer type of feedback, do it!
+		 * 
+		 * NOTE: This is only applicable for ADA_TYPE_ACTIVITY
+		 */
+		else if (is_a($this,'ActivityTest') && $this->getForceFeedback() && $this->tipo{2} == ADA_IMMEDIATE_TEST_INTERACTION)
+		{
+			return  $this->renderEndTest($this->_id_history_test);
 		}
 		else if (!empty($this->_children)) {
 			if ($this->sequenced) {
@@ -577,7 +628,7 @@ abstract class RootTest extends NodeTest
 	 * @return an object of CDOMElement
 	 */
 	protected function renderingHtml(&$ref = null,$feedback=false,$rating=false,$rating_answer=false) {
-		if ($feedback || $_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+		if ($feedback || $_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			$out = CDOMElement::create('div','id:testForm');
 		}
 		else {
@@ -618,8 +669,20 @@ abstract class RootTest extends NodeTest
 			$div->addChild(new CText('[ '));
 			$get_topic = (isset($_GET['topic'])?'&topic='.$_GET['topic']:'');
 			$add_link = CDOMElement::create('a','href:'.MODULES_TEST_HTTP.'/edit_topic.php?action=add&id_test='.$this->id_nodo.$get_topic);
-			$add_link->addChild(new CText(translateFN('Aggiungi sessione')));
+			// $add_link->addChild(new CText(translateFN('Aggiungi sessione')));
+			$add_link->addChild(new CText(translateFN('Aggiungi attivit&agrave;')));
 			$div->addChild($add_link);
+			$div->addChild(new CText(' ]'));
+			
+			/**
+			 * @author giorgio 08/ott/2013
+			 * added preview link
+			 */
+			$div->addChild(new CText(' [ '));			
+			$preview_link = CDOMElement::create('a','href:'.MODULES_TEST_HTTP.'/index.php?action=preview&id_test='.$this->id_nodo.'&topic='.$this->_currentTopic);
+			$preview_link->setAttribute('target', '_blank');
+			$preview_link->addChild(new CText(translateFN('Anteprima').' ('.translateFN('in nuova finestra').')'));			
+			$div->addChild($preview_link);
 			$div->addChild(new CText(' ]'));
 
 			$out->addChild($div);
@@ -631,23 +694,56 @@ abstract class RootTest extends NodeTest
 		$out->addChild($ul);
 
 		if (!$feedback) {
-			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
-				$submit = CDOMElement::create('submit','id:confirm');
-				$submit->setAttribute('value',translateFN('Conferma'));
-
-				$reset = CDOMElement::create('reset','id:redo');
-				$reset->setAttribute('value',translateFN('Ripeti'));
-
+			if ($_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {
+				/**
+				 * @author giorgio 07/apr/2015
+				 * 
+				 * If this is an activity and the user is a student with ADA_STATUS_TERMINATED
+				 * or ADA_STATUS_COMPLETED status for the current instance, don't draw the
+				 * submit and reset buttons so that the activity cannot be submitted.
+				 */
+				if (isset($_SESSION['sess_userObj'])) {
+					if ($_SESSION['sess_userObj'] instanceof ADAUser) {
+						$checkUserObj = $_SESSION['sess_userObj'];
+					} else if ($_SESSION['sess_userObj'] instanceof ADAPractitioner && self::isSessionUserAStudent()) {
+						$checkUserObj = $_SESSION['sess_userObj']->toStudent();
+					} else $checkUserObj = null;					
+				} else $checkUserObj = null;
+				
+				if (!is_null($checkUserObj)) {
+					$isTerminated =   is_a($this,'ActivityTest') && isset($_SESSION['sess_id_course_instance']) && 
+									  in_array($checkUserObj->get_student_status($checkUserObj->getId(),
+								 											   	 $_SESSION['sess_id_course_instance']),
+									   array(ADA_STATUS_TERMINATED, ADA_STATUS_COMPLETED));					
+				} else {
+					/**
+					 * should arrive here only if it's a tutor that
+					 * is not a student for the session instance id 
+					 */
+					$isTerminated = false;
+				}
+				
+				if (!$isTerminated) {
+					$submit = CDOMElement::create('submit','id:confirm');
+					$submit->setAttribute('value',translateFN('Conferma'));
+	
+					$reset = CDOMElement::create('reset','id:redo');
+					$reset->setAttribute('value',translateFN('Ripeti'));
+				}
+				
 				$div = CDOMElement::create('div');
 				$div->setAttribute('class', 'submit_test');
-				$div->addChild($reset);
-				$div->addChild(new CText('&nbsp;'));
-				$div->addChild($submit);
 				
+				if (!$isTerminated) {
+					$div->addChild($reset);
+					$div->addChild(new CText('&nbsp;'));
+					$div->addChild($submit);
+				}
+												
 				$out->addChild(CDOMElement::create('div','class:clearfix'));
 				$out->addChild($div);
 			}
-			else if ($this->sequenced) {
+			else if ($this->sequenced && $_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 				//paginazione nel caso di test sequenziale
 				$div = CDOMElement::create('div');
 				$div->setAttribute('class', 'submit_test');
@@ -704,10 +800,13 @@ abstract class RootTest extends NodeTest
 	protected function renderEndTest($id_history_test,$return_html=true) {
 		$dh = $GLOBALS['dh'];
 
-		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR) {
-			$this->feedback = true;
-			$this->rating = true;
-		}
+		/*
+		 * @author giorgio 19/feb/2014 commented out
+			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR) {
+				$this->feedback = true;
+				$this->rating = true;
+			}
+        */
 
 		if ($this->feedback) {
 			//check if $id_history_test param is an integer and retrieve rows from database
@@ -719,15 +818,32 @@ abstract class RootTest extends NodeTest
 				$id_history_test = intval($id_history_test);
 				$givenTest = $dh->test_getHistoryTest($id_history_test);
 				$givenTest = $givenTest[0];
-				$givenAnswers = $dh->test_getGivenAnswers($id_history_test);
+				$givenAnswers = $dh->test_getGivenAnswers($id_history_test, (is_a($this,'ActivityTest') && !$this->isTutorEvaluating()));
 				if (AMA_DataHandler::isError($givenTest) || AMA_DataHandler::isError($givenAnswers)) {
 					$html = CDOMElement::create('div');
 					$html->addChild(new CText(translateFN('Si è verificato un errore durante il recupero delle informazioni!')));
 				}
 				else {
+					if (is_a($this,'ActivityTest') && $this->isTutorEvaluating()) {
+						/**
+						 * @author giorgio 04/nov/2014
+						 *
+						 * if it's a tutor count how many time the user
+						 * has answered to each question. This will be
+						 * used to determine if a child question must be
+						 * appended to display each additional answer
+						 */
+						$answersCount = array();
+						foreach ($givenAnswers as $anAnswer) {
+							if (!isset($answersCount[$anAnswer['id_nodo']])) $answersCount[$anAnswer['id_nodo']] = 0;
+							else $answersCount[$anAnswer['id_nodo']]++;
+						}
+					}
+
 					//search every question objects
 					$genericItems = $this->_children;
 					$questions = array();
+					$originalChildCount = array();
 					while(!empty($genericItems)) {
 						foreach($genericItems as $k=>$child) {
 							if (!is_subclass_of($child, 'QuestionTest')) {
@@ -736,7 +852,56 @@ abstract class RootTest extends NodeTest
 								}
 							}
 							else {
+								// child is a Question add it to its parent
 								$questions[] = $child;
+								
+								if (is_a($this,'ActivityTest') && $this->isTutorEvaluating() &&
+										isset($answersCount[$child->id_nodo]) && $answersCount[$child->id_nodo]>0) {
+									$possibleParentTypes = array ('TopicTest','ActivityTest','RootTest');
+									foreach ($possibleParentTypes as $parentType) {
+										$parent = $child->searchParent($parentType);
+										if (!is_null($parent)) {
+											
+											/**
+											 * get original child count only the first time,
+											 * this is needed to add cloned question in proper
+											 * position and must be evaluated BEFORE inserting
+											 * anything in the $parent->_children array
+											 */
+											if (!isset($originalChildCount[$parent->id_nodo])) {
+												$originalChildCount[$parent->id_nodo] = $parent->countChildren();
+											}
+											
+											/**
+											 * search the position where I must insert the cloned question
+											 * This is going to be the position in the $parent->_children
+											 * array of the first occourence of $child, that is a QuestionTest
+											 */
+											foreach ($parent->_children as $pos=>$searchNode) {
+												if ($child->id_nodo===$searchNode->id_nodo) break;
+											}
+											
+											/**
+											 * for each given answer to the current question,
+											 * insert its clone the calculated position of the
+											 * $parent->_children array 
+											 * 
+											 * Note: $pos variable is set in the above foreach loop
+											 */
+											for ($x=0; $x<$answersCount[$child->id_nodo];$x++) {
+												$newPos = $pos+$originalChildCount[$parent->id_nodo]*($x+1);
+												$parent->_children[$newPos] = clone $child;
+												$questions[] = $parent->_children[$newPos];
+											}
+											
+											/**
+											 * sort the array by key to have it properly rendered
+											 */
+											ksort($parent->_children);
+											break;
+										}
+									}
+								}
 							}
 							unset($genericItems[$k]);
 						}
@@ -747,7 +912,11 @@ abstract class RootTest extends NodeTest
 				//assign data to objects
 				if (!empty($questions)) {
 					foreach($questions as $q) {
-						$q->setDisplay(false);
+						/**
+						 * show all questions if it's an activity and tutor is evaluating
+						 */
+						$showQuestion = is_a($this,'ActivityTest') && $this->isTutorEvaluating();
+						$q->setDisplay($showQuestion);
 					}
 				}
 
@@ -778,8 +947,26 @@ abstract class RootTest extends NodeTest
 				$html = $this->renderingHtml($ref,$this->feedback,$this->rating,$this->rating_answer);
 				if (is_null($ref)) $ref = $html;
 				if (!empty($this->_children)) {
-					foreach($this->_children as $v) {
-						$ref->addChild($v->render(false,$this->feedback,$this->rating,$this->rating_answer));
+					foreach($this->_children as $index=>$v) {
+						if ($this->tipo{2} != ADA_IMMEDIATE_TEST_INTERACTION)
+						{
+							$ref->addChild($v->render(false,$this->feedback,$this->rating,$this->rating_answer));
+						}
+						else if (is_a($this,'ActivityTest') && $this->tipo{2} == ADA_IMMEDIATE_TEST_INTERACTION && $this->_currentTopic == $index)
+						{
+							/**
+							 * @author giorgio 28/ott/2013
+							 * if it's an activity with an immediate answer type of feedback, and the current loop iteration
+							 * is the current topic, render it and break out of the loop since we only want this topic to be displayed.
+							 *
+							 * NOTE: This is only applicable for ADA_TYPE_ACTIVITY
+							 */
+							$ref->addChild($v->render(false,$this->feedback,$this->rating,$this->rating_answer));
+							break;
+						}
+						$lifix = CDOMElement::create('li');
+						$lifix->addChild(CDOMElement::create('div','class:clearfix'));
+						$ref->addChild($lifix);
 					}
 				}
 
@@ -787,14 +974,15 @@ abstract class RootTest extends NodeTest
 				if ($this->rating) {
 					$div = CDOMElement::create('div','id:test_score');
 					$div->setAttribute('id', 'score_test');
-					if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
-						$testo = translateFN('Lo studente ha totalizzato %s punti su %s');
+					if (!self::isSessionUserAStudent()) {
+						$testo = translateFN('Lo studente ha totalizzato %01.2f punti su %01.2f');
 					}
 					else {
-						$testo = translateFN('Hai totalizzato %s punti su %s');
+						$testo = translateFN('Hai totalizzato %01.2f punti su %01.2f');
 					}
+					$div->addChild(CDOMElement::create('div','class:clearfix'));
 					$div->addChild(new CText(sprintf($testo,$score,$max_score)));
-					$html->addChild($div);
+					if ($this->tipo{2} != ADA_IMMEDIATE_TEST_INTERACTION) $html->addChild($div);
 				}
 
 				// prints control to set test repeatable
@@ -825,34 +1013,49 @@ abstract class RootTest extends NodeTest
 				}
 			}
 		}
-		else {
-			$html = CDOMElement::create('div');
-			$html->addChild(new CText(Node::prepareInternalLinkMediaForEditor($this->consegna)));
-		}
+// 		else {
+			if (!isset($html)) $html = CDOMElement::create('div');			
+			$html->addChild(CDOMElement::create('div','class:clearfix'));
+			$finalMsgDIV = CDOMElement::create('div','class:final_message');
+			
+			require_once MODULES_TEST_PATH.'/include/forms/topicFormTest.inc.php';
+			$finalMsgAr = TopicFormTest::extractFieldsFromTesto($this->consegna, array('final_success', 'final_error'));
+			if (!isset($finalMsgAr['final_success']) || strlen($finalMsgAr['final_success'])) $finalMsgAr['final_success'] = '';
+			if (!isset($finalMsgAr['final_error']) || strlen($finalMsgAr['final_error'])) $finalMsgAr['final_error'] = '';
+			$finalMsgTxt = (floatval($score)>=floatval($this->correttezza)) ? $finalMsgAr['final_success'] : $finalMsgAr['final_error'] ;
+			
+			$finalMsgDIV->addChild(new CText(Node::prepareInternalLinkMediaForEditor($finalMsgTxt)));
+			$html->addChild($finalMsgDIV);
+// 		}
 
 		//return link
 		$return_link = null;
-		switch ($this->returnLink) {
-			default:
-			case ADA_NO_TEST_RETURN:
-				$label = null;
-				$return_link = null;
-			break;
-			case ADA_NEXT_NODE_TEST_RETURN:
-				$label = translateFN('Procedi');
-				$node_obj = new Node($this->id_nodo_riferimento);
-				if (!empty($node_obj->next_id)) {
-					$return_link = HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$node_obj->next_id;
-				}
-			break;
-			case ADA_INDEX_TEST_RETURN:
-				$label = translateFN('Torna all\'indice del corso');
-				$return_link = HTTP_ROOT_DIR.'/browsing/main_index.php';
-			break;
-			case ADA_COURSE_INDEX_TEST_RETURN:
-				$label = translateFN('Torna all\'elenco dei corsi');
-				$return_link = HTTP_ROOT_DIR.'/browsing/user.php';
-			break;
+		// show return link if it's not an activity with immediate interaction
+		// and if it's not a barrier test or user has scored the minimum required points
+		if (!(is_a($this,'ActivityTest') && $this->tipo{2} == ADA_IMMEDIATE_TEST_INTERACTION) &&
+			(!$this->barrier || floatval($score)>=floatval($this->correttezza)) ) {
+			switch ($this->returnLink) {
+				default:
+				case ADA_NO_TEST_RETURN:
+					$label = null;
+					$return_link = null;
+					break;
+				case ADA_NEXT_NODE_TEST_RETURN:
+					$label = translateFN('Procedi');
+					$node_obj = new Node($this->id_nodo_riferimento);
+					if (!empty($node_obj->next_id)) {
+						$return_link = HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$node_obj->next_id;
+					}
+					break;
+				case ADA_INDEX_TEST_RETURN:
+					$label = translateFN('Torna all\'indice del corso');
+					$return_link = HTTP_ROOT_DIR.'/browsing/main_index.php';
+					break;
+				case ADA_COURSE_INDEX_TEST_RETURN:
+					$label = translateFN('Torna all\'elenco dei corsi');
+					$return_link = HTTP_ROOT_DIR.'/browsing/user.php';
+					break;
+			}		
 		}
 
 		if (!is_null($return_link)) {
@@ -924,7 +1127,7 @@ abstract class RootTest extends NodeTest
 	 * @return int
 	 */
 	protected function buildStatusBox($out) {
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 
 			$div = CDOMElement::create('fieldset');
 			$div->setAttribute('id','test_info');
@@ -1085,7 +1288,19 @@ abstract class RootTest extends NodeTest
 	 *
 	 */
 	protected function checkStudentLevel() {
-		return ($_SESSION['sess_userObj']->livello >= $this->minLevel);
+		if (isset($_SESSION['sess_userObj'])) {
+			if ($_SESSION['sess_userObj'] instanceof ADAUser) {
+				$checkUserObj = $_SESSION['sess_userObj'];
+			} else if ($_SESSION['sess_userObj'] instanceof ADAPractitioner) {
+				$checkUserObj = $_SESSION['sess_userObj']->toStudent();
+			} else $checkUserObj = null;
+			
+			if (!is_null($checkUserObj) && isset($_SESSION['sess_id_course_instance'])) {
+				return ($checkUserObj->get_student_level($checkUserObj->getId(),
+														 $_SESSION['sess_id_course_instance']) >= $this->minLevel);
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1126,5 +1341,44 @@ abstract class RootTest extends NodeTest
 	 */
 	public function getFeedback() {
 		return $this->feedback;
+	}
+	
+
+	/**
+	 * @author giorgio 10/ott/2013
+	 * 
+	 * setter for isPreview class property.
+	 *
+	 * @access public
+	 *
+	 * @param boolean $isPreview	true if the test is in preview mode
+	 */
+	public function setPreview($isPreview)
+	{
+		$this->previewMode = $isPreview;
+	}
+	
+	/**
+	 * @author giorgio 14/mag/2015
+	 * 
+	 * checks if session user is to be considered as a student
+	 * for this test purposes in the passed instance id
+	 *
+	 * @param number $id_instance defaults to null, meaning $_SESSION['']
+	 *
+	 * @return boolean true if session user is a student or
+	 * if user is a tutor subscribed to the passed instance id
+	 *
+	 * @access public
+	 */
+	public static function isSessionUserAStudent($id_instance = null) {
+		if (isset($_SESSION['sess_id_user_type'])) {
+			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) return true;
+			else if ($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR && isset($_SESSION['sess_userObj'])) {
+				if (is_null($id_instance) && isset($_SESSION['sess_id_course_instance'])) $id_instance = $_SESSION['sess_id_course_instance'];
+				return ($_SESSION['sess_userObj'] instanceof ADAPractitioner && $_SESSION['sess_userObj']->isSubscribedToInstance($id_instance));
+			}
+		}
+		return false;
 	}
 }

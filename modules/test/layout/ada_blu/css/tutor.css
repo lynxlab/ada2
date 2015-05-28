@@ -1,1 +1,39 @@
 @import url("index.css");
+
+.clozePopup { display:none; }
+
+.default_table tbody td { text-align: center; }
+.default_table tbody .default_tr_even { background: #e0e0e0; }
+li.topic_test { width: 100%; float: left; }
+
+/*
+ * jQuery dataTable
+ */
+table.default_table { width: 100% !important; }
+table.default_table tbody td { height: 2.5em; border:none; vertical-align: middle; }
+table.default_table thead th { padding-right: 5px; border-bottom: 1px solid #999; }
+table.default_table tbody td.details { padding-left:3%; padding-right: 1%; background: darkgray; }
+/* table.default_table tbody td.details { background: #c1d4ff; box-shadow: 0px 0px 50px #000; padding: 1.5em; border-radius: 20px; } */
+table.default_table tbody td.details table.default_table  a { text-align:center; background:none; }
+table.default_table tbody td.details caption {  
+  width: 65%;
+  margin: -25px auto 0 auto;
+  position: relative;
+  top: -4px;
+  font-weight: bold;
+  color: #fff;
+ }
+td.details table.dataTable tr { color: #2E3C59; }
+div.DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; }
+div.dataTables_paginate a.fg-button { margin:0; padding: 3px; }
+div.dataTables_length,
+div.dataTables_filter,
+div.dataTables_paginate { padding: 5px; }
+div.dataTables_info { padding: 5px 0 0 5px; }
+/*
+ * jQuery dataTable
+ */
+
+.dataTables_wrapper .DataTables_sort_icon { float: right; margin-top: -20px; margin-right: -15px; }
+
+.question_group_test .question_test h3 { border-bottom: 1px dotted #cacaca; padding-bottom:5px; width: 95%; }

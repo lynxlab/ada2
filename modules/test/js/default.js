@@ -10,3 +10,12 @@ function zeroFill( number, width )
   }
   return number + ""; // always return a string
 }
+
+function toggleVisibilityByDiv(className, mode)
+{
+	$$('ul.'+className).each( function(e) {
+		if (!$(e).empty()) {
+			toggleVisibilityByClassName(className, e.id, mode);
+		}
+	});
+}

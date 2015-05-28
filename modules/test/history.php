@@ -34,6 +34,7 @@ $neededObjAr = array(
 /**
  * Performs basic controls before entering this module
  */
+if(isset($_REQUEST['isAjax']) && intval($_REQUEST['isAjax'])===1) $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 
@@ -67,7 +68,51 @@ $return = $management->render();
 $text = $return['html'];
 $title = $return['title'];
 $path = $return['path'];
+/**
+ * if it's an ajax request, put the id_test in session
+ * so that it'll be opened on next page load (whenever it
+ * will occour), output the html table and die
+ */
+if(isset($_REQUEST['isAjax']) && intval($_REQUEST['isAjax'])===1) {
+	if (isset($_GET['id_test']) && intval($_GET['id_test'])>0 &&
+			isset($_GET['id_student']) && intval($_GET['id_student'])>0) {
+				$_SESSION['list_history_tests_id'] = intval($_GET['id_test']).'_'.intval($_GET['id_student']);
+			}
+			die ($text);
+}
 
+/*
+ * Go back link
+ */
+$navigation_history = $_SESSION['sess_navigation_history'];
+$last_visited_node  = $navigation_history->lastModule();
+$go_back_link = CDOMElement::create('a', 'href:'.$last_visited_node);
+$go_back_link->addChild(new CText(translateFN('Indietro')));
+
+/*
+ * Edit profile
+ */
+
+$edit_profile=$userObj->getEditProfilePage();
+
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+{
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile.'?self_instruction=1');
+}
+else
+{
+    $edit_profile_link=CDOMElement::create('a', 'href:'.$edit_profile);
+}
+$edit_profile_link->addChild(new CText(translateFN('Modifica profilo')));
+
+/*
+ * link Naviga
+ 
+$naviga=CDOMElement::create('a','#');
+$naviga->setAttribute(onclick, "toggleElementVisibility('menuright', 'right')");
+$naviga->setAttribute('class', 'positionNaviga');
+$naviga->addChild(new CText(translateFN('Naviga')));
+*/
 /*
  * Output
  */
@@ -78,13 +123,15 @@ $content_dataAr = array(
     'user_type' => $user_type,
     'user_level' => $user_level,
     'visited' => '-',
-    'icon' => isset($icon) ? $icon: '',
+    'icon' => isset($icon) ? $icon : '',
     //'navigation_bar' => $navBar->getHtml(),
     'text' =>  $text,
+    'go_back' => $go_back_link->getHtml(),
     'title' => $title,
     'author' => isset($author) ? $author : '',
     'node_level' => 'livello nodo',
-    'edit_profile'=> $userObj->getEditProfilePage()
+    'edit_profile'=> $edit_profile_link->getHtml(),
+    'naviga'=>$go_back_link->getHtml()
     //'course_title' => '<a href="'.HTTP_ROOT_DIR.'/tutor/tutor.php">'.translateFN('Modulo Tutor').'</a> > ',
     //'media' => 'media',
 );
@@ -92,8 +139,14 @@ $content_dataAr = array(
 $content_dataAr['notes'] = isset($other_node_data['notes']) ? $other_node_data['notes'] : null;
 $content_dataAr['personal'] = isset($other_node_data['private_notes']) ? $other_node_data['private_notes'] : null;
 
+
+if ($log_enabled)
+    $content_dataAr['go_history'] = isset($go_history) ? $go_history : '';
+else
+    $content_dataAr['go_history'] = translateFN("cronologia");
+
 if ($reg_enabled) {
-    $content_dataAr['add_bookmark'] = isset($add_bookmark) ? $add_bookmark : "";
+    $content_dataAr['add_bookmark'] = isset($add_bookmark) ? $add_bookmark : '';
 } else {
     $content_dataAr['add_bookmark'] = "";
 }
@@ -101,6 +154,28 @@ if ($reg_enabled) {
 $content_dataAr['bookmark'] = isset($bookmark) ? $bookmark : "";
 $content_dataAr['go_bookmarks_1'] = isset($go_bookmarks) ? $go_bookmarks : "";
 $content_dataAr['go_bookmarks_2'] = isset($go_bookmarks) ? $go_bookmarks : "";
+
+if ($mod_enabled) {
+	$content_dataAr['add_node'] = isset($add_node) ? $add_node : '';
+	$content_dataAr['edit_node'] = isset($edit_node) ? $edit_node : '';
+	$content_dataAr['delete_node'] = isset($delete_node) ? $delete_node : '';
+	$content_dataAr['send_media'] = isset($send_media) ? $send_media : '';
+	$content_dataAr['add_exercise'] = isset($add_exercise)  ? $add_exercise : '';
+	$content_dataAr['add_note'] = isset($add_note) ? $add_note : '';
+	$content_dataAr['add_private_note'] = isset($add_private_note) ? $add_private_note : '';
+	$content_dataAr['edit_note'] = isset($edit_note) ? $edit_note : '';
+	$content_dataAr['delete_note'] = isset($delete_note) ? : '';
+	$content_dataAr['import_exercise'] = isset($import_exercise) ? $import_exercise : '';
+} else {
+    $content_dataAr['add_node'] = '';
+    $content_dataAr['edit_node'] = '';
+    $content_dataAr['delete_node'] = '';
+    $content_dataAr['send_media'] = '';
+    $content_dataAr['add_note'] = '';
+    $content_dataAr['add_private_note'] = '';
+    $content_dataAr['edit_note'] = '';
+    $content_dataAr['delete_note'] = '';
+}
 
 if ($com_enabled) {
     $content_dataAr['ajax_chat_link'] = isset($ajax_chat_link) ? $ajax_chat_link : "";
@@ -118,9 +193,14 @@ if ($com_enabled) {
 $layout_dataAr['JS_filename'] = array(
 	JQUERY,
 	JQUERY_UI,
+	MODULES_TEST_PATH.'/js/jquery/jquery.mCustomScrollbar.concat.min.js',
+	JQUERY_JPLAYER,	
+	JQUERY_DATATABLE,
+	ROOT_DIR . '/js/include/jquery/dataTables/dateSortPlugin.js',			
 	JQUERY_NO_CONFLICT,
 	MODULES_TEST_PATH.'/js/dragdrop.js',
-	ROOT_DIR.'/js/browsing/virtual_keyboard.js',
+	MODULES_TEST_PATH.'/js/index.js',		
+	ROOT_DIR. '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js'		
 );
 
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) 
@@ -131,14 +211,25 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
      }
      
 $layout_dataAr['CSS_filename'] = array(
-	JQUERY_UI_CSS
+	JQUERY_UI_CSS,
+	JQUERY_JPLAYER_CSS,
+	JQUERY_DATATABLE_CSS,		
+	ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css',
+	MODULES_TEST_PATH.'/template/jquery.mCustomScrollbar.css'		
 );
 
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) 
-     {        
-     
-    $layout_dataAr['CSS_filename'][] = 
-        ROOT_DIR.'/modules/test/layout/ada_blu/css/tutor.css';   //for tutorSelfInstruction.tpl
-     }
+$imgAvatar = $userObj->getAvatar();
+$avatar = CDOMElement::create('img','src:'.$imgAvatar);
+$avatar->setAttribute('class', 'img_user_avatar');
+
+$content_dataAr['user_modprofilelink'] = $userObj->getEditProfilePage();
+$content_dataAr['user_avatar'] = $avatar->getHtml();
+
+$optionsAr['onload_func']  = "initDoc(";
+if (isset($_SESSION['list_history_tests_id']) && intval($_SESSION['list_history_tests_id'])) {
+	$optionsAr['onload_func'] .= '\''.urlencode(json_encode(array('openTestID'=>$_SESSION['list_history_tests_id']))).'\'';
+}
+$optionsAr['onload_func'] .= ");";
+
 $menuOptions['self_instruction'] = $self_instruction;
-ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
+ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr,$menuOptions);

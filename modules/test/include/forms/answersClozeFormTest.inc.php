@@ -60,9 +60,11 @@ class AnswersClozeFormTest extends FormTest {
 		$dragDropSemplicity = array(ADA_DRAGDROP_TEST_SIMPLICITY, ADA_SLOT_TEST_SIMPLICITY);
 		if (in_array($this->questionObj->tipo{3},$dragDropSemplicity)) {
 			$this->questionObj->buildDragDropElements($div, $clozeText, true);
+			$isDragDrop = $this->questionObj->tipo{3};
 		}
 		else {
 			$div->addChild(new CText($clozeText));
+			$isDragDrop = false;
 		}
 
 		foreach($this->ordine as $i=>$ord) {
@@ -79,7 +81,7 @@ class AnswersClozeFormTest extends FormTest {
 			$fieldset = CDOMElement::create('fieldset','class:form');
 			$ol = CDOMElement::create('ol','class:form');
 
-			$r = new AnswerHeaderControlTest(false,$this->case_sensitive,$this->modifiable);
+			$r = new AnswerHeaderControlTest(false,$this->case_sensitive,$this->modifiable,$isDragDrop);
 			$li = CDOMElement::create('li','class:form');
 			$li->addChild(new CText($r->render()));
 			$ol->addChild($li);
@@ -87,7 +89,7 @@ class AnswersClozeFormTest extends FormTest {
 			if (!empty($v)) {
 				foreach($v as $answer) {
 					$li = CDOMElement::create('li','class:form');
-					$r = new AnswerClozeControlTest($this->case_sensitive,$answer['record'],false,$this->modifiable);
+					$r = new AnswerClozeControlTest($this->case_sensitive,$answer['record'],false,$this->modifiable,$isDragDrop);
 					$r->withData($answer);
 					$li->addChild(new CText($r->render()));
 					$ol->addChild($li);
@@ -95,7 +97,7 @@ class AnswersClozeFormTest extends FormTest {
 			}
 			else {
 				$li = CDOMElement::create('li','class:form');
-				$r = new AnswerClozeControlTest($this->case_sensitive);
+				$r = new AnswerClozeControlTest($this->case_sensitive,null,null,false,$isDragDrop);
 				$r->withData(array('ordine'=>$ord));
 				$li->addChild(new CText($r->render()));
 				$ol->addChild($li);
@@ -105,7 +107,7 @@ class AnswersClozeFormTest extends FormTest {
 			if ($this->modifiable) {
 				$li = CDOMElement::create('li');
 				$li->setAttribute('class', 'form hidden');
-				$hidden_record = new AnswerClozeControlTest($this->case_sensitive,null,true,$this->modifiable);
+				$hidden_record = new AnswerClozeControlTest($this->case_sensitive,null,true,$this->modifiable,$isDragDrop);
 				$hidden_record->withData(array('ordine'=>$ord));
 				$li->addChild(new CText($hidden_record->render()));
 				$ol->addChild($li);

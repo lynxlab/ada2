@@ -40,7 +40,6 @@ require_once(ROOT_DIR.'/services/include/author_functions.inc.php');
 $layout_dataAr['node_type'] = $self;
 
 $online_users_listing_mode = 2;
-if (!isset($id_course_instance)) $id_course_instance = null;
 $online_users = ADAGenericUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
 
 
@@ -59,11 +58,20 @@ switch($_GET['mode']) {
 	default:
 	case 'test':
 		require_once(MODULES_TEST_PATH.'/include/management/testManagementTest.inc.php');
-		$management = new TestManagementTest($_GET['action'],isset($_GET['id_test']) ? $_GET['id_test'] : null);
+		$management = new TestManagementTest($_GET['action'],$_GET['id_test']);
+	break;
+	/**
+	 * @author giorgio 24/ott/2013
+	 * added case to build an activity
+	 */
+	case 'activity':
+		ini_set ('display_errors','0'); error_reporting(E_ALL);
+		require_once(MODULES_TEST_PATH.'/include/management/activityManagementTest.inc.php');
+		$management = new ActivityManagementTest($_GET['action'],$_GET['id_test']);
 	break;
 	case 'survey':
 		require_once(MODULES_TEST_PATH.'/include/management/surveyManagementTest.inc.php');
-		$management = new SurveyManagementTest($_GET['action'],isset($_GET['id_test']) ? $_GET['id_test'] : null);
+		$management = new SurveyManagementTest($_GET['action'],$_GET['id_test']);
 	break;
 }
 
@@ -72,8 +80,16 @@ $form_return = $management->run();
 // per la visualizzazione del contenuto della pagina
 $banner = include ($root_dir.'/include/banner.inc.php');
 
+ /* link al forum disabilitato per l'autore  */
+$li_forum_author=CDOMElement::create('li','id:com');
+$li_forum_author->setAttribute('class', 'disable');
+$forum=CDOMElement::create('a',"href:main_index.php?op=forum");
+$forum->addChild(new CText(translateFN('forum')));
+$li_forum_author->addChild($forum);
+$forum_link=$li_forum_author->getHtml();
+
 $content_dataAr = array(
-        'head'=>isset($head_form) ? $head_form : '',
+        'head'=>$head_form,
         'banner'=>$banner,
 		'path'=>$form_return['path'],
         'form'=>$form_return['html'],
@@ -82,23 +98,52 @@ $content_dataAr = array(
         'user_type'=>$user_type,
         'messages'=>$user_messages->getHtml(),
         'agenda'=>$user_agenda->getHtml(),
-        'title'=>isset($node_title) ? $node_title : '',
+        'title'=>$node_title,
         'course_title'=>$course_title,
-        'back'=>isset($back) ? $back : ''
+        'forum'=>$forum_link,
+        'back'=>$back
 );
 
-if (isset($other_node_data['notes'])) $content_dataAr['notes'] = $other_node_data['notes'];
-if (isset($other_node_data['private_notes'])) $content_dataAr['personal'] = $other_node_data['private_notes'];
+$content_dataAr['notes'] = $other_node_data['notes'];
+$content_dataAr['personal'] = $other_node_data['private_notes'];
 
-if ($reg_enabled && isset($add_bookmark)) {
+
+if ($log_enabled)
+    $content_dataAr['go_history'] = $go_history;
+else
+    $content_dataAr['go_history'] = translateFN("cronologia");
+
+if ($reg_enabled) {
     $content_dataAr['add_bookmark'] = $add_bookmark;
 } else {
     $content_dataAr['add_bookmark'] = "";
 }
 
-if (isset($bookmark)) $content_dataAr['bookmark'] = $bookmark;
-if (isset($go_bookmarks)) $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
-if (isset($go_bookmarks)) $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+$content_dataAr['bookmark'] = $bookmark;
+$content_dataAr['go_bookmarks_1'] = $go_bookmarks;
+$content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+
+if ($mod_enabled) {
+    $content_dataAr['add_node'] = $add_node;
+    $content_dataAr['edit_node'] = $edit_node;
+    $content_dataAr['delete_node'] = $delete_node;
+    $content_dataAr['send_media'] = $send_media;
+    $content_dataAr['add_exercise'] = $add_exercise;
+    $content_dataAr['add_note'] = $add_note;
+    $content_dataAr['add_private_note'] = $add_private_note;
+    $content_dataAr['edit_note'] = $edit_note;
+    $content_dataAr['delete_note'] = $delete_note;
+    $content_dataAr['import_exercise'] = $import_exercise;
+} else {
+    $content_dataAr['add_node'] = '';
+    $content_dataAr['edit_node'] = '';
+    $content_dataAr['delete_node'] = '';
+    $content_dataAr['send_media'] = '';
+    $content_dataAr['add_note'] = '';
+    $content_dataAr['add_private_note'] = '';
+    $content_dataAr['edit_note'] = '';
+    $content_dataAr['delete_note'] = '';
+}
 
 if ($com_enabled) {
     $content_dataAr['ajax_chat_link'] = $ajax_chat_link;
@@ -117,5 +162,12 @@ $layout_dataAr['JS_filename'] = array(
 	JQUERY,
 	JQUERY_NO_CONFLICT
 );
+
+$imgAvatar = $userObj->getAvatar();
+$avatar = CDOMElement::create('img','src:'.$imgAvatar);
+$avatar->setAttribute('class', 'img_user_avatar');
+
+$content_dataAr['user_modprofilelink'] = $userObj->getEditProfilePage();
+$content_dataAr['user_avatar'] = $avatar->getHtml();
 
 ARE::render($layout_dataAr, $content_dataAr);

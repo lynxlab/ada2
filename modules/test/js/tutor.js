@@ -1,5 +1,28 @@
 document.write('<script type="text/javascript" src="js/commons.js"></script>');
 
+var datatable;
+var openedRow = null;
+
+function initDoc(){
+    initDataTable();
+    
+    if ('undefined' != typeof arguments[0]) {
+    	/**
+    	 * urldecode passed arguments[0] and turn it into a JSON Object
+    	 */
+    	var passedObj = JSON.parse(decodeURIComponent(arguments[0].replace(/\+/g, ' ')));
+    	
+    	/**
+		 * select the image having data-testid equal to the
+		 * passed openTestID, if one is found open that row
+		 */
+    	if (passedObj != null && 'undefined' != passedObj.openTestID &&
+    			$j('img[data-testid="'+passedObj.openTestID+'"]').length>0) {
+    		$j('img[data-testid="'+passedObj.openTestID+'"]').trigger('click');
+    	}
+    }
+}
+
 function toggleRepeatable(id_history_test,repeatable) {
 	var loc = window.location.pathname;
 	var dir = loc.substring(0, loc.lastIndexOf('/'));
@@ -147,4 +170,84 @@ function saveCommentAnswer(id_answer) {
 
 function toggleDiv(id) {
 	$j('#'+id).toggle();
+}
+function initDataTable(){
+    datatable = $j('.default_table').dataTable({
+        "bJQueryUI": true,
+        "oLanguage": {
+                   "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+                },
+       "aoColumnDefs": [{ "bSortable": false, "aTargets": [ 0 ], "sWidth" : "1%" },
+                        { "bSortable": false, "aTargets": [ 4 ], "sWidth" : "29%" }],
+       "fnDrawCallback": function () {
+	                // put the sort icon outside of the DataTables_sort_wrapper div
+	                // for better display styling with CSS
+	                $j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
+			                sortIcon = $j(this).find('span').clone();
+			                $j(this).find('span').remove();
+			                $j(this).parents('th').append(sortIcon);
+		                });
+        } 
+    });
+}
+
+function expandListTestsRow(imgObj, url) {
+	
+	var closeOpenedRowOnClick = true;
+	
+    var nTr = $j(imgObj).parents('tr')[0];
+    
+    if ('undefined' != typeof nTr) {
+    	
+    	if (closeOpenedRowOnClick && openedRow!=null && datatable.fnIsOpen(openedRow)) {
+    		/* This row is already open - close it */
+    		$j(openedRow).find('img.noPopup').attr('src',HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_open.png");
+    		datatable.fnClose(openedRow);
+    	}
+    	
+    	if (!closeOpenedRowOnClick || openedRow != nTr) {
+    		openedRow = nTr;
+    		/* Open this row */
+    		$j(imgObj).attr('src',HTTP_ROOT_DIR+"/js/include/jquery/ui/images/ui-anim_basic_16x16.gif");    		
+    		$j.ajax({
+    			url: url,
+    			data : { isAjax: 1 },
+    			type: 'GET',
+    			dataType: 'html'
+    		}).done(function(htmlResponse){        	
+    			if (htmlResponse!=null) {
+    				var nDetailsRow = datatable.fnOpen( nTr, htmlResponse, 'details' );
+    				nDetailsRow.className += ' '+nTr.className;
+    				$j('table').not('.dataTable').dataTable({
+    					"bJQueryUI": true,
+    					"oLanguage": {
+    						"sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+    					},
+    					"aaSorting": [[0,'desc']],
+    					"aoColumnDefs": [{ "aTargets": [ 0 ], "sWidth" : "10%" },
+    					                 { "aTargets": [ 2 ], "sType" : "date-euro" },
+    					                 { "aTargets": [ 3 ], "sType" : "date-euro" },
+    					                 { "aTargets": [ 4 ], "bSortable": false, "sWidth" : "1%" }],
+    					"fnDrawCallback": function() {
+    						// put the sort icon outside of the DataTables_sort_wrapper div
+    						// for better display styling with CSS
+    						$j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
+    							sortIcon = $j(this).find('span').clone();
+    							$j(this).find('span').remove();
+    							$j(this).parents('th').append(sortIcon);
+    						});
+    					}
+    				});
+    			}
+    		}).always(function(data){
+    			if ('undefined' != typeof data && data.indexOf('index.tpl')!=-1) {
+    				alert('Your session has expired! Redirecting to home page');
+    				self.document.location.href = HTTP_ROOT_DIR;    				
+    			}
+    			else if ($j(imgObj).length>0) {
+    				$j(imgObj).attr('src',HTTP_ROOT_DIR+"/layout/"+ADA_TEMPLATE_FAMILY+"/img/details_close.png");
+    			}
+    		});
+    	} else openedRow=null;
+    }
 }

@@ -7,7 +7,7 @@ cloze img {
 }
 
 #testForm table, #testForm tbody, #testForm tr, #testForm td, #testForm th {
-    border-collapse: collapse;
+    
     font-family: inherit;
     font-size: 100%;
     font-style: inherit;
@@ -15,8 +15,26 @@ cloze img {
     line-height: 1.5em;
     text-align: left;
     vertical-align: baseline;
-	border-color: #DFDFDF;
+	width:100%;
+	/* border: 1px solid #DFDFDF; */
+	border-collapse: collapse;
+	padding: 0;
+	
+	
 }
+
+
+
+
+
+/* #testForm table {
+	border-collapse: collapse;
+	border-color: #C0C0C0;
+	width:100%;
+	border: 1px solid;
+}
+*/
+
 
 #testForm th {
     background-color: #6F7E9B;
@@ -28,7 +46,9 @@ cloze img {
     background-color: #EEEEEE;
     padding: 0px 5px;
     vertical-align: middle;
-    border-bottom: 1px solid #DFDFDF;
+    border: 1px solid #DFDFDF;
+    line-height: 2em;
+    min-width: 200px;
 }
 
 #testForm tbody td p, #testForm td p {
@@ -106,6 +126,16 @@ cloze img {
     padding: 10px;
     text-align: center;
 }
+
+.question_full {
+    background-color: #DDDDDD;
+    border-radius: 10px;
+    height: auto;
+    margin-left: -340px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
 
 .exerciseFull .question table {
     float: left;
@@ -711,3 +741,228 @@ ul.tableLike li {
 .primo_elemento {
     color: #4C5E80;
 }
+
+.resetDnD {
+  border: 1px dotted #008000;
+  opacity: 0.7;
+  min-height: 16px;
+  width: auto;
+  background-color: #DAFC8F;
+  display:inline-block;
+}
+
+
+
+
+
+
+
+.questionDd_border {
+    background-color: #EEEEEE;
+    margin: 1px;
+    width: 800px;
+    }
+    
+    
+    
+#testForm .tableborder {
+    border: 1px solid #C0C0C0;
+    font-family: inherit;
+    font-size: 100%;
+    font-style: inherit;
+    font-weight: inherit;
+    line-height: 1.5em;
+    text-align: left;
+    vertical-align: baseline;
+    width: 100%;
+}
+
+
+
+
+/* esercizio due colonne e cloze drag */
+
+/* 
+	.media {
+    width: 290px;
+    float:left;
+    margin-top: 40px;
+}
+*/
+
+div.media.video {
+    width: 290px;
+    float:left;
+    margin-top: 40px;
+}
+
+div.media.sound {
+    width: 290px;
+    float:left;
+    margin-top: 40px;
+}
+
+
+table > tbody > tr > td > div.media.sound,
+table > tbody > tr > td > div.media.video {
+	float: none;
+	margin: 10px auto 10px auto;
+}
+
+
+
+/*
+
+ul.video  {
+    width: 650px;
+    float:left;
+}
+
+
+
+ul.audio  {
+    width: 650px;
+    float:left;
+}
+*/
+
+ul.question_group_test.audio  {
+    width: 650px;
+    float:left;
+}
+
+ul.question_group_test.video  {
+    width: 650px;
+    float:left;
+}
+
+
+ul.question_group_test.imagestimolo  {
+    width: 650px;
+    float:left;
+}
+
+.exercise .question .questionDd_due_col_cloze {
+    background-color: #EEEEEE;
+    margin: 1px;
+    width: 360px;
+}
+
+
+
+.questionDd_due_col_cloze td {
+    min-width: 180px;
+    vertical-align: middle;
+}
+
+
+
+.exercise .question .questionDd_due_col {
+    background-color: #EEEEEE;
+    margin: 1px;
+    width: 600px;
+}
+
+.questionDd_due_col_cloze td {
+    min-width: 300px;
+    vertical-align: middle;
+}
+
+
+
+.exercise .question .questionDd_border_double {
+    background-color: #EEEEEE;
+    margin: 1px;
+    width: 435px;
+}
+
+
+.exercise .question .questionDd_border_triple {
+    background-color: #EEEEEE;
+    margin: 1px;
+    width: 435px;
+}
+
+
+
+/* test per template 3 colonne e 2 cloze */
+
+#testForm .questionDd_border_triple tbody td, #testForm .questionDd_border_triple td {
+    min-width: 136px;    
+}
+
+
+
+
+
+/* modifiche alle tabelle nei box zoomabili */
+
+#testForm table.box_stimolo_due td {
+    vertical-align: top;
+    width:50%;
+}
+
+#testForm table.box_stimolo_tre td {
+    vertical-align: top;
+    width:33%;
+}
+
+#testForm table.box_stimolo_quattro td {
+    vertical-align: top;
+    width:25%;
+}
+
+/* giorgio, stimolo to the right */
+/* era -43px modificato a 0 luca */
+.rightstimolo {
+  float: right;
+  margin-top: 0px;
+}
+
+.rightstimolo div.media.video {
+  float: right;
+  margin-top: 25px;
+}
+
+
+
+.topic_test_description .rightstimolo img {
+    float: left;
+    margin-bottom: 20px;
+    margin-top: 39px;
+    width: 290px;
+}
+
+/* giorgio, stimolo to the middle */
+ul.question_group_test.centerstimolo {
+  width: 100% !important;
+}
+
+div.centerstimolo {
+margin-left: auto;
+margin-right: auto;
+width: 100%;
+margin-top: -30px;  
+}
+
+div.centerstimolo div.media {
+  float: none;
+  margin-left: auto;
+  margin-right: auto; 
+}
+
+div.centerstimolo img {
+  float: none;
+}
+
+/**
+ * giorgio, quick fix for cloze grid with dnd
+ */
+#testForm table.multipleClozeTable {
+  width:910px;
+}
+#testForm table.multipleClozeTable th,
+#testForm table.multipleClozeTable td {
+  width: auto;
+}
+

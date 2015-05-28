@@ -82,6 +82,7 @@ class QuestionManagementTest extends ManagementTest {
 						case ADA_MULTIPLE_TEST_SIMPLICITY:
 							$this->tipo[4] = intval($_POST['box_position']);
 							$this->tipo[5] = intval($_POST['cloze_apostrofo']);
+							$this->tipo[6] = intval($_POST['colAnswerMode']);
 						break;
 					}
 				break;
@@ -125,6 +126,9 @@ class QuestionManagementTest extends ManagementTest {
 							if (isset($_POST['cloze_apostrofo'])) {
 								$this->tipo[5] = intval($_POST['cloze_apostrofo']);
 							}
+							if (isset($_POST['colAnswerMode'])) {
+								$this->tipo[6] = intval($_POST['colAnswerMode']);
+							}
 						break;
 					}
 				break;
@@ -167,6 +171,20 @@ class QuestionManagementTest extends ManagementTest {
 
 					//crea nuova domanda con i dati del form
 					$this->setTipo();
+					
+				/**
+				 * giorgio if it's a drag and drop and $_POST['titolo_dragdrop']
+				 * is an array must produce the xhtml to be saved in the database
+				 * 
+				 */
+				 if ($this->tipo{3} == ADA_DRAGDROP_TEST_SIMPLICITY && is_array($_POST['titolo_dragdrop']))
+				 {
+					$xmlStr = '';
+					foreach ($_POST['titolo_dragdrop'] as $dndKey=>$dndTitle)
+						$xmlStr .= '<titolo table="' . ($dndKey) .'">' . $dndTitle .'</titolo>';
+					$_POST['titolo_dragdrop'] = '<titoli>' . $xmlStr . '</titoli>';
+				 }
+					
 					$data = array(
 						'id_corso'=>$this->test['id_corso'],
 						'id_utente'=>$_SESSION['sess_id_user'],
@@ -268,6 +286,11 @@ class QuestionManagementTest extends ManagementTest {
 						case ADA_MULTIPLE_TEST_SIMPLICITY:
 							$data['box_position'] = $question['tipo']{4};
 							$data['cloze_apostrofo'] = $question['tipo']{5};
+							if (strlen($question['tipo'])>6) {
+								$data['colAnswerMode'] = $question['tipo']{6};
+							} else {
+								$data['colAnswerMode'] = ADA_MULTIPLE_TEST_OK_SINGLE_CELL;
+							}
 						break;
 					}
 				break;
@@ -283,6 +306,20 @@ class QuestionManagementTest extends ManagementTest {
 			if ($form->isValid()) {
 				//crea nuovo test con i dati del form
 				$this->setTipo();
+				
+				/**
+				 * giorgio if it's a drag and drop and $_POST['titolo_dragdrop']
+				 * is an array must produce the xhtml to be saved in the database
+				 * 
+				 */					
+				if ($this->tipo{3} == ADA_DRAGDROP_TEST_SIMPLICITY && is_array($_POST['titolo_dragdrop']))
+				{
+					$xmlStr = '';
+					foreach ($_POST['titolo_dragdrop'] as $dndKey=>$dndTitle)
+						$xmlStr .= '<titolo table="' . ($dndKey) .'">' . $dndTitle .'</titolo>';
+					$_POST['titolo_dragdrop'] = '<titoli>' . $xmlStr . '</titoli>';
+				}
+				
 				$data = array(
 					'nome'=>$_POST['nome'],
 					'titolo'=>$_POST['titolo'],
@@ -404,7 +441,7 @@ class QuestionManagementTest extends ManagementTest {
 
 		if ($type == ADA_CLOZE_TEST_TYPE && ($cloze_type == ADA_DRAGDROP_TEST_SIMPLICITY || $cloze_type == ADA_SLOT_TEST_SIMPLICITY)) {
 			require_once(MODULES_TEST_PATH.'/include/forms/questionDragDropClozeFormTest.inc.php');
-			$form = new QuestionDragDropClozeFormTest($id_test, $data, $id_nodo_parent, $isCloze, $savedExerciseType);
+			$form = new QuestionDragDropClozeFormTest($id_test, $data, $id_nodo_parent, $isCloze, $savedExerciseType, $cloze_type);
 		}
 		else if ($type == ADA_CLOZE_TEST_TYPE && $cloze_type == ADA_SELECT_TEST_SIMPLICITY) {
 			require_once(MODULES_TEST_PATH.'/include/forms/questionSelectClozeFormTest.inc.php');

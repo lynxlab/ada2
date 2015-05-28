@@ -9,8 +9,23 @@
  * @version		0.1
  */
 
-class QuestionDragDropClozeFormTest extends QuestionFormTest {
+/**
+ * @author giorgio 11/nov/2013
+ * must include all of the following to use QuestionDragDropClozeTest::extractTitlesFromData
+ */
+require_once MODULES_TEST_PATH . '/include/question.class.inc.php';
+require_once MODULES_TEST_PATH . '/include/questionCloze.class.inc.php';
+require_once MODULES_TEST_PATH . '/include/questionDragDropCloze.class.inc.php';
 
+class QuestionDragDropClozeFormTest extends QuestionFormTest {
+	
+	private  $_clozeType;
+
+	public function __construct($id_test, $data, $id_nodo_parent, $isCloze, $savedExerciseType, $cloze_type) {
+		$this->_clozeType = $cloze_type;
+		parent::__construct($id_test, $data, $id_nodo_parent, $isCloze, $savedExerciseType);
+	}
+	
 	protected function content() {
 		$this->common_elements();
 
@@ -31,8 +46,47 @@ class QuestionDragDropClozeFormTest extends QuestionFormTest {
 		}
         $this->addSelect($box,translateFN('Posizione box drag\'n\'drop').':',$options,$defaultValue);
 
-		//titolo box drag'n'drop
-        $this->addTextInput('titolo_dragdrop', translateFN('Titolo box drag\'n\'drop (lasciare vuoto se non usato)').':')
-             ->withData($this->data['titolo_dragdrop']);
+        /**
+         * giorgio 28/gen/2014
+         * 
+         * ADA_DRAGDROP_TEST_SIMPLICITY and ADA_SLOT_TEST_SIMPLICITY
+         * both share the same form, but ADA_SLOT_TEST_SIMPLICITY
+         * cannot add Drag and Drop boxes at all!
+         */
+        
+        if ($this->_clozeType == ADA_DRAGDROP_TEST_SIMPLICITY) {   
+	        $btnAdd = FormControl::create(FormControl::INPUT_BUTTON, 'add_dndTitle', translateFN('Aggiungi Box'));
+	        $btnAdd->setAttribute('onclick', 'javascript:addBoxTitleElement();');
+	        
+	        $btnDel = FormControl::create(FormControl::INPUT_BUTTON, 'del_dndTitle', translateFN('Elimina Box'));
+	        $btnDel->setAttribute('onclick', 'javascript:removeLastBoxTitleElement();');
+	        
+	        $this->addFieldset('','btnFieldset')->withData(array($btnAdd, $btnDel));
+        }
+        
+        
+        $dragdropTitles = QuestionDragDropClozeTest::extractTitlesFromData($this->data['titolo_dragdrop']);        
+		if (is_null($dragdropTitles) || empty($dragdropTitles)) $dragdropTitles[1]='';
+
+		if ($this->_clozeType == ADA_DRAGDROP_TEST_SIMPLICITY) {
+        foreach ($dragdropTitles as $dndKey=>$dndTitle)
+	        {        	
+				//titolo box drag'n'drop
+		        $this->addTextInput('titolo_dragdrop_'.$dndKey, '#'. $dndKey .'. '.translateFN('Titolo box drag\'n\'drop (lasciare vuoto se non usato)').':')
+		        	 ->setName('titolo_dragdrop['.$dndKey.']')
+		        	 ->withData($dndTitle);
+//	 	             ->withData($this->data['titolo_dragdrop']);
+	        }
+		} else if ($this->_clozeType == ADA_SLOT_TEST_SIMPLICITY) {
+			//titolo box drag'n'drop
+			$this->addTextInput('titolo_dragdrop', translateFN('Titolo box drag\'n\'drop (lasciare vuoto se non usato)').':')
+			->setName('titolo_dragdrop')
+			->withData($this->data['titolo_dragdrop']);
+			
+		}
+        
+        
     }
+    
+
 }

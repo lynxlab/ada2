@@ -17,6 +17,7 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
 
 	protected $boxPosition;
 	protected $apostrophe;
+	protected $colAnswerMode;
 
 	protected $tableData = null;
 	protected $order_points = null;
@@ -41,7 +42,15 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
 
 		//fifth character
 		$this->boxPosition = $this->tipo{4};
+		//sixth character
 		$this->apostrophe = $this->tipo{5};
+		// seventh character, if it's there
+		if ((strlen($this->tipo)>6))
+			$this->colAnswerMode = $this->tipo{6};
+		else
+// 			$this->colAnswerMode = ADA_MULTIPLE_TEST_OK_WHOLE_COL;
+			$this->colAnswerMode = ADA_MULTIPLE_TEST_OK_SINGLE_CELL;
+		
 		return true;
 	}
 
@@ -60,16 +69,33 @@ class QuestionMultipleClozeTest extends QuestionClozeTest
 	protected function renderingHtml(&$ref = null,$feedback=false,$rating=false,$rating_answer=false) {
 		if (!$this->display) return new CText(''); //if we don't have to display this question, let's return an empty item
 
-		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR) {
-			$rating = true;
-			$rating_answer = true;
-		}
+		/*
+		 * @author giorgio 19/feb/2014 commented out
+			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR) {
+				$rating = true;
+				$rating_answer = true;
+			}
+		*/
 
 		$out = parent::renderingHtml($ref,$feedback,$rating,$rating_answer);
-
+		
 		$li = new CLi();
 		$li->setAttribute('class', 'answer_cloze_multiple_test');
-		$this->buildDragDropElements($li,$this->getPreparedText($feedback,$rating,$rating_answer));
+		
+		/**
+		 * @author giorgio 19/set/2014
+		 *
+		 * Do the drag drop elements if $this->testo has
+		 * some <cloze> tag inside.
+		 */
+		$doDragDropBox = (preg_match(self::regexpCloze, $this->testo)!==0);
+		
+		if ($doDragDropBox) {
+			$this->buildDragDropElements($li,$this->getPreparedText($feedback,$rating,$rating_answer));
+		} else {
+			$li->addChild(new CText($this->testo));			
+		}
+		
 		$ref->addChild($li);
 
 		return $out;
@@ -294,8 +320,16 @@ public function countSpanAndRemoveClozeMarker($params) {
 		if ($this->feedback) {
 			$tableAnswers = $this->getAnswersTableData();
 			$givenAnswers = $this->prepareGivenAnswer($this->givenAnswer['risposta'][self::POST_ANSWER_VAR]);
-
-			if($this->isAGivenAnswer($ordine,$givenAnswers)) {
+			
+			/**
+			 * giorgio 17/dic/2013
+			 * modified if condition to not show the
+			 * right answer instead of the given ones.
+			 * Was:
+			 * 
+			 * if($this->isAGivenAnswer($ordine,$givenAnswers)) {
+			 */
+			if($this->isAGivenAnswer($ordine,$tableAnswers)) {
 				$element = CDOMElement::create('ul','id:drop'.$this->id_nodo.'_'.$new_ordine.', class:sortable drop'.$this->id_nodo);
 				$return = $element->getHtml();
 			}
@@ -317,8 +351,9 @@ public function countSpanAndRemoveClozeMarker($params) {
 		}
 		else {
 			$popup = '';
-			$dragBox = CDOMElement::create('ul','id:drop'.$this->id_nodo.'_'.$new_ordine.', class:sortable drop'.$this->id_nodo);
-			if ($_SESSION['sess_id_user_type'] != AMA_TYPE_STUDENT) {
+			$dragBox = CDOMElement::create('ul','class:sortable drop'.$this->id_nodo);
+			$dragBox->setAttribute('id', 'drop'.$this->id_nodo.'_'.$new_ordine );
+			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 				if (!empty($answer)) {
 					$ordine = $answer->ordine;
 					$value = $answer->testo;
@@ -332,11 +367,13 @@ public function countSpanAndRemoveClozeMarker($params) {
 
 				$showItEmpty = false;
 				$tableData = $this->getTableData();
-				foreach($tableData['answers'] as $array) {
-					foreach($array as $ordini) {
-						if (in_array($ordine,$ordini)) {
-							$showItEmpty = true;
-							break;
+				if (is_array($tableData['answers'])) {
+					foreach($tableData['answers'] as $array) {
+						foreach($array as $ordini) {
+							if (in_array($ordine,$ordini)) {
+								$showItEmpty = true;
+								break;
+							}
 						}
 					}
 				}
@@ -379,6 +416,42 @@ public function countSpanAndRemoveClozeMarker($params) {
 						foreach($givenAnswers[$k][$j] as $ordine) {
 							if ($this->isAnswerCorrect($answer, $ordine)) {
 								$orders[] = $ordine;
+							}
+						}
+					}
+				}
+			}
+		}
+		return $orders;
+	}
+	
+	/**
+	 * Return order array that matches in both parameter,
+	 * looseCompare means that any givenAnswer shall be matched
+	 * against the corresponding column of the correct answer.
+	 * 
+	 * NOTE: this method gets called instead of compareGivenAnswersWithTableAnswers
+	 * if $colAnswerMode == ADA_MULTIPLE_TEST_OK_WHOLE_COL
+	 *
+	 * @author giorgio 16/dic/2013
+	 *
+	 * @param array $risposte
+	 * @param array $risposte
+	 *
+	 * @return array
+	 */
+	protected function looseCompareGivenAnswersWithTableAnswers($givenAnswers,$answers) {
+		$orders = array();
+		if ($givenAnswers) {
+			foreach ($answers as $numRow=>$rowAnswers) {
+				foreach ($rowAnswers as $numCol=>$answer) {
+					if (!empty($givenAnswers)) {
+						foreach ($givenAnswers as $givenAnswerNumRow=>$givenAnswerRow) {
+							if (isset ($givenAnswerRow[$numCol]) &&
+							$this->isAnswerCorrect($answer, $givenAnswerRow[$numCol][0])) {
+								$orders[] = $givenAnswerRow[$numCol][0];
+								unset ($givenAnswerRow[$numCol]);
+								break;
 							}
 						}
 					}
@@ -447,7 +520,16 @@ public function countSpanAndRemoveClozeMarker($params) {
 		if (is_array($data) && !empty($data)) {
 			$tableAnswers = $this->getAnswersTableData();
 			$givenAnswers = $this->prepareGivenAnswer($data[self::POST_ANSWER_VAR]);
-			$validOrders = $this->compareGivenAnswersWithTableAnswers($givenAnswers, $tableAnswers);
+			/**
+			 * giorgio, modified 19/dic/2013
+			 * 
+			 * calls the appropriate compareGivenAnswerWithTableAnswer method
+			 * based on the colAnswerMode value
+			 */
+			if ($this->colAnswerMode== ADA_MULTIPLE_TEST_OK_WHOLE_COL )
+				$validOrders = $this->looseCompareGivenAnswersWithTableAnswers($givenAnswers, $tableAnswers);
+			else
+				$validOrders = $this->compareGivenAnswersWithTableAnswers($givenAnswers, $tableAnswers);
 
 			if (!empty($validOrders)) {
 				$answers_points = $this->getOrderPoints();
@@ -548,26 +630,66 @@ public function countSpanAndRemoveClozeMarker($params) {
 		$delRow->addChild(CDOMElement::create('div','class:deleteSilk,onclick:delRow(this);'));
 		$delCol = CDOMElement::create('th','class:colButton');
 		$delCol->addChild(CDOMElement::create('div','class:deleteSilk,onclick:delCol(this);'));
+		
+		/**
+		 * giorgio 20/gen/2014
+		 *
+		 * build the first column html element as requested in
+		 * $tableData['firstcol_th']: <th> or <td>
+		 */
+		if (!$edit && strlen($tableData['firstcol_th'])>0) {
+			$firstColElement = $tableData['firstcol_th'];
+		} else {
+			$firstColElement = 'th';
+		}
 
 		$container = CDOMElement::create('div');
+		
+		/**
+		 * giorgio 09/gen/2014
+		 * adds a hidden span containing the number of answer a student must give
+		 */
+		$nonEmptyAnswers = 0;
+		self::recursiveCountAnswers ($nonEmptyAnswers, $tableData['answers']);
+		if ($nonEmptyAnswers>0)
+		{
+			$nonEmptySpan = CDOMElement::create('span','id:must-data_'.$this->id_nodo);
+			$nonEmptySpan->setAttribute('style', 'display:none');
+			$nonEmptySpan->addChild (new CText($nonEmptyAnswers)); 
+			$container->addChild ($nonEmptySpan);
+		}				
+		
 		$table = CDOMElement::create('table','class:multipleClozeTable');
 		$container->addChild($table);
 
 		$thead = CDOMElement::create('thead');
 		$table->addChild($thead);
-
+		
 		//table header
 		if (!empty($tableData['cols_label'])) {
 			$header = CDOMElement::create('tr');
 			$thead->addChild($header);
-
-			$th = CDOMElement::create('th','class:colButton empty');
+			
+			$th = CDOMElement::create('th', 'class:thVert');
+			/**
+			 * giorgio 20/gen/2014
+			 * moved reset table button and the end of the table
+			 * (see $divResetButton towards the end of this method )
+			 * to make room for row0 label, placed here
+			 */
 			if ($edit) {
-				$button = CDOMElement::create('button','onclick:emptyTable();');
-				$button->setAttribute('type', 'button');
-				$button->addChild(new CText(translateFN('Svuota Tabella')));
-				$th->addChild($button);
+				$row = CDOMElement::create('text','class:inputAnswers rows_label');
+				$row->setAttribute('value',htmlentities($tableData['row0_label'], ENT_COMPAT | ENT_HTML401, ADA_CHARSET));
+				$row->setAttribute('name', QuestionMultipleClozeTest::postVariable.'[row0_label]');
+				$th->addChild($row);
+			} else {
+				$trimmed = trim($tableData['row0_label']);
+				if (empty($trimmed)) {
+					$th->setAttribute('class',trim($th->getAttribute('class').' empty'));
+				}
+				$th->addChild(new CText($tableData['row0_label']));
 			}
+					
 			$header->addChild($th);
 
 			for($i=0;$i<$tableData['cols'];$i++) {
@@ -576,7 +698,7 @@ public function countSpanAndRemoveClozeMarker($params) {
 
 				if ($edit) {
 					$col = CDOMElement::create('text','class:inputAnswers cols_label');
-					$col->setAttribute('value', $tableData['cols_label'][$i]);
+					$col->setAttribute('value', htmlentities($tableData['cols_label'][$i], ENT_COMPAT | ENT_HTML401, ADA_CHARSET));
 					$col->setAttribute('name', QuestionMultipleClozeTest::postVariable.'[cols_label][]');
 					$th->addChild($col);
 				}
@@ -602,12 +724,12 @@ public function countSpanAndRemoveClozeMarker($params) {
 			$tbody->addChild($tr);
 
 			if (!empty($tableData['rows_label'])) {
-				$th = CDOMElement::create('th', 'class:thVert');
+				$th = CDOMElement::create($firstColElement, 'class:thVert');
 				$tr->addChild($th);
 
 				if ($edit) {
 					$row = CDOMElement::create('text','class:inputAnswers rows_label');
-					$row->setAttribute('value',$tableData['rows_label'][$i]);
+					$row->setAttribute('value',htmlentities($tableData['rows_label'][$i], ENT_COMPAT | ENT_HTML401, ADA_CHARSET));
 					$row->setAttribute('name', QuestionMultipleClozeTest::postVariable.'[rows_label][]');
 					$th->addChild($row);
 				}
@@ -622,7 +744,7 @@ public function countSpanAndRemoveClozeMarker($params) {
 
 			for($j=0;$j<$tableData['cols'];$j++,$y++) {
 				$td = CDOMElement::create('td');
-
+				
 				//Drag'n'drop cell
 				$input = CDOMElement::create('hidden','class:inputAnswers,id:dropInput'.$this->id_nodo.'_'.$y);
 				if ($edit) {
@@ -636,36 +758,183 @@ public function countSpanAndRemoveClozeMarker($params) {
 				}
 
 				if ($this->feedback) {
+					
 					$ddUl = CDOMElement::create('div');
 					$givenAnswers = $this->prepareGivenAnswer($this->givenAnswer['risposta'][self::POST_ANSWER_VAR]);
 					$ordini = $givenAnswers[$i][$j];
-					foreach($ordini as $order) {
-						if ($this->isAnswerCorrect($tableData['answers'][$i][$j], $order)) {
-							$class = 'right_answer_test';
-							$score = $this->searchChild($order, 'ordine')->correttezza;
+					$allAnswers = $tableData['answers'][$i][$j];
+					
+					if ($this->colAnswerMode == ADA_MULTIPLE_TEST_OK_SINGLE_CELL) { 
+						/**
+						 * giorgio 19/dic/2013
+						 * 
+						 * added above $allAnswer var, to display all
+						 * the answers and not just the given ones.
+						 * 
+						 * The corresponding below foreach was:
+						 * 
+						 * foreach($ordini as $order) { 
+						 */
+						foreach($allAnswers as $order) {
+							/**
+							 * giorgio 19/dic/2013
+							 *
+							 * modified the if condition to check for the correct
+							 * answer when showing all the answers and not just
+							 * the given ones.
+							 *
+							 * Was:
+							 *
+							 * if ($this->isAnswerCorrect($tableData['answers'][$i][$j], $order)) {
+							 *
+							 */						
+							if ($this->isAnswerCorrect($givenAnswers[$i][$j], $order)) {
+								$class = 'right_answer_test';
+								$score = $this->searchChild($order, 'ordine')->correttezza;
+							}
+							else {
+								$class = 'wrong_answer_test';
+								$score = 0;
+							}
+							$div = CDOMElement::create('div','class:'.$class);
+							$span = CDOMElement::create('span','class:answerPopup');
+							
+							/**
+							 * giorgio 19/dic/2013
+							 * 
+							 * added below if to display an empty cell with correct
+							 * answer in its popup if the answer was not given, and
+							 * to display the given anser with the correction in the
+							 * popup if the given answer was wrong.
+							 * 
+							 * There was no if/else and the below $span->addChild was:
+							 * 
+							 *$span->addChild(new CText($this->exerciseWords[$order])); 
+							 */
+	
+							if (empty($givenAnswers[$i][$j][0])) {
+								$displayWord = "&nbsp;";
+								$span->setAttribute('class', $span->getAttribute('class').'  answer_dragdrop_test empty_answer_test');
+							}
+							else $displayWord = $this->exerciseWords[$givenAnswers[$i][$j][0]]; 
+							
+							$span->addChild(new CText($displayWord));
+							$div->addChild($span);
+							if ($this->rating || $this->rating_answer) {
+								if ($class == 'wrong_answer_test' && strlen($order)>0) $span->setAttribute('title', $this->id_nodo.'_'.$order);
+	
+								$popup = CDOMElement::create('div','id:popup_'.$this->id_nodo.'_'.$order);
+								$popup->setAttribute('style','display:none;');
+								if ($this->rating) $popup->addChild(new CText($score.' '.translateFN('Punti')));
+								/**
+								 * giorgio 18/dic/2013
+								 * added if $this->rating_answer to show right answer in the popup
+								 */
+								if ($this->rating_answer && $class!='right_answer_test') {
+									$righAnswerPos = $tableData['answers'][$i][$j][0];
+									$popup->addChild(new CText($this->exerciseWords[$righAnswerPos]));
+								}
+								$ddUl->addChild($popup);
+							}
+							$ddUl->addChild($div);
 						}
-						else {
-							$class = 'wrong_answer_test';
-							$score = 0;
-						}
-						$div = CDOMElement::create('div','class:'.$class);
-						$span = CDOMElement::create('span','class:answerPopup');
-						if (isset($this->exerciseWords[$order])) $span->addChild(new CText($this->exerciseWords[$order]));
-						$div->addChild($span);
-						if ($this->rating || $this->rating_answer) {
-							$span->setAttribute('title', $this->id_nodo.'_'.$order);
+					} // ends if ($this->colAnswerMode == ADA_MULTIPLE_TEST_OK_SINGLE_CELL)
+					else if ($this->colAnswerMode == ADA_MULTIPLE_TEST_OK_WHOLE_COL) {
+																	
+						$displayWord = null;
+						$popupWord = null;
+						/**
+						 * build the array of the right answers, i.e. the column
+						 */
+						$checkAnswers = array ();
+						foreach ($tableData ['answers'] as $aRow => $ansRow) $checkAnswers [] = $tableData ['answers'][$aRow][$j][0];
 
-							$popup = CDOMElement::create('div','id:popup_'.$this->id_nodo.'_'.$order);
-							$popup->setAttribute('style','display:none;');
-							$popup->addChild(new CText($score.' '.translateFN('Punti')));
-							$ddUl->addChild($popup);
+						/**
+						 * build the available right answer array for each column
+						 * this contains all the possible answers minus the
+						 * right answer the student has given, in the current or future rows
+						 */
+						if (!isset($availableAnswers[$j])) {
+							$availableAnswers[$j] = $this->exerciseWords;
+							foreach ($givenAnswers as $gnumRow=>$givenAnswersRow) {
+								if ($this->isAnswerCorrect($checkAnswers, $givenAnswers[$gnumRow][$j][0])) unset ($availableAnswers[$j][$givenAnswers[$gnumRow][$j][0]]);
+							}
 						}
-
-						$ddUl->addChild($div);
-					}
-				}
+						
+						foreach($ordini as $order) {
+							
+							if ($this->isAnswerCorrect ($checkAnswers, $order)) {
+								$class = 'right_answer_test';
+								$score = $this->searchChild ($order, 'ordine')->correttezza;								
+							} else {
+								$class = 'wrong_answer_test';
+								$score = 0;
+							}
+							
+							$div = CDOMElement::create ('div', 'class:' . $class);
+							$span = CDOMElement::create ('span', 'class:answerPopup');
+							
+							if (empty ($givenAnswers [$i][$j][0])) {
+								$displayWord = "&nbsp;";
+								$span->setAttribute ('class', $span->getAttribute ('class') . ' answer_dragdrop_test empty_answer_test');
+							} else
+								if (is_null($displayWord)) $displayWord = $this->exerciseWords [$givenAnswers [$i][$j][0]];
+								
+							$span->addChild (new CText ($displayWord));
+							$div->addChild ($span);
+								
+							if ($this->rating || $this->rating_answer) {
+								
+								$popupOrder = null;
+								$popupWord = null;
+								if ($score <= 0)
+								{
+									// find the first available answer to be put in the popup
+									foreach ($checkAnswers as $answerIndex)
+									{										
+										if (strlen($answerIndex)>0 && isset($availableAnswers[$j][$answerIndex])) {
+											$popupWord = $availableAnswers[$j][$answerIndex];
+											$popupOrder = $answerIndex;
+											unset ($availableAnswers[$j][$answerIndex]);
+											break;
+										}
+									}
+								}
+								
+								// if popupOrder is null here, than it's a right answer
+								// or a right answer whose cell should be left empty
+								if (is_null($popupOrder) && !empty ($givenAnswers [$i][$j][0]))
+								{ 
+									// generate a uniqe number for proper popup display if it's needed
+									$popupOrder = crc32($displayWord);
+								}
+								
+								if ($class == 'wrong_answer_test' && strlen($popupOrder)>0) $span->setAttribute ('title', $this->id_nodo . '_' . $popupOrder);
+								
+								$popup = CDOMElement::create ('div', 'id:popup_' . $this->id_nodo . '_' . $popupOrder);
+								$popup->setAttribute ('style', 'display:none;');
+								
+								if ($this->rating) {
+									$popup->addChild (new CText ($score . ' ' . translateFN ('Punti')));
+									$ddUl->addChild ($popup);
+								}
+								/**
+								 * giorgio 18/dic/2013
+								 * added if $this->rating_answer to show right answer in the popup
+								*/
+								if ($this->rating_answer && strlen($popupOrder)>0 && $class != 'right_answer_test') {
+									if (is_null($popupWord)) $popupWord = "&nbsp;";
+									$popup->addChild (new CText ($popupWord));
+									$ddUl->addChild ($popup);
+								}
+							}								
+							$ddUl->addChild ($div);
+						} // ends foreach
+					} // ends else if ($this->colAnswerMode == ADA_MULTIPLE_TEST_OK_WHOLE_COL)
+				} // ends if feedback
 				else {
-					$ddUl = CDOMElement::create('ul','id:drop'.$this->id_nodo.'_'.$y);
+					$ddUl = CDOMElement::create('ul');
+					$ddUl->setAttribute('id','drop'.$this->id_nodo.'_'.$y);
 					$ddUl->setAttribute('class', 'multiDragDropBox sortable drop'.$this->id_nodo);
 					if ($edit || $_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 						$ordini = $tableData['answers'][$i][$j];
@@ -673,23 +942,23 @@ public function countSpanAndRemoveClozeMarker($params) {
 							$input->setAttribute('value', implode(',',$ordini));
 							foreach($this->_children as $v) {
 								if (in_array($v->ordine,$ordini)) {
-									$ddUl->addChild($this->createLiItem($v->ordine,$v->testo,true,$v->correttezza));
+									$outText = $v->testo;
+									$ddUl->addChild($this->createLiItem($v->ordine,$outText,true,$v->correttezza));
 								}
 							}
 						}
 					}
 				}
 
-				$td->addChild($input);
-				$td->addChild($ddUl);
-				$tr->addChild($td);
-			}
+				if (isset ($input)) $td->addChild($input);
+				if (isset ($ddUl)) $td->addChild($ddUl);
+				if (isset($td))    $tr->addChild($td);
+			} // ends inner for loop
 
 			if ($edit) {
 				$tr->addChild($delRow);
 			}
-		}
-
+		} // ends main loop
 		$tfoot = CDOMElement::create('tfoot');
 		$table->addChild($tfoot);
 
@@ -713,12 +982,16 @@ public function countSpanAndRemoveClozeMarker($params) {
 
 		//clonable cell
 		$td = CDOMElement::create('td','id:clonableCell');
+		$ddUl = CDOMElement::create('ul');
+		
 		$input = CDOMElement::create('hidden','id:dropInput'.$this->id_nodo.'_cell');
 		$input->setAttribute('name', QuestionMultipleClozeTest::postVariable.'[answers][row][]');
 		$input->setAttribute('value', '');
-		$ddUl = CDOMElement::create('ul','id:drop'.$this->id_nodo.'_cell');
-		$ddUl->setAttribute('class', 'multiDragDropBox sortable drop'.$this->id_nodo);
 		$td->addChild($input);
+		
+		$ddUl->setAttribute('id','drop'.$this->id_nodo.'_cell');
+		$ddUl->setAttribute('class', 'multiDragDropBox sortable drop'.$this->id_nodo);
+		
 		$td->addChild($ddUl);
 		$tr->addChild($td);
 
@@ -743,7 +1016,46 @@ public function countSpanAndRemoveClozeMarker($params) {
 		$clone = clone $delCol;
 		$clone->setAttribute('id','clonableDelCol');
 		$tr->addChild($clone);
-
+		
+		if ($edit) {
+			/**
+			 * giorgio 20/gen/2014
+			 * added 'first column as header/cell' select
+			 * and moved empty table button down here
+			 */
+			$divFirstCol = CDOMElement::create('div','class:multipleClozeFirstColDiv');
+			
+			$values = array ('th'=>translateFN('Intestazioni'),'td'=>translateFN('Celle'));
+			
+			$select = CDOMElement::create('select','class:firstcol_th');
+			$select->setAttribute('name', QuestionMultipleClozeTest::postVariable.'[firstcol_th]');
+			
+			$selectedValue = (strlen($tableData['firstcol_th'])>0) ? $tableData['firstcol_th'] : 'th';
+			
+			foreach ($values as $key=>$val) {
+				$option = CDOMElement::create('option');
+				if ($key == $selectedValue) $option->setAttribute('selected', 'selected');
+				$option->setAttribute('value', $key);
+				$option->addChild (new CText($val));
+				$select->addChild ($option);
+			}
+			
+			$divFirstCol->addChild(new CText(translateFN('La prima colonna è di:').' '));
+			$divFirstCol->addChild($select);					
+			
+			$divResetButton = CDOMElement::create('div','class:multipleClozeResetButtonDiv');
+				$button = CDOMElement::create('button','onclick:emptyTable();');
+				$button->setAttribute('type', 'button');
+				$button->addChild(new CText(translateFN('Svuota Tabella')));			
+			$divResetButton->addChild($button);
+			
+			$containerActions = CDOMElement::create('div','class:multipleClozeActionsContainer');			
+			$containerActions->addChild($divFirstCol);
+			$containerActions->addChild($divResetButton);
+			
+			$container->addChild ($containerActions);
+		}
+		
 		return $container;
 	}
 
@@ -758,7 +1070,7 @@ public function countSpanAndRemoveClozeMarker($params) {
 		$updateData = false;
 		if ($data['operation'] == 'save') {
 			$updateData = true;
-			$titolo_dragdrop = $this->setTableData($data['rows_label'], $data['cols_label'], $data['answers']);
+			$titolo_dragdrop = $this->setTableData($data['rows_label'], $data['cols_label'], $data['answers'],$data['row0_label'],$data['firstcol_th']);
 		}
 		else if ($data['operation'] == 'reset') {
 			$updateData = true;
@@ -808,6 +1120,8 @@ public function countSpanAndRemoveClozeMarker($params) {
 				'cols_label'=>array(''),
 				'answers'=>array(
 				),
+				'row0_label'=>'',
+				'firstcol_th'=>'th'
 			);
 		}
 		
@@ -823,7 +1137,7 @@ public function countSpanAndRemoveClozeMarker($params) {
 	 * 
 	 * @return string
 	 */
-	protected function setTableData($rows_label,$cols_label,$answers) {
+	protected function setTableData($rows_label,$cols_label,$answers,$row0_label='',$firstcol_th='th') {
 		if (!empty($answers)) {
 			foreach($answers as $k=>$array) {
 				if (!empty($array)) {
@@ -840,6 +1154,8 @@ public function countSpanAndRemoveClozeMarker($params) {
 			'rows_label'=>$rows_label,
 			'cols_label'=>$cols_label,
 			'answers'=>$answers,
+			'row0_label'=>$row0_label,
+			'firstcol_th'=>$firstcol_th
 		);
 
 		return serialize($this->tableData);
@@ -874,5 +1190,10 @@ public function countSpanAndRemoveClozeMarker($params) {
 		}
 
 		return $dragItem;
+	}
+	
+	private static function recursiveCountAnswers (&$nonEmptyAnswers, $answersArray) {
+		if (is_array($answersArray)) foreach ($answersArray as $k=>$temp) self::recursiveCountAnswers($nonEmptyAnswers, $temp);
+		else if (strlen($answersArray)>0) $nonEmptyAnswers++;
 	}
 }

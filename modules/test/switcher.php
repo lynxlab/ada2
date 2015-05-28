@@ -81,18 +81,47 @@ $content_dataAr = array(
 	'back_link' => $go_back_link->getHtml(),
 );
 
-if (isset($other_node_data['notes'])) $content_dataAr['notes'] = $other_node_data['notes'];
-if (isset($other_node_data['private_notes'])) $content_dataAr['personal'] = $other_node_data['private_notes'];
+$content_dataAr['notes'] = isset($other_node_data['notes']) ? $other_node_data['notes'] : '';
+$content_dataAr['personal'] = isset($other_node_data['private_notes']) ? $other_node_data['private_notes'] : '';
+
+
+
+if ($log_enabled)
+    $content_dataAr['go_history'] = isset($go_history) ? $go_history : '';
+else
+    $content_dataAr['go_history'] = translateFN("cronologia");
 
 if ($reg_enabled) {
-    $content_dataAr['add_bookmark'] = $add_bookmark;
+    $content_dataAr['add_bookmark'] = isset($add_bookmark) ? $add_bookmark : '';
 } else {
     $content_dataAr['add_bookmark'] = "";
 }
 
-if (isset($bookmark)) $content_dataAr['bookmark'] = $bookmark;
-if (isset($go_bookmarks)) $content_dataAr['go_bookmarks_1'] = $go_bookmarks;
-if (isset($go_bookmarks)) $content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+$content_dataAr['bookmark'] = isset($bookmark) ? $bookmark : '';
+$content_dataAr['go_bookmarks_1'] = isset($go_bookmarks) ? $go_bookmarks : '';
+$content_dataAr['go_bookmarks_2'] = isset($go_bookmarks) ? $go_bookmarks : '';
+
+if ($mod_enabled) {
+    $content_dataAr['add_node'] = $add_node;
+    $content_dataAr['edit_node'] = $edit_node;
+    $content_dataAr['delete_node'] = $delete_node;
+    $content_dataAr['send_media'] = $send_media;
+    $content_dataAr['add_exercise'] = $add_exercise;
+    $content_dataAr['add_note'] = $add_note;
+    $content_dataAr['add_private_note'] = $add_private_note;
+    $content_dataAr['edit_note'] = $edit_note;
+    $content_dataAr['delete_note'] = $delete_note;
+    $content_dataAr['import_exercise'] = $import_exercise;
+} else {
+    $content_dataAr['add_node'] = '';
+    $content_dataAr['edit_node'] = '';
+    $content_dataAr['delete_node'] = '';
+    $content_dataAr['send_media'] = '';
+    $content_dataAr['add_note'] = '';
+    $content_dataAr['add_private_note'] = '';
+    $content_dataAr['edit_note'] = '';
+    $content_dataAr['delete_note'] = '';
+}
 
 if ($com_enabled) {
     $content_dataAr['ajax_chat_link'] = $ajax_chat_link;
@@ -116,5 +145,12 @@ $layout_dataAr['JS_filename'] = array(
 $layout_dataAr['CSS_filename'] = array(
 	JQUERY_UI_CSS
 );
+
+$imgAvatar = $userObj->getAvatar();
+$avatar = CDOMElement::create('img','src:'.$imgAvatar);
+$avatar->setAttribute('class', 'img_user_avatar');
+
+$content_dataAr['user_modprofilelink'] = $userObj->getEditProfilePage();
+$content_dataAr['user_avatar'] = $avatar->getHtml();
 
 ARE::render($layout_dataAr, $content_dataAr);
