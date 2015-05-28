@@ -29,7 +29,7 @@ class CDOMElement {
   public static function getElementTemplate($element_class) {
     $core_attributes  = '%id% %class% %style% %title%';
     $i18n_attributes  = '%lang% %dir%';
-    $event_attributes = '%onclick% %ondblclick% %onmousedown% %onmouseup% %onmouseover% %onmousemove% %onomuseout% %onkeypress% %onkeydown% %onkeyup%';
+    $event_attributes = '%onclick% %ondblclick% %onmousedown% %onmouseup% %onmouseover% %onmousemove% %onmouseout% %onkeypress% %onkeydown% %onkeyup%';
 
     $attrs = "$core_attributes $i18n_attributes $event_attributes"; 
     

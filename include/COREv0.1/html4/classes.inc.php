@@ -101,6 +101,7 @@ abstract class CBaseAttributesElement extends CBaseElement
     protected $onkeydown;
     protected $onkeyup;
     protected $role;
+    protected $datas;
 
     public function __construct() {
 
