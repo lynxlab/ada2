@@ -501,3 +501,30 @@ html, body {
 #container {
     padding-top:0;
 }
+
+#cookies { 
+  width: 100%;
+  margin: 0;
+  padding: 0.5em 0 0.5em 0;
+  position: fixed;
+  bottom: 0;
+  background: rgba(86,86,86,0.85);
+  border-bottom: solid 1px rgb(225,225,225);
+  display: none;
+  z-index: 999;
+}
+ 
+#cookies p {
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.35);
+  text-align: center; 
+  color: rgb(255,255,250);
+  margin: 4px;
+  line-height: 30px;
+}
+ 
+#cookies #cookie-accept {
+  padding-right: 10px;
+  cursor: pointer;
+  display: inline;
+  float:right;
+}
