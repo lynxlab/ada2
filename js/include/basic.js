@@ -141,25 +141,22 @@ function validateContent(elements, regexps, formName) {
  * 
  * cookie-policy banner management, in plain javascript
  */
-window.onload=(function(oldLoad){
-	  return function(){
-		if (typeof(oldLoad)=='function') oldLoad();
-		
-	    elem = document.getElementById("cookies");
-		
-		if (readCookie("ada_comply_cookie") == null) {
-			document.getElementById("cookies").style.display = 'block';
-			document.getElementById("cookie-accept").onclick = function(e) {
-				  days = 365; //number of days to keep the cookie
-				  myDate = new Date();
-				  myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
-				  document.cookie = "ada_comply_cookie = comply_yes; expires = " + myDate.toGMTString(); //creates the cookie: name|value|expiry
-				  if (elem != null) elem.parentNode.removeChild(elem);
-			}
+function checkCookie() {
+
+	elem = document.getElementById("cookies");
+	
+	if (readCookie("ada_comply_cookie") == null) {
+		document.getElementById("cookies").style.display = 'block';
+		document.getElementById("cookie-accept").onclick = function(e) {
+			  days = 365; //number of days to keep the cookie
+			  myDate = new Date();
+			  myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
+			  document.cookie = "ada_comply_cookie = comply_yes; expires = " + myDate.toGMTString(); //creates the cookie: name|value|expiry
+			  if (elem != null) elem.parentNode.removeChild(elem);
 		}
-		else if (elem != null) elem.parentNode.removeChild(elem);
-	  }
-	})(window.onload)
+	}
+	else if (elem != null) elem.parentNode.removeChild(elem);
+}
 
 function readCookie(name) {
     var nameEQ = name + "=";
@@ -171,3 +168,7 @@ function readCookie(name) {
     }
     return null;
 }
+
+if (window.attachEvent) {window.attachEvent('onload', checkCookie);}
+else if (window.addEventListener) {window.addEventListener('load', checkCookie, false);}
+else {document.addEventListener('load', checkCookie, false);}

@@ -23,7 +23,7 @@ $variableToClearAR = array('node', 'layout', 'course', 'course_instance');
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_VISITOR, AMA_TYPE_AUTHOR, AMA_TYPE_TUTOR, AMA_TYPE_SWITCHER);
+$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_VISITOR, AMA_TYPE_AUTHOR, AMA_TYPE_TUTOR, AMA_TYPE_SWITCHER, AMA_TYPE_ADMIN);
 /**
  * Performs basic controls before entering this module
  */
@@ -32,6 +32,7 @@ $neededObjAr = array(
   AMA_TYPE_VISITOR      => array('layout'),
   AMA_TYPE_AUTHOR       => array('layout'),
   AMA_TYPE_TUTOR => array('layout'),
+  AMA_TYPE_ADMIN => array('layout'),
   AMA_TYPE_SWITCHER => array('layout')
 );
 
@@ -88,6 +89,22 @@ elseif ($filename != false) {
 	    if (strlen(end($underscoreDelimited))===2) {
 	    	unset($underscoreDelimited[count($underscoreDelimited)-1]);
 	    }
+
+            /*
+             * attempt to find the file in the user actual language
+             */
+            if (is_object($userObj)) {
+                $userActualLangId = $userObj->getLanguage();
+                if ($userActualLangId != false) {
+                    $userActualLang = Translator::getLanguageInfoForLanguageId($userActualLangId);
+                    $userActualLangCod = $userActualLang['codice_lingua'];                    
+                }
+                if (isset($userActualLangCod)) {
+                    $filename = implode('_', $underscoreDelimited).'_'.$userActualLangCod.$extension;
+                    $foundFile = is_file(ROOT_DIR . '/docs/' . $filename) && is_readable(ROOT_DIR . '/docs/' . $filename);
+                }
+            }
+
 	    /**
 	     * build the array of candidate languages
 	     */
