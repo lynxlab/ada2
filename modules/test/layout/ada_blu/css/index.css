@@ -29,13 +29,15 @@
 	padding-bottom:25px;
 	line-height: 25px;
 	border-bottom: 1px solid #999999;
+	float:left;
+	width: 100%;
 }
 
 /* lista domande */
 ul.topic_group_test
 {
-	list-style-image:url('../img/punto-elenco.png');
-	list-style:none;
+	/* list-style-image:url('../img/punto-elenco.png'); */
+	 list-style:none;  
 }
 
 /* Domande_principali */
@@ -59,6 +61,11 @@ ul.topic_group_test
 	margin:20px 0px;
 }
 
+.didascalia-field {
+
+	text-align: center;
+}
+
 /* domande */
 .question_test {
 	margin: 5px 0px 10px;
@@ -71,8 +78,13 @@ ul.topic_group_test
 .question_group_test {
 	padding-left: 0px;
 	list-style:none;
-}
-
+	/* and */
+	float: left;
+   margin-left: 10px;
+   width: 950px;
+   }
+   
+   
 /* indentazione con stimolo video a sinistra */
 
 .stimolo_sx {
@@ -82,7 +94,7 @@ ul.topic_group_test
 }
 
 /* testo nelle form */
-input {
+input, button {
 	font-family:"Courier New", Courier, monospace;
 	font-size: 12px;
 }
@@ -111,6 +123,11 @@ input {
 ul.answer_group_test {
 	list-style:none;
 	margin:15px;
+	/* and */
+	border-radius: 10px 10px 10px 10px;
+	background-color: white;
+    padding: 5px;
+    line-height: 1.4em;
 }
 
 .extra_answer_test {
@@ -119,7 +136,7 @@ ul.answer_group_test {
 	height:75px;
 }
 
-.question_test {
+ul.question_group_test li.question_test {
 	margin: 5px 0px 10px;
 	font-weight:normal;
 	font-size:12px;
@@ -156,9 +173,13 @@ ul.answer_group_test {
 	
 }
 
+
+
+/*  bottoniera finale */
 .submit_test {
 	text-align:center;
 	min-height: 30px;
+	margin: 10px 0;
 }
 
 .submit_test #redo,
@@ -634,6 +655,7 @@ input.right_answer_test, select.right_answer_test {
 	border-collapse: collapse;
 }
 
+
 .multipleClozeTable th,
 .multipleClozeTable td {
 	vertical-align: middle !important;
@@ -683,7 +705,7 @@ input.right_answer_test, select.right_answer_test {
 
 .expandStimolo,
 .zoomStimolo {
-	display: inline;
+/* 	display: inline; */
 	text-decoration:underline;
 	margin-right : 10px;
 }
@@ -692,8 +714,6 @@ input.right_answer_test, select.right_answer_test {
 background: url("../img/bg-bott-annulla.png") no-repeat scroll center center rgba(0, 0, 0, 0);
     border: 0 none;
     cursor: pointer;
-    font-family: verdana;
-    font-size: 11px;
     height: 29px;
     line-height: 26px;
     margin: 3px 6px;
@@ -707,8 +727,6 @@ background: url("../img/bg-bott-annulla.png") no-repeat scroll center center rgb
 background: url("../img/bg-bott-enlarge.png") no-repeat scroll center center rgba(0, 0, 0, 0);
     border: 0 none;
     cursor: pointer;
-    font-family: verdana;
-    font-size: 11px;
     height: 29px;
     line-height: 26px;
     margin: 3px 6px;
@@ -722,8 +740,6 @@ background: url("../img/bg-bott-enlarge.png") no-repeat scroll center center rgb
 background: url("../img/bg-bott-zoom.png") no-repeat scroll center center rgba(0, 0, 0, 0);
     border: 0 none;
     cursor: pointer;
-    font-family: verdana;
-    font-size: 11px;
     height: 29px;
     line-height: 26px;
     margin: 3px 6px;
@@ -927,6 +943,7 @@ input.radio_multiple_test.media {
 	padding-right: 40px;
 	margin-bottom: 10px;
 	line-height: 29px;	
+	background-size: 24px;
 }
 
 /* #contentcontent p.didascalia-translate { font-style: italic; } */

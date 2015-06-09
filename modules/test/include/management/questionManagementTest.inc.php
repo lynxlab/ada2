@@ -55,7 +55,8 @@ class QuestionManagementTest extends ManagementTest {
 			5=>0, //applicable only for certain cloze subtype
 		);
 
-		if ($_POST['step'] == 2 && isset($_SESSION['new_question'][$_GET['id_nodo_parent']])) {
+		if (isset($_POST['step']) && isset($_GET['id_nodo_parent']) && $_POST['step'] == 2 && 
+			isset($_SESSION['new_question'][$_GET['id_nodo_parent']])) {
 			$new_q = &$_SESSION['new_question'][$_GET['id_nodo_parent']];
 			$this->tipo[1] = intval($new_q['tipologia']);
 			$this->tipo[2] = intval($_POST['commento']);
@@ -198,8 +199,8 @@ class QuestionManagementTest extends ManagementTest {
 						'id_nodo_radice'=>$this->test['id_nodo'],
 						'didascalia'=>$_POST['didascalia'],
 						'ordine'=>$ordine,
-						'titolo_dragdrop'=>$_POST['titolo_dragdrop'],
-						'correttezza'=>$_POST['correttezza'],
+						'titolo_dragdrop'=>isset($_POST['titolo_dragdrop']) ? $_POST['titolo_dragdrop'] : null,
+						'correttezza'=>isset($_POST['correttezza']) ? $_POST['correttezza'] : null
 					);
 					$res = $this->saveQuestion($data);
 					unset($data);
@@ -221,7 +222,10 @@ class QuestionManagementTest extends ManagementTest {
 				if (!$bypass) {
 					$_SESSION['new_question'][$_POST['id_nodo_parent']] = $_POST;
 				}
-				$form = $this->instantiateObject($this->test['id_nodo'],$_POST,$_GET['id_nodo_parent'],$_POST['tipologia'],$_POST['cloze']);
+				$form = $this->instantiateObject($this->test['id_nodo'],$_POST,
+						isset($_GET['id_nodo_parent']) ? $_GET['id_nodo_parent'] : null,
+						isset($_POST['tipologia']) ? $_POST['tipologia'] : null,
+						isset($_POST['cloze']) ? $_POST['cloze'] : null);
 				$html = $form->getHtml();
 			}
 			else {
@@ -328,8 +332,8 @@ class QuestionManagementTest extends ManagementTest {
 					'id_nodo_parent'=>$_POST['id_nodo_parent'],
 					'tipo'=>$this->getTipo(),
 					'didascalia'=>$_POST['didascalia'],
-					'titolo_dragdrop'=>$_POST['titolo_dragdrop'],
-					'correttezza'=>$_POST['correttezza'],
+					'titolo_dragdrop'=>isset($_POST['titolo_dragdrop']) ? $_POST['titolo_dragdrop'] : null,
+					'correttezza'=>isset($_POST['correttezza']) ? $_POST['correttezza'] : null,
 				);
 
 				if ($this->saveQuestion($data,$question['id_nodo'])) {

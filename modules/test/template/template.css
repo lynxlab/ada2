@@ -793,13 +793,13 @@ ul.tableLike li {
 div.media.video {
     width: 290px;
     float:left;
-    margin-top: 40px;
+    margin-top: 15px;
 }
 
 div.media.sound {
     width: 290px;
     float:left;
-    margin-top: 40px;
+    margin-top: 15px;
 }
 
 
@@ -826,19 +826,10 @@ ul.audio  {
 }
 */
 
-ul.question_group_test.audio  {
-    width: 650px;
-    float:left;
-}
-
-ul.question_group_test.video  {
-    width: 650px;
-    float:left;
-}
-
-
+ul.question_group_test.audio,
+ul.question_group_test.video,
 ul.question_group_test.imagestimolo  {
-    width: 650px;
+    width: 70%;
     float:left;
 }
 
@@ -914,17 +905,10 @@ ul.question_group_test.imagestimolo  {
 
 /* giorgio, stimolo to the right */
 /* era -43px modificato a 0 luca */
-.rightstimolo {
-  float: right;
-  margin-top: 0px;
-}
-
+.rightstimolo,
 .rightstimolo div.media.video {
   float: right;
-  margin-top: 25px;
 }
-
-
 
 .topic_test_description .rightstimolo img {
     float: left;

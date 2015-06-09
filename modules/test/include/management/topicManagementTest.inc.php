@@ -72,7 +72,8 @@ class TopicManagementTest extends ManagementTest {
 		}
 
 		require_once(MODULES_TEST_PATH.'/include/forms/topicFormTest.inc.php');
-		$form = new TopicFormTest($test['id_nodo'],$_POST,$_GET['id_nodo_parent']);
+		$form = new TopicFormTest($test['id_nodo'],$_POST,
+				isset($_GET['id_nodo_parent']) ? $_GET['id_nodo_parent'] : null);
 
 		if ($_POST) {
 			if ($form->isValid()) {

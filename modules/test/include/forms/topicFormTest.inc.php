@@ -22,6 +22,11 @@ class TopicFormTest extends FormTest {
 		 * @author giorgio 09/ott/2013
 		 * split testo into consegna(aka testo), didascalia and stimolo (if any)
 		 */
+		if (!isset($data['testo']) || strlen($data['testo'])<=0) $data['testo'] = '';
+		if (!isset($data['titolo']) || strlen($data['titolo'])<=0) $data['titolo'] = '';
+		if (!isset($data['didascalia']) || strlen($data['didascalia'])<=0) $data['didascalia'] = '';
+		if (!isset($data['stimolo']) || strlen($data['stimolo'])<=0) $data['stimolo'] = '';
+		
 		$splittedAr = self::extractFieldsFromTesto(Node::prepareInternalLinkMediaForEditor($data['testo']), array('stimolo-field','didascalia-field'));
 		foreach ($splittedAr as $key=>$value) $data[preg_replace('/[-]\w+/', '', $key)]=$value;
 		
@@ -217,7 +222,7 @@ class TopicFormTest extends FormTest {
 		}
         $num = $this->addTextInput($random_number, $label.':')
 					->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR)
-					->withData($this->data[$random_number]);
+					->withData(isset($this->data[$random_number]) ? $this->data[$random_number] : 0);
 		if (isset($this->data[$random]) && $this->data[$random] == ADA_PICK_QUESTIONS_RANDOM) {
 			$num->setRequired();
 		}

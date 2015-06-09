@@ -23,6 +23,9 @@ class QuestionDragDropClozeFormTest extends QuestionFormTest {
 
 	public function __construct($id_test, $data, $id_nodo_parent, $isCloze, $savedExerciseType, $cloze_type) {
 		$this->_clozeType = $cloze_type;
+		
+		if (!isset($data['titolo_dragdrop']) || strlen($data['titolo_dragdrop'])<=0) $data['titolo_dragdrop'] = '';
+		
 		parent::__construct($id_test, $data, $id_nodo_parent, $isCloze, $savedExerciseType);
 	}
 	

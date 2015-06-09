@@ -40,7 +40,8 @@ require_once(ROOT_DIR.'/services/include/author_functions.inc.php');
 $layout_dataAr['node_type'] = $self;
 
 $online_users_listing_mode = 2;
-$online_users = ADAGenericUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
+if (isset($id_course_instance)) $online_users = ADAGenericUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
+else $online_users = null;
 
 
 require_once(MODULES_TEST_PATH.'/config/config.inc.php');
@@ -89,7 +90,7 @@ $li_forum_author->addChild($forum);
 $forum_link=$li_forum_author->getHtml();
 
 $content_dataAr = array(
-        'head'=>$head_form,
+        'head'=>isset($head_form) ? $head_form : '',
         'banner'=>$banner,
 		'path'=>$form_return['path'],
         'form'=>$form_return['html'],
@@ -98,14 +99,14 @@ $content_dataAr = array(
         'user_type'=>$user_type,
         'messages'=>$user_messages->getHtml(),
         'agenda'=>$user_agenda->getHtml(),
-        'title'=>$node_title,
+        'title'=>isset($node_title) ? $node_title : '',
         'course_title'=>$course_title,
         'forum'=>$forum_link,
-        'back'=>$back
+        'back'=>isset($back) ? $back : ''
 );
 
-$content_dataAr['notes'] = $other_node_data['notes'];
-$content_dataAr['personal'] = $other_node_data['private_notes'];
+// $content_dataAr['notes'] = $other_node_data['notes'];
+// $content_dataAr['personal'] = $other_node_data['private_notes'];
 
 
 if ($log_enabled)
@@ -119,9 +120,9 @@ if ($reg_enabled) {
     $content_dataAr['add_bookmark'] = "";
 }
 
-$content_dataAr['bookmark'] = $bookmark;
-$content_dataAr['go_bookmarks_1'] = $go_bookmarks;
-$content_dataAr['go_bookmarks_2'] = $go_bookmarks;
+$content_dataAr['bookmark'] = isset($bookmark) ? $bookmark : '';
+$content_dataAr['go_bookmarks_1'] = isset($go_bookmarks) ? $go_bookmarks : '';
+$content_dataAr['go_bookmarks_2'] = isset($go_bookmarks) ? $go_bookmarks : '';
 
 if ($mod_enabled) {
     $content_dataAr['add_node'] = $add_node;

@@ -937,7 +937,7 @@ public function countSpanAndRemoveClozeMarker($params) {
 					$ddUl->setAttribute('id','drop'.$this->id_nodo.'_'.$y);
 					$ddUl->setAttribute('class', 'multiDragDropBox sortable drop'.$this->id_nodo);
 					if ($edit || $_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
-						$ordini = $tableData['answers'][$i][$j];
+						$ordini = isset($tableData['answers'][$i][$j]) ? $tableData['answers'][$i][$j] : null;
 						if (!empty($ordini)) {
 							$input->setAttribute('value', implode(',',$ordini));
 							foreach($this->_children as $v) {

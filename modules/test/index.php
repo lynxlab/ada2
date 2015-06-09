@@ -318,7 +318,8 @@ $content_dataAr = array(
     'user_level' => $user_level,
     'visited' => '-',
     'icon' => isset($icon) ? $icon : '',
-    'navigation_bar' => ($navBar!==false) ? $navBar->getHtml() : '',
+    'navigation_bar_top' => ($navBar!==false) ? $navBar->getHtml('top') : '',
+	'navigation_bar_bottom' => ($navBar!==false) ? $navBar->getHtml('bottom') : '',
     'text' =>  $text,
     'go_back' => $go_back_link->getHtml(),
     'back_link' => $back_link->getHtml(),
@@ -361,10 +362,10 @@ if ($mod_enabled) {
 	$content_dataAr['add_node'] = isset($add_node) ? $add_node : '';
 	$content_dataAr['edit_node'] = isset($edit_node) ? $edit_node : '';
 	$content_dataAr['delete_node'] = isset($delete_node) ? $delete_node : '';
-	$content_dataAr['send_media'] = $send_media;
+	$content_dataAr['send_media'] = isset($send_media) ? $send_media : '';
 	$content_dataAr['add_exercise'] = isset($add_exercise)  ? $add_exercise : '';
 	$content_dataAr['add_note'] = isset($add_note) ? $add_note : '';
-	$content_dataAr['add_private_note'] = $add_private_note;
+	$content_dataAr['add_private_note'] = isset($add_private_note) ? $add_private_note : '';
 	$content_dataAr['edit_note'] = isset($edit_note) ? $edit_note : '';
 	$content_dataAr['delete_note'] = isset($delete_note) ? : '';
 	$content_dataAr['import_exercise'] = isset($import_exercise) ? $import_exercise : '';

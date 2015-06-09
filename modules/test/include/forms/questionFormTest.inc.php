@@ -21,6 +21,11 @@ class QuestionFormTest extends FormTest {
 		$this->id_nodo_parent = $id_nodo_parent;
 		$this->isCloze = ($isCloze)?'true':'false';
 		$this->savedExerciseType = $savedExerciseType;
+		
+		if (!isset($data['titolo']) || strlen($data['titolo'])<=0) $data['titolo'] = '';
+		if (!isset($data['consegna']) || strlen($data['consegna'])<=0) $data['consegna'] = '';
+		if (!isset($data['testo']) || strlen($data['testo'])<=0) $data['testo'] = '';
+		
 		parent::__construct($data);
 	}
 
@@ -115,7 +120,7 @@ class QuestionFormTest extends FormTest {
 		//didascalia commento fine domanda
         $didascalia = $this->addTextInput($didascalia, translateFN('Testo commento fine domanda').':')
 						   ->setValidator(null)
-						   ->withData($this->data[$didascalia]);
+						   ->withData(isset($this->data[$didascalia]) ? $this->data[$didascalia] : '');
 		if (isset($this->data[$commento]) && $this->data[$commento] == ADA_YES_TEST_COMMENT) {
 			$didascalia->setRequired();
 		}

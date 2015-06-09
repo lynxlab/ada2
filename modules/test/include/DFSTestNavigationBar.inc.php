@@ -51,20 +51,20 @@ class DFSTestNavigationBar extends DFSNavigationBar
      *
      * @return string
      */
-    protected function renderPreviousNodeLink() {
-    	
+    protected function renderPreviousNodeLink($hrefText=null) {
+    	if (is_null($hrefText)) $hrefText = translateFN('Indietro');
     	if ($this->_currentNode != null && $this->_previousNode != null && $this->_prevTestNode == null) {
 			return '<a onClick="javascript:unloadParam=\'force\';"  href="'. 
 					HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $this->_previousNode.
 					(($this->_currentNode != $this->_previousNode) ? '&nextId='.
-					$this->_currentNode : '') . '">' . translateFN ('Indietro') . '</a>';
+					$this->_currentNode : '') . '">' . $hrefText . '</a>';
 		} else if ($this->_currentNode != null && $this->_prevTestNode != null) {
 			// @author giorgio 08/ott/2013, check if prev node points to a test node			
 			return '<a href="' . MODULES_TEST_HTTP . '/index.php?id_test=' . $this->_prevTestNode.
 				   (!is_null($this->_topic) ? '&topic='.($this->_topic-1) : '').
-				   '">' . translateFN ('Indietro') . '</a>';
+				   '">' . $hrefText . '</a>';
 		}
-		return '<a>'.translateFN ('Indietro').'</a>';
+		return '<a>'.$hrefText.'</a>';
     }
     
     /**
@@ -72,18 +72,19 @@ class DFSTestNavigationBar extends DFSNavigationBar
      *
      * @return string
      */
-    protected function renderNextNodeLink() {
+    protected function renderNextNodeLink($hrefText=null) {
+    	if (is_null($hrefText)) $hrefText = translateFN('Avanti');
 		if ($this->_currentNode != null && $this->_nextNode != null && $this->_nextTestNode == null) {
 			return '<a onClick="javascript:unloadParam=\'force\';" href="'.
 					HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $this->_nextNode.
 					(($this->_currentNode != $this->_nextNode) ? '&prevId='.
-					$this->_currentNode : '') . '">' . translateFN ('Avanti') . '</a>';
+					$this->_currentNode : '') . '">' . $hrefText . '</a>';
 		} else if ($this->_currentNode != null && $this->_nextTestNode != null) {
 			// @author giorgio 08/ott/2013, check if next node points to a test node			
 			return '<a href="' . MODULES_TEST_HTTP . '/index.php?id_test=' . $this->_nextTestNode.
 				   (!is_null($this->_topic) ? '&topic='.($this->_topic + 1) : '').
-				   '">' . translateFN ('Avanti') . '</a>';
+				   '">' . $hrefText . '</a>';
 		}
-		return '<a>'.translateFN ('Avanti').'</a>'.'<script type="text/javascript">unloadParam=\'force\';</script>';
+		return '<a>'.$hrefText.'</a>'.'<script type="text/javascript">unloadParam=\'force\';</script>';
 	}
 }

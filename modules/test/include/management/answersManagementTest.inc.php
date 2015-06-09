@@ -121,7 +121,8 @@ class AnswersManagementTest {
 			if ($this->question['tipo']{3} == ADA_MULTIPLE_TEST_SIMPLICITY) {
 				require_once(MODULES_TEST_PATH.'/include/nodeTest.class.inc.php');
 				$questionObj = nodeTest::readNode($this->question['id_nodo']);
-				$questionObj->updateAnswerTable($_POST[QuestionMultipleClozeTest::postVariable]);
+				$updateVal = isset($_POST[QuestionMultipleClozeTest::postVariable]) ? $_POST[QuestionMultipleClozeTest::postVariable] : null;
+				$questionObj->updateAnswerTable($updateVal);
 			}
 
 			if ($form->isValid()) {
@@ -132,10 +133,10 @@ class AnswersManagementTest {
 					$post[] = array(
 						'answer'=> $_POST['answer'][$k],
 						'value'=> $_POST['value'][$k],
-						'case_sensitive'=> ($_POST['case_sensitive'][$k]==1)?true:false,
-						'other_answer'=> ($_POST['other_answer'][$k]==1)?true:false,
+						'case_sensitive'=> (isset($_POST['case_sensitive'][$k]) && $_POST['case_sensitive'][$k]==1)?true:false,
+						'other_answer'=> (isset($_POST['other_answer'][$k]) && $_POST['other_answer'][$k]==1)?true:false,
 						'record'=> $_POST['record'][$k],
-						'ordine'=> $_POST['ordine'][$k],
+						'ordine'=> isset($_POST['ordine'][$k]) ? $_POST['ordine'][$k] : null,
 						'titolo_dragdrop' => ( isset( $_POST['titolo_dragdrop'][$k]) && trim($_POST['titolo_dragdrop'][$k])!=='' 
 													? trim($_POST['titolo_dragdrop'][$k]) : null ),
 					);
@@ -178,8 +179,8 @@ class AnswersManagementTest {
 
 				if ($result) {
 					$get_topic = (isset($_GET['topic'])?'&topic='.$_GET['topic']:'');
-					if ($_POST['return'] == 'here') {						
-						redirect(MODULES_TEST_HTTP.'/edit_answers.php?id_question='.$this->question['id_nodo'].$get_topic);
+					if (isset($_POST['return']) && $_POST['return'] == 'here') {						
+						redirect(MODULES_TEST_HTTP.'/edit_answers.php?id_question='.$this->question['id_nodo'].$get_topic . '&saved=1');
 					}
 					else {
 						redirect(MODULES_TEST_HTTP.'/index.php?id_test='.$this->test['id_nodo'].$get_topic.'#liQuestion'.$this->question['id_nodo']);

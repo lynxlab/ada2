@@ -85,12 +85,12 @@
                     </div>
                     <div class="first">
                         <!-- PULSANTI AVANTI E INDIETRO -->
-                        <template_field class="template_field" name="navigation_bar">navigation_bar</template_field>
+                        <template_field class="template_field" name="navigation_bar_top">navigation_bar_top</template_field>
                         <!-- end - PULSANTI AVANTI E INDIETRO -->                    
                         <template_field class="template_field" name="media">media</template_field>
                         <template_field class="template_field" name="text">text</template_field>
                         <!-- PULSANTI AVANTI E INDIETRO -->
-                        <template_field class="template_field" name="navigation_bar">navigation_bar</template_field>
+                        <template_field class="template_field" name="navigation_bar_bottom">navigation_bar_bottom</template_field>
                         <!-- end - PULSANTI AVANTI E INDIETRO -->                        
                     </div>
                 </div>
