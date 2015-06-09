@@ -22,6 +22,7 @@ abstract class FormControl
     public function __construct($controlType, $controlId, $labelText) {
         $this->_controlType = $controlType;
         $this->_controlId = $controlId;
+        $this->_controlName = $controlId;
         $this->_labelText = $labelText;
         $this->_controlData = NULL;
         $this->_selected = FALSE;
@@ -147,6 +148,11 @@ abstract class FormControl
         $this->_isMissing = TRUE;
         return $this;
     }
+    
+    public function getIsMissing() {
+    	return $this->_isMissing;
+    }
+    
     /**
      * Sets this form control as attribute.
      * @return FormControl
@@ -190,6 +196,14 @@ abstract class FormControl
         return $this->_controlId;
     }
     /**
+     * Returns the name of this form control.
+     *
+     * @return string
+     */
+    public function getName() {
+    	return $this->_controlName;
+    }    
+    /**
      * Returns the data contained in this form control.
      *
      * @return mixed
@@ -217,10 +231,26 @@ abstract class FormControl
         return $this;
     }
     /**
+     * Sets the name for this form control.
+     *
+     * @param integer $name
+     *
+     * @return FormControl
+     */
+    public function setName($name) {
+    	$this->_controlName = $name;
+    	return $this;
+    }    
+    /**
      *
      * @var string
      */
     protected $_controlId;
+    /**
+     *
+     * @var string
+     */
+    protected $_controlName;    
     /**
      *
      * @var string
@@ -293,7 +323,7 @@ class FCInput extends FormControl {
     public function render() {
 		$this->setAttribute('class', 'input_text');
 
-        $html = '<input type="'.$this->_controlType.'" id="'.$this->_controlId.'" name="'.$this->_controlId.'"';
+        $html = '<input type="'.$this->_controlType.'" id="'.$this->_controlId.'" name="'.$this->_controlName.'"';
         if($this->_controlData !== NULL) {
             $html .= ' value="' . $this->_controlData .'"';
         }
@@ -314,7 +344,7 @@ class FCInputHidden extends FormControl {
 
     public function render() {
 		$this->setAttribute('class', 'input_hidden');
-        $html = '<input type="'.$this->_controlType.'" id="'.$this->_controlId.'" name="'.$this->_controlId.'"';
+        $html = '<input type="'.$this->_controlType.'" id="'.$this->_controlId.'" name="'.$this->_controlName.'"';
         if($this->_controlData !== NULL) {
             $html .= ' value="' . $this->_controlData .'"';
         }
@@ -340,7 +370,7 @@ class FCInputCheckable extends FormControl {
 			break;
 		}
 
-        $html = '<input type="'.$this->_controlType.'" id="'.$this->_controlId.'" name="'.$this->_controlId.'"';
+        $html = '<input type="'.$this->_controlType.'" id="'.$this->_controlId.'" name="'.$this->_controlName.'"';
         //$html = '<input type="'.$this->_controlType.'" name="'.$this->_controlId.'"';
         if($this->_controlData !== NULL) {
             $html .= ' value="' . $this->_controlData .'"';
@@ -408,7 +438,7 @@ class FCSelect extends FormControl {
     }
     
     public function render() {
-        $html = '<select id="' . $this->_controlId .'" name="' . $this->_controlId . '"';
+        $html = '<select id="' . $this->_controlId .'" name="' . $this->_controlName . '"';
         $html .= $this->renderAttributes();
         $html .=  ' >';
         foreach($this->_options as $option) {
@@ -443,7 +473,7 @@ class FCOption extends FormControl {
  */
 class FCTextarea extends FormControl {
     public function render() {
-        $html = '<textarea id="'.$this->_controlId.'" name="'.$this->_controlId.'"'.$this->renderAttributes().' >'.$this->_controlData.'</textarea><div class="'.self::DEFAULT_CLASS.' clear"></div>';
+        $html = '<textarea id="'.$this->_controlId.'" name="'.$this->_controlName.'"'.$this->renderAttributes().' >'.$this->_controlData.'</textarea><div class="'.self::DEFAULT_CLASS.' clear"></div>';
         return $this->label() . $html;
     }
 }
@@ -475,7 +505,7 @@ class FCFieldset extends FormControl {
 
     public function render() {
         $html = $this->label().
-				'<fieldset id="'.$this->_controlId.'" class="'.self::DEFAULT_CLASS.'"><ol class="'.self::DEFAULT_CLASS.'">';
+				'<fieldset id="'.$this->_controlId.'"'.$this->renderAttributes().'><ol class="'.self::DEFAULT_CLASS.'">';
 				foreach ($this->_controls as $control) {
 					$html .= '<li class="'.self::DEFAULT_CLASS.'">' . $control->render() .'</li>';
 				}
@@ -492,7 +522,7 @@ class FCFieldset extends FormControl {
  */
 class FCButton extends FormControl {
 	public function render() {
-		$html = '<button id="'.$this->_controlId.'" type="button" name="'.$this->_controlId.'"'.$this->renderAttributes().'>'.$this->_labelText.'</button>';
+		$html = '<button id="'.$this->_controlId.'" type="button" name="'.$this->_controlName.'"'.$this->renderAttributes().'>'.$this->_labelText.'</button>';
 		return $html;
 	}
 }

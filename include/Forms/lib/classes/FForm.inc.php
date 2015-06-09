@@ -123,6 +123,10 @@ abstract class FForm
         }
         return $formAsArray;
     }
+    
+    public function getControls() {
+    	return $this->_controls;
+    }
 
     protected function setCustomJavascript($js,$append = true) {
 		if ($append) {
@@ -131,6 +135,10 @@ abstract class FForm
 		else {
 			$this->_customJavascript = $js;
 		}
+    }
+
+    protected function setId($id) {
+        $this->_id = $id;
     }
 
     protected function setAction($action) {
