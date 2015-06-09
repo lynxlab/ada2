@@ -22,3 +22,4 @@ FCKLang['ClozeDlgRemoveAll']	= 'Rimuovere tutti i tag cloze già inseriti (tutte
 FCKLang['ClozeDlgSelectFirst']	= 'Per inserire un tag cloze devi prima effettuare una selezione sul testo';
 FCKLang['ClozeDlgError']		= 'Inserire un numero positivo maggiore di 0!';
 FCKLang['ClozeDlgErrorExist']	= 'Questa posizione è già in uso!';
+FCKLang['ClozeDlgTblName']		= 'Nel box numero: ';

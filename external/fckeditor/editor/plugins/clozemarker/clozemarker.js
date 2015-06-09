@@ -8,6 +8,7 @@ window.onload = function () {
 
 	var oLink = getoLink();
 	var oSelection = oEditor.FCKSelection.GetSelectedHTML();
+	oEditor.FCKCloze.hasTable = hasTable;
 
 	// display an alert-message when no selection is made if we want to make a abbr
 	// and also the cursor is not placed in a abbr
@@ -25,11 +26,21 @@ window.onload = function () {
 		oEditor.FCK.Selection.SelectNode( oLink );
 		document.getElementById('title').value = oLink.getAttribute('title');
 		document.getElementById('title').focus();
+		if (hasTable)
+		{
+			document.getElementById('table').value = oLink.getAttribute('table');
+			document.getElementById('selectfield').style.display = 'block';
+		}
 	}
 	// we want to insert a abbr
 	else {
 		document.getElementById('inputfield').style.display = 'block';
 		document.getElementById('title').value = FCKCloze.title;
+		if (hasTable)
+		{
+			document.getElementById('selectfield').style.display = 'block';
+			document.getElementById('table').value = FCKCloze.table;
+		}
 	}
 
 	// Show the "Ok" button?
@@ -55,34 +66,48 @@ function Ok() {
 			for ( var i = 0 ; i < oLink.childNodes.length ; i++ ) {
 				e.appendChild( oLink.childNodes[i].cloneNode(true) );
 			}
+			oLink.remove();
 			oEditor.FCK.InsertHtml( e.innerHTML ) ;
 		}
 		return true;
 	}
 	else {
 		clozeTags = oEditor.FCK.EditorDocument.getElementsByTagName('cloze');
-		usedTitles = [];
+		
+		var value = parseInt(document.getElementById('title').value);
+		var table = -1;
+		var oldValue = -1;
+		
+		if (hasTable)
+		{
+			e = document.getElementById("table");
+			table = parseInt(e.options[e.selectedIndex].value);
+		}
+		
+		if (oLink) oldValue = oLink.getAttribute('title');
+		
+		usedTitles = [];		
 		if (clozeTags != null && clozeTags.length > 0) {
 			for(var i = 0; i<clozeTags.length; i++) {
 				usedTitles[i] = parseInt(clozeTags[i].getAttribute('title'));
 			}
 		}
-
-		var value = parseInt(document.getElementById('title').value);
-		if (isNaN(value) || value <= 0) {
+		
+		if (isNaN(value) || value <= 0 || (hasTable && table < 0)) {
 			alert(FCKLang['ClozeDlgError']);
 			return false;
 		}
-		else if (usedTitles.indexOf(value)!=-1) {
+		else if (oldValue!=value && usedTitles.indexOf(value)!=-1) {
 			alert(FCKLang['ClozeDlgErrorExist']);
 			return false;
 		}
 		else {
 			if (oLink && value != '') {// if cloze already exists, insert or replace title
 				oLink.setAttribute('title',value);
+				if (hasTable) oLink.setAttribute('table',table);
 			}
 			else {// otherwise, make a new cloze, with or without title
-				FCKCloze.Insert(value);
+				FCKCloze.Insert(value,table);
 				FCKCloze.Redraw();
 			}
 			return true;

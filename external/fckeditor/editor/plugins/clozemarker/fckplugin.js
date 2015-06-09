@@ -22,28 +22,35 @@ FCKToolbarItems.RegisterItem( 'ClozeMarker', oClozeItem ) ;
 var FCKCloze = new Object();
 
 FCKCloze.title = 1;
+FCKCloze.table = 1;
+FCKCloze.hasTable = null;
 
 document.createElement('cloze');
 
 // Insert a new Cloze
-FCKCloze.Insert = function(val) {
+FCKCloze.Insert = function(val, table) {
 	if (val == undefined) {
 		val = FCKCloze.title;		
 	}
+	
+	if (FCKCloze.hasTable && table == undefined) {
+		table = FCKCloze.table;
+	} else if (!FCKCloze.hasTable) table = null;
 
-	var hrefStartHtml	= '<cloze title="'+val+'">';
+	var hrefStartHtml	= '<cloze title="'+val+'"';
+	if (FCKCloze.hasTable && table>=0) hrefStartHtml += ' table="'+table+'"';
+	hrefStartHtml += '>';
 	var hrefEndHtml		= '</cloze>';
 
 	mySelection = FCKSelection.GetSelectedHTML();
 	if (mySelection.html.length > 0) {
 		hrefHtml = hrefStartHtml+mySelection.html+hrefEndHtml;
 		hrefHtml = ProtectTags(hrefHtml) ; // needed because cloze is a custom tag and browser tends to breaks it.
-
-		this.markSelection(val, mySelection.html);
+		this.markSelection(val, table, mySelection.html);
 	}
 };
 
-FCKCloze.markSelection = function(title, content) {
+FCKCloze.markSelection = function(title, table, content) {
 	var sel, range;
     if (FCK.EditorWindow.getSelection) {
         sel = FCK.EditorWindow.getSelection();
@@ -59,6 +66,7 @@ FCKCloze.markSelection = function(title, content) {
 		range.collapse(true);
 		var el = FCK.EditorDocument.createElement('cloze');
 		el.title = title;
+		if (FCKCloze.hasTable && parseInt(table)>=0) el.setAttribute('table', table);
 		el.innerHTML = content;
 		range.insertNode(el);
 	}
@@ -72,14 +80,18 @@ FCKCloze.Redraw = function () {
 			for(var i = 0; i<clozeTags.length; i++) {
 				var el = clozeTags[i];
 				var ord = parseInt(el.getAttribute('title'));
+				if (FCKCloze.hasTable) var tbl = parseInt(el.getAttribute('table'));
+				else var tbl = -1;
 				if (ord > max_title) {
 					max_title = ord;
 				}
 			}
 			FCKCloze.title = max_title+1;
+			if (tbl>=0) FCKCloze.table = tbl;
 		}
 		else {
 			FCKCloze.title = 1;
+			if (FCKCloze.hasTable) FCKCloze.table = -1;
 		}
 		return max_title;
 	}

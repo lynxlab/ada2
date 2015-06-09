@@ -22,3 +22,4 @@ FCKLang['ClozeDlgRemoveAll']	= 'Remove all inserted cloze tag (all existent answ
 FCKLang['ClozeDlgSelectFirst']	= 'To insert a cloze tag you have to select some text';
 FCKLang['ClozeDlgError']		= 'Insert a positive number > 0!';
 FCKLang['ClozeDlgErrorExist']	= 'This position is already used!';
+FCKLang['ClozeDlgTblName']		= 'Inside box number: ';
