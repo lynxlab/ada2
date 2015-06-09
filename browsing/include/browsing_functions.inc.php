@@ -123,11 +123,18 @@ if (isset($_REQUEST['mode']) && strlen($_REQUEST['mode'])>0) {
       $user_status = ADA_STATUS_VISITOR;
       break;
     case AMA_TYPE_ADMIN:
+      $user_level = ADA_MAX_USER_LEVEL;
+      $user_score = "";
+      $user_status = ADA_STATUS_VISITOR;
+      break;
+        /*
       $homepage = HTTP_ROOT_DIR .'/admin/admin.php';
       $msg =   urlencode(translateFN('Redirezionamento automatico'));
       header("Location: $homepage?err_msg=$msg");
       exit();
       break;
+         * 
+         */
     default:
       $user_messages = "";
       $user_agenda =  "";
