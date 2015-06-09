@@ -162,7 +162,7 @@ if (isset($_REQUEST['mode']) && strlen($_REQUEST['mode'])>0) {
 /*
  * Get this user needed objects from $neededObjAr based on user tyoe
  */
-if(is_array($neededObjAr) && is_array($neededObjAr[$id_profile])) {
+if(isset($neededObjAr[$id_profile]) && is_array($neededObjAr[$id_profile])) {
   $thisUserNeededObjAr = $neededObjAr[$id_profile];
 }
 else {
@@ -368,7 +368,7 @@ if ($id_profile == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MOD
 /**
  * Authors can edit public courses of their own tester only
  */
-if ($id_profile == AMA_TYPE_AUTHOR && $courseObj instanceof Course) {
+if ($id_profile == AMA_TYPE_AUTHOR && isset($courseObj) && $courseObj instanceof Course) {
 	$userTesters = $userObj->getDefaultTester();
 	if (!is_array($userTesters)) $userTesters = array($userTesters);
 	if ($courseObj->getIsPublic()) $mod_enabled = in_array(ADA_PUBLIC_TESTER, $userTesters);

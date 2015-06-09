@@ -1336,11 +1336,11 @@ function search_text_in_glosary($text) {
 		preg_match('/title="([^"]+)"/',$params[1],$value);
 		$value = $value[1];
 		$add_title = preg_match('/rel="([^"]+)"/',$params[1],$title);
-		$title = $title[1];
+		$title = ($add_title) ? $title[1] : null;
 		$add_width = preg_match('/width="([^"]+)"/',$params[1],$width);
-		$width = $width[1];
+		$width = ($add_width) ? $width[1] : null;
 		$add_height = preg_match('/height="([^"]+)"/',$params[1],$height);
-		$height = $height[1];
+		$height = ($add_height) ? $height[1] : null;
 
 		$tag = 'MEDIA';
 		if ($type == INTERNAL_LINK) {
