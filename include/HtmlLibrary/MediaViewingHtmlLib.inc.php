@@ -75,7 +75,7 @@ class MediaViewingHtmlLib {
 		$jpTypeSingle = self::buildJPElement('single');
 		$jpTypeSingle->addChild(self::buildJPElement('jplayer',  $isAudio, $divID));
 		
-		$jpGUI = self::buildJPElement('gui',$isAudio);
+		$jpGUI = self::buildJPElement('gui',$isAudio, null, $height);
 		$jpInterface = self::buildJPElement('interface', $isAudio);
 		
 		$jpInterface->addChild(self::buildJPElement('progress'));
@@ -117,7 +117,7 @@ class MediaViewingHtmlLib {
 		return self::jplayerCommonJS('mp3', $divID, $url, $title) . $jpPlayer->getHtml()  . $jpContainer->getHtml();
 	}
 	
-	private static function buildJPElement ($type, $isAudio=true, $divID=null) {
+	private static function buildJPElement ($type, $isAudio=true, $divID=null, $height=null) {
 		switch ($type) {
 			case 'jplayer':
 					return CDOMElement::create('div','id:jquery_jplayer_'.$divID.',class:jp-jplayer');		
@@ -136,6 +136,10 @@ class MediaViewingHtmlLib {
 				if ($isAudio) return null;
 				else {					
 					$outer = CDOMElement::create('div','id:outer-video-play-icon,class:jp-video-play');
+					/**
+					 * style must be inline because it needs the height in px to recuperate
+					 */
+					$outer->setAttribute('style', 'height: '.$height.'px; margin-top: -'.$height.'px');
 					$middle = CDOMElement::create('div','id:middle-video-play-icon');
 					$playButton = CDOMElement::create('button','class:jp-video-play-icon');
 					$playButton->setAttribute('role', 'button');
