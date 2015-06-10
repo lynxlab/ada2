@@ -122,7 +122,13 @@ function updateLevel(id_student, step, forceUpdate){
         	$j('#studentLevel_'+id_student).text(level);
         	updateAverageLevel();
         	if (forceUpdate) {
-        		self.document.location.href = document.URL +'&mode=update';
+        		// strip off '&mode=update' and re-append it to be
+        		// sure it will not be concatenade more than once
+        		$j.ajax({
+					type	:	'GET',
+					url		:	document.URL.replace(/&mode=update/g,"") +'&mode=update'
+        		});
+        		// self.document.location.href = document.URL.replace(/&mode=update/g,"") +'&mode=update';
         	}
         }
     })

@@ -1397,7 +1397,7 @@ class Student_class {
                 $returnArray[$row]['bookmarks'] = $currentReportRow['bookmarks'];
                 $returnArray[$row]['index'] = $currentReportRow['indice_att'];
                 $returnArray[$row]['level'] = '<span id="studentLevel_'.$currentReportRow['id_stud'].'">'.$currentReportRow['level'].'</span>';
-                $forceUpdate = true; 
+                $forceUpdate = false; 
                 $linksHtml = $this->generateLevelButtons($currentReportRow['id_stud'], $forceUpdate);
                 $returnArray[$row]['level_plus'] = (!is_null($linksHtml)) ? $linksHtml : '-';
 
@@ -1790,7 +1790,7 @@ class Student_class {
                         // level
                         $tot_level+=$student_level;
                         $dati_stude[$num_student]['level'] = '<span id="studentLevel_'.$id_student.'">'.$student_level.'</span>';
-                        $forceUpdate = true;
+                        $forceUpdate = false;
                         $linksHtml = $this->generateLevelButtons($id_student,$forceUpdate);
                         
                         $dati_stude[$num_student]['level_plus'] = (!is_null($linksHtml)) ? $linksHtml : '-';

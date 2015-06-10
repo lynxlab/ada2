@@ -190,12 +190,21 @@ switch ($op) {
            			$id_instance.") - " . translateFN("Iniziato il ");
            	$help .= "&nbsp;<strong>$start_date</strong>" ;
            	$help .= '<br />' . translateFN("Cliccando sui dati si accede al dettaglio.");
+           	$help .= '<br />' . translateFN('Ricordarsi di aggiornare il report dopo aver finito le modifiche ai livelli degli studenti.');
+           	$help .= '<br />' . translateFN('L\'operazione di aggiornamento del report può richiedere qualche minuto');
            	if (isset($report_generation_TS)) {
            		$updateDIV = CDOMElement::create('div','class:updatelink');
            		$updateSPAN = CDOMElement::create('span');
            		$updateSPAN->addChild(new CText(translateFN('Report aggiornato al').' '.ts2dFN($report_generation_TS)));           		
-           		$updateLink = CDOMElement::create('a','href:'.$http_root_dir.
-           				'/tutor/tutor.php?op=student&id_instance='.$id_instance.'&id_course='.$id_course.'&mode=update');
+           		$updateLink = CDOMElement::create('a','href:javascript:void(0);');           		
+           		$confirmMessage = translateFN('Questa operazione può richiedere qualche minuto');           		
+           		$updateLink->setAttribute('onclick', 'javascript:'.
+           				'if (confirm(decodeURI(\''.urlencode($confirmMessage).'\').replace(/\+/g, \' \'))) '.
+           				'self.document.location.href=\''.
+           				$http_root_dir.
+           				'/tutor/tutor.php?op=student&id_instance='.$id_instance.
+           				'&id_course='.$id_course.'&mode=update'.           				
+           				'\';');           		
            		$updateLink->addChild(new CText(' '.translateFN("Aggiorna il report")));
            		$updateDIV->addChild($updateSPAN);
            		$updateDIV->addChild($updateLink);
