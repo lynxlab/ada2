@@ -86,4 +86,15 @@
 	else {
 		define('MODULES_CLASSAGENDA', false);
 	}
+	
+	//defines for module login
+	define ('MODULES_LOGIN_PATH', MODULES_DIR.'/login');
+	if (file_exists(MODULES_LOGIN_PATH.'/include/abstractLogin.class.inc.php'))
+	{
+		require_once(MODULES_LOGIN_PATH.'/config/config.inc.php');
+		define('MODULES_LOGIN', true);
+	}
+	else {
+		define('MODULES_LOGIN', false);
+	}
 ?>
