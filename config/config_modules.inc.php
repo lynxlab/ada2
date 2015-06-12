@@ -92,7 +92,9 @@
 	if (file_exists(MODULES_LOGIN_PATH.'/include/abstractLogin.class.inc.php'))
 	{
 		require_once(MODULES_LOGIN_PATH.'/config/config.inc.php');
+		
 		define('MODULES_LOGIN', true);
+		define('MODULES_LOGIN_HTTP', HTTP_ROOT_DIR.'/modules/login');
 	}
 	else {
 		define('MODULES_LOGIN', false);
