@@ -806,7 +806,7 @@ class MultiPort
         if(isset($id_course_instance) && DataValidator::is_uinteger($id_course_instance) !== FALSE) {
           $userObj->set_course_instance_for_history($id_course_instance);
         }
-        elseif (DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) !== FALSE) {
+        elseif (isset($_SESSION['sess_id_course_instance']) && DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) !== FALSE) {
           $userObj->set_course_instance_for_history($_SESSION['sess_id_course_instance']);
         }
 
