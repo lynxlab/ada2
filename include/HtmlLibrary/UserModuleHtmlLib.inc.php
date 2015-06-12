@@ -82,6 +82,7 @@ class UserModuleHtmlLib {
     	if (!AMA_DB::isError($loginProviders) && is_array($loginProviders) && count($loginProviders)>0) {
     		$submit = CDOMElement::create('div','id:loginProviders');
     		$form->addChild(CDOMElement::create('hidden','id:selectedLoginProvider, name:selectedLoginProvider'));
+    		$form->addChild(CDOMElement::create('hidden','id:selectedLoginProviderID, name:selectedLoginProviderID'));
     		// add a DOM element (or html) foreach loginProvider
     		foreach ($loginProviders as $providerID=>$loginProvider) {
     			include_once  MODULES_LOGIN_PATH . '/include/'.$loginProvider.'.class.inc.php';
