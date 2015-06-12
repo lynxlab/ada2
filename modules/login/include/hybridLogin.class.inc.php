@@ -10,18 +10,19 @@
  */
 
 /**
- * ADA login provider implementation
+ * google login provider implementation
  */
-class adaLogin extends AbstractLogin
+class hybridLogin extends AbstractLogin
 {
 	/**
-	 * performs user login using the ADA db
+	 * performs user login using hybridLogin.php redirection
 	 * 
 	 * (non-PHPdoc)
 	 * @see iLogin::doLogin()
 	 */
 	public function doLogin($name, $pass, $remindMe, $language)
 	{
-		return MultiPort::loginUser($name, $pass);
+		redirect(MODULES_LOGIN_HTTP . '/hybridLogin.php?id='.$this->id.
+				'&remindme='.intval($remindMe).'&lang='.$language);
 	}
 }

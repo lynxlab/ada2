@@ -21,7 +21,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	/**
 	 * database to be used (if !MULTIPROVIDER)
 	 */
-	public static $dbToUse = null;
+	private static $dbToUse = null;
 	
 	/**
 	 * loads login provider's own options
@@ -53,6 +53,21 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	}
 	
 	/**
+	 * loads the provider name from the DB
+	 *
+	 * @param number $id the id of the login provider
+	 *
+	 * @return string the loaded label
+	 *
+	 * @access public
+	 */	
+	public function loadProviderName($id) {
+		$sql = 'SELECT `name` FROM `'.self::$PREFIX.'providers` '.
+				'WHERE `'.self::$PREFIX.'providers_id`=?';
+		return self::$dbToUse->getOnePrepared($sql, $id);
+	}
+	
+	/**
 	 * loads the button label from the DB
 	 * 
 	 * @param number $id the id of the login provider
@@ -76,12 +91,14 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function getLoginProviders ($enabled = null) {
+	public function getLoginProviders ($enabled = null, $orderby=null) {
 		$sql = 'SELECT * FROM `'.self::$PREFIX.'providers`';
 		if (!is_null($enabled) && is_bool($enabled)) {
 			$sql .= ' WHERE `enabled` = ?';
 			$params = array (intval($enabled));
 		}
+		
+		if (!is_null($orderby)) $sql .= ' ORDER BY '.$orderby;
 		
 		$res = self::$dbToUse->getAllPrepared($sql, (isset($params) ? $params : null) ,AMA_FETCH_ASSOC);
 		

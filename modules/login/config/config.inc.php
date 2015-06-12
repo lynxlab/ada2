@@ -9,5 +9,6 @@
  * @version		0.1
  */
  
+require_once MODULES_LOGIN_PATH . '/include/abstractLogin.class.inc.php'; 
 require_once MODULES_LOGIN_PATH . '/include/AMALoginDataHandler.inc.php';
 ?>
