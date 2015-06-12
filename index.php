@@ -129,17 +129,22 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
   
   if (!isset($p_remindme)) $p_remindme = false;
 
-  if($username !== FALSE && $password !== FALSE) {
-    //User has correctly inserted un & pw
-
   	if (isset($p_login)) {
-	    $userObj = MultiPort::loginUser($username, $password);
+  		if($username !== FALSE && $password !== FALSE) {
+  			//User has correctly inserted un & pw
+	    	$userObj = MultiPort::loginUser($username, $password);
+  		} else {
+		    // Utente non loggato perche' informazioni in username e password non valide
+		    // es. campi vuoti o contenenti caratteri non consentiti.
+			$login_error_message = translateFN("Username  e/o password non valide");
+  		}
   	} else if (defined('MODULES_LOGIN') && MODULES_LOGIN && 
   			   isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0) {
   		include_once  MODULES_LOGIN_PATH . '/include/'.$selectedLoginProvider.'.class.inc.php';
   		if (class_exists($selectedLoginProvider)) {
-  			$loginObj = new $selectedLoginProvider();
-  			$userObj = $loginObj->doLogin($username, $password);
+  			$loginProviderID = isset($selectedLoginProviderID) ? $selectedLoginProviderID : null;
+  			$loginObj = new $selectedLoginProvider($selectedLoginProviderID);
+  			$userObj = $loginObj->doLogin($username, $password, $p_remindme, $p_selected_language);
   		}
   	}
     
@@ -148,15 +153,12 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
             //  Utente non loggato perché stato <> ADA_STATUS_REGISTERED
 	        $login_error_message = translateFN("Utente non abilitato");
 	    }
-      } else {
-        // Utente non loggato perché coppia username password non corretta
-		$login_error_message = translateFN("Username  e/o password non valide");
-      }
-  } else {
-    // Utente non loggato perche' informazioni in username e password non valide
-    // es. campi vuoti o contenenti caratteri non consentiti.
+    } else if ((is_object($userObj)) && ($userObj instanceof Exception)) {
+    	$login_error_message = $userObj->getMessage();
+    } else {
+      // Utente non loggato perché coppia username password non corretta
 	$login_error_message = translateFN("Username  e/o password non valide");
-  }
+    }
 }
 
 /**
@@ -294,6 +296,13 @@ if (isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj']-> getType() !=
 		$layout_dataAr['CSS_filename'] = array (
 				JQUERY_UI_CSS
 		);
+if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
+	
+	$layout_dataAr['CSS_filename'] = array_merge($layout_dataAr['CSS_filename'], 
+		array (
+			MODULES_LOGIN_PATH . '/layout/support/login-form.css'
+	));
+}
 			
 		$optionsAr['onload_func'] = $onload_function;
 		
