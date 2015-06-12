@@ -1092,11 +1092,12 @@ abstract class ADALoggableUser extends ADAGenericUser {
     /**
      * sets the proper $_SESSION var of userObj and redirects to user home page
      * 
-     * @param unknown $userObj user object to be used to set $_SESSION vars
-     * @param unknown $remindMe true if remindme check box has been checked
-     * @param unknown $language lang selection at login form: language to be set
+     * @param ADALoggableUser $userObj user object to be used to set $_SESSION vars
+     * @param boolean $remindMe true if remindme check box has been checked
+     * @param string $language lang selection at login form: language to be set
+     * @param Object $loginProviderObj login provider class used, null if none used 
      */
-    public static function setSessionAndRedirect($userObj, $remindMe, $language) {
+    public static function setSessionAndRedirect($userObj, $remindMe, $language, $loginProviderObj = null) {
     	if ($userObj->getStatus() == ADA_STATUS_REGISTERED)
     	{
     		/**
@@ -1141,6 +1142,11 @@ abstract class ADALoggableUser extends ADAGenericUser {
     			// sets var for non multiprovider environment
     			$GLOBALS ['user_provider'] = $user_default_tester;
     		}
+    		
+    		if (!is_null($loginProviderObj)) {
+    			$_SESSION['sess_loginProviderArr']['className'] = get_class($loginProviderObj);
+    			$_SESSION['sess_loginProviderArr']['id'] = $loginProviderObj->getID();    			
+    		}    		
     		$redirectURL = $userObj->getHomePage();
     		header('Location:'.$redirectURL);
     		exit();
