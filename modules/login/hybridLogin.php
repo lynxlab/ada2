@@ -225,6 +225,10 @@ if(isset($_GET['id']))
 		    	}
 	    	}
 	    	
+	    	/**
+	    	 * At this point, either the $userObj was already in
+	    	 * ADA DB or had just been created by the above code
+	    	 */
 	    	if (is_object($userObj) && $userObj instanceof ADALoggableUser) {
 	    		/**
 	    		 * $selectedLanguage is coming from $_GET and is the
@@ -238,7 +242,7 @@ if(isset($_GET['id']))
 	    	} else {
 	    		// throw an exception
 	    		$authProvider->logout();
-	    		throw new Exception(null,0);
+	    		throw new Exception(null,9);
 	    	}
 	    }           
     }
@@ -248,30 +252,31 @@ if(isset($_GET['id']))
     	 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
          switch( $e->getCode() )
          {
-                case 0 : $message = "Unspecified error."; break;
-                case 1 : $message = "Hybridauth configuration error."; break;
-                case 2 : $message = "Provider not properly configured."; break;
-                case 3 : $message = "Unknown or disabled provider."; break;
-                case 4 : $message = "Missing provider application credentials."; break;
-                case 5 : $message = "Authentication failed The user has canceled the authentication or the provider refused the connection.";
+                case 0 : $message = "Errore sconosciuto."; break;
+                case 1 : $message = "Errore di configurazione di Hybridauth."; break;
+                case 2 : $message = "Provider di login non configurato bene."; break;
+                case 3 : $message = "Provider di login disabilitato o sconosciuto."; break;
+                case 4 : $message = "Mancano le credenziali dell'applicazione presso il provider di login."; break;
+                case 5 : $message = "Autenticazione non riuscita: l'utente ha annullato l'autenticazione o il provider rifiuta la connessione";
                          break;
-                case 6 : $message = "User profile request failed. Most likely the user is not connected to the provider and he should to authenticate again.";
+                case 6 : $message = "Richiesta del profilo utente fallita. Probabilmente non è connesso al provider e deve autenticarsi di nuovo";
                          $authProvider->logout();
                          break;
-                case 7 : $message = "User not connected to the provider.";
+                case 7 : $message = "Utente non connesso al provider di login.";
                          $authProvider->logout();
                          break;
-                case 8 : $message = "Provider does not support this feature."; break;
+                case 8 : $message = "Il provider di login non supporta la funzionalità richiesta."; break;
+                case 9 : $message = "Problema nel generare l'oggetto utente di ADA"; break;
                 default : $message = ""; break;
         }
  
-        $message .= "<br /><br /><b>Original error message:</b> " . $e->getMessage();
+        $message .= "<br /><br /><b>".translateFN("Messaggio d'errore originale").":</b> " . $e->getMessage();
  
         $messagespan = CDOMElement::create('span','class: login-error-message');
-        $messagespan->addChild(new CText($message));
+        $messagespan->addChild(new CText(translateFN($message)));
         
         $content_dataAr = array(
-			'help' => 'Problema Autenticazione '.$providerName,
+			'help' => translateFN('Problema Autenticazione ').$providerName,
 			'data' => $messagespan->getHtml()
 		);
         $self = 'login-error';
