@@ -61,9 +61,6 @@ abstract class abstractLogin implements iLogin
 		}
 		
 		$this->id = intval($id);
-		
-		// $this->buttonLabel = $this->loadButtonLabel($id);
-		$this->options = $this->loadOptions($id);
 	}
 	
 	/**
@@ -190,6 +187,19 @@ abstract class abstractLogin implements iLogin
 		} else {
 			return null;
 		}		
+	}
+	
+	/**
+	 * adds a row to the login history table
+	 * 
+	 * @param number $userID user id that has logged in
+	 * @param number $time unix timestamp of the login
+	 * 
+	 * @access public
+	 */
+	public function addLoginToHistory ($userID, $time = null) {
+		if (is_null($time)) $time = time();		
+		$this->dataHandler->addLoginToHistory($userID, $time, $this->id);
 	}
 	
 	/**

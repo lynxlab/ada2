@@ -133,6 +133,7 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
   		if($username !== FALSE && $password !== FALSE) {
   			//User has correctly inserted un & pw
 	    	$userObj = MultiPort::loginUser($username, $password);
+	    	$loginObj = null;
   		} else {
 		    // Utente non loggato perche' informazioni in username e password non valide
 		    // es. campi vuoti o contenenti caratteri non consentiti.
@@ -149,7 +150,7 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
   	}
     
     if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)) {
-		if(!ADALoggableUser::setSessionAndRedirect($userObj, $p_remindme, $p_selected_language)) {
+		if(!ADALoggableUser::setSessionAndRedirect($userObj, $p_remindme, $p_selected_language, $loginObj)) {
             //  Utente non loggato perché stato <> ADA_STATUS_REGISTERED
 	        $login_error_message = translateFN("Utente non abilitato");
 	    }

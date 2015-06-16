@@ -107,10 +107,46 @@ class AMALoginDataHandler extends AMA_DataHandler {
 		} else return null;
 	}
 	
+	/**
+	 * looks for a loginProvider ID given its class name
+	 * 
+	 * @param string $className the className to be searched
+	 * 
+	 * @return number the provider id|AMA_Error on Error
+	 * 
+	 * @access public
+	 */
 	public function getLoginProviderIDFromClassName($className) {
 		$sql = 'SELECT `'.self::$PREFIX.'providers_id` FROM `'.self::$PREFIX.'providers` '.
 			   'WHERE `className`=?';
 		return self::$dbToUse->getOnePrepared($sql,$className);
+	}
+	
+	/**
+	 * adds a row to the login history table
+	 * 
+	 * @param number $userID user id that has logged in
+	 * @param number $time unix timestamp of the login
+	 * @param number $loginProviderID provider used to authenticate
+	 * 
+	 * @return the result of the query
+	 * 
+	 * @access public
+	 */
+	public function addLoginToHistory($userID, $time, $loginProviderID) {
+		$sql = 'SELECT COUNT(`date`) FROM `'.self::$PREFIX.'history_login` WHERE '.
+			   '`id_utente`=? AND `'.self::$PREFIX.'providers_id`=?';
+		$rowCount = self::$dbToUse->getOnePrepared($sql,array($userID, $loginProviderID));
+		
+		if (!AMA_DB::isError($rowCount) && defined('MODULES_LOGIN_HISTORY_LIMIT') &&
+				$rowCount>MODULES_LOGIN_HISTORY_LIMIT) {
+			$numRowsToDel = $rowCount - MODULES_LOGIN_HISTORY_LIMIT + 1;
+			self::$dbToUse->executeCritical('DELETE FROM `'.self::$PREFIX.'history_login` ORDER BY `date` ASC LIMIT '.$numRowsToDel);
+		}
+		
+		$sql = 'INSERT INTO `'.self::$PREFIX.'history_login` (`id_utente`,`date`,`'.
+				self::$PREFIX.'providers_id`) VALUES (?,?,?)';
+		return self::$dbToUse->queryPrepared($sql, array($userID, $time, $loginProviderID));		
 	}
 	
 	/**
