@@ -29,7 +29,7 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once MODULES_LOGIN_PATH . '/include/hybridLogin.class.inc.php';
-require_once MODULES_LOGIN_PATH . '/hybridauth/Hybrid/Auth.php';
+require_once MODULES_LOGIN_PATH . '/include/Hybrid/Auth.php';
 
 /**
  * only allow local execution
