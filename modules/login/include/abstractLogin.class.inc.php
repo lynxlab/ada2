@@ -154,6 +154,65 @@ abstract class abstractLogin implements iLogin
 	}
 	
 	/**
+	 * checks if a user with the passed username exists in the ADA DB
+	 * 
+	 * @param string $username username to check
+	 * 
+	 * @return ADALoggableUser|null
+	 */
+	public function checkADAUser ($username) {
+		return MultiPort::findUserByUsername($username);
+	}
+	
+	/**
+	 * adds a user whose data are coming from the login provider to the proper ADA DB
+	 * 
+	 * @param array $userArr array of user data to be added
+	 * @param function $successCallback callback function accepting a ADALoggableUser parameter to be called just before returning 
+	 * @param function $errorCallback callback function accepting no parameters to be called just before redirecting
+	 * 
+	 * @return ADALoggableUser|null (redirects if MultiPort::addUser fails)
+	 * 
+	 * @access public
+	 */
+	public function addADAUser ($userArr, $successCallback=null, $errorCallback=null) {
+		/**
+		 * build user object
+		 */
+		$userObj = new ADAUser($userArr);
+		$userObj->setLayout('');
+		$userObj->setType(AMA_TYPE_STUDENT);
+		$userObj->setStatus(ADA_STATUS_REGISTERED);
+		$userObj->setPassword(sha1(time())); // force unguessable password
+		
+		/**
+		 * save the user in the appropriate provider
+		 */
+		if (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) {
+			$regProvider = array ($GLOBALS['user_provider']);
+		} else {
+			$regProvider = array (ADA_PUBLIC_TESTER);
+		}
+		
+		$id_user = Multiport::addUser($userObj,$regProvider);
+		
+		if($id_user < 0) {
+			if (!is_null($errorCallback)) call_user_func($errorCallback);
+			$message = translateFN('Impossibile procedere. Un utente con questi dati esiste?')
+			. ' ' . urlencode($userObj->getEmail());
+			header('Location:'.HTTP_ROOT_DIR.'/browsing/registration.php?message='.$message);
+			exit();
+		} else {
+			/**
+			 * reload user object just to double check
+			 */
+			$retObj = MultiPort::findUserByUsername($userArr['username']);
+			if (!is_null($successCallback)) call_user_func($successCallback,$retObj);
+			return $retObj;
+		}
+	}
+	
+	/**
 	 * id getter
 	 * 
 	 * @return number id of the class
