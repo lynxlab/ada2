@@ -77,7 +77,8 @@ class UserModuleHtmlLib {
     if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
     	// load login providers
     	require_once MODULES_LOGIN_PATH . '/include/abstractLogin.class.inc.php';
-    	$loginProviders = abstractLogin::getLoginProviders(); 
+    	$loginProviders = abstractLogin::getLoginProviders();
+    }
 
     	if (!AMA_DB::isError($loginProviders) && is_array($loginProviders) && count($loginProviders)>0) {
     		$submit = CDOMElement::create('div','id:loginProviders');
@@ -99,8 +100,7 @@ class UserModuleHtmlLib {
     				}
     			}
     		}
-    	}
-    } else {
+    	} else {
     	// standard submit button if no MODULES_LOGIN
 	    $value      = translateFN('Accedi');
 	    $submit     = CDOMElement::create('submit',"id:p_login, name:p_login");
