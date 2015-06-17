@@ -88,7 +88,7 @@ if(isset($_GET['id']))
 	    	/**
 	    	 * look if user is already in ADA DB
 	    	 */	    	
-	    	$userObj = MultiPort::findUserByUsername($email);
+	    	$userObj = $hybridLogin->checkADAUser($email);
 
 	    	if (!is_object($userObj) || !$userObj instanceof ADALoggableUser) {
 	    		/**
@@ -158,71 +158,13 @@ if(isset($_GET['id']))
 		    			'stato' => ''
 		    	);
 		    	
-		    	/**
-		    	 * build user object
-		    	 */
-		    	$userObj = new ADAUser($adaUser);
-		    	$userObj->setLayout('');
-		    	$userObj->setType(AMA_TYPE_STUDENT);
-		    	$userObj->setStatus(ADA_STATUS_REGISTERED);
-		    	$userObj->setPassword(sha1(time())); // force unguessable password
-		    	
-		    	/**
-		    	 * save the user in the appropriate provider
-		    	 */
-		    	if (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) {
-		    		$regProvider = array ($GLOBALS['user_provider']);
-		    	} else {
-		    		$regProvider = array (ADA_PUBLIC_TESTER);
-		    	}
-		    	
-		    	$id_user = Multiport::addUser($userObj,$regProvider);
-		    	
-		    	if($id_user < 0) {
-		    		$authProvider->logout();
-		    		$message = translateFN('Impossibile procedere. Un utente con questi dati esiste?')
-		    		. ' ' . urlencode($userObj->getEmail());
-		    		header('Location:'.HTTP_ROOT_DIR.'/browsing/registration.php?message='.$message);
-		    		exit();
-		    	} else {
-		    		/**
-		    		 * reload user object just to double check
-		    		 */
-		    		$userObj = MultiPort::findUserByUsername($email);
-		    		
-		    		/**
-		    		 * download user avatar image to proper location
-		    		 */
-		    		if (!is_null($avatar)) {
-			    		$destDir = ADA_UPLOAD_PATH.$userObj->getId();
-			    		if (!is_dir($destDir)) mkdir($destDir);
-			    		$destFile = $destDir . DIRECTORY_SEPARATOR . $avatar;
-			    		/**
-			    		 * save the image locally from the url
-			    		 */
-			    		$ch = curl_init($user_profile->photoURL);
-			    		$fp = fopen($destFile, 'wb');
-			    		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-			    		curl_setopt($ch, CURLOPT_FILE, $fp);
-			    		curl_setopt($ch, CURLOPT_HEADER, 0);
-			    		curl_exec($ch);
-			    		curl_close($ch);
-			    		fclose($fp);
-			    		/**
-			    		 * resize the image if needed
-			    		 */
-			    		require_once ROOT_DIR .'/browsing/include/class_image.inc.php';
-			    		$id_img = new ImageDevice();
-			    		$new_img = $id_img->resize_image($destFile, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
-			    		if(stristr($destFile, 'png')) {
-			    			imagepng($new_img,$destFile);
-			    		} else if(stristr($destFile, 'jpeg')!==false || stristr($destFile, 'jpg')!==false) {
-			    			imagejpeg($new_img,$destFile);
-			    		} else if(stristr($destFile, 'gif')) {
-			    			imagegif($new_img,$destFile);
-			    		}
-		    		}
-		    	}
+		    	$userObj = $hybridLogin->addADAUser($adaUser,
+		    			function($newUserObj) use ($hybridLogin, $user_profile, $avatar) {
+		    				$hybridLogin->addADASuccessCallBack($newUserObj, $user_profile->photoURL, $avatar);
+		    			},
+		    			function() use ($hybridLogin, $authProvider) {
+		    				$hybridLogin->addADAErrorCallBack($authProvider);
+		    			});
 	    	}
 	    	
 	    	/**
