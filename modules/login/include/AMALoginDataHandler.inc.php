@@ -44,7 +44,10 @@ class AMALoginDataHandler extends AMA_DataHandler {
 				else if (strcasecmp($keyvalue['value'], 'null')===0) $value = null;
 				else if (strcasecmp($keyvalue['value'], 'true')===0) $value = true;
 				else if (strcasecmp($keyvalue['value'], 'false')===0) $value = false;
-				else $value = $keyvalue['value'];				
+				else if (is_string($keyvalue['value']) && is_object(json_decode($keyvalue['value']))) {
+					$value = json_decode($keyvalue['value'], true); // true means return it as an assoc array
+				}
+				else $value = $keyvalue['value'];
 				$retArr[$keyvalue['key']] = $value;
 			}
 			return ((count($retArr)>0) ? $retArr : null);
