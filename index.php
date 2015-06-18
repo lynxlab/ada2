@@ -156,6 +156,7 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
 	    }
     } else if ((is_object($userObj)) && ($userObj instanceof Exception)) {
     	$login_error_message = $userObj->getMessage();
+    	if ($userObj->getCode()!==0) $login_error_message .= ' ('.$userObj->getCode().')';
     } else {
       // Utente non loggato perché coppia username password non corretta
 	$login_error_message = translateFN("Username  e/o password non valide");
