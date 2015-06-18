@@ -181,7 +181,7 @@ abstract class abstractLogin implements iLogin
 		 */
 		$userObj = new ADAUser($userArr);
 		$userObj->setLayout('');
-		$userObj->setType(AMA_TYPE_STUDENT);
+		$userObj->setType(isset($userArr['tipo']) ? $userArr['tipo']: AMA_TYPE_STUDENT);
 		$userObj->setStatus(ADA_STATUS_REGISTERED);
 		$userObj->setPassword(sha1(time())); // force unguessable password
 		
