@@ -71,7 +71,10 @@ abstract class abstractLogin implements iLogin
 	 * @access public
 	 */
 	public function loadButtonLabel () {
-		return $this->dataHandler->loadButtonLabel($this->id);
+		if (is_null($this->buttonLabel)) {
+			$this->buttonLabel =  $this->dataHandler->loadButtonLabel($this->id);
+		}
+		return $this->buttonLabel;
 	}
 	
 	/**
@@ -82,7 +85,10 @@ abstract class abstractLogin implements iLogin
 	 * @access public
 	 */
 	public function loadProviderName () {
-		return $this->dataHandler->loadProviderName($this->id);
+		if (is_null($this->name)) {
+			$this->name = $this->dataHandler->loadProviderName($this->id); 
+		}
+		return $this->name;
 	}
 	
 	/**
@@ -93,7 +99,10 @@ abstract class abstractLogin implements iLogin
 	 * @access public
 	 */
 	public  function loadOptions() {
-		return $this->dataHandler->loadOptions($this->id);
+		if (is_null($this->options)) {
+			$this->options = $this->dataHandler->loadOptions($this->id);
+		}
+		return $this->options;
 	}
 	
 	/**
