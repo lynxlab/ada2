@@ -14,6 +14,8 @@
  */
 class ldapLogin extends AbstractLogin
 {
+	const INVALID_USERNAME_EXECEPTION_CODE = 49;
+	
 	/**
 	 * performs user login using an LDAP server
 	 * 
@@ -23,6 +25,11 @@ class ldapLogin extends AbstractLogin
 	public function doLogin($name, $pass, $remindMe, $language)
 	{
 		try {
+			/**
+			 * If invalid name or password, throw exception
+			 */
+			if ($name === false || $pass === false) throw new Exception(null,self::INVALID_USERNAME_EXECEPTION_CODE);
+			
 			$options = $this->loadOptions();
 			/**
 			 * check LDAP configuration in module's option table
@@ -144,7 +151,7 @@ class ldapLogin extends AbstractLogin
 		} catch (Exception $e) {
 			ldap_unbind($handle);
 			// 'Invalid credentials' (code:49)  gets ADA's own message as text
-			if ($e->getCode()==49) {
+			if ($e->getCode()==self::INVALID_USERNAME_EXECEPTION_CODE) {
 				return new Exception(translateFN("Username  e/o password non valide"));
 			}
 			return $e;
