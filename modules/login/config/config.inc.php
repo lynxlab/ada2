@@ -15,6 +15,13 @@
  */
 define ('MODULES_LOGIN_HISTORY_LIMIT', 10);
 
+/**
+ * module's action code for edit an ldap config
+ * 
+ * @var number
+ */
+define('MODULES_LOGIN_EDIT_LDAP',		1); // edit ldap config action code
+
 require_once MODULES_LOGIN_PATH . '/include/abstractLogin.class.inc.php'; 
 require_once MODULES_LOGIN_PATH . '/include/AMALoginDataHandler.inc.php';
 ?>

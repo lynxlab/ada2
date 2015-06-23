@@ -19,6 +19,13 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	public static $PREFIX = 'module_login_';
 	
 	/**
+	 * class name implementing login with ldap
+	 * 
+	 * @var string
+	 */
+	public static $LDAPCLASSNAME = 'ldapLogin';
+	
+	/**
 	 * database to be used (if !MULTIPROVIDER)
 	 */
 	private static $dbToUse = null;
@@ -149,7 +156,136 @@ class AMALoginDataHandler extends AMA_DataHandler {
 		
 		$sql = 'INSERT INTO `'.self::$PREFIX.'history_login` (`id_utente`,`date`,`'.
 				self::$PREFIX.'providers_id`) VALUES (?,?,?)';
-		return self::$dbToUse->queryPrepared($sql, array($userID, $time, $loginProviderID));		
+		return self::$dbToUse->queryPrepared($sql, array($userID, $time, $loginProviderID));
+	}
+	
+	/**
+	 * gets max providers_options_id from DB, needed when inserting new
+	 * options for the passed provider
+	 * 
+	 * @param number $provider_id login provider to get the next available options id
+	 * 
+	 * @return number the id
+	 * 
+	 * @access private
+	 */
+	private function getMaxProvidersOptionsID ($provider_id) {
+		$sql = 'SELECT MAX(`'.self::$PREFIX.'providers_options_id`)+1 FROM '.
+			   '`'.self::$PREFIX.'options` WHERE `'.self::$PREFIX.'providers_id`=?';
+		$val = self::$dbToUse->getOnePrepared($sql,$provider_id);
+		return (intval($val)>0 ? $val : 1);
+	}
+	
+	/**
+	 * gets all LDAP options rows
+	 * 
+	 * @return array
+	 * 
+	 * @access public
+	 */
+	public function getAllLDAP() {
+		$ldapProviderID = $this->getLoginProviderIDFromClassName(self::$LDAPCLASSNAME);
+		
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'options` WHERE `'.self::$PREFIX.'providers_id`=? ';
+			   'ORDER BY `'.self::$PREFIX.'providers_options_id`';
+		$result = self::$dbToUse->getAllPrepared($sql,$ldapProviderID,AMA_FETCH_ASSOC);
+		$retval = array();
+		
+		if (!AMA_DB::isError($result) && is_array($result) && count($result)>0) {
+			foreach ($result as $anOption) {
+				$option_id = $anOption[self::$PREFIX.'providers_options_id'];
+				unset ($anOption[self::$PREFIX.'providers_options_id']);
+				$retval[$option_id][$anOption['key']] = $anOption['value'];
+			}
+		}
+		return $retval;
+	}
+	
+	/**
+	 * gets an LDAP provider option set
+	 * 
+	 * @param number $options_id the option set id to be loaded
+	 * 
+	 * @return array|AMA_Error
+	 * 
+	 * @access public
+	 */
+	public function getLDAP ($options_id) {
+		$ldapProviderID = $this->getLoginProviderIDFromClassName(self::$LDAPCLASSNAME);
+		
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'options` '.
+			   'WHERE `'.self::$PREFIX.'providers_id`=? AND `'.self::$PREFIX.'providers_options_id`=?';
+		$res = self::$dbToUse->getAllPrepared($sql, array($ldapProviderID, $options_id),AMA_FETCH_ASSOC);
+		if (AMA_DB::isError($res)) return $res;
+		else {
+			$retval = array('id_ldap'=>$options_id);
+			foreach ($res as $element) {
+				$retval[$element['key']] = $element['value'];
+			}
+			return $retval;
+		}
+	}
+	
+	/**
+	 * saves (either insert or update) an ldap provider option set
+	 * 
+	 * @param array $ldapArr array of data to be saved
+	 * 
+	 * @return boolean|AMA_Error
+	 * 
+	 * @access public
+	 */
+	public function saveLDAP ($ldapArr) {
+		$ldapProviderID = $this->getLoginProviderIDFromClassName(self::$LDAPCLASSNAME);
+		
+		if (!isset($ldapArr['id_ldap']) || (isset($ldapArr['id_ldap'])) && intval($ldapArr['id_ldap'])<=0) {
+			// it's an insert
+			unset ($ldapArr['id_ldap']);
+			$optionID = $this->getMaxProvidersOptionsID($ldapProviderID);
+			
+			$sql = 'INSERT INTO `'.self::$PREFIX.'options` VALUES ';
+			$values = array(); $i=0;
+			foreach ($ldapArr as $key=>$element) {
+				$sql .= '(?,?,?,?)';
+				$values[] = $ldapProviderID;
+				$values[] = $optionID;
+				$values[] = $key;
+				// save even empty values, useful when it's an update
+				$values[] = (strlen($element)>0) ? $element : null;
+				if (++$i < count($ldapArr)) $sql .= ',';
+			}
+			$retval = self::$dbToUse->queryPrepared($sql,$values);
+		} else {
+			// it's an update
+			$optionID = $ldapArr['id_ldap'];
+			unset ($ldapArr['id_ldap']);
+			$sql = 'UPDATE `'.self::$PREFIX.'options` SET `value`=? WHERE `key`=? AND '.
+					   '`'.self::$PREFIX.'providers_id`=? AND '.
+					   '`'.self::$PREFIX.'providers_options_id`=?';
+			foreach ($ldapArr as $key=>$value) {
+				$retval = self::$dbToUse->queryPrepared($sql,array(
+						(strlen($value)>0 ? $value : null),$key,$ldapProviderID,$optionID));
+				if (AMA_DB::isError($retval)) break;
+			}
+		}
+		return $retval;
+	}
+	
+	/**
+	 * deletes an ldap provider option set
+	 * 
+	 * @param number $options_id the option id to be deleted
+	 * 
+	 * @return boolean|AMA_Error
+	 * 
+	 * @access public
+	 */
+	public function deleteLDAP($options_id) {
+		$ldapProviderID = $this->getLoginProviderIDFromClassName(self::$LDAPCLASSNAME);
+		$sql = 'DELETE FROM `'.self::$PREFIX.'options` WHERE '.
+				'`'.self::$PREFIX.'providers_id`=? AND '.
+				'`'.self::$PREFIX.'providers_options_id`=?';
+		return self::$dbToUse->queryPrepared($sql,array($ldapProviderID,$options_id));
 	}
 	
 	/**
