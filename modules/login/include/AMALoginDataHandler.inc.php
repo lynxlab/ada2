@@ -40,7 +40,15 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * @access public
 	 */
 	public function loadOptions($id) {
-		$sql = 'SELECT `key`,`value` FROM `'.self::$PREFIX.'options` '.
+		/**
+		 * if more than one disctinct option set, return an array of options
+		 */
+		$makeArray = intval(self::$dbToUse->getOnePrepared(
+				'SELECT COUNT(DISTINCT(`'.self::$PREFIX.'providers_options_id`)) FROM `'.
+				 self::$PREFIX.'options` WHERE `'.self::$PREFIX.'providers_id` = ?',$id))>1;
+		
+		$sql = 'SELECT `key`,`value`,`'.self::$PREFIX.'providers_options_id` '.
+			   'FROM `'.self::$PREFIX.'options` '.
 			   'WHERE `'.self::$PREFIX.'providers_id`=?';
 		$res = self::$dbToUse->getAllPrepared($sql,$id,AMA_FETCH_ASSOC);
 		
@@ -55,9 +63,15 @@ class AMALoginDataHandler extends AMA_DataHandler {
 					$value = json_decode($keyvalue['value'], true); // true means return it as an assoc array
 				}
 				else $value = $keyvalue['value'];
-				$retArr[$keyvalue['key']] = $value;
+				
+				if ($makeArray) $retArr[$keyvalue[self::$PREFIX.'providers_options_id']][$keyvalue['key']] = $value;
+				else $retArr[$keyvalue['key']] = $value;
 			}
-			return ((count($retArr)>0) ? $retArr : null);
+			
+			if (count($retArr)>0) {
+				$retArr['optionscount'] = ($makeArray ? count($retArr) : 1);
+				return $retArr;
+			}
 		}
 		return null;
 	}
@@ -143,7 +157,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function addLoginToHistory($userID, $time, $loginProviderID) {
+	public function addLoginToHistory($userID, $time, $loginProviderID, $successfulOptionsID) {
 		$sql = 'SELECT COUNT(`date`) FROM `'.self::$PREFIX.'history_login` WHERE '.
 			   '`id_utente`=? AND `'.self::$PREFIX.'providers_id`=?';
 		$rowCount = self::$dbToUse->getOnePrepared($sql,array($userID, $loginProviderID));
@@ -155,8 +169,8 @@ class AMALoginDataHandler extends AMA_DataHandler {
 		}
 		
 		$sql = 'INSERT INTO `'.self::$PREFIX.'history_login` (`id_utente`,`date`,`'.
-				self::$PREFIX.'providers_id`) VALUES (?,?,?)';
-		return self::$dbToUse->queryPrepared($sql, array($userID, $time, $loginProviderID));
+				self::$PREFIX.'providers_id`,`successfulOptionsID`) VALUES (?,?,?,?)';
+		return self::$dbToUse->queryPrepared($sql, array($userID, $time, $loginProviderID, $successfulOptionsID));
 	}
 	
 	/**

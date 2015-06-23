@@ -24,13 +24,40 @@ class ldapLogin extends AbstractLogin
 	 */
 	public function doLogin($name, $pass, $remindMe, $language)
 	{
+		$loginResult = null;
+		$errorMessages = array();
+		$allOptions = $this->loadOptions();
+
+		if (!is_null($allOptions)) {
+			if ($allOptions['optionscount']<=1) $allOptions = array ($allOptions);
+			unset($allOptions['optionscount']);
+			
+			foreach ($allOptions as $option_id=>$options) {
+				if ($options['enabled']) {
+					$loginResult = $this->doLoginAttempt($name, $pass, $remindMe, $language, $options);
+					if (is_object($loginResult) && $loginResult instanceof ADALoggableUser) {
+						$this->setSuccessfulOptionsID($option_id);
+						return $loginResult;
+					} else if ((is_object($loginResult)) && ($loginResult instanceof Exception)) {
+						if(!in_array($loginResult->getMessage(), $errorMessages)) $errorMessages[] = $loginResult->getMessage();
+					}
+				}
+			}
+		}
+		if (count($errorMessages)==0) {
+			$errorMessages[] = translateFN('Nessun servizio LDAP configurato o attivo');
+		}
+		return new Exception(implode('<br/>', $errorMessages));
+	}
+	
+	private function doLoginAttempt($name, $pass, $remindMe, $language, $options)
+	{
 		try {
 			/**
 			 * If invalid name or password, throw exception
 			 */
 			if ($name === false || $pass === false) throw new Exception(null,self::INVALID_USERNAME_EXECEPTION_CODE);
 			
-			$options = $this->loadOptions();
 			/**
 			 * check LDAP configuration in module's option table
 			 */
@@ -38,9 +65,9 @@ class ldapLogin extends AbstractLogin
 				// mandatory fields
 				$mandatoryOptions = array(
 						'host' => 'Impostare l\'host LDAP',
-						'dn'  => 'Impostare il dn LDAP',
-						'ou_users' => 'Impostare l\'ou per gli utenti in LDAP',
-						'ou_groups'=> 'Impostare l\'ou per i gruppi in LDAP'
+						'authdn'  => 'Impostare il dn di autenticazione LDAP',
+						'basedn' => 'Impostare il dn di ricerca in LDAP',
+						'usertype' => 'Specificare il ruolo utente WISP'
 				);
 				
 				foreach ($mandatoryOptions as $optionName=>$errorMessage) {
@@ -59,7 +86,7 @@ class ldapLogin extends AbstractLogin
 			ldap_set_option($handle, LDAP_OPT_NETWORK_TIMEOUT,  30); /* 30 second timeout */
 			
 			// this will output a warning in the webserver log on failure
-			$bind = ldap_bind($handle, 'uid='.$name.',ou='.$options['ou_users'].','.$options['dn'], $pass);
+			$bind = ldap_bind($handle, 'uid='.$name.','.$options['authdn'], $pass);
 			
 			if ($bind !==false) {
 				/**
@@ -71,7 +98,7 @@ class ldapLogin extends AbstractLogin
 					/**
 					 * If user is not in ADA DB, try loading his data from LDAP
 					 */
-					$result = ldap_search($handle, $options['dn'], "uid=".$name);
+					$result = ldap_search($handle, $options['authdn'], "uid=".$name);
 					/**
 					 * If $results is false, throw an exception
 					 */
@@ -81,60 +108,50 @@ class ldapLogin extends AbstractLogin
 					if ($entries!==false && is_array($entries) && count($entries)>0) {
 						$entries = $entries[0];
 						/**
-						 * Look for user group name from group id and map it to proper AMA_TYPE
-						 * accordingly to module's option table
+						 * If user uid is listed in the memberUid attributes
+						 * for the basedn than it's safe to say that his type is $options['usertype']
 						 */
-						if (!is_null($entries) && isset($entries['gidnumber']) && intval($entries['gidnumber'][0])>0) {
-							// look for group name
-							$query = "(&(objectClass=posixGroup)(gidNumber=".$entries['gidnumber'][0]."))";
-							$groupres = ldap_search($handle, "ou=".$options['ou_groups'].",".$options['dn'], $query);
-							/**
-							 * If $groupres is false, don't thrown an exception: the user shall be a student
-							 */
-							$groupentries = ldap_get_entries($handle, $groupres);
+						if (!is_null($entries)) {
+							$namefilter = '(&(memberUid='.$name.'))';
+							if  (isset($options['filter']) && strlen($options['filter'])>0) {
+								// extract filter up to last ')' character
+								$substr = substr($options['filter'], 0,strrpos($options['filter'], ')'));
+								// concatenate $namefilter to passed filter and restore the last ')'
+								$query = $substr.$namefilter.')';
+							} else $query = $namefilter;
 							
-							if (isset($groupentries[0]['cn']) && strlen($groupentries[0]['cn'][0])>0) {
-								$groupname = $groupentries[0]['cn'][0];
-								$possibleUserType = null;
-								/**
-								 * this will map LDAP groups to AMA_TYPE_* 
-								 * accordingly to the options table
-								 */
-								foreach ($options as $optionName=>$groupDesc) {
-									if (strpos($optionName,'AMA_TYPE')===0) {
-										if (is_array($groupDesc) && in_array($groupname, $groupDesc)) {
-											// if value (aka $groupDesc) in the options table is array
-											$possibleUserType = strtoupper($optionName);
-											break;
-										} else if (strcmp($groupDesc, $groupname)===0) {
-											// if value (aka $groupDesc) in the options table is string
-											$possibleUserType = strtoupper($optionName);
-											break;
-										}
-									}
+							$groupres = ldap_search($handle, $options['basedn'], $query);
+							if ($groupres!==false) $groupentries = ldap_get_entries($handle, $groupres); 
+							else throw new Exception(ldap_err2str(ldap_errno($handle)), ldap_errno($handle));
+							
+							if ($groupentries!==false && is_array($groupentries) && count($groupentries)>0) {
+								if($groupentries['count']>0) {
+									// all went ok here: user has been found, user data has been loaded
+									// and user memberUid was found on the passed basedn, create ADA user 
+									$userType = $options['usertype'];
+									/**
+									 * build user array
+									 */
+									$adaUser = array(
+											'nome' => $entries['givenname'][0],
+											'cognome' => $entries['sn'][0],
+											'email' => 'nobody',
+											'username' => $entries['uid'][0],
+											'tipo' => $options['usertype'],
+											'cap' => '',
+											'matricola' => '',
+											'avatar' => '',
+											'birthcity' => ''
+									);
+									
+									if (isset($handle) && !is_null($handle)) ldap_unbind($handle);
+									return $this->addADAUser($adaUser);
 								}
-								
-								if (!is_null($possibleUserType) && defined($possibleUserType)) $userType = constant($possibleUserType);
 							}
+							
+							return new Exception(translateFN('Utente non trovato nel dn fornito per').' '.$options['name']);
 						}
 						
-						/**
-						 * build user array
-						 */
-						$adaUser = array(
-								'nome' => $entries['givenname'][0],
-								'cognome' => $entries['sn'][0],
-								'email' => 'nobody',
-								'username' => $entries['uid'][0],
-								'tipo' => isset($userType) ? $userType  : AMA_TYPE_STUDENT,
-								'cap' => '',
-								'matricola' => '',
-								'avatar' => '',
-								'birthcity' => ''
-						);
-						
-						if (isset($handle) && !is_null($handle)) ldap_unbind($handle);
-						return $this->addADAUser($adaUser);
 					}
 				} // user not found in ADA
 				
@@ -149,12 +166,12 @@ class ldapLogin extends AbstractLogin
 				throw new Exception(ldap_err2str(ldap_errno($handle)), ldap_errno($handle));
 			}
 		} catch (Exception $e) {
-			ldap_unbind($handle);
+			if (!is_null($handle)) ldap_unbind($handle);
 			// 'Invalid credentials' (code:49)  gets ADA's own message as text
 			if ($e->getCode()==self::INVALID_USERNAME_EXECEPTION_CODE) {
-				return new Exception(translateFN("Username  e/o password non valide"));
+				return new Exception(translateFN("Username  e/o password non valide"), self::INVALID_USERNAME_EXECEPTION_CODE);
 			}
-			return $e;
+			return new Exception($e->getMessage().' '.translateFN('di').' '.$options['name']);
 		}
 	}
 }
