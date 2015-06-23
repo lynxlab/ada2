@@ -43,6 +43,12 @@ abstract class abstractLogin implements iLogin
 	protected  $options = null;
 	
 	/**
+	 * options id that had a successful login
+	 * to be written in the login history table
+	 */
+	protected $successfulOptionsID = null;
+	
+	/**
 	 * datahandler to be used
 	 * 
 	 * @var AMALoginDataHandler
@@ -233,6 +239,28 @@ abstract class abstractLogin implements iLogin
 	}
 	
 	/**
+	 * successfulOptionsID getter
+	 * 
+	 * @return id of the succesful login option set
+	 * 
+	 * @access public
+	 */
+	public function getSuccessfulOptionsID() {
+		return $this->successfulOptionsID;
+	}
+	
+	/**
+	 * successfulOptionsID setter
+	 * 
+	 * @param number $id the id to set
+	 * 
+	 * @access public
+	 */
+	public function setSuccessfulOptionsID($id) {
+		$this->successfulOptionsID = $id;
+	}
+	
+	/**
 	 * gets the proper login provider object from session
 	 * stored $_SESSION['sess_loginProviderArr']['className'] and
 	 * $_SESSION['sess_loginProviderArr']['id'] variables
@@ -260,14 +288,16 @@ abstract class abstractLogin implements iLogin
 	/**
 	 * adds a row to the login history table
 	 * 
+	 * WARNING! Multiple sets of options are supported only for LDAP class
+	 * 
 	 * @param number $userID user id that has logged in
 	 * @param number $time unix timestamp of the login
 	 * 
 	 * @access public
 	 */
 	public function addLoginToHistory ($userID, $time = null) {
-		if (is_null($time)) $time = time();		
-		$this->dataHandler->addLoginToHistory($userID, $time, $this->id);
+		if (is_null($time)) $time = time();
+		$this->dataHandler->addLoginToHistory($userID, $time, $this->id, $this->successfulOptionsID);
 	}
 	
 	/**

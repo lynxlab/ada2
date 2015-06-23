@@ -22,6 +22,11 @@ class adaLogin extends AbstractLogin
 	 */
 	public function doLogin($name, $pass, $remindMe, $language)
 	{
-		return MultiPort::loginUser($name, $pass);
+		$user = MultiPort::loginUser($name, $pass);
+		if (is_object($user) && $user instanceof ADALoggableUser) {
+			// WARNING! For this login provider, only one set of options is supported
+			$this->setSuccessfulOptionsID(1);
+		}
+		return $user;
 	}
 }

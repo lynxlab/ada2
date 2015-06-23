@@ -1,5 +1,4 @@
 <?php
-
 /**
  * LOGIN MODULE -hybridLogin.php - performs user login using hybrid lybrary
  * 
@@ -83,6 +82,8 @@ if(isset($_GET['id']))
 	    		 * user selection
 	    		 */
 	    		if (!is_null($language)) $selectedLanguage = $language;
+	    		// WARNING!! only one set of options is supported on this login provider
+	    		$hybridLogin->setSuccessfulOptionsID(1);
 	    		// set session and redirect
 	    		ADALoggableUser::setSessionAndRedirect($userObj, $remindme, $selectedLanguage, $hybridLogin);
 	    	} else {
