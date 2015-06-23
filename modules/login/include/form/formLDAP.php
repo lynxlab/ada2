@@ -42,6 +42,9 @@ class FormLDAP extends FForm {
 			 ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);		
 		$this->addTextInput('filter', translateFN('Filtro'))
 			 ->setAttribute('maxlength', $this->maxlength);
+		$this->addSelect('enabled', translateFN('Abilitato'), array(
+				'false'=>translateFN('No'), 'true'=>translateFN('Sì')
+		), 'true');
 		$this->addSelect('usertype',
 				translateFN('Tipo Utente'),
 				array(

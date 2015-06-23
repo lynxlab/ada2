@@ -20,6 +20,7 @@ class ldapManagement
 	public $basedn;
 	public $filter;
 	public $usertype;
+	public $enabled;
 
 	/**
      * name constructor
