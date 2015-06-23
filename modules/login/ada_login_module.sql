@@ -19,7 +19,8 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `module_login_history_login` (
   `id_utente` int(10) unsigned NOT NULL,
   `date` int(11) NOT NULL,
-  `module_login_providers_id` int(5) unsigned NOT NULL
+  `module_login_providers_id` int(5) unsigned NOT NULL,
+  `successfulOptionsID` int(5) unsigned NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -30,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `module_login_history_login` (
 
 CREATE TABLE IF NOT EXISTS `module_login_options` (
   `module_login_providers_id` int(5) unsigned NOT NULL,
+  `module_login_providers_options_id` int(5) unsigned NOT NULL,
   `key` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
