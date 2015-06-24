@@ -1,6 +1,6 @@
 <?php
 /**
- * LOGIN MODULE - config page for ldap login provider
+ * LOGIN MODULE - config page for option sets of the provider type
  * 
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
@@ -37,38 +37,51 @@ require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 require_once MODULES_LOGIN_PATH .'/config/config.inc.php';
 $self = whoami();
 $GLOBALS['dh'] = AMALoginDataHandler::instance();
+
+$providerType = 'ldap';
+
 /**
- * generate HTML for 'New LDAP' button and the table
+ * generate HTML for 'New Option set' button and the table
  */
 $configIndexDIV = CDOMElement::create('div','id:configindex');
 $newButton = CDOMElement::create('button');
 $newButton->setAttribute('class', 'newButton top');
 $newButton->setAttribute('title', translateFN('Clicca per creare un nuova fonte'));
-$newButton->setAttribute('onclick', 'javascript:editLDAP(null);');
+$newButton->setAttribute('onclick', 'javascript:editOptionSet(null,\''.$providerType.'\');');
 $newButton->addChild (new CText(translateFN('Nuova Fonte')));
 $configIndexDIV->addChild($newButton);
-$LDAPData = array();
-$LDAPList = $GLOBALS['dh']->getAllLDAP();
-$i = count($LDAPList);
-if (!AMA_DB::isError($LDAPList)) {
+$tableOutData = array();
+switch ($providerType) {
+	case 'ldap':
+			$optionSetList = $GLOBALS['dh']->getAllLDAP();
+		break;
+}
+$i = count($optionSetList);
+if (!AMA_DB::isError($optionSetList)) {
 	
-	$labels = array (translateFN('nome'), translateFN('host'), 
+	$labels = array (translateFN('nome'), translateFN('host'),  translateFN('stato'),
 					 translateFN('azioni'));
-	foreach ($LDAPList as $i=>$LDAPAr) {
+	foreach ($optionSetList as $i=>$elementArr) {
 		$links = array();
 		$linksHtml = "";
 			
-		for ($j=0;$j<2;$j++) {
+		for ($j=0;$j<3;$j++) {
 			switch ($j) {
 				case 0:
 					$type = 'edit';
 					$title = translateFN('Modifica Fonte');
-					$link = 'editLDAP('.$i.');';
+					$link = 'editOptionSet('.$i.',\''.$providerType.'\');';
 					break;
 				case 1:
 					$type = 'delete';
 					$title = translateFN ('Cancella Fonte');
-					$link = 'deleteLDAP($j(this), '.$i.' , \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
+					$link = 'deleteOptionSet($j(this), '.$i.' , \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
+					break;
+				case 2:
+					$isEnabled = intval($elementArr['enabled'])===1;
+					$type = ($isEnabled) ? 'disable' : 'enable';
+					$title = ($isEnabled) ? translateFN('Disabilita') : translateFN('Abilita');
+					$link = 'setEnabledOptionSet($j(this), '.$i.', '.($isEnabled ? 'false' : 'true').');';
 					break;
 			}
 				
@@ -89,14 +102,16 @@ if (!AMA_DB::isError($LDAPList)) {
 			$linksHtml = $linksul->getHtml();
 		} else $linksHtml = '';
 				
-		$LDAPData[$i] = array (
-				$labels[0]=>$LDAPAr['name'],
-				$labels[1]=>$LDAPAr['host'],
-				$labels[2]=>$linksHtml);
+		$tableOutData[$i] = array (
+				$labels[0]=>$elementArr['name'],
+				$labels[1]=>$elementArr['host'],
+				$labels[2]=>((intval($elementArr['enabled'])===1) ? translateFN('Abilitata') : translateFN('Disabilitata') ),
+				$labels[3]=>$linksHtml);
 	}
 	
-	$LDAPTable = BaseHtmlLib::tableElement('id:completeLDAPList',$labels,$LDAPData,'',translateFN('Elenco delle fonti LDAP'));
-	$configIndexDIV->addChild($LDAPTable);
+	$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper($providerType).'List',
+				$labels,$tableOutData,'',translateFN('Elenco delle fonti '.strtoupper($providerType)));
+	$configIndexDIV->addChild($OutTable);
 	
 	// if there are more than 10 rows, repeat the add new button below the table
 	if ($i>10) {
@@ -104,7 +119,7 @@ if (!AMA_DB::isError($LDAPList)) {
 		$bottomButton->setAttribute('class', 'newButton bottom');
 		$configIndexDIV->addChild($bottomButton);
 	} 
-} // if (!AMA_DB::isError($LDAPList))
+} // if (!AMA_DB::isError($optionSetList))
 $data = $configIndexDIV->getHtml();
 $content_dataAr = array(
 		'user_name' => $user_name,
@@ -112,7 +127,7 @@ $content_dataAr = array(
 		'messages' => $user_messages->getHtml(),
 		'agenda' => $user_agenda->getHtml(),
 		'status' => $status,
-		'title' => translateFN('Configurazioni LDAP'),
+		'title' => translateFN('Configurazioni '.strtoupper($providerType)),
 		'data' => $data,
 );
 $layout_dataAr['JS_filename'] = array(

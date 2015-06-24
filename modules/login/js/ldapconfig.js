@@ -8,6 +8,11 @@
  * @version		0.1
  */
 
+var ENABLEDCELLCLASS = 'enabledstate';
+var ENABLEDBUTTONCLASS = 'enableButton';
+var DISABLEDBUTTONCLASS = 'disableButton';
+
+
 function initDoc() {
 	initToolTips();
 	initButtons();
@@ -19,13 +24,14 @@ function initDataTables() {
 		 		"bJQueryUI": true,
                 "bFilter": true,
                 "bInfo": true,
-                "bSort": true,
+                "bSort": false,
                 "bAutoWidth": true,
                 "bPaginate" : true,
                 "aoColumns": [
                                 { "sWidth": "30%"},
                                 { "sWidth": "20%"},
-                                { "bSearchable": false, "bSortable": false, "sWidth": "10%"}
+                                { "sWidth": "5%", "sClass":ENABLEDCELLCLASS },
+                                { "bSearchable": false, "bSortable": false, "sWidth": "8%"}
                 ],
                 "aaSorting": [[ 0, "asc" ]],
                 "oLanguage": {
@@ -44,12 +50,14 @@ function initDataTables() {
 	}).show();
 }
 
-function editLDAP(id_ldap) {
+function editOptionSet(option_id, providerType) {
+	if ('undefined' == typeof providerType) return false;
+	
 	// ask the server for the edit ldap form
 	$j.ajax({
 		type	:	'GET',
-		url		:	'ajax/edit_ldap.php',
-		data	:	{ id_ldap: id_ldap },
+		url		:	'ajax/edit_'+providerType+'.php',
+		data	:	{ option_id: option_id },
 		dataType:	'json'
 	})
 	.done(function (JSONObj){
@@ -89,7 +97,7 @@ function editLDAP(id_ldap) {
 					var okToSubmit = (onClickDefaultAction.length > 0) ? new Function(onClickDefaultAction)() : false;						
 					// and if ok ajax-submit the form
 					if (okToSubmit) {
-						ajaxSubmitLDAPForm(theDialog.find('form').serialize());
+						ajaxSubmitOptionSetForm(theDialog.find('form').serialize(),providerType);
 						theDialog.dialog('close');
 					}
 				};
@@ -126,11 +134,11 @@ function editLDAP(id_ldap) {
 	.fail(function () { showHideDiv('', 'Server Error', false) } );
 }
 
-function ajaxSubmitLDAPForm(data) {
+function ajaxSubmitOptionSetForm(data, providerType) {
 	// ask the server to save the ldap config
 	$j.ajax({
 		type	:	'POST',
-		url		:	'ajax/edit_ldap.php',
+		url		:	'ajax/edit_'+providerType+'.php',
 		data	:	data,
 		dataType:	'json'
 	})
@@ -143,15 +151,15 @@ function ajaxSubmitLDAPForm(data) {
 	});
 }
 
-function deleteLDAP(jqueryObj, id_ldap, message) {
+function deleteOptionSet(jqueryObj, option_id, message) {
 	if ($j('.tooltip').length>0) $j('.tooltip').blur();
 	// the trick below should emulate php's urldecode behaviour
 	if (confirm ( decodeURIComponent((message + '').replace(/\+/g, '%20')) ))
 	{
 		$j.ajax({
 			type	:	'POST',
-			url		:	'ajax/delete_ldap.php',
-			data	:	{ id_ldap: id_ldap },
+			url		:	'ajax/delete_optionset.php',
+			data	:	{ option_id: option_id },
 			dataType:	'json'
 		})
 		.done  (function (JSONObj) {
@@ -169,4 +177,38 @@ function deleteLDAP(jqueryObj, id_ldap, message) {
 			}
 		});
 	}
+}
+
+function setEnabledOptionSet(jqueryObj, option_id, newstatus) {
+	$j.ajax({
+		type	:	'POST',
+		url		:	'ajax/setenabled_optionset.php',
+		data	:	{ option_id: option_id, status: (newstatus ? 1 :0) },
+		beforeSend : function() {
+			if ($j('.tooltip').length>0) {
+				jqueryObj.tooltip('destroy');
+			}
+			jqueryObj.blur();
+			jqueryObj.button('disable');
+			jqueryObj.removeAttr('title');
+			jqueryObj.parents('tr').children('.'+ENABLEDCELLCLASS).toggleClass('disabled');
+		},
+		dataType:	'json'
+	})
+	.always (function() { jqueryObj.button('enable'); initToolTips(); })
+	.done  (function (JSONObj) {
+		if (JSONObj) {
+				if (JSONObj.status=='OK') {
+					// ajax must return button title and html text
+					jqueryObj.attr('onclick','setEnabledOptionSet($j(this), '+option_id+', '+(newstatus ? 'false' : 'true')+');');
+					jqueryObj.attr('title', JSONObj.buttonTitle);
+					jqueryObj.toggleClass(ENABLEDBUTTONCLASS).toggleClass(DISABLEDBUTTONCLASS);
+					initButtons();
+					jqueryObj.parents('tr').children('.'+ENABLEDCELLCLASS).
+						toggleClass('disabled').html(JSONObj.statusText).effect("highlight", {}, 2000);
+				} else {
+					showHideDiv('', JSONObj.msg, false);
+				}
+		}
+	});
 }

@@ -33,14 +33,13 @@ class ldapLogin extends AbstractLogin
 			unset($allOptions['optionscount']);
 			
 			foreach ($allOptions as $option_id=>$options) {
-				if ($options['enabled']) {
-					$loginResult = $this->doLoginAttempt($name, $pass, $remindMe, $language, $options);
-					if (is_object($loginResult) && $loginResult instanceof ADALoggableUser) {
-						$this->setSuccessfulOptionsID($option_id);
-						return $loginResult;
-					} else if ((is_object($loginResult)) && ($loginResult instanceof Exception)) {
-						if(!in_array($loginResult->getMessage(), $errorMessages)) $errorMessages[] = $loginResult->getMessage();
-					}
+				// disabled options are not returned at all by loadOptions
+				$loginResult = $this->doLoginAttempt($name, $pass, $remindMe, $language, $options);
+				if (is_object($loginResult) && $loginResult instanceof ADALoggableUser) {
+					$this->setSuccessfulOptionsID($option_id);
+					return $loginResult;
+				} else if ((is_object($loginResult)) && ($loginResult instanceof Exception)) {
+					if(!in_array($loginResult->getMessage(), $errorMessages)) $errorMessages[] = $loginResult->getMessage();
 				}
 			}
 		}

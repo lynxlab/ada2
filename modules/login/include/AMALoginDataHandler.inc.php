@@ -194,14 +194,15 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	}
 	
 	/**
-	 * gets all LDAP options rows
+	 * gets all options rows for a login provider
+	 * 
+	 * @param number $provider_id login provider id to get options for
 	 * 
 	 * @return array
 	 * 
-	 * @access public
+	 * @access private
 	 */
-	public function getAllLDAP() {
-		$ldapProviderID = $this->getLoginProviderIDFromClassName(self::$LDAPCLASSNAME);
+	private function getAllOptions($provider_id) {
 		
 		$sql = 'SELECT PR_OP.`'.self::$PREFIX.'providers_id`, PR_OP.`enabled`, PR_OP.`order`, OP.* '.
 			   'FROM `'.self::$PREFIX.'options` OP '.
@@ -209,7 +210,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 			   'ON PR_OP.`'.self::$PREFIX.'providers_options_id`=OP.`'.self::$PREFIX.'providers_options_id` '.			   
 			   'WHERE PR_OP.`'.self::$PREFIX.'providers_id`=? '.
 			   'ORDER BY PR_OP.`order` ASC';
-		$result = self::$dbToUse->getAllPrepared($sql,$ldapProviderID,AMA_FETCH_ASSOC);
+		$result = self::$dbToUse->getAllPrepared($sql,$provider_id,AMA_FETCH_ASSOC);
 		$retval = array();
 		
 		if (!AMA_DB::isError($result) && is_array($result) && count($result)>0) {
@@ -224,7 +225,18 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	}
 	
 	/**
-	 * gets an LDAP provider option set
+	 * gets all LDAP options
+	 * 
+	 * @return array
+	 * 
+	 * @access public
+	 */
+	public function getAllLDAP() {
+		return $this->getAllOptions($this->getLoginProviderIDFromClassName(self::$LDAPCLASSNAME));
+	}
+	
+	/**
+	 * gets a provider option set
 	 * 
 	 * @param number $options_id the option set id to be loaded
 	 * 
@@ -232,7 +244,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function getLDAP ($options_id) {
+	public function getOptionSet ($options_id) {
 		
 		$sql = 'SELECT * FROM `'.self::$PREFIX.'options` '.
 			   'WHERE `'.self::$PREFIX.'providers_options_id`=?';
@@ -248,19 +260,19 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	}
 	
 	/**
-	 * saves (either insert or update) an ldap provider option set
+	 * saves (either insert or update) a provider option set
 	 * 
-	 * @param array $ldapArr array of data to be saved
+	 * @param array $dataArr array of data to be saved
 	 * 
 	 * @return boolean|AMA_Error
 	 * 
 	 * @access public
 	 */
-	public function saveLDAP ($ldapArr) {
+	public function saveOptionSet ($dataArr) {
 		
-		if (!isset($ldapArr['id_ldap']) || (isset($ldapArr['id_ldap'])) && intval($ldapArr['id_ldap'])<=0) {
+		if (!isset($dataArr['id_ldap']) || (isset($dataArr['id_ldap'])) && intval($dataArr['id_ldap'])<=0) {
 			// it's an insert
-			unset ($ldapArr['id_ldap']);
+			unset ($dataArr['id_ldap']);
 			
 			$ldapProviderID = $this->getLoginProviderIDFromClassName(self::$LDAPCLASSNAME);
 			$orderValue = $this->getMaxOrderForProviderOptions($ldapProviderID);
@@ -279,23 +291,23 @@ class AMALoginDataHandler extends AMA_DataHandler {
 				 */
 				$sql = 'INSERT INTO `'.self::$PREFIX.'options` VALUES ';
 				$values = array(); $i=0;
-				foreach ($ldapArr as $key=>$element) {
+				foreach ($dataArr as $key=>$element) {
 					$sql .= '(?,?,?)';
 					$values[] = $optionID;
 					$values[] = $key;
 					// save empty values as null, useful when it's an update
 					$values[] = (strlen($element)>0) ? $element : null;
-					if (++$i < count($ldapArr)) $sql .= ',';
+					if (++$i < count($dataArr)) $sql .= ',';
 				}
 				$retval = self::$dbToUse->queryPrepared($sql,$values);				
 			} else $retval = $res; // return the error			
 		} else {
 			// it's an update
-			$optionID = $ldapArr['id_ldap'];
-			unset ($ldapArr['id_ldap']);
+			$optionID = $dataArr['id_ldap'];
+			unset ($dataArr['id_ldap']);
 			$sql = 'UPDATE `'.self::$PREFIX.'options` SET `value`=? WHERE `key`=? AND '.
 					   '`'.self::$PREFIX.'providers_options_id`=?';
-			foreach ($ldapArr as $key=>$value) {
+			foreach ($dataArr as $key=>$value) {
 				$retval = self::$dbToUse->queryPrepared($sql,array(
 						(strlen($value)>0 ? $value : null),$key,$optionID));
 				if (AMA_DB::isError($retval)) break;
@@ -305,7 +317,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	}
 	
 	/**
-	 * deletes an ldap provider option set
+	 * deletes a provider option set
 	 * 
 	 * @param number $options_id the option id to be deleted
 	 * 
@@ -313,7 +325,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function deleteLDAP($options_id) {
+	public function deleteOptionSet($options_id) {
 		
 		$tablesToDel = array('providers_options','options');
 		
@@ -325,6 +337,22 @@ class AMALoginDataHandler extends AMA_DataHandler {
 		}
 		
 		return $res;
+	}
+	
+	/**
+	 * sets the enabled status of an option set
+	 * 
+	 * @param number $options_id the option id to be deleted
+	 * @param number $status 1 to enable, 0 to disable
+	 * 
+	 * @return boolean|AMA_Error
+	 * 
+	 * @access public
+	 */
+	public function setEnabledOptionSet ($options_id, $status) {
+		$sql = 'UPDATE `'.self::$PREFIX.'providers_options` SET `enabled`=? '.
+			   'WHERE `'.self::$PREFIX.'providers_options_id`=?';
+		return self::$dbToUse->queryPrepared($sql, array(intval($status),$options_id));
 	}
 	
 	/**

@@ -47,10 +47,10 @@ $retArray = array();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	if (!isset($_POST['id_ldap'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so cosa cancellare"));
+	if (!isset($_POST['option_id'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so cosa cancellare"));
 	else
 	{
-		$result = $GLOBALS['dh']->deleteLDAP (intval($_POST['id_ldap']));
+		$result = $GLOBALS['dh']->deleteOptionSet (intval($_POST['option_id']));
 		
 		if (!AMA_DB::isError($result))
 		{		

@@ -51,7 +51,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	// build a ldapconfig with passed POST data
 	$ldapManager = new ldapManagement($_POST);
 	// try to save it
-	$res = $GLOBALS['dh']->saveLDAP($ldapManager->toArray());
+	$res = $GLOBALS['dh']->saveOptionSet($ldapManager->toArray());
 
 	if (AMA_DB::isError($res)) {
 		// if it's an error display the error message
@@ -63,13 +63,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		$retArray['msg'] = translateFN('Fonte salvata');
 	}	
 } else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
-			isset($_GET['id_ldap']) && intval(trim($_GET['id_ldap']))>0) {
+			isset($_GET['option_id']) && intval(trim($_GET['option_id']))>0) {
 	/**
-	 * it's a GET with an id_ldap, load it and display
+	 * it's a GET with an option_id, load it and display
 	 */
-	$id_ldap = intval(trim($_GET['id_ldap']));
+	$option_id = intval(trim($_GET['option_id']));
 	// try to load it
-	$res = $GLOBALS['dh']->getLDAP($id_ldap);
+	$res = $GLOBALS['dh']->getOptionSet($option_id);
 	
 	if (AMA_DB::isError($res)) {
 		// if it's an error display the error message without the form
@@ -86,7 +86,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 } else {
 	/**
-	 * it's a get without an id_ldap, display the empty form
+	 * it's a get without an option_id, display the empty form
 	 */
 	$ldapManager = new ldapManagement();
 	$data = $ldapManager->run(MODULES_LOGIN_EDIT_LDAP);

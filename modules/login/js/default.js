@@ -63,6 +63,20 @@ function initButtons() {
 			primary : 'ui-icon-trash'
 		},
 		text : false
+	});
+	
+	$j('.disableButton').button({
+		icons : {
+			primary : 'ui-icon-cancel'
+		},
+		text : false
+	});	
+	
+	$j('.enableButton').button({
+		icons : {
+			primary : 'ui-icon-check'
+		},
+		text : false
 	});	
 }
 
