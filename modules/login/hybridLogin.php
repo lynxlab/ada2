@@ -44,6 +44,7 @@ if(isset($_GET['id']))
 	$remindme = isset($_GET['remindme']) ? intval($_GET['remindme']) : 0;
 	$selectedLanguage = isset($_GET['lang']) ? trim($_GET['lang']) : null;
 	$hybridLogin = new hybridLogin(intval($_GET['id']));
+	$hybridLogin->loadHybridAuth();
 	
 	try {
 		$hybridLogin->authenticate();

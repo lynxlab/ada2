@@ -28,8 +28,18 @@ class hybridLogin extends AbstractLogin
 	
 	public function __construct($id=null)
 	{
-		parent::__construct($id);		
-		$this->hybridauth = new Hybrid_Auth($this->getConfigFromOptions());		
+		parent::__construct($id);
+	}
+	
+	/**
+	 * sets the hybridauth object.
+	 * MUST be called before any attempt to authenticate with the provider
+	 * 
+	 * @access public
+	 */
+	public function loadHybridAuth()
+	{
+		$this->hybridauth = new Hybrid_Auth($this->getConfigFromOptions());
 	}
 	
 	/**
