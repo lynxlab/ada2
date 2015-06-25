@@ -69,6 +69,10 @@ abstract class abstractLogin implements iLogin
 		$this->id = intval($id);
 	}
 	
+	public function __destruct() {
+		$this->dataHandler->disconnect();
+	}
+	
 	/**
 	 * loads the button label from the DB
 	 * 
@@ -258,6 +262,17 @@ abstract class abstractLogin implements iLogin
 	 */
 	public function setSuccessfulOptionsID($id) {
 		$this->successfulOptionsID = $id;
+	}
+	
+	/**
+	 * gets all option sets for the login provider
+	 * 
+	 * @return array
+	 * 
+	 * @access public
+	 */
+	public function getAllOptions() {
+		return $this->dataHandler->getAllOptions($this->id);
 	}
 	
 	/**

@@ -17,6 +17,11 @@ class ldapLogin extends AbstractLogin
 	const INVALID_USERNAME_EXECEPTION_CODE = 49;
 	
 	/**
+	 * class for managing options data
+	 */
+	const MANAGEMENT_CLASS = 'ldapManagement';
+	
+	/**
 	 * performs user login using an LDAP server
 	 * 
 	 * (non-PHPdoc)

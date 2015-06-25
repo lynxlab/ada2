@@ -1,6 +1,6 @@
 <?php
 /**
- * LOGIN MODULE - config page for ldap login provider
+ * LOGIN MODULE - config page for login provider
  * 
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
@@ -68,7 +68,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' &&
 	}
 }
 else {
-	$retArray = array ("status"=>"ERROR", "msg"=>trasnlateFN("Errore nella trasmissione dei dati"));
+	$retArray = array ("status"=>"ERROR", "msg"=>translateFN("Errore nella trasmissione dei dati"));
 }
 
 if (empty($retArray)) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore sconosciuto"));

@@ -13,7 +13,7 @@ require_once MODULES_LOGIN_PATH . '/include/form/formLDAP.php';
 
 class ldapManagement
 {
-	public $id_ldap;
+	public $option_id;
 	public $name;
 	public $host;
 	public $authdn;
@@ -46,7 +46,7 @@ class ldapManagement
     	$title= translateFN('Fonti LDAP');
     	
     	switch ($action) {
-    		case MODULES_LOGIN_EDIT_LDAP:
+    		case MODULES_LOGIN_EDIT_OPTIONSET:
     			/**
     			 * edit action, display the form with passed data
     			 */

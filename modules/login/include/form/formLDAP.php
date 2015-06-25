@@ -27,7 +27,7 @@ class FormLDAP extends FForm {
 		if (!is_null($formName)) $this->setName($formName);
 		if (!is_null($action)) $this->setAction($action);
 		
-		$this->addHidden('id_ldap');
+		$this->addHidden('option_id');
 		$this->addTextInput('name', translateFN('Nome'))->setRequired()
 			  ->setAttribute('maxlength', $this->maxlength)
 			 ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);

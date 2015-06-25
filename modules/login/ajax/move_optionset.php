@@ -45,19 +45,19 @@ $GLOBALS['dh'] = AMALoginDataHandler::instance();
 
 $retArray = array();
 
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delta'])) {
 
-	if (!isset($_POST['option_id'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so cosa cancellare"));
+	if (!isset($_POST['option_id'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so cosa spostare"));
 	else
 	{
-		$result = $GLOBALS['dh']->deleteOptionSet (intval($_POST['option_id']));
-		
+		$delta = intval($_POST['delta']);
+		$result = $GLOBALS['dh']->moveOptionSet (intval($_POST['option_id']),$delta);
 		if (!AMA_DB::isError($result))
-		{		
-			$retArray = array ("status"=>"OK", "msg"=>translateFN("Fonte cancellata"));
+		{
+			$retArray = array ("status"=>"OK");
 		}
 		else
-			$retArray = array ("status"=>"ERROR", "msg"=>translateFN("Errore di cancellazione") );
+			$retArray = array ("status"=>"ERROR", "msg"=>translateFN("Errore nello spostamento") );
 	}
 }
 else {

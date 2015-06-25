@@ -1,5 +1,5 @@
 /**
- * LOGIN MODULE - config page for ldap login provider
+ * LOGIN MODULE - config page for login provider
  * 
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
@@ -77,7 +77,21 @@ function initButtons() {
 			primary : 'ui-icon-check'
 		},
 		text : false
-	});	
+	});
+	
+	$j('.upButton').button({
+		icons : {
+			primary : 'ui-icon-circle-arrow-n'
+		},
+		text : false
+	});
+	
+	$j('.downButton').button({
+		icons : {
+			primary : 'ui-icon-circle-arrow-s'
+		},
+		text : false
+	});
 }
 
 /**
@@ -92,7 +106,7 @@ function showHideDiv ( title, message, isOK ) {
 		var errorClass = (!isOK) ? ' error' : '';
 		var content = "<div id='ADAJAX' class='saveResults popup"+errorClass+"'>";
 		if (title.length > 0) content += "<p class='title'>"+title+"</p>";
-		if (message.length > 0) content += "<p class='message'>"+message+"</p>";
+		if ('undefined' != typeof message && message.length > 0) content += "<p class='message'>"+message+"</p>";
 		content += "</div>";
         var theDiv = $j(content);
         theDiv.css("position","fixed");
