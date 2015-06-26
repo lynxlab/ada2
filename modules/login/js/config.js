@@ -51,7 +51,7 @@ function initDataTables() {
 						});
 						// hide move up button from actions of first row
 						$j(this).find('td.actions').first().find('button.upButton').hide();
-						// hide move down button from actions of last row						
+						// hide move down button from actions of last row
 						$j(this).find('td.actions').last().find('button.downButton').hide();
 					}
 	}).show();
@@ -84,10 +84,10 @@ function editOptionSet(option_id) {
 						effect: "fade",
 						easing: "easeOutSine", 
 						duration: 250
-			        }				
+			        }
 				});
 				
-				// get and hide the submit button				
+				// get and hide the submit button
 				var submitButton = theDialog.find('input[type="submit"]');
 				submitButton.hide();
 				
@@ -99,7 +99,7 @@ function editOptionSet(option_id) {
 					// get form (previously hidden) submit button onclick code
 					var onClickDefaultAction = submitButton.attr('onclick');
 					// execute it, to hava ADA's own form validator
-					var okToSubmit = (onClickDefaultAction.length > 0) ? new Function(onClickDefaultAction)() : false;						
+					var okToSubmit = (onClickDefaultAction.length > 0) ? new Function(onClickDefaultAction)() : false;
 					// and if ok ajax-submit the form
 					if (okToSubmit) {
 						 // append on the fly an hidden field form for the providerClassName
@@ -172,16 +172,16 @@ function deleteOptionSet(jqueryObj, option_id, message) {
 		})
 		.done  (function (JSONObj) {
 			if (JSONObj) {
-					if (JSONObj.status=='OK') {
-						// deletes the corresponding row from the DOM with a fadeout effect
-						showHideDiv('', JSONObj.msg, true);
-						jqueryObj.parents("tr").fadeOut("slow", function () {
-							var pos = configDataTable.fnGetPosition(this);
-							configDataTable.fnDeleteRow(pos);
-						});							
-					} else {
-						showHideDiv('', JSONObj.msg, false);
-					}
+				if (JSONObj.status=='OK') {
+					// deletes the corresponding row from the DOM with a fadeout effect
+					showHideDiv('', JSONObj.msg, true);
+					jqueryObj.parents("tr").fadeOut("slow", function () {
+						var pos = configDataTable.fnGetPosition(this);
+						configDataTable.fnDeleteRow(pos);
+					});
+				} else {
+					showHideDiv('', JSONObj.msg, false);
+				}
 			}
 		});
 	}
@@ -205,44 +205,45 @@ function setEnabledOptionSet(jqueryObj, option_id, newstatus) {
 	.fail (function() { jqueryObj.parents('td').find('button').button('enable'); initToolTips(); })
 	.done  (function (JSONObj) {
 		if (JSONObj) {
-				if (JSONObj.status=='OK') {
-					// get the cell where the statustext is, by the ENABLEDCELLCLASS
-					var position = configDataTable.fnGetPosition( jqueryObj.parents('tr').children('.'+ENABLEDCELLCLASS)[0] );
-					// update data with the statusText and no redraw yet
-					configDataTable.fnUpdate (JSONObj.statusText, position[0], position[2], false);
-					
-					// get the cell where the buttons are: it contains the clicked button
-					position = configDataTable.fnGetPosition( jqueryObj.parents('td')[0] );
-					// get the contents
-					var cellContent = configDataTable.fnGetData( jqueryObj.parents('td')[0] );
-					// clone it around a div
-					var newObj = $j('<div>').append($j(cellContent).clone());
-					// search for the old button class
-					var classToFind = newstatus ? ENABLEDBUTTONCLASS :  DISABLEDBUTTONCLASS ;
-					/**
-					 * on the cloned object
-					 * 1. set its onclick to the new value
-					 * 2. toggle enabled and disabled button class
-					 * 3. set the new title
-					 * 4. remove any old span needed by the jquery UI button
-					 */
-					newObj.find('.'+classToFind).					
-						attr('onclick','setEnabledOptionSet($j(this), '+option_id+', '+(newstatus ? 'false' : 'true')+');').					
-						toggleClass(ENABLEDBUTTONCLASS).
-						toggleClass(DISABLEDBUTTONCLASS).					
-						attr('title', JSONObj.buttonTitle).children('span').remove();
-					// update new cell in the data of the table an redraw					
-					configDataTable.fnUpdate (newObj.html(), position[0], position[2], true);
-					
-					// remove disabled class from cell with highlight effect
-					var row = configDataTable.fnGetNodes(position[0]);
-					$j(row).find('td.disabled.'+ENABLEDCELLCLASS).removeClass('disabled').effect("highlight", {}, 2000);
-					
-				} else {
-					showHideDiv('', JSONObj.msg, false);
-				}
+			// get the cell where the statustext is, by the ENABLEDCELLCLASS
+			var position = configDataTable.fnGetPosition( jqueryObj.parents('tr').children('.'+ENABLEDCELLCLASS)[0] );
+			var row = configDataTable.fnGetNodes(position[0]);
+			
+			if (JSONObj.status=='OK') {
+				// update data with the statusText and no redraw yet
+				configDataTable.fnUpdate (JSONObj.statusText, position[0], position[2], false);
+				
+				// get the cell where the buttons are: it contains the clicked button
+				position = configDataTable.fnGetPosition( jqueryObj.parents('td')[0] );
+				// get the contents
+				var cellContent = configDataTable.fnGetData( jqueryObj.parents('td')[0] );
+				// clone it around a div
+				var newObj = $j('<div>').append($j(cellContent).clone());
+				// search for the old button class
+				var classToFind = newstatus ? ENABLEDBUTTONCLASS :  DISABLEDBUTTONCLASS ;
+				/**
+				 * on the cloned object
+				 * 1. set its onclick to the new value
+				 * 2. toggle enabled and disabled button class
+				 * 3. set the new title
+				 * 4. remove any old span needed by the jquery UI button
+				 */
+				newObj.find('.'+classToFind).
+					attr('onclick','setEnabledOptionSet($j(this), '+option_id+', '+(newstatus ? 'false' : 'true')+');').
+					toggleClass(ENABLEDBUTTONCLASS).
+					toggleClass(DISABLEDBUTTONCLASS).
+					attr('title', JSONObj.buttonTitle).children('span').remove();
+				// update new cell in the data of the table an redraw
+				configDataTable.fnUpdate (newObj.html(), position[0], position[2], true);
 				initButtons();
-				initToolTips();
+				// cell with highlight effect
+				$j(row).find('td.disabled.'+ENABLEDCELLCLASS).effect("highlight", {}, 2000);
+			} else {
+				showHideDiv('', JSONObj.msg, false);
+				jqueryObj.parents('td').find('button').button('enable');
+			}
+			$j(row).find('td.disabled.'+ENABLEDCELLCLASS).removeClass('disabled');
+			initToolTips();
 		}
 	});
 }
@@ -266,26 +267,26 @@ function moveOptionSet(jqueryObj, option_id, delta) {
 	.fail (function() { jqueryObj.parents('td').find('button').button('enable'); initToolTips(); })
 	.done  (function (JSONObj) {
 		if (JSONObj) {
-				if (JSONObj.status=='OK') {
-				    var index = jqueryObj.parents('tr').index();
-
-				    // moves the row up or down by updating the
-					// data array of the table an then redraw it
-				    if ('undefined' != typeof index && configDataTable!=null) {
-				    	if ((index+delta) >= 0) {
-				    		var data = configDataTable.fnGetData();
-				    		configDataTable.fnClearTable();
-				    		data.splice((index+delta), 0, data.splice(index,1)[0]);
-				    		configDataTable.fnAddData(data);
-				    	}    	    	
-				    }
-					$j(configDataTable.fnGetNodes(index+delta)).effect("highlight", {}, 1000);
-					initButtons();
-				} else {
-					showHideDiv('', JSONObj.msg, false);
-					jqueryObj.parents('td').find('button').button('enable');
-				}
-				initToolTips();
+			if (JSONObj.status=='OK') {
+			    var index = jqueryObj.parents('tr').index();
+	
+			    // moves the row up or down by updating the
+				// data array of the table an then redraw it
+			    if ('undefined' != typeof index && configDataTable!=null) {
+			    	if ((index+delta) >= 0) {
+			    		var data = configDataTable.fnGetData();
+			    		configDataTable.fnClearTable();
+			    		data.splice((index+delta), 0, data.splice(index,1)[0]);
+			    		configDataTable.fnAddData(data);
+			    	}
+			    }
+				$j(configDataTable.fnGetNodes(index+delta)).effect("highlight", {}, 1000);
+				initButtons();
+			} else {
+				showHideDiv('', JSONObj.msg, false);
+				jqueryObj.parents('td').find('button').button('enable');
+			}
+			initToolTips();
 		}
 	});   
 }
