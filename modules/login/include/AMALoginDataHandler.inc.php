@@ -426,6 +426,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * @param string $dsn
 	 */
 	static function instance($dsn = null) {
+		if (!MULTIPROVIDER && is_null($dsn)) $dsn = MultiPort::getDSN($GLOBALS['user_provider']);
 		$theInstance = parent::instance($dsn);
 		
 		if (is_null(self::$dbToUse)) {
