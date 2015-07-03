@@ -163,6 +163,15 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 // 				array (translateFN ("Sample Extra 1:1"), $extraForm),
 // 				array (translateFN ("Sample Extra 1:n"), 'oneToManyDataSample'), 
 // 		);
+
+		/**
+		 * If you want the $extraForm fields embedded in the $form tab instead
+		 * of being on its own tab, use the following:
+		 */		
+		// 		$tabsArray = array (
+		// 				array (translateFN ("Anagrafica"), $form, 'withExtra'=>true),
+		// 				array (translateFN ("Sample Extra 1:n"), 'oneToManyDataSample'),
+		// 		);
 		
 		$data = "";
 		$linkedTablesInADAUser = !is_null(ADAUser::getLinkedTables()) ? ADAUser::getLinkedTables() : array();
@@ -273,6 +282,11 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 					// add the container to the current tab
 					$tabContents [$currTab]->addChild ($container);
 				} else if (isset ($currentForm)) {
+					// if form of current tab wants the UserExtraForm fields embedded, obey it
+					if (isset($tabsArray[$currTab]['withExtra']) && $tabsArray[$currTab]['withExtra']===true) {
+						UserExtraForm::addExtraControls($currentForm);
+						$currentForm->fillWithArrayData($user_dataAr);						
+					}
 					$tabContents [$currTab]->addChild (new CText ($currentForm->render()));
 					unset ($currentForm);				
 				}			
