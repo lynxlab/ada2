@@ -146,6 +146,14 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
   			$loginProviderID = isset($selectedLoginProviderID) ? $selectedLoginProviderID : null;
   			$loginObj = new $selectedLoginProvider($selectedLoginProviderID);
   			$userObj = $loginObj->doLogin($username, $password, $p_remindme, $p_selected_language);
+  			if ((is_object($userObj)) && ($userObj instanceof Exception)) {
+  				// try the adalogin before giving up the login process
+  				$lastTry = MultiPort::loginUser($username, $password);
+  				if ((is_object($lastTry)) && ($lastTry instanceof ADALoggableUser)) {
+	  				$loginObj = null;
+  					$userObj = $lastTry;
+  				}
+  			}
   		}
   	}
     
