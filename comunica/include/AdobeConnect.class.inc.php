@@ -182,13 +182,13 @@ class AdobeConnect extends videoroom implements IVideoRoom {
     
     public function addUser($userObj) {
         $common_dh = $GLOBALS['common_dh'];
-        $userPwd = substr($common_dh->_get_user_pwd($sess_id_user),0,31);
+        $userPwd = substr($common_dh->_get_user_pwd($userObj->getId()),0,31);
         
         $principalData = array();
         $principalData['login'] = $userObj->getUserName();
         $principalData['first-name'] = $userObj->getFirstName();
         $principalData['last-name'] = $userObj->getLastName();
-        $principalData['password'] = $userPwd; // fake password
+        $principalData['password'] = $userPwd; 
         $principalData['type'] = 'user';
         $principalData['send-email'] = false;
         $principalData['has-children'] = '0';

@@ -15,9 +15,9 @@
  * @name CONNECT DATA SERVER 
  */
 define('PROTOCOL','https://');
-define('CONNECT_HOST',  'https://meeting.unimc.it');
-define('CONNECT_ADMIN',  'api-user');
-define('CONNECT_PASSWD',  'Pabre5aP');
+define('CONNECT_HOST',  '');
+define('CONNECT_ADMIN',  '');
+define('CONNECT_PASSWD',  '');
 define('CONNECT_DIR',  'CONNECT');
 
 define('DEFAULT_ROOM_NAME','my-meetings');
