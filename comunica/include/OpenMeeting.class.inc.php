@@ -1,9 +1,16 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Openmeetings specific class
+ *
+ * @package             videochat
+ * @author		Stefano Penge <steve@lynxlab.com>
+ * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
+ * @author		giorgio consorti <g.conorti@lynxlab.com>
+ * @copyright           Copyright (c) 2015, Lynx s.r.l.
+ * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @link		
+ * @version		0.1
  */
 
 class OpenMeeting extends videoroom implements IVideoRoom {
@@ -27,8 +34,7 @@ class OpenMeeting extends videoroom implements IVideoRoom {
         $port = OPENMEETINGS_PORT;
         $dir = OPENMEETINGS_DIR;
 
-    //	$room_type = intval(CONFERENCE_TYPE);
-        $room_type = intval(AUDIENCE_TYPE);
+        $room_type = intval(OM_ROOM_TYPE);
         $ispublic = ROOM_IS_PUBLIC;
         $videoPodWidth = VIDEO_POD_WIDTH;
         $videoPodHeight = VIDEO_POD_HEIGHT;
@@ -75,7 +81,12 @@ class OpenMeeting extends videoroom implements IVideoRoom {
         $videoroom_dataAr['tempo_avvio'] = time();
         $videoroom_dataAr['tempo_fine'] = time() + $interval;
 
-        $videoroom_data = $dh->add_videoroom($videoroom_dataAr);      
+        $videoroom_data = $dh->add_videoroom($videoroom_dataAr);
+        
+        if (AMA_DB::isError($videoroom_data)) {
+            return false;
+        }
+        return $this->id_room;
 
     }
 
@@ -157,7 +168,7 @@ class OpenMeeting extends videoroom implements IVideoRoom {
  */
     }
 
-    public function roomAccess($username,$nome,$cognome,$user_email,$sess_id_user,$id_profile) {
+    public function roomAccess($username,$nome,$cognome,$user_email,$sess_id_user,$id_profile, $selected_provider) {
 
             $host = OPENMEETINGS_HOST;
             $port = OPENMEETINGS_PORT;

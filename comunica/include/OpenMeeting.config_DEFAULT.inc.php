@@ -48,8 +48,10 @@ define('FILES_PANEL_WIDTH',  '270');
 define('CONFERENCE_TYPE','1');
 define('AUDIENCE_TYPE','3'); 
 
+define('OM_ROOM_TYPE',AUDIENCE_TYPE);
+
 //*******
-define('FRAME_WIDTH','1000');
+define('FRAME_WIDTH','90%');
 define('FRAME_HEIGHT','600');
 
 define('VIDEOCHAT_LANGUAGE_BG', '30');

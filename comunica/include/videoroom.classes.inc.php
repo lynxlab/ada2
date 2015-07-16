@@ -35,8 +35,7 @@ abstract class videoroom
 	var $link_to_room;
 	var $room_properties;
 	var $list_room; // elenco stanze disponibili sul server
-	 
-	
+        
     public function __construct($id_course_instance=""){
         $dh            =   $GLOBALS['dh'];
         $error         =   $GLOBALS['error'];
@@ -78,11 +77,18 @@ abstract class videoroom
             $this->full = 1;
         }
     }
+    
+    public static function xml_attribute($object, $attribute)
+    {
+        if(isset($object[$attribute]))
+            return (string) $object[$attribute];
+    }
+            
 }
 interface iVideoRoom
 {
 	function addRoom ($name, $pass, $remindMe, $language);
 	function serverLogin();
-	function roomAccess($username,$nome,$cognome,$user_email,$sess_id_user,$id_profile);
+	function roomAccess($username,$nome,$cognome,$user_email,$sess_id_user,$id_profile,$selected_provider);
         function getRoom($id_room);
 }

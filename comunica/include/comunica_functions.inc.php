@@ -256,14 +256,10 @@ if (in_array('videoroom',$thisUserNeededObjAr)) {
          * get videoroom Obj
          */
           
-//        $videoroomObj = new videoroom();
         $videoroomObj = videoroom::getVideoObj();
-         
+        
 	$tempo_attuale = time();
         $videoroomObj->videoroom_info($sess_id_course_instance, $tempo_attuale);
-
-        //$videoroomObj->videoroom_info($sess_id_course_instance);
-
         if ($videoroomObj->full) {
           $videoroomObj->serverLogin();
           if ($videoroomObj->login >=0) {
@@ -272,14 +268,11 @@ if (in_array('videoroom',$thisUserNeededObjAr)) {
           }
         }else
         {
-        	//$status = addslashes(translateFN("Practitioner not yet present"));
         	$status = addslashes(translateFN("Room not yet opened"));
-  		//	$options_Ar = array('onload_func'=>'close_page("No_practitioner");');
 		  	$options_Ar = array('onload_func' => "close_page('$status');");
         }
         break;
       case AMA_TYPE_TUTOR:
-//        $videoroomObj = new videoroom();
         $videoroomObj = videoroom::getVideoObj();
 	$tempo_attuale = time();
         $creationDate = Abstract_AMA_DataHandler::ts_to_date($tempo_attuale);
@@ -287,17 +280,20 @@ if (in_array('videoroom',$thisUserNeededObjAr)) {
         $videoroomObj->serverLogin();
         if ($videoroomObj->full) {
           if ($videoroomObj->login >=0) {
-            $videoroomObj->roomAccess($user_uname,$user_name,$user_surname,$user_mail,$sess_id_user,$id_profile);
+            $videoroomObj->roomAccess($user_uname,$user_name,$user_surname,$user_mail,$sess_id_user,$id_profile, $sess_selected_tester);
 //            $videoroomObj->list_rooms();
           }
         } else {
 
-	        $room_name = translateFN("course: ") . $course_title . ", Tutor " . $user_uname . " date: " .$creationDate;
-	        $id_room = $videoroomObj->addRoom($room_name, $sess_id_course_instance, $sess_id_user);
-	        if ($videoroomObj->login >=0) {
+	        $room_name = $course_title . ' - '. translateFN('Tutor') .': '. $user_uname . ' '.translateFN('data').': ' .$creationDate;
+                $comment = translateFN('inserimento automatico via').' '. PORTAL_NAME;
+                $numUserPerRoom = 4;
+	        $id_room = $videoroomObj->addRoom($room_name, $sess_id_course_instance, $sess_id_user, $comment, $numUserPerRoom, $course_title, $sess_selected_tester);
+	        if ($videoroomObj->login >=0 && ($id_room != false)) {
 	          $videoroomObj->roomAccess($user_uname,$user_name,$user_surname,$user_mail,$sess_id_user,$id_profile);
 	      	}
         }
+
         break;
     }
 
