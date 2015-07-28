@@ -144,6 +144,9 @@ class hybridLogin extends AbstractLogin
 				if (isset($options['scope'])) {
 					$config['providers'][$providerName]['scope'] = $options['scope'];
 				}
+				if (isset($options['fields'])) {
+					$config['providers'][$providerName]['fields'] = $options['fields'];
+				}
 				break;
 			default:
 				$config = null;
@@ -251,14 +254,14 @@ class hybridLogin extends AbstractLogin
 				'indirizzo' => (isset($user_profile->address) && strlen($user_profile->address)>0) ? $user_profile->address : null,
 				'citta' => (isset($user_profile->city) && strlen($user_profile->city)>0) ? $user_profile->city : null,
 				'provincia' => (isset($user_profile->region) && strlen($user_profile->region)>0) ? $user_profile->region : null,
-				'nazione' => (isset($user_profile->country) && strlen($user_profile->country)>0) ? $user_profile->country : null,
+				'nazione' => null,
 				'birthdate' => $birthDate,
 				'sesso' => $gender,
 				'telefono' => (isset($user_profile->phone) && strlen($user_profile->phone)>0) ? $user_profile->phone : null,
 				'lingua' => $language,
 				'cap' => (isset($user_profile->zip) && strlen($user_profile->zip)>0) ? $user_profile->zip : '',
 				'avatar' => $avatar,
-				'birthcity' => '',
+				'birthcity' => (isset($user_profile->region) && strlen($user_profile->region)>0) ? $user_profile->region : null,
 				'matricola' => '',
 				'stato' => ''
 		);
