@@ -79,10 +79,14 @@ $content = "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codeb
 
 $width = FRAME_WIDTH;
 $height = FRAME_HEIGHT;
-$iframe = "
-    <iframe src='$videoroomObj->link_to_room' width='$width' height = '$height' ></iframe>;
-
-    ";
+if (strlen($videoroomObj->link_to_room)>0) {
+    $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height' ></iframe>";
+}
+else 
+{
+    $status = addslashes(translateFN("ops, there was a problem!"));
+    $options_Ar = array('onload_func' => "close_page('$status');");
+}
 
 $menu_01 = "<a href=\"close_videochat.php?id_room=".$videoroomObj->id_room ."&event_token=$event_token\">" . translateFN("Chiudi") . "</a>";
 $content_dataAr = array (

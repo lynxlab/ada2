@@ -1,5 +1,5 @@
 /*
- *  PekeUpload 1.0 - jQuery plugin
+ *  PekeUpload 1.0.6 - jQuery plugin
  *  written by Pedro Molina
  *  http://www.pekebyte.com/
  *
@@ -87,7 +87,6 @@
       var formData = new FormData();
       formData.append(options.field, obj[0].files[0]);
       formData.append('data', options.data);
-
       $j.ajax({
             url: options.url,
             type: 'POST',
@@ -105,14 +104,13 @@
                 }
                 else{
                   options.onFileError(file,data);
-                  errorMsg = ( (data!=null || data!="") ) ? data : options.sizeError;  
                   obj.next('a').next('div').find('.file:first').remove();
                   if((options.theme == "bootstrap")&&(options.showErrorAlerts==true)){
-                    obj.next('a').next('div').prepend('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button> '+errorMsg+'</div>');
+                    obj.next('a').next('div').prepend('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button> '+data+'</div>');
                     bootstrapclosenotification();
                   }
                   if((options.theme == "custom")&&(options.showErrorAlerts==true)){
-                    obj.next('a').next('div').prepend('<div class="alert-pekeupload"><button type="button" class="close" data-dismiss="alert">&times;</button> '+errorMsg+'</div>');
+                    obj.next('a').next('div').prepend('<div class="alert-pekeupload"><button type="button" class="close" data-dismiss="alert">&times;</button> '+data+'</div>');
                     customclosenotification();
                   }
                   error = false;
@@ -129,7 +127,7 @@
                   contentType: false,
                   processData: false
           });
-      return error;      
+      return error;
     }
     //Function that updates bars progress
     function progressHandlingFunction(e){
@@ -146,6 +144,8 @@
             // giorgio
             progressBarHtml = obj.next('a').next('div').find('.file').first().find('.pekeup-progress-bar:first').clone().wrap('<div></div>').parent().html();
             obj.next('a').next('div').find('.file').first().find('.progress-pekeupload:first').html('<center>'+percent+"%</center>"+progressBarHtml);
+            // original, commented
+            // obj.next('a').next('div').find('.file').first().find('.pekeup-progress-bar:first').html('<center>'+percent+"%</center>");
         }
     }
     //Validate master
@@ -164,6 +164,7 @@
             customclosenotification();
           }
           options.onFileError(file,options.invalidExtError);
+          return canUpload;
         }
         else{
           canUpload = true;
@@ -182,6 +183,7 @@
             customclosenotification();
           }
           options.onFileError(file,options.sizeError);
+          return canUpload;
         }
         else{
           canUpload = true;

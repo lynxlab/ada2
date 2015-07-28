@@ -146,7 +146,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            	 * falls after 'now', must set the subscription status to terminated
 	            	 */
 	            	if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
-	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione'])) {
+	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione'])===0) {
 	            			$c['data_iscrizione']=time();
 	            		}
 	            		if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
@@ -249,7 +249,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            	 * falls after 'now', must set the subscription status to terminated
 	            	 */
 	            	if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
-	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione'])) $c['data_iscrizione']=time();
+	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione'])===0) $c['data_iscrizione']=time();
 	            		if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 	            		$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
 	            		if ($isEnded || time()>=$subscritionEndDate) {
@@ -463,7 +463,7 @@ else {
 		 * falls after 'now', must set the subscription status to terminated
 		 */
 		if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
-			if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione'])) $c['data_iscrizione']=time();
+			if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione'])===0) $c['data_iscrizione']=time();
 			if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 			$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
 			if ($isEnded || time()>=$subscritionEndDate) {
