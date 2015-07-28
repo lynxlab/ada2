@@ -5,6 +5,9 @@
  * Creating courseObj, $courseInstanceObj, nodeObj, userObj, tutorObj, videoroomObj objects
  * + layout_dataAr array
  */
+
+
+
 /**
  * Needed when obtaining messages for a user.
  */
@@ -15,7 +18,7 @@ require_once ROOT_DIR.'/include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php';
 /**
  * Specific room object .
  */
-require_once ROOT_DIR.'/comunica/include/videoroom_classes.inc.php';
+require_once ROOT_DIR.'/comunica/include/videoroom.classes.inc.php';
 
 
 if (isset($_REQUEST['id_node'])){
@@ -235,28 +238,6 @@ if (in_array('node',$thisUserNeededObjAr)){
 if (in_array('videoroom',$thisUserNeededObjAr)) {
 
   /*
-   * Check if the user has an appointment
-   */
-
-  //	$tester_dh = AMA_DataHandler::instance(self::getDSN('PIPPO'));
-  /*
-  $dh = $GLOBALS['dh'];
-  $sess_selected_tester = $_SESSION['sess_selected_tester'];
-  //	$user_agenda =  $userObj->get_agendaFN($sess_id_user);
-  //	$mh =  MessageHandler::instance($dh);
-  $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
-  $sort_field = "data_ora desc";
-  $res_agenda_ha = $mh->get_messages($sess_id_user, WISP_MSG_AGENDA,
-  array("id_mittente", "data_ora", "titolo", "priorita", "read_timestamp"),
-  $sort_field);
-  if (AMA_DataHandler::isError($res_agenda_ha) || (count($res_agenda_ha) < 1)){
-    $err_code = $msgs_ha->code;
-    $status = addslashes(translateFN("Non ci sono appuntamenti"));
-//  	$options_Ar = array('onload_func'=>'close_page("NO_appuntamenti");');
-  	$options_Ar = array('onload_func' => "close_page('$status');");
-  }
-*/
-  /*
    * Check if the user has an appointment today at actual time
    */
 
@@ -266,23 +247,6 @@ if (in_array('videoroom',$thisUserNeededObjAr)) {
   }else  {
   	$user_has_app = MultiPort::hasThisUserAVideochatAppointment($userObj);
   }
-
-  /*
-  $today_time = today_timeFN();
-  $today_date = today_dateFN();
-  $today_time_date = date(WISP_DATE_FORMAT);
-  foreach ($res_agenda_ha as $one_date) {
-    $time_2_add = 30*60; // 30 minuti di arrotondamento.
-    $unix_date_app_rounded = $one_date[1] + $time_2_add;
-    $udate_now = time();
-    if ($udate_now >= $one_date[1] and $udate_now <= $unix_date_app_rounded) {
-      $user_has_app = true;
-      $event_token = WISPEventProposal::extractEventToken($one_date[2]);
-      break;
-    }
-  }
-*/
-//  if (($user_has_app = MultiPort::hasThisUserAVideochatAppointment($userObj)) !== FALSE) {
   if ($user_has_app) {
     $event_token = $user_has_app;
     $id_profile = $userObj->getType();
@@ -291,46 +255,45 @@ if (in_array('videoroom',$thisUserNeededObjAr)) {
         /**
          * get videoroom Obj
          */
-        $videoroomObj = new videoroom();
+          
+        $videoroomObj = videoroom::getVideoObj();
+        
 	$tempo_attuale = time();
         $videoroomObj->videoroom_info($sess_id_course_instance, $tempo_attuale);
-
-        //$videoroomObj->videoroom_info($sess_id_course_instance);
-
         if ($videoroomObj->full) {
-          $videoroomObj->server_login();
-          if ($videoroomObj->login->return >=0) {
-            $videoroomObj->room_access($user_uname,$user_name,$user_surname,$user_mail,$sess_id_user,$id_profile);
+          $videoroomObj->serverLogin();
+          if ($videoroomObj->login >=0) {
+            $videoroomObj->roomAccess($user_uname,$user_name,$user_surname,$user_mail,$sess_id_user,$id_profile);
 //            $videoroomObj->list_rooms();
           }
         }else
         {
-        	//$status = addslashes(translateFN("Practitioner not yet present"));
         	$status = addslashes(translateFN("Room not yet opened"));
-  		//	$options_Ar = array('onload_func'=>'close_page("No_practitioner");');
 		  	$options_Ar = array('onload_func' => "close_page('$status');");
         }
         break;
       case AMA_TYPE_TUTOR:
-        $videoroomObj = new videoroom();
+        $videoroomObj = videoroom::getVideoObj();
 	$tempo_attuale = time();
         $creationDate = Abstract_AMA_DataHandler::ts_to_date($tempo_attuale);
         $videoroomObj->videoroom_info($sess_id_course_instance, $tempo_attuale);
-        $videoroomObj->server_login();
+        $videoroomObj->serverLogin();
         if ($videoroomObj->full) {
-          if ($videoroomObj->login->return >=0) {
-            $videoroomObj->room_access($user_uname,$user_name,$user_surname,$user_mail,$sess_id_user,$id_profile);
+          if ($videoroomObj->login >=0) {
+            $videoroomObj->roomAccess($user_uname,$user_name,$user_surname,$user_mail,$sess_id_user,$id_profile, $sess_selected_tester);
 //            $videoroomObj->list_rooms();
           }
         } else {
 
-	        $room_name = translateFN("course: ") . $course_title . ", Tutor " . $user_uname . " date: " .$creationDate;
-	        $id_room = $videoroomObj->add_openmeetings_room($room_name, $sess_id_course_instance, $sess_id_user);
-	        if ($videoroomObj->login->return >=0) {
-	          $videoroomObj->room_access($user_uname,$user_name,$user_surname,$user_mail,$sess_id_user,$id_profile);
-//	          $videoroomObj->list_rooms();
+	        $room_name = $course_title . ' - '. translateFN('Tutor') .': '. $user_uname . ' '.translateFN('data').': ' .$creationDate;
+                $comment = translateFN('inserimento automatico via').' '. PORTAL_NAME;
+                $numUserPerRoom = 4;
+	        $id_room = $videoroomObj->addRoom($room_name, $sess_id_course_instance, $sess_id_user, $comment, $numUserPerRoom, $course_title, $sess_selected_tester);
+	        if ($videoroomObj->login >=0 && ($id_room != false)) {
+	          $videoroomObj->roomAccess($user_uname,$user_name,$user_surname,$user_mail,$sess_id_user,$id_profile);
 	      	}
         }
+
         break;
     }
 
