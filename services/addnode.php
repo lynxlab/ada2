@@ -117,8 +117,9 @@ if ( $op == 'add_node' ) {
   }
   $body_onload = "switchToFCKeditor('$template_family');";
 
-  if ( isset($id_course) && isset($id_parent) && isset($type) )
+  if (isset($id_course) && isset($type))
   {
+  	if (!(isset($id_parent) && strlen($id_parent) > 0)) $id_parent = $id_course.'_'.$courseObj->getRootNodeId();
     $node_type = Utilities::getAdaNodeTypeFromString($type);
 
     $nodeObj = read_node_from_DB($id_parent);
