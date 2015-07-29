@@ -261,7 +261,7 @@ class hybridLogin extends AbstractLogin
 				'lingua' => $language,
 				'cap' => (isset($user_profile->zip) && strlen($user_profile->zip)>0) ? $user_profile->zip : '',
 				'avatar' => $avatar,
-				'birthcity' => (isset($user_profile->region) && strlen($user_profile->region)>0) ? $user_profile->region : null,
+				'birthcity' => (isset($user_profile->region) && strlen($user_profile->region)>0) ? $user_profile->region : '',
 				'matricola' => '',
 				'stato' => ''
 		);

@@ -30,15 +30,6 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once MODULES_LOGIN_PATH . '/include/hybridLogin.class.inc.php';
 require_once MODULES_LOGIN_PATH . '/include/Hybrid/Auth.php';
 
-/**
- * only allow local execution
- */
-if (isset($_SERVER['HTTP_REFERER'])) {
-	if(preg_match("#^".HTTP_ROOT_DIR."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1) {
-		die ('Only local execution allowed.');
-	}
-}
-
 if(isset($_GET['id']))
 {	
 	$remindme = isset($_GET['remindme']) ? intval($_GET['remindme']) : 0;
