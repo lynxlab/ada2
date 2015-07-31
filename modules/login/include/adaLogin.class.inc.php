@@ -24,8 +24,8 @@ class adaLogin extends AbstractLogin
 	{
 		$user = MultiPort::loginUser($name, $pass);
 		if (is_object($user) && $user instanceof ADALoggableUser) {
-			// WARNING! For this login provider, only one set of options is supported
-			$this->setSuccessfulOptionsID(1);
+			// WARNING! For this login provider, no set of options is supported
+			$this->setSuccessfulOptionsID(0);
 		}
 		return $user;
 	}
