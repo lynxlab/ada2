@@ -117,79 +117,58 @@ $login_error_message = '';
 /**
  * Perform login
  */
-if(isset($p_login)) {
-  $username = DataValidator::validate_username($p_username);
-  $password = DataValidator::validate_password($p_password, $p_password);
+if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0)) {
 
-  if($username !== FALSE && $password !== FALSE) {
-    //User has correctly inserted un & pw
+  if (isset($p_login)) {
+  	$username = DataValidator::validate_username($p_username);
+  	$password = DataValidator::validate_password($p_password, $p_password);
+  } else {
+  	$username = DataValidator::validate_not_empty_string($p_username);
+  	$password = DataValidator::validate_not_empty_string($p_password);
+  }
+  
+  if (!isset($p_remindme)) $p_remindme = false;
 
-    $userObj = MultiPort::loginUser($username, $password);
+  	if (isset($p_login)) {
+  		if($username !== FALSE && $password !== FALSE) {
+  			//User has correctly inserted un & pw
+	    	$userObj = MultiPort::loginUser($username, $password);
+	    	$loginObj = null;
+  		} else {
+		    // Utente non loggato perche' informazioni in username e password non valide
+		    // es. campi vuoti o contenenti caratteri non consentiti.
+			$login_error_message = translateFN("Username  e/o password non valide");
+  		}
+  	} else if (defined('MODULES_LOGIN') && MODULES_LOGIN && 
+  			   isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0) {
+  		include_once  MODULES_LOGIN_PATH . '/include/'.$selectedLoginProvider.'.class.inc.php';
+  		if (class_exists($selectedLoginProvider)) {
+  			$loginProviderID = isset($selectedLoginProviderID) ? $selectedLoginProviderID : null;
+  			$loginObj = new $selectedLoginProvider($selectedLoginProviderID);
+  			$userObj = $loginObj->doLogin($username, $password, $p_remindme, $p_selected_language);
+  			if ((is_object($userObj)) && ($userObj instanceof Exception)) {
+  				// try the adalogin before giving up the login process
+  				$lastTry = MultiPort::loginUser($username, $password);
+  				if ((is_object($lastTry)) && ($lastTry instanceof ADALoggableUser)) {
+	  				$loginObj = null;
+  					$userObj = $lastTry;
+  				}
+  			}
+  		}
+  	}
     
-    if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)){
-      $status = $userObj->getStatus();
-	  if ($status == ADA_STATUS_REGISTERED)
-      {
-      	/**
-      	 * @author giorgio 12/dic/2013
-      	 * when a user sucessfully logs in, regenerate her session id.
-      	 * this fixes a quite big problem in the 'history_nodi' table
-      	 */
-      	if (isset($p_remindme) && intval($p_remindme)>0) {
-	      	ini_set('session.cookie_lifetime', 60 * 60 * 24 * ADA_SESSION_LIFE_TIME);  // day cookie lifetime
-      	}
-      	session_regenerate_id(true);
-      	
-      	$user_default_tester = $userObj->getDefaultTester();
-      	
-      	if (!MULTIPROVIDER && $userObj->getType()!=AMA_TYPE_ADMIN) 
-      	{
-      		if ($user_default_tester!=$GLOBALS['user_provider'])
-      		{
-      			// if the user is trying to login in a provider
-      			// that is not his/her own,
-      			// redirect to his/her own provider home page      			
-      			$redirectURL = preg_replace("/(http[s]?:\/\/)(\w+)[.]{1}(\w+)/", "$1".$user_default_tester.".$3", $userObj->getHomePage());
-      			header('Location:'.$redirectURL);
-		  		exit();
-      		}      		       		
-      	}
-      	
-        // user is a ADAuser with status set to 0 OR
-        // user is admin, author or switcher whose status is by default = 0
-    	$_SESSION['sess_user_language'] = $p_selected_language;
-		$_SESSION['sess_id_user'] = $userObj->getId();
-		$GLOBALS['sess_id_user']  = $userObj->getId();
-		$_SESSION['sess_id_user_type'] = $userObj->getType();
-		$GLOBALS['sess_id_user_type']  = $userObj->getType();
-	    $_SESSION['sess_userObj'] = $userObj;
-            
-            /* unset $_SESSION['service_level'] to allow the correct label translatation according to user language */
-            unset($_SESSION['service_level']);
-            
-		if($user_default_tester !== NULL) {
-					$_SESSION ['sess_selected_tester'] = $user_default_tester;
-					// sets var for non multiprovider environment
-					$GLOBALS ['user_provider'] = $user_default_tester;		    
-		  }
-		  $redirectURL = $userObj->getHomePage();      	
-		  header('Location:'.$redirectURL);
-		  exit();
-		}
-		else {
+    if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)) {
+		if(!ADALoggableUser::setSessionAndRedirect($userObj, $p_remindme, $p_selected_language, $loginObj)) {
             //  Utente non loggato perché stato <> ADA_STATUS_REGISTERED
 	        $login_error_message = translateFN("Utente non abilitato");
 	    }
-      } else {
-        // Utente non loggato perché coppia username password non corretta
-		$login_error_message = translateFN("Username  e/o password non valide");
-      }
-  }
-  else {
-    // Utente non loggato perche' informazioni in username e password non valide
-    // es. campi vuoti o contenenti caratteri non consentiti.
+    } else if ((is_object($userObj)) && ($userObj instanceof Exception)) {
+    	$login_error_message = $userObj->getMessage();
+    	if ($userObj->getCode()!==0) $login_error_message .= ' ('.$userObj->getCode().')';
+    } else {
+      // Utente non loggato perché coppia username password non corretta
 	$login_error_message = translateFN("Username  e/o password non valide");
-  }
+    }
 }
 
 /**
@@ -327,6 +306,13 @@ if (isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj']-> getType() !=
 		$layout_dataAr['CSS_filename'] = array (
 				JQUERY_UI_CSS
 		);
+if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
+	
+	$layout_dataAr['CSS_filename'] = array_merge($layout_dataAr['CSS_filename'], 
+		array (
+			MODULES_LOGIN_PATH . '/layout/support/login-form.css'
+	));
+}
 			
 		$optionsAr['onload_func'] = $onload_function;
 		

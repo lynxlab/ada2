@@ -1088,6 +1088,73 @@ abstract class ADALoggableUser extends ADAGenericUser {
     	}
     	return $retval;
     }
+    
+    /**
+     * sets the proper $_SESSION var of userObj and redirects to user home page
+     * 
+     * @param ADALoggableUser $userObj user object to be used to set $_SESSION vars
+     * @param boolean $remindMe true if remindme check box has been checked
+     * @param string $language lang selection at login form: language to be set
+     * @param Object $loginProviderObj login provider class used, null if none used 
+     */
+    public static function setSessionAndRedirect($userObj, $remindMe, $language, $loginProviderObj = null) {
+    	if ($userObj->getStatus() == ADA_STATUS_REGISTERED)
+    	{
+    		/**
+    		 * @author giorgio 12/dic/2013
+    		 * when a user sucessfully logs in, regenerate her session id.
+    		 * this fixes a quite big problem in the 'history_nodi' table
+    		 */
+    		if (isset($remindMe) && intval($remindMe)>0) {
+    			ini_set('session.cookie_lifetime', 60 * 60 * 24 * ADA_SESSION_LIFE_TIME);  // day cookie lifetime
+    		}
+    		session_regenerate_id(true);
+    		 
+    		$user_default_tester = $userObj->getDefaultTester();
+    		 
+    		if (!MULTIPROVIDER && $userObj->getType()!=AMA_TYPE_ADMIN)
+    		{
+    			if ($user_default_tester!=$GLOBALS['user_provider'])
+    			{
+    				// if the user is trying to login in a provider
+    				// that is not his/her own,
+    				// redirect to his/her own provider home page
+    				$redirectURL = preg_replace("/(http[s]?:\/\/)(\w+)[.]{1}(\w+)/", "$1".$user_default_tester.".$3", $userObj->getHomePage());
+    				header('Location:'.$redirectURL);
+    				exit();
+    			}
+    		}
+    		 
+    		// user is a ADAuser with status set to 0 OR
+    		// user is admin, author or switcher whose status is by default = 0
+    		$_SESSION['sess_user_language'] = $language;
+    		$_SESSION['sess_id_user'] = $userObj->getId();
+    		$GLOBALS['sess_id_user']  = $userObj->getId();
+    		$_SESSION['sess_id_user_type'] = $userObj->getType();
+    		$GLOBALS['sess_id_user_type']  = $userObj->getType();
+    		$_SESSION['sess_userObj'] = $userObj;
+    	
+    		/* unset $_SESSION['service_level'] to allow the correct label translatation according to user language */
+    		unset($_SESSION['service_level']);
+    	
+    		if($user_default_tester !== NULL) {
+    			$_SESSION ['sess_selected_tester'] = $user_default_tester;
+    			// sets var for non multiprovider environment
+    			$GLOBALS ['user_provider'] = $user_default_tester;
+    		}
+    		
+    		if (!is_null($loginProviderObj)) {
+    			$_SESSION['sess_loginProviderArr']['className'] = get_class($loginProviderObj);
+    			$_SESSION['sess_loginProviderArr']['id'] = $loginProviderObj->getID();
+    			$loginProviderObj->addLoginToHistory($userObj->getId());
+    		}    		
+    		$redirectURL = $userObj->getHomePage();
+    		header('Location:'.$redirectURL);
+    		exit();
+    	}
+    	
+    	return false;
+    }
 }
 
 /**
