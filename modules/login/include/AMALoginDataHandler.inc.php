@@ -246,8 +246,17 @@ class AMALoginDataHandler extends AMA_DataHandler {
 		// get login provider options
 		$options = $this->loadOptions($provider_id);
 		// delete them
-		if (!AMA_DB::isError($options) && isset ($options['providers_options_id'])) {
-			$this->deleteOptionSet($options['providers_options_id']);
+		if (!AMA_DB::isError($options)) {
+			if (isset($options['optionscount'])) {
+				$optionsCount = intval($options['optionscount']);
+				unset($options['optionscount']);
+				
+				if ($optionsCount>1) {
+					foreach ($options as $key=>$anOption) $this->deleteOptionSet($key);					
+				} else if (isset ($options['providers_options_id'])) {
+					$this->deleteOptionSet($options['providers_options_id']); 				
+				}
+			}			
 		}
 		if (AMA_DB::isError($this->updateOrderBeforeDelete(true, $provider_id))) return new AMA_Error();
 		// delete provider
