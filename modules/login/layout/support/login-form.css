@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+
+button.hybridLogin.login {
+  float: none;
+  display: block;
+  margin-top: 10px;
+  width: 100%;
+  color: #fff;
+  background-repeat: no-repeat;
+  background-size: 32px;
+  background-position: left center;
+  min-height: 32px;
+  cursor: pointer;
+  text-align: left;
+  padding-left: 36px;
+  border-radius: 5px;	
+}
+
+#google-button {
+  background-color: #F20000;
+  border: 1px solid #8c8c8c;
+  background-image: url("google.png");
+}
+
+#facebook-button {
+  background-color: #0917A6;
+  border: 1px solid #0B2238;
+  background-image: url("facebook.png");
+}
