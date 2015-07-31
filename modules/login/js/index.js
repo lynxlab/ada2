@@ -25,14 +25,14 @@ function initDoc() {
 function initDataTables() {
 	var columnsConf = [
 	                   { "sWidth": "4%", "sClass" : "center" },
-	                   { "sWidth": "4%", "sClass" : "center "+ ORDERCELLCLASS },
+	                   { "sWidth": "4%", "sClass" : "hidden center "+ ORDERCELLCLASS, "bSearchable": false },
 	                   { "sWidth": "18%" },
 	                   { "sWidth": "18%" },
 	                   { "sWidth": "16%", "sClass":ENABLEDCELLCLASS },
 	                   { "sWidth": "20%" },
 	                   { "bSearchable": false, "bSortable": false, "sClass":"actions", "sWidth": "20%"}
 	                   ];
-	var sortable = true;
+	var sortable = false;
 	
 	if ($j('#loginProvidersList').length>0)		
 		return $j('#loginProvidersList').dataTable( {

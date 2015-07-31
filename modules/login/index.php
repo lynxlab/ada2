@@ -55,7 +55,7 @@ if (!is_null($loginProviders) && is_array($loginProviders)) {
 		
 	if (!AMA_DB::isError($loginProviders)) {
 	
-		$labels = array (translateFN('id'), translateFN('posizione'), translateFN('className'),  translateFN('Nome'),
+		$labels = array (translateFN('id'), translateFN('ordine'), translateFN('className'),  translateFN('Nome'),
 				translateFN('Abilitato'), translateFN('Bottone'),
 				translateFN('azioni'));
 		$hasDefault = false;
