@@ -98,6 +98,7 @@
 	}
 	else {
 		define('MODULES_CLASSBUDGET', false);
+	}
 
 	//defines for module login
 	define ('MODULES_LOGIN_PATH', MODULES_DIR.'/login');
