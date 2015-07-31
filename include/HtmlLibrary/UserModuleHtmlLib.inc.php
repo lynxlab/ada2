@@ -78,32 +78,32 @@ class UserModuleHtmlLib {
     	// load login providers
     	require_once MODULES_LOGIN_PATH . '/include/abstractLogin.class.inc.php';
     	$loginProviders = abstractLogin::getLoginProviders();
-    }
+    } else $loginProviders = null;
 
-    	if (!AMA_DB::isError($loginProviders) && is_array($loginProviders) && count($loginProviders)>0) {
-    		$submit = CDOMElement::create('div','id:loginProviders');
-    		$form->addChild(CDOMElement::create('hidden','id:selectedLoginProvider, name:selectedLoginProvider'));
-    		$form->addChild(CDOMElement::create('hidden','id:selectedLoginProviderID, name:selectedLoginProviderID'));
-    		// add a DOM element (or html) foreach loginProvider
-    		foreach ($loginProviders as $providerID=>$loginProvider) {
-    			include_once  MODULES_LOGIN_PATH . '/include/'.$loginProvider.'.class.inc.php';
-    			if (class_exists($loginProvider)) {
-    				$loginObject = new $loginProvider($providerID);
-    				$CDOMElement = $loginObject->getCDOMElement();
-    				if (!is_null($CDOMElement)) {
-    					$submit->addChild($CDOMElement);
-    				} else {
-	    				$htmlString  = $loginObject->getHtml();
-	    				if (!is_null($htmlString)) {
-	    					$submit->addChild(new CText($htmlString));
-	    				}
-    				}
+    if (!AMA_DB::isError($loginProviders) && is_array($loginProviders) && count($loginProviders)>0) {
+    	$submit = CDOMElement::create('div','id:loginProviders');
+    	$form->addChild(CDOMElement::create('hidden','id:selectedLoginProvider, name:selectedLoginProvider'));
+    	$form->addChild(CDOMElement::create('hidden','id:selectedLoginProviderID, name:selectedLoginProviderID'));
+    	// add a DOM element (or html) foreach loginProvider
+    	foreach ($loginProviders as $providerID=>$loginProvider) {
+    		include_once  MODULES_LOGIN_PATH . '/include/'.$loginProvider.'.class.inc.php';
+    		if (class_exists($loginProvider)) {
+    			$loginObject = new $loginProvider($providerID);
+    			$CDOMElement = $loginObject->getCDOMElement();
+    			if (!is_null($CDOMElement)) {
+    				$submit->addChild($CDOMElement);
+    			} else {
+ 					$htmlString  = $loginObject->getHtml();
+ 					if (!is_null($htmlString)) {
+ 						$submit->addChild(new CText($htmlString));
+ 					}
     			}
     		}
-    	} else {
+    	}
+    } else {
     	// standard submit button if no MODULES_LOGIN
-	    $value      = translateFN('Accedi');
-	    $submit     = CDOMElement::create('submit',"id:p_login, name:p_login");
+    	$value      = translateFN('Accedi');
+    	$submit     = CDOMElement::create('submit',"id:p_login, name:p_login");
     	$submit->setAttribute('value' ,$value);
     }
     
