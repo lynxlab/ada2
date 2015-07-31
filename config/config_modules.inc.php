@@ -86,7 +86,7 @@
 	else {
 		define('MODULES_CLASSAGENDA', false);
 	}
-	
+
 	//defines for module classbudget
 	define ('MODULES_CLASSBUDGET_PATH', MODULES_DIR.'/classbudget');
 	if (file_exists(MODULES_CLASSBUDGET_PATH.'/index.php'))
@@ -98,5 +98,17 @@
 	}
 	else {
 		define('MODULES_CLASSBUDGET', false);
+
+	//defines for module login
+	define ('MODULES_LOGIN_PATH', MODULES_DIR.'/login');
+	if (file_exists(MODULES_LOGIN_PATH.'/include/abstractLogin.class.inc.php'))
+	{
+		require_once(MODULES_LOGIN_PATH.'/config/config.inc.php');
+		
+		define('MODULES_LOGIN', true);
+		define('MODULES_LOGIN_HTTP', HTTP_ROOT_DIR.'/modules/login');
+	}
+	else {
+		define('MODULES_LOGIN', false);
 	}
 ?>

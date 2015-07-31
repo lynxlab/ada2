@@ -21,5 +21,11 @@ function initDoc(logged) {
     });
     if (logged) {
         $j("#loginform").parent().remove();
+    } else {
+    	$j('#p_username, #p_password').keypress(function(e) {
+    		if (e.which == 13) { // return key does a click on first provider login button
+    			$j(this).parents('form').find('button').first().click();
+    		}
+    	});
     }
 }
