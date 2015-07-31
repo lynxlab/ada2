@@ -45,26 +45,22 @@ $GLOBALS['dh'] = AMALoginDataHandler::instance();
 
 $retArray = array();
 
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['status'])) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delta'])) {
 
-	if (!isset($_POST['option_id'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so a cosa cambiare stato"));
+	if (!isset($_POST['option_id']) && !isset($_POST['provider_id'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so cosa spostare"));
 	else
 	{
-		$status = intval($_POST['status']);
-		$result = $GLOBALS['dh']->setEnabledOptionSet (intval($_POST['option_id']),$status);
+		$delta = intval($_POST['delta']);
+		
+		if (isset($_POST['option_id'])) $result = $GLOBALS['dh']->moveOptionSet (intval($_POST['option_id']),$delta);
+		else if (isset($_POST['provider_id'])) $result = $GLOBALS['dh']->moveLoginProvider (intval($_POST['provider_id']),$delta);
+		
 		if (!AMA_DB::isError($result))
 		{
-			if ($status) {
-				$statusText = translateFN('Abilitata');
-				$buttonTitle = translateFN('Disabilita');
-			} else {
-				$statusText = translateFN('Disabilitata');
-				$buttonTitle = translateFN('Abilita');
-			}
-			$retArray = array ("status"=>"OK", "statusText"=>$statusText, "buttonTitle"=>$buttonTitle);
+			$retArray = array ("status"=>"OK");
 		}
 		else
-			$retArray = array ("status"=>"ERROR", "msg"=>translateFN("Errore nell'impostare lo stato") );
+			$retArray = array ("status"=>"ERROR", "msg"=>translateFN("Errore nello spostamento") );
 	}
 }
 else {

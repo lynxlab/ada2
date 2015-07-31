@@ -17,6 +17,11 @@ require_once MODULES_LOGIN_PATH . '/include/Hybrid/Auth.php';
 class hybridLogin extends AbstractLogin
 {
 	/**
+	 * class for managing options data
+	 */
+	const MANAGEMENT_CLASS = 'hybridManagement';
+		
+	/**
 	 * Hybrid_Auth object
 	 */
 	private $hybridauth = null;
@@ -268,4 +273,96 @@ class hybridLogin extends AbstractLogin
 		
 		return $adaUser;
 	}
+	
+	/**
+	 * generate HTML for login provider configuration page
+	 */
+	public function generateConfigPage() {
+		$optionSetList = $this->loadOptions();
+		
+		if (isset($optionSetList['providers_options_id']) && intval($optionSetList['providers_options_id'])>0) {
+			$optionID = intval($optionSetList['providers_options_id']);
+		} else $optionID = null;
+		
+		// If no option id return abstract config page (aka 'no options to configure' message)
+		if (is_null($optionID)) return parent::generateConfigPage();
+		
+		$configIndexDIV = CDOMElement::create('div','id:configindex');
+		
+		$newButton = CDOMElement::create('button');
+		$newButton->setAttribute('class', 'newButton tooltip top');
+		$newButton->setAttribute('title', translateFN('Clicca per creare un nuova chiave'));
+		$newButton->setAttribute('onclick', 'javascript:addOptionRow();');
+		$newButton->addChild (new CText(translateFN('Nuova Chiave')));
+		$configIndexDIV->addChild($newButton);
+		
+		$tableOutData = array();
+		if (!AMA_DB::isError($optionSetList)) {
+			unset ($optionSetList['optionscount']);
+			unset ($optionSetList['providers_options_id']);
+			/**
+			 * Add an empty table with one row that will be hidden
+			 * and will be used as a template when adding new rows
+			 */
+			$optionSetList = array(''=>'') + $optionSetList;
+
+			$labels = array (translateFN('chiave'), translateFN('valore'),translateFN('azioni'));
+			foreach ($optionSetList as $i=>$elementArr) {
+				$links = array();
+				$linksHtml = "";
+			
+				for ($j=0;$j<1;$j++) {
+					switch ($j) {
+						case 0:
+							$type = 'delete';
+							$title = translateFN ('Cancella');
+							$link = 'deleteOptionSet($j(this), '.$optionID.', \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
+							break;
+					}
+			
+					if (isset($type)) {
+						$links[$j] = CDOMElement::create('li','class:liactions');
+						$linkshref = CDOMElement::create('button');
+						$linkshref->setAttribute('onclick','javascript:'.$link);
+						$linkshref->setAttribute('class', $type.'Button tooltip');
+						$linkshref->setAttribute('title',$title);
+						if ($j==0) $linkshref->setAttribute('data-delkey', $i);
+						$links[$j]->addChild ($linkshref);
+						// unset for next iteration
+						unset ($type);
+					}
+				}
+				if (!empty($links)) {
+					$linksul = CDOMElement::create('ul','class:ulactions');
+					foreach ($links as $link) $linksul->addChild ($link);
+					$linksHtml = $linksul->getHtml();
+				} else $linksHtml = '';
+			
+				$tableOutData[$i] = array (
+						$labels[0]=>$i,
+						$labels[1]=>str_replace(array("\r\n", "\r", "\n"), "<br />", $elementArr),
+						$labels[2]=>$linksHtml);
+			}
+			
+			$emptyrow = array(array_shift($tableOutData));
+			$EmptyTable = BaseHtmlLib::tableElement('id:empty'.strtoupper(get_class($this)),$labels,$emptyrow);
+			$EmptyTable->setAttribute('style', 'display:none');
+			
+			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper(get_class($this)).'List',
+					$labels,$tableOutData,'',translateFN('Opzioni '.strtoupper($this->loadProviderName())));
+			$OutTable->setAttribute('data-optionid', $optionID);
+			
+			$configIndexDIV->addChild($EmptyTable);
+			$configIndexDIV->addChild($OutTable);
+
+			// if there are more than 10 rows, repeat the add new button below the table
+			if (count($optionSetList)>10) {
+				$bottomButton = clone $newButton;
+				$bottomButton->setAttribute('class', 'newButton bottom tooltip');
+				$configIndexDIV->addChild($bottomButton);
+			}
+		}
+		return $configIndexDIV;
+	}
+	
 }

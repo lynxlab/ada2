@@ -23,7 +23,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @var string
 	 */
-	public static $LDAPCLASSNAME = 'ldapLogin';
+	const LDAPCLASSNAME = 'ldapLogin';
 	
 	/**
 	 * database to be used (if !MULTIPROVIDER)
@@ -39,15 +39,15 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function loadOptions($id) {
+	public function loadOptions ($id) {
 		/**
 		 * if more than one disctinct option set, return an array of options
 		 */
-		$makeArray = intval(self::$dbToUse->getOnePrepared(
+		$optionsCount = intval(self::$dbToUse->getOnePrepared(
 				'SELECT COUNT(DISTINCT(`'.self::$PREFIX.'providers_options_id`)) FROM `'.
 				 self::$PREFIX.'providers_options` WHERE `'.
-				 self::$PREFIX.'providers_id` = ? AND `enabled`=1',$id))>1;
-		
+				 self::$PREFIX.'providers_id` = ? AND `enabled`=1',$id));
+		$makeArray = $optionsCount > 1;
 		$sql = 'SELECT OP.`key`,OP.`value`,PR_OP.`'.self::$PREFIX.'providers_options_id` '.
 			   'FROM `'.self::$PREFIX.'options` OP '.
 			   'JOIN `'.self::$PREFIX.'providers_options` PR_OP '.
@@ -55,24 +55,37 @@ class AMALoginDataHandler extends AMA_DataHandler {
 			   'WHERE `'.self::$PREFIX.'providers_id`=? AND `enabled`=1';
 		$res = self::$dbToUse->getAllPrepared($sql,$id,AMA_FETCH_ASSOC);
 		
-		if (!AMA_DB::isError($res) && is_array($res) && count($res)>0) {
+		if (!AMA_DB::isError($res) && is_array($res)) {
 			$retArr = array();
-			foreach ($res as $keyvalue) {
-				if (is_numeric($keyvalue['value'])) $value = $keyvalue['value'] + 0;
-				else if (strcasecmp($keyvalue['value'], 'null')===0) $value = null;
-				else if (strcasecmp($keyvalue['value'], 'true')===0) $value = true;
-				else if (strcasecmp($keyvalue['value'], 'false')===0) $value = false;
-				else if (is_string($keyvalue['value']) && is_object(json_decode($keyvalue['value']))) {
-					$value = json_decode($keyvalue['value'], true); // true means return it as an assoc array
+			if (count($res)>0) {
+				foreach ($res as $keyvalue) {
+					if (is_numeric($keyvalue['value'])) $value = $keyvalue['value'] + 0;
+					else if (strcasecmp($keyvalue['value'], 'null')===0) $value = null;
+					else if (strcasecmp($keyvalue['value'], 'true')===0) $value = true;
+					else if (strcasecmp($keyvalue['value'], 'false')===0) $value = false;
+					else if (is_string($keyvalue['value']) && is_object(json_decode($keyvalue['value']))) {
+						$value = json_decode($keyvalue['value'], true); // true means return it as an assoc array
+					}
+					else $value = $keyvalue['value'];
+					
+					if ($makeArray) $retArr[$keyvalue[self::$PREFIX.'providers_options_id']][$keyvalue['key']] = $value;
+					else $retArr[$keyvalue['key']] = $value;
 				}
-				else $value = $keyvalue['value'];
-				
-				if ($makeArray) $retArr[$keyvalue[self::$PREFIX.'providers_options_id']][$keyvalue['key']] = $value;
-				else $retArr[$keyvalue['key']] = $value;
 			}
 			
-			if (count($retArr)>0) {
-				$retArr['optionscount'] = ($makeArray ? count($retArr) : 1);
+			if (count($retArr)>0 || $optionsCount>0) {
+				$retArr['optionscount'] = ($makeArray ? count($retArr) : $optionsCount);
+				if (!$makeArray) {
+					if (!is_null($keyvalue[self::$PREFIX.'providers_options_id'])) {
+						$retArr['providers_options_id'] = $keyvalue[self::$PREFIX.'providers_options_id'];
+					} else {
+						// must still load the providers_options_id
+						$sql = 'SELECT `'.self::$PREFIX.'providers_options_id`'.
+						       ' FROM `'.self::$PREFIX.'providers_options`'.
+						       ' WHERE `'.self::$PREFIX.'providers_id`=?';
+						$retArr['providers_options_id'] = intval(self::$dbToUse->getOnePrepared($sql,$id));
+					}
+				}
 				return $retArr;
 			}
 		}
@@ -88,7 +101,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 *
 	 * @access public
 	 */	
-	public function loadProviderName($id) {
+	public function loadProviderName ($id) {
 		$sql = 'SELECT `name` FROM `'.self::$PREFIX.'providers` '.
 				'WHERE `'.self::$PREFIX.'providers_id`=?';
 		return self::$dbToUse->getOnePrepared($sql, $id);
@@ -103,7 +116,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function loadButtonLabel($id) {
+	public function loadButtonLabel ($id) {
 		$sql = 'SELECT `buttonLabel` FROM `'.self::$PREFIX.'providers` '.
 			   'WHERE `'.self::$PREFIX.'providers_id`=?';
 		return self::$dbToUse->getOnePrepared($sql, $id);
@@ -143,10 +156,133 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function getLoginProviderIDFromClassName($className) {
+	public function getLoginProviderIDFromClassName ($className) {
 		$sql = 'SELECT `'.self::$PREFIX.'providers_id` FROM `'.self::$PREFIX.'providers` '.
 			   'WHERE `className`=?';
 		return self::$dbToUse->getOnePrepared($sql,$className);
+	}
+	
+	/**
+	 * loads a login provider data
+	 * 
+	 * @param number $provider_id the provider id to load
+	 * 
+	 * @return array|AMA_Error
+	 * 
+	 * @access public
+	 */
+	public function getLoginProvider($provider_id) {
+	
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'providers` '.
+				'WHERE `'.self::$PREFIX.'providers_id`=?';
+		$res = self::$dbToUse->getAllPrepared($sql, $provider_id,AMA_FETCH_ASSOC);
+		if (AMA_DB::isError($res)) return $res;
+		else {
+			$retval = array('provider_id'=>$provider_id);
+			foreach ($res as $element) {
+				foreach ($element as $key=>$value) $retval[$key] = $value;
+			}
+			return $retval;
+		}
+	}
+	
+	/**
+	 * saves (either insert or update) a login provider
+	 *
+	 * @param array $dataArr array of data to be saved
+	 *
+	 * @return boolean|AMA_Error|number the created provider id
+	 *
+	 * @access public
+	 */
+	public function saveLoginProvider($dataArr) {
+		$retval = new AMA_Error();
+		
+		if (!isset($dataArr['provider_id']) || (isset($dataArr['provider_id'])) && intval($dataArr['provider_id'])<=0) {
+			// it's an insert
+			unset ($dataArr['provider_id']);
+			
+			$orderValue = $this->getMaxOrderForLoginProvider();
+			
+			$sql = 'INSERT INTO `'.self::$PREFIX.'providers`'.
+			       ' (`className`, `name`, `buttonLabel`, `displayOrder`)  VALUES(?,?,?,?)';
+			
+			$res = self::$dbToUse->queryPrepared($sql,
+				array($dataArr['className'],$dataArr['name'],$dataArr['buttonLabel'],$orderValue));
+				
+			if (!AMA_DB::isError($res)) {
+				$providerID = self::$dbToUse->getConnection()->lastInsertID();
+				// insert a corresponding row into providers_options
+				$sql = 'INSERT INTO `'.self::$PREFIX.'providers_options` '.
+				       '(`'.self::$PREFIX.'providers_id`,`order`) VALUES(?,?)';
+				$optRes = self::$dbToUse->queryPrepared($sql,array($providerID,1));
+				if (!AMA_DB::isError($optRes)) $retval = $providerID;
+				else {
+					$this->deleteLoginProvider($providerID);
+					$retval = $optRes;
+				}
+			} else $retval = $res;
+		} else {
+			// it's an update
+			$sql = 'UPDATE `'.self::$PREFIX.'providers` SET'.
+				   ' `className`=?, `name`=?, `buttonLabel`=?'.
+				   ' WHERE `'.self::$PREFIX.'providers_id`=?';
+			$retval = self::$dbToUse->queryPrepared($sql,
+					array($dataArr['className'],$dataArr['name'],$dataArr['buttonLabel'],$dataArr['provider_id']));
+		}
+		return $retval;
+	}
+	
+	/**
+	 * deletes a login provider, with all of its options
+	 * 
+	 * @param number $provider_id the provider id to be deleted
+	 * 
+	 * @return boolean|AMA_Error
+	 * 
+	 * @accesss public
+	 */
+	public function deleteLoginProvider ($provider_id) {
+		// get login provider options
+		$options = $this->loadOptions($provider_id);
+		// delete them
+		if (!AMA_DB::isError($options) && isset ($options['providers_options_id'])) {
+			$this->deleteOptionSet($options['providers_options_id']);
+		}
+		if (AMA_DB::isError($this->updateOrderBeforeDelete(true, $provider_id))) return new AMA_Error();
+		// delete provider
+		$sql = 'DELETE FROM `'.self::$PREFIX.'providers` WHERE `'.self::$PREFIX.'providers_id`=?';
+		return self::$dbToUse->queryPrepared($sql, $provider_id);
+	}
+	
+	/**
+	 * sets the enabled status of a login provider
+	 *
+	 * @param number $provider_id the provider id to be enabled or disabled
+	 * @param number $status 1 to enable, 0 to disable
+	 *
+	 * @return boolean|AMA_Error
+	 *
+	 * @access public
+	 */
+	public function setEnabledLoginProvider ($provider_id, $status) {
+		$sql = 'UPDATE `'.self::$PREFIX.'providers` SET `enabled`=? '.
+				'WHERE `'.self::$PREFIX.'providers_id`=?';
+		return self::$dbToUse->queryPrepared($sql, array(intval($status),$provider_id));
+	}
+	
+	/**
+	 * moves the order of a login provider
+	 *
+	 * @param number $provider_id the provider to be moved
+	 * @param number $delta amount to move (only +/-1 are tested so far)
+	 *
+	 * @return boolean|AMA_Error
+	 *
+	 * @access public
+	 */
+	public function moveLoginProvider ($provider_id, $delta) {
+		return $this->moveTableRow ($provider_id, $delta, true);
 	}
 	
 	/**
@@ -160,7 +296,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function addLoginToHistory($userID, $time, $loginProviderID, $successfulOptionsID) {
+	public function addLoginToHistory ($userID, $time, $loginProviderID, $successfulOptionsID) {
 		$sql = 'SELECT COUNT(`date`) FROM `'.self::$PREFIX.'history_login` WHERE '.
 			   '`id_utente`=? AND `'.self::$PREFIX.'providers_id`=?';
 		$rowCount = self::$dbToUse->getOnePrepared($sql,array($userID, $loginProviderID));
@@ -192,6 +328,20 @@ class AMALoginDataHandler extends AMA_DataHandler {
 		$val = self::$dbToUse->getOnePrepared($sql,$provider_id);
 		return (intval($val)>0 ? $val : 1);
 	}
+
+	/**
+	 * gets max order from providers table, needed
+	 * when inserting new provider
+	 *
+	 * @return number the order value
+	 *
+	 * @access private
+	 */
+	private function getMaxOrderForLoginProvider() {
+		$sql = 'SELECT MAX(`displayOrder`)+1 FROM `'.self::$PREFIX.'providers`';
+		$val = self::$dbToUse->getOnePrepared($sql);
+		return (intval($val)>0 ? $val : 1);		
+	}
 	
 	/**
 	 * gets all options rows for a login provider
@@ -202,12 +352,12 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access private
 	 */
-	public function getAllOptions($provider_id) {
+	public function getAllOptions ($provider_id) {
 		
 		$sql = 'SELECT PR_OP.`'.self::$PREFIX.'providers_id`, PR_OP.`enabled`, PR_OP.`order`, OP.* '.
 			   'FROM `'.self::$PREFIX.'options` OP '.
 			   'JOIN `'.self::$PREFIX.'providers_options` PR_OP '.
-			   'ON PR_OP.`'.self::$PREFIX.'providers_options_id`=OP.`'.self::$PREFIX.'providers_options_id` '.			   
+			   'ON PR_OP.`'.self::$PREFIX.'providers_options_id`=OP.`'.self::$PREFIX.'providers_options_id` '.
 			   'WHERE PR_OP.`'.self::$PREFIX.'providers_id`=? '.
 			   'ORDER BY PR_OP.`order` ASC';
 		$result = self::$dbToUse->getAllPrepared($sql,$provider_id,AMA_FETCH_ASSOC);
@@ -263,7 +413,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 			// it's an insert
 			unset ($dataArr['option_id']);
 			
-			$ldapProviderID = $this->getLoginProviderIDFromClassName(self::$LDAPCLASSNAME);
+			$ldapProviderID = $this->getLoginProviderIDFromClassName(self::LDAPCLASSNAME);
 			$orderValue = $this->getMaxOrderForProviderOptions($ldapProviderID);
 			/**
 			 * Insert a new row in the relation table
@@ -285,11 +435,11 @@ class AMALoginDataHandler extends AMA_DataHandler {
 					$values[] = $optionID;
 					$values[] = $key;
 					// save empty values as null, useful when it's an update
-					$values[] = (strlen($element)>0) ? $element : null;
+					$values[] = $this->or_null($element);
 					if (++$i < count($dataArr)) $sql .= ',';
 				}
-				$retval = self::$dbToUse->queryPrepared($sql,$values);				
-			} else $retval = $res; // return the error			
+				$retval = self::$dbToUse->queryPrepared($sql,$values);
+			} else $retval = $res; // return the error
 		} else {
 			// it's an update
 			$optionID = $dataArr['option_id'];
@@ -314,45 +464,28 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @access public
 	 */
-	public function deleteOptionSet($options_id) {
+	public function deleteOptionSet ($options_id) {
 		
 		$tablesToDel = array('providers_options','options');
-		
-		/**
-		 * must update options order before deleting. A couple of nested 
-		 * queries are needed for updating and selecting from the same table.
-		 * 
-		 * The logic is to set order=order-1 to all the options_id following
-		 * the passed option AND of the same login provider of the passed options
-		 */
-		$updateOrder = 'UPDATE `'.self::$PREFIX.'providers_options` SET `order`=`order`-1 '.
-					   'WHERE `order`> ( SELECT * FROM '.
-					   		'(SELECT `order` FROM `'.self::$PREFIX.'providers_options` WHERE '.
-					   		'`'.self::$PREFIX.'providers_options_id`=? ) AS dummy ) '.
-					   	'AND `module_login_providers_id` = ( SELECT * FROM '.
-					   		'(SELECT `'.self::$PREFIX.'providers_id` FROM `'.
-					   			self::$PREFIX.'providers_options` WHERE '.
-					   			'`'.self::$PREFIX.'providers_options_id`=? ) AS dummy2 )';
 		
 		foreach ($tablesToDel as $table) {
 			$sql = 'DELETE FROM `'.self::$PREFIX.$table.'`';
 			$where = ' WHERE `'.self::$PREFIX.'providers_options_id`=?';
 			if ($table=='providers_options') {
 				// update orders before deleting from the providers_options table
-				$updRes = self::$dbToUse->queryPrepared($updateOrder,array($options_id,$options_id));
+				$updRes = $this->updateOrderBeforeDelete(false, $options_id);
 				if (AMA_DB::isError($updRes)) return $updRes;
 			}
 			$res = self::$dbToUse->queryPrepared($sql.$where,$options_id);
-			if (AMA_DB::isError($res)) break;			
+			if (AMA_DB::isError($res)) break;
 		}
-		
 		return $res;
 	}
 	
 	/**
 	 * sets the enabled status of an option set
 	 * 
-	 * @param number $options_id the option id to be deleted
+	 * @param number $options_id the option id to be enabled or disabled
 	 * @param number $status 1 to enable, 0 to disable
 	 * 
 	 * @return boolean|AMA_Error
@@ -368,7 +501,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	/**
 	 * moves the order of an option set
 	 * 
-	 * @param number $options_id the option id to be deleted
+	 * @param number $options_id the option id to be moved
 	 * @param number $delta amount to move (only +/-1 are tested so far)
 	 *
 	 * @return boolean|AMA_Error
@@ -376,6 +509,22 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * @access public
 	 */
 	public function moveOptionSet ($options_id, $delta) {
+		return $this->moveTableRow ($options_id, $delta, false);
+	}
+	
+	/**
+	 * moves the order of a table row
+	 *
+	 * @param number $row_id the row id to be moved
+	 * @param number $delta amount to move (only +/-1 are tested so far)
+	 *
+	 * @return boolean|AMA_Error
+	 *
+	 * @access private
+	 */
+	private function moveTableRow ($row_id, $delta, $isProvider) {
+		
+		$options = $this->getCommonQueryOptions($isProvider);
 		
 		$compareOperator = ($delta>0) ? '>' : '<';
 		$mathOperator = ($delta>0) ? '+' : '-';
@@ -384,37 +533,158 @@ class AMALoginDataHandler extends AMA_DataHandler {
 		// 0. get the provider_id of the passed options_id
 		$provider_id = self::$dbToUse->getOnePrepared( 
 					'SELECT `'.self::$PREFIX.'providers_id` '.
-					'FROM `'.self::$PREFIX.'providers_options` WHERE `'.
-					self::$PREFIX.'providers_options_id`=?', $options_id);
+					'FROM `'.$options['table'].'` WHERE `'.
+					$options['col'].'`=?', $row_id);
 		
 		if (!AMA_DB::isError($provider_id)) {
 			// subquery to select the order of the passed options_id
-			$subquery = '(SELECT `order` FROM '.
-				   		'`'.self::$PREFIX.'providers_options` WHERE '.
-				   		'`'.self::$PREFIX.'providers_options_id`=?)';
+			$subquery = '(SELECT `'.$options['ordercol'].'` FROM '.
+				   		'`'.$options['table'].'` WHERE '.
+				   		'`'.$options['col'].'`=?)';
 			
 			// 1. get the options_id of the options that is one position above or below
 			// (depending on delta being positive) the passed one, that will be called target_id
-			$sql = 'SELECT `'.self::$PREFIX.'providers_options_id`, `order` '.
-				   'FROM `'.self::$PREFIX.'providers_options` WHERE `'.self::$PREFIX.'providers_id`=? AND '. 
-				   '`order` '.$compareOperator.' '.$subquery.' ORDER BY `order` '.$orderBY.' LIMIT 1';	
-			$target_id = self::$dbToUse->getOnePrepared($sql, array($provider_id,$options_id));
+			$sql = 'SELECT `'.$options['col'].'`, `'.$options['ordercol'].'` '.
+				   'FROM `'.$options['table'].'` WHERE ';
+			
+			if ($isProvider===false) {
+				$sql .= '`'.self::$PREFIX.'providers_id`=? AND ';
+				$values = array($provider_id,$row_id);
+			} else $values = $row_id;
+			
+			$sql .= '`'.$options['ordercol'].'` '.$compareOperator.' '.$subquery.
+			        ' ORDER BY `'.$options['ordercol'].'` '.$orderBY.' LIMIT 1';
+				
+			$target_id = self::$dbToUse->getOnePrepared($sql, $values);
 	
 			if (!AMA_DB::isError($target_id)) {
 				// 2. update target_id setting its order to the one of options_id
-				$sql_update_target = 'UPDATE `'.self::$PREFIX.'providers_options` SET `order`= (SELECT * FROM '.$subquery.
-				       ' AS dummy) WHERE `'.self::$PREFIX.'providers_options_id`=?';
-				$res = self::$dbToUse->queryPrepared($sql_update_target, array($options_id, $target_id));
+				$sql_update_target = 'UPDATE `'.$options['table'].'` SET `'.$options['ordercol'].
+				'`= (SELECT * FROM '.$subquery.' AS dummy) WHERE `'.$options['col'].'`=?';
+				$res = self::$dbToUse->queryPrepared($sql_update_target, array($row_id, $target_id));
 				if (!AMA_DB::isError($res)) {
 					// 3. update options_id, increasing or decreasing its order
-					$sql_update_option = 'UPDATE `'.self::$PREFIX.'providers_options` SET `order`= `order`'.
-						   $mathOperator.abs($delta).' WHERE `'.self::$PREFIX.'providers_options_id`=?';
+					$sql_update_option = 'UPDATE `'.$options['table'].'` SET `'.$options['ordercol'].
+							'`= `'.$options['ordercol'].'`'.$mathOperator.abs($delta).
+					        ' WHERE `'.$options['col'].'`=?';
 					$res = self::$dbToUse->queryPrepared($sql_update_option,
-							array($options_id));
+							array($row_id));
 				}
-				return $res;			
+				return $res;
 			} else return $target_id;
-		} else return $provider_id;		
+		} else return $provider_id;
+	}
+	
+	/**
+	 * saves (either insert or update) a provider option key/value pair
+	 * 
+	 * @param array $dataArr array of data to be saved
+	 * 
+	 * @return unknown|mixed|AMA_Error
+	 * 
+	 * @access public
+	 */
+	public function saveOptionByKey ($dataArr) {
+		
+		if (!is_null($dataArr['newkey']) && $dataArr['key']!=$dataArr['newkey']) {
+			// user has edited a key
+			if (!is_null($dataArr['key']) && strlen($dataArr['key'])>0) {
+				$sql = 'UPDATE `'.self::$PREFIX.'options` SET `key`=? '.
+					   'WHERE `'.self::$PREFIX.'providers_options_id`=? AND `key`=?';
+				$values = array($dataArr['newkey'],$dataArr['option_id'],$dataArr['key']);
+				$retval = $dataArr['newkey'];
+			} else if (is_null($dataArr['key']) || strlen($dataArr['key'])<=0) {
+				$sql = 'INSERT INTO `'.self::$PREFIX.'options` VALUES (?,?,?)';
+				$values = array($dataArr['option_id'],$dataArr['newkey'],null);
+				$retval = $dataArr['newkey'];
+			}			
+		} else if (!is_null($dataArr['key']) && !is_null($dataArr['value'])) {
+			$sql = 'UPDATE `'.self::$PREFIX.'options` SET `value`=? '.
+				   'WHERE `'.self::$PREFIX.'providers_options_id`=? AND `key`=?';
+			$values = array($this->or_null($dataArr['value']),$dataArr['option_id'],$dataArr['key']);
+			$retval = $dataArr['value'];
+		}
+		if (isset($sql)) {
+			$res = self::$dbToUse->queryPrepared($sql,$values);
+			if (AMA_DB::isError($res)) return $res;
+			else return str_replace(array("\r\n", "\r", "\n"), "<br />", $retval);
+		} else return new AMA_Error();
+	}
+	
+	/**
+	 * Deletes a login provider option by key
+	 * 
+	 * @param number $options_id the providers_options_id of the login provider
+	 * @param string $key the key of the element to be deleted
+	 * 
+	 * @return boolean|AMA_Error
+	 * 
+	 * @access public
+	 */
+	public function deleteOptionByKey ($options_id, $key) {
+		$sql = 'DELETE FROM `'.self::$PREFIX.'options` WHERE `'.self::$PREFIX.'providers_options_id`=?'.
+				' AND `key`=?';
+		return self::$dbToUse->queryPrepared($sql, array($options_id,$key));
+	}
+	
+	/**
+	 * updates the order before deleting from a table
+	 * 
+	 * @param boolean $isProvider true if provider, false if option set 
+	 * @param number $row_id row id to perform the needed update
+	 * 
+	 * @access private
+	 */
+	private function updateOrderBeforeDelete ($isProvider, $row_id) {
+		$options = $this->getCommonQueryOptions($isProvider);
+		/**
+		 * must update options order before deleting. A couple of nested
+		 * queries are needed for updating and selecting from the same table.
+		 *
+		 * The logic is to set order=order-1 to all the options_id following
+		 * the passed option AND of the same login provider of the passed options
+		 */
+		$updateOrder = 'UPDATE `'.$options['table'].'` SET `'.$options['ordercol'].'`=`'.$options['ordercol'].'`-1 '.
+				'WHERE `'.$options['ordercol'].'`> ( SELECT * FROM '.
+				'(SELECT `'.$options['ordercol'].'` FROM `'.$options['table'].'` WHERE '.
+				'`'.$options['col'].'`=? ) AS dummy )';
+		
+		if ($isProvider===false) {
+			$updateOrder .= ' AND `'.self::$PREFIX.'providers_id` = ( SELECT * FROM '.
+			'(SELECT `'.self::$PREFIX.'providers_id` FROM `'.
+			$options['table'].'` WHERE '.
+			'`'.$options['col'].'`=? ) AS dummy2 )';
+			$values = array($row_id,$row_id);
+		} else {
+			$values = $row_id;
+		}
+		
+		return self::$dbToUse->queryPrepared($updateOrder,$values);
+	}
+	
+	/**
+	 * gets common options like, table, col and ordercol names
+	 * to be used in methods sharing same queries on different tables
+	 * 
+	 * @param bool $isProvider true if provider, false if option set
+	 * 
+	 * @return array
+	 * 
+	 * @access private
+	 */
+	private function getCommonQueryOptions($isProvider) {
+		if ($isProvider===false) {
+			$options = array('table'=>self::$PREFIX.'providers_options',
+					'col'=>self::$PREFIX.'providers_options_id',
+					'ordercol'=>'order');
+		} else {
+			$options = array('table'=>self::$PREFIX.'providers',
+					'col'=>self::$PREFIX.'providers_id',
+					'ordercol'=>'displayOrder'
+			);
+		}
+		
+		return $options;
 	}
 	
 	/**
@@ -425,7 +695,7 @@ class AMALoginDataHandler extends AMA_DataHandler {
 	 * 
 	 * @param string $dsn
 	 */
-	static function instance($dsn = null) {
+	static function instance ($dsn = null) {
 		if (!MULTIPROVIDER && is_null($dsn)) $dsn = MultiPort::getDSN($GLOBALS['user_provider']);
 		$theInstance = parent::instance($dsn);
 		

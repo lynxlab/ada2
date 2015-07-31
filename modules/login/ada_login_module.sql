@@ -62,6 +62,13 @@ CREATE TABLE IF NOT EXISTS `module_login_providers` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
+-- Dump dei dati per la tabella `module_login_providers`
+--
+
+INSERT INTO `module_login_providers` (`module_login_providers_id`, `className`, `name`, `enabled`, `buttonLabel`, `displayOrder`) VALUES
+(1, 'adaLogin', 'Ada', 1, 'Accedi', 1);
+
+--
 -- Indexes for dumped tables
 --
 

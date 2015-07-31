@@ -23,3 +23,9 @@
 .dataTables_wrapper ul.ulactions > li.liactions > button { height: 1.5em; }
 .dataTables_wrapper table.dataTable td.enabledstate.disabled,
 .dataTables_wrapper ul.ulactions > li.liactions > button.ui-button-disabled { opacity: 0.4; }
+
+/**
+ * HybridLogin config has centerd action icons
+ */
+#completeHYBRIDLOGINList ul.ulactions { list-style-type: none; display: block; padding:0; margin:0; }
+#completeHYBRIDLOGINList li.liactions { float: none; text-align:center; border: none !important; margin-bottom: 5px;}

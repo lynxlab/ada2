@@ -178,4 +178,100 @@ class ldapLogin extends AbstractLogin
 			return new Exception($e->getMessage().' '.translateFN('di').' '.$options['name']);
 		}
 	}
+	
+	/**
+	 * generate HTML for login provider configuration page
+	 */
+	public function generateConfigPage() {
+		$configIndexDIV = CDOMElement::create('div','id:configindex');
+		$newButton = CDOMElement::create('button');
+		$newButton->setAttribute('class', 'newButton top tooltip');
+		$newButton->setAttribute('title', translateFN('Clicca per creare un nuova fonte'));
+		$newButton->setAttribute('onclick', 'javascript:editOptionSet(null);');
+		$newButton->addChild (new CText(translateFN('Nuova Fonte')));
+		$configIndexDIV->addChild($newButton);
+		$tableOutData = array();
+		$optionSetList = $this->getAllOptions();
+		
+		if (!AMA_DB::isError($optionSetList)) {
+		
+			$labels = array (translateFN('nome'), translateFN('host'),  translateFN('stato'),
+					translateFN('azioni'));
+			foreach ($optionSetList as $i=>$elementArr) {
+				$isEnabled = intval($elementArr['enabled'])===1;
+				unset ($elementArr['enabled']);
+				unset ($elementArr['order']);
+				
+				$keys = array_keys($elementArr);
+				$values = array_values($elementArr);
+				
+				$links = array();
+				$linksHtml = "";
+		
+				for ($j=0;$j<5;$j++) {
+					switch ($j) {
+						case 0:
+							$type = 'edit';
+							$title = translateFN('Modifica Fonte');
+							$link = 'editOptionSet('.$i.');';
+							break;
+						case 1:
+							$type = 'delete';
+							$title = translateFN ('Cancella Fonte');
+							$link = 'deleteOptionSet($j(this), '.$i.' , \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
+							break;
+						case 2:
+							$type = ($isEnabled) ? 'disable' : 'enable';
+							$title = ($isEnabled) ? translateFN('Disabilita') : translateFN('Abilita');
+							$link = 'setEnabledOptionSet($j(this), '.$i.', '.($isEnabled ? 'false' : 'true').');';
+							break;
+						case 3:
+							$type = 'up';
+							$title = translateFN('Sposta su');
+							$link = 'moveOptionSet($j(this),'.$i.',-1);';
+							break;
+						case 4:
+							$type = 'down';
+							$title = translateFN('Sposta giu');
+							$link = 'moveOptionSet($j(this),'.$i.',1);';
+							break;
+					}
+		
+					if (isset($type)) {
+						$links[$j] = CDOMElement::create('li','class:liactions');
+						$linkshref = CDOMElement::create('button');
+						$linkshref->setAttribute('onclick','javascript:'.$link);
+						$linkshref->setAttribute('class', $type.'Button tooltip');
+						$linkshref->setAttribute('title',$title);
+						$links[$j]->addChild ($linkshref);
+						// unset for next iteration
+						unset ($type);
+					}
+				}
+				if (!empty($links)) {
+					$linksul = CDOMElement::create('ul','class:ulactions');
+					foreach ($links as $link) $linksul->addChild ($link);
+					$linksHtml = $linksul->getHtml();
+				} else $linksHtml = '';
+		
+				$tableOutData[$i] = array (
+						$labels[0]=>$elementArr['name'],
+						$labels[1]=>$elementArr['host'],
+						$labels[2]=>(($isEnabled) ? translateFN('Abilitata') : translateFN('Disabilitata') ),
+						$labels[3]=>$linksHtml);
+			}
+		
+			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper(get_class($this)).'List',
+					$labels,$tableOutData,'',translateFN('Elenco delle fonti '.strtoupper($this->loadProviderName())));
+			$configIndexDIV->addChild($OutTable);
+		
+			// if there are more than 10 rows, repeat the add new button below the table
+			if (count($optionSetList)>10) {
+				$bottomButton = clone $newButton;
+				$bottomButton->setAttribute('class', 'newButton bottom tooltip');
+				$configIndexDIV->addChild($bottomButton);
+			}
+		} // if (!AMA_DB::isError($optionSetList))
+		return $configIndexDIV;
+	}
 }

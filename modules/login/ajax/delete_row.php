@@ -47,14 +47,28 @@ $retArray = array();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	if (!isset($_POST['option_id'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so cosa cancellare"));
+	if (!isset($_POST['option_id']) && !isset($_POST['provider_id'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so cosa cancellare"));
 	else
 	{
-		$result = $GLOBALS['dh']->deleteOptionSet (intval($_POST['option_id']));
+		if (isset($_POST['option_id'])) {
+			if (isset($key) && strlen($key)>0) {
+				$result = $GLOBALS['dh']->deleteOptionByKey (intval($_POST['option_id']), trim($key));
+				$deletedElement = 'Chiave'; // translateFN delayed when building msg
+				$vowel = 'a';
+			} else {
+				$result = $GLOBALS['dh']->deleteOptionSet (intval($_POST['option_id']));
+				$deletedElement = 'Fonte';  // translateFN delayed when building msg
+				$vowel = 'a';
+			}			
+		} else if (isset($_POST['provider_id'])) {
+			$result = $GLOBALS['dh']->deleteLoginProvider (intval($_POST['provider_id']));
+			$deletedElement = 'Login Provider'; // translateFN delayed when building msg
+			$vowel = 'o';
+		}
 		
 		if (!AMA_DB::isError($result))
 		{		
-			$retArray = array ("status"=>"OK", "msg"=>translateFN("Fonte cancellata"));
+			$retArray = array ("status"=>"OK", "msg"=>translateFN($deletedElement." cancellat".$vowel));
 		}
 		else
 			$retArray = array ("status"=>"ERROR", "msg"=>translateFN("Errore di cancellazione") );

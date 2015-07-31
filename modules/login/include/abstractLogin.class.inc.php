@@ -122,13 +122,14 @@ abstract class abstractLogin implements iLogin
 	 * else first it's searched the provider db and if no
 	 * module_login_providers table is found there, use common
 	 * 
-	 * @param string $enabled true if only enabled providers, false if only disabled, null for all providers
+	 * @param bool $enabled true if only enabled providers, false if only disabled, null for all providers
+	 * @param bool $getData true, to return all provider's data. defaults to false: return className only 
 	 * 
 	 * @return array with provider id as the key and implementing className as value
 	 * 
 	 * @access public
 	 */
-	public static function getLoginProviders($enabled = true) {
+	public static function getLoginProviders($enabled = true, $getData=false) {
 		/**
 		 * If not multiprovider, the AMALoginDataHandler must check
 		 * if module's own tables are in the user_provider DB and use them
@@ -142,7 +143,13 @@ abstract class abstractLogin implements iLogin
 		
 		if (!AMA_DB::isError($res) && is_array($res) && count($res)>0) {
 			foreach ($res as $provider) {
-				$retArr[$provider[AMALoginDataHandler::$PREFIX.'providers_id']] = $provider['className'];
+				if ($getData===false) {
+					$retArr[$provider[AMALoginDataHandler::$PREFIX.'providers_id']] = $provider['className'];
+				} else {
+					$id = $provider[AMALoginDataHandler::$PREFIX.'providers_id'];
+					unset($provider[AMALoginDataHandler::$PREFIX.'providers_id']);
+					$retArr[$id] = $provider;
+				}
 			}
 			return $retArr;
 		} else return null;
@@ -168,7 +175,7 @@ abstract class abstractLogin implements iLogin
 					'$j(this).parents(\'form\').first().submit();');
 			$button->addChild (new CText(translateFN($buttonLabel)));
 			
-			return (($returnHtml) ? $button->getHtml() : $button);			
+			return (($returnHtml) ? $button->getHtml() : $button);
 		} else return null;
 	}
 	
@@ -298,6 +305,17 @@ abstract class abstractLogin implements iLogin
 		} else {
 			return null;
 		}		
+	}
+	
+	/**
+	 * generate HTML for login provider configuration page
+	 */
+	public function generateConfigPage() {
+		$configIndexDIV = CDOMElement::create('div','id:configindex');
+		$noConfigSpan = CDOMElement::create('span');
+		$noConfigSpan->addChild(new CText('Nessuna opzione da configurare'));
+		$configIndexDIV->addChild($noConfigSpan);
+		return $configIndexDIV;
 	}
 	
 	/**

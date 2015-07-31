@@ -92,6 +92,13 @@ function initButtons() {
 		},
 		text : false
 	});
+	
+	$j('.configButton').button({
+		icons : {
+			primary : 'ui-icon-gear'
+		},
+		text : false
+	});
 }
 
 /**

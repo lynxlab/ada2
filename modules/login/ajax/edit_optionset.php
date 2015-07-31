@@ -57,7 +57,7 @@ if (isset($_REQUEST['providerClassName']) && strlen($_REQUEST['providerClassName
 
 if (!is_null($optionsClassName)) {
 	
-	require_once MODULES_LOGIN_PATH.'/include/management/'.$optionsClassName.'.inc.php';	
+	require_once MODULES_LOGIN_PATH.'/include/management/'.$optionsClassName.'.inc.php';
 
 	if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		/**
@@ -66,7 +66,27 @@ if (!is_null($optionsClassName)) {
 		// build an optionManager with passed POST data
 		$optionsManager = new $optionsClassName($_POST);
 		// try to save it
-		$res = $GLOBALS['dh']->saveOptionSet($optionsManager->toArray());
+		if (is_a($optionsManager, 'ldapManagement')) {
+			$res = $GLOBALS['dh']->saveOptionSet($optionsManager->toArray());
+			$editElement = 'Fonte';  // translatedFN delayed when building msg
+		} else {
+			/**
+			 * check if passed data are OK before saving
+			 */
+			if (is_null($optionsManager->value)) {
+				// user has edited a key
+				if ($optionsManager->key === $optionsManager->newkey) die($key);
+				else if (strlen($optionsManager->newkey)<=0) {
+					$retArray['status'] = "ERROR";
+					$retArray['msg'] = translateFN('La chiave non può essere vuota');
+					$retArray['displayValue'] = $optionsManager->key;
+					die (json_encode($retArray));
+				}
+			}
+			
+			$res = $GLOBALS['dh']->saveOptionByKey($optionsManager->toArray());
+			$editElement = 'Chiave'; // translatedFN delayed when building msg
+		}
 	
 		if (AMA_DB::isError($res)) {
 			// if it's an error display the error message
@@ -75,7 +95,8 @@ if (!is_null($optionsClassName)) {
 		} else {
 			// redirect to config page
 			$retArray['status'] = "OK";
-			$retArray['msg'] = translateFN('Fonte salvata');
+			$retArray['msg'] = translateFN($editElement.' salvata');
+			if (is_string($res) && strlen($res)>0) $retArray['displayValue'] = $res;
 		}	
 	} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
 				isset($_GET['option_id']) && intval(trim($_GET['option_id']))>0) {
@@ -97,7 +118,7 @@ if (!is_null($optionsClassName)) {
 			
 			$retArray['status'] = "OK";
 			$retArray['html'] = $data['htmlObj']->getHtml();
-			$retArray['dialogTitle'] = translateFN('Modifica Fonte');
+			$retArray['dialogTitle'] = translateFN('Modifica '.$editElement);
 		}
 	} else {
 		/**
@@ -108,7 +129,7 @@ if (!is_null($optionsClassName)) {
 		
 		$retArray['status'] = "OK";
 		$retArray['html'] = $data['htmlObj']->getHtml();
-		$retArray['dialogTitle'] = translateFN('Nuova Fonte');	
+		$retArray['dialogTitle'] = translateFN('Nuova '.$editElement);
 	}
 }
 echo json_encode($retArray);
