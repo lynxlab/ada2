@@ -49,7 +49,7 @@ $retArray = array('status'=>'ERROR');
 $optionsClassName = null;
 if (isset($_REQUEST['providerClassName']) && strlen($_REQUEST['providerClassName'])>0) {
 	$type = trim($_REQUEST['providerClassName']);
-	if (in_array($type, abstractLogin::getLoginProviders(true))) {		
+	if (in_array($type, abstractLogin::getLoginProviders(null))) {		
 		require_once MODULES_LOGIN_PATH . '/include/'.$type.'.class.inc.php';
 		$optionsClassName = $type::MANAGEMENT_CLASS;
 	}
