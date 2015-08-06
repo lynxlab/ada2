@@ -1097,7 +1097,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
      * @param string $language lang selection at login form: language to be set
      * @param Object $loginProviderObj login provider class used, null if none used 
      */
-    public static function setSessionAndRedirect($userObj, $remindMe, $language, $loginProviderObj = null) {
+    public static function setSessionAndRedirect($userObj, $remindMe, $language, $loginProviderObj = null, $redirectURL = null) {
     	if ($userObj->getStatus() == ADA_STATUS_REGISTERED)
     	{
     		/**
@@ -1148,7 +1148,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
     			$_SESSION['sess_loginProviderArr']['id'] = $loginProviderObj->getID();
     			$loginProviderObj->addLoginToHistory($userObj->getId());
     		}    		
-    		$redirectURL = $userObj->getHomePage();
+    		if (is_null($redirectURL)) $redirectURL = $userObj->getHomePage();
     		header('Location:'.$redirectURL);
     		exit();
     	}
