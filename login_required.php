@@ -37,6 +37,7 @@ $neededObjAr = array(
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
+include_once ROOT_DIR . '/include/index_functions.inc.php';
 $self= whoami();
 /*
  * YOUR CODE HERE
@@ -50,8 +51,6 @@ $navigationHistoryObj = $_SESSION['sess_navigation_history'];
 
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $form = new UserLoginForm();
-    $form->fillWithPostData();
     /*
      *
     $navigationHistoryObj = $_SESSION['sess_navigation_history'];
@@ -59,41 +58,84 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     print_r($form);
      * 
      */
-    if ($form->isValid()) {
-        $userObj = MultiPort::loginUser($_POST['username'], $_POST['password']);
-        if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)) {
-            $status = $userObj->getStatus();
-            if ($status == ADA_STATUS_REGISTERED) {
-                $_SESSION['sess_user_language'] = $p_selected_language;
-                $_SESSION['sess_id_user'] = $userObj->getId();
-                $GLOBALS['sess_id_user'] = $userObj->getId();
-                $_SESSION['sess_id_user_type'] = $userObj->getType();
-                $GLOBALS['sess_id_user_type'] = $userObj->getType();
-                $_SESSION['sess_userObj'] = $userObj;
-                $user_default_tester = $userObj->getDefaultTester();
-                if ($user_default_tester !== NULL) {
-                    $_SESSION['sess_selected_tester'] = $user_default_tester;
-                }
-//                print_r($_SESSION['subscription_page']);
-                if (isset($_SESSION['subscription_page'])) {
-                    $redirectURL = $_SESSION['subscription_page'];
-                    unset ($_SESSION['subscription_page']);
-                    header('Location:' . $redirectURL);
-                    exit();
-                } else {
-                    $lastModule = $navigationHistoryObj->lastModule();
-                    header('Location:' . $lastModule);
-                    exit();
-                }
-            }
-        } else {
-            $data = new CText('Utente non trovato');
-        }
-    } else {
-        $data = new CText('Dati inseriti non validi');
+    /**
+     * Perform login
+     */
+    if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0)) {
+    
+    	if (isset($p_login)) {
+    		$username = DataValidator::validate_username($p_username);
+    		$password = DataValidator::validate_password($p_password, $p_password);
+    	} else {
+    		$username = DataValidator::validate_not_empty_string($p_username);
+    		$password = DataValidator::validate_not_empty_string($p_password);
+    	}
+    
+    	if (!isset($p_remindme)) $p_remindme = false;
+    
+    	if (isset($p_login)) {
+    		if($username !== FALSE && $password !== FALSE) {
+    			//User has correctly inserted un & pw
+    			$userObj = MultiPort::loginUser($username, $password);
+    			$loginObj = null;
+    		} else {
+    			// Utente non loggato perche' informazioni in username e password non valide
+    			// es. campi vuoti o contenenti caratteri non consentiti.
+    			$login_error_message = translateFN("Username  e/o password non valide");
+    		}
+    	} else if (defined('MODULES_LOGIN') && MODULES_LOGIN &&
+    			isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0) {
+    				include_once  MODULES_LOGIN_PATH . '/include/'.$selectedLoginProvider.'.class.inc.php';
+    				if (class_exists($selectedLoginProvider)) {
+    					$loginProviderID = isset($selectedLoginProviderID) ? $selectedLoginProviderID : null;
+    					$loginObj = new $selectedLoginProvider($selectedLoginProviderID);
+    					$userObj = $loginObj->doLogin($username, $password, $p_remindme, $p_selected_language);
+    					if ((is_object($userObj)) && ($userObj instanceof Exception)) {
+    						// try the adalogin before giving up the login process
+    						$lastTry = MultiPort::loginUser($username, $password);
+    						if ((is_object($lastTry)) && ($lastTry instanceof ADALoggableUser)) {
+    	  				$loginObj = null;
+    	  				$userObj = $lastTry;
+    						}
+    					}
+    				}
+    			}
+    
+    			if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)) {
+    				if (isset($_SESSION['subscription_page'])) {
+    					$redirectURL = $_SESSION['subscription_page'];
+    					unset ($_SESSION['subscription_page']);
+    				} else {
+    					$redirectURL = $navigationHistoryObj->lastModule();
+                    }
+                    
+    				if(!ADALoggableUser::setSessionAndRedirect($userObj, $p_remindme, $p_selected_language, $loginObj,$redirectURL)) {
+    					//  Utente non loggato perché stato <> ADA_STATUS_REGISTERED
+    					$login_error_message = translateFN("Utente non abilitato");
+    				}
+    			} else if ((is_object($userObj)) && ($userObj instanceof Exception)) {
+    				$login_error_message = $userObj->getMessage();
+    				if ($userObj->getCode()!==0) $login_error_message .= ' ('.$userObj->getCode().')';
+    			} else {
+    				// Utente non loggato perché coppia username password non corretta
+    				$login_error_message = translateFN("Username  e/o password non valide");
+    			}
     }
+    if (isset($login_error_message)) $data = new CText($login_error_message);
+    
 } else {
-    $data = new UserLoginForm();
+	/**
+	 * Negotiate login page language
+	 */
+	Translator::loadSupportedLanguagesInSession();
+	$supported_languages = Translator::getSupportedLanguages();
+	$login_page_language_code = Translator::negotiateLoginPageLanguage($lang_get);
+	$_SESSION['sess_user_language'] = $login_page_language_code;
+	
+    $form_action = HTTP_ROOT_DIR ;
+    $form_action .= '/'.whoami().'.php';
+    $data = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_page_language_code, $login_error_message);
+    
     $registration_action = HTTP_ROOT_DIR . '/browsing/registration.php';
     $cod = FALSE;
     $registration_data = new UserRegistrationForm($cod, $registration_action);
@@ -113,6 +155,13 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_MASKEDINPUT,
 		JQUERY_NO_CONFLICT
 );
+$layout_dataAr['CSS_filename']= array( ROOT_DIR . '/layout/'.$_SESSION['sess_userObj']->template_family.'/css/main/index.css' );
+if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
+	$layout_dataAr['CSS_filename'] = array_merge($layout_dataAr['CSS_filename'],
+			array (
+					MODULES_LOGIN_PATH . '/layout/support/login-form.css'
+			));
+}
 
 $optionsAr['onload_func'] = 'initDateField();';
 
