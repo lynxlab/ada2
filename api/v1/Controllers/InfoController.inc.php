@@ -116,7 +116,7 @@ class InfoController extends AbstractController implements AdaApiInterface {
 							$more_info_link = null;
 						}
 						// giorgio 13/ago/2013 if it's not the news course, add it to the displayed results
-						if (defined ('PUBLIC_COURSE_ID_FOR_NEWS') && intval (PUBLIC_COURSE_ID_FOR_NEWS) > 0 && PUBLIC_COURSE_ID_FOR_NEWS != $courseData ['id_corso']) {
+						if (defined ('PUBLIC_COURSE_ID_FOR_NEWS') && PUBLIC_COURSE_ID_FOR_NEWS != $courseData ['id_corso']) {
 							$returnArray [] = array (
 									'name'=>$service ['nome'],
 									'description'=>$service ['descrizione']
