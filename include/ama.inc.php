@@ -10166,7 +10166,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 					(($isSuper) ? $id_tutor." AS `id_utente_tutor`" : "ts.`id_utente_tutor`") .",".
 					"c.`id_corso`, c.`titolo`, c.`id_utente_autore`,
 					i.`id_istanza_corso`, i.`title`,i.`data_inizio_previsto`,i.`data_fine`,i.`duration_hours`,
-                                        i.`durata`,i.`self_instruction`
+                                        i.`durata`,i.`self_instruction`,i.`data_inizio`
 				FROM ".
 				(($isSuper) ? "" : "`tutor_studenti` ts JOIN ").
 				"`istanza_corso` i ".
