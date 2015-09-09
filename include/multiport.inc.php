@@ -427,6 +427,7 @@ class MultiPort
   static public function setUser(ADALoggableUser $userObj, $new_testers = array(), $update_user_data = FALSE, $extraTableName=false ) {      
     $user_id = $userObj->getId();
     $testers = $userObj->getTesters();
+    $testers_to_add = array();
     if(!is_array($testers)) {
       $testers = array();
     }
@@ -478,6 +479,7 @@ class MultiPort
           break;
         }
         if (AMA_DataHandler::isError($result)) {
+        	if ($result->code == AMA_ERR_NOT_FOUND) $testers_to_add[] = $tester;
           //return ADA_SET_USER_ERROR_TESTER;
         }
       }
@@ -486,7 +488,7 @@ class MultiPort
     // se sono qui, verifico se in new_testers ci sono dei tester nuovi e li associo all'utente
 
 
-    $testers_to_add = array_diff($new_testers, $testers);
+    $testers_to_add = array_merge($testers_to_add, array_diff($new_testers, $testers));
 
     $pwd = $common_dh->_get_user_pwd($user_id);
     if (AMA_DataHandler::isError($pwd)){
@@ -632,6 +634,15 @@ class MultiPort
         }
         $userObj = new ADAAdmin($user_dataAr);
         $userObj->setUserId($id_user);
+        // @author giorgio 09/set/2015
+        // admin user gets listed on all testers
+        $allPointers = $common_dh->get_all_testers(array('puntatore'));
+        if (!AMA_DB::isError($allPointers) && is_array($allPointers) && count($allPointers)>0) {
+        	foreach ($allPointers as $aPointer) $user_testersAr[] = $aPointer['puntatore'];
+        } else {
+        	$errObj = new ADA_Error($user_testersAr,'An error occurred while retrieving admin testers in MultiPort::finduser');
+        }
+        $userObj->setTesters($user_testersAr);
         $return = $userObj;
         break;
 
