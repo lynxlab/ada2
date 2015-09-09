@@ -104,6 +104,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   
   if(count($errorsAr) > 0) {
     $tester_dataAr = $_POST;
+    $testersAr = array();
     $form = AdminModuleHtmlLib::getAddTesterForm($testersAr,$tester_dataAr,$errorsAr);
   }
   else {
@@ -116,6 +117,13 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
       $form = new CText('');
     }
     else {
+      $adminUsersArr = $common_dh->get_users_by_type(array(AMA_TYPE_ADMIN));
+      if (!AMA_DB::isError($adminUsersArr) && is_array($adminUsersArr) && count($adminUsersArr)>0) {
+      	foreach ($adminUsersArr as $adminUser) {
+      		$adminUserObj = MultiPort::findUserByUsername($adminUser['username']);
+		    $common_dh->add_user_to_tester($adminUserObj->getId(),$result);      		
+      	}
+      }
       header('Location: ' . $userObj->getHomePage());
       exit();
     }
