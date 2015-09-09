@@ -539,9 +539,9 @@ class ExternalLinkViewer {
             case 2:
             default:
             /*
-         * Remove http:// from the link
+         * Remove http[s]:// from the link
             */
-                $cleaned_string = substr($media_value,7);
+                $cleaned_string = preg_replace("/http[s]?:\/\//", "", $media_value);
 //        $ADA_EXTERNAL_LINKS_MAX_LENGTH = 10;
 //        $string_length = count($cleaned_string);
 //
@@ -565,7 +565,29 @@ class ExternalLinkViewer {
                     $exploded_ext_link = $cleaned_string;
                 }
                 else {
-                    $exploded_ext_link = "<a href=\"".HTTP_ROOT_DIR.'/browsing/external_link.php?id='.$id."\" target=\"_blank\"><img src=\"img/_web.png\" border=\"0\" title=\"$media_value\" alt=\"\"> $cleaned_string </a>";
+                	$spanLink = CDOMElement::create('span');
+                	$linkImg = CDOMElement::create('img');
+                	$linkImg->setAttribute('src', 'img/_web.png');
+                	$linkImg->setAttribute('border', '0');
+                	$linkImg->setAttribute('title', $media_value);
+                	$linkImg->setAttribute('alt', $media_value);
+                	$spanLink->addChild($linkImg);
+                	$spanLink->addChild(new CText($cleaned_string));
+                	
+                	if (stripos($media_value,'https')===0) {
+                		/**
+                		 * @author giorgio 09/set/2015
+                		 * 
+                		 * if link is https do not show it in an iframe
+                		 * as it will cause security problems
+                		 */
+                		$href = $media_value;
+                	} else {
+	                	$href = HTTP_ROOT_DIR.'/browsing/external_link.php?id='.$id;                		
+                	}
+                	$link = BaseHtmlLib::link($href, $spanLink);
+                	$link->setAttribute('target', '_blank');
+                	$exploded_ext_link = $link->getHtml();
                 }
                 break;
         }
