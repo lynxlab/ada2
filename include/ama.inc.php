@@ -1750,7 +1750,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
             return new AMA_Error(AMA_ERR_ADD);
         }
 
-        return true; // FIXME: deve restituire l'id del tester appena aggiunto
+        return $this->getConnection()->lastInsertID();
     }
 
     public function set_tester($tester_id, $tester_dataAr=array()) {
@@ -3309,7 +3309,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if(AMA_DB::isError($user_id)) {
             return new AMA_Error(AMA_ERR_GET);
         }
-        if(is_null($user_id)) {
+        if(is_null($user_id) || $user_id===false) {
             return new AMA_Error(AMA_ERR_NOT_FOUND);
         }
 
