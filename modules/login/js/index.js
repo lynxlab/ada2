@@ -191,9 +191,10 @@ function deleteProvider(jqueryObj, provider_id, message) {
 							var selfCell = $j(this).children('td.'+ORDERCELLCLASS);
 							var selfPos = configDataTable.fnGetPosition(selfCell[0]);
 							for (var i=selfPos[0]; i<numRows; i++) {
-								configDataTable.fnUpdate(parseInt(configDataTable.fnGetData(i, selfPos[1]))-1, i, selfPos[1]);
+								configDataTable.fnUpdate(parseInt(configDataTable.fnGetData(i, selfPos[1]))-1, i, selfPos[1], false);
 							}
 							configDataTable.fnDeleteRow(selfPos[0]);
+							configDataTable.fnStandingRedraw();
 						});
 					} else {
 						/**
@@ -256,7 +257,8 @@ function setEnabledProvider(jqueryObj, provider_id, newstatus) {
 					toggleClass(DISABLEDBUTTONCLASS).
 					attr('title', JSONObj.buttonTitle).children('span').remove();
 				// update new cell in the data of the table an redraw
-				configDataTable.fnUpdate (newObj.html(), position[0], position[2], true);
+				configDataTable.fnUpdate (newObj.html(), position[0], position[2], false);
+				configDataTable.fnStandingRedraw();
 				initButtons();
 				// cell with highlight effect
 				$j(row).find('td.disabled.'+ENABLEDCELLCLASS).effect("highlight", {}, 2000);
