@@ -208,8 +208,9 @@ function saveTranslation()
                     substr=substr+'...';
                 }
                 /*update datatable*/ 
-                oTable.fnUpdate(substr,oTable.fnGetPosition(SelectRow),1);
-                oTable.fnUpdate(JSONObj.text,oTable.fnGetPosition(SelectRow),3);
+                oTable.fnUpdate(substr,oTable.fnGetPosition(SelectRow),1,false);
+                oTable.fnUpdate(JSONObj.text,oTable.fnGetPosition(SelectRow),3,false);
+                oTable.fnStandingRedraw();
                 $j('#TranslationTextArea').val('');
              }
              else
