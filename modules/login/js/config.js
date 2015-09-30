@@ -140,7 +140,8 @@ function initEditable(jqueryObj) {
 	            } catch (e) {}
 	            
 	            var cellPos = configDataTable.fnGetPosition( this );
-	            configDataTable.fnUpdate( sValue, cellPos[0], cellPos[1] );
+	            configDataTable.fnUpdate( sValue, cellPos[0], cellPos[1], false );
+	            configDataTable.fnStandingRedraw();
 	            
 	            if (jqueryObj.hasClass('key')) {
 	            	if ($j(this).parents('tr').children('td.actions').length>0) {
@@ -150,7 +151,8 @@ function initEditable(jqueryObj) {
 	            		// 1. get its html and replace the old key with the new key
 	            		var search  = 'data-delkey="'+this.revert+'"';
 	            		var replace = 'data-delkey="'+sValue+'"';
-	            		configDataTable.fnUpdate(configDataTable.fnGetData(aPos[0], aPos[1]).replace(search, replace), aPos[0], aPos[1] );
+	            		configDataTable.fnUpdate(configDataTable.fnGetData(aPos[0], aPos[1]).replace(search, replace), aPos[0], aPos[1], false );
+	            		configDataTable.fnStandingRedraw();
 	            		if (this.revert.length==0) {
 	            			initEditable($j(this).parents('tr').children('td.editable.value'));
 	            		}
@@ -372,7 +374,8 @@ function setEnabledOptionSet(jqueryObj, option_id, newstatus) {
 					toggleClass(DISABLEDBUTTONCLASS).
 					attr('title', JSONObj.buttonTitle).children('span').remove();
 				// update new cell in the data of the table an redraw
-				configDataTable.fnUpdate (newObj.html(), position[0], position[2], true);
+				configDataTable.fnUpdate (newObj.html(), position[0], position[2], false);
+				configDataTable.fnStandingRedraw();
 				initButtons();
 				// cell with highlight effect
 				$j(row).find('td.disabled.'+ENABLEDCELLCLASS).effect("highlight", {}, 2000);

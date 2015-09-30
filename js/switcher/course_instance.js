@@ -146,7 +146,7 @@ function saveStatus(select)
            showHideDiv(JSONObj.title,JSONObj.msg);
            var selectedText = $j(select).find('option[value="'+myVal+'"]').text();
            var cloned = $j(aData[indexColumn]).text(selectedText).clone();
-           datatable.fnUpdate(cloned[0].outerHTML, indexRow,indexColumn);
+           datatable.fnUpdate(cloned[0].outerHTML, indexRow,indexColumn, false);
            
            $j(select).find('option').each(function(i,e){
               $j(e).prop('selected', false).removeAttr('selected');
@@ -154,9 +154,9 @@ function saveStatus(select)
            $j(select).val(myVal);
            $j(select).find('option[value="'+myVal+'"]').prop('selected', true).attr('selected', 'selected');       
            
-           datatable.fnUpdate($j(select)[0].outerHTML, indexRow, indexColumn+3);
+           datatable.fnUpdate($j(select)[0].outerHTML, indexRow, indexColumn+3, false);
            // console.log($j(select)[0].outerHTML);
-           
+           datatable.fnStandingRedraw();
            /* if user status is removed  it deletes user row from datatable */
            if(select.value == 3)  
            {
