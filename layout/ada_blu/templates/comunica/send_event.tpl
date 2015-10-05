@@ -19,6 +19,9 @@
     <span>
         <i18n>agenda</i18n>
     </span>
+    <span>
+        > <template_field class="template_field" name="status">status</template_field>
+    </span>
 </div> 
 <!-- / percorso -->
 <!-- contenitore -->
