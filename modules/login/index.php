@@ -164,6 +164,7 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_DATATABLE,
+		JQUERY_DATATABLE_REDRAW,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT

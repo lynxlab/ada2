@@ -356,6 +356,7 @@ $layout_dataAr['JS_filename'] = array(
             JQUERY,
             JQUERY_UI,
             JQUERY_DATATABLE,
+			JQUERY_DATATABLE_REDRAW,
             JQUERY_DATATABLE_DATE,
             ROOT_DIR. '/js/include/jquery/dataTables/selectSortPlugin.js',
             JQUERY_NO_CONFLICT

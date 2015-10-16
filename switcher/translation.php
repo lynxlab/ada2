@@ -104,6 +104,7 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
         JQUERY_DATATABLE,
+		JQUERY_DATATABLE_REDRAW,
 		JQUERY_NO_CONFLICT,
 		JQUERY_MASKEDINPUT
 );
