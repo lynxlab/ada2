@@ -69,6 +69,7 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		MODULES_LOGIN_PATH . '/js/jquery.jeditable.mini.js',
 		JQUERY_DATATABLE,
+		JQUERY_DATATABLE_REDRAW,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT
