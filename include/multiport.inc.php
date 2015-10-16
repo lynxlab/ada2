@@ -466,6 +466,7 @@ class MultiPort
           $result = $tester_dh->set_author($user_id,$user_dataAr);
           break;
 
+        case AMA_TYPE_SUPERTUTOR:
         case AMA_TYPE_TUTOR:
           $result = $tester_dh->set_tutor($user_id,$user_dataAr);
           break;
@@ -545,6 +546,7 @@ class MultiPort
           $result = $tester_dh->add_author($user_dataAr);
           break;
 
+        case AMA_TYPE_SUPERTUTOR:
         case AMA_TYPE_TUTOR:
           $result = $tester_dh->add_tutor($user_dataAr);
           break;
@@ -854,6 +856,7 @@ class MultiPort
         return $userObj;
         break;
 
+      case AMA_TYPE_SUPERTUTOR:
       case AMA_TYPE_TUTOR:
         $user_dataAr = $common_dh->get_tutor($id_user);
         if(AMA_Common_DataHandler::isError($user_dataAr)) {
