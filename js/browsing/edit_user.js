@@ -428,6 +428,11 @@ function editExtra ( extraTableName, extraID )
 	
 	// init forms initial values
 	initFormsInitialValues();
+	
+	// set save state to unsaved
+	// var theId = $j(this).closest("div[role='tabpanel']").attr('id').replace(/^\D+/g, '');
+	var theId = $j('form[name='+extraTableName+']').closest("div[role='tabpanel']").attr('id').replace(/^\D+/g, '');
+	setSaveIconVisibility (theId, 'hidden');
 
 	// scroll to the label of the first form element so that it'll become visible to the user
 	scrollTo ( $j('#l_'+firstElementID) );
@@ -449,28 +454,34 @@ function scrollTo ( jqueryObj )
  * 
  * @param extraTableName name of the extra table we're working on
  * @param extraID numeric id of the row to edit
+ * @param foreignKeyName name of foreignKey used to store student_id value
  */
-function deleteExtra ( extraTableName, extraID )
+function deleteExtra ( extraTableName, extraID, foreignKeyName )
 {
-	if ($j('#studente_id_utente_studente').length > 0) id_utente = parseInt ($j('#studente_id_utente_studente').val());
-	else id_utente = 0;
+	if ($j('#'+foreignKeyName).length > 0) foreignKeyVal = parseInt ($j('#'+foreignKeyName).val());
+	else foreignKeyVal = 0;
 	
 	if (confirm ("Questo cancellera' l'elemento selezionato"))
 	{
+		var data = {};
+		data[foreignKeyName] = foreignKeyVal;
+		data['id'] = extraID;
+		data['extraTableName'] = extraTableName;
+		
 		$j.ajax({
 			type	:	'POST',
 			url		:	HTTP_ROOT_DIR+ '/browsing/ajax/delete_multiRow.php',
-			data	:	{ id: extraID, extraTableName: extraTableName, id_utente: id_utente },
+			data	:	data,
 			dataType:	'json'
 		})
 		.done  (function (JSONObj) {
 			if (JSONObj)
 				{
+					showHideDiv(JSONObj.title ,JSONObj.msg);
 					if (JSONObj.status=='OK')
 					{
 						$j('.'+ extraTableName +'#extraDIV_'+extraID).fadeOut(600, function () { 
-							$j('.' + extraTableName + '#extraDIV_'+extraID).remove();
-							showHideDiv(JSONObj.title ,JSONObj.msg); } );
+							$j('.' + extraTableName + '#extraDIV_'+extraID).remove(); } );
 					}
 				}
 		});

@@ -84,7 +84,7 @@ class UserExtraModuleHtmlLib {
 		$editbutton->addChild (new CText(translateFN('Modifica')));
 		
 		$deletebutton = CDOMElement::create('a','class:extraDeleteButton');
-		$deletebutton->setAttribute('href', 'javascript:deleteExtra(\''.$className.'\','.$extraObject->$keyProperty.');');
+		$deletebutton->setAttribute('href', 'javascript:deleteExtra(\''.$className.'\','.$extraObject->$keyProperty.',\''.$extraObject::getForeignKeyProperty().'\');');
 		$deletebutton->addChild(new CText(translateFN('Cancella')));
 		
 		$buttonsdiv->addChild($editbutton);
