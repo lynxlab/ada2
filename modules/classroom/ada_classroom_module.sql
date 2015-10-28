@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `module_classroom_classrooms` (
 `id_classroom` int(10) unsigned NOT NULL,
   `id_venue` int(10) unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `seats` tinyint(4) unsigned DEFAULT NULL,
+  `seats` int(4) unsigned DEFAULT NULL,
   `computers` tinyint(4) unsigned DEFAULT NULL,
   `internet` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `wifi` tinyint(1) unsigned NOT NULL DEFAULT '0',
