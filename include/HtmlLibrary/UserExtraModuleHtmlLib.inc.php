@@ -95,7 +95,7 @@ class UserExtraModuleHtmlLib {
 		$div->addChild($table);
 		$div->addChild($buttonsdiv);
 		
-		return $div->getHtml();
+		return $div->getHtml().CDOMElement::create('div','class:clearfix')->getHtml();
 	}
 }
 ?>
