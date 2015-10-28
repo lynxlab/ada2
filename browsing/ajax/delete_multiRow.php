@@ -50,13 +50,28 @@ $title = translateFN('Cancellazione');
  */
 $editUserObj = null;
 
+if (!isset($_POST['extraTableName'])) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Non so cosa salvare"));
+else
+{
+	/**
+	 * include and instantiate form class based on extraTableName POST
+	 * variable that MUST be set, else dont' know what and how to save.
+	 */
+	$extraTableClass = trim($_POST['extraTableName']);
+	$extraTableFormClass = "User".ucfirst($extraTableClass)."Form";
+
+	if (is_file(ROOT_DIR . '/include/Forms/'.$extraTableFormClass.'.inc.php'))
+		require_once ROOT_DIR . '/include/Forms/'.$extraTableFormClass.'.inc.php';
+	else die ("Form class not found, don't know how to save");
+}
+
 switch($userObj->getType()) {
 	case AMA_TYPE_STUDENT:
 	case AMA_TYPE_AUTHOR:
 		$editUserObj =& $userObj;
 		break;
 	case AMA_TYPE_SWITCHER:
-		$userId = DataValidator::is_uinteger($_POST['id_utente']);
+		$userId = DataValidator::is_uinteger($_POST[$extraTableClass::getForeignKeyProperty()]);
 		if ($userId !== false) {
 			$editUserObj = MultiPort::findUser($userId);
 		}

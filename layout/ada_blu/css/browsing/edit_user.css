@@ -1,5 +1,5 @@
 @CHARSET "UTF-8";
-@import "../jquery-ui/jquery-ui-1.10.3.custom.min.css";
+
 /* giorgio, to style jquery ui tab with icons */
 #tabs .ui-tabs-nav .ui-icon { 
     display: inline-block;
