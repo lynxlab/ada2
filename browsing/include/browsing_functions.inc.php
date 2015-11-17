@@ -375,7 +375,7 @@ if ($id_profile == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MOD
 /**
  * Authors can edit public courses assigned to themselves
  */
-if ($id_profile == AMA_TYPE_AUTHOR && $courseObj instanceof Course && $courseObj->getIsPublic()) {
+if ($id_profile == AMA_TYPE_AUTHOR && isset($courseObj) && $courseObj instanceof Course && $courseObj->getIsPublic()) {
 	$mod_enabled = ($userObj->getId() == $courseObj->getAuthorId());
 }
 
