@@ -10,3 +10,4 @@
  */
 
 define('DEV_ALLOW_SENDING_EMAILS', true);
+ini_set('display_errors', 0);
