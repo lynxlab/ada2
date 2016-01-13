@@ -392,18 +392,19 @@ if($op !== false && $op == 'course_info') {
 			header ('Location: '.HTTP_ROOT_DIR.'/info.php');
 			die();
 		}		
+		$thead_data = array(translateFN('nome'), translateFN('descrizione'), translateFN('crediti'), translateFN('informazioni'));
 	} else {
-    	$publishedServices = $common_dh->get_published_courses();
+		$thead_data = array(translateFN('nome'), translateFN('provider'), translateFN('descrizione'), translateFN('crediti'), translateFN('informazioni'));
+		$publishedServices = $common_dh->get_published_courses();
 	}
 	
     if(!AMA_Common_DataHandler::isError($publishedServices)) {
 //      $thead_data = array('nome', 'descrizione', 'durata (giorni)', 'informazioni');
-        $thead_data = array(translateFN('nome'), translateFN('descrizione'), translateFN('crediti'), translateFN('informazioni'));
         $tbody_data = array();
 
         foreach($publishedServices as $service) {
                $serviceId = $service['id_servizio'];
-               $coursesAr = $common_dh-> get_courses_for_service($serviceId); 
+               $coursesAr = $common_dh->get_courses_for_service($serviceId); 
                if(!AMA_DB::isError($coursesAr)) {
                     $currentTesterId = 0;
                     $currentTester = '';
@@ -415,6 +416,7 @@ if($op !== false && $op == 'course_info') {
                         if($newTesterId != $currentTesterId) { // stesso corso su altro tester ?
                         	$testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId);
                         	if(!AMA_DB::isError($testerInfoAr)) {
+                        		$providerName = $testerInfoAr[1];
                         		$tester = $testerInfoAr[10];
                         		$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
                         		$currentTesterId = $newTesterId;
@@ -440,13 +442,24 @@ if($op !== false && $op == 'course_info') {
                         	$more_info_link = BaseHtmlLib::link("info.php",translateFN('No instances available'));
                         }
                         
-                        $tbody_data[] = array(
-                        	$service['nome'],
-                        	$service['descrizione'],
-                        	$credits,
-                        	// $service['durata_servizio'],
-                        	$more_info_link
-                        );
+                        if (!MULTIPROVIDER) {
+                        	$tbody_data[] = array(
+                        			$service['nome'],
+                        			$service['descrizione'],
+                        			$credits,
+                        			// $service['durata_servizio'],
+                        			$more_info_link
+                        	);
+                        } else {
+                        	$tbody_data[] = array(
+                        			$service['nome'],
+                        			$providerName,
+                        			$service['descrizione'],
+                        			$credits,
+                        			// $service['durata_servizio'],
+                        			$more_info_link
+                        	);
+                        }
                     }
                } else {
                		$credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS

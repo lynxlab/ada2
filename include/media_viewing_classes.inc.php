@@ -334,6 +334,18 @@ class AudioPlayer {
 class VideoPlayer {
 	const DEFAULT_WIDTH = DEFAULT_VIDEO_WIDTH;
 	const DEFAULT_HEIGHT = DEFAULT_VIDEO_HEIGHT;
+	
+	/**
+	 * function heightCalc
+	 * 
+	 */
+	public static function heightCalc($width = DEFAULT_WIDTH, $mediaWidth = DEFAULT_WIDTH, $mediaHeight = DEFAULT_HEIGHT) {
+		$height_dest = floor($mediaHeight*($width/$mediaWidth));
+		return $height_dest;
+		
+	}
+	
+	
     /**
      * function view
      *
@@ -349,19 +361,23 @@ class VideoPlayer {
     	$getID3 = new getID3();
     	$toAnalyze = ( !empty($http_file_path) ? $http_file_path : ROOT_DIR).$file_name;
     	$fileInfo = $getID3->analyze(urldecode(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze)));
-
+		
+    	if (empty($width)) {
+    		$width = self::DEFAULT_WIDTH;
+    	}
+//     	if (empty($height)) {
+//     		$height = self::DEFAULT_HEIGHT;
+//     	}
+		$mediaWidth = (intval ($fileInfo['video']['resolution_x'])>0) ? intval($fileInfo['video']['resolution_x']) : null;
+		$mediaHeight = (intval ($fileInfo['video']['resolution_y'])>0) ? intval($fileInfo['video']['resolution_y']) : null;
+		$height = VideoPlayer::heightCalc($width,$mediaWidth, $mediaHeight);
+		
     	if ( (empty($width) || empty($height) ) && isset ($fileInfo['video']) && !empty($fileInfo['video']))
     	{
     		$width = (intval ($fileInfo['video']['resolution_x'])>0) ? intval($fileInfo['video']['resolution_x']) : null;
     		$height = (intval ($fileInfo['video']['resolution_y'])>0) ? intval($fileInfo['video']['resolution_y']) : null;
     	}
     	
-		if (empty($width)) {
-			$width = self::DEFAULT_WIDTH;
-		}
-		if (empty($height)) {
-			$height = self::DEFAULT_HEIGHT;
-		}
 
         if ($videoTitle == NULL || !isset($videoTitle)) {
             $videoTitle = $file_name;
