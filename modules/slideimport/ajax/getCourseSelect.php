@@ -39,25 +39,25 @@ $neededObjAr = array(
 */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 require_once MODULES_SLIDEIMPORT_PATH . '/config/config.inc.php';
 
-if (isset($_GET['url']) && strlen(trim($_GET['url']))>0 &&
-	isset($_GET['pageNum']) && intval($_GET['pageNum'])>0) {
+/**
+ * load course list from the DB and output the generated select in a template field
+ */
+$providerCourses = $GLOBALS['dh']->find_courses_list (array ('nome','titolo'),'`id_utente_autore`='.$userObj->getId());
+$html = translateFN('Nessun corso trovato');
 
-	$fileName = str_replace(HTTP_ROOT_DIR, ROOT_DIR, trim($_GET['url']));
-	// first page is zero
-	$pageNum = intval($_GET['pageNum'])-1;
-	$baseHeight = IMPORT_PREVIEW_HEIGHT;
+if (!AMA_DB::isError($providerCourses)) {
+	$courses = array();
+	foreach($providerCourses as $course) {
+		$courses[$course[0]] = '('.$course[0].') '.$course[1].' - '.$course[2];
+	}
 
-	if (is_readable($fileName)) {
-		$imagick = new Imagick();
-		$imagick->readimage($fileName.'['.$pageNum.']');
-		$width = $imagick->getimagewidth();
-		$height = $imagick->getimageheight();
-		$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
-
-		$imagick->setImageFormat('png');
-		header('Content-type: image/png');
-		echo $imagick->getimageblob();
+	if(count($courses)>0) {
+		reset($courses);
+		$html = BaseHtmlLib::selectElement2('id:courseSelect,class:ui search selection dropdown', $courses, key($courses))->getHtml();
 	}
 }
+echo $html;
+?>

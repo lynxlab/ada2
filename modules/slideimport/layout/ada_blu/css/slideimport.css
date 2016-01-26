@@ -10,6 +10,7 @@
 #selNode,
 #importLoader,
 #messagesContainer,
+#courseTree,
 #footer .footerleft { display: none; }
 /* page rules */
 html, body { height: 99.2%; margin:0; }
@@ -47,3 +48,7 @@ html, body { height: 99.2%; margin:0; }
 #slideImportContainer,
 #previewBox,
 #selectCourseContainer { margin-top: -20px; }
+#progressbar { width:99%; height:0.2rem; border-radius:0; }
+#progressbar .ui-progressbar-value { background-color: #00B5AD; }
+.ui.modal .actions { visibility: hidden; }
+.ui.modal span:not(.step0) { display: none; }

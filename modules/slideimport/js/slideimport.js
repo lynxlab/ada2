@@ -8,14 +8,11 @@
  * @link           slideimport
  * @version		   0.1
  */
-var tree;
+var tree = null;
 var previewSettings = null;
 
 function initDoc(userId, uploadSessionVar)
 {
-	tree = $j('#courseTree');
-	tree.css ('display','none');
-
 	Dropzone.autoDiscover = false;
 	$j('#slideImportDZ').addClass('dropzone');
 
@@ -57,7 +54,7 @@ function initDoc(userId, uploadSessionVar)
 	});
 
 	// select course change
-	$j('#courseSelect').change(function() {
+	$j('#courseSelectInput').on('change','#courseSelect', function() {
 		var courseID = $j(this).val();
 
 		if ('undefined' != typeof courseID && parseInt(courseID)>0) {
@@ -134,38 +131,103 @@ function initDoc(userId, uploadSessionVar)
 	});
 
 	// objects initialization
-	$j('#courseSelect').dropdown();
 	$j('.ui.radio.checkbox','#selectCourseContainer').checkbox();
-	// tree must be built before triggering courseSelect change
-	tree.tree({ data : [], useContextMenu : false, autoOpen : 0 });
-	$j('#courseSelect').trigger('change');
 
-	// bind function to tree select action
-	tree.bind('tree.select',function(event) {
-    	if (event.node) {
-            // node was selected
-            $j('#selNode').text(event.node.id);
-            if ($j('button','#importToNode').hasClass('disabled')) $j('button','#importToNode').removeClass('disabled');
-        }
-        else {
-            // event.node is null, a node was deselected
-            // e.previous_node contains the deselected node
-        	$j('#selNode').text('');
-        	if (!$j('button','#importToNode').hasClass('disabled')) $j('button','#importToNode').addClass('disabled');
-        }
-    });
+	$j.when(loadCourseSelect($j('#courseSelectInput'))).then (function() {
+		// init tree
+
+		if (tree == null) {
+			tree = $j('#courseTree');
+			tree.css ('display','none');
+		}
+
+		// tree must be built before triggering courseSelect change
+		tree.tree({ data : [], useContextMenu : false, autoOpen : 0 });
+
+		// bind function to tree select action
+		tree.bind('tree.select',function(event) {
+			if (event.node) {
+				// node was selected
+				$j('#selNode').text(event.node.id);
+				if ($j('button','#importToNode').hasClass('disabled')) $j('button','#importToNode').removeClass('disabled');
+			}
+			else {
+				// event.node is null, a node was deselected
+				// e.previous_node contains the deselected node
+				$j('#selNode').text('');
+				if (!$j('button','#importToNode').hasClass('disabled')) $j('button','#importToNode').addClass('disabled');
+			}
+		});
+
+		$j('#courseSelect').trigger('change');
+	});
+
+	// set onunload handler to clean files and session
+	$j(window).unload(function() {
+		$j.ajax({
+			type	:	'POST',
+			url		:	'ajax/cleanSlideImport.php',
+			data	:	{ sessionVar : uploadSessionVar }
+		});
+	});
+
 	// activate step one
 	activateStep(1);
 }
 
 function doImport(asNewCourse) {
+	var context = '.ui.modal';
+	$j.when(doAjaxImport(asNewCourse))
+		.done(function (retObj) {
+			$j('button.homepage', context).attr('onclick','self.document.location.href=\''+HTTP_ROOT_DIR+'/browsing\'');
+			if (retObj && retObj.status === true) {
+				if ('undefined' != typeof retObj.nodeId && retObj.nodeId) {
+					$j('button.viewnodes', context).attr('onclick','self.document.location.href=\''+
+							HTTP_ROOT_DIR+'/browsing/view.php?id_node='+retObj.nodeId+'\'').show();
+				} else {
+					$j('button.viewnodes', context).hide();
+				}
+				$j('.content span', context).stop().hide();
+				$j('.actions button.showonerror', context).hide();
+				$j('.actions button.showonok', context).show();
+				$j('.content span#importcompleteok', context).show();
+				if (tree!=null) $j('#courseSelect').trigger('change');
+				showHideDiv($j('#infotitle').html(), $j('#importcompleteok').html(), true);
+				$j('.actions', context).css({'visibility':'visible'});
+			} else {
+				$j('.actions button.showonok', context).hide();
+				$j('.actions button.showonerror', context).show();
+				$j('.actions', context).css({'visibility':'visible'});
+			}
+		})
+		.fail(function() {
+			$j('.actions button.showonok', context).hide();
+			$j('.actions button.showonerror', context).show();
+			$j('.content span#importcompleteerror', context).show();
+			showHideDiv($j('#errortitle').html(), $j('#importcompleteerror').html(), false);
+			$j('.actions', context).css({'visibility':'visible'});
+		})
+		.always(function() {
+			$j("#progressbar").hide();
+		});
+}
+
+function doAjaxImport(asNewCourse) {
+	var deferred = $j.Deferred();
+
 	var error = true;
 	var asSlideShow = parseInt($j('input[name="importSlideshow"]:radio:checked').val()) == 1;
 	var selectedPages = $j('input[name="selectedPages[]"]:checked').map(function(){
 	        return this.value;
 	    }).get();
+	var selCourse = $j('#selCourse').text().trim();
 	var selNode = $j('#selNode').text().trim();
 	var courseName;
+
+	if (asSlideShow) {
+		showHideDiv($j('#infotitle').html(), 'Slideshow not implemented yet!', true);
+		return false;
+	}
 
 	if (selectedPages.length>0) {
 		// should not be here if no page has been selected
@@ -189,27 +251,130 @@ function doImport(asNewCourse) {
 		}
 
 		if (!error) {
-			var msg = "Importerai le pagine " + selectedPages.join(', ');
-
-			if (asSlideShow) {
-				msg += " creando uno slideshow ";
-			} else {
-				msg += " creando un nodo per immagine ";
-			}
-
-			if (asNewCourse) {
-				msg += " come nuovo corso dal titolo " + courseName;
-			} else {
-				msg += " come nuovo nodo, figlio di " + selNode;
-			}
 			activateStep(4);
-			alert (msg);
+		    $j('.actions', '.ui.modal').css({'visibility':'hidden'});
+			$j("#progressbar").progressbar({ value: false }).show();
+			$j('.ui.modal').modal('setting', { closable: false }).modal('show');
+
+			var courseID = null;
+
+			$j.when(generateCourse(asNewCourse, courseName)).then(function(JSONObj){
+				if (JSONObj && 'undefined' != typeof JSONObj.courseID && parseInt(JSONObj.courseID)>0) {
+					courseID = parseInt(JSONObj.courseID);
+					$j.when(generateImages(selectedPages, JSONObj.courseID)).then(function(JSONObj) {
+						if (JSONObj && 'undefined' != typeof JSONObj.error && parseInt(JSONObj.error)==0) {
+							var startNode = (asNewCourse) ? courseID + '_0' : selNode;
+							$j.when(generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow)).then(function(JSONObj) {
+								if (JSONObj && 'undefined' != typeof JSONObj.status) {
+									deferred.resolve(JSONObj);
+								} else {
+									$j('.ui.modal .content span').stop().hide();
+									$j('.ui.modal .content span#generatenodeserror').show();
+									showHideDiv($j('#errortitle').html(), $j('#generatenodedserror').html(), false);
+									if (asNewCourse) {
+										// TODO: remove generated course
+									}
+									deferred.resolve({status: false});
+								}
+							});
+						} else {
+							$j('.ui.modal .content span').stop().hide();
+							$j('.ui.modal .content span#generateimageserror').show();
+							showHideDiv($j('#errortitle').html(), $j('#generateimageserror').html(), false);
+							if (asNewCourse) {
+								// TODO: remove generated course
+							}
+							deferred.resolve({status: false});
+						}
+					});
+				} else {
+					$j('.ui.modal .content span').stop().hide();
+					$j('.ui.modal .content span#newcourseerror').show();
+					showHideDiv($j('#errortitle').html(), $j('#newcourseerror').html(), false);
+					deferred.resolve({status: false});
+				}
+			});
 		}
 	} else {
 		console.log ("No page selected, you should not be here!");
+		deferred.reject();
 	}
 
+	return deferred.promise();
+
 }
+
+function generateCourse(makeNewCourse, courseName) {
+	var deferred = $j.Deferred();
+
+	if (makeNewCourse) {
+		$j.ajax({
+			type	:	'POST',
+			url		:	'ajax/generateCourse.php',
+			data	:	{ courseName : courseName },
+			dataType:	'json',
+			beforeSend: function() {
+				$j('.content span', '.ui.modal').stop().hide();
+				$j('.content span.step1', '.ui.modal').stop().show();
+			}
+		})
+		.done(function(JSONObj) {
+			loadCourseSelect($j('#courseSelectInput'));
+			deferred.resolve(JSONObj);
+		})
+		.fail(function() { deferred.reject(); });
+
+		return deferred.promise();
+	} else {
+		return deferred.resolve ({ courseID : $j('#selCourse').text().trim() }).promise();
+	}
+}
+
+
+function generateImages(selectedPages, courseID) {
+	var deferred = $j.Deferred();
+
+	$j.ajax({
+		type	:	'GET',
+		url		:	'ajax/generateImages.php',
+		data	:	{ selectedPages : selectedPages, courseID : courseID, url : previewSettings.url },
+		dataType:	'json',
+		beforeSend: function() {
+			$j('.content span', '.ui.modal').stop().hide();
+			$j('.content span.step2', '.ui.modal').stop().show();
+		}
+	})
+	.done(function(JSONObj) { deferred.resolve(JSONObj); })
+	.fail(function() { deferred.reject(); });
+
+	return deferred.promise();
+}
+
+function generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow) {
+	var deferred = $j.Deferred();
+	$j.ajax({
+		type	:	'POST',
+		url		:	'ajax/generateNodes.php',
+		data	:	{ selectedPages : selectedPages, courseID : courseID, startNode : startNode,
+					  asNewCourse: (asNewCourse) ? 1 : 0, asSlideShow : (asSlideShow) ? 1 : 0,
+					  url : previewSettings.url },
+		dataType:	'json',
+		beforeSend: function() {
+			$j('.content span', '.ui.modal').stop().hide();
+			$j('.content span.step3', '.ui.modal').stop().show();
+		}
+	})
+	.done(function(JSONObj) {
+		deferred.resolve({
+			status : (JSONObj && JSONObj.status=='OK') ? true : false,
+			nodeId : (JSONObj && 'undefined' != typeof JSONObj.nodeId) ? JSONObj.nodeId : null
+		});
+	})
+	.fail(function() { deferred.reject(); });
+
+	return deferred.promise();
+}
+
 
 function displayPreview() {
 	/**
@@ -258,8 +423,25 @@ function gotoStep(stepNumber) {
 		break;
 	default:
 		break;
-
 	}
+}
+
+function loadCourseSelect(jQueryObj) {
+	return $j.ajax({
+		type	:	'GET',
+		url		:	'ajax/getCourseSelect.php',
+		dataType:	'html',
+	})
+	.done(function(retHTML) {
+		jQueryObj.html(retHTML);
+		if ($j('#courseSelect').length>0) {
+			$j('#courseSelect').dropdown();
+			$j('button','#importToNode').removeClass("disabled");
+			if (tree!=null) $j('#courseSelect').trigger('change');
+		} else {
+			$j('button','#importToNode').addClass("disabled");
+		}
+	});
 }
 
 function activateStep(stepNumber) {

@@ -35,8 +35,9 @@ $neededObjAr = array(
 /**
  * Performs basic controls before entering this module
 */
-require_once(ROOT_DIR.'/include/module_init.inc.php');
-require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+$trackPageToNavigationHistory = false;
+require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 
 // MODULE's OWN IMPORTS
 require_once MODULES_SLIDEIMPORT_PATH . '/config/config.inc.php';

@@ -39,25 +39,39 @@ $neededObjAr = array(
 */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 require_once MODULES_SLIDEIMPORT_PATH . '/config/config.inc.php';
+$error=1;
 
-if (isset($_GET['url']) && strlen(trim($_GET['url']))>0 &&
-	isset($_GET['pageNum']) && intval($_GET['pageNum'])>0) {
-
+if (isset($_GET['selectedPages']) && is_array($_GET['selectedPages']) && count($_GET['selectedPages'])>0) {
+	$error=0;
 	$fileName = str_replace(HTTP_ROOT_DIR, ROOT_DIR, trim($_GET['url']));
-	// first page is zero
-	$pageNum = intval($_GET['pageNum'])-1;
-	$baseHeight = IMPORT_PREVIEW_HEIGHT;
-
 	if (is_readable($fileName)) {
-		$imagick = new Imagick();
-		$imagick->readimage($fileName.'['.$pageNum.']');
-		$width = $imagick->getimagewidth();
-		$height = $imagick->getimageheight();
-		$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
 
-		$imagick->setImageFormat('png');
-		header('Content-type: image/png');
-		echo $imagick->getimageblob();
+		$info = pathinfo($fileName);
+		$media_path = ROOT_DIR . MEDIA_PATH_DEFAULT . $userObj->getId() . DIRECTORY_SEPARATOR . $info['filename'];
+		if (!is_dir($media_path)) {
+			if(!mkdir($media_path, 0777, true)) $error = 1;
+		}
+
+		if ($error===0) {
+			foreach ($_GET['selectedPages'] as $selectedPage) {
+				$baseHeight = IMPORT_IMAGE_HEIGHT;
+				$imagick = new Imagick();
+				$imagick->readimage($fileName.'['.($selectedPage-1).']');
+				$width = $imagick->getimagewidth();
+				$height = $imagick->getimageheight();
+				$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
+				$imagick->setImageFormat('png');
+				if ($imagick->writeimage($media_path . DIRECTORY_SEPARATOR . $selectedPage.'.png') !== true) {
+					// delete all files and dir on error
+					delTree($media_path);
+					$error = 1;
+					break;
+				}
+			}
+		}
 	}
 }
+header('Content-Type: application/json');
+echo json_encode (array('error'=>$error));

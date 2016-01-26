@@ -21,3 +21,21 @@ function getFileData($fileName) {
 	return $filedata;
 }
 
+function generateRandomString($length = 10) {
+	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$charactersLength = strlen($characters);
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++) {
+		$randomString .= $characters[rand(0, $charactersLength - 1)];
+	}
+	return $randomString;
+}
+
+function getNameFromFileName($complete_file_name) {
+	$pos = strpos($complete_file_name, '_');
+	if ($pos !== false) {
+		return trim(str_replace('_', ' ', substr($complete_file_name, $pos)));
+	}
+	return $complete_file_name;
+}
+

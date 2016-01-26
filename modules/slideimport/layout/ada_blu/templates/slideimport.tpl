@@ -175,7 +175,7 @@
 									<h4 class="ui header"><i18n>Nel corso e nodo selezionati</i18n></h4>
 									<span id="selCourse"></span>
 									<span id="selNode"></span>
-									<template_field class="template_field" name="course_select">course_select</template_field>
+									<div id="courseSelectInput"></div>									
 									<div id="courseTree"></div>
 								 	<button onclick="doImport(false);" class="ui teal labeled icon right floated button">
                             			<i class="add icon"></i><i18n>Importa</i18n>
@@ -229,6 +229,35 @@
 			<span id="infotitle"><i class="basic info icon"></i><i18n>Info</i18n></span>
 			<span id="emptycoursename"><i18n>Il nome del corso non può essere vuoto</i18n></span>
 			<span id="nonodeselected"><i18n>Selezionare un nodo per l'importazione</i18n></span>
+		</div>
+		
+		<!-- modal to show import progress -->
+		<div class="ui modal">  
+		  <div class="header"><i18n>Importazione in corso</i18n></div>
+		  <div class="content">
+		  	<span class="step0"><i18n>L'importazione è in corso, potrebbe volerci un po' di tempo...</i18n></span>
+		  	<span class="step1"><i18n>Generazione corso...</i18n></span>
+		  	<span class="step2"><i18n>Generazione immagini...</i18n></span>
+		  	<span class="step3"><i18n>Generazione nodi...</i18n></span>
+		  	<span id="importcompleteok"><i18n>Importazione terminata</i18n></span>
+			<span id="importcompleteerror"><i18n>Errori nell'importazione</i18n></span>
+			<span id="newcourseerror"><i18n>Errore nella creazione del nuovo corso</i18n></span>
+			<span id="generateimageserror"><i18n>Errore nella generazione delle immagini</i18n></span>
+			<span id="generatenodedserror"><i18n>Errore nella generazione dei nuovi nodi</i18n></span>
+		  </div>
+		  <div id="progressbar"></div>
+		  		
+		  <div class="actions">
+			    <button onclick="javascript:$j('#selectCourseContainer').fadeOut('slow',function() { displayPreview(); });" class="ui button showonok">
+			      <i18n>Importa altre pagine da questo file</i18n>
+			    </button>
+			    <button class="ui button viewnodes showonok">
+			      <i18n>Naviga nodi importati</i18n>
+			    </button>
+			    <button class="ui button homepage showonok showonerror">
+			      <i18n>Vai alla tua home page</i18n>
+			    </button>		    
+		  </div>
 		</div>
 
     </body>

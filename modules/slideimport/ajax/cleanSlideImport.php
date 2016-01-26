@@ -39,25 +39,14 @@ $neededObjAr = array(
 */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
+require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 require_once MODULES_SLIDEIMPORT_PATH . '/config/config.inc.php';
 
-if (isset($_GET['url']) && strlen(trim($_GET['url']))>0 &&
-	isset($_GET['pageNum']) && intval($_GET['pageNum'])>0) {
-
-	$fileName = str_replace(HTTP_ROOT_DIR, ROOT_DIR, trim($_GET['url']));
-	// first page is zero
-	$pageNum = intval($_GET['pageNum'])-1;
-	$baseHeight = IMPORT_PREVIEW_HEIGHT;
-
-	if (is_readable($fileName)) {
-		$imagick = new Imagick();
-		$imagick->readimage($fileName.'['.$pageNum.']');
-		$width = $imagick->getimagewidth();
-		$height = $imagick->getimageheight();
-		$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
-
-		$imagick->setImageFormat('png');
-		header('Content-type: image/png');
-		echo $imagick->getimageblob();
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['sessionVar']) && strlen(trim($_POST['sessionVar']))>0) {
+	$sessionVar = trim($_POST['sessionVar']);
+	if  (isset($_SESSION[$sessionVar]['filename']) && strlen($_SESSION[$sessionVar]['filename'])>0) {
+		unlink ($_SESSION[$sessionVar]['filename']);
+		unset  ($_SESSION[$sessionVar]['filename']);
 	}
 }
+?>

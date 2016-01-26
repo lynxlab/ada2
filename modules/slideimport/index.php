@@ -73,23 +73,6 @@ if(isset($_SESSION[MODULES_SLIDEIMPORT_UPLOAD_SESSION_VAR]['filename'])) {
 
 if (isset($data)) $content_dataAr['data'] = $data->getHtml();
 
-/**
- * load course list from the DB and output the generated select in a template field
- */
-$providerCourses = $dh->get_courses_list (array ('nome','titolo'));
-
-$courses = array();
-foreach($providerCourses as $course) {
-	$courses[$course[0]] = '('.$course[0].') '.$course[1].' - '.$course[2];
-}
-
-if(count($courses)>0) {
-	reset($courses);
-	$content_dataAr['course_select'] = BaseHtmlLib::selectElement2('id:courseSelect,class:ui search selection dropdown', $courses, key($courses))->getHtml();
-} else {
-	$content_dataAr['course_select'] = translateFN('Nessun corso trovato');
-}
-
 $avatar = CDOMElement::create('img','class:img_user_avatar,src:'.$userObj->getAvatar());
 $content_dataAr['user_avatar'] = $avatar->getHtml();
 $content_dataAr['user_modprofilelink'] = $userObj->getEditProfilePage();
