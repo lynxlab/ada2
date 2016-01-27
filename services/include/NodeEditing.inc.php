@@ -254,10 +254,10 @@ class NodeEditing {
         $path_to_icon = $root_dir.'/templates/browsing/'.$template_family;
 //        if(trim($node_data['icon']) == "" || !file_exists($path_to_icon.'/'.$node_data['icon'])) {
 //        if(trim($node_data['icon']) == "" || !file_exists($node_data['icon'])) {
-        if(!file_exists($node_data['icon'])) {
+        if(!isset($node_data['icon']) || !file_exists($node_data['icon'])) {
             $node_data['icon'] = 'nodo.png';
         }
-		
+
         $result = $dh->_edit_node($node_data);
         if ( AMA_DataHandler::isError($result) ) return $result;
 
@@ -321,7 +321,7 @@ class NodeEditing {
 
 //        return true;
         return $node_id;
-        
+
     }
 
     public static function getAuthorMedia( $id_course, $media_type=array() ) {
@@ -357,7 +357,7 @@ class NodeEditingViewer {
         // vito, 1 ottobre 2008
         if (isset($node_to_edit['text'])) $node_to_edit_text = $node_to_edit['text'];
         else $node_to_edit_text = '';
-        
+
         if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
             $node_to_edit_text = stripslashes($node_to_edit_text);
         }
@@ -640,8 +640,8 @@ class NodeEditingViewer {
         }
         else {
             $node_text = $node_data['DataFCKeditor'];
-        }        
-        
+        }
+
         if ($node_data['type'] == ADA_LEAF_WORD_TYPE OR $node_data['type'] == ADA_GROUP_WORD_TYPE) {
             // hyphenation
             $hyphenation_label = CDOMElement::create('DIV');
@@ -1051,7 +1051,7 @@ class NodeEditingViewer {
 
             $node_data_div->addChild($parent_node_selector);
         }
-        
+
         // @author giorgio 26/apr/2013
         // checkbox to force node modification to appear in whats new page
         $node_forcecreationupdate  = CDOMElement::create('div','id:show_node_forcecreationupdate, class:editor_input');
@@ -1059,7 +1059,7 @@ class NodeEditingViewer {
         $label->addChild(new CText(translateFN('Appare nelle novit&agrave;')));
         $input_forcecreationupdate = CDOMElement::create('checkbox','id:forcecreationupdate, name:forcecreationupdate');
         $input_forcecreationupdate->setAttribute('value','1');
-        if (isset($node_data['forcecreationupdate'])) $input_forcecreationupdate->setAttribute('checked', 'checked');    
+        if (isset($node_data['forcecreationupdate'])) $input_forcecreationupdate->setAttribute('checked', 'checked');
         $node_forcecreationupdate->addChild($input_forcecreationupdate);
         $node_forcecreationupdate->addChild($label);
         $node_data_div->addChild($node_forcecreationupdate);
