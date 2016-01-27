@@ -216,18 +216,14 @@ function doAjaxImport(asNewCourse) {
 	var deferred = $j.Deferred();
 
 	var error = true;
-	var asSlideShow = parseInt($j('input[name="importSlideshow"]:radio:checked').val()) == 1;
+	var asSlideShow = parseInt($j('input[name="importSlideshow"]:radio:checked').val()) >0;
+	var withLinkedNodes = parseInt($j('input[name="importSlideshow"]:radio:checked').val()) ==2;
 	var selectedPages = $j('input[name="selectedPages[]"]:checked').map(function(){
 	        return this.value;
 	    }).get();
 	var selCourse = $j('#selCourse').text().trim();
 	var selNode = $j('#selNode').text().trim();
 	var courseName;
-
-	if (asSlideShow) {
-		showHideDiv($j('#infotitle').html(), 'Slideshow not implemented yet!', true);
-		return false;
-	}
 
 	if (selectedPages.length>0) {
 		// should not be here if no page has been selected
@@ -264,7 +260,7 @@ function doAjaxImport(asNewCourse) {
 					$j.when(generateImages(selectedPages, JSONObj.courseID)).then(function(JSONObj) {
 						if (JSONObj && 'undefined' != typeof JSONObj.error && parseInt(JSONObj.error)==0) {
 							var startNode = (asNewCourse) ? courseID + '_0' : selNode;
-							$j.when(generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow)).then(function(JSONObj) {
+							$j.when(generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow, withLinkedNodes)).then(function(JSONObj) {
 								if (JSONObj && 'undefined' != typeof JSONObj.status) {
 									deferred.resolve(JSONObj);
 								} else {
@@ -350,14 +346,14 @@ function generateImages(selectedPages, courseID) {
 	return deferred.promise();
 }
 
-function generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow) {
+function generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow, withLinkedNodes) {
 	var deferred = $j.Deferred();
 	$j.ajax({
 		type	:	'POST',
 		url		:	'ajax/generateNodes.php',
 		data	:	{ selectedPages : selectedPages, courseID : courseID, startNode : startNode,
 					  asNewCourse: (asNewCourse) ? 1 : 0, asSlideShow : (asSlideShow) ? 1 : 0,
-					  url : previewSettings.url },
+					  withLinkedNodes : (withLinkedNodes) ? 1 : 0, url : previewSettings.url },
 		dataType:	'json',
 		beforeSend: function() {
 			$j('.content span', '.ui.modal').stop().hide();

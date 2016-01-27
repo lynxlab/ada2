@@ -142,10 +142,16 @@
 								  <div class="inline fields">
 								    <div class="field">
 								      <div class="ui radio checkbox">
-								        <input type="radio" name="importSlideshow" checked="" tabindex="0" class="hidden" value="1">
+								        <input type="radio" name="importSlideshow" checked="checked" tabindex="0" class="hidden" value="1">
 								        <label><i18n>In unico nodo, con slideshow</i18n></label>
 								      </div>
-								    </div>	     
+								    </div>
+								    <div class="field">
+								      <div class="ui radio checkbox">
+								        <input type="radio" name="importSlideshow" tabindex="0" class="hidden" value="2">
+								        <label><i18n>Primo nodo con slideshow, e nodi di approfondimento</i18n></label>
+								      </div>
+								    </div>								    	     
 								    <div class="field">
 								      <div class="ui radio checkbox">
 								        <input type="radio" name="importSlideshow" tabindex="0" class="hidden" value="0">
@@ -168,7 +174,7 @@
 										</button>
 									</div>
 										<p><i18n>Verrà creato un corso di livello servizio <strong>Corso OnLine</strong> e con le
-										   impostazioni più comuni che potrai modificare dalla gestione dei corsi.</i18n></p>
+										   impostazioni più comuni che potrai far modificare da uno switcher.</i18n></p>
 								</div>	
 								<div class="ui horizontal divider"><i18n>OPPURE</i18n></div>
 								<div id="importToNode">

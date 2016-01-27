@@ -32,10 +32,5 @@ function generateRandomString($length = 10) {
 }
 
 function getNameFromFileName($complete_file_name) {
-	$pos = strpos($complete_file_name, '_');
-	if ($pos !== false) {
-		return trim(str_replace('_', ' ', substr($complete_file_name, $pos)));
-	}
-	return $complete_file_name;
+	return trim(str_replace('_', ' ', preg_replace('/^_*\d+_/', '', $complete_file_name)));
 }
-

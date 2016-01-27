@@ -45,23 +45,26 @@ class AMASlideimportDataHandler extends AMA_DataHandler {
 		// first get all passed node data
 		$nodeInfo = $dh->get_node_info($rootNode);
 
-		$retarray = array ('id'=>$rootNode, 'label'=>$nodeInfo['name']);
+		if (!AMA_DB::isError($nodeInfo)) {
+			$retarray = array ('id'=>$rootNode, 'label'=>$nodeInfo['name']);
 
-		if ($mustRecur)
-		{
-			// get node children only having instance=0
-			$childNodesArray = $dh->get_node_children ($rootNode,0);
-			if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray))
+			if ($mustRecur)
 			{
-				$i=0;
-				$children = array();
-				foreach ($childNodesArray as &$childNodeId)
+				// get node children only having instance=0
+				$childNodesArray = $dh->get_node_children ($rootNode,0);
+				if (!empty($childNodesArray) && !AMA_DB::isError($childNodesArray))
 				{
-					$children[$i++] = $this->getAllChildrenArray($childNodeId, $dh, $mustRecur);
+					$i=0;
+					$children = array();
+					foreach ($childNodesArray as &$childNodeId)
+					{
+						$children[$i++] = $this->getAllChildrenArray($childNodeId, $dh, $mustRecur);
+					}
+					$retarray['children'] = $children;
 				}
-				$retarray['children'] = $children;
 			}
-		}
+		} else return array();
+
 		return $retarray;
 	}
 
