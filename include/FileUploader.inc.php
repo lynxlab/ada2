@@ -24,7 +24,7 @@ class FileUploader
         $this->_name = $_FILES[$fieldUploadName]['name'];
         $this->_size = $_FILES[$fieldUploadName]['size'];
         $this->_tmpName = $_FILES[$fieldUploadName]['tmp_name'];
-        $this->_type = $_FILES[$fieldUploadName]['type'];
+        $this->_type = trim($_FILES[$fieldUploadName]['type'],'"');
 
         $this->_destinationFolder = $pathToUploadFolder;
         $this->_errorMessage = '';
@@ -41,7 +41,7 @@ class FileUploader
                 return false;
             }
         }
-                
+
         if (!is_writable($this->_destinationFolder)) {
             $this->_errorMessage = 'Upload directory not writable';
             //return ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH;
@@ -101,7 +101,7 @@ class FileUploader
     {
         return $this->_name;
     }
-    
+
     public static function listDirectoryContents($pathToDirectory, $filterFiles=FileUploader::FILES_AND_DIRS, $includeFullPath = false)
     {
 
@@ -148,24 +148,24 @@ class FileUploader
     }
 
     /**
-     * Creates the upload directory for the user 
+     * Creates the upload directory for the user
      *
      * @param integer $user_id
      * @return FALSE if an error occurs, a string containing the path to the
      * directory on success
      */
     public function createUploadDir() {
-  
+
         if (mkdir($this->_destinationFolder) == FALSE) {
             return FALSE;
         }
 
         return $this->_destinationFolder;
     }
-    
+
     /**
      * Reduce image using GD
-     * 
+     *
      */
     public function reduceImage() {
         require_once ROOT_DIR .'/browsing/include/class_image.inc.php';
@@ -178,16 +178,16 @@ class FileUploader
           imagejpeg($new_img,$this->_tmpName);
         }
         if(stristr($this->_type, 'gif')) {
-          imagegif($new_img,$this->_tmpName);        
+          imagegif($new_img,$this->_tmpName);
         }
 //        imagejpeg($new_img,$this->_tmpName);
-    } 
-    
+    }
+
     public function getType() {
     	return $this->_type;
     }
-            
-    
+
+
     private $_name;
     private $_tmpName;
     private $_size;
