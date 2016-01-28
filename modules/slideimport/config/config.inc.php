@@ -22,6 +22,7 @@ define ('IMPORT_PREVIEW_HEIGHT', 210);
  * Define IMPORT_MIME_TYPE as a subset of ADA_MIME_TYPE
  */
 $IMPORT_MIME_TYPE["application/pdf"]['permission'] = _GO;
+$IMPORT_MIME_TYPE["application/x-pdf"]['permission'] = _GO;
 $IMPORT_MIME_TYPE["application/msword"]['permission'] = _GO;
 $IMPORT_MIME_TYPE["application/mspowerpoint"]['permission'] = _GO;
 $IMPORT_MIME_TYPE["application/vnd.ms-powerpoint"]['permission'] = _GO;

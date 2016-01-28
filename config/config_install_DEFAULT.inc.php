@@ -45,7 +45,7 @@ if (MULTIPROVIDER) {
 	 * In a single provider environment, each one
 	 * shall have these set in its own config file
 	 */
-	
+
 	/**
 	 * ID of the public course to get the latest news
 	 */
@@ -73,7 +73,7 @@ if (!defined('PORTAL_NAME')) define('PORTAL_NAME','ADA 2.1 local git');
 /**
  * DataBase abstraction layer,
  * kept for possible future implementations.
- * 
+ *
  * Only possible value is PDO_DB as of 30/mag/2013
  */
 define('PDO_DB', 1);
@@ -213,7 +213,7 @@ define ("ADA_USER_AUTOMATIC_ENTER",FALSE); // feature disabled !
 define ("ADA_PRINT_CERTIFICATE",FALSE);
 
 /*
- * If there isn't db_common.service_type table, use this to define default service type. 
+ * If there isn't db_common.service_type table, use this to define default service type.
  */
 define('DEFAULT_SERVICE_TYPE_NAME','Corso Online');
 
@@ -354,6 +354,7 @@ $rbstack_class = ROOT_DIR.'/include/rbstack.inc.php';
 // was $mimetypeHa + $mimetypeCodeHa in 1.7
 // replaced also in upload functions
 $ADA_MIME_TYPE["application/pdf"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/x-pdf"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/x-zip-compressed"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/zip-compressed"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/zip"]['permission'] = _GO;
@@ -421,6 +422,7 @@ $ADA_MIME_TYPE["application/octet-stream"]['permission'] = _STOP;
 //  $mimetypeCodeHa
 
 $ADA_MIME_TYPE["application/pdf"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/x-pdf"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/x-zip-compressed"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/zip-compressed"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/zip"]['type'] = _DOC;
