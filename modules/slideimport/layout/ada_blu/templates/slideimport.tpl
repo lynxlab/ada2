@@ -176,7 +176,7 @@
 										<p><i18n>Verrà creato un corso di livello servizio <strong>Corso OnLine</strong> e con le
 										   impostazioni più comuni che potrai far modificare da uno switcher.</i18n></p>
 								</div>	
-								<div class="ui horizontal divider"><i18n>OPPURE</i18n></div>
+								<!-- div class="ui horizontal divider"><i18n>OPPURE</i18n></div -->
 								<div id="importToNode">
 									<h4 class="ui header"><i18n>Nel corso e nodo selezionati</i18n></h4>
 									<span id="selCourse"></span>
@@ -223,7 +223,7 @@
 	        <div class="column">
 				<h5 class="ui teal inverted top attached header"><i18n>Pagina</i18n>&nbsp;<span class="pagenumber"></span></h5>
 				<div class="ui segment">
-					<img class="ui image preview" src="layout/blank.gif"/>
+					<img class="ui image preview" src="layout/img/blank.gif"/>
 				</div>
 		      	<h5 class="ui teal inverted bottom attached header"><label><input name="selectedPages[]" type="checkbox"><i18n>Importa</i18n></label></h5>
 		    </div>
@@ -254,12 +254,16 @@
 		  <div id="progressbar"></div>
 		  		
 		  <div class="actions">
+		  		<button onclick="javascript:$j('#selectCourseContainer').fadeOut('slow',function() { location.reload(); });" class="ui button showonok">
+			      <i18n>Importa nuova presentazione</i18n>
+			    </button>
 			    <button onclick="javascript:$j('#selectCourseContainer').fadeOut('slow',function() { displayPreview(); });" class="ui button showonok">
 			      <i18n>Importa altre pagine da questo file</i18n>
 			    </button>
 			    <button class="ui button viewnodes showonok">
 			      <i18n>Naviga nodi importati</i18n>
 			    </button>
+				<div class="clearfix" style="margin-top: 1rem;"></div>			    
 			    <button class="ui button homepage showonok showonerror">
 			      <i18n>Vai alla tua home page</i18n>
 			    </button>		    
