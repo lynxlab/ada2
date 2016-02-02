@@ -354,6 +354,7 @@ $rbstack_class = ROOT_DIR.'/include/rbstack.inc.php';
 // was $mimetypeHa + $mimetypeCodeHa in 1.7
 // replaced also in upload functions
 $ADA_MIME_TYPE["application/pdf"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/x-pdf"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/x-zip-compressed"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/zip-compressed"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/zip"]['permission'] = _GO;
@@ -421,6 +422,7 @@ $ADA_MIME_TYPE["application/octet-stream"]['permission'] = _STOP;
 //  $mimetypeCodeHa
 
 $ADA_MIME_TYPE["application/pdf"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/x-pdf"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/x-zip-compressed"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/zip-compressed"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/zip"]['type'] = _DOC;
