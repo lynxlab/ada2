@@ -103,7 +103,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 		if (!AMA_DB::isError ($createdNodeID)) {
 			$error = false;
 			$createdNodes = array($createdNodeID);
-			$order = 0;
+			if ($asNewCourse === false) {
+				$order = $GLOBALS['dh']->get_ordine_max_val($startNode);
+				if (AMA_DB::isError($order) || is_null($order)) $order = 0;
+			} else {
+				$order = 0;
+			}
 			$imgtemplate = '<MEDIA TYPE="'._IMAGE.'" VALUE="'. $info['filename'] . DIRECTORY_SEPARATOR .'%filenamehere%">';
 
 			// prepare nivo slider holding elements
@@ -178,8 +183,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 
 			// if it's a slideshow, the first created note must be updated
 			if ($asSlideShow) {
+				$maxOrder = $GLOBALS['dh']->get_ordine_max_val($startNode);
+				if (AMA_DB::isError($maxOrder) || is_null($maxOrder)) $maxOrder = 0;
 				$slideshow_data['id'] = $createdNodeID;
-				$slideshow_data['order'] = 0;
+				$slideshow_data['order'] = ++$maxOrder;
 				$slideshow_data['text'] = $wrapper->getHtml();
 				if (AMA_DB::isError(NodeEditing::saveNode($slideshow_data))) {
 					$error = true;
