@@ -11,7 +11,7 @@
 var tree = null;
 var previewSettings = null;
 
-function initDoc(userId, uploadSessionVar)
+function initDoc(userId, userType, preselectedCourseID, uploadSessionVar)
 {
 	Dropzone.autoDiscover = false;
 	$j('#slideImportDZ').addClass('dropzone');
@@ -133,7 +133,7 @@ function initDoc(userId, uploadSessionVar)
 	// objects initialization
 	$j('.ui.radio.checkbox','#selectCourseContainer').checkbox();
 
-	$j.when(loadCourseSelect($j('#courseSelectInput'))).then (function() {
+	$j.when(loadCourseSelect($j('#courseSelectInput'), preselectedCourseID)).then (function() {
 		// init tree
 
 		if (tree == null) {
@@ -170,6 +170,13 @@ function initDoc(userId, uploadSessionVar)
 			data	:	{ sessionVar : uploadSessionVar }
 		});
 	});
+
+	// set html elements depending on user type
+	if (userType==AMA_TYPE_AUTHOR) {
+		$j('#importToCourse').remove();
+	} else if (userType==AMA_TYPE_SWITCHER) {
+		$j('#importToNode').remove();
+	}
 
 	// activate step one
 	activateStep(1);
@@ -315,7 +322,7 @@ function generateCourse(makeNewCourse, courseName) {
 			}
 		})
 		.done(function(JSONObj) {
-			loadCourseSelect($j('#courseSelectInput'));
+			loadCourseSelect($j('#courseSelectInput'), parseInt(JSONObj.courseID));
 			deferred.resolve(JSONObj);
 		})
 		.fail(function() { deferred.reject(); });
@@ -422,10 +429,11 @@ function gotoStep(stepNumber) {
 	}
 }
 
-function loadCourseSelect(jQueryObj) {
+function loadCourseSelect(jQueryObj, selectedID) {
 	return $j.ajax({
 		type	:	'GET',
 		url		:	'ajax/getCourseSelect.php',
+		data    :   { selectedID : selectedID },
 		dataType:	'html',
 	})
 	.done(function(retHTML) {

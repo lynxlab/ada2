@@ -64,7 +64,12 @@ $layout_dataAr['JS_filename'] = array(
 		MODULES_SLIDEIMPORT_PATH . '/js/dropzone.js'
 );
 
-$optionsAr['onload_func'] = 'initDoc('.$userObj->getId().', \''.MODULES_SLIDEIMPORT_UPLOAD_SESSION_VAR.'\');';
+if (isset($_GET['id_course']) && intval($_GET['id_course'])>0) {
+	$course_id = intval($_GET['id_course']);
+} else $course_id = 0;
+
+$optionsAr['onload_func'] = 'initDoc('.$userObj->getId().', '.$userObj->getType().', '.$course_id.', '.
+							'\''.MODULES_SLIDEIMPORT_UPLOAD_SESSION_VAR.'\');';
 
 // clear session var
 if(isset($_SESSION[MODULES_SLIDEIMPORT_UPLOAD_SESSION_VAR]['filename'])) {

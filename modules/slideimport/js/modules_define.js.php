@@ -21,4 +21,12 @@ if (defined('MODULES_SLIDEIMPORT_HTTP')) {
 
 if (defined('AMA_TYPE_AUTHOR')) {
 	echo 'var AMA_TYPE_AUTHOR=' . AMA_TYPE_AUTHOR .';'.PHP_EOL;
+} else {
+	echo 'var AMA_TYPE_AUTHOR=null;'.PHP_EOL;
+}
+
+if (defined('AMA_TYPE_SWITCHER')) {
+	echo 'var AMA_TYPE_SWITCHER=' . AMA_TYPE_SWITCHER .';'.PHP_EOL;
+} else {
+	echo 'var AMA_TYPE_SWITCHER=null;'.PHP_EOL;
 }

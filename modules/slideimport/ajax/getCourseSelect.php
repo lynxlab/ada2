@@ -50,13 +50,21 @@ $html = translateFN('Nessun corso trovato');
 
 if (!AMA_DB::isError($providerCourses)) {
 	$courses = array();
+	if (isset($_GET['selectedID']) && intval($_GET['selectedID'])>0) {
+		$selectedID = intval($_GET['selectedID']);
+	} else {
+		$selectedID = 0;
+	}
+
 	foreach($providerCourses as $course) {
 		$courses[$course[0]] = '('.$course[0].') '.$course[1].' - '.$course[2];
+		if (intval($course[0]) == $selectedID) $idToSelect = $selectedID;
 	}
 
 	if(count($courses)>0) {
 		reset($courses);
-		$html = BaseHtmlLib::selectElement2('id:courseSelect,class:ui search selection dropdown', $courses, key($courses))->getHtml();
+		if (!isset($idToSelect)) $idToSelect = key($courses);
+		$html = BaseHtmlLib::selectElement2('id:courseSelect,class:ui search selection dropdown', $courses, $idToSelect)->getHtml();
 	}
 }
 echo $html;
