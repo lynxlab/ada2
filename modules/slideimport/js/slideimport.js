@@ -131,7 +131,18 @@ function initDoc(userId, userType, preselectedCourseID, uploadSessionVar)
 	});
 
 	// objects initialization
-	$j('.ui.radio.checkbox','#selectCourseContainer').checkbox();
+	$j('.importsettings .form .ui.checkbox','#selectCourseContainer').checkbox();
+
+	$j('#selectCourseContainer .importsettings .form .ui.checkbox').on('change','input[type="radio"]', function() {
+		var askFrontPage = ('undefined' != typeof $j(this).data('askfrontpage')) && ($j(this).data('askfrontpage')) ;
+		if (askFrontPage) {
+			if (!$j('input[name="hasFrontPage"]','#selectCourseContainer .askfrontpage.field').is(':visible')) {
+				$j('input[name="hasFrontPage"]','#selectCourseContainer .askfrontpage.field').parents('.askfrontpage.field').slideDown('fast');
+			}
+		} else {
+			$j('input[name="hasFrontPage"]','#selectCourseContainer .askfrontpage.field').parents('.askfrontpage.field').slideUp('fast');
+		}
+	});
 
 	$j.when(loadCourseSelect($j('#courseSelectInput'), preselectedCourseID)).then (function() {
 		// init tree
@@ -228,6 +239,7 @@ function doAjaxImport(asNewCourse) {
 	var selectedPages = $j('input[name="selectedPages[]"]:checked').map(function(){
 	        return this.value;
 	    }).get();
+	var hasFrontPage = $j('input[name="hasFrontPage"]').filter(':checked').filter(':visible').length >0;
 	var selCourse = $j('#selCourse').text().trim();
 	var selNode = $j('#selNode').text().trim();
 	var courseName;
@@ -267,7 +279,7 @@ function doAjaxImport(asNewCourse) {
 					$j.when(generateImages(selectedPages, JSONObj.courseID)).then(function(JSONObj) {
 						if (JSONObj && 'undefined' != typeof JSONObj.error && parseInt(JSONObj.error)==0) {
 							var startNode = (asNewCourse) ? courseID + '_0' : selNode;
-							$j.when(generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow, withLinkedNodes)).then(function(JSONObj) {
+							$j.when(generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow, withLinkedNodes, hasFrontPage)).then(function(JSONObj) {
 								if (JSONObj && 'undefined' != typeof JSONObj.status) {
 									deferred.resolve(JSONObj);
 								} else {
@@ -353,14 +365,15 @@ function generateImages(selectedPages, courseID) {
 	return deferred.promise();
 }
 
-function generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow, withLinkedNodes) {
+function generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideShow, withLinkedNodes, hasFrontPage) {
 	var deferred = $j.Deferred();
 	$j.ajax({
 		type	:	'POST',
 		url		:	'ajax/generateNodes.php',
 		data	:	{ selectedPages : selectedPages, courseID : courseID, startNode : startNode,
 					  asNewCourse: (asNewCourse) ? 1 : 0, asSlideShow : (asSlideShow) ? 1 : 0,
-					  withLinkedNodes : (withLinkedNodes) ? 1 : 0, url : previewSettings.url },
+					  withLinkedNodes : (withLinkedNodes) ? 1 : 0, hasFrontPage : (hasFrontPage) ? 1 : 0,
+					  url : previewSettings.url },
 		dataType:	'json',
 		beforeSend: function() {
 			$j('.content span', '.ui.modal').stop().hide();
@@ -381,7 +394,7 @@ function generateNodes(selectedPages, courseID, startNode, asNewCourse, asSlideS
 
 function displayPreview() {
 	/**
-	 * gloval var previewSettings is going to be something like:
+	 * global var previewSettings is going to be something like:
 	 *
 	 * numPages: 2
 	 * orientation: "landscape"

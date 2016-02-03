@@ -56,18 +56,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
    isset($_POST['url']) && strlen(trim($_POST['url']))>0) {
 
    	// sanitize and setup variables
-   	$selectePages = array_values($_POST['selectedPages']);
+   	$selectedPages = array_values($_POST['selectedPages']);
    	$courseID = intval($_POST['courseID']);
    	$startNode = trim($_POST['startNode']);
    	$asNewCourse = intval($_POST['asNewCourse'])===0 ? false : true;
    	$asSlideShow = intval($_POST['asSlideShow'])===0 ? false : true;
    	$withLinkedNodes = intval($_POST['withLinkedNodes'])===0 ? false : true;
+   	$hasFrontPage = intval($_POST['hasFrontPage'])===0 ? false : true;
+   	$createStartNode = $asNewCourse || $asSlideShow || $hasFrontPage;
    	$authorID = $userObj->getId();
    	$fileName = str_replace(HTTP_ROOT_DIR, ROOT_DIR, trim($_POST['url']));
    	$info = pathinfo($fileName);
    	$nodeBaseName = isset($info['filename']) ? getNameFromFileName($info['filename']) : translateFN('File Importato');
    	$media_path = ROOT_DIR . MEDIA_PATH_DEFAULT . $userObj->getId() . DIRECTORY_SEPARATOR . $info['filename'];
    	$slideShowPath = '..' . MEDIA_PATH_DEFAULT . $userObj->getId() . DIRECTORY_SEPARATOR . $info['filename'] . DIRECTORY_SEPARATOR;
+   	$imgtemplate = '<MEDIA TYPE="'._IMAGE.'" VALUE="'. $info['filename'] . DIRECTORY_SEPARATOR .'%filenamehere%">';
    	$slideShowupdateMedia = array();
 
    	if (is_readable($media_path)) {
@@ -93,23 +96,44 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 	   			'keywords' => ''
 	   	);
 
+	   	if (!$asSlideShow && $hasFrontPage) {
+   			reset($selectedPages);
+   			$selectedPage = array_shift($selectedPages);
+   			$node_data['text'] = str_replace('%filenamehere%', $selectedPage.'.png', $imgtemplate);
+   			/**
+   			 * cursed _add_media method in ama.inc.php starts inserting resources from array index 1!!!
+   			 */
+   			$node_data['resources_ar'] = array( 1 =>
+   				array_merge($resource_data, array(
+   					'nome_file' => $info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.png',
+   					'titolo' => translateFN('Pagina').' '.$selectedPage
+   			)));
+	   	}
+
 	   	if ($asNewCourse === false) {
+	   		$order = $GLOBALS['dh']->get_ordine_max_val($startNode);
+	   		if (AMA_DB::isError($order) || is_null($order)) $order = 0;
 	   		$node_data['id'] = null;
 	   		$node_data['id_nodo_parent'] = $startNode;
 	   		$node_data['parent_id'] = $startNode;
+	   	} else {
+	   		$order = 0;
 	   	}
 
-		$createdNodeID = NodeEditing::createNode ($node_data);
+	   	if ($createStartNode) {
+	   		$node_data['order'] = ++$order;
+			$createdNodeID = NodeEditing::createNode ($node_data);
+	   	} else {
+	   		$createdNodeID = $startNode;
+	   	}
+
 		if (!AMA_DB::isError ($createdNodeID)) {
 			$error = false;
-			$createdNodes = array($createdNodeID);
-			if ($asNewCourse === false) {
-				$order = $GLOBALS['dh']->get_ordine_max_val($startNode);
-				if (AMA_DB::isError($order) || is_null($order)) $order = 0;
-			} else {
-				$order = 0;
-			}
-			$imgtemplate = '<MEDIA TYPE="'._IMAGE.'" VALUE="'. $info['filename'] . DIRECTORY_SEPARATOR .'%filenamehere%">';
+			if ($createStartNode) $createdNodes = array($createdNodeID);
+			else $createdNodes = array();
+
+			$order = $GLOBALS['dh']->get_ordine_max_val($createdNodeID);
+			if (AMA_DB::isError($order) || is_null($order)) $order = 0;
 
 			// prepare nivo slider holding elements
 			$slideshow_data = $node_data;
@@ -118,9 +142,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 			$nivo = CDOMElement::create('div','id:slider,class:nivoSlider');
 			$wrapper->addChild($nivo);
 
-			foreach ($selectePages as $key=>$selectedPage) {
+			foreach ($selectedPages as $key=>$selectedPage) {
 
-				if (!$asSlideShow || ($key>0 && $asSlideShow && $withLinkedNodes)) {
+				if (!$asSlideShow || ($key>0 && $asSlideShow && $withLinkedNodes) ||
+					($key==0 && $asSlideShow && $withLinkedNodes && !$hasFrontPage)) {
 					// build a node foreach selectedPage
 					$child_data = $node_data;
 					$child_data['id'] = null;
@@ -169,7 +194,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 					$img->setAttribute('data-thumb', $imgPath);
 					$img->setAttribute('src', $imgPath);
 
-					if ($key!=0 && $withLinkedNodes && !AMA_DB::isError($childNodeID)) {
+					if (!AMA_DB::isError($childNodeID) && $withLinkedNodes &&
+						($key!=0  || ($key==0 && !$hasFrontPage))) {
 						$a = CDOMElement::create('a','href:view.php?id_node='.$childNodeID);
 						$a->addChild($img);
 						$nivo->addChild($a);
@@ -183,10 +209,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 
 			// if it's a slideshow, the first created note must be updated
 			if ($asSlideShow) {
-				$maxOrder = $GLOBALS['dh']->get_ordine_max_val($startNode);
-				if (AMA_DB::isError($maxOrder) || is_null($maxOrder)) $maxOrder = 0;
 				$slideshow_data['id'] = $createdNodeID;
-				$slideshow_data['order'] = ++$maxOrder;
 				$slideshow_data['text'] = $wrapper->getHtml();
 				if (AMA_DB::isError(NodeEditing::saveNode($slideshow_data))) {
 					$error = true;

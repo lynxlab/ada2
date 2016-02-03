@@ -6,6 +6,7 @@
 #previewBox,
 #previewPageTemplate,
 #selectCourseContainer,
+#selectCourseContainer .askfrontpage.field,
 #selCourse,
 #selNode,
 #importLoader,
@@ -52,3 +53,4 @@ html, body { height: 99.2%; margin:0; }
 #progressbar .ui-progressbar-value { background-color: #00B5AD; }
 .ui.modal .actions { visibility: hidden; }
 .ui.modal span:not(.step0) { display: none; }
+#selectCourseContainer .askfrontpage.field { margin-bottom: 0; }

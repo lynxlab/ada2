@@ -92,14 +92,19 @@
 								<div class="content">
 									<i18n>Seleziona le pagine</i18n>
 									<div class="sub header">
-									<i18n>Attendi l'antemprima e seleziona le pagine</i18n>
+									<i18n>Attendi l'antemprima e seleziona le pagine che vuoi importare nel corso</i18n>
 									</div>
 								</div>
 							</h2>
 							<div class="ui basic segment">
+	                            <button onclick="javascript:$j('#previewBox').fadeOut('slow',function() { location.reload();  });" class="ui red labeled icon left floated button">
+                           			<i class="left arrow icon"></i><i18n>Indietro</i18n>
+                           		</button>
 	                            <button class="ui medium labeled icon right floated teal proceed disabled button">
 	                            	<i18n>Avanti</i18n><i class="right arrow icon"></i>
 	                            </button>
+                           	</div>
+                           	<div class="ui basic segment">
 	  							<button type="button" class="ui medium labeled icon selectall button">
 	  								<i class="icon checkmark"></i><i18n>Seleziona tutti</i18n>
 	  							</button>
@@ -111,15 +116,20 @@
 		                        <!-- filled by js -->
 		                        <div id="previewContainer" class="ui six column stackable grid"></div>
 		                        
-		                        <button class="ui medium labeled icon right floated teal proceed disabled button">
-	                            	<i18n>Avanti</i18n><i class="right arrow icon"></i>
-	                            </button>
 		                        <button type="button" class="ui medium labeled icon selectall button">
 	  								<i class="icon checkmark "></i><i18n>Seleziona tutti</i18n>
 	  							</button>
 	  							<button type="button" class="ui medium labeled icon deselectall button ">
 	  								<i class="icon checkbox minus sign"></i><i18n>Deseleziona tutti</i18n>
 	  							</button>
+	  						</div>
+	  						<div class="ui basic segment">		                        
+		                        <button onclick="javascript:$j('#previewBox').fadeOut('slow',function() { location.reload();  });" class="ui red labeled icon left floated button">
+                           			<i class="left arrow icon"></i><i18n>Indietro</i18n>
+                           		</button>
+		                        <button class="ui medium labeled icon right floated teal proceed disabled button">
+	                            	<i18n>Avanti</i18n><i class="right arrow icon"></i>
+	                            </button>
   							</div>
                         </div>
                         <!-- /preview box -->
@@ -131,7 +141,7 @@
 								<i class="settings large icon"></i>
 								<div class="content">
 									<i18n>Configura importazione</i18n>
-									<div class="sub header"><i18n>Scegli come e dove importare</i18n></div>
+									<div class="sub header"><i18n>Scegli come importare le slide e in quale corso</i18n></div>
 								</div>
 							</h2>
 							
@@ -148,16 +158,21 @@
 								    </div>
 								    <div class="field">
 								      <div class="ui radio checkbox">
-								        <input type="radio" name="importSlideshow" tabindex="0" class="hidden" value="2">
+								        <input data-askfrontpage=true type="radio" name="importSlideshow" tabindex="0" class="hidden" value="2">
 								        <label><i18n>Primo nodo con slideshow, e nodi di approfondimento</i18n></label>
 								      </div>
 								    </div>								    	     
 								    <div class="field">
 								      <div class="ui radio checkbox">
-								        <input type="radio" name="importSlideshow" tabindex="0" class="hidden" value="0">
+								        <input data-askfrontpage=true type="radio" name="importSlideshow" tabindex="0" class="hidden" value="0">
 								        <label><i18n>Un nodo per ogni pagina selezionata</i18n></label>
 								      </div>
 								    </div>        
+								  </div>
+								  <div class="askfrontpage field">
+								  	<div class="ui checkbox">
+								  		<input type="checkbox" name="hasFrontPage"><label><i18n>Usa la prima pagina come copertina</i18n></label>
+								  	</div>
 								  </div>
 								</div>
 							</div>
