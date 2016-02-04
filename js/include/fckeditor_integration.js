@@ -187,6 +187,9 @@ function createEditor(FCKeditorID, Plain_textID) {
 	oFCKeditor.Height = '350';
 	oFCKeditor.ToolbarSet = 'Basic';
 
+	oFCKeditor.Config["StylesXmlPath"] = '../fckADAstyles.xml';
+	oFCKeditor.Config['TemplatesXmlPath'] = '../fckADAtemplates.xml';
+
 	oFCKeditor.ReplaceTextarea();
 
 	return oFCKeditor;
@@ -213,8 +216,6 @@ function FCKeditor_OnComplete(FCKEDITOR_INSTANCE_NAME) {
 		$(PARENT_NODE_DIV).hide();
 	}
 
-	FCKEDITOR_INSTANCE_NAME.Config['TemplatesXmlPath'] = FCKEDITOR_INSTANCE_NAME.Config['EditorPath'] + 'fckADAtemplates.xml';
-	FCKEDITOR_INSTANCE_NAME.Config['StylesXmlPath'] = FCKEDITOR_INSTANCE_NAME.Config['EditorPath'] + 'fckADAstyles.xml';
 }
 
 /*
