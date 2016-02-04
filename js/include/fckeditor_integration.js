@@ -117,7 +117,7 @@ var ADA_MEDIA_VIDEO = MEDIA_VIDEO;
 var ADA_MEDIA_LINK = MEDIA_LINK;
 var ADA_MEDIA_DOC = MEDIA_DOC;
 var ADA_MEDIA_EXE = MEDIA_EXE;
-var ADA_MEDIA_INTERNAL_LINK = "INTERNAL"; // this is 7 in PHPjavascript, looks like 7 is not used...??!? 
+var ADA_MEDIA_INTERNAL_LINK = "INTERNAL"; // this is 7 in PHPjavascript, looks like 7 is not used...??!?
 var ADA_MEDIA_EXTERNAL_LINK = MEDIA_LINK;
 var ADA_MEDIA_IMAGE_MONTESSORI = MEDIA_MONTESSORI;
 var ADA_MEDIA_VIDEO_LIS = MEDIA_LIS;
@@ -212,6 +212,9 @@ function FCKeditor_OnComplete(FCKEDITOR_INSTANCE_NAME) {
 	if ($(PARENT_NODE_DIV) != null) {
 		$(PARENT_NODE_DIV).hide();
 	}
+
+	FCKEDITOR_INSTANCE_NAME.Config['TemplatesXmlPath'] = FCKEDITOR_INSTANCE_NAME.Config['EditorPath'] + 'fckADAtemplates.xml';
+	FCKEDITOR_INSTANCE_NAME.Config['StylesXmlPath'] = FCKEDITOR_INSTANCE_NAME.Config['EditorPath'] + 'fckADAstyles.xml';
 }
 
 /*
