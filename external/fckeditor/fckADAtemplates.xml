@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2010 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * This is the sample templates definitions file. It makes the "templates"
+ * command completely customizable.
+ *
+ * See FCKConfig.TemplatesXmlPath in the configuration file.
+ *
+ * GIORGIO: Preview Image size is 100x70
+-->
+<Templates imagesBasePath="fck_template/images/">
+	<Template title="Accordion" image="accordion.png">
+		<Description>A simple fluid accordion with three sections </Description>
+		<Html>
+			<![CDATA[
+				<div class="ui fluid accordion">
+				  <div class="active title">
+				    <i class="dropdown icon"></i>
+				    What is a dog?
+				  </div>
+				  <div class="active content">
+				    <p>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
+				  </div>
+				  <div class="title">
+				    <i class="dropdown icon"></i>
+				    What kinds of dogs are there?
+				  </div>
+				  <div class="content">
+				    <p>There are many breeds of dogs. Each breed varies in size and temperament. Owners often select a breed of dog that they find to be compatible with their own lifestyle and desires from a companion.</p>
+				  </div>
+				  <div class="title">
+				    <i class="dropdown icon"></i>
+				    How do you acquire a dog?
+				  </div>
+				  <div class="content">
+				    <p>Three common ways for a prospective owner to acquire a dog is from pet shops, private owners, or shelters.</p>
+				    <p>A pet shop may be the most convenient way to buy a dog. Buying a dog from a private owner allows you to assess the pedigree and upbringing of your dog before choosing to take it home. Lastly, finding your dog from a shelter, helps give a good home to a dog who may not find one so readily.</p>
+				  </div>
+				</div>
+			]]>
+		</Html>
+	</Template>
+	<Template title="Simple Tabs" image="simpletabs.png">
+		<Description>Three top simple tabs with sample content</Description>
+		<Html>
+			<![CDATA[
+			<div class="semantic tabs">
+				<div class="top attached ui tabular menu">
+	          		<a class="active item" href="#testo">Definition</a>
+	          		<a class="item" href="#approfondimenti">Examples</a>
+	          		<a class="item" href="#losapevi">Usage</a>
+		       </div>
+				<div class="ui bottom attached segment">
+					<div class="ui active tab" id="testo">
+						<p style="text-align: justify;">Ciao!<br /> Benvenuto nel “<em>Corso di formazione per lavoratori in materia di salute e sicurezza sui luoghi di lavoro</em>” in particolare nel modulo di formazione generale per lavoratori dipendenti.  Io sono la tua tutor e ti accompagnerò in questo percorso di formazione che dura 4 ore.</p><p style="text-align: justify;"></p><p style="text-align: justify;">Prima di iniziare, voglio presentarti il lavoro che faremo assieme.  Il corso è articolato in 6 unità didattiche.</p><p style="text-align: justify;">Ogni unità didattica contiene  video di spiegazione, approfondimenti  e curiosità su ciò che è importante sapere per lavorare in sicurezza.</p><p style="text-align: justify;">Per ogni unità è previsto un momento di autovalutazione attraverso dei giochi che ti permetteranno di misurare il tuo livello di conoscenza e di proseguire nel corso, al termine del quale, invece, dovrai rispondere a un questionario su tutto ciò che avrai imparato.</p><p style="text-align: justify;">Se seguirai con attenzione il corso, sono sicura non avrai problemi a rispondere correttamente a tutte le domande.</p><p style="text-align: justify;"><strong>Ma non aspettiamo altro. Iniziamo! </strong></p>
+					</div>
+					
+					<div class="ui tab" id="approfondimenti">
+						<p style="text-align: justify;"><strong>Chiara</strong> è la&#160;tua tutor per questo corso di formazione.</p><p style="text-align: justify;"><strong>Chiara </strong>di nome e di fatto. <br />Lei ti auterà a seguire questo corso di formazione e ad usare al meglio la piattaforma e-learning.</p><p style="text-align: justify;">Prima di ogni unità didattica, <strong>Chiara </strong>ti presenterà i contenuti più importanti del corso, quelli a cui devi prestare particolare attenzione.</p><p style="text-align: justify;">Nel corso delle lezioni, invece, <strong>Chiara </strong>sarà sempre al tuo fianco per indicati a che punto del corso ti trovi e per darti informazioni utili.</p><p style="text-align: justify;"></p><p style="text-align: justify;"></p>
+					</div>
+					
+					<div class="ui tab" id="losapevi">
+						<p>La parola <strong>sicurezza </strong>deriva dal latino <em>"sine cura"</em> che significa "<em>senza preoccupazione</em>".</p><p>La Sicurezza quindi può essere definita come la "c<em><strong>onoscenza che l'evoluzione di un sistema non produrrà stati indesiderati</strong></em>".</p><p>In termini più semplici, la <strong>sicurezza </strong>è : <em>sapere che quello che faremo non provocherà dei danni!</em></p>
+					</div>
+				</div>
+			</div>			
+			]]>
+		</Html>
+	</Template>	
+	<Template title="Top Tabs" image="toptabs.png">
+		<Description>Three top tabs with sample content</Description>
+		<Html>
+			<![CDATA[
+			<div class="semantic tabs">
+				<div class="top attached ui teal inverted pointing menu">
+	          		<a class="active item" href="#testo">Definition</a>
+	          		<a class="item" href="#approfondimenti">Examples</a>
+	          		<a class="item" href="#losapevi">Usage</a>
+		       </div>
+				<div class="ui bottom attached segment">
+					<div class="ui active tab" id="testo">
+						<p style="text-align: justify;">Ciao!<br /> Benvenuto nel “<em>Corso di formazione per lavoratori in materia di salute e sicurezza sui luoghi di lavoro</em>” in particolare nel modulo di formazione generale per lavoratori dipendenti.  Io sono la tua tutor e ti accompagnerò in questo percorso di formazione che dura 4 ore.</p><p style="text-align: justify;"></p><p style="text-align: justify;">Prima di iniziare, voglio presentarti il lavoro che faremo assieme.  Il corso è articolato in 6 unità didattiche.</p><p style="text-align: justify;">Ogni unità didattica contiene  video di spiegazione, approfondimenti  e curiosità su ciò che è importante sapere per lavorare in sicurezza.</p><p style="text-align: justify;">Per ogni unità è previsto un momento di autovalutazione attraverso dei giochi che ti permetteranno di misurare il tuo livello di conoscenza e di proseguire nel corso, al termine del quale, invece, dovrai rispondere a un questionario su tutto ciò che avrai imparato.</p><p style="text-align: justify;">Se seguirai con attenzione il corso, sono sicura non avrai problemi a rispondere correttamente a tutte le domande.</p><p style="text-align: justify;"><strong>Ma non aspettiamo altro. Iniziamo! </strong></p>
+					</div>
+					
+					<div class="ui tab" id="approfondimenti">
+						<p style="text-align: justify;"><strong>Chiara</strong> è la&#160;tua tutor per questo corso di formazione.</p><p style="text-align: justify;"><strong>Chiara </strong>di nome e di fatto. <br />Lei ti auterà a seguire questo corso di formazione e ad usare al meglio la piattaforma e-learning.</p><p style="text-align: justify;">Prima di ogni unità didattica, <strong>Chiara </strong>ti presenterà i contenuti più importanti del corso, quelli a cui devi prestare particolare attenzione.</p><p style="text-align: justify;">Nel corso delle lezioni, invece, <strong>Chiara </strong>sarà sempre al tuo fianco per indicati a che punto del corso ti trovi e per darti informazioni utili.</p><p style="text-align: justify;"></p><p style="text-align: justify;"></p>
+					</div>
+					
+					<div class="ui tab" id="losapevi">
+						<p>La parola <strong>sicurezza </strong>deriva dal latino <em>"sine cura"</em> che significa "<em>senza preoccupazione</em>".</p><p>La Sicurezza quindi può essere definita come la "c<em><strong>onoscenza che l'evoluzione di un sistema non produrrà stati indesiderati</strong></em>".</p><p>In termini più semplici, la <strong>sicurezza </strong>è : <em>sapere che quello che faremo non provocherà dei danni!</em></p>
+					</div>
+				</div>
+			</div>			
+			]]>
+		</Html>
+	</Template>
+	<Template title="Bottom Tabs" image="bottomtabs.png">
+		<Description>Three bottom tabs with sample content</Description>
+		<Html>
+			<![CDATA[
+			<div class="semantic tabs">
+				<div class="ui top attached segment">
+					<div class="ui active tab" id="testo-bottom">
+						<p style="text-align: justify;">Ciao!<br /> Benvenuto nel “<em>Corso di formazione per lavoratori in materia di salute e sicurezza sui luoghi di lavoro</em>” in particolare nel modulo di formazione generale per lavoratori dipendenti.  Io sono la tua tutor e ti accompagnerò in questo percorso di formazione che dura 4 ore.</p><p style="text-align: justify;"></p><p style="text-align: justify;">Prima di iniziare, voglio presentarti il lavoro che faremo assieme.  Il corso è articolato in 6 unità didattiche.</p><p style="text-align: justify;">Ogni unità didattica contiene  video di spiegazione, approfondimenti  e curiosità su ciò che è importante sapere per lavorare in sicurezza.</p><p style="text-align: justify;">Per ogni unità è previsto un momento di autovalutazione attraverso dei giochi che ti permetteranno di misurare il tuo livello di conoscenza e di proseguire nel corso, al termine del quale, invece, dovrai rispondere a un questionario su tutto ciò che avrai imparato.</p><p style="text-align: justify;">Se seguirai con attenzione il corso, sono sicura non avrai problemi a rispondere correttamente a tutte le domande.</p><p style="text-align: justify;"><strong>Ma non aspettiamo altro. Iniziamo! </strong></p>
+					</div>
+					
+					<div class="ui tab" id="approfondimenti-bottom">
+						<p style="text-align: justify;"><strong>Chiara</strong> è la&#160;tua tutor per questo corso di formazione.</p><p style="text-align: justify;"><strong>Chiara </strong>di nome e di fatto. <br />Lei ti auterà a seguire questo corso di formazione e ad usare al meglio la piattaforma e-learning.</p><p style="text-align: justify;">Prima di ogni unità didattica, <strong>Chiara </strong>ti presenterà i contenuti più importanti del corso, quelli a cui devi prestare particolare attenzione.</p><p style="text-align: justify;">Nel corso delle lezioni, invece, <strong>Chiara </strong>sarà sempre al tuo fianco per indicati a che punto del corso ti trovi e per darti informazioni utili.</p><p style="text-align: justify;"></p><p style="text-align: justify;"></p>
+					</div>
+					
+					<div class="ui tab" id="losapevi-bottom">
+						<p>La parola <strong>sicurezza </strong>deriva dal latino <em>"sine cura"</em> che significa "<em>senza preoccupazione</em>".</p><p>La Sicurezza quindi può essere definita come la "c<em><strong>onoscenza che l'evoluzione di un sistema non produrrà stati indesiderati</strong></em>".</p><p>In termini più semplici, la <strong>sicurezza </strong>è : <em>sapere che quello che faremo non provocherà dei danni!</em></p>
+					</div>
+				</div>
+				<div class="bottom attached ui teal inverted menu">
+	          		<a class="active item" href="#testo-bottom">Definition</a>
+	          		<a class="item" href="#approfondimenti-bottom">Examples</a>
+	          		<a class="item" href="#losapevi-bottom">Usage</a>
+		       </div>
+			</div>			
+			]]>
+		</Html>
+	</Template>
+</Templates>
