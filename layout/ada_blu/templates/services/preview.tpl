@@ -95,7 +95,7 @@
                         <div id="text">
                             <template_field class="template_field" name="head">head</template_field>
                             <template_field class="template_field" name="node_links">node_links</template_field>
-                            <script type='text/javascript'>colorpicker_init('bgcolor')</script>
+                            <!-- script type='text/javascript'>colorpicker_init('bgcolor')</script -->
                         </div>
                         <p>
                         <template_field class="template_field" name="form">form</template_field>

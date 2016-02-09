@@ -54,6 +54,8 @@
     }
     ul.menu li.item,    
     ul.menu li.ui.dropdown ul.menu li.item { padding:0 !important; }
+    .ui.ada.menu  ul.menu > li.item.disabled { opacity: 0.2; }
+    .ui.ada.menu  ul.menu > li.item.disabled > a { cursor: default; }
     i.icon { display: none; }
     div.ui.icon.input { background: transparent; text-align: right; }
     ul.right.menu ul.menu { right:0px !important; }
