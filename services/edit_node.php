@@ -48,11 +48,11 @@ require_once '../browsing/include/CourseViewer.inc.php';
 
 if ($id_profile == 0 || ($id_profile != AMA_TYPE_TUTOR && $id_profile != AMA_TYPE_AUTHOR && $id_profile != AMA_TYPE_STUDENT)) {
     $errObj = new ADA_Error(NULL, translateFN('Utente non autorizzato, impossibile proseguire.'));
-} else if ($id_profile==AMA_TYPE_STUDENT && isset($id_course_instance) && intval($id_course_instance)>0 && 
+} else if ($id_profile==AMA_TYPE_STUDENT && isset($id_course_instance) && intval($id_course_instance)>0 &&
 		$userObj->get_student_status($userObj->getId(),$id_course_instance)==ADA_STATUS_TERMINATED) {
 	/**
 	 * @author giorgio 03/apr/2015
-	 * 
+	 *
 	 * if user has the terminated status for the course instance, redirect to view
 	 */
 	redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node='.$parent_id.'&id_course='.$id_course.
@@ -330,6 +330,28 @@ switch ($op) {
                 'edit_link'  => 'edit_node.php?op=edit',
                 'save_link'=>  'edit_node.php?op=save'
         );
+
+        if (!isset($layout_dataAr['CSS_filename'])) $layout_dataAr['CSS_filename'] = array();
+        if (!isset($layout_dataAr['JS_filename'])) $layout_dataAr['JS_filename'] = array();
+
+        $layout_dataAr['CSS_filename'][] = JQUERY_UI_CSS;
+        $layout_dataAr['CSS_filename'][] = ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css';
+        $layout_dataAr['CSS_filename'][] = JQUERY_NIVOSLIDER_CSS;
+        $layout_dataAr['CSS_filename'][] = ROOT_DIR.'/js/include/jquery/nivo-slider/themes/default/default.css';
+        $layout_dataAr['CSS_filename'][] = JQUERY_JPLAYER_CSS;
+
+        $layout_dataAr['JS_filename'] = array_merge($layout_dataAr['JS_filename'], array(
+        		JQUERY,
+        		JQUERY_UI,
+        		JQUERY_NIVOSLIDER,
+        		JQUERY_JPLAYER,
+        		JQUERY_NO_CONFLICT,
+        		ROOT_DIR. '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js',
+        		ROOT_DIR.'/js/browsing/view.js'
+        ));
+
+        $body_onload = "initDoc();";
+
         break;
 
     case 'save':
@@ -394,7 +416,7 @@ switch ($op) {
          define('ADA_NOTIFICATION_DAILY',1);
          define('ADA_NOTIFICATION_WEEKLY',7);
          define('ADA_NOTIFICATION_MONTHLY',30);
-         
+
          /* read the configuration for the platform installation (from config_install file...) */
           $broadcast_update = ADA_BROADCAST_UPDATE;
           /* read the configuration for the user (from profile...? now fixed to 1)*/
@@ -403,9 +425,9 @@ switch ($op) {
           $user_preferred_notification_channel = ADA_MSG_MAIL;
           /* notification interval (from config_install)(0= realtime; 1 = daily; 7 = weekly; 30 = monthly)  */
           $notification_interval = ADA_NOTIFICATION_REALTIME;
-          
+
           // version
-          /* we should add an option to the form to let the author choose if there have been an update of the version 
+          /* we should add an option to the form to let the author choose if there have been an update of the version
            * now it is forced to TRUE
            */
         //  if ($content_dataAr['version'] <> $nodeObj->version){
@@ -413,17 +435,17 @@ switch ($op) {
         //  } else {
         //      $is_updated_version = FALSE;
         //  }
-              
-          
+
+
           if (
-                  ($broadcast_update == ADA_BROADCAST_UPDATE) && 
-                  ($user_receive_updates == ADA_USER_AUTOMATIC_RECEIVE_UPDATE) && 
+                  ($broadcast_update == ADA_BROADCAST_UPDATE) &&
+                  ($user_receive_updates == ADA_USER_AUTOMATIC_RECEIVE_UPDATE) &&
                   ($is_updated_version)
                 ){
               //...
-               
-            /* get the students subscribed to this course instance 
-                 * 
+
+            /* get the students subscribed to this course instance
+                 *
                  * this is userful if we want use ths snippet of code form outside
                  *  here we use AMA get_students_for_course_instance() instead
                  */
@@ -433,7 +455,7 @@ switch ($op) {
                 $tester_name = $tester_info_Ar[1];
                 $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
                 $students_Ar = $tester_dh->get_unique_students_for_course_instances($sess_id_course_instance);
-               
+
                */
                 if ($dh->course_has_instances($sess_id_course)){
                   $field_list_ar = array();
@@ -451,10 +473,10 @@ switch ($op) {
                      $students_Ar[] = $course_instance_student['username'];
                   }
                    $destinatari = implode(',', $students_Ar);
-                  
-                   /* 
-                     //get the sender: the admin??? 
-                    
+
+                   /*
+                     //get the sender: the admin???
+
                      $admtypeAr = array(AMA_TYPE_ADMIN);
                      $admList = $dh->get_users_by_type($admtypeAr);
                      // $admList = $tester_dh-> get_users_by_type($admtypeAr); ???
@@ -481,34 +503,34 @@ switch ($op) {
                  				 . "\n"
                  				 . translateFN('This message has been sent to you by ADA. For additional information please visit the following address: ')
                  				 . "\n";
-                    
+
                     $node_url = $http_root_dir.'/browsing/view.php?id_course='.$sess_id_course.'&id_course_instance='.$id_course_instance.'&id_node='.$content_dataAr['id'];
-                     
-                    $message_text  = sprintf($base_text1, $node_title);                    
+
+                    $message_text  = sprintf($base_text1, $node_title);
                     $message_text .= "\n".$node_url."\n\n";
                     $message_text .= sprintf($base_text2, HTTP_ROOT_DIR."/browsing/user.php");
                     $message_text .= $footer_text.HTTP_ROOT_DIR;
 
                     $link_to_node = CDOMElement::create('a',"href:$node_url");
                     $link_to_node->addChild(new CText($node_title));
-                    
+
                     $link_to_home = CDOMElement::create('a',"href:".HTTP_ROOT_DIR."/browsing/user.php");
                     $link_to_home->addChild(new CText(translateFN('your home page')));
-                    
+
                     $link_to_footer = CDOMElement::create('a',"href:".HTTP_ROOT_DIR);
                     $link_to_footer->addChild(new CText(HTTP_ROOT_DIR));
-                    
+
                     $message_html = sprintf($base_text1, $link_to_node->getHtml());
                     $message_html .= "<br/><br/>";
                     $message_html .= sprintf($base_text2, $link_to_home->getHtml());
                     $message_html .= nl2br($footer_text).$link_to_footer->getHtml();
 
                     if  ( $notification_interval == ADA_NOTIFICATION_REALTIME ){
-                    	
+
                     	// require phpmailer
                     	require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
                     	require_once ROOT_DIR.'/include/data_validation.inc.php';
-                    	
+
                     	/**
                     	 * Send the message an email message
                     	 * via PHPMailer
@@ -520,7 +542,7 @@ switch ($op) {
                     	$phpmailer->IsHTML(true);
                     	$phpmailer->Priority = 2;
                     	$phpmailer->Subject = PORTAL_NAME.' - '.translateFN("Aggiornamento dei contenuti del corso");
-                    	
+
                     	$phpmailer->AddAddress(ADA_NOREPLY_MAIL_ADDRESS);
                     	foreach ($students_Ar as $destinatario) {
                     		/**
@@ -532,9 +554,9 @@ switch ($op) {
                     		if (DataValidator::validate_email($destinatario)) {
                     			$phpmailer->AddBCC($destinatario);
                     		}
-                    		
+
                     	}
-                    	
+
                     	$phpmailer->Body = $message_html;
                     	$phpmailer->AltBody = $message_text;
                     	if (!$phpmailer->Send()) {
@@ -542,20 +564,20 @@ switch ($op) {
                     	} else {
                     		$result = true;
                     	}
-                    	
+
                           //$message_handler = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
-                          
+
 //                           $message_handler = MessageHandler::instance();
-//                           $message_ha['destinatari'] =  $destinatari ; 
+//                           $message_ha['destinatari'] =  $destinatari ;
 //                           $message_ha['data_ora']    = "now";
 //                           $message_ha['tipo']        = $user_preferred_notification_channel;
 //                           $message_ha['mittente']    = $sender; // author??
 //                           $message_ha['testo']       = $message_text;
 //                           $message_ha['titolo']      = translateFN("Aggiornamento dei contenuti del corso");
 //                           $message_ha['priorita']    = 2;
-                          
+
 //                           $result = $message_handler->send_message($message_ha);
-                          
+
                           if (AMA_DataHandler::isError($result)) {
                               $errObj = new ADA_Error($result, translateFN("Errore nell'invio del messaggio di notifica dell'aggiornamento."));
                           }
@@ -563,11 +585,11 @@ switch ($op) {
                           // we should add to a list of programmed notifications, create a module that is called by CRON, ... etc
                       }
 
-                  }     
+                  }
 
-              } 
-        
-      
+              }
+
+
         // end notification
         header("Location: $http_root_dir/browsing/view.php?cachemode=updatecache&id_node={$content_dataAr['id']}");
         exit();

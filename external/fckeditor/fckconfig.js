@@ -156,7 +156,7 @@ FCKConfig.ToolbarSets["Basic"] = [
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
     ['Cut','Copy','Paste','PasteText','PasteWord', 'FitWindow'],
 	'/',
-	['YouTube'],['Link','Unlink','Anchor'],['Image','Flash','Table','Rule','Smiley','SpecialChar']
+	['Templates'/*,'-','Style'*/],['YouTube'],['Link','Unlink','Anchor'],['Image','Flash','Table','Rule','Smiley','SpecialChar']
 ] ;
 
 FCKConfig.EnterMode = 'p' ;			// p | div | br
@@ -235,7 +235,7 @@ FCKConfig.DefaultLinkTarget = '' ;
 FCKConfig.CleanWordKeepsStructure = false ;
 
 // Only inline elements are valid.
-FCKConfig.RemoveFormatTags = 'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var' ;
+FCKConfig.RemoveFormatTags = 'b,big,code,del,dfn,em,font,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var' ;
 
 // Attributes that will be removed
 // vito, ho aggiunto l'attributo alt tra quelli da rimuovere

@@ -70,25 +70,25 @@ switch($op){
     $self = whoami();//$self="author";
     $action = "addnode";
     break;
-  
+
   case "preview":
     // case preview is handled at line ..., because we need to know
     // the type of the edited node
     break;
-  
+
   default:
     $self = whoami();
     $action = 'addnode';
     $op = 'add_node';
-} 
+}
 
 if (($id_profile!=AMA_TYPE_AUTHOR) && ($id_profile!=AMA_TYPE_STUDENT) && ($id_profile!=AMA_TYPE_TUTOR)) {
   $errObj = new ADA_Error(NULL, translateFN('Utente non autorizzato, impossibile proseguire.'));
-} else if ($id_profile==AMA_TYPE_STUDENT && isset($id_course_instance) && intval($id_course_instance)>0 && 
+} else if ($id_profile==AMA_TYPE_STUDENT && isset($id_course_instance) && intval($id_course_instance)>0 &&
 		$userObj->get_student_status($userObj->getId(),$id_course_instance)==ADA_STATUS_TERMINATED) {
 	/**
 	 * @author giorgio 03/apr/2015
-	 * 
+	 *
 	 * if user has the terminated status for the course instance, redirect to view
 	 */
 	redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node='.$parent_id.'&id_course='.$id_course.
@@ -149,7 +149,7 @@ if ( $op == 'add_node' ) {
                 'level'          => $nodeObj->level,
                 'order'          => $nodeObj->order,
                 'version'        => 0,
-            	'creation_date'  => $ymdhms,           
+            	'creation_date'  => $ymdhms,
                 'icon'           => Utilities::getIconForNodeType($node_type),
                 'type'           => $node_type,               // usare una select?
                 'position'       => '100,100,200,200',
@@ -191,7 +191,7 @@ if ( $op == 'add_node' ) {
                 'level'          => $nodeObj->level,
                 'order'          => $nodeObj->order,
                 'version'        => 0,
-            	'creation_date'  => $ymdhms,           
+            	'creation_date'  => $ymdhms,
                 'icon'           => Utilities::getIconForNodeType($node_type),
                 'type'           => $node_type,               // usare una select?
                 'position'       => '100,100,200,200',
@@ -212,7 +212,7 @@ if ( $op == 'add_node' ) {
     // qui il codice necessario a generare la pagina di aggiunta per il nodo
     // quando non vengono passati parametri
   }
-   
+
   /*
    * Determina quali media l'utente può inserire in base al tipo di utente, al tipo di nodo ed all'operazione.
    */
@@ -232,7 +232,7 @@ if ( $op == 'add_node' ) {
    */
   //$navigation_history = $_SESSION['sess_navigation_history'];
   $need_to_unset_session = (strcmp($navigation_history->previousItem(), __FILE__) !== 0);
-  
+
   if ( !isset($_SESSION['sess_node_editing']['node_data']) || $need_to_unset_session)
   {
     if ( $need_to_unset_session !== 0 )
@@ -252,10 +252,10 @@ if ( $op == 'add_node' ) {
 
   //    $data = NodeEditingViewer::getEditingForm($form_action, $id_course, $id_course_instance, $sess_id_user, $node_to_edit, $flags);
   //    $form = $data['form'];
-  
-  $form = NodeEditingViewer::getEditingForm($form_action, 
+
+  $form = NodeEditingViewer::getEditingForm($form_action,
   		isset($id_course) ? $id_course : null,
-  		isset($id_course_instance) ? $id_course_instance : null, 
+  		isset($id_course_instance) ? $id_course_instance : null,
   		isset($sess_id_user) ? $sess_id_user : null, $node_to_edit, $flags);
   /* vito, 20 feb 2009
    * usa i dati presenti nella sessione per mostrare alcune informazioni relative al nodo
@@ -337,7 +337,28 @@ else if ( $op == 'preview' )
       'edit_link'  => 'addnode.php?op=add_node',
       'save_link'=>'addnode.php?op=save'
   );
-  
+
+  if (!isset($layout_dataAr['CSS_filename'])) $layout_dataAr['CSS_filename'] = array();
+  if (!isset($layout_dataAr['JS_filename'])) $layout_dataAr['JS_filename'] = array();
+
+  $layout_dataAr['CSS_filename'][] = JQUERY_UI_CSS;
+  $layout_dataAr['CSS_filename'][] = ROOT_DIR.'/external/mediaplayer/flowplayer-5.4.3/skin/minimalist.css';
+  $layout_dataAr['CSS_filename'][] = JQUERY_NIVOSLIDER_CSS;
+  $layout_dataAr['CSS_filename'][] = ROOT_DIR.'/js/include/jquery/nivo-slider/themes/default/default.css';
+  $layout_dataAr['CSS_filename'][] = JQUERY_JPLAYER_CSS;
+
+  $layout_dataAr['JS_filename'] = array_merge($layout_dataAr['JS_filename'], array(
+  		JQUERY,
+  		JQUERY_UI,
+  		JQUERY_NIVOSLIDER,
+  		JQUERY_JPLAYER,
+  		JQUERY_NO_CONFLICT,
+  		ROOT_DIR. '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js',
+  		ROOT_DIR.'/js/browsing/view.js'
+  ));
+
+  $body_onload = "initDoc();";
+
 }
 
 /*
@@ -346,14 +367,14 @@ else if ( $op == 'preview' )
 else if ( $op == 'save' )
 {
   $form = 'Salvataggio del nodo';
-   
+
   /*
    * media inseriti nel nodo
    */
   $current_media = array();
   $node_data = unserialize($_SESSION['sess_node_editing']['node_data']);
   $current_media = NodeEditing::getMediaFromNodeText($node_data['text']);
-   
+
   /*
    * crea il nuovo nodo
    */
