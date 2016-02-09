@@ -27,25 +27,25 @@ function hideSideBarFromSideBar() {
 }
 
 document.observe('dom:loaded', function() {
-	
+
 	/**
 	 * add trim method to String object
 	 */
-	
+
 	if(typeof String.prototype.trim !== 'function') {
 		  String.prototype.trim = function() {
-		    return this.replace(/^\s+|\s+$/g, ''); 
+		    return this.replace(/^\s+|\s+$/g, '');
 		  }
 		}
 	/**
 	 * sets the dropdown menu to appear on hover
 	 * and the menuitem onclick handler for proper css class switching
-	 * 
+	 *
 	 * WARNING: I'm using $j inside a function called by prototype
-	 * document observer. One day all shall be handled by jQuery... 
+	 * document observer. One day all shall be handled by jQuery...
 	 * This is not going to harm anybody, but you've been warned
-	 */	
-	
+	 */
+
 	/**
 	 * If it's not internet explorer or is IE>8
 	 * use semantic-ui components
@@ -74,7 +74,7 @@ document.observe('dom:loaded', function() {
 		    });
 		}
 
-	    
+
 		// mobile dropdown on click
     	/**
     	 * @author giorgio 16/set/2014
@@ -95,7 +95,7 @@ document.observe('dom:loaded', function() {
 		          .find('.item').not($j(this)).removeClass('active');
 		    }
 		});
-		
+
 		// enable userpopup, if found
 		if ($j('li.item.userpopup').length>0 && $j('#status_bar').length>0) {
 			$j('#status_bar').hide();
@@ -108,7 +108,7 @@ document.observe('dom:loaded', function() {
 			    }
 			  });
 		}
-		
+
 	    // perform search on search icon click
     	if ($j('.search.link.icon').length>0) {
     		$j('.search.link.icon').on('click',function(){
@@ -118,7 +118,7 @@ document.observe('dom:loaded', function() {
     			}
     		});
     	}
-		
+
 	    // init and set resize for mobile sidebar if needed
 	    if ($j('#mobilesidebar').length>0) {
 	        $j('#mobilesidebar').sidebar();
@@ -129,21 +129,30 @@ document.observe('dom:loaded', function() {
 	        	}
 	        });
 	    }
-	    
+
 	    $j('.ui.accordion').accordion();
-	    
+
 	} else {
 		/**
 		 * it's internet explorer v.8 or less, use smartmenus
 		 */
 		$j('.ui.mobile.ada.menubutton ,#mobilesidebar').remove();
-		
+
 		$j('ul.left.menu, ul.right.menu').smartmenus({
 			subMenusSubOffsetX: 1,
 			subMenusSubOffsetY: -8,
 			subIndicators: false
 		});
-		
+
+		if ($j('#menuright').length>0) {
+			$j('li.item.rightpaneltoggle').removeClass('disabled');
+		}
+
+		// disable click event on disabled items
+		if ($j('.ui.ada.menu  ul.menu > li.item.disabled > a').length>0) {
+			$j('.ui.ada.menu  ul.menu > li.item.disabled > a').prop('onclick',null).off('click');
+		}
+
 		// enable show/hide userpopup, if found
 		if ($j('li.item.userpopup').length>0 && $j('#status_bar').length>0) {
 			$j('#status_bar').hide();
@@ -169,7 +178,7 @@ document.observe('dom:loaded', function() {
 			}
 		});
     }
-    
+
 
 });
 
@@ -188,7 +197,7 @@ function navigationPanelToggle() {
  Effect.BlindLeft = function(elem) {
 	var element = $(elem);
 	element.makeClipping();
-	
+
 	return new Effect.Scale(element, 0,
 		Object.extend({scaleContent: false,
 			scaleY: false,
@@ -209,7 +218,7 @@ function navigationPanelToggle() {
 Effect.BlindRight = function(elem) {
 	var element = $(elem);
 	var elementDimensions = $(element).getDimensions();
-	
+
 	return new Effect.Scale(element, 100, Object.extend({
 		scaleContent: false,
 		scaleY: false,
@@ -239,7 +248,7 @@ function toggleElementVisibility(element, direction)
 
 	/*
 	 * Handle navigation panel visibility.
-	 */	
+	 */
 	if ($(element).identify() == NAVIGATION_PANEL_IDENTIFIER) {
 		if($(element).visible()) {
 			navigationPanelHide(direction);
@@ -257,28 +266,28 @@ function toggleElementVisibility(element, direction)
 	var elements_count = elements.size();
 
 	for (i=0; i < elements_count; i++) {
-		
+
 		var e = elements[i];
-		
+
 		var menu_link = e.identify().sub('submenu_','',1);
 
 		var selected_classname   = 'selected'   + menu_link;
 		var unselected_classname = 'unselected' + menu_link;
 
 		if(e.identify() == element) {
-						
+
 			if(e.visible()) {
-							
+
 				$(menu_link).removeClassName(selected_classname);
 				$(menu_link).addClassName(unselected_classname);
-			
+
 				dropDownMenuHide(e, direction);
 			}
 			else {
-			
+
 				$(menu_link).removeClassName(unselected_classname);
 				$(menu_link).addClassName(selected_classname);
-				
+
 				dropDownMenuShow(e, direction);
 			}
 		}
@@ -288,7 +297,7 @@ function toggleElementVisibility(element, direction)
 				$(menu_link).removeClassName(selected_classname);
 				$(menu_link).addClassName(unselected_classname);
 
-				dropDownMenuHide(e, direction);							
+				dropDownMenuHide(e, direction);
 			}
 		}
 	}
@@ -299,30 +308,30 @@ function showElement(element, direction) {
 	switch(direction) {
 		case 'left':
 			Effect.BlindRight(element);
-	
+
 		case 'right':
 			Effect.BlindRight(element);
-	
+
 		case 'up':
 			Effect.BlindDown(element, {duration: EFFECT_BLIND_DURATION_IN_SECONDS});
-	
-		default:			
+
+		default:
 	}
 }
 
 function hideElement(element, direction) {
-		
+
 	switch(direction) {
 		case 'left':
 			Effect.BlindLeft(element);
-		
+
 		case 'right':
 			Effect.BlindLeft(element);
-		
+
 		case 'up':
 			Effect.BlindUp(element, {duration: EFFECT_BLIND_DURATION_IN_SECONDS});
-		
-		default:			
+
+		default:
 	}
 }
 
@@ -333,7 +342,7 @@ function navigationPanelHide(direction) {
 	else {
 		if($(NODE_TEXT_CONTAINER_IDENTIFIER)
 		   && $(NODE_TEXT_CONTAINER_IDENTIFIER).hasClassName('content_small')){
-			
+
 			$(NODE_TEXT_CONTAINER_IDENTIFIER).removeClassName('content_small');
 		}
                 else {
@@ -353,7 +362,7 @@ function navigationPanelShow(direction) {
 	else {
 		if($(NODE_TEXT_CONTAINER_IDENTIFIER)
 		   && !$(NODE_TEXT_CONTAINER_IDENTIFIER).hasClassName('content_small')){
-			
+
 			$(NODE_TEXT_CONTAINER_IDENTIFIER).addClassName('content_small');
 		}
                 else {
@@ -367,7 +376,7 @@ function navigationPanelShow(direction) {
 }
 
 function dropDownMenuShow(element, direction) {
-	
+
 	var targetElement = $(element).identify().sub('submenu_', '');
 	$(element).clonePosition(targetElement, {
 		setLeft: true,
@@ -375,7 +384,7 @@ function dropDownMenuShow(element, direction) {
 		setWidth: false,
 		setHeight: false
 	});
-	
+
 	if(DROPDOWN_MENU_OPEN_ANIMATION) {
 		showElement(element, direction);
 	}
@@ -444,7 +453,7 @@ function setUnreadMessagesBadge () {
 			// show the counter with effect
 //			$j('#com').append(msgCounter);
 //			msgCounter.fadeIn();
-		}		
+		}
 	});
 }
 
