@@ -109,6 +109,15 @@ document.observe('dom:loaded', function() {
 			  });
 		}
 
+		// enable com_tools popup
+		if ($j('div#com_tools').length>0) {
+			$j('.ui.menu .item','#com_tools').each (function() {
+				$j(this).popup({
+					html: $j(this).children('span').first().html()
+				});
+			});
+		}
+
 	    // perform search on search icon click
     	if ($j('.search.link.icon').length>0) {
     		$j('.search.link.icon').on('click',function(){
