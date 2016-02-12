@@ -115,26 +115,29 @@
                     <div class="firstnode">
                         <template_field class="template_field" name="text">text</template_field>
                     </div>
-					<!-- PULSANTI AVANTI E INDIETRO -->
+                    
+				    <div class="ui fluid accordion">
+		  				<div class="title">
+		    				<i class="dropdown icon"></i>
+		    					<i18n>note di classe</i18n>
+		  				</div>
+		  				<div class="content">
+		    				<template_field class="template_field" name="notes">notes</template_field>
+		  				</div>
+		  				<div class="title">
+		    				<i class="dropdown icon"></i>
+		    					<i18n>note personali</i18n>
+		  				</div>
+		  				<div class="content">
+		    				<template_field class="template_field" name="personal">personal</template_field>
+		  				</div>
+		  			</div>
+		  			
+		  			<!-- PULSANTI AVANTI E INDIETRO -->
 						<template_field class="template_field" name="navigation_bar">navigation_bar</template_field>
 					<!-- end - PULSANTI AVANTI E INDIETRO -->
-
-		    <hr>
-		    <div id="index_in_text">
-		      <h3><i18n>note di classe</i18n></h3>
-                            <template_field class="template_field" name="notes">notes</template_field>
-			    <!--h3><i18n>Approfondimenti:</i18n></h3-->
-			    <!--template_field class="template_field" name="index">index</template_field-->
-		  </div>
-		  <div id="exercises_in_text">
-		      <h3><i18n>note personali</i18n></h3>
-		       <template_field class="template_field" name="personal">personal</template_field>
-			<!--template_field class="template_field" name="exercises">exercises</template_field-->
-		  </div>
-
-                </div>
-                <div id="bottomcont">
-                </div>
+					
+                </div>                
             </div>
             <!--  / contenuto -->
             <!-- com_tools -->
