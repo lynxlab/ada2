@@ -2,7 +2,7 @@
 ----------------------------------------------- */
 @CHARSET "UTF-8";
 
-html, body { font-family: Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:5px; color:#000; font-size: small;
+html, body { font-family: "Helvetica Neue", "Helvetica", Arial, Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:5px; color:#000; font-size: small;
 			 background: #fff; }
 
 A IMG {border:none;}
@@ -19,7 +19,9 @@ THEAD IMG, TFOOT IMG {vertical-align:middle;}
 
 TH { vertical-align:middle; text-transform: capitalize; }
 
+/*
 div, span, /*form,*/ a { font-style: inherit; margin: 0; padding: 0; border: 0; font-weight: inherit; font-family: inherit; text-align: left;vertical-align: baseline;}
+*/
 li, ol, ul { font-style: inherit; border: 0; font-weight: inherit; font-family: inherit; text-align: left; vertical-align: baseline;}
 
 tbody td { border-bottom:1px solid #ECECEA;	height:30px; line-height:1.5em;}
@@ -28,7 +30,7 @@ colgroup { }
 col { }
 caption {text-align: center; border-collapse: collapse; font-weight: bold; font-style: inherit;	font-size: 100%; line-height: 2; font-family: inherit;	vertical-align: baseline;	text-transform: uppercase;}
 
-a:link {color: Black; text-decoration: underline; }
+a:link {color: Black; text-decoration: none; }
 a:hover {color: Red; }
 a:visited {text-decoration: none; }
 
