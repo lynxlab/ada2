@@ -123,7 +123,7 @@ a:visited {text-decoration: none; }
 #container {
     background:#fff;
     padding:70px 10px 5px 10px;
-    border-bottom:10px solid #1665AD;
+/*     border-bottom:10px solid #1665AD; */
 }
 
 /*
@@ -233,9 +233,12 @@ a:visited {text-decoration: none; }
     margin-right: 0px;
 }
 #com_toolscontent {
-    background: #a0bfdb;
-    padding: 10px;
+    background: transparent;
+    padding: 0px;
     color:#fff;
+    /* compensate container margins */
+    margin-left: -10px;
+    margin-right: -10px;
 }
 
 #topcom_t {
@@ -245,6 +248,8 @@ a:visited {text-decoration: none; }
 #bottomcom_t {
     height:5px;
 }
+
+#com_tools .ui.menu .item > span { display: none; }
 
 /*
  *

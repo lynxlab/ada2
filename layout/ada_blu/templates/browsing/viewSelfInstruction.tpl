@@ -113,6 +113,9 @@
                         </span>
                     </div>
                     <div class="firstnode">
+	                    <h1 class="ui red header">
+	                    	<template_field class="template_field" name="title">title</template_field>
+	                    </h1>                    
                         <template_field class="template_field" name="text">text</template_field>						
                     </div>
 					<!-- PULSANTI AVANTI E INDIETRO -->
