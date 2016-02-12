@@ -232,7 +232,7 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 .querystring {background-color: #FFFF66;}
 
 /* identifica i li annidati dell'indice e del forum*/
-.courseNode { margin-bottom: 10px; margin-top: 10px;}
+.courseNode { margin-top: 10px;}
 
 /* identifica il div che contiene l'indice dei contenuti del corso*/
 #courseIndex { padding: 5px; }
@@ -252,8 +252,16 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  */
 .ADA_GROUP_TYPE
 {
-    background: url(../../img/gruppo.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/gruppo.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+.ADA_GROUP_TYPE::before {
+	font-family: 'Basic Icons';
+	content: '\e736';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #005D00;
 }
 /*
  * classe per l'elemento che contiene un nodo Termine di tipo gruppo
@@ -269,8 +277,17 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  */
 .ADA_LEAF_TYPE
 {
-    background: url(../../img/nodo.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/nodo.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+
+.ADA_LEAF_TYPE::before {
+	font-family: 'Icons';
+	content: '\f016';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #339033;
 }
 /*
  * classe per l'elemento che contiene un nodo termine (WORD) di tipo foglia
@@ -285,8 +302,17 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  * classe per l'elemento nodo disattivo
  */
 .NODE_NOT_VIEWABLE {
-    background: url(../../img/_nododis.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nododis.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+
+.NODE_NOT_VIEWABLE::before {
+	font-family: 'Icons';
+	content: '\f023';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: red;
 }
 
 /*
@@ -346,8 +372,17 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  */
 .ADA_EXERCISE
 {
-    background: url(../../img/_exer.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_exer.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+
+.ADA_EXERCISE::before {
+	font-family: 'Basic Icons';
+	content: '\270d';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #7CB97C;
 }
 
 /*

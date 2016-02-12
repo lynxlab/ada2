@@ -111,7 +111,7 @@ div#menuright { position: fixed; }
 div.right.sidebar .close.icon { background-image: none; padding:0; }
 div.right.sidebar .accordion .content.field #show_index { padding: 10px; }
 div.right.sidebar .accordion .content.field #show_index #structIndex ul { padding:0; }
-div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul { padding-left:20px; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul { padding-left:1.5rem; }
 /* div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li a { line-height: 30px; } */
 div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span.ADA_LEAF_TYPE { background-position-x: -3px; line-height: 35px; }
 div.right.sidebar .accordion .content.field #show_index #structIndex>ul>li>ul>li>span.ADA_EXERCISE { line-height: 35px; }
