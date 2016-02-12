@@ -72,5 +72,15 @@ function initDoc() {
 				$j($j(this).attr('href')).addClass('active');
 			});
 		}
+
+		// add class to style keywords as labels
+		$j('a','div.keywords.content').each(function() {
+			// remove keywords equals to string 'null'
+			if ($j(this).text().toLowerCase()=='null') $j(this).remove();
+			$j(this).addClass('ui label');
+		});
+		// if no keywords, remove the divs
+		if ($j('a','div.keywords.content').length<=0) $j('div.keywords').remove();
+
 	}); // end $j function
 } // end initDoc

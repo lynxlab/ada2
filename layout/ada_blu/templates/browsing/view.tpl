@@ -86,12 +86,6 @@
                                             <template_field class="template_field" name="node_level">node_level</template_field>
                                         </span>
                                         </li>
-                                        <li>
-                                        <i18n>keywords: </i18n>
-                                        <span class="keywords">
-                                            <template_field class="template_field" name="keywords">keywords</template_field>
-                                        </span>
-                                        </li>
                                     </ul>
                                     <!--div class="dattilo" id="dattilo">
                                       <template_field class="template_field_disabled" name="dattilo">dattilo</template_field>
@@ -122,20 +116,28 @@
                     </div>
                     
 				    <div class="ui fluid accordion">
-		  				<div class="title">
+		  				<div class="class notes title">
 		    				<i class="dropdown icon"></i>
 		    					<i18n>note di classe</i18n>
 		  				</div>
-		  				<div class="content">
+		  				<div class="class notes content">
 		    				<template_field class="template_field" name="notes">notes</template_field>
 		  				</div>
-		  				<div class="title">
+		  				<div class="personal notes title">
 		    				<i class="dropdown icon"></i>
 		    					<i18n>note personali</i18n>
 		  				</div>
-		  				<div class="content">
+		  				<div class="personal notes content">
 		    				<template_field class="template_field" name="personal">personal</template_field>
 		  				</div>
+		  				<div class="keywords title">
+		    				<i class="dropdown icon"></i>
+		    					<i18n>keywords</i18n>
+		  				</div>
+		  				<div class="keywords ui blue labels content">
+		    				<template_field class="template_field" name="keywords">keywords</template_field>
+		  				</div>
+		  				
 		  			</div>
 		  			
 		  			<!-- PULSANTI AVANTI E INDIETRO -->
