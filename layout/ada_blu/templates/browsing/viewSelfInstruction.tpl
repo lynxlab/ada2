@@ -112,72 +112,12 @@
                             <template_field class="template_field" name="bookmark">bookmark</template_field>
                         </span>
                     </div>
-                    
-                    
-					<div class="navbar_top">
-						<div class="previous_arrow">
-							<div class="go_prev">
-								<a href='javascript:history.back();'><i18n>Torna</i18n></a>
-							</div>
-
-						</div>
-						
-						<div class="next_arrow">				
-	                    	<div class="go_next">
-								<template_field class="template_field" name="go_next">go_next</template_field>
-							</div>							
-						</div>
-					</div>
-					
-					
-                    
                     <div class="firstnode">
-                        <template_field class="template_field" name="text">text</template_field>
-						
-						<!-- 
-						<div class="stabilo_viola">testo stabilo viola</div>
-						<span class="didascalia">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tortor nunc, luctus sit amet metus at, fringilla pellentesque dolor. Nam in est dui. Quisque sagittis at enim quis rhoncus. Duis sit amet enim non nunc hendrerit porta. Etiam non metus vel erat tristique interdum. Cras nec elit enim. Sed porttitor tempus elit ac bibendum. Nam sit amet ipsum vitae lacus tincidunt tincidunt. Vestibulum non felis tellus.<BR> <BR>
-						
-						<div class="titolo_viola">testo TITOLO viola</div>
-
-Pellentesque venenatis facilisis velit, ut hendrerit eros tincidunt lacinia. Nullam consequat odio vitae ullamcorper congue. Vestibulum a eros at risus lobortis eleifend. Mauris at pellentesque arcu. Sed in purus ligula. Vestibulum velit est, dictum non porta accumsan, vehicula in mi. In et porta mi. Etiam eget lacus consectetur, suscipit quam eu, egestas dui. Morbi iaculis fermentum dui at molestie. Curabitur in justo varius, dictum sem sed, mattis odio. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec blandit mauris ut ornare volutpat. Suspendisse vel est porttitor, consectetur nisi sed, mollis diam. Etiam malesuada lacinia leo, a iaculis enim pellentesque ut.<BR> <BR>
-
-Curabitur mollis egestas leo. Sed fermentum quam urna, in cursus metus posuere eget. Phasellus laoreet fermentum orci, ac cursus velit porta sit amet. Morbi a odio in libero pretium vehicula. Donec et arcu sed metus fringilla commodo id vel neque. Donec scelerisque leo metus, sed ultricies justo consectetur vel. Vestibulum placerat nibh in ante molestie vestibulum. Phasellus vel libero ut justo porta consequat nec non neque. Nulla lobortis magna eget enim blandit aliquam. Sed ultrices tellus vel arcu commodo egestas. Donec vel fermentum metus. Quisque hendrerit iaculis leo, sed blandit justo pulvinar interdum. Suspendisse leo elit, varius at elementum vel, auctor vel dui. Maecenas congue, tellus quis tincidunt blandit, dolor augue ultrices nibh, vel commodo nibh neque quis nunc. </span>
-						
-						
-						<div class="stabilo_rosso">testo STABILO rosso</div>
-						<div class="titolo_rosso">testo TITOLO rosso</div>
-						
-						<span class="didascalia">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tortor nunc, luctus sit amet metus at, fringilla pellentesque dolor. Nam in est dui. Quisque sagittis at enim quis rhoncus. Duis sit amet enim non nunc hendrerit porta. Etiam non metus vel erat tristique interdum. Cras nec elit enim. Sed porttitor tempus elit ac bibendum. Nam sit amet ipsum vitae lacus tincidunt tincidunt. Vestibulum non felis tellus.</span>
-						
-						<div class="stabilo_giallo">testo STABILO giallo</div>
-						<div class="titolo_giallo">testo TITOLO giallo</div>
-						
-						<span class="didascalia">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tortor nunc, luctus sit amet metus at, fringilla pellentesque dolor. Nam in est dui. Quisque sagittis at enim quis rhoncus. Duis sit amet enim non nunc hendrerit porta. Etiam non metus vel erat tristique interdum. Cras nec elit enim. Sed porttitor tempus elit ac bibendum. Nam sit amet ipsum vitae lacus tincidunt tincidunt. Vestibulum non felis tellus.</span>
-						
-						<div class="stabilo_verde">testo STABILO verde</div>
-						<div class="titolo_verde">testo TITOLO verde</div>
-<span class="didascalia">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tortor nunc, luctus sit amet metus at, fringilla pellentesque dolor. Nam in est dui. Quisque sagittis at enim quis rhoncus. Duis sit amet enim non nunc hendrerit porta. Etiam non metus vel erat tristique interdum. Cras nec elit enim. Sed porttitor tempus elit ac bibendum. Nam sit amet ipsum vitae lacus tincidunt tincidunt. Vestibulum non felis tellus.</span>
-						
-						
-						-->
-						
+                        <template_field class="template_field" name="text">text</template_field>						
                     </div>
-
-					<div class="navbar_bottom">
-						<div class="previous_arrow">
-							<div class="go_prev">
-								<a href='javascript:history.back();'><i18n>Torna</i18n></a>
-							</div>
-						</div>
-						
-						<div class="next_arrow">
-							<div class="go_next">
-								<template_field class="template_field" name="go_next">go_next</template_field>
-							</div>				
-
-						</div>
-					</div>
+					<!-- PULSANTI AVANTI E INDIETRO -->
+						<template_field class="template_field" name="navigation_bar">navigation_bar</template_field>
+					<!-- end - PULSANTI AVANTI E INDIETRO -->
 
 		    <!-- <hr>
 		    <div id="index_in_text">

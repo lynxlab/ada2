@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+.dfsNavigationBar.ui.basic.segment {
+	padding: 0;
+}
+
+.dfsNavigationBar button a {
+    color: inherit;
+    text-decoration: inherit;
+    font-size: inherit;
+    font-family: inherit;
+}

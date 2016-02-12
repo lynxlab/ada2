@@ -22,6 +22,10 @@ require_once ROOT_DIR . '/include/node_classes.inc.php';
  * @copyright Copyright (c) 2011, Lynx s.r.l.
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
  */
+ if (defined('MODULES_TEST') && MODULES_TEST) {
+ 	require_once MODULES_TEST_PATH . '/include/AMATestDataHandler.inc.php';
+ }
+
 class DFSNavigationBar
 {
     /**
@@ -32,6 +36,8 @@ class DFSNavigationBar
     public function  __construct(Node $n, $params = array())
     {
         $this->_currentNode = $n->id;
+        if (!isset($params['prevId'])) $params['prevId'] = null;
+        if (!isset($params['nextId'])) $params['nextId'] = null;
 
         $prevId = DataValidator::validate_node_id($params['prevId']);
         if($prevId !== false) {
@@ -47,33 +53,48 @@ class DFSNavigationBar
             $this->findNextNode($n, $params['userLevel']);
         }
 
-		/**
+        /**
+         * set the tester to be used to be the one stored in session...
+         */
+        if (isset($_SESSION['sess_selected_tester']) && strlen($_SESSION['sess_selected_tester'])) {
+        	$this->_testerToUse = $_SESSION['sess_selected_tester'];
+        }
+        /**
+         * ...unless a testerToUse params has been passed, in which case force that
+         */
+        if (isset($params['testerToUse']) && DataValidator::validate_testername($params['testerToUse'], MULTIPROVIDER)) {
+        	$this->_testerToUse = $params['testerToUse'];
+        }
+
+        /**
          * @author giorgio 08/ott/2013
          * check if this is a node wich has been generated when creating a test.
          * If it is, next node is the first topic of the test.
          * BUT, I'll pass the computed $this->_nextNode to give a callBack point
          * to be used when user is in the last topic of the test.
          */
-        if (MODULES_TEST && strpos($n->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0) {
+        if (defined('MODULES_TEST') && MODULES_TEST) { // && strpos($n->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0) {
         	if (isset($GLOBALS['dh'])) $GLOBALS['dh']->disconnect();
         	$test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-        	$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$n->id));
-        	
-        	if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
+        	if (!is_null($n->id)) {
+	        	$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$n->id));
+        	} else $res = array();
+
+        	if (!empty($res) && count($res) == 1 && !AMA_DB::isError($res)) {
         		$node = array_shift($res);
         		$this->_nextTestNode = $node['id_nodo'];
         	}
-        	
+
         	/**
         	 * @author giorgio 06/nov/2013
         	 * must check if computed $this->_previousNode points to a test
         	 * and get last topic if it does.
         	 */
         	if (!is_null($this->_previousNode)) {
-	        	$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$this->_previousNode));        		
+	        	$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$this->_previousNode));
         	} else $res = array();
-        	
-        	if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
+
+        	if (!empty($res) && count($res) == 1 && !AMA_DB::isError($res)) {
         		$node = array_shift($res);
         		$test = NodeTest::readTest($node['id_nodo'], $test_db);
         		$this->_prevTestTopic = count($test->_children);
@@ -174,78 +195,117 @@ class DFSNavigationBar
     /**
      * Renders the navigation bar
      *
+     * @param string|array $hrefText if what is null, must be an array of ['next','prev'] holding
+     * the text to be used in the respective hrefs. if what is a string, than hrefText is the string
+     * to be used as the hreftext
+     *
      * @return string
      */
-    public function render()
+    public function render($hrefText = null)
     {
+    	$prevText = null;
+    	$nextText = null;
 
-        $navigationBar = '<div class="dfsNavigationBar">'
-                       . '<span class="previous">'
-                       . $this->renderPreviousNodeLink()
-                       . '</span>'
-                       . '<span class="next">'
-                       . $this->renderNextNodeLink()
-                       . '</span>'
-                       . '</div>';
+    	if (isset($hrefText['prev']) && strlen($hrefText['prev'])>0) $prevText = $hrefText['prev'];
+    	if (isset($hrefText['next']) && strlen($hrefText['next'])>0) $nextText = $hrefText['next'];
+
+    	$prevLink = $this->renderPreviousNodeLink($prevText);
+    	$nextLink = $this->renderNextNodeLink($nextText);
+
+    	if (is_null($prevLink) && is_null($nextLink)) {
+    		$navigationBar = '';
+    	} else {
+    		$navigationBar = '<div class="dfsNavigationBar ui basic segment">';
+    		if (!is_null($prevLink)) {
+    			$navigationBar .= '<button class="ui medium labeled icon left floated red button">'.
+      							  '<i class="left arrow icon"></i>'.
+    							  $this->renderPreviousNodeLink($prevText).
+                       			  '</button>';
+    		}
+    		if (!is_null($nextLink)) {
+    			$navigationBar .= '<button class="ui medium labeled icon right floated teal button">'.
+      							  $this->renderNextNodeLink($nextText).
+    							  '<i class="right arrow icon"></i></button>';
+    		}
+    		$navigationBar .= '</div>';
+    	}
 
         return $navigationBar;
     }
     /**
-     * Renders the navigation bar
+     *
      *
      * @return string
      */
-    public function getHtml($what, $hrefText = null)
+
+    /**
+     * Renders the navigation bar
+     *
+     * @param string $what can be one of: <next,prev> to get only the specified link
+     * if empty the whole navbar will be returned wrapped in a div with its class
+     * @param string|array $hrefText if what is null, must be an array of ['next','prev'] holding
+     * the text to be used in the respective hrefs. if what is a string, than hrefText is the string
+     * to be used as the hreftext
+     *
+     * @return string
+     */
+    public function getHtml($what='', $hrefText = null)
     {
     	if (preg_match('/^next$/i', $what)>0) return $this->renderNextNodeLink($hrefText);
     	else if (preg_match('/^prev$/i', $what)>0) return $this->renderPreviousNodeLink($hrefText);
-        else return $this->render();
+        else return $this->render($hrefText);
     }
     /**
      * Renders the link to the previous node
      *
      * @return string
      */
-    private function renderPreviousNodeLink($hrefText=null)
+    protected function renderPreviousNodeLink($hrefText=null)
     {
-    	if (is_null($hrefText)) $hrefText = translateFN('Indietro');
+    	if (is_null($hrefText)) $hrefText = translateFN('Precedente');
+    	else $hrefText = translateFN($hrefText);
+
         if ($this->_currentNode != null && $this->_previousNode != null && $this->_prevTestNode == null) {
-            return '<a href="'.HTTP_ROOT_DIR.'/browsing/view.php?id_node=' . $this->_previousNode
-                   . (($this->_currentNode!=$this->_previousNode) ? '&nextId=' . $this->_currentNode : '')
-		   .'">'
+            return '<a href="'.HTTP_ROOT_DIR.'/browsing/'.$this->linkScriptForNode($this->_previousNode)
+            		.'?id_node=' . $this->_previousNode
+                   	. (($this->_currentNode!=$this->_previousNode) ? '&nextId=' . $this->_currentNode : '')
+		   			.'">'
                    . $hrefText . '</a>';
         }
         // @author giorgio 08/ott/2013, check if prev node points to a test node
         else if ($this->_currentNode != null && $this->_prevTestNode != null) {
-	    return '<a href="'.MODULES_TEST_HTTP.'/index.php?id_test=' . $this->_prevTestNode 
+	    return '<a href="'.MODULES_TEST_HTTP.'/index.php?id_test=' . $this->_prevTestNode
 		   . (!is_null($this->_prevTestTopic)  ? '&topic='  .($this->_prevTestTopic-1) : '')
 		   .'">'
 		   . $hrefText . '</a>';
         }
-        return '&nbsp;';
+        return null;
     }
     /**
      * Renders the link to the next node
      *
      * @return string
      */
-    private function renderNextNodeLink($hrefText=null)
+    protected function renderNextNodeLink($hrefText=null)
     {
-    	if (is_null($hrefText)) $hrefText = translateFN('Avanti'); 
+    	if (is_null($hrefText)) $hrefText = translateFN('Successivo');
+    	else $hrefText = translateFN($hrefText);
+
         if ($this->_currentNode != null && $this->_nextNode != null && $this->_nextTestNode == null) {
-            return '<a href="'.HTTP_ROOT_DIR.'/browsing/view.php?id_node=' . $this->_nextNode
+            return '<a href="'.HTTP_ROOT_DIR.'/browsing/'.$this->linkScriptForNode($this->_nextNode)
+            	   .'?id_node=' . $this->_nextNode
                    . (($this->_currentNode!=$this->_nextNode) ? '&prevId=' . $this->_currentNode : '')
                    .'">'
                    . $hrefText . '</a>';
         }
         // @author giorgio 08/ott/2013, check if next node points to a test node
         else if ($this->_currentNode != null && $this->_nextTestNode != null) {
-	    return '<a href="'.MODULES_TEST_HTTP.'/index.php?id_test=' . $this->_nextTestNode 
+	    return '<a href="'.MODULES_TEST_HTTP.'/index.php?id_test=' . $this->_nextTestNode
 		   . (!is_null($this->_nextTestTopic)  ? '&topic='  .($this->_nextTestTopic+1) : '')
 		   .'">'
 		   . $hrefText . '</a>';
         }
-        return '&nbsp;';
+        return null;
     }
     /**
      * Returns the parameters needed to invoke the navigation bar
@@ -257,6 +317,24 @@ class DFSNavigationBar
         return 'id_node=' . $this->_currentNode
                . '&prevId=' . $this->_previousNode
                . '&nextId=' . $this->_nextNode;
+    }
+
+    /**
+     * tell the php script to be called for node_id, if it's view or exercise
+     *
+     * @param string $node_id
+     *
+     * @return string
+     */
+    private function linkScriptForNode($node_id) {
+    	$dh = $GLOBALS['dh'];
+
+    	$retLink = 'view.php';
+    	$nodeAr =  $dh->get_node_info($node_id);
+    	if (!AMA_DB::isError($nodeAr) && Node::isNodeExercise($nodeAr['type'])) {
+    		$retLink = 'exercise.php';
+    	}
+    	return $retLink;
     }
 
     /**
@@ -299,4 +377,11 @@ class DFSNavigationBar
      * @var string
      */
     protected $_nextNode = null;
+
+    /**
+     * tester to be used
+     *
+     * @var string
+     */
+    protected $_testerToUse = null;
 }

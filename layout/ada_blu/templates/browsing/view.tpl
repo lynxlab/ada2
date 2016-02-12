@@ -115,10 +115,9 @@
                     <div class="firstnode">
                         <template_field class="template_field" name="text">text</template_field>
                     </div>
-
-                    <div id="go_next">
-						<template_field class="template_field" name="go_next">go_next</template_field>
-					</div>
+					<!-- PULSANTI AVANTI E INDIETRO -->
+						<template_field class="template_field" name="navigation_bar">navigation_bar</template_field>
+					<!-- end - PULSANTI AVANTI E INDIETRO -->
 
 		    <hr>
 		    <div id="index_in_text">
