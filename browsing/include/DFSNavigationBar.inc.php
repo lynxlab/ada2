@@ -199,7 +199,7 @@ class DFSNavigationBar
      * the text to be used in the respective hrefs. if what is a string, than hrefText is the string
      * to be used as the hreftext
      *
-     * @return string
+     * @return CDOMElement|null
      */
     public function render($hrefText = null)
     {
@@ -213,30 +213,27 @@ class DFSNavigationBar
     	$nextLink = $this->renderNextNodeLink($nextText);
 
     	if (is_null($prevLink) && is_null($nextLink)) {
-    		$navigationBar = '';
+    		$navigationBar = null;
     	} else {
-    		$navigationBar = '<div class="dfsNavigationBar ui basic segment">';
+    		$navigationBar = CDOMElement::create('div','class:dfsNavigationBar ui basic segment');
     		if (!is_null($prevLink)) {
-    			$navigationBar .= '<button class="ui medium labeled icon left floated red button">'.
-      							  '<i class="left arrow icon"></i>'.
-    							  $this->renderPreviousNodeLink($prevText).
-                       			  '</button>';
+    			$prevLink->setAttribute('class','ui medium left floated red animated button');
+    			$iconDIV = CDOMElement::create('div','class:hidden content');
+    			$iconDIV->addChild(new CText('<i class="left arrow icon"></i>'));
+    			$prevLink->addChild($iconDIV);
+    			$navigationBar->addChild($prevLink);
     		}
     		if (!is_null($nextLink)) {
-    			$navigationBar .= '<button class="ui medium labeled icon right floated teal button">'.
-      							  $this->renderNextNodeLink($nextText).
-    							  '<i class="right arrow icon"></i></button>';
+    			$nextLink->setAttribute('class','ui medium right floated teal animated button');
+    			$iconDIV = CDOMElement::create('div','class:hidden content');
+    			$iconDIV->addChild(new CText('<i class="right arrow icon"></i>'));
+    			$nextLink->addChild($iconDIV);
+    			$navigationBar->addChild($nextLink);
     		}
-    		$navigationBar .= '</div>';
     	}
 
         return $navigationBar;
     }
-    /**
-     *
-     *
-     * @return string
-     */
 
     /**
      * Renders the navigation bar
@@ -251,59 +248,75 @@ class DFSNavigationBar
      */
     public function getHtml($what='', $hrefText = null)
     {
-    	if (preg_match('/^next$/i', $what)>0) return $this->renderNextNodeLink($hrefText);
-    	else if (preg_match('/^prev$/i', $what)>0) return $this->renderPreviousNodeLink($hrefText);
-        else return $this->render($hrefText);
+    	$retElement = null;
+    	if (preg_match('/^next$/i', $what)>0) $retElement = $this->renderNextNodeLink($hrefText);
+    	else if (preg_match('/^prev$/i', $what)>0) $retElement = $this->renderPreviousNodeLink($hrefText);
+        else $retElement = $this->render($hrefText);
+
+        return (!is_null($retElement)) ? $retElement->getHtml() : '';
     }
     /**
      * Renders the link to the previous node
      *
-     * @return string
+     * @return CDOMElement|null
      */
     protected function renderPreviousNodeLink($hrefText=null)
     {
     	if (is_null($hrefText)) $hrefText = translateFN('Precedente');
     	else $hrefText = translateFN($hrefText);
 
+    	$retElement = CDOMElement::create('a');
+    	$hrefTextElement = CDOMElement::create('div','class:visible content');
+    	$hrefTextElement->addChild(new CText($hrefText));
+    	$retElement->addChild($hrefTextElement);
+    	$href = null;
+
         if ($this->_currentNode != null && $this->_previousNode != null && $this->_prevTestNode == null) {
-            return '<a href="'.HTTP_ROOT_DIR.'/browsing/'.$this->linkScriptForNode($this->_previousNode)
+        	$href = HTTP_ROOT_DIR.'/browsing/'.$this->linkScriptForNode($this->_previousNode)
             		.'?id_node=' . $this->_previousNode
-                   	. (($this->_currentNode!=$this->_previousNode) ? '&nextId=' . $this->_currentNode : '')
-		   			.'">'
-                   . $hrefText . '</a>';
+                   	. (($this->_currentNode!=$this->_previousNode) ? '&nextId=' . $this->_currentNode : '');
         }
         // @author giorgio 08/ott/2013, check if prev node points to a test node
         else if ($this->_currentNode != null && $this->_prevTestNode != null) {
-	    return '<a href="'.MODULES_TEST_HTTP.'/index.php?id_test=' . $this->_prevTestNode
-		   . (!is_null($this->_prevTestTopic)  ? '&topic='  .($this->_prevTestTopic-1) : '')
-		   .'">'
-		   . $hrefText . '</a>';
+        	$href = MODULES_TEST_HTTP.'/index.php?id_test=' . $this->_prevTestNode
+		   			. (!is_null($this->_prevTestTopic)  ? '&topic='  .($this->_prevTestTopic-1) : '');
+        }
+
+        if (!is_null($href)) {
+        	$retElement->setAttribute('href', $href);
+        	return $retElement;
         }
         return null;
     }
     /**
      * Renders the link to the next node
      *
-     * @return string
+     * @return CDOMElement|null
      */
     protected function renderNextNodeLink($hrefText=null)
     {
     	if (is_null($hrefText)) $hrefText = translateFN('Successivo');
     	else $hrefText = translateFN($hrefText);
 
+		$retElement = CDOMElement::create('a');
+    	$hrefTextElement = CDOMElement::create('div','class:visible content');
+    	$hrefTextElement->addChild(new CText($hrefText));
+    	$retElement->addChild($hrefTextElement);
+
         if ($this->_currentNode != null && $this->_nextNode != null && $this->_nextTestNode == null) {
-            return '<a href="'.HTTP_ROOT_DIR.'/browsing/'.$this->linkScriptForNode($this->_nextNode)
+        	$href = HTTP_ROOT_DIR.'/browsing/'.$this->linkScriptForNode($this->_nextNode)
             	   .'?id_node=' . $this->_nextNode
-                   . (($this->_currentNode!=$this->_nextNode) ? '&prevId=' . $this->_currentNode : '')
-                   .'">'
-                   . $hrefText . '</a>';
+                   . (($this->_currentNode!=$this->_nextNode) ? '&prevId=' . $this->_currentNode : '');
         }
         // @author giorgio 08/ott/2013, check if next node points to a test node
         else if ($this->_currentNode != null && $this->_nextTestNode != null) {
-	    return '<a href="'.MODULES_TEST_HTTP.'/index.php?id_test=' . $this->_nextTestNode
-		   . (!is_null($this->_nextTestTopic)  ? '&topic='  .($this->_nextTestTopic+1) : '')
-		   .'">'
-		   . $hrefText . '</a>';
+        	$href = MODULES_TEST_HTTP.'/index.php?id_test=' . $this->_nextTestNode
+		   			. (!is_null($this->_nextTestTopic)  ? '&topic='  .($this->_nextTestTopic+1) : '');
+        }
+
+        if (!is_null($href)) {
+        	$retElement->setAttribute('href', $href);
+        	return $retElement;
         }
         return null;
     }
