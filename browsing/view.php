@@ -66,10 +66,11 @@ if (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) 
 
 if ($userObj instanceof ADAGuest) {
     $self = 'guest_view';
-}
- elseif($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {
+} else if ($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {
     $self='viewSelfInstruction';
     // $self='tutorSelfInstruction';
+} else if ($userObj->tipo == AMA_TYPE_AUTHOR) {
+	$self = 'viewAuthor';
 }
 else {
     $self = whoami();

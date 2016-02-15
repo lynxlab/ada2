@@ -5,6 +5,7 @@
     </head>
     <body>
         <a name="top"></a>
+		<div id="pagecontainer">
 
         <!-- testata -->
         <div id="header">
@@ -112,6 +113,8 @@
                 </div>
             </div> <!-- /com_tools -->
         </div> <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
         <!-- MENU A TENDINA -->
         <div id="mainmenu">
             <ul id="menu">

@@ -1,5 +1,10 @@
 @CHARSET "UTF-8";
 
+.first {
+	float: left;
+	width: 100%;
+}
+
 /* giorgio, to style jquery ui tab with icons */
 #tabs .ui-tabs-nav .ui-icon { 
     display: inline-block;

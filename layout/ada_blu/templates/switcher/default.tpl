@@ -5,6 +5,7 @@
     </head>
     <body>
         <a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -42,23 +43,6 @@
                             </span> </div>
                     </div>
                     <!-- / dati utente -->
-                    <!-- label -->
-                    <!--div id="label">
-                        <div class="topleft">
-                            <div class="topright">
-                                <div class="bottomleft">
-                                    <div class="bottomright">
-                                        <div class="contentlabel">
-                                            <h1>
-                                                <template_field class="template_field" name="label">label</template_field>
-                                            </h1>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /label -->
                 </div>
             </div>
 
@@ -78,19 +62,19 @@
             </div>
             <!--  / contenuto -->
 
-            <!-- com_tools -->
-            <div id="com_tools">
-                <div id="topcom_t">
-                </div>
-                <div id="com_toolscontent">
-                    <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-                </div>
-                <div id="bottomcom_t">
-                </div>
-            </div>
-            <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
+		
+        <!-- com_tools -->
+        <div class="clearfix"></div>
+        <div id="com_tools">
+            <div id="com_toolscontent">
+                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
+            </div>
+        </div>
+        <!-- /com_tools -->		
         <!-- piede -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>

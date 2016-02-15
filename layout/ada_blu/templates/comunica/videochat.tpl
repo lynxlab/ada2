@@ -60,6 +60,8 @@
 </div>
 </div> <!--  / contenuto -->
 </div> <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 <!-- PIEDE -->
 <div id="footer">
 	<template_field class="microtemplate_field" name="footer">footer</template_field>

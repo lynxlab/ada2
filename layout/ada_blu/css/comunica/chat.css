@@ -34,7 +34,7 @@ a:visited { text-decoration: none; }
 #user_wrap 	{/*background:#808080 url(../../img/userid.png) no-repeat 99% 50%;*/ width:100%}
 /*#label	   	{background:#55f;}*/
 #content	{background:#fff; padding:10px; clear:both;}
-#container {background:#fff;  border-bottom:10px solid #808080;}
+#container {background:#fff;  }
 
 /* CLEAR FIX*/
 #user_wrap:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;}

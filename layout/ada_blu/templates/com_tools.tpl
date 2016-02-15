@@ -1,4 +1,4 @@
-<div class="ui small teal inverted menu">
+<div class="ui small inverted menu ada">
  <div class="item">
   	<i class="users circular inverted icon"></i><i18n>chi è online</i18n>
 	<span>

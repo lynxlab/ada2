@@ -118,6 +118,8 @@
             <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
 
         <!-- MENU A TENDINA -->

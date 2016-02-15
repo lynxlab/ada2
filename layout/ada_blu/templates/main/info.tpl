@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="../../../css/main/default/default.css" type="text/css">
     </head>
     <body >
-        <a name="top">
-        </a>
+        <a name="top"></a>
+        <div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -36,6 +36,8 @@
                 </div>
             </div> <!--  / contenuto -->
         </div> <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
         
         <!-- PIEDE -->
         <div id="footer_login">

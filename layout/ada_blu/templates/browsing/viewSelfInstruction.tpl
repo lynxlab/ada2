@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="../../css/browsing/default.css" type="text/css">
     </head>
     <body>
-        <a name="top">
-        </a>
+        <a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -13,10 +13,10 @@
         <!-- / testata -->
         <!-- menu -->
             <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-        <!-- / menu -->  
+        <!-- / menu -->
         <!-- help -->
             <template_field class="template_field" name="help">help</template_field>  
-        <!-- / help --> 
+        <!-- / help -->     
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->
@@ -86,12 +86,6 @@
                                             <template_field class="template_field" name="node_level">node_level</template_field>
                                         </span>
                                         </li>
-                                        <li>
-                                        <i18n>keywords: </i18n>
-                                        <span class="keywords">
-                                            <template_field class="template_field" name="keywords">keywords</template_field>
-                                        </span>
-                                        </li>
                                     </ul>
                                     <!--div class="dattilo" id="dattilo">
                                       <template_field class="template_field_disabled" name="dattilo">dattilo</template_field>
@@ -113,48 +107,31 @@
                         </span>
                     </div>
                     <div class="firstnode">
+	                <!-- PULSANTI AVANTI E INDIETRO -->
+						<template_field class="template_field" name="navigation_bar">navigation_bar</template_field>
+					<!-- end - PULSANTI AVANTI E INDIETRO -->                    
 	                    <h1 class="ui red header">
 	                    	<template_field class="template_field" name="title">title</template_field>
-	                    </h1>                    
+	                    </h1>
+	                    <div class="ui divider"></div>
+	                                   
                         <template_field class="template_field" name="text">text</template_field>						
                     </div>
-					<!-- PULSANTI AVANTI E INDIETRO -->
-						<template_field class="template_field" name="navigation_bar">navigation_bar</template_field>
-					<!-- end - PULSANTI AVANTI E INDIETRO -->
-
-		    <!-- <hr>
-		    <div id="index_in_text">
-		      <h3><i18n>note di classe</i18n></h3>
-                            <template_field class="template_field" name="notes">notes</template_field> -->
-			    <!--h3><i18n>Approfondimenti:</i18n></h3-->
-			    <!--template_field class="template_field" name="index">index</template_field-->
-				
-		   <!-- </div>
-		  <div id="exercises_in_text">
-		      <h3><i18n>note personali</i18n></h3>
-		       <template_field class="template_field" name="personal">personal</template_field>   -->
-			<!--template_field class="template_field" name="exercises">exercises</template_field-->
-		  
-		  <!-- </div> -->
-
+                    
+                 	<div class="ui fluid accordion">
+		  				<div class="keywords active title">
+		    				<i class="dropdown icon"></i>
+		    					<i18n>keywords</i18n>
+		  				</div>
+		  				<div class="keywords ui blue labels active content">
+		    				<template_field class="template_field" name="keywords">keywords</template_field>
+		  				</div>
+		  				
+		  			</div>
                 </div>
-				<!-- 
-                <div id="bottomcont">
-                </div> 
-				-->
             </div>
             <!--  / contenuto -->
-            <!-- com_tools -->
-            <!--<div id="com_tools">
-                <div id="topcom_t">
-                </div>
-                <div id="com_toolscontent">
-                    <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-                </div>
-                <div id="bottomcom_t">
-                </div>
-            </div>-->
-            <!-- /com_tools -->
+
             <!-- menudestra -->
                   <!-- <div id="menuright" class="sottomenu_off menuright_view "> -->
             <div id="menuright" class="menuright_view ui wide right sidebar">
@@ -217,6 +194,8 @@
             <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
         <!-- pannello video -->
         <div id="rightpanel" class="sottomenu_off rightpanel_view">
@@ -237,8 +216,18 @@
             </div>
         </div>
         <!-- / pannello video -->
+        
+       	<!-- com_tools -->
+        <div class="clearfix"></div>
+        <div id="com_tools" style="visibility:hidden;">
+            <div id="com_toolscontent">
+                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
+            </div>
+        </div>
+        <!-- /com_tools -->
+        
         <!-- piede -->
-       <div id="footer">
+        <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->

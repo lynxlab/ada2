@@ -5,6 +5,7 @@
     </head>
     <body>
         <a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -67,13 +68,9 @@
             <div id="content">
                 <div id="contentcontent" >
                     <div class="first">
-                        <!--div id="help">
-                            <template_field class="template_field" name="help">help</template_field>
-                        </div-->
                       </div>
                         <div class="translationData">
                             <template_field class="template_field" name="data">data</template_field>
-                        
                         </div>
                          <div class="EditTranslation">
                             <template_field class="template_field" name="dataEditTranslation">dataEditTranslation</template_field>
@@ -82,32 +79,24 @@
                         <div class="translationResults">
                             <template_field class="template_field" name="results">results</template_field>
                        </div>
-                      
-                           
                        <div class="clearfix"></div>
-                   
                 </div>
-                 
 
-                <div id="bottomcont">
-                </div>
-            </div>
-            
+            </div>            
             <!--  / contenuto -->
-
-            <!-- com_tools -->
-            <div id="com_tools">
-                <div id="topcom_t">
-                </div>
-                <div id="com_toolscontent">
-                    <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-                </div>
-                <div id="bottomcom_t">
-                </div>
-            </div>
-            <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
+
+        <!-- com_tools -->
+        <div class="clearfix"></div>
+        <div id="com_tools">
+            <div id="com_toolscontent">
+                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
+            </div>
+        </div>
+        <!-- /com_tools -->		
         <!-- piede -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>

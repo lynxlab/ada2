@@ -4,9 +4,8 @@
         <link rel="stylesheet" href="../../css/services/default.css" type="text/css">
     </head>
     <body>
-       
        <a name="top"></a>
-
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -45,9 +44,6 @@
                 </div>
             </div> 
 			<!-- / dati utente -->
-			
-			
-			
 			
             <!-- label -->
             <div id="labelview">
@@ -96,8 +92,6 @@
             </div><!-- /label -->
             </div>
        
-
-
 			<!-- contenuto -->
             <div id="content">
                 <div id="contentcontent" class="contentcontent_view">
@@ -117,7 +111,6 @@
             </div>
             <!--  / contenuto -->
 
-
             <!-- com_tools -->
             <div id="com_tools">
                 <div id="topcom_t">
@@ -130,10 +123,9 @@
             </div>
             <!-- /com_tools -->
 
-
-
         </div> <!-- / contenitore -->
-		
+		<div id="push"></div>
+		</div>
 	
         <!-- PIEDE -->
         <div id="footer">

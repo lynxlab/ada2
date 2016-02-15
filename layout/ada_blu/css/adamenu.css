@@ -3,9 +3,9 @@ div.ui.menu.ada {
 	font-family: "Helvetica Neue", "Helvetica", Arial;
 	border-radius:0;
 	border-bottom: 1px solid #009F98;
-	/* background-color: #1C68AD; */
-	
+	background-color: #00B5AD;
 }
+
 .ui.menu.ada i.icon {
 	opacity: 0.9;
 	/* do not remove this float, it overwrites some 

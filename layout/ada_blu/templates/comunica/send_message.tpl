@@ -6,6 +6,7 @@
 </head>
 <body>
 <a name="top"></a>
+		<div id="pagecontainer">
 <div id="header">
 		 <template_field class="microtemplate_field" name="header_com">header_com</template_field>
 </div> 
@@ -20,7 +21,7 @@
     </span>
 </div> 
 <!-- / percorso -->
-</div> 
+
 <!-- contenitore -->
 <div id="container">
 
@@ -143,6 +144,8 @@
 </div>
 </div> <!--  / contenuto -->
 </div> <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
 
 <!-- PIEDE -->

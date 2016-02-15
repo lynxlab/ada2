@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="../../css/browsing/default.css" type="text/css">
     </head>
     <body>
-        <a name="top">
-        </a>
+        <a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -213,6 +213,8 @@
             <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
         <!-- menu -->
         <div id="mainmenu">

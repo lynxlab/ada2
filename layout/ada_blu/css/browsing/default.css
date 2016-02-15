@@ -7,7 +7,7 @@
 @import url("../form.css");
 
 /* BROWSING STYLE */
-
+#pagecontainer { margin-bottom: -55px; }
 
 #banner {
     position: absolute;
@@ -73,20 +73,21 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 }
 
 #content_view {
-    min-height: 410px;
+    float: left;
+    width: 100%;
     padding-top: 10px;
 }
 
 .content_small { margin-right: 365px;}
 #content li { list-style-type: none; }
-#contentcontent {}
-.contentcontent_default {
-    padding: 0 10px 10px 10px;
-	 background-color: White;
+#contentcontent {
+	float: left;
+	width: 100%;
 }
+.contentcontent_default,
 .contentcontent_view {
-     padding: 0px 10px 10px 10px;
-	 background-color: White;
+     padding: 0 0 10px 0;
+	 background-color: transparent;
 }
 .contentcontent_note {
 	padding: 10px;
@@ -220,12 +221,6 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 #login_div {margin:1em 0; line-height:2.5em;}
 #login_div #login_button {margin:1em 0}
 
-/*PIEDE*/
-#footer { padding: 0px 5px 0px 5px;}
-#footer .menusuperiore {margin-top:00px;margin-left:0px;}
-#footer .copyright{font-size:0.8em; line-height:1.2em;}
-#footer_registration {  position: relative; padding: 20px 10px 10px 30px; top: 90px; background: url(../../img/up.png) no-repeat left;
-						margin-left: 20px; margin-bottom: 100px; }
 #mail { background: url(../../img/mail.png) no-repeat right; padding: 5px 35px 5px 0;}
 
 /* identifica le parole evidenziate della ricerca*/

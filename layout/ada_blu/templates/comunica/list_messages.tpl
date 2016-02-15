@@ -5,8 +5,8 @@
 			<link rel="stylesheet" href="../../../css/main/default/default.css" type="text/css">
 </head>
 <body>
-<a name="top">
-</a> 
+<a name="top"></a>
+<div id="pagecontainer"> 
 <div id="header">
 		 <template_field class="microtemplate_field" name="header_com">header_com</template_field>
 </div> 
@@ -74,12 +74,13 @@
 			 </div>
   </div>
 </div>
-<div id="bottomcont">
-</div>
 </div> <!--  / contenuto -->
 </div> <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
 </div> 
+<div class="clearfix"></div>
 <!-- PIEDE -->
 <div id="footer">
 		 <template_field class="microtemplate_field" name="footer">footer</template_field>

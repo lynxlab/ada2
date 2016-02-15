@@ -1,6 +1,8 @@
 @import url("../page.css");
 @import url("../form.css");
 
+#pagecontainer { margin-bottom: -55px; }
+
 ul.inline_menu li {
     margin:0px;
     padding: 5px 0px;

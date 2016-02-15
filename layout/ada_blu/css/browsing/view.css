@@ -38,3 +38,7 @@ div.firstnode .ui.header:nth-child(-n+2) {
     font-size: inherit;
     font-family: inherit;
 }
+
+div#content_view .ui.accordion:last-child {
+	display:none;
+}

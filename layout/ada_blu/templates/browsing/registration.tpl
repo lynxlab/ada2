@@ -5,6 +5,7 @@
     </head>
     <body>
         <a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -30,19 +31,20 @@
                 <div id="bottomcont">
                 </div>
             </div> <!--  / contenuto -->
-            <!-- com_tools -->
-            <div id="com_tools">
-                <div id="topcom_t">
-                </div>
-                <div id="com_toolscontent">                   
-                </div>
-                <div id="bottomcom_t">
-                </div>
-            </div> <!-- /com_tools -->
         </div> <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
+       	<!-- com_tools -->
+        <div class="clearfix"></div>
+        <div id="com_tools" style="visibility:hidden;">
+            <div id="com_toolscontent">
+                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
+            </div>
+        </div>
+        <!-- /com_tools -->			
         <!-- PIEDE -->
         <div id="footer">
-            <template_field class="microtemplate_field" name="footer_guest">footer_guest</template_field>
+            <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div> <!-- / piede -->
     </body>
 </html>

@@ -119,25 +119,11 @@
                     </div>
                     
 				    <div class="ui fluid accordion">
-		  				<div class="class notes title">
-		    				<i class="dropdown icon"></i>
-		    					<i18n>note di classe</i18n>
-		  				</div>
-		  				<div class="class notes content">
-		    				<template_field class="template_field" name="notes">notes</template_field>
-		  				</div>
-		  				<div class="personal notes title">
-		    				<i class="dropdown icon"></i>
-		    					<i18n>note personali</i18n>
-		  				</div>
-		  				<div class="personal notes content">
-		    				<template_field class="template_field" name="personal">personal</template_field>
-		  				</div>
-		  				<div class="keywords title">
+		  				<div class="keywords active title">
 		    				<i class="dropdown icon"></i>
 		    					<i18n>keywords</i18n>
 		  				</div>
-		  				<div class="keywords ui blue labels content">
+		  				<div class="keywords ui blue labels active content">
 		    				<template_field class="template_field" name="keywords">keywords</template_field>
 		  				</div>
 		  				
@@ -257,15 +243,6 @@
             </div>
         </div>
         <!-- / pannello video -->
-        
-        <!-- com_tools -->
-        <div class="clearfix"></div>
-        <div id="com_tools">
-            <div id="com_toolscontent">
-                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-            </div>
-        </div>
-        <!-- /com_tools -->
         
         <!-- piede -->
         <div id="footer">

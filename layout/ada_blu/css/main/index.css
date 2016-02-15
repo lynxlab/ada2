@@ -58,25 +58,6 @@ html,body {
 	right: 10px;
 }
 
-#footer {
-	background: #c5C9D2;
-	color: #fff;
-	font-size: 120%;
-	padding: 5px;
-}
-
-#footer .copyright {
-	color: #fff;
-}
-
-#footer a:link,#footer a:visited {
-	color: #fff;
-}
-
-#footer a:hover {
-	color: #aeaeae;
-}
-
 .portlet {
     border: 1px dotted beige;
     background: #eaeaea;

@@ -5,8 +5,8 @@
 </head>
 
 <body>
-<a name="top">
-</a>
+<a name="top"></a>
+<div id="pagecontainer">
 <div id="header">
 		 <template_field class="microtemplate_field" name="header_com">header_com</template_field>
 </div>
@@ -82,6 +82,8 @@
 </div>
 </div> <!--  / contenuto --> 
 </div> <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
 </div> 
 <!-- PIEDE -->

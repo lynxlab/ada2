@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="../../css/browsing/default.css" type="text/css">
     </head>
     <body>
-        <a name="top">
-        </a>
+		<a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -52,6 +52,17 @@
                 </div>
             </div> <!--  / contenuto -->
         </div> <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
+
+       	<!-- com_tools -->
+        <div class="clearfix"></div>
+        <div id="com_tools" style="visibility:hidden;">
+            <div id="com_toolscontent">
+                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
+            </div>
+        </div>
+        <!-- /com_tools -->
 
         <!-- PIEDE -->
         <div id="footer">

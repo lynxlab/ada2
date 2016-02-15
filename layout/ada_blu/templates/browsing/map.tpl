@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="../../css/browsing/default.css" type="text/css">
     </head>
     <body>
-        <a name="top">
-        </a>
+		<a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -124,23 +124,21 @@
                 <div id="bottomcont">
                 </div>
             </div>
-            <!--  / contenuto -->
-            <!-- com_tools -->
-            <div id="com_tools">
-                <div id="topcom_t">
-                </div>
-                <div id="com_toolscontent">
-                    <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-                </div>
-                <div id="bottomcom_t">
-                </div>
-            </div>
-            <!-- /com_tools -->
-            <!-- menudestra -->
-            
-            <!-- / menudestra  -->
+            <!--  / contenuto -->            
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
+		
+       	<!-- com_tools -->
+        <div class="clearfix"></div>
+        <div id="com_tools" style="visibility:hidden;">
+            <div id="com_toolscontent">
+                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
+            </div>
+        </div>
+        <!-- /com_tools -->	
+        		
         <!-- pannello video -->
         <div id="rightpanel" class="sottomenu_off rightpanel_view">
             <div id="toprightpanel">

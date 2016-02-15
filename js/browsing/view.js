@@ -79,8 +79,16 @@ function initDoc() {
 			if ($j(this).text().toLowerCase()=='null') $j(this).remove();
 			$j(this).addClass('ui label');
 		});
+
 		// if no keywords, remove the divs
 		if ($j('a','div.keywords.content').length<=0) $j('div.keywords').remove();
+
+		// if accordion holding notes and keywords is empty, remove it
+		if ($j('.ui.accordion','#content_view').last().children().length <= 0) {
+			$j('.ui.accordion','#content_view').last().remove();
+		}
+		// show the accordion, if it's still there
+		$j('.ui.accordion','#content_view').last().fadeIn();
 
 	}); // end $j function
 } // end initDoc
