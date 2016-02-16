@@ -73,8 +73,8 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 }
 
 #content_view {
-    float: left;
-    width: 100%;
+    margin: 0 auto;
+    width: 98%;
     padding-top: 10px;
 }
 
