@@ -64,12 +64,13 @@ background: url(../../../../../layout/ada_blu/img/back.png) no-repeat center lef
     background: url(../../../../../layout/ada_blu/img/topcont.png) no-repeat;
     margin-bottom: -35px;
 }
-
+/* 
 #content_view {
     min-height: 410px;
     padding-top: 40px;
 }
-
+ */
+ 
 .content_small { margin-right: 365px;}
 #content li { list-style-type: none; }
 #contentcontent {}

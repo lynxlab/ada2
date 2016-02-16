@@ -5,6 +5,7 @@
     </head>
     <body>
         <a name="top"></a>
+        <div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -79,20 +80,19 @@
                 </div>
             </div>
             <!--  / contenuto -->
-
-            <!-- com_tools -->
-            <div id="com_tools">
-                <div id="topcom_t">
-                </div>
-                <div id="com_toolscontent">
-                    <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-                </div>
-                <div id="bottomcom_t">
-                </div>
-            </div>
-            <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
+        <div id="push"></div>
+        </div>
+        
+        <!-- com_tools -->
+        <div class="clearfix"></div>
+        <div id="com_tools">
+            <div id="com_toolscontent">
+                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
+            </div>
+        </div>
+        <!-- /com_tools -->          
 
         <!-- piede -->
         <div id="footer">

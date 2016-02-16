@@ -5,6 +5,7 @@
     </head>
     <body>
         <a name="top"></a>
+        <div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -75,27 +76,25 @@
                         <template_field class="template_field" name="text">text</template_field>
                     </div>
                 </div>
-                <div id="bottomcont"> </div>
             </div>
             <!--  / contenuto -->
-            <!-- com_tools -->
-            <div id="com_tools">
-                <div id="topcom_t"> </div>
-                <div id="com_toolscontent">
-                    <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-                </div>
-                <div id="bottomcom_t"> </div>
-            </div>
-            <!-- /com_tools -->
-        <!-- menudestra -->
-          
-        <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
-        <!-- notifiche eventi -->
-            <template_field class="template_field" name="events">events</template_field>
-            <!-- / notifiche eventi -->
+        <div id="push"></div>
         </div>
+        
+        <!-- com_tools -->
+        <div class="clearfix"></div>
+        <div id="com_tools">
+            <div id="com_toolscontent">
+                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
+            </div>
+        </div>
+        <!-- /com_tools -->            
+        
+        <!-- notifiche eventi -->
+        <!-- <template_field class="template_field_disabled" name="events">events</template_field> -->
+        <!-- / notifiche eventi -->
         
         <!-- PIEDE -->
         <div id="footer">
