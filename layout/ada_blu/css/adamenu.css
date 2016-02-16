@@ -116,7 +116,7 @@ div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul { 
 div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span.ADA_LEAF_TYPE { background-position-x: -3px; line-height: 35px; }
 div.right.sidebar .accordion .content.field #show_index #structIndex>ul>li>ul>li>span.ADA_EXERCISE { line-height: 35px; }
 div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span.ADA_GROUP_TYPE { display: inline-block; padding-bottom: 0;padding-top: 0;line-height: 35px; }
-div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>ul>li>span.ADA_EXERCISE { display: inline-block; padding: 2px 0 12px 35px; }
+div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>ul>li>span.ADA_EXERCISE { display: inline-block; padding: 2px 0 12px 0px; }
 div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span>span.viewNodeChildren,
 div.right.sidebar .accordion .content.field #show_index #structIndex ul>li>ul>li>span>span.hideNodeChildren { display: block; float: left; padding:0; }
 div.right.sidebar .accordion .loader-wrapper { text-align: center; }
