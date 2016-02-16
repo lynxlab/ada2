@@ -100,6 +100,10 @@
                 <div id="contentcontent" class="contentcontent_view">
 
                     <div class="firstnode">
+	                    <h1 class="ui red header">
+	                    	<template_field class="template_field" name="title">title</template_field>
+	                    </h1>
+	                    <div class="ui divider"></div>                    
                         <template_field class="template_field" name="text">text</template_field>
                     </div>
 		    <hr>
@@ -114,9 +118,6 @@
 		       <template_field class="template_field" name="personal">personal</template_field>
 			<!--template_field class="template_field" name="exercises">exercises</template_field-->
 		  </div>
-
-                </div>
-                <div id="bottomcont">
                 </div>
             </div>
             <!--  / contenuto -->           
