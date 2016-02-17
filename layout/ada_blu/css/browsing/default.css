@@ -314,47 +314,84 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  * classe per l'elemento nota
  */
 
-.ADA_NOTE_TYPE
-{
-    background: url(../../img/_nota.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+.ADA_NOTE_TYPE {
+    /* background: url(../../img/_nota.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
     color: Black;
 }
+
+.ADA_NOTE_TYPE:not(.TUTOR_NOTE):not(.ADA_PRIVATE_NOTE_TYPE):not(.YOUR_NOTE):before {
+	font-family: 'Icons';
+	content: '\f0f6';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #000;	
+}
+
 .ADA_NOTE_TYPE.YOUR_NOTE
 {
-    background: url(../../img/_nota_pers.png) no-repeat left;
-    font-weight: bold;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nota_pers.png) no-repeat left; */
+    /* font-weight: bold; */
+    padding: 10px 0 10px 0px;
 }
+
+.ADA_NOTE_TYPE.YOUR_NOTE:before {
+	font-family: 'Icons';
+	content: '\f0f6';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: purple;	
+}
+
 .ADA_NOTE_TYPE.TUTOR_NOTE
 {
-    background: url(../../img/_nota_tutor.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nota_tutor.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+.ADA_NOTE_TYPE.TUTOR_NOTE:not(.YOUR_NOTE):before {
+	font-family: 'Icons';
+	content: '\f0f6';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #f00;	
 }
 .ADA_NOTE_TYPE.TUTOR_NOTE.YOUR_NOTE
 {
-    background: url(../../img/_nota_pers_tutor.png) no-repeat left;
-    font-weight: bold;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nota_pers_tutor.png) no-repeat left; */
+    /* font-weight: bold; */
+    padding: 10px 0 10px 0px;
 }
 .ADA_NOTE_TYPE.YOUR_NOTE.ADA_PRIVATE_NOTE_TYPE
 {
-    background: url(../../img/_nota_private.png) no-repeat left;
-    font-weight: bold;
-    padding: 10px 0 10px 35px;
-}
-.ADA_NOTE_TYPE.TUTOR_NOTE.YOUR_NOTE.ADA_PRIVATE_NOTE_TYPE
-{
-    background: url(../../img/_nota_private_tutor.png) no-repeat left;
-    font-weight: bold;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nota_private.png) no-repeat left; */
+    /* font-weight: bold; */
+    padding: 10px 0 10px 0px;
 }
 
-.ADA_PRIVATE_NOTE_TYPE {
+.ADA_NOTE_TYPE.YOUR_NOTE.ADA_PRIVATE_NOTE_TYPE:before {
+	font-family: 'Icons';
+	content: '\f15c';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #000;	
+}
+
+.ADA_NOTE_TYPE.TUTOR_NOTE.YOUR_NOTE.ADA_PRIVATE_NOTE_TYPE
+{
+    /* background: url(../../img/_nota_private_tutor.png) no-repeat left;
+    font-weight: bold; */
+    padding: 10px 0 10px 0px;
+}
+
+/* .ADA_PRIVATE_NOTE_TYPE {
 	background: url(../../img/_nota_private.png) no-repeat left;
     font-weight: bold;
     padding: 10px 0 10px 35px;
-}
+} */
 /*
  * classe per l'elemento nota disattiva
  */
