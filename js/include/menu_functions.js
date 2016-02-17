@@ -100,6 +100,7 @@ document.observe('dom:loaded', function() {
 		if ($j('li.item.userpopup').length>0 && $j('#status_bar').length>0) {
 			$j('#status_bar').hide();
 			$j('li.item.userpopup').popup({
+				variation: 'large',
 			    position: 'bottom center',
 			    html: $j('#status_bar').html(),
 			    on: 'click',
@@ -112,9 +113,39 @@ document.observe('dom:loaded', function() {
 		// enable com_tools popup
 		if ($j('div#com_tools').length>0) {
 			$j('.ui.menu .item','#com_tools').each (function() {
-				$j(this).popup({
-					html: $j(this).children('span').first().html()
-				});
+				var popupContent = $j(this).children('span').first();
+				var totalRows = 0;
+				if ($j(this).hasClass('whosonline')) {
+					totalRows = popupContent.find("ul>li").length;
+				} else if ($j(this).hasClass('messages') || $j(this).hasClass('appointments')){
+					// maxium number of rows to display
+					var maxRows = 5;
+					totalRows = popupContent.find("table>tbody>tr").length;
+					if (totalRows > maxRows) {
+						popupContent.find("table>tbody>tr").each(function() {
+							if (totalRows > maxRows) {
+								$j(this).remove();
+								totalRows--;
+							}
+						});
+					}
+				}
+				// if the resulting popup have no rows, disable
+				// the respective link/button in the com_tools bar
+				if (totalRows>0) {
+					$j(this).popup({
+						position: 'top left',
+						html: popupContent.html(),
+						on: 'click',
+						target: $j(this),
+						offset: -50,
+						inline: true,
+						onShow: function() { $j(this).toggleClass('active'); },
+						onHide: function() { $j(this).toggleClass('active'); }
+					});
+				} else {
+					$j(this).addClass('disabled');
+				}
 			});
 		}
 

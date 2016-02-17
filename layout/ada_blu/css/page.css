@@ -248,6 +248,31 @@ a:visited {text-decoration: none; }
     margin-right: -10px;  */
 }
 
+#com_tools .ui.menu.ada > div.item:not(.disabled) {
+	cursor: pointer;	
+}
+
+#com_tools .ui.popup {
+	max-width: 40rem;
+}
+
+#com_tools .ui.popup table {
+	width: 40rem;
+	color: #000000;
+}
+
+#com_tools .ui.popup ul.user_online {
+	list-style-type: none;
+}
+
+#com_tools .ui.popup table>tbody>tr>td {
+	vertical-align: middle;
+}
+
+#com_tools .ui.popup table>tbody>tr:last-child>td {
+	border-bottom: none;
+}
+
 #topcom_t {
     height:5px;
 }

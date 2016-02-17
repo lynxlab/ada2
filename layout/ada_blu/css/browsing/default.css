@@ -408,13 +408,6 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  * claire
  */
 
-
-
-#com_tools .default_table { width: auto; color:#ccc; }
-#com_tools .default_table TD {padding:0 10px 0 0; vertical-align:middle;}
-#com_tools .default_table A { color:#fff; background:#777; padding:1px; display:block; padding:2px; }
-#com_tools .default_table A:hover {background:#ffc; color:#f50;}
-
 #menuright .default_table {
     width: auto !important;
 }
