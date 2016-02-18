@@ -18,6 +18,22 @@ div.firstnode a:hover {
 	color: red;
 }
 
+
+/**
+ * class and private notes inside the accordion
+ */
+#contentcontent .accordion .notes.content table tbody tr td .ADA_NOTE_TYPE a {
+	display: inline-block;
+}
+
+#contentcontent .accordion .notes.content table tbody tr:last-child td {
+	border: none;
+}
+
+#contentcontent .accordion .notes.content table tbody tr td:first-child {
+	width: 2%;
+} 
+ 
 /**
  * First .ui.header element is node title added in the template
  * if the author added a subheader, its containing .ui.header
@@ -30,13 +46,6 @@ div.firstnode .ui.header:nth-child(-n+2) {
 
 .dfsNavigationBar.ui.basic.segment {
 	padding: 0;
-}
-
-.dfsNavigationBar button a {
-    color: inherit;
-    text-decoration: inherit;
-    font-size: inherit;
-    font-family: inherit;
 }
 
 div#content_view .ui.accordion:last-child {
