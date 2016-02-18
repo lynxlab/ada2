@@ -347,17 +347,16 @@ UL#menu a:hover { color: #eaff00; }
 
 
 #journey {
-	background: url(../img/journey-pattern.png) repeat-x;
-	padding-top: 0px;
-	padding-right: 0px;
-	padding-bottom: 0px;
-	padding-left: 10px;
-	margin-top:10px;
 	margin-bottom:5px;
+	line-height: 1.5rem;
+	padding: 0.2rem 1rem 0.2rem 5.4rem;
+    text-indent: -4.3rem;
 }
 
-#journey A {text-decoration:none;}
-#journey A:hover {color:#000; text-decoration:underline}
+#journey a { text-decoration:none; color: #147975; }
+#journey a:hover { text-decoration:underline; color: #17504E; }
+#journey a.selected { cursor: default; }
+#journey a.selected:hover { text-decoration: none; color:#147975; }
 
 
 /* SOTTOMENU */

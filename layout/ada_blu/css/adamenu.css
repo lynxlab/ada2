@@ -88,7 +88,7 @@ div.ui.mobile.ada.menu  .dropdown {
 .ui.vertical.ada.mobile.menu .searchItem input[type="text"] { width: 100%; float:none; }
 .ui.vertical.ada.mobile.menu i.search.link.icon { margin-right: 1em; margin-top: 0.8em; }
 .ada.mobile.row.menubutton { padding-top: 0; }
-.ada.mobile.row.menubutton .menubutton-container { padding: 0 10px 0 10px; }
+.ada.mobile.row.menubutton .menubutton-container { padding: 0 10px 0 10px; margin-bottom: 0.5rem; }
 .ui.vertical.ada.mobile.menu .item { width: 95%; padding-right:0; }
 body.left.pushed > div.ui.popup.right.center.transition.visible { z-index: 9999; } 
 
