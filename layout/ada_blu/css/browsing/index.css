@@ -62,6 +62,7 @@
  * adjust last viewed icon
  */
 #structIndex > ul > li.courseNode li.courseNode span.ADA_LEAF_TYPE > img, 
+#structIndex > ul > li.courseNode li.courseNode span.ADA_GROUP_TYPE > img,
 #structIndex > ul > li.courseNode li.courseNode span.ADA_NOTE_TYPE > img {
 	zoom: 0.5;
     vertical-align: middle;
@@ -69,6 +70,7 @@
     margin-top: -2px;
 }
 
+#structIndex > ul > li.courseNode li.courseNode span.ADA_GROUP_TYPE > img,
 #structIndex > ul > li.courseNode li.courseNode span.ADA_LEAF_TYPE > img {
 	margin-left: 0;
 }	
