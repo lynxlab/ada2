@@ -224,7 +224,23 @@ document.observe('dom:loaded', function() {
 
 function navigationPanelToggle() {
 	if (IE_version==false || IE_version>8) {
-		$j('#menuright').sidebar({overlay:true}).sidebar('toggle');
+		// right panel pushes content if window width > 1265
+		var overlay = $j(window).width()<=1265;
+		$j('#menuright').sidebar({
+				overlay:overlay,
+				onShow: function() {
+					  days = 365; //number of days to keep the cookie
+					  myDate = new Date();
+					  myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
+					  document.cookie = "rightPanelOpen = 1; " +
+					  					"expires = " + myDate.toGMTString() + "; " +
+					  					"path=/"; //creates the cookie: name|value|expiry
+				},
+				onHide: function() {
+					document.cookie = "rightPanelOpen = ; expires = -1; path=/";
+				}
+			})
+			.sidebar('toggle');
 	} else {
 		$j('#menuright').toggle('fade');
 		if (!index_loaded) showIndex();
