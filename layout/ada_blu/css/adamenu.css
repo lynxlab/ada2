@@ -134,7 +134,7 @@ div.right.sidebar .accordion .content.field>a {
     background: transparent;
  }
 div.right.sidebar .accordion .content.field table tbody td { vertical-align: middle; }
-div.right.sidebar .accordion .content.field table.default_table tbody td div { padding: 0 0 0 30px; line-height: 50px; } 
+div.right.sidebar .accordion .content.field table.default_table tbody td div { padding: 0; line-height: 50px; } 
 div.right.sidebar .accordion .content.field table tbody td a {
 	background: transparent;
     line-height: 50px; 
@@ -143,6 +143,83 @@ div.right.sidebar .accordion .content.field table tbody td a {
 
 div.right.sidebar .accordion .content.field table.table_link_table { width:100%; } 
 div.right.sidebar .accordion .content.field table.table_link_table tbody td img { display: inline; vertical-align: middle; } 
+
+/**
+ * Fix links icon in links accordion panel
+ */
+div.right.sidebar .accordion .links.content table.table_link_table tbody td img { display: none; }
+div.right.sidebar .accordion .links.content table.table_link_table tbody td a[data-type="link"]:before {
+    font-family: 'Icons';
+    content: '\f0c1';
+    font-size: 1.5em;
+    vertical-align: middle;
+    margin-right: 0.5rem;	
+}
+
+div.right.sidebar .accordion .links.content table.table_link_table tbody td a[data-type="link-disabled"]:before {
+    font-family: 'Icons';
+    content: '\f023';
+    font-size: 1.5em;
+    vertical-align: middle;
+    margin-right: 0.5rem;	
+    color: red;
+}
+
+/**
+ * Fix exercise icon in exercises accordion panel
+ */
+div.right.sidebar .accordion .exercises.content table.table_link_table tbody td img { display: none; }
+div.right.sidebar .accordion .exercises.content table.table_link_table tbody td a:before {
+    font-family: 'Basic Icons';
+    content: '\270d';
+    font-size: 1.5em;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+    color: #7CB97C;
+}
+/**
+ * Fix resource icon in resources accordion panel
+ */
+div.right.sidebar .accordion .resources.content table.table_link_table tbody td img { display: none; }
+div.right.sidebar .accordion .resources.content table.table_link_table tbody td a[data-type="video"]:before {
+    font-family: 'Icons';
+    content: '\f008';
+    font-size: 1.5em;
+    vertical-align: middle;
+    margin-right: 0.5rem;	
+}
+
+div.right.sidebar .accordion .resources.content table.table_link_table tbody td a[data-type="audio"]:before {
+    font-family: 'Icons';
+    content: '\f001';
+    font-size: 1.5em;
+    vertical-align: middle;
+    margin-right: 0.5rem;	
+}
+
+div.right.sidebar .accordion .resources.content table.table_link_table tbody td a[data-type="img"]:before {
+    font-family: 'Icons';
+    content: '\f03e';
+    font-size: 1.5em;
+    vertical-align: middle;
+    margin-right: 0.5rem;	
+}
+
+div.right.sidebar .accordion .resources.content table.table_link_table tbody td a[data-type="link"]:before {
+    font-family: 'Icons';
+    content: '\f0c1';
+    font-size: 1.5em;
+    vertical-align: middle;
+    margin-right: 0.5rem;	
+}
+
+div.right.sidebar .accordion .resources.content table.table_link_table tbody td a[data-type="doc"]:before {
+    font-family: 'Icons';
+    content: '\f016';
+    font-size: 1.5em;
+    vertical-align: middle;
+    margin-right: 1.2rem;	
+}
  
  /**
   * end accordion
@@ -170,4 +247,4 @@ div.right.sidebar #menurightcontent span.index.item a { color: #4CB164; }
 
 div.right.sidebar #menurightcontent .resources table.table_link_table { width: 100%; table-layout:fixed; }
 div.right.sidebar #menurightcontent .resources table.table_link_table tbody tr td:first-child { display: none; }
-div.right.sidebar #menurightcontent .resources table.table_link_table tbody td a { width: 100%; display: inline-block; overflow: hidden; text-overflow: ellipsis; line-height: 25px; }
+div.right.sidebar #menurightcontent .resources table.table_link_table tbody td a { width: 100%; display: inline-block; overflow: hidden; text-indent: 0.8rem;  ellipsis; line-height: 25px; }
