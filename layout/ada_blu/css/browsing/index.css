@@ -3,13 +3,17 @@
 #structIndex .preview_forum {
 	margin-top: 1rem;
 	padding: 1rem;
-	border: 1px solid #dedede;
+	border: 1px solid #efefef;
 	border-radius: 5px;
 }
 
 #structIndex > ul > li.courseNode > ul.structIndex > li.courseNode {
 	border-bottom: 1px solid #cecece;
 	padding-bottom: 1rem;
+}
+
+#structIndex > ul > li.courseNode > ul.structIndex > li.courseNode:last-child {
+	border-bottom: none;
 }
 
 #structIndex span.visitsCount {
