@@ -438,7 +438,7 @@ else {
 	}
 
 	// @author giorgio 24/apr/2013 gocontinue link
-	$last_visited_node_id = $userObj->get_last_accessFN($courseInstanceId,"N");
+	$last_visited_node_id = $userObj->get_last_accessFN($courseInstanceId,"N",AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore'])));
 	if  ((!empty($last_visited_node_id)) AND (!is_object($last_visited_node_id))&& $isStarted && !$isEnded){
 		$last_node_visitedObj = BaseHtmlLib::link("view.php?id_course=$courseId&id_node=$last_visited_node_id&id_course_instance=$courseInstanceId",translateFN("Continua"));
 		// echo "<!--"; var_dump($last_node_visitedObj);echo "-->";
@@ -524,7 +524,7 @@ else {
 	//$content_dataAr['last_visit'] = $userObj->get_last_accessFN();
     $content_dataAr['last_visit'] = $last_access;
 	$content_dataAr['message'] = isset($message) ? $message : null;
-	$content_dataAr['course_title'] = translateFN("Home dell'utente"). " &gt; ".translateFN("Novità");
+	$content_dataAr['course_title'] = $c['titolo'].' - '.$c['title'];
 	$content_dataAr['status'] = $status;
 }
 

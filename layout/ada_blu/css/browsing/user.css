@@ -1,51 +1,27 @@
 #trebox {
-height: 400px;
-position: relative;
-/*background: url(../../img/3box.gif) bottom center no-repeat;*/
   width: 980px;
   margin: 0 auto;
 }
 
-#blocco_uno {
-/*position: relative;*/
-width: 300px;
-height: 300px;
-margin-top: 70px;
-/*margin-left: 10%;*/
-float: left;
-background-color:#f7f7f7;
-border: 1px solid #dedede;
-border-radius: 20px;
-}
-
-#blocco_due {
-/*position: relative;*/
-width: 300px;
-height: 300px;
-margin-top: 70px;
-margin-left: 35px;
-float: left;
-background-color:#f7f7f7;
-border: 1px solid #dedede;
-border-radius: 20px;
-}
-
+#blocco_uno,
+#blocco_due,
 #blocco_tre {
-/*position: relative;*/
-width: 300px;
-height: 300px;
-margin-top: 70px;
-margin-left: 35px;
-float: left;
-background-color:#f7f7f7;
-border: 1px solid #dedede;
-border-radius: 20px;
+	width: 300px;
+	height: 300px;
+	margin-top: 60px;
+	margin-left: 35px;
+	float: left;
+	background-color:#f7f7f7;
+	border: 1px solid #dedede;
+	border-radius: 20px;
+}
+
+#blocco_uno {
+	margin-left: 0;
 }
 
 #lista_blocco_uno {
 	position:relative;
-	/*padding-top:28px;
-	padding-left:65px;*/
 	margin: 0;
 	padding: 0;
 }
@@ -56,46 +32,29 @@ border-radius: 20px;
 	width:300px;
 	height:60px;
 	margin-top: 0px;
-	
-        line-height: 35px;
-        margin-left:-38px;
+    line-height: 35px;
+    margin-left:-38px;
 	text-indent: 65px;
-        
 }
 
-
-
-#lista_blocco_due {
-	position:relative;
-	/*padding-top:28px;
-	padding-left:65px;*/
-	margin: 0;
-	padding: 0;
-}
-
-#lista_blocco_due li {
-	/*padding-bottom:47px;*/
-        //margin-left:-38px;
-        line-height: 35px;
-        margin-left:-38px;
-	text-indent: 65px;
-        
-}
-
-
-
+#lista_blocco_due,
 #lista_blocco_tre {
-	position:relative;
-	/*padding-top:28px;
-	padding-left:65px;*/
-	margin: 0;
-	padding: 0;
+	padding: 15px 0 0 0;
+ 	margin: 0;
 }
 
+#lista_blocco_due li,
 #lista_blocco_tre li {
-	/*padding-bottom:47px;*/
+	padding-bottom:47px;
+    line-height: 35px;
+	text-indent: 35px;
 }
 
+#lista_blocco_uno li a,
+#lista_blocco_due li a,
+#lista_blocco_tre li a {
+	text-transform: capitalize;
+}
 
 #cosacedinuovo {
 	position:relative;
@@ -133,7 +92,6 @@ border-radius: 20px;
         border-bottom: 2px #dedede solid;
 }
 
-
 #laclasse {
 	position:relative;
 	height:53px;
@@ -156,54 +114,6 @@ border-radius: 20px;
 	color: #666666;
 }
 
-#gostart {
-	display:block;
-	position:relative;
-	padding-top:1px;
-	padding-left:1px;
-	font-size: 12px;
-	color: #666666;
-	width:300px;
-	height:60px;
-	margin-top: 5px;
-	text-indent: 65px;
-	line-height: 60px;
-}
-
-#gostart a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	text-indent: 65px;
-}
-
-#gostart a:hover{
-	/*background:url(../../img/inizia-hover.png) 31px 17px no-repeat;*/
-}
-
-#goclasse {
-	position:relative;
-	padding-top:1px;
-	padding-left:1px;
-	font-size: 12px;
-	color: #666666;
-}
-
-#goclasse a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	margin-top: 5px;
-	line-height: 35px;
-        margin-left:-38px;
-	text-indent: 65px;
-}
-
-#goclasse a:hover{
-	/*background:url(../../img/classe-hover.png) 30px 20px no-repeat;*/
-}
-
-
 #msg {
 	position:relative;
 	padding-top:0px;
@@ -221,18 +131,6 @@ border-radius: 20px;
 	color: #666666;
 }
 
-#gocontinue a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	line-height: 60px;
-	text-indent: 65px;
-}
-
-#gocontinue a:hover{
-	/*background:url(../../img/continua-hover.png) 31px 17px no-repeat;*/
-}
-
 #goforum {
 	position:relative;
 	padding-top:1px;
@@ -240,21 +138,6 @@ border-radius: 20px;
 	font-size: 12px;
 	color: #666666;
 }
-
-#goforum a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	line-height: 35px;
-        margin-left:-38px;
-	text-indent: 65px;
-}
-
-#goforum a:hover{
-	/*background:url(../../img/forum-hover.png) 30px 15px no-repeat;*/
-}
-
-
 
 #msg_agenda {
 	position:relative;
@@ -270,19 +153,6 @@ border-radius: 20px;
 	padding-left:1px;
 	font-size: 12px;
 	color: #666666;
-}
-
-#goindex a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	/*line-height: 60px;*/
-	text-indent: 65px;
-       
-}
-
-#goindex a:hover{
-	/*background:url(../../img/indice-hover.png) 30px 20px no-repeat;*/
 }
 
 #gochat {

@@ -16,18 +16,7 @@
         <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
-            <!-- PERCORSO -->
-            <div id="journey">
-                <i18n>dove sei: </i18n>
-                <span>
-                    <template_field class="template_field" name="course_title">course_title</template_field>
-                </span>
-                <span> > </span>
-                <span>
-                    <template_field class="template_field" name="path">path</template_field>
-                </span>
-            </div>
-            <!-- / percorso -->
+
             <!--dati utente-->
             <div id="status_bar">
             <div id="user_data" class="user_data_default">
@@ -73,7 +62,10 @@
             <div id="content">
                 <div id="contentcontent" class="contentcontent_default">
                     <!-- start tre blocchi grafici homepage -->
-
+						<h1 class="ui red header">
+	                    	<template_field class="template_field" name="course_title">course_title</template_field>
+	                    </h1>
+	                    <div class="ui divider"></div>
 			<div id="trebox">
 				<!-- blocco1 -->
 				<div id="blocco_uno">
@@ -94,7 +86,7 @@
                                         </div>
 						<ul id="lista_blocco_due">
 							<li id="gostart"><template_field class="template_field" name="gostart">gostart</template_field></li>		
-							<!--li id="gocontinue"><template_field class="template_field" name="gocontinue">gocontinue</template_field></li-->		
+							<li id="gocontinue"><template_field class="template_field" name="gocontinue">gocontinue</template_field></li>		
 							<li id="goindex"><template_field class="template_field" name="goindex">goindex</template_field></li>
 						</ul>
 				</div>
