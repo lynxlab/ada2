@@ -2,6 +2,7 @@
 <html>
     <body>
         <a name="top"></a>
+        <div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -72,13 +73,12 @@
                         <template_field class="template_field" name="data">data</template_field>
                     </div>
                 </div>
-
-                <div id="bottomcont">
-                </div>
             </div>
             <!--  / contenuto -->
         </div>
         <!-- / contenitore -->
+     	<div id="push"></div>
+		</div>          
 
         <!-- piede -->
         <div id="footer">
