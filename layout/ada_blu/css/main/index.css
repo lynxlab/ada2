@@ -54,7 +54,7 @@ html,body {
 
 #container .portlet-header { 
 	margin: -0.7em;
-	margin-bottom:0;
+	margin-bottom:1.2em;
     border: none ;
     border-radius: 0;
     padding: 0.5em;
