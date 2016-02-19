@@ -30,32 +30,11 @@ html,body {
 	float: left;
 }
 
-#newscont .news {
-	width: 30%;
-	float: left;
-	background: #9da5b8;
-	color: #fff;
-	margin-right: 5px;
-	padding: 10px;
-	height: 175px;
-	position: relative;
-}
-
-#newscont .news .newstitle {
-	font-size: 150%;
-	font-weight: bold;
-}
 #submenu_question_mark {
     position: absolute;
     left: 490px;
     top: 135px;
     padding: 0;
-}
-
-#newscont .news .continuelink {
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
 }
 
 .portlet {
@@ -66,12 +45,31 @@ html,body {
     margin: 5px 10px 5px 0;
     /* box-shadow: 0px 5px 15px 0px rgba(120, 120, 120, .4);     */
 }
-.column { 
+
+.ada-column { 
     padding-bottom: 10px;
     width: 99%;
     float: left;
 }
-.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; }
+
+#container .portlet-header { 
+	margin: -0.7em;
+	margin-bottom:0;
+    border: none ;
+    border-radius: 0;
+    padding: 0.5em;
+    text-transform: capitalize;
+ }
+ 
+#container .ui-widget-content {
+ 	background: none;
+ 	background-color: #f5f5f5	;
+ 	
+}
+
+#container a { color: #72A9D3; }
+#container a:hover { color: #1263A0; }
+
 .portlet-header .ui-icon { float: right; }
 .portlet-content { padding: 0.4em; }
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
@@ -107,3 +105,9 @@ html,body {
 .RSSContent a { margin-top: 10px; display: inline-block; }
 .facebookContainer,
 .twitterContainer { margin-bottom: 15px; overflow: hidden; text-overflow: ellipsis; }
+
+#newscont .continuelink.row { margin:0; padding:0; }
+#newscont .newstitle { display: inline-block; }
+#newscont p.newscontent { color: #767676; line-height: 1.5rem; }
+#newscont a.newstitle { color: #777; }
+#newscont a.newstitle:hover { color: #1263A0; }
