@@ -257,7 +257,7 @@ class NodeEditing {
         if(!file_exists($node_data['icon'])) {
             $node_data['icon'] = 'nodo.png';
         }
-		
+
         $result = $dh->_edit_node($node_data);
         if ( AMA_DataHandler::isError($result) ) return $result;
 
@@ -321,7 +321,7 @@ class NodeEditing {
 
 //        return true;
         return $node_id;
-        
+
     }
 
     public static function getAuthorMedia( $id_course, $media_type=array() ) {
@@ -357,7 +357,7 @@ class NodeEditingViewer {
         // vito, 1 ottobre 2008
         if (isset($node_to_edit['text'])) $node_to_edit_text = $node_to_edit['text'];
         else $node_to_edit_text = '';
-        
+
         if (get_magic_quotes_gpc() /*|| get_magic_quotes_runtime()*/) {
             $node_to_edit_text = stripslashes($node_to_edit_text);
         }
@@ -640,8 +640,8 @@ class NodeEditingViewer {
         }
         else {
             $node_text = $node_data['DataFCKeditor'];
-        }        
-        
+        }
+
         if ($node_data['type'] == ADA_LEAF_WORD_TYPE OR $node_data['type'] == ADA_GROUP_WORD_TYPE) {
             // hyphenation
             $hyphenation_label = CDOMElement::create('DIV');
@@ -1051,7 +1051,7 @@ class NodeEditingViewer {
 
             $node_data_div->addChild($parent_node_selector);
         }
-        
+
         // @author giorgio 26/apr/2013
         // checkbox to force node modification to appear in whats new page
         $node_forcecreationupdate  = CDOMElement::create('div','id:show_node_forcecreationupdate, class:editor_input');
@@ -1059,7 +1059,7 @@ class NodeEditingViewer {
         $label->addChild(new CText(translateFN('Appare nelle novit&agrave;')));
         $input_forcecreationupdate = CDOMElement::create('checkbox','id:forcecreationupdate, name:forcecreationupdate');
         $input_forcecreationupdate->setAttribute('value','1');
-        if (isset($node_data['forcecreationupdate'])) $input_forcecreationupdate->setAttribute('checked', 'checked');    
+        if (isset($node_data['forcecreationupdate'])) $input_forcecreationupdate->setAttribute('checked', 'checked');
         $node_forcecreationupdate->addChild($input_forcecreationupdate);
         $node_forcecreationupdate->addChild($label);
         $node_data_div->addChild($node_forcecreationupdate);
@@ -1094,8 +1094,8 @@ class NodeEditingViewer {
 
 //    if ($flags & EDITOR_INSERT_NODE_DATA)
 //    {
-        $span_node_data = CDOMElement::create('div','id:jsbutton_forjsnode_data_div');
-        $span_node_data->setAttribute('class', 'editor_input selected');
+        $span_node_data = CDOMElement::create('div','id:jsbutton_forjsnode_data_div,class:ui tiny active button');
+//         $span_node_data->setAttribute('class', 'editor_input selected');
         $span_node_data->setAttribute('onclick', "showMeHideOthers('jsbutton_forjsnode_data_div','jsnode_data_div');");
         $span_node_data->addChild(new CText(translateFN('Attributi nodo')));
 
@@ -1103,8 +1103,8 @@ class NodeEditingViewer {
 //    }
 
         if ( $flags & EDITOR_INSERT_EXTERNAL_LINK ) {
-            $span_external_link = CDOMElement::create('div','id:jsbutton_forjsid_divle');
-            $span_external_link->setAttribute('class', 'editor_input unselected');
+            $span_external_link = CDOMElement::create('div','id:jsbutton_forjsid_divle,class:ui tiny inactive button');
+//             $span_external_link->setAttribute('class', 'editor_input unselected');
             $span_external_link->setAttribute('onclick', "showMeHideOthers('jsbutton_forjsid_divle','jsid_divle');");
             $span_external_link->addChild(new CText(translateFN('Aggiungi link esterno')));
 
@@ -1112,8 +1112,8 @@ class NodeEditingViewer {
         }
 
         if ( $flags & EDITOR_INSERT_INTERNAL_LINK ) {
-            $span_internal_link = CDOMElement::create('div','id:jsbutton_forjsid_divli');
-            $span_internal_link->setAttribute('class', 'editor_input unselected');
+            $span_internal_link = CDOMElement::create('div','id:jsbutton_forjsid_divli,class:ui tiny inactive button');
+//             $span_internal_link->setAttribute('class', 'editor_input unselected');
             $span_internal_link->setAttribute('onclick', "showMeHideOthers('jsbutton_forjsid_divli','jsid_divli');");
             $span_internal_link->addChild(new CText(translateFN('Aggiungi link interno')));
 
@@ -1121,8 +1121,8 @@ class NodeEditingViewer {
         }
 
         if ( ($flags & EDITOR_UPLOAD_FILE) || ($flags & EDITOR_SELECT_FILE) ) {
-            $span_upload_file = CDOMElement::create('div','id:jsbutton_forjsid_divfu');
-            $span_upload_file->setAttribute('class', 'editor_input unselected');
+            $span_upload_file = CDOMElement::create('div','id:jsbutton_forjsid_divfu,class:ui tiny inactive button');
+//             $span_upload_file->setAttribute('class', 'editor_input unselected');
             $span_upload_file->setAttribute('onclick', "showMeHideOthers('jsbutton_forjsid_divfu','jsid_divfu');");
             $span_upload_file->addChild(new CText(translateFN('Aggiungi multimedia')));
 
