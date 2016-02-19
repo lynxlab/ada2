@@ -224,8 +224,8 @@ document.observe('dom:loaded', function() {
 
 function navigationPanelToggle() {
 	if (IE_version==false || IE_version>8) {
-		// right panel pushes content if window width > 1265
-		var overlay = !$j('#menuright').sidebar('is open') && $j(window).width()<=1265;
+		// right panel pushes content if window width > 1280
+		var overlay = !$j('#menuright').sidebar('is open') && $j(window).width()<=1280;
 		$j('#menuright').sidebar({
 				overlay:overlay,
 				onShow: function() {
