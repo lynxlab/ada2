@@ -90,13 +90,13 @@ function initDoc() {
 		// show the accordion, if it's still there
 		$j('.ui.accordion','#content_view').last().fadeIn();
 
-		// open navigation right panel if its cookie is there
-		if (parseInt(readCookie("rightPanelOpen")) == 1) {
+		// close navigation right panel if its cookie is there
+		var closeRightPanel = parseInt(readCookie("closeRightPanel"))==1;
+		if ((!$j('#menuright').sidebar('is open') && !closeRightPanel) ||
+			($j('#menuright').sidebar('is open') && closeRightPanel)) {
 			$j('a[onclick*="navigationPanelToggle()"]').trigger('click');
 			navigationPanelToggle();
 		}
-
-
 
 	}); // end $j function
 } // end initDoc

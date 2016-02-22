@@ -229,15 +229,15 @@ function navigationPanelToggle() {
 		$j('#menuright').sidebar({
 				overlay:overlay,
 				onShow: function() {
-					  days = 365; //number of days to keep the cookie
-					  myDate = new Date();
-					  myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
-					  document.cookie = "rightPanelOpen = 1; " +
-					  					"expires = " + myDate.toGMTString() + "; " +
-					  					"path=/"; //creates the cookie: name|value|expiry
+					document.cookie = "closeRightPanel = ; expires = -1; path=/";
 				},
 				onHide: function() {
-					document.cookie = "rightPanelOpen = ; expires = -1; path=/";
+					days = 365; //number of days to keep the cookie
+					myDate = new Date();
+					myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
+					document.cookie = "closeRightPanel = 1; " +
+					"expires = " + myDate.toGMTString() + "; " +
+					"path=/"; //creates the cookie: name|value|expiry
 				}
 			})
 			.sidebar('toggle');
