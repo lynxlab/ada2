@@ -302,6 +302,7 @@ class DFSNavigationBar
     	$hrefTextElement = CDOMElement::create('div','class:visible content');
     	$hrefTextElement->addChild(new CText($hrefText));
     	$retElement->addChild($hrefTextElement);
+    	$href = null;
 
         if ($this->_currentNode != null && $this->_nextNode != null && $this->_nextTestNode == null) {
         	$href = HTTP_ROOT_DIR.'/browsing/'.$this->linkScriptForNode($this->_nextNode)
