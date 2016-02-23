@@ -54,3 +54,27 @@
     height: auto;
     overflow: hidden;
 }
+
+/**
+ * subscription success in info.php
+ */
+#contentcontent .ui.success.message .message a {
+	font-weight: bold;
+	color: #006F00;
+}
+
+#contentcontent .ui.success.message .message a:hover {
+	color: #2BE02B;
+}
+
+/**
+ * subscription error in info.php
+ */
+#contentcontent .ui.error.message .message a {
+	font-weight: bold;
+	color: #BD2323;
+}
+
+#contentcontent .ui.error.message .message a:hover {
+	color: #FF6F6F;
+} 
