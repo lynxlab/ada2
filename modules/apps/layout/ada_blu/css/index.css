@@ -1,0 +1,36 @@
+@CHARSET "UTF-8";
+
+/* THIS IS JUST THE BASIC CSS WITH THE BACK BUTTON STYLED
+   USE IT TO BUILD MODULE'S OWN CSS */
+#container { border: none; }
+#getButton {
+	margin: 0 auto;
+}
+
+#gettokenpage, #outputtoken {
+	text-align: center;
+	border: 1px dotted #eaeaea;
+	padding: 10px;
+}
+
+#outputtoken {
+	font-size: 1.2em;
+	background: lightyellow;
+	margin-top: 10px;
+}
+
+.appsecret,
+.appsecreterror {
+	text-align: center;
+}
+
+.appsecreterror {
+	background: red;
+	color: white;
+	padding: 10px;
+	font-weight: bold;
+}
+
+.clientIDLabel, .clientSecretLabel {
+	font-weight: bold;
+}

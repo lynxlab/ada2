@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# Redirect all requests not pointing at an actual file to index.php
+# passing the requested extension as format GET parameter
+# e.g. /api/v1/users.json => /api/v1/index.php?format=json
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond $2 !^$
+RewriteRule ^(\w*)\.?(\w*) index.php?format=$2 [L,QSA]
+
+# If above did not match, just pass it all to index
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . index.php [L,QSA]

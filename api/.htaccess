@@ -1,0 +1,14 @@
+RewriteEngine On
+RewriteBase /api
+
+# Redirect requests to the /token endpoint to tokenController.php
+RewriteRule ^token(\/)?$ tokenController.php [L]
+
+# Redirect direct tokenController.php requests to 404 not found
+# RewriteRule ^tokenController.php$ - [L,R=404]
+
+# Redirect all requests not pointing at an actual file to index.php
+# always pointing to the latest stable api version (see the vx/ path)
+# SET IN THE BELOW RewriteRule THE LATEST STABLE API VERSION TO REDIRECT TO
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ v1/$1 [L,QSA]
