@@ -81,12 +81,12 @@ if($op !== false && $op == 'course_info') {
                         $courseId = $courseData['id_corso'];
                         $course_dataHa = $tester_dh->get_course($courseId);
                         if (!AMA_DataHandler::isError($course_dataHa)) {
-                            $credits =  $course_dataHa['crediti']; 
+                            $credits =  $course_dataHa['crediti'];
                             // supponiamo che tutti i corsi di un servizio (su tester diversi) abbiano lo stesso numero di crediti
                             // quindi prendiamo solo l'ultimo
                         } else {
                             $credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
-                        }    
+                        }
 
                     }
                 }
@@ -97,14 +97,14 @@ if($op !== false && $op == 'course_info') {
                 $instancesAr = $tester_dh->course_instance_subscribeable_get_list(
                         array('data_inizio_previsto', 'durata', 'data_fine', 'title'),
                         $courseId);
-                
+
                 $CourseIstanceIscription=$tester_dh->course_users_instance_get($courseId);
                 $id_node=$courseId.'_0';
-                
+
                 if(is_array($instancesAr) && count($instancesAr) > 0) {
                     foreach($instancesAr as $instance) {
                         $instanceId = $instance[0];
-                $flagSubscribe_link=false;     
+                $flagSubscribe_link=false;
                 $isEnded = ($instance[3] > 0 && $instance[3] < time()) ? true : false;
                    if($isEnded)
                         {
@@ -146,19 +146,19 @@ if($op !== false && $op == 'course_info') {
                                                translateFN('iscriviti'));
                                                $flagSubscribe_link=true;
                                            }
-                                       } 
+                                       }
                                    }
                            }
                            if(!$flagSubscribe_link)
                             {
                               $subscribe_link = BaseHtmlLib::link(
                               "info.php?op=subscribe&provider=$currentTesterId&course=$courseId&instance=$instanceId",
-                              translateFN('iscriviti')); 
+                              translateFN('iscriviti'));
                             }
 
-                           }     
-                            
-                    
+                           }
+
+
                         /*
                          * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
                          * per ogni istanza corso (qualcosa che vada a sostituire course_instance_get_list solo in questo caso.
@@ -205,7 +205,7 @@ if($op !== false && $op == 'course_info') {
                             $tutorFullName,
                             $subscribe_link
                         );
-                         * 
+                         *
                          */
                         $tbody_data[] = array(
                             $nome_instanza,
@@ -258,7 +258,21 @@ if($op !== false && $op == 'course_info') {
                     if ($id_tester_user !== FALSE ) {
                         $result = $tester_dh->course_instance_student_presubscribe_add($instanceId, $userObj->getId(),$startStudentLevel);
                         if(!AMA_DataHandler::isError($result) || $result->code == AMA_ERR_UNIQUE_KEY) {
-                            $data = new CText(translateFN('La tua preiscrizione è stata effettuata con successo.'));
+
+                            $data = CDOMElement::create('div','class:ui success icon large message');
+                            $data->addChild(CDOMElement::create('i','class:ok sign icon'));
+                            $MSGcontent = CDOMElement::create('div','class:content');
+                            $MSGheader = CDOMElement::create('div','class:header');
+                            $MSGtext = CDOMElement::create('span','class:message');
+
+                            $data->addChild($MSGcontent);
+                            $MSGcontent->addChild($MSGheader);
+                            $MSGcontent->addChild($MSGtext);
+
+                            $MSGheader->addChild(new CText(translateFN('La tua preiscrizione è stata effettuata con successo.')));
+                            $MSGtext->addChild(BaseHtmlLib::link($userObj->getHomePage(), translateFN('Clicca qui')));
+                            $MSGtext->addChild (new CText(' '.translateFN('per tornare alla tua home page')));
+
                             if ($course_instance_infoAR['price'] > 0) {
                                 $args = '?provider='.$providerId.'&course='.$courseId.'&instance='.$instanceId;
                                 header('Location: ' . HTTP_ROOT_DIR . '/browsing/student_course_instance_subscribe.php'.$args);
@@ -266,18 +280,20 @@ if($op !== false && $op == 'course_info') {
                             } else {
                                 $result = $tester_dh->course_instance_student_subscribe($instanceId, $userObj->getId(),ADA_STATUS_SUBSCRIBED, $startStudentLevel);
                                 if(!AMA_DataHandler::isError($result)) {
-                                    $info_div = CDOMElement::create('DIV', 'id:info_div');
-                                    $info_div->setAttribute('class', 'info_div');
-                                    $label_text = CDOMElement::create('span','class:info');
-                                    $label_text->addChild(new CText(translateFN('La tua iscrizione è stata effettuata con successo.')));
-                                    $info_div->addChild($label_text);
-                                    $homeUser = $userObj->getHomePage();
-                                    $link_span = CDOMElement::create('span','class:info_link');
-                                    $link_to_home = BaseHtmlLib::link($homeUser, translateFN('vai alla home per accedere.'));
-                                    $link_span->addChild($link_to_home);
-                                    $info_div->addChild($link_span);
-                                    //$data = new CText(translateFN('La tua iscrizione è stata effettuata con successo.'));
-                                    $data = $info_div;
+
+                                	$data = CDOMElement::create('div','class:ui success icon large message');
+                                	$data->addChild(CDOMElement::create('i','class:ok sign icon'));
+                                	$MSGcontent = CDOMElement::create('div','class:content');
+                                	$MSGheader = CDOMElement::create('div','class:header');
+                                	$MSGtext = CDOMElement::create('span','class:message');
+
+                                	$data->addChild($MSGcontent);
+                                	$MSGcontent->addChild($MSGheader);
+                                	$MSGcontent->addChild($MSGtext);
+
+                                	$MSGheader->addChild(new CText(translateFN('La tua iscrizione è stata effettuata con successo.')));
+                                	$MSGtext->addChild(BaseHtmlLib::link($userObj->getHomePage(), translateFN('Clicca qui')));
+                                	$MSGtext->addChild (new CText(' '.translateFN('per andare alla tua home page e accedere')));
                                 }
 
                             }
@@ -285,10 +301,34 @@ if($op !== false && $op == 'course_info') {
 //                        } else if($result->code == AMA_ERR_UNIQUE_KEY) {
 //                            $data = new CText(translateFN('Risulti già preiscritto a questa edizione del corso'));
                         } else {
-                            $data = new CText(translateFN('Si è verificato un errore'));
+                        	$data = CDOMElement::create('div','class:ui error icon large message');
+                        	$data->addChild(CDOMElement::create('i','class:attention icon'));
+                        	$MSGcontent = CDOMElement::create('div','class:content');
+                        	$MSGheader = CDOMElement::create('div','class:header');
+                        	$MSGtext = CDOMElement::create('span','class:message');
+
+                        	$data->addChild($MSGcontent);
+                        	$MSGcontent->addChild($MSGheader);
+                        	$MSGcontent->addChild($MSGtext);
+
+                        	$MSGheader->addChild(new CText(translateFN('Si è verificato un errore')));
+                        	$MSGtext->addChild(BaseHtmlLib::link($userObj->getHomePage(), translateFN('Clicca qui')));
+                        	$MSGtext->addChild (new CText(' '.translateFN('per tornare alla tua home page')));
                         }
                     } else {
-                        $data = new CText('Si è verificato un errore aggiungendo lo studente al provider');
+                    	$data = CDOMElement::create('div','class:ui error icon large message');
+                    	$data->addChild(CDOMElement::create('i','class:attention icon'));
+                    	$MSGcontent = CDOMElement::create('div','class:content');
+                    	$MSGheader = CDOMElement::create('div','class:header');
+                    	$MSGtext = CDOMElement::create('span','class:message');
+
+                    	$data->addChild($MSGcontent);
+                    	$MSGcontent->addChild($MSGheader);
+                    	$MSGcontent->addChild($MSGtext);
+
+                    	$MSGheader->addChild(new CText(translateFN('Si è verificato un errore aggiungendo lo studente al provider')));
+                    	$MSGtext->addChild(BaseHtmlLib::link($userObj->getHomePage(), translateFN('Clicca qui')));
+                    	$MSGtext->addChild (new CText(' '.translateFN('per tornare alla tua home page')));
                     }
 
                 }
@@ -369,13 +409,13 @@ if($op !== false && $op == 'course_info') {
 	{
 		// if provider is not set or there's an error loading its id, retirect to home
 		$redirect = false;
-		
+
 		/**
 		 * sets user selected provider name
 		 */
 		if (isset($GLOBALS['user_provider']))
 			$user_provider_name = $GLOBALS['user_provider'];
-			 		
+
 		/**
 		 * check if user selected provider name has a valid id in the database
 		 */
@@ -386,25 +426,25 @@ if($op !== false && $op == 'course_info') {
 			$redirect = is_null($user_provider_id);
 		}
 		else $redirect = true;
-			
+
 		if (!$redirect) $publishedServices = $common_dh->get_published_courses($user_provider_id);
 		else {
 			header ('Location: '.HTTP_ROOT_DIR.'/info.php');
 			die();
-		}		
+		}
 		$thead_data = array(translateFN('nome'), translateFN('descrizione'), translateFN('crediti'), translateFN('informazioni'));
 	} else {
 		$thead_data = array(translateFN('nome'), translateFN('provider'), translateFN('descrizione'), translateFN('crediti'), translateFN('informazioni'));
 		$publishedServices = $common_dh->get_published_courses();
 	}
-	
+
     if(!AMA_Common_DataHandler::isError($publishedServices)) {
 //      $thead_data = array('nome', 'descrizione', 'durata (giorni)', 'informazioni');
         $tbody_data = array();
 
         foreach($publishedServices as $service) {
                $serviceId = $service['id_servizio'];
-               $coursesAr = $common_dh->get_courses_for_service($serviceId); 
+               $coursesAr = $common_dh->get_courses_for_service($serviceId);
                if(!AMA_DB::isError($coursesAr)) {
                     $currentTesterId = 0;
                     $currentTester = '';
@@ -441,7 +481,7 @@ if($op !== false && $op == 'course_info') {
                         } else {
                         	$more_info_link = BaseHtmlLib::link("info.php",translateFN('No instances available'));
                         }
-                        
+
                         if (!MULTIPROVIDER) {
                         	$tbody_data[] = array(
                         			$service['nome'],
