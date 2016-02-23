@@ -334,8 +334,8 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	    	$MSGcontent->addChild($MSGtext);
 
 	    	$MSGheader->addChild(new CText(translateFN('Non sei iscritto a nessun corso')));
-	    	$MSGtext->addChild(BaseHtmlLib::link(HTTP_ROOT_DIR . '/info.php', 'Clicca qui'));
-	    	$MSGtext->addChild (new CText(' '.'per vedere l\'elenco dei corsi a cui puoi iscriverti'));
+	    	$MSGtext->addChild(BaseHtmlLib::link(HTTP_ROOT_DIR . '/info.php', translateFN('Clicca qui')));
+	    	$MSGtext->addChild (new CText(' '.translateFN('per vedere l\'elenco dei corsi a cui puoi iscriverti')));
 	    }
 	    // @author giorgio 24/apr/2013
 	    // end else... line
