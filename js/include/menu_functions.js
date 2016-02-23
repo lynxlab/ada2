@@ -219,6 +219,10 @@ document.observe('dom:loaded', function() {
 		});
     }
 
+    // if help div element is empty remove it
+    if ($j('#help').length>0 && $j('#help').html().trim().length<=0) {
+    	$j('#help').remove();
+    }
 
 });
 
