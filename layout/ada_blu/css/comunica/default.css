@@ -41,7 +41,8 @@ a:visited { text-decoration: none; }
     padding: 0 0 0 10px;
 }
 #user_wrap 	{background:#00b5ad url(../../img/userid.png) no-repeat 99% 50%; width:100%}
-#content	{background:#fff; padding:10px; clear:both;min-height:350px;border-bottom:10px solid #c9c9c9;}
+#content	{background:#fff; padding:10px; clear:both;border-bottom:10px solid #c9c9c9;}
+#pagecontainer { margin-bottom: -15px; }
 
 /* CLEAR FIX*/
 #user_wrap:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;}

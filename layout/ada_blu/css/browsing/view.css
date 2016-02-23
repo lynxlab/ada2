@@ -1,0 +1,53 @@
+@CHARSET "UTF-8";
+
+/**
+ * Style node content text here
+ */
+div.firstnode {
+	line-height: 2rem;
+	font-size: 1.2rem;
+} 
+ 
+/**
+ * Style node content links here
+ */
+div.firstnode a {
+	color: inherit;
+}
+div.firstnode a:hover {
+	color: red;
+}
+
+
+/**
+ * class and private notes inside the accordion
+ */
+#contentcontent .accordion .notes.content table tbody tr td .ADA_NOTE_TYPE a {
+	display: inline-block;
+}
+
+#contentcontent .accordion .notes.content table tbody tr:last-child td {
+	border: none;
+}
+
+#contentcontent .accordion .notes.content table tbody tr td:first-child {
+	width: 2%;
+} 
+ 
+/**
+ * First .ui.header element is node title added in the template
+ * if the author added a subheader, its containing .ui.header
+ * element must have no top and bottom margin as well
+ */
+div.firstnode .ui.header:nth-child(-n+2) {
+	margin-top:0;
+	margin-bottom: 0;	
+}
+
+.dfsNavigationBar.ui.basic.segment {
+	padding: 0;
+}
+
+div#content_view .ui.accordion:last-child {
+	display:none;
+}

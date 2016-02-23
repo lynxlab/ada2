@@ -6,6 +6,13 @@
 @import url("../exercises.css");
 @import url("../form.css");
 
+#pagecontainer { margin-bottom: -55px; }
+
+#content,
+#content_view {
+	float: left;
+	width: 100%;
+}
 /*
  * JavaScript pager
  */

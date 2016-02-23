@@ -106,7 +106,7 @@ abstract class QuestionTest extends NodeTest
 			$class.= ' last';
 		}
 		$out->setAttribute('class', $class);
-		$out->addChild(new CText($this->titolo));		
+		$out->addChild(new CText($this->titolo));
 
 		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			if (!empty($this->_children)) {
@@ -128,9 +128,9 @@ abstract class QuestionTest extends NodeTest
 			$out->addChild($span);
 		}
 		else if ($rating) {
-			$points = (is_null($this->givenAnswer['punteggio']))?0:$this->givenAnswer['punteggio'];			
+			$points = (is_null($this->givenAnswer['punteggio']))?0:$this->givenAnswer['punteggio'];
 			$text = '('.translateFN('punteggio ottenuto').' '.$points.'/'.$this->getMaxScore().')';
-			
+
 			$span = CDOMElement::create('span');
 			$span->setAttribute('class', 'rating_question_test');
 			$span->addChild(new CText($text));
@@ -197,7 +197,7 @@ abstract class QuestionTest extends NodeTest
 					$div->addChild($span);
 				}
 
-				if ((is_a($this, QuestionMultipleClozeTest) && !$this->isAnswersTableDataEmpty())) {
+				if ((is_a($this, 'QuestionMultipleClozeTest') && !$this->isAnswersTableDataEmpty())) {
 					$span = CDOMElement::create('span','class:wrong_answer_test');
 					$span->addChild(new CText(translateFN('Attenzione! Non sono state associate le risposte ai campi della tabella!')));
 					$div->addChild($span);

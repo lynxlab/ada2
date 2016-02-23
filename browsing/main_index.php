@@ -34,7 +34,7 @@ $neededObjAr = array(
   AMA_TYPE_STUDENT => array('layout','tutor','course','course_instance'),
   AMA_TYPE_TUTOR   => array('layout','course','course_instance'),
   AMA_TYPE_AUTHOR  => array('layout','course'),
-  AMA_TYPE_SWITCHER  => array('layout','course')		
+  AMA_TYPE_SWITCHER  => array('layout','course')
 );
 
 
@@ -54,14 +54,8 @@ include_once ROOT_DIR.'/include/bookmark_class.inc.php';
 if (isset ($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) {
     $self_instruction = $courseInstanceObj->getSelfInstruction();
 }
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
-{
-    $self='defaultSelfInstruction';
-}
-else
-{
-    $self = 'index';
-}
+
+$self = 'index';
 
 if (!isset($hide_visits)) {
   $hide_visits = 1; // default: no visits countg
@@ -70,7 +64,7 @@ if (!isset($hide_visits)) {
  if (!isset($order)) {
   $order = 'struct'; // default
  }
- 
+
  if (!isset($op)) {
  	$op = null;
  }
@@ -191,11 +185,11 @@ if (is_object($userObj) && (!AMA_DataHandler::isError($userObj))) {
         $label   = CDOMElement::create('span','class:text');
         $label->addChild(new CText(translateFN('Legenda:')));
         $legenda->addChild($label);
-        
+
         $group_item = CDOMElement::create('span','class:ADA_GROUP_TYPE');
         $group_item->addChild(new CText(translateFN('gruppo')));
         $legenda->addChild($group_item);
-        
+
         $note_item = CDOMElement::create('span','class:ADA_NOTE_TYPE');
         $note_item->addChild(new CText(translateFN('nota di classe di un altro studente')));
         $legenda->addChild($note_item);
@@ -543,7 +537,7 @@ $search_data = array(
     'name'     => 'l_search',
     'size'     => '20',
     'maxlength'=> '40',
-    'value'    => isset($node_type) ? $node_type : null 
+    'value'    => isset($node_type) ? $node_type : null
   )
 );
 $fObj = new Form();
@@ -561,8 +555,8 @@ if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
     $user_type=$user_type.' livello '.$user_level;
     $user_level='';
-    $layout_dataAr['JS_filename']=array(ROOT_DIR.'/js/include/menu_functions.js'); 
-    
+    $layout_dataAr['JS_filename']=array(ROOT_DIR.'/js/include/menu_functions.js');
+
 }
 
 /*
@@ -577,13 +571,13 @@ if(isset($_SESSION['sess_id_course_instance'])){
         $last_access=$userObj->get_last_accessFN(null,"UT",null);
         $last_access=AMA_DataHandler::ts_to_date($last_access);
   }
-  
+
  if($last_access=='' || is_null($last_access)){
     $last_access='-';
 }
 
 $title = '';
-if (isset($index_link)) $title .= $index_link; 
+if (isset($index_link)) $title .= $index_link;
 if (isset($index_no_visits_link)) $title .= $index_no_visits_link;
 
 $content_dataAr = array(

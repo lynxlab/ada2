@@ -1,6 +1,7 @@
 @import url("page.css");
 @import url("exercises.css");
 @import url("form.css");
+@import url("../../../js/include/semantic/css/semantic.min.css");
 
 body {
 	padding:1em;
@@ -12,8 +13,9 @@ body {
 .media.labiale,
 .media.lis,
 .media.finger-spelling,
-.meida.doc,
-div.ui,
+.media.doc,
+div.ui.ada.menucontainer,
+div.ui.dfsdNavigationBar,
 div#status_bar,
 div#user_data,
 div#labelview,

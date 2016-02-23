@@ -284,7 +284,7 @@ class Node
         if (!empty($id_child)){
           $child_dataHa = $dh->get_node_info($id_child);
           // Vengono mostrati nella mappa solo i nodi dei tipi che sono nel seguente array
-          $nodeTypesToShow = array(ADA_LEAF_TYPE, ADA_GROUP_TYPE, ADA_LEAF_WORD_TYPE, 
+          $nodeTypesToShow = array(ADA_LEAF_TYPE, ADA_GROUP_TYPE, ADA_LEAF_WORD_TYPE,
           		ADA_GROUP_WORD_TYPE, ADA_PERSONAL_EXERCISE_TYPE, ADA_STANDARD_EXERCISE_TYPE);
           if (in_array($child_dataHa['type']{0}, $nodeTypesToShow)) {
             //mydebug(__LINE__,__FILE__,$child_dataHa);
@@ -306,7 +306,7 @@ class Node
                 }
               }
             }
-            
+
             $children_count = 0;
             $children_count_res = $dh->get_node_children($id_child);
             if(!AMA_DB::isError($children_count_res) && is_array($children_count_res)) {
@@ -884,17 +884,17 @@ function filter_nodeFN($user_level,$user_history,$id_profile='3',$querystring=''
    -
 
    */
-    
-    
+
+
 
   if (!isset($id_profile))
     $id_profile = AMA_TYPE_STUDENT;
-  
+
     if ($this->type == ADA_LEAF_TYPE || $this->type == ADA_GROUP_TYPE || $this->type == ADA_NOTE_TYPE || $this->type == ADA_PRIVATE_NOTE_TYPE) {
       if (SEARCH_WORD_IN_NODE)
           $this->text = $this->search_text_in_glosary($this->text);
   }
-  
+
   $htmldataHa['text'] = $this->get_textFN($user_level,$querystring);
   $htmldataHa['media'] = $this->get_mediaFN($user_level);
   $htmldataHa['user_media']= $this->get_user_mediaFN($user_level);
@@ -903,14 +903,14 @@ function filter_nodeFN($user_level,$user_history,$id_profile='3',$querystring=''
   $htmldataHa['notes'] = $this->get_notesFN($user_level,$id_profile);
   $htmldataHa['private_notes'] = $this->get_private_notesFN($user_level,$id_profile);
   $htmldataHa['extended_node'] ='';
-  if (SHOW_NODE_EXTENDED_FIELDS)  
+  if (SHOW_NODE_EXTENDED_FIELDS)
       $htmldataHa['extended_node'] = $this->get_extended_nodeFN($user_level,$id_profile);
 /*
   if ($this->type == ADA_LEAF_TYPE || $this->type == ADA_GROUP_TYPE || $this->type == ADA_NOTE_TYPE || $this->type == ADA_PRIVATE_NOTE_TYPE) {
       if (SEARCH_WORD_IN_NODE)
           $htmldataHa['text'] = $this->search_text_in_glosary($htmldataHa['text']);
   }
- * 
+ *
  */
 
   return $htmldataHa;
@@ -1265,14 +1265,14 @@ function search_text_in_glosary($text) {
 		if ($tag == 'LINK' && $type == 'INTERNAL') {
 			$type = INTERNAL_LINK;
 		}
-		
+
 		if (isset ($_SESSION['sess_userObj']->template_family) && !empty($_SESSION['sess_userObj']->template_family))
-			$template_family = $_SESSION['sess_userObj']->template_family;		
+			$template_family = $_SESSION['sess_userObj']->template_family;
 		else
 			$template_family = ADA_TEMPLATE_FAMILY;
-		
+
 		$path = HTTP_ROOT_DIR.'/layout/'.$template_family.'/img/';
-		
+
 		$src = array(
 			_IMAGE =>           $path.'_img.png',
 			_SOUND =>           $path.'_audio.png',
@@ -1398,52 +1398,52 @@ function get_extended_nodeFN($user_level,$id_profile){
   	$grammar_label->setAttribute('class', 'label_extended');
   	$grammar_label->addChild(new CText(translateFN('grammar')));
   	$glossary_div->addChild($grammar_label);
-  	
+
   	$grammar = CDOMElement::create('DIV');
   	$grammar->setAttribute('class', 'content_extended');
   	$grammar->addChild(new CText($this->grammar));
-  	$glossary_div->addChild($grammar);  	
+  	$glossary_div->addChild($grammar);
   }
-  
+
   if (property_exists($this, 'semantic')) {
   	// semantic
   	$semantic_label = CDOMElement::create('DIV');
   	$semantic_label->setAttribute('class', 'label_extended');
   	$semantic_label->addChild(new CText(translateFN('semantic')));
   	$glossary_div->addChild($semantic_label);
-  	
+
   	$semantic = CDOMElement::create('DIV');
   	$semantic->setAttribute('class', 'content_extended');
   	$semantic->addChild(new CText($this->semantic));
   	$glossary_div->addChild($semantic);
   }
-  
+
   if (property_exists($this, 'notes')) {
   	// notes
   	$notes_label = CDOMElement::create('DIV');
   	$notes_label->setAttribute('class', 'label_extended');
   	$notes_label->addChild(new CText(translateFN('notes')));
   	$glossary_div->addChild($notes_label);
-  	
+
   	$notes = CDOMElement::create('DIV');
   	$notes->setAttribute('class', 'content_extended');
   	$notes->addChild(new CText($this->notes));
   	$glossary_div->addChild($notes);
   }
-  
+
   if (property_exists($this, 'examples')) {
   	// examples
   	$examples_label = CDOMElement::create('DIV');
   	$examples_label->setAttribute('class', 'label_extended');
   	$examples_label->addChild(new CText(translateFN('examples')));
   	$glossary_div->addChild($examples_label);
-  	
+
   	$examples = CDOMElement::create('DIV');
   	$examples->setAttribute('class', 'content_extended');
   	$examples->addChild(new CText($this->examples));
-  	$glossary_div->addChild($examples);  	
+  	$glossary_div->addChild($examples);
   }
-  
+
 //  $gloassary_div->getHtml();
 
   return $glossary_div->getHtml();
@@ -1490,23 +1490,23 @@ function get_linksFN($user_level,$id_profile){
           }
 
           if  ($visit_count<=0){
-            $ok_link = array("<img src=\"img/_linka.png\">","&nbsp;<a class='node_not_visited' href=view.php?id_node=$node alt=\"$link_meaning\">$linked_node_name</a>");
+            $ok_link = array("<img data-type='link' src=\"img/_linka.png\">","&nbsp;<a data-type='link' class='node_not_visited' href=view.php?id_node=$node alt=\"$link_meaning\">$linked_node_name</a>");
           } else {
-            $ok_link = array("<img src=\"img/_linka.png\">","&nbsp;<a href=view.php?id_node=$node alt=\"$link_meaning\">$linked_node_name</a> ($visit_count)");
+            $ok_link = array("<img data-type='link' src=\"img/_linka.png\">","&nbsp;<a data-type='link' href=view.php?id_node=$node alt=\"$link_meaning\">$linked_node_name</a> ($visit_count)");
           }
         } else {
-          $ok_link = array("<img src=\"img/_linkdis.png\">","&nbsp; ".$linked_node_name);
+          $ok_link = array("<img data-type='link-disabled' src=\"img/_linkdis.png\">","&nbsp;<span data-type='link-disabled'> ".$linked_node_name.'</span>');
           // $ok_link = array("<img src=\"templates/default/img/_linkdis.png\">",$linked_node_name);
         }
       } else {
         //$ok_link =array("&nbsp;","&nbsp;");
-        $ok_link =array("<img src=\"img/_linkdis.png\" alt=\"$node\">",translateFN("nodo non trovato"));
+        $ok_link =array("<img data-type='link-disabled' src=\"img/_linkdis.png\" alt=\"$node\">","&nbsp;<span data-type='link-disabled'> ".translateFN("nodo non trovato").'</span>');
       }
       array_push($dataAr,$ok_link);
     }
 
     $dataAr = $this->_removeEmptyElements($dataAr);
-    
+
     $t = new Table();
     $rules = '';
     $style = 'table_link';
@@ -1603,7 +1603,7 @@ function get_exercisesFN($user_level){
     }
 
     $dataAr = $this->_removeEmptyElements($dataAr);
-    
+
     $rules = '';
     $style = 'table_link';
     $t = new Table();
@@ -2352,12 +2352,12 @@ public static function isNodeExercise($type) {
 /**
  * @author giorgio 29/ago/2014
  * wrap returned text inside a span
- * 
+ *
  * @param string $text the text to be wrapped
  * @param string $class if passed, the css class assigned to the span
- * 
+ *
  * @return CBaseElement on success, null on failure
- * 
+ *
  * @access private
  */
 private function _wrapTextInSpan($text, $class=null) {
@@ -2367,18 +2367,18 @@ private function _wrapTextInSpan($text, $class=null) {
 			$retel->setAttribute('class', $class);
 		}
 		$retel->addChild(new CText($text));
-		return $retel;		
+		return $retel;
 	} else return null;
 }
 
 /**
  * @author giorgio 29/ago/2014
  * remove empty $dataAr elements
- * 
+ *
  * @param array $dataAr data to operate on
- * 
+ *
  * @return array cleaned array
- * 
+ *
  * @access private
  */
 private function _removeEmptyElements($dataAr) {

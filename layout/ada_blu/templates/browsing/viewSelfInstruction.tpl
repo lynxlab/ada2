@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="../../css/browsing/default.css" type="text/css">
     </head>
     <body>
-        <a name="top">
-        </a>
+        <a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -13,14 +13,14 @@
         <!-- / testata -->
         <!-- menu -->
             <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-        <!-- / menu -->  
+        <!-- / menu -->
         <!-- help -->
             <template_field class="template_field" name="help">help</template_field>  
-        <!-- / help --> 
+        <!-- / help -->     
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->
-            <div id="journey">
+            <div id="journey" class="ui tertiary inverted teal segment">
                 <i18n>dove sei: </i18n>
                 <span>
                     <template_field class="template_field" name="course_title">course_title</template_field>
@@ -86,12 +86,6 @@
                                             <template_field class="template_field" name="node_level">node_level</template_field>
                                         </span>
                                         </li>
-                                        <li>
-                                        <i18n>keywords: </i18n>
-                                        <span class="keywords">
-                                            <template_field class="template_field" name="keywords">keywords</template_field>
-                                        </span>
-                                        </li>
                                     </ul>
                                     <!--div class="dattilo" id="dattilo">
                                       <template_field class="template_field_disabled" name="dattilo">dattilo</template_field>
@@ -112,106 +106,32 @@
                             <template_field class="template_field" name="bookmark">bookmark</template_field>
                         </span>
                     </div>
-                    
-                    
-					<div class="navbar_top">
-						<div class="previous_arrow">
-							<div class="go_prev">
-								<a href='javascript:history.back();'><i18n>Torna</i18n></a>
-							</div>
-
-						</div>
-						
-						<div class="next_arrow">				
-	                    	<div class="go_next">
-								<template_field class="template_field" name="go_next">go_next</template_field>
-							</div>							
-						</div>
-					</div>
-					
-					
-                    
                     <div class="firstnode">
-                        <template_field class="template_field" name="text">text</template_field>
-						
-						<!-- 
-						<div class="stabilo_viola">testo stabilo viola</div>
-						<span class="didascalia">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tortor nunc, luctus sit amet metus at, fringilla pellentesque dolor. Nam in est dui. Quisque sagittis at enim quis rhoncus. Duis sit amet enim non nunc hendrerit porta. Etiam non metus vel erat tristique interdum. Cras nec elit enim. Sed porttitor tempus elit ac bibendum. Nam sit amet ipsum vitae lacus tincidunt tincidunt. Vestibulum non felis tellus.<BR> <BR>
-						
-						<div class="titolo_viola">testo TITOLO viola</div>
-
-Pellentesque venenatis facilisis velit, ut hendrerit eros tincidunt lacinia. Nullam consequat odio vitae ullamcorper congue. Vestibulum a eros at risus lobortis eleifend. Mauris at pellentesque arcu. Sed in purus ligula. Vestibulum velit est, dictum non porta accumsan, vehicula in mi. In et porta mi. Etiam eget lacus consectetur, suscipit quam eu, egestas dui. Morbi iaculis fermentum dui at molestie. Curabitur in justo varius, dictum sem sed, mattis odio. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec blandit mauris ut ornare volutpat. Suspendisse vel est porttitor, consectetur nisi sed, mollis diam. Etiam malesuada lacinia leo, a iaculis enim pellentesque ut.<BR> <BR>
-
-Curabitur mollis egestas leo. Sed fermentum quam urna, in cursus metus posuere eget. Phasellus laoreet fermentum orci, ac cursus velit porta sit amet. Morbi a odio in libero pretium vehicula. Donec et arcu sed metus fringilla commodo id vel neque. Donec scelerisque leo metus, sed ultricies justo consectetur vel. Vestibulum placerat nibh in ante molestie vestibulum. Phasellus vel libero ut justo porta consequat nec non neque. Nulla lobortis magna eget enim blandit aliquam. Sed ultrices tellus vel arcu commodo egestas. Donec vel fermentum metus. Quisque hendrerit iaculis leo, sed blandit justo pulvinar interdum. Suspendisse leo elit, varius at elementum vel, auctor vel dui. Maecenas congue, tellus quis tincidunt blandit, dolor augue ultrices nibh, vel commodo nibh neque quis nunc. </span>
-						
-						
-						<div class="stabilo_rosso">testo STABILO rosso</div>
-						<div class="titolo_rosso">testo TITOLO rosso</div>
-						
-						<span class="didascalia">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tortor nunc, luctus sit amet metus at, fringilla pellentesque dolor. Nam in est dui. Quisque sagittis at enim quis rhoncus. Duis sit amet enim non nunc hendrerit porta. Etiam non metus vel erat tristique interdum. Cras nec elit enim. Sed porttitor tempus elit ac bibendum. Nam sit amet ipsum vitae lacus tincidunt tincidunt. Vestibulum non felis tellus.</span>
-						
-						<div class="stabilo_giallo">testo STABILO giallo</div>
-						<div class="titolo_giallo">testo TITOLO giallo</div>
-						
-						<span class="didascalia">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tortor nunc, luctus sit amet metus at, fringilla pellentesque dolor. Nam in est dui. Quisque sagittis at enim quis rhoncus. Duis sit amet enim non nunc hendrerit porta. Etiam non metus vel erat tristique interdum. Cras nec elit enim. Sed porttitor tempus elit ac bibendum. Nam sit amet ipsum vitae lacus tincidunt tincidunt. Vestibulum non felis tellus.</span>
-						
-						<div class="stabilo_verde">testo STABILO verde</div>
-						<div class="titolo_verde">testo TITOLO verde</div>
-<span class="didascalia">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tortor nunc, luctus sit amet metus at, fringilla pellentesque dolor. Nam in est dui. Quisque sagittis at enim quis rhoncus. Duis sit amet enim non nunc hendrerit porta. Etiam non metus vel erat tristique interdum. Cras nec elit enim. Sed porttitor tempus elit ac bibendum. Nam sit amet ipsum vitae lacus tincidunt tincidunt. Vestibulum non felis tellus.</span>
-						
-						
-						-->
-						
+	                <!-- PULSANTI AVANTI E INDIETRO -->
+						<template_field class="template_field" name="navigation_bar">navigation_bar</template_field>
+					<!-- end - PULSANTI AVANTI E INDIETRO -->                    
+	                    <h1 class="ui red header">
+	                    	<template_field class="template_field" name="title">title</template_field>
+	                    </h1>
+	                    <div class="ui divider"></div>
+	                                   
+                        <template_field class="template_field" name="text">text</template_field>						
                     </div>
-
-					<div class="navbar_bottom">
-						<div class="previous_arrow">
-							<div class="go_prev">
-								<a href='javascript:history.back();'><i18n>Torna</i18n></a>
-							</div>
-						</div>
-						
-						<div class="next_arrow">
-							<div class="go_next">
-								<template_field class="template_field" name="go_next">go_next</template_field>
-							</div>				
-
-						</div>
-					</div>
-
-		    <!-- <hr>
-		    <div id="index_in_text">
-		      <h3><i18n>note di classe</i18n></h3>
-                            <template_field class="template_field" name="notes">notes</template_field> -->
-			    <!--h3><i18n>Approfondimenti:</i18n></h3-->
-			    <!--template_field class="template_field" name="index">index</template_field-->
-				
-		   <!-- </div>
-		  <div id="exercises_in_text">
-		      <h3><i18n>note personali</i18n></h3>
-		       <template_field class="template_field" name="personal">personal</template_field>   -->
-			<!--template_field class="template_field" name="exercises">exercises</template_field-->
-		  
-		  <!-- </div> -->
-
+                    
+                 	<div class="ui fluid accordion">
+		  				<div class="keywords active title">
+		    				<i class="dropdown icon"></i>
+		    					<i18n>keywords</i18n>
+		  				</div>
+		  				<div class="keywords ui blue labels active content">
+		    				<template_field class="template_field" name="keywords">keywords</template_field>
+		  				</div>
+		  				
+		  			</div>
                 </div>
-				<!-- 
-                <div id="bottomcont">
-                </div> 
-				-->
             </div>
             <!--  / contenuto -->
-            <!-- com_tools -->
-            <!--<div id="com_tools">
-                <div id="topcom_t">
-                </div>
-                <div id="com_toolscontent">
-                    <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-                </div>
-                <div id="bottomcom_t">
-                </div>
-            </div>-->
-            <!-- /com_tools -->
+
             <!-- menudestra -->
                   <!-- <div id="menuright" class="sottomenu_off menuright_view "> -->
             <div id="menuright" class="menuright_view ui wide right sidebar">
@@ -274,6 +194,8 @@ Curabitur mollis egestas leo. Sed fermentum quam urna, in cursus metus posuere e
             <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
         <!-- pannello video -->
         <div id="rightpanel" class="sottomenu_off rightpanel_view">
@@ -294,8 +216,18 @@ Curabitur mollis egestas leo. Sed fermentum quam urna, in cursus metus posuere e
             </div>
         </div>
         <!-- / pannello video -->
+        
+       	<!-- com_tools -->
+        <div class="clearfix"></div>
+        <div id="com_tools" style="visibility:hidden;">
+            <div id="com_toolscontent">
+                <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
+            </div>
+        </div>
+        <!-- /com_tools -->
+        
         <!-- piede -->
-       <div id="footer">
+        <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->

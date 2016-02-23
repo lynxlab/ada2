@@ -5,8 +5,8 @@
 </head>
 
 <body>
-<a name="top">
-</a>
+<a name="top"></a>
+<div id="pagecontainer">
 <div id="header">
 <template_field class="microtemplate_field" name="header">header</template_field>
 </div> 
@@ -14,7 +14,7 @@
 <!-- contenitore -->
 <div id="container">
 <!-- PERCORSO -->
-<div id="journey">
+<div id="journey" class="ui tertiary inverted teal segment">
 		 <i18n>dove sei: </i18n>
 		 <span>
 		 			 <i18n>Modulo di valutazione della sessione di guidance</i18n>
@@ -67,15 +67,9 @@
 </div>
 </div> <!--  / contenuto --> 
 </div> <!-- / contenitore -->
-<!-- MENU -->
-<div id="mainmenu">
-<ul id="menu">
-		<li id="selfclose">
-				<a href="#" onclick="javascript:self.close();"><i18n>chiudi</i18n></a> 
-		</li>
+		<div id="push"></div>
+		</div>
 
-</ul> <!-- / menu -->
-</div> <!-- / MAINMENU -->
 <!-- PIEDE -->
 <div id="footer">
 		 <template_field class="microtemplate_field" name="footer">footer</template_field>

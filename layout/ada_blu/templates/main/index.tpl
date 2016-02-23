@@ -3,8 +3,8 @@
 <head>
 </head>
 <body >
-<a name="top">
-</a>
+<a name="top"></a>
+<div id="pagecontainer">
 <!-- testata -->
 <div id="header">
 		 <template_field class="microtemplate_field" name="header">header</template_field>
@@ -27,7 +27,7 @@
 <div id="contentcontent">
          <div class="first">
             <div class="sx">
-                <div class="column">
+                <div class="ada-column">
                     <!-- <div class="portlet">
                         <div class"portlet-header"><i18n>messaggi</i18n></div>
                         <template_field class="template_field" name="message">message</template_field>
@@ -40,7 +40,7 @@
                         </div>
                     </div>    
                 </div>
-                <div class="column">
+                <div class="ada-column">
                   <div class="lynxRSS portlet">
                     <div class="portlet-header">RSS Feeds</div>
                     <div class="portlet-content">
@@ -50,7 +50,7 @@
                 </div>
             </div>
             <div class="dx">
-                <div class="column">
+                <div class="ada-column">
                 <div class="login portlet" id="loginform">
                     <div class="portlet-header"><i18n>login</i18n></div>
                     <div class="portlet-content">
@@ -62,7 +62,7 @@
     		</div>
                 </div>    
                 
-		<div class="helpcont column">
+		<div class="helpcont ada-column">
                     <div class="portlet">
                         <div class="portlet-header">&nbsp;</div>
                     <div class="portlet-content">
@@ -71,7 +71,7 @@
                     </div>  
                 </div>    
 
-                <div class="helpcont column">
+                <div class="helpcont ada-column">
                     <div class="portlet">
                         <div class="portlet-header"><i18n>facebook</i18n></div>
                         <div class="portlet-content">
@@ -79,7 +79,7 @@
                         </div>
                     </div>    
                 </div>
-		<div class="helpcont column">
+		<div class="helpcont ada-column">
                   <div class="TwitterTimeLine portlet">
                     <div class="portlet-header">Twitter</div>
                     <div class="portlet-content">
@@ -94,7 +94,7 @@
 <br class="clearfix">
 </div>
 
-<div id="newscont" class="column">
+<div id="newscont" class="ada-column">
    <div class="portlet">
      <div class="portlet-header"><i18n>Ultime news</i18n></div>
         <div class="portlet-content">
@@ -107,6 +107,8 @@
 </div> <!--  / contenuto -->
 </div> 
 <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 <!-- PIEDE -->
 <div id="footer_login">
 		 <template_field class="microtemplate_field" name="footer">footer</template_field>

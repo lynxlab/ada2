@@ -77,8 +77,8 @@ var PARENT_NODE = 'jsparent_id';
 var TEXT_PARENT_NODE_ID = 'jsparent_node_text';
 
 var EDITOR_ID_BUTTON_PREFIX = 'jsbutton_for';
-var EDITOR_BUTTON_UNSELECTED_CLASSNAME = 'unselected';
-var EDITOR_BUTTON_SELECTED_CLASSNAME = 'selected';
+var EDITOR_BUTTON_UNSELECTED_CLASSNAME = 'inactive';
+var EDITOR_BUTTON_SELECTED_CLASSNAME = 'active';
 
 var ADDONS = new Array(EXTERNAL_LINK_DIV, INTERNAL_LINK_DIV, MULTIMEDIA_DIV,
 		NODE_DATA_DIV);
@@ -1011,8 +1011,8 @@ function showMeHideOthers(button, addon) {
 		$(button).addClassName(EDITOR_BUTTON_SELECTED_CLASSNAME);
 	}
 
-	if (!$(addon).visible()) {
-		$(addon).show();
+	if (!$j('#'+addon).is(':visible')) {
+		$j('#'+addon).fadeIn();
 	}
 }
 

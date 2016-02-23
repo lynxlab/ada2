@@ -15,7 +15,7 @@
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
-            <div id="journey">
+            <div id="journey" class="ui tertiary inverted teal segment">
                 <i18n>dove sei: </i18n>
                 <span>
                     <i18n>aggiungi esercizio</i18n>

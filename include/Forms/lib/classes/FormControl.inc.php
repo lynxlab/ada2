@@ -147,6 +147,11 @@ abstract class FormControl
         $this->_isMissing = TRUE;
         return $this;
     }
+    
+    public function getIsMissing() {
+    	return $this->_isMissing;
+    }
+    
     /**
      * Sets this form control as attribute.
      * @return FormControl

@@ -34,6 +34,8 @@
         </div> <!--  / contenuto -->
 
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
         <!-- MENU A TENDINA -->
         <div id="mainmenu">
             <ul id="menu">

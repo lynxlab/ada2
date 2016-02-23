@@ -36,7 +36,7 @@ class History
     ADA_NOTE_TYPE  => 0);
     $this->node_visits_ratio   = 0;
     $this->visited_nodes_count = 0;
-     
+
   }
 
   function setCourseInstance( $id_course_instance )
@@ -138,7 +138,7 @@ class History
    * @param int $nodes_num - the number of last accessed nodes for which display infos.
    * @return string $t->getTable() - an html string
    */
-  
+
   /**
    * @author giorgio 15/mag/2013
    * added $returnHTML parameter
@@ -149,7 +149,7 @@ class History
     $formatted_data = History::format_history_dataFN($result, $returnHTML);
 
     if ($returnHTML)
-    {	    
+    {
 	    $t = new Table();
 	    $t->initTable('0','center','1','1','90%','','','','','0','1');
 	    $t->setTable($formatted_data,translateFN("Ultime $nodes_num visite"),translateFN("Ultime $nodes_num visite"));
@@ -207,11 +207,11 @@ class History
    *
    * @return string - an html string for a table
    */
-  
+
   /**
    * @author giorgio 15/mag/2013
    * added $returnHTML parameter
-   */  
+   */
   function history_nodes_visited_FN($returnHTML = true)
   {
     $http_root_dir = $GLOBALS['http_root_dir'];
@@ -236,8 +236,8 @@ class History
         $css_classname = $this->getClassNameForNodeType($visita['tipo']);
         if ($returnHTML)
         	$label1Value = "<span class=\"$css_classname\"><a href=\"$http_root_dir/browsing/view.php?id_node=$id_node\">$name</a></span>";
-        else 
-        	$label1Value = $name; 
+        else
+        	$label1Value = $name;
         $histAr = array(
         $label1 => $label1Value,
         $label2 => $tot_visit
@@ -266,7 +266,7 @@ class History
   /**
    * @author giorgio 16/mag/2013
    * added $returnHTML parameter
-   */  
+   */
   function history_nodes_list_filtered_FN( $period, $returnHTML = true )
   {
     $dh = $GLOBALS['dh'];
@@ -284,20 +284,20 @@ class History
     	$caption = translateFN("Nodi visitati negli ultimi $period giorni");
     else
     	$caption = translateFN("Tutti i nodi visitati");
-    
+
     $formatted_data = History::format_history_dataFN($result);
-    
+
     if ($returnHTML)
-    {    	
+    {
     	$t = new Table();
     	$t->initTable('0','center','1','1','90%','','','','','0','1');
-    	
-    	$t->setTable($formatted_data,$caption,$caption);    	
+
+    	$t->setTable($formatted_data,$caption,$caption);
     	if (!empty($formatted_data)) return $t->getTable();
     	else return "Nessun nodo trovato";
     }
     else {
-    	$formatted_data['caption'] = $caption;    	
+    	$formatted_data['caption'] = $caption;
     }
     return  $formatted_data;
   }
@@ -311,7 +311,7 @@ class History
   /**
    * @author giorgio 16/mag/2013
    * added $returnHTML parameter
-   */  
+   */
   function get_historyFN($returnHTML = true)
   {
     return $this->history_nodes_list_filtered_FN(0,$returnHTML);
@@ -334,7 +334,7 @@ class History
   {
     $dh = $GLOBALS['dh'];
 
-    if ( !isset( $this->id_course) )
+    if ( !isset( $this->id_course) || (isset($this->id_course) && is_null($this->id_course)))
     {
       //print("<BR>query su id_corso<BR>");
       $this->id_course = $dh->get_course_id_for_course_instance( $this->id_course_instance );
@@ -394,7 +394,7 @@ class History
     if (isset($visit_time[0])) {
 	    $n_session = $visit_time[0]['session_id'] ;
 	    $n_start = $visit_time[0]['data_visita'] ;
-	    $n_time_prec = $visit_time[0]['data_visita'] ;    	
+	    $n_time_prec = $visit_time[0]['data_visita'] ;
     } else {
     	$n_session = null ;
     	$n_start = null ;

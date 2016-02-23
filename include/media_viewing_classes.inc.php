@@ -25,7 +25,7 @@ class MediaViewer {
         $this->media_title = $title;
         $this->default_http_media_path = $this->media_path;
     }
-    
+
     public function setMediaPath ($media_data=array()) {
         if (file_exists(ROOT_DIR. MEDIA_PATH_DEFAULT. $media_data['owner'] . '/'. $media_data['value'])) {
             $this->media_path = HTTP_ROOT_DIR. MEDIA_PATH_DEFAULT. $media_data['owner'].'/';
@@ -44,7 +44,7 @@ class MediaViewer {
      * @param array $VIEWING_PREFERENCES
      * @return string
      */
-    public function getViewer($media_data=array()) {    	
+    public function getViewer($media_data=array()) {
         $media_type  = isset($media_data[1]) ? $media_data[1] : null;
 		if (isset($media_data['type'])) {
 			$media_type = $media_data['type'];
@@ -64,7 +64,7 @@ class MediaViewer {
 		if (isset($media_data['width']) && !is_null($media_data['width'])) {
 			$media_width = $media_data['width'];
 		}
-		
+
 		$media_height = null;
 		if (isset($media_data['height']) && !is_null($media_data['height'])) {
 			$media_height = $media_data['height'];
@@ -77,9 +77,9 @@ class MediaViewer {
 		 * string is wrapped around a <div> element with proper class for css styling just before returning.
 		 *
 		 */
-		
+
 		/* @var $return string */
-		$return = '';		
+		$return = '';
         if ($media_type === _IMAGE || $media_type === _MONTESSORI) {
 			$return = ImageViewer::view($this->media_path,$media_value, $this->viewing_preferences[_IMAGE],$media_title,$media_width,$media_height);
 		}
@@ -101,13 +101,13 @@ class MediaViewer {
 		else {
 			$return = '';
         }
-        
+
         /**
          * @author giorgio 23/apr/2013
          *
          * array to hold proper css classes
          */
-        
+
         $cssArray = array (
         		_IMAGE=>'image',
         		_MONTESSORI=>'montessori',
@@ -120,21 +120,21 @@ class MediaViewer {
         		_DOC=>'doc',
         		_LINK=>'link'
         );
-        
+
         /**
          * @author giorgio 23/apr/2013
          *
          * wrap $return around a div and return as promised
         */
-        
+
         if ( $return !== '' )
         {
         	$return = "<div class='media ".$cssArray[$media_type]."'>".$return."</div>";
         }
-        
+
         return $return;
     }
-	
+
     public function displayLink ($media_data=array()) {
         $media_value = isset($media_data[2]) ? $media_data[2] : null;
 		if (isset($media_data['value'])) {
@@ -165,8 +165,8 @@ class MediaViewer {
 		if (isset($media_data['title'])) {
 			$media_title  = $media_data['title'];
 		}
-				
-		
+
+
         if ($media_type === _IMAGE || $media_type === _MONTESSORI) {
         	$viewing_prefs = isset($this->viewing_preferences[_IMAGE]) ? $this->viewing_preferences[_IMAGE] : null;
 			return ImageViewer::link($this->media_path,$media_value, $media_real_file_name,$path_to_media, $viewing_prefs, $media_title, $media_type);
@@ -226,7 +226,7 @@ class ImageViewer {
             default:
                 $exploded_img = '<a href="'.$http_file_path.$file_name.'"><img src="img/_img.png" border="0" alt="'.$file_name.'"'.$width.$height.' />'.$imageTitle.'</a>';
 			break;
-		
+
             case 2:
                 $exploded_img = '<img src="'.$http_file_path.$file_name.'" alt="'.$file_name.'"'.$width.$height.' />';
 			break;
@@ -248,16 +248,16 @@ class ImageViewer {
 
         switch (IMG_VIEWING_MODE) {   // it would be better to use a property instead
             case 2: // full img in page, only icon here
-                $link_media = '<img src="img/_img.png"><a href="#" onclick="newWindow(\''.$file_name_http.'\','.$x.','.$y.');">'.$imageTitle.'</a>';
+                $link_media = '<img src="img/_img.png" data-type="img"><a data-type="img" href="#" onclick="newWindow(\''.$file_name_http.'\','.$x.','.$y.');">'.$imageTitle.'</a>';
 			break;
 
             case 1: // icon in page, a reduced size preview  here
-                $link_media = '<img src="'.HTTP_ROOT_DIR.'/include/resize.php?img='.$file_name.'&ratio='.$r.'"><a href="#" onclick="newWindow(\''.$file_name_http.'\','.$x.','.$y.');">'.$file_name.'</a>';
+                $link_media = '<img src="'.HTTP_ROOT_DIR.'/include/resize.php?img='.$file_name.'&ratio='.$r.'" data-type="img"><a data-type="img" href="#" onclick="newWindow(\''.$file_name_http.'\','.$x.','.$y.');">'.$file_name.'</a>';
 			break;
 
             case 0: // icon in page,  icon here
             default:
-                $link_media = '<img src="img/_img.png"><a href="#" onclick="newWindow(\''.$file_name_http.'\','.$x.','.$y.');">'.$imageTitle.'</a>';
+                $link_media = '<img src="img/_img.png" data-type="img"><a data-type="img" href="#" onclick="newWindow(\''.$file_name_http.'\','.$x.','.$y.');">'.$imageTitle.'</a>';
 			break;
         }
 
@@ -279,8 +279,8 @@ class AudioPlayer {
      * @return string
      */
     public static function view( $http_file_path, $file_name, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
-    	$http_root_dir = $GLOBALS['http_root_dir'];    	
-    	
+    	$http_root_dir = $GLOBALS['http_root_dir'];
+
     	require_once ROOT_DIR.'/include/getid3/getid3.php';
     	$getID3 = new getID3();
     	$toAnalyze = ( !empty($http_file_path) ? $http_file_path : ROOT_DIR).$file_name;
@@ -297,7 +297,7 @@ class AudioPlayer {
             case 1:
             case 2:
             default:
-            	
+
             	if ($fileInfo['fileformat']=='mp3') // use jplayer if mp3
             	{
             		require_once ROOT_DIR . '/include/HtmlLibrary/MediaViewingHtmlLib.inc.php';
@@ -321,9 +321,9 @@ class AudioPlayer {
 
     public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $AudioPlayingPreferences = AUDIO_PLAYING_MODE, $audioTitle = null ) {
         if ($audioTitle == NULL || !isset($audioTitle)) {
-                $imageTitle = $file_name;
+                $audioTitle = $file_name;
         }
-        return '<img src="img/_audio.png"><a href="'.$http_file_path.$real_file_name.'" target="_blank">'.$audioTitle.'</a>';
+        return '<img src="img/_audio.png" data-type="audio"><a data-type="audio" href="'.$http_file_path.$real_file_name.'" target="_blank">'.$audioTitle.'</a>';
     }
 }
 
@@ -334,18 +334,18 @@ class AudioPlayer {
 class VideoPlayer {
 	const DEFAULT_WIDTH = DEFAULT_VIDEO_WIDTH;
 	const DEFAULT_HEIGHT = DEFAULT_VIDEO_HEIGHT;
-	
+
 	/**
 	 * function heightCalc
-	 * 
+	 *
 	 */
 	public static function heightCalc($width = DEFAULT_WIDTH, $mediaWidth = DEFAULT_WIDTH, $mediaHeight = DEFAULT_HEIGHT) {
 		$height_dest = floor($mediaHeight*($width/$mediaWidth));
 		return $height_dest;
-		
+
 	}
-	
-	
+
+
     /**
      * function view
      *
@@ -355,13 +355,13 @@ class VideoPlayer {
      * @return string
      */
     public static function view( $http_file_path, $file_name, $VideoPlayingPreferences = VIDEO_PLAYING_MODE, $videoTitle = null, $width = null,$height = null) {
-    	
+
     	require_once ROOT_DIR.'/include/getid3/getid3.php';
 
     	$getID3 = new getID3();
     	$toAnalyze = ( !empty($http_file_path) ? $http_file_path : ROOT_DIR).$file_name;
     	$fileInfo = $getID3->analyze(urldecode(str_replace (HTTP_ROOT_DIR,ROOT_DIR,$toAnalyze)));
-		
+
     	if (empty($width)) {
     		$width = self::DEFAULT_WIDTH;
     	}
@@ -371,19 +371,19 @@ class VideoPlayer {
 		$mediaWidth = (intval ($fileInfo['video']['resolution_x'])>0) ? intval($fileInfo['video']['resolution_x']) : null;
 		$mediaHeight = (intval ($fileInfo['video']['resolution_y'])>0) ? intval($fileInfo['video']['resolution_y']) : null;
 		$height = VideoPlayer::heightCalc($width,$mediaWidth, $mediaHeight);
-		
+
     	if ( (empty($width) || empty($height) ) && isset ($fileInfo['video']) && !empty($fileInfo['video']))
     	{
     		$width = (intval ($fileInfo['video']['resolution_x'])>0) ? intval($fileInfo['video']['resolution_x']) : null;
     		$height = (intval ($fileInfo['video']['resolution_y'])>0) ? intval($fileInfo['video']['resolution_y']) : null;
     	}
-    	
+
 
         if ($videoTitle == NULL || !isset($videoTitle)) {
             $videoTitle = $file_name;
         }
-		
-        $extension = pathinfo($file_name, PATHINFO_EXTENSION);		
+
+        $extension = pathinfo($file_name, PATHINFO_EXTENSION);
 
         switch ($VideoPlayingPreferences) {
             case 2:
@@ -397,7 +397,7 @@ class VideoPlayer {
 								<embed src="'.$http_file_path.$file_name.'" quality="high" pluginspage="http://www.macromedia.com/shockwave/download/" width="'.$width.'" height="'.$height.'"></embed>
 							</object>';
 					break;
-				
+
                     case 'swf': // flash
 						$exploded_video = '
 							<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="'.$width.'" height="'.$height.'">
@@ -409,20 +409,20 @@ class VideoPlayer {
 
                     case 'flv':
                     case 'avi':
-                    case 'mp4':                    	
+                    case 'mp4':
                         if(defined('USE_MEDIA_CLASS') && class_exists(USE_MEDIA_CLASS, false)) {
                             $className = USE_MEDIA_CLASS;
                             $file_name = $className::getPathForFile($file_name);
                         } else {
                             $file_name = Media::getPathForFile($file_name);
                         }
-                        
+
                         /**
                          * old code to be used for flowplayer
                          */
                         // if (!$_SESSION['mobile-detect']->isMobile()) $playerAttr = ' data-engine="flash" ';
                         // else $playerAttr = '';
-                        
+
                         if ($fileInfo['fileformat']=='mp4')
                         {
                         	/**
@@ -434,25 +434,25 @@ class VideoPlayer {
                         	//			<source src="'.$http_file_path.$file_name.'" type="video/mp4" />
                         	//		</video></div>';
                         	require_once ROOT_DIR . '/include/HtmlLibrary/MediaViewingHtmlLib.inc.php';
-                        	$exploded_video = MediaViewingHtmlLib::jplayerMp4Viewer($http_file_path. $file_name, $file_name, $width, $height);                       
+                        	$exploded_video = MediaViewingHtmlLib::jplayerMp4Viewer($http_file_path. $file_name, $file_name, $width, $height);
                         }
-                        else {                        
+                        else {
 						$exploded_video = '
 							<object id="flowplayer" width="'.$width.'" height="'.$height.'" data="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer/flowplayer.swf"	type="application/x-shockwave-flash">
 							<param name="movie" value="'.HTTP_ROOT_DIR.'/external/mediaplayer/flowplayer/flowplayer.swf" />
 							<param name="allowfullscreen" value="true" />
 							<param name="flashvars" value="config={\'clip\':{\'url\':\''.$http_file_path.$file_name.'\', \'autoPlay\':false, \'autoBuffering\':true}}" />
 						</object>';
-                        }						
+                        }
 					break;
 
-                    case 'mpg':                    
+                    case 'mpg':
                     default:
 						$exploded_video = '<embed src="'.$http_file_path.$file_name.'" controls="smallconsole" width="'.$width.'" height="'.$height.'" loop="false" autostart="false">';
 					break;
                 }
 			break;
-		
+
             case 1:
             case 0:
             default:
@@ -484,9 +484,9 @@ class VideoPlayer {
         if ($videoTitle == NULL || !isset($videoTitle)) {
             $videoTitle = $file_name;
         }
-        
+
         $templateFamily = (isset($_SESSION['sess_template_family']) && strlen($_SESSION['sess_template_family'])>0) ? $_SESSION['sess_template_family'] : ADA_TEMPLATE_FAMILY;
-        return '<a href="#" onClick="openInRightPanel(\''.$http_file_path.$file_name.'\',\''.$extension.'\');"><img src="../layout/'.$templateFamily.'/img/flv_icon.png" alt="video">'.$label.' '.$videoTitle.'</a>';
+        return '<a data-type="video" href="#" onClick="openInRightPanel(\''.$http_file_path.$file_name.'\',\''.$extension.'\');"><img data-type="video" src="../layout/'.$templateFamily.'/img/flv_icon.png" alt="video">'.$label.' '.$videoTitle.'</a>';
         //return '<img src="img/_video.png"><a href="'.$http_file_path.$real_file_name.'" target="_blank">'.$file_name.'</a>';
     }
 }
@@ -587,22 +587,24 @@ class ExternalLinkViewer {
                 	$linkImg->setAttribute('border', '0');
                 	$linkImg->setAttribute('title', $media_value);
                 	$linkImg->setAttribute('alt', $media_value);
+                	$linkImg->setAttribute('data-type', 'link');
                 	$spanLink->addChild($linkImg);
                 	$spanLink->addChild(new CText($cleaned_string));
-                	
+
                 	if (stripos($media_value,'https')===0) {
                 		/**
                 		 * @author giorgio 09/set/2015
-                		 * 
+                		 *
                 		 * if link is https do not show it in an iframe
                 		 * as it will cause security problems
                 		 */
                 		$href = $media_value;
                 	} else {
-	                	$href = HTTP_ROOT_DIR.'/browsing/external_link.php?id='.$id;                		
+	                	$href = HTTP_ROOT_DIR.'/browsing/external_link.php?id='.$id;
                 	}
                 	$link = BaseHtmlLib::link($href, $spanLink);
                 	$link->setAttribute('target', '_blank');
+                	$link->setAttribute('data-type', 'link');
                 	$exploded_ext_link = $link->getHtml();
                 }
                 break;
@@ -635,7 +637,7 @@ class DocumentViewer {
             case 1:
             case 2:
             default:
-                $exploded_document = '<a href="'.$http_file_path.$media_value.'" target="_blank"><img src="img/_doc.png" border="0" alt="'.$media_value.'"></a>';
+                $exploded_document = '<a data-type="doc" href="'.$http_file_path.$media_value.'" target="_blank"><img data-type="doc" src="img/_doc.png" border="0" alt="'.$media_value.'"></a>';
                 break;
         }
         return $exploded_document;
@@ -649,10 +651,10 @@ class DocumentViewer {
             $file_name = substr($file_name, 0, 12). '...'.$ext[0];
         }
         $link = array (
-            '<img src="img/_doc.png">',
-            '<a href="'.$http_file_path.$real_file_name.'" target="_blank" title="'.$complete_file_name.'">'.$file_name.'</a>'                
+            '<img src="img/_doc.png" data-type="doc">',
+            '<a data-type="doc" href="'.$http_file_path.$real_file_name.'" target="_blank" title="'.$complete_file_name.'">'.$file_name.'</a>'
         );
 //        return $link;
-        return '<img src="img/_doc.png"><a href="'.$http_file_path.$real_file_name.'" target="_blank" title="'.$complete_file_name.'">'.$file_name.'</a>';
+        return '<img data-type="doc" src="img/_doc.png"><a data-type="doc" href="'.$http_file_path.$real_file_name.'" target="_blank" title="'.$complete_file_name.'">'.$file_name.'</a>';
     }
 }
