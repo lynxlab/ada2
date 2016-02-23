@@ -540,11 +540,12 @@ else {
 		$enddateForTemplate = AMA_DataHandler::ts_to_date(min($c['data_fine'], $subscritionEndDate));
 
 		if ($self_instruction) {
+			$self = 'userSelfInstruction';
 			if (($subscription_stopUT+AMA_SECONDS_IN_A_DAY) < time()) {
 // 				$gostart = BaseHtmlLib::link("#", translateFN('Corso terminato...'));
 // 				$gostart_link = $gostart->getHtml();
-				$last_node_visited_link = '';
-				$goindex_link = '';
+// 				$last_node_visited_link = '';
+// 				$goindex_link = '';
 			}
 		}
 	}
