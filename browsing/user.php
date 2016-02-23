@@ -65,6 +65,20 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 		return (intval($_SESSION['service_level_info'][$courseInstance['tipo_servizio']]['isPublic'])===0);
 	});
 
+	/**
+	 * @author giorgio 22/feb/2016
+	 *
+	 * if an id_course and id_course_instance are passed in $_GET, filter the found
+	 * course instances so that at the end courseInstances array should have one element
+	 * and the proper page is shown to the logged user (as if she was subscribed to one course only)
+	 */
+	if (!isset($_GET['id_node']) && isset($_GET['id_course']) && isset($_GET['id_course_instance'])) {
+		$courseInstances = array_filter($courseInstances, function($courseInstance) {
+			return (($courseInstance['id_corso'] == $_GET['id_course']) &&
+					($courseInstance['id_istanza_corso'] == $_GET['id_course_instance']));
+		});
+	}
+
     $found = count($courseInstances);
     $thead_dataAr = array(
            translateFN('Titolo'),
@@ -158,12 +172,20 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            	}
 
 					$access_link = CDOMElement::create('div');
-					$link = CDOMElement::create('a','href:view.php?id_node='.$nodeId.'&id_course='.$courseId.'&id_course_instance='.$courseInstanceId);
+					$link = CDOMElement::create('a');
+					$linkParams = array(
+							'id_course'=>$courseId,
+							'id_course_instance'=>$courseInstanceId
+					);
 					if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED || $subscription_status == ADA_STATUS_COMPLETED) {
 						$link->addChild(new CText(translateFN('Rivedi il corso')));
+						$linkScript = 'view.php';
+						$linkParams['id_node'] = $nodeId;
 					} else if ($isStarted && !$isEnded) {
+						$linkScript = 'user.php';
 						$link->addChild(new CText(translateFN('Accedi')));
 					}
+					$link->setAttribute('href', $linkScript.'?'.http_build_query($linkParams));
 					$access_link->addChild($link);
 
 					// @author giorgio 24/apr/2013
@@ -198,7 +220,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	    	 */
 	    	$displayWhatsNew = true;
 
-	        $c = $courseInstances[0];
+	        $c = reset($courseInstances);
 	        $currentTimestamp = time();
 
 	        $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
@@ -301,7 +323,19 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            $data = BaseHtmlLib::tableElement('class:doDataTable', $thead_dataAr, $tbody_dataAr);
 	        }
 	    } else {
-	        $data = new CText(translateFN('Non sei iscritto a nessuna classe'));
+	    	$data = CDOMElement::create('div','class:ui info icon large message');
+	    	$data->addChild(CDOMElement::create('i','class:book icon'));
+	    	$MSGcontent = CDOMElement::create('div','class:content');
+	    	$MSGheader = CDOMElement::create('div','class:header');
+	    	$MSGtext = CDOMElement::create('span','class:message');
+
+	    	$data->addChild($MSGcontent);
+	    	$MSGcontent->addChild($MSGheader);
+	    	$MSGcontent->addChild($MSGtext);
+
+	    	$MSGheader->addChild(new CText(translateFN('Non sei iscritto a nessun corso')));
+	    	$MSGtext->addChild(BaseHtmlLib::link(HTTP_ROOT_DIR . '/info.php', 'Clicca qui'));
+	    	$MSGtext->addChild (new CText(' '.'per vedere l\'elenco dei corsi a cui puoi iscriverti'));
 	    }
 	    // @author giorgio 24/apr/2013
 	    // end else... line
@@ -362,7 +396,7 @@ else {
 	$c = $courseInstances[$i];
     }
     else{
-        $c = $courseInstances[0];
+        $c = reset($courseInstances);
     }
 
 	$currentTimestamp = time();
@@ -490,8 +524,20 @@ else {
 		$goindex  = BaseHtmlLib::link("main_index.php?id_course=$courseId&id_course_instance=$courseInstanceId",translateFN('Indice'));
 		$goindex_link = $goindex->getHtml();
 		$goforum   = BaseHtmlLib::link("main_index.php?id_course=$courseId&id_course_instance=$courseInstanceId&op=forum",translateFN('Forum'));
-
 		$goforum_link = $goforum->getHtml();
+		$gohistory = BaseHtmlLib::link('history.php?id_course='.$courseId.'&id_course_instance='.$courseInstanceId, translateFN('Cronologia'));
+
+		/**
+		 * @author giorgio 22/feb/2016
+		 * get course description
+		 */
+		$cd_res = $provider_dh->find_courses_list(array('descrizione'),'id_corso='.$courseId);
+		if (!AMA_DB::isError($cd_res) && is_array($cd_res) && count($cd_res)>0) {
+			$cd_el = reset($cd_res);
+			$course_description = $cd_el['descrizione'];
+		}
+
+		$enddateForTemplate = AMA_DataHandler::ts_to_date(min($c['data_fine'], $subscritionEndDate));
 
 		if ($self_instruction) {
 			if (($subscription_stopUT+AMA_SECONDS_IN_A_DAY) < time()) {
@@ -503,6 +549,7 @@ else {
 		}
 	}
 
+	require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
 	$gochat_link = "";
    	$content_dataAr['edit_profile'] = $userObj->getEditProfilePage();
 	$content_dataAr['gostart'] = $gostart_link;
@@ -526,6 +573,19 @@ else {
 	$content_dataAr['message'] = isset($message) ? $message : null;
 	$content_dataAr['course_title'] = $c['titolo'].' - '.$c['title'];
 	$content_dataAr['status'] = $status;
+	$content_dataAr['course_description'] = isset($course_description) ? $course_description: null;
+	$content_dataAr['enddate'] = isset($enddateForTemplate) ? $enddateForTemplate : null;
+	$content_dataAr['gohistory'] = isset($gohistory) ? $gohistory->getHtml() : null;
+	$content_dataAr['subscription_status'] = Subscription::subscriptionStatusArray()[$subscription_status];
+	$content_dataAr['messages'] = $user_messages->getHtml();
+	$content_dataAr['agenda'] = $user_agenda->getHtml();
+
+	// must set the DH to the course provider one
+	$GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
+	$userObj->set_course_instance_for_history($courseInstanceId);
+	$user_history = $userObj->getHistoryInCourseInstance($courseInstanceId);
+	$content_dataAr['percentcomplete'] = $user_history->history_nodes_visitedpercent_FN();
+	$GLOBALS['dh']->disconnect();
 }
 
 $layout_dataAr['CSS_filename'] = array (
