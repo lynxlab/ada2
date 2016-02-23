@@ -7,7 +7,7 @@
 @import url("../form.css");
 
 /* BROWSING STYLE */
-
+#pagecontainer { margin-bottom: -55px; }
 
 #banner {
     position: absolute;
@@ -73,20 +73,21 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 }
 
 #content_view {
-    min-height: 410px;
+    margin: 0 auto;
+    width: 98%;
     padding-top: 10px;
 }
 
 .content_small { margin-right: 365px;}
 #content li { list-style-type: none; }
-#contentcontent {}
-.contentcontent_default {
-    padding: 0 10px 10px 10px;
-	 background-color: White;
+#contentcontent {
+	float: left;
+	width: 100%;
 }
+.contentcontent_default,
 .contentcontent_view {
-     padding: 0px 10px 10px 10px;
-	 background-color: White;
+     padding: 0 0 10px 0;
+	 background-color: transparent;
 }
 .contentcontent_note {
 	padding: 10px;
@@ -220,19 +221,13 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 #login_div {margin:1em 0; line-height:2.5em;}
 #login_div #login_button {margin:1em 0}
 
-/*PIEDE*/
-#footer { padding: 0px 0px 0px 0px;}
-#footer .menusuperiore {margin-top:00px;margin-left:0px;}
-#footer .copyright{font-size:0.8em; line-height:1.2em;}
-#footer_registration {  position: relative; padding: 20px 10px 10px 30px; top: 90px; background: url(../../img/up.png) no-repeat left;
-						margin-left: 20px; margin-bottom: 100px; }
 #mail { background: url(../../img/mail.png) no-repeat right; padding: 5px 35px 5px 0;}
 
 /* identifica le parole evidenziate della ricerca*/
 .querystring {background-color: #FFFF66;}
 
 /* identifica i li annidati dell'indice e del forum*/
-.courseNode { margin-bottom: 10px; margin-top: 10px;}
+.courseNode { margin-top: 10px;}
 
 /* identifica il div che contiene l'indice dei contenuti del corso*/
 #courseIndex { padding: 5px; }
@@ -252,8 +247,16 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  */
 .ADA_GROUP_TYPE
 {
-    background: url(../../img/gruppo.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/gruppo.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+.ADA_GROUP_TYPE::before {
+	font-family: 'Basic Icons';
+	content: '\e736';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #005D00;
 }
 /*
  * classe per l'elemento che contiene un nodo Termine di tipo gruppo
@@ -269,8 +272,17 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  */
 .ADA_LEAF_TYPE
 {
-    background: url(../../img/nodo.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/nodo.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+
+.ADA_LEAF_TYPE::before {
+	font-family: 'Icons';
+	content: '\f016';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #339033;
 }
 /*
  * classe per l'elemento che contiene un nodo termine (WORD) di tipo foglia
@@ -285,55 +297,101 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  * classe per l'elemento nodo disattivo
  */
 .NODE_NOT_VIEWABLE {
-    background: url(../../img/_nododis.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nododis.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+
+.NODE_NOT_VIEWABLE::before {
+	font-family: 'Icons';
+	content: '\f023';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: red;
 }
 
 /*
  * classe per l'elemento nota
  */
 
-.ADA_NOTE_TYPE
-{
-    background: url(../../img/_nota.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+.ADA_NOTE_TYPE {
+    /* background: url(../../img/_nota.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
     color: Black;
 }
+
+.ADA_NOTE_TYPE:not(.TUTOR_NOTE):not(.ADA_PRIVATE_NOTE_TYPE):not(.YOUR_NOTE):before {
+	font-family: 'Icons';
+	content: '\f0f6';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #000;	
+}
+
 .ADA_NOTE_TYPE.YOUR_NOTE
 {
-    background: url(../../img/_nota_pers.png) no-repeat left;
-    font-weight: bold;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nota_pers.png) no-repeat left; */
+    /* font-weight: bold; */
+    padding: 10px 0 10px 0px;
 }
+
+.ADA_NOTE_TYPE.YOUR_NOTE:before {
+	font-family: 'Icons';
+	content: '\f0f6';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: purple;	
+}
+
 .ADA_NOTE_TYPE.TUTOR_NOTE
 {
-    background: url(../../img/_nota_tutor.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nota_tutor.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+.ADA_NOTE_TYPE.TUTOR_NOTE:not(.YOUR_NOTE):before {
+	font-family: 'Icons';
+	content: '\f0f6';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #f00;	
 }
 .ADA_NOTE_TYPE.TUTOR_NOTE.YOUR_NOTE
 {
-    background: url(../../img/_nota_pers_tutor.png) no-repeat left;
-    font-weight: bold;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nota_pers_tutor.png) no-repeat left; */
+    /* font-weight: bold; */
+    padding: 10px 0 10px 0px;
 }
 .ADA_NOTE_TYPE.YOUR_NOTE.ADA_PRIVATE_NOTE_TYPE
 {
-    background: url(../../img/_nota_private.png) no-repeat left;
-    font-weight: bold;
-    padding: 10px 0 10px 35px;
-}
-.ADA_NOTE_TYPE.TUTOR_NOTE.YOUR_NOTE.ADA_PRIVATE_NOTE_TYPE
-{
-    background: url(../../img/_nota_private_tutor.png) no-repeat left;
-    font-weight: bold;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_nota_private.png) no-repeat left; */
+    /* font-weight: bold; */
+    padding: 10px 0 10px 0px;
 }
 
-.ADA_PRIVATE_NOTE_TYPE {
+.ADA_NOTE_TYPE.YOUR_NOTE.ADA_PRIVATE_NOTE_TYPE:before {
+	font-family: 'Icons';
+	content: '\f15c';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #000;	
+}
+
+.ADA_NOTE_TYPE.TUTOR_NOTE.YOUR_NOTE.ADA_PRIVATE_NOTE_TYPE
+{
+    /* background: url(../../img/_nota_private_tutor.png) no-repeat left;
+    font-weight: bold; */
+    padding: 10px 0 10px 0px;
+}
+
+/* .ADA_PRIVATE_NOTE_TYPE {
 	background: url(../../img/_nota_private.png) no-repeat left;
     font-weight: bold;
     padding: 10px 0 10px 35px;
-}
+} */
 /*
  * classe per l'elemento nota disattiva
  */
@@ -346,8 +404,17 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  */
 .ADA_EXERCISE
 {
-    background: url(../../img/_exer.png) no-repeat left;
-    padding: 10px 0 10px 35px;
+    /* background: url(../../img/_exer.png) no-repeat left; */
+    padding: 10px 0 10px 0px;
+}
+
+.ADA_EXERCISE::before {
+	font-family: 'Basic Icons';
+	content: '\270d';
+	font-size: 1.5em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	color: #7CB97C;
 }
 
 /*
@@ -377,13 +444,6 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
  * TABELLE 5 febbraio 2009
  * claire
  */
-
-
-
-#com_tools .default_table { width: auto; color:#ccc; }
-#com_tools .default_table TD {padding:0 10px 0 0; vertical-align:middle;}
-#com_tools .default_table A { color:#fff; background:#777; padding:1px; display:block; padding:2px; }
-#com_tools .default_table A:hover {background:#ffc; color:#f50;}
 
 #menuright .default_table {
     width: auto !important;

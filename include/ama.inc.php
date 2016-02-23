@@ -2,7 +2,7 @@
 /**
  *
  * @author	Guglielmo Celata <guglielmo@celata.com>
- * @author  giorgio <g.consorti@lynxlab.com> 
+ * @author  giorgio <g.consorti@lynxlab.com>
  * @version
  * @package
  * @license	PHP license version 2.02
@@ -122,7 +122,7 @@ abstract class Abstract_AMA_DataHandler {
 //            ADALogger::log_db('Creating a new database connection '. $this->dsn);
             $db =& AMA_DB::connect($this->dsn);
             if(AMA_DB::isError($db)) {
-            	$retval = new AMA_Error(AMA_ERR_DB_CONNECTION); 
+            	$retval = new AMA_Error(AMA_ERR_DB_CONNECTION);
                 return $retval;
             }
             $this->db =& $db;
@@ -183,7 +183,7 @@ abstract class Abstract_AMA_DataHandler {
                 break;
                 /**
                  * Pls handle other databases connection here by adding more cases
-                 */                
+                 */
         }
         // $res is the number of affected rows or an error
         // if $res is an error, return an AMA Error with error message as
@@ -584,7 +584,7 @@ abstract class Abstract_AMA_DataHandler {
      * @param  string $sql       - the sql query with placeholders
      * @param  array  $values    - the values to bind with the prepared statement
      * @return object $resultObj - the result object as returned by the AMA_DB layer
-     * 
+     *
      * @access private
      */
     private function prepareAndExecute($sql, $values=array()) {
@@ -592,25 +592,25 @@ abstract class Abstract_AMA_DataHandler {
 		if (AMA_DB::isError($db)) {
 			return $db;
 		}
-	
+
 		/**
 		 * qui potrebbe esserci il codice che verifica se la query $sql ha gia' uno
 		 * statement precompilato nell'array statico $statements degli statement precompilati
 		 * che potrebbe essere mantenuto anche qui (anche se forse e' meglio averlo
 		 * come attributo della classe).
 		 */
-	
+
 		/**
 		 * let's check if $sql has alreay been prepared, and let's do it if it's not.
-		 */		
+		 */
 		if (!$sql instanceof PDOStatement) $stmt = $db->prepare($sql);
 		else $stmt = $sql;
-		
+
 		/**
 		 * if $values is a scalar, let's transform it into a one-element array
 		 */
 		if (!is_array($values)) $values = array ($values);
-		
+
 		try {
 			$resultObj = $stmt->execute($values);
 			if ($resultObj) return $stmt;
@@ -640,7 +640,7 @@ abstract class Abstract_AMA_DataHandler {
     	 * if $values is a scalar, let's transform it into a one-element array
     	 */
     	if (!is_array($values)) $values = array ($values);
-    	
+
         $resultObj = $this->prepareAndExecute($sql,$values);
 
         if(AMA_DB::isError($resultObj)) {
@@ -666,16 +666,16 @@ abstract class Abstract_AMA_DataHandler {
     	 * if $values is a scalar, let's transform it into a one-element array
     	 */
     	if (!is_array($values)) $values = array ($values);
-    	
+
         $resultObj = $this->prepareAndExecute($sql, $values);
 
         if(AMA_DB::isError($resultObj)) {
             return $resultObj;
         }
-        
+
         if (is_null($col)) $resultAr = $resultObj->fetchAll ($fetchmode);
         else if (is_numeric($col) && intval($col)>=0) $resultAr = $resultObj->fetchAll($fetchmode,intval($col));
-        
+
         $resultObj->closeCursor();
         return $resultAr;
     }
@@ -720,7 +720,7 @@ abstract class Abstract_AMA_DataHandler {
     	 * if $values is a scalar, let's transform it into a one-element array
     	 */
     	if (!is_array($values)) $values = array ($values);
-    	
+
         $resultObj = $this->prepareAndExecute($sql, $values);
 
         if(!AMA_DB::isError($resultObj) && $resultObj === AMA_DB_OK) {
@@ -748,12 +748,12 @@ abstract class Abstract_AMA_DataHandler {
     	 */
     	if (!$sql instanceof PDOStatement) $stmt = $db->prepare($sql);
     	else $stmt = $sql;
-    	
+
     	/**
     	 * if $values is a scalar, let's transform it into a one-element array
     	 */
     	if (!is_array($values)) $values = array ($values);
-    	
+
     	try {
     		$resultObj = $stmt->execute($values);
     		if ($resultObj) return $db->affectedRows($stmt);
@@ -796,7 +796,7 @@ abstract class Abstract_AMA_DataHandler {
                 break;
                 /**
                  * Pls handle other databases connection here by adding more cases
-                 */                
+                 */
         }
         // $res is the number of affected rows or an error
         // if $res is an error, return an AMA Error with error message as
@@ -915,7 +915,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         //ADALogger::log_db('AMA_Common_DataHandler: get instance for main db connection');
     	$callerClassName = get_called_class();
     	if (get_class(self::$instance) !== $callerClassName) self::$instance = null;
-    	
+
         if(self::$instance == null) {
             //ADALogger::log_db('AMA_Common_DataHandler: creating a new instance of AMA_Common_DataHandler');
             self::$instance = new $callerClassName();
@@ -939,13 +939,13 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
     	$sql = 'SELECT U.id_utente, U.tipo, U.nome, U.cognome FROM utente U ';
     	$sql_params = array($username, sha1($password));
-    	
+
     	/**
     	 * @author giorgio 05/mag/2014 16:32:07
     	 *
     	 * if not in a multiprovider environment, must
     	 * match the user in the selected provider
-    	 */    	
+    	 */
     	if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider'])>0) {
     		$testerAr = $this->get_tester_info_from_pointer($GLOBALS['user_provider']);
     		$sql .= ',utente_tester UT WHERE '.
@@ -1003,7 +1003,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
                 $user_dataAr['provincia'],
                 $user_dataAr['nazione'],
                 $user_dataAr['codice_fiscale'],
-                AMA_Common_DataHandler::date_to_ts($user_dataAr['birthdate']), 
+                AMA_Common_DataHandler::date_to_ts($user_dataAr['birthdate']),
                 $user_dataAr['sesso'],
                 $user_dataAr['telefono'],
 //                $this->or_null($user_dataAr['indirizzo']),
@@ -1020,7 +1020,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         		$user_dataAr['avatar'],
         		$user_dataAr['birthcity'],
         		$user_dataAr['birthprovince']
-        		
+
         );
 
         /*
@@ -1042,7 +1042,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         } else {
         	$user_id = $this->find_user_from_username($user_dataAr['username']);
         }
-        
+
         /*
     $user_id_sql = 'SELECT id_utente FROM utente WHERE username=?';
     $user_id = $this->getOnePrepared($user_id_sql, $user_dataAr['username']);
@@ -1053,20 +1053,20 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         return $user_id;
 
     }
-    
+
     /**
      * Return the user id of the user with username = $username
-     * 
+     *
      * @param string $username
      * @return AMA_Error|number
      */
     public function find_user_from_username($username) {
         /**
          * @author giorgio 05/mag/2014 15:44:34
-         * 
+         *
          * if not in a multiprovider environment, must
          * match the user in the selected provider
-         *  
+         *
          */
         if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider'])>0) {
         	$testerAr = $this->get_tester_info_from_pointer($GLOBALS['user_provider']);
@@ -1084,17 +1084,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         return $user_id;
     }
-    
+
     /**
      * Return the user id of the user with email = $e_mail
-     * 
+     *
      * @param string $email
      * @return AMA_Error|number
      */
     public function find_user_from_email($email) {
     	/**
          * @author giorgio 05/mag/2014 16:29:39
-         * 
+         *
          * if not in a multiprovider environment, must
          * match the user in the selected provider
     	 */
@@ -1105,7 +1105,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
     		$sql_params = array ($email, $testerAr[0]);
     	} else {
     		$user_id_sql = 'SELECT id_utente FROM utente WHERE e_mail=?';
-    		$sql_params = $email;        
+    		$sql_params = $email;
     	}
     	$user_id = $this->getOnePrepared($user_id_sql, $sql_params);
         if (AMA_DB::isError($user_id) || $user_id == null) {
@@ -1736,7 +1736,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
                 $tester_dataAr['tester_rs'],
                 $tester_dataAr['tester_address'],
         		$tester_dataAr['tester_city'],
-                $tester_dataAr['tester_province'],                
+                $tester_dataAr['tester_province'],
                 $tester_dataAr['tester_country'],
                 $tester_dataAr['tester_phone'],
                 $tester_dataAr['tester_email'],
@@ -1901,7 +1901,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         return $testers_result;
     }
-    
+
     /**
      * gets the max id of a course in the whole ADA system
      *
@@ -1914,13 +1914,13 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
      */
     public function get_course_max_id()
     {
-    	$sql = "SELECT MAX(id_corso) FROM servizio_tester";    	 
+    	$sql = "SELECT MAX(id_corso) FROM servizio_tester";
     	$max_id = $this->getOnePrepared($sql);
-    	
+
     	if (AMA_DB::isError($max_id)) $retval = new AMA_Error(AMA_ERR_GET);
     	else $retval = $max_id;
-    	    	 
-    	return $retval;    	
+
+    	return $retval;
     }
 
     /**
@@ -1998,7 +1998,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         return $service_result;
     }
 
-  
+
     /*
    * Get all services
    *
@@ -2139,7 +2139,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         return $service_result;
     }
-    
+
     /**
      * Get informations about the course service type
      *
@@ -2152,17 +2152,17 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
      *
      */
     public function get_service_type_info_from_course($id_course) {
-    	
+
     	$sql = "SELECT STYPE.* FROM `service_type` as STYPE, " .
     		   "servizio_tester as ST, servizio as S " .
     		   "WHERE ST.id_corso=? " .
     		   "AND S.id_servizio = ST.id_servizio AND S.livello = STYPE.`livello_servizio`";
-    	
+
     	$result = $this->getRowPrepared($sql, $id_course, AMA_FETCH_ASSOC);
     	if(self::isError($result)) {
     		return new AMA_Error(AMA_ERR_GET);
     	}
-    	
+
     	return $result;
     }
 
@@ -2260,7 +2260,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 	/**
 	 * giorgio 13/ago/2013
 	 * added id_tester parameter that is passed if it's not a multiprovider environment
-	 */    
+	 */
     public function get_published_courses($id_tester=null) {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
@@ -2811,31 +2811,31 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         return $result;
     }
-    
+
     /**
      * return the identificatore_tabella of language given a language id
      * added on 17/lug/2013 for course exporting, feel free to use it!
-     * 
+     *
      * @author giorgio
-     * 
+     *
      */
     public function find_language_table_identifier_by_langauge_id ($language_id)
     {
     	$db =& $this->getConnection();
     	if (AMA_DB::isError($db)) return $db;
-    	
+
     	$sql_select_languages = "SELECT identificatore_tabella FROM lingue WHERE id_lingua=".$language_id;
     	$result = $db->getOne($sql_select_languages, null, AMA_FETCH_ASSOC);
-    	
+
     	if (AMA_DB::isError($result)) {
     		return new AMA_Error(AMA_ERR_GET);
     	}
-    	
+
     	if(empty($result)) {
     		return new AMA_Error(AMA_ERR_NOT_FOUND);
     	}
-    	
-    	return $result;    	    	
+
+    	return $result;
     }
 
     /**
@@ -2849,19 +2849,19 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
     {
     	$db =& $this->getConnection();
     	if (AMA_DB::isError($db)) return $db;
-    	 
+
     	$sql_select_languages = "SELECT id_lingua FROM lingue WHERE identificatore_tabella='".$table_identifier."'";
     	$result = $db->getOne($sql_select_languages, null, AMA_FETCH_ASSOC);
-    	 
+
     	if (AMA_DB::isError($result)) {
     		return new AMA_Error(AMA_ERR_GET);
     	}
-    	 
+
     	if(empty($result)) {
     		return new AMA_Error(AMA_ERR_NOT_FOUND);
     	}
-    	 
-    	return $result;    	
+
+    	return $result;
     }
 
     /**
@@ -2945,7 +2945,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     static function instance($dsn = null) {
     	$callerClassName = get_called_class();
     	if (get_class(self::$instance) !== $callerClassName) self::$instance = null;
-    	
+
         if(self::$instance === NULL) {
             self::$instance = new $callerClassName($dsn);
         }
@@ -4226,7 +4226,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 	$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
 
         $sql = 'SELECT U.id_utente, U.username, U.tipo, U.nome, U.cognome, U.avatar, I.status,I.data_iscrizione';
-        
+
          if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
         {
             $sql=$sql.', I.codice FROM utente AS U, iscrizioni AS I '
@@ -4241,7 +4241,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
              . ' AND I.status IN ('.implode(',',$status_Ar).')'
              . ' AND U.id_utente = I.id_utente_studente';
         }
-        
+
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -4289,9 +4289,9 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     public function get_presubscribed_students_for_course_instance($id_course_instance) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
-        
+
         $sql = 'SELECT U.id_utente, U.nome, U.cognome, I.status,I.data_iscrizione';
-        
+
         if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
         {
             $sql = $sql.', I.codice FROM utente AS U, iscrizioni AS I '
@@ -4306,7 +4306,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
              . ' AND I.status = '.ADA_STATUS_PRESUBSCRIBED
              . ' AND U.id_utente = I.id_utente_studente';
         }
-        
+
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -4357,7 +4357,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
 		/**
 		 * @author giorgio 16/mag/2013
-		 * 
+		 *
 		 * just pushing the root_node will result in an array with root node always at last position,
 		 * regardless of numer_visite (i.e. visit count). Let's sort the whole array so that the root
 		 * node will be properly positioned as well.
@@ -4366,7 +4366,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         	if ($a['numero_visite'] == $b['numero_visite']) return 0;
         	return ($a['numero_visite'] > $b['numero_visite']) ? -1 : 1;
         });
-                       
+
         return $result;
     }
 
@@ -4683,9 +4683,9 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         if ($status=="") {
             $clause = "";  // 1 OR 2
-        } elseif ($status == ADA_STATUS_SUBSCRIBED) { 
+        } elseif ($status == ADA_STATUS_SUBSCRIBED) {
             $clause = 'and (status IN ('.ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED.','.
-            		   ADA_STATUS_SUBSCRIBED.','.ADA_STATUS_TERMINATED.'))'; 
+            		   ADA_STATUS_SUBSCRIBED.','.ADA_STATUS_TERMINATED.'))';
         } else {
             $clause = "and status = $status";
         }
@@ -4943,7 +4943,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql = 'SELECT C.id_corso, C.titolo, C.crediti, IC.id_istanza_corso,'
              . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status';
         if ($extra_fields) {
-            $sql .= ' ,IC.title,I.data_iscrizione,IC.duration_subscription, C.tipo_servizio';
+            $sql .= ' ,IC.title,I.data_iscrizione,IC.duration_subscription, C.tipo_servizio, IC.self_instruction';
         }
         $sql .=' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
              . ' WHERE I.id_utente_studente=?'
@@ -5014,7 +5014,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         if ($getAll===false) $result = $db->getRow($sql);
         else $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
-        
+
         if (AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
         }
@@ -5230,7 +5230,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         return true;
     }
 
-    
+
   /**
    * Get all informations about the users subscribed the course instances
    *
@@ -5258,7 +5258,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         return $result;
   }
 
-    
+
     /**
      * Get all informations about a course instance
      *
@@ -5550,15 +5550,15 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         return true;
     }
-    
+
     /**
      * update students subscription status in the passed instance to
      * either SUBSCRIBED or TERMINATED as appropriate, checking if
      * $duration_subscription + student subscription date is in the past or not
-     * 
+     *
      * @param number $instance_id
      * @param number $duration_subscription
-     * 
+     *
      * @author giorgio 02/apr/2015
      */
     private function _update_students_subscription_after_course_instance_set ($instance_id, $duration_subscription) {
@@ -5577,7 +5577,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     					$subscription->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
     					$updateSubscription = true;
     			}
-    			
+
     			if ($updateSubscription) {
     				$subscription->setStartStudentLevel(null); // null means no level update
     				subscription::updateSubscription($subscription);
@@ -5655,7 +5655,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         return $result;
     }
-    
+
     /**
      * function get_course_instances_student_can_subscribe_to:
      *
@@ -6052,19 +6052,19 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $index_att= $student_data['index'];
         $level= $student_data['level'];
         $last_access = $this->or_zero($student_data['last_access']);
-        
+
         if (MODULES_TEST) {
         	$exercises_test = $this->or_zero($student_data['exercises_test']);
         	$score_test = $this->or_zero($student_data['score_test']);
         	$exercises_survey = $this->or_zero($student_data['exercises_survey']);
         	$score_survey = $this->or_zero($student_data['score_survey']);
         }
-        
+
         //		print_r($student_data);
 
         $sql = "SELECT `id_user`,`id_istanza_corso`,`data`,`id_log` from log_classi
    			WHERE `id_istanza_corso`  =  $course_instance_id AND data = $date AND `id_user` = $user_id";
-        
+
         $res = $this->getRowPrepared($sql, null, AMA_FETCH_ASSOC);
         if (!AMA_DB::isError($res) && !empty($res)) {
         	$id_log = $res['id_log'];
@@ -6081,7 +6081,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             $sql .= "$score,$exercises, $msg_out, $msg_in, $added_notes,$read_notes, $chat,$bookmarks, $index_att,$level,$last_access);";
             //echo $sql;
         }
-        
+
         $res = $db->query($sql);
         // global $debug;$debug=1;mydebug(__LINE__,__FILE__,$res); $debug=0;
         if (AMA_DB::isError($res)) {
@@ -6098,7 +6098,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         		}
         	}
         }
-        
+
         return true;
     }
     /**
@@ -6117,10 +6117,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
-        
+
         /**
          * @author giorgio 27/ott/2014
-         * 
+         *
          * if we've been passed a null date, get the latest
          * availeble report for the passed course_instance_id
          */
@@ -6140,7 +6140,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if (AMA_DB::isError($res)) {
             return new AMA_Error($this->errorMessage(AMA_ERR_GET) ." while in get_class_report");
         }
-        
+
         foreach ($res as $res_item) {
             $id_log = $res_item['id_log'];
             $student_data[$id_log]['id_stud'] = $res_item['id_user'];
@@ -6172,7 +6172,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         /**
          * @author giorgio 27/ott/2014
-         * 
+         *
          * added report generation date
          */
         if (isset($student_data)) {
@@ -6293,12 +6293,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         /**
          * @author giorgio 15/lug/2013
-         * nobody remembers how come this lines of code sets the published date 
+         * nobody remembers how come this lines of code sets the published date
          * value to either creation or publication date.
          * Anyway, today it was decided to comment 'em out and set the published date
          * to the passed one.
          */
-        
+
 //         if (isset($course_ha['d_create'])) {
 //             $date_to_ts = $course_ha['d_create'];
 //         }
@@ -6314,7 +6314,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
          * @author giorgio 15/lug/2013
          * this line was added
 		 */
-        $d_publish = $this->date_to_ts($this->or_null($course_ha['d_publish']));        
+        $d_publish = $this->date_to_ts($this->or_null($course_ha['d_publish']));
 
         $id_autore = $this->or_zero($course_ha['id_autore']);
         $id_nodo_iniziale = $this->or_zero($this->sql_prepared($course_ha['id_nodo_toc']));
@@ -6340,12 +6340,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
          * @author giorgio 03/lug/2013
          *
          * call to common dh to get the new id_corso for the course to be inserted
-         */        
+         */
         $sql1 .= (AMA_Common_DataHandler::instance()->get_course_max_id()+1);
         $sql1 .= ", $nome, $titolo, $id_autore, $descr, $d_create, $d_publish, $id_nodo_toc, $id_nodo_iniziale, $media_path,$static_mode,$id_lingua, $crediti, $duration_hours,$service_type);";
 
         $res = $this->executeCritical( $sql1 );
-        
+
         if (AMA_DB::isError($res)) {
             return $res;
         }
@@ -6890,9 +6890,9 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         return $result;
     }
-    
-    
-    
+
+
+
     /**
      * Methods accessing table `nodo`
      */
@@ -7148,7 +7148,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 //             $regExp = '#^([1-9][0-9]+)_#';
             // giorgio 09/mag/2013
             // fixed bug in regexp, it mached two digits only and gived back no match for the first 9 courses!
-            $regExp = '#^([1-9][0-9]*)_#';                        
+            $regExp = '#^([1-9][0-9]*)_#';
             preg_match($regExp, $parentId, $stringFound);
             if (count($stringFound) > 0) {
                 $idCourse = $stringFound[1];
@@ -7291,16 +7291,16 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if (isset($id_instance)) {
             $sql  .= ", id_istanza = $id_instance";     // promoting nodes
         }
-        
+
 		// @author giorgio 26/apr/2013
 		// force data_creazione to now if appropriate form checkbox is checked
         if (isset($node_ha['forcecreationupdate']) && intval($node_ha['forcecreationupdate'])===1 )
-        {        	        	
+        {
         	$sql .= ', data_creazione='.$this->date_to_ts('now');
         }
-        
+
         $sql  .= " where id_nodo = $id_node";
-        
+
         ADALogger::log_db("trying updating the node: $sql");
 
         $res = $db->query($sql);
@@ -8316,7 +8316,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         $res_ar =  $db->getCol($sql);
         if (AMA_DB::isError($res_ar)) {
-        	$retval = new AMA_Error(AMA_ERR_GET); 
+        	$retval = new AMA_Error(AMA_ERR_GET);
             return $retval;
         }
         // return an error in case of an empty recordset
@@ -8429,7 +8429,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         // return an error in case of an empty recordset
         if (!$res_ar) {
-        	$retval = new AMA_Error(AMA_ERR_NOT_FOUND); 
+        	$retval = new AMA_Error(AMA_ERR_NOT_FOUND);
             return $retval;
         }
         // return nested array
@@ -8993,7 +8993,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $sqlfilename = $this->sql_prepared($filename);
         $sql = "select RE.id_risorsa_ext,RE.nome_file,RE.tipo,RE.copyright, RE.id_utente, RE.keywords,RE.titolo, RE.descrizione, RE.pubblicato,RE.lingua, RN.id_nodo from risorsa_esterna as RE, risorse_nodi as RN where RE.nome_file = ? and RE.id_risorsa_ext = RN.id_risorsa_ext and RN.id_nodo = ?";
-        
+
         $resourceInfoAr =  $db->getRow($sql,array($filename,$id_node),AMA_FETCH_ASSOC);
 //        $resourceInfoAr =  $db->getRow("select id_risorsa_ext, nome_file, tipo, copyright, id_utente, keywords, titolo, descrizione, pubblicato, lingua from risorsa_esterna where nome_file=$sqlfilename");
         if (AMA_DB::isError($resourceInfoAr)) {
@@ -9282,7 +9282,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      */
     public function _add_risorse_nodi($sqlnode_id, $res_id) {
         ADALogger::log_db("entered _add_risorse_nodi (node_id: $sqlnode_id, res_id: $res_id)");
-        
+
         if ($sqlnode_id == "''")
         {
         	ADALogger::log_db("passed node id is empty, returning true right away");
@@ -9712,7 +9712,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         /**
          * Add user data in table utenti
-         */ 
+         */
         $result = $this->add_user($student_ar);
         if(self::isError($result)) {
             // $result is an AMA_Error object
@@ -10067,7 +10067,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     public function &get_tutors_list($field_list_ar) {
         return $this->find_tutors_list($field_list_ar,'',false);
     }
-    
+
     /**
      * Get a list of super tutor' fields from the DB
      *
@@ -10183,19 +10183,19 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 				$sql .= " WHERE id_utente_tutor = ".$id_tutor;
 			}
         }
-		
+
 		if (is_numeric($id_course) && intval($id_course)>0) {
-			
+
 			if (stristr($sql,'where')!==false) $sql .= ' AND ';
 			else $sql .= ' WHERE ';
-			
-			$sql .= 'c.`id_corso`='.intval($id_course);			
+
+			$sql .= 'c.`id_corso`='.intval($id_course);
 		}
 
         $tutors_ar =  $db->getAll($sql, null, AMA_FETCH_ASSOC);
-        
+
         if (AMA_DB::isError($tutors_ar)) {
-        	$retval = new AMA_Error(AMA_ERR_GET); 
+        	$retval = new AMA_Error(AMA_ERR_GET);
             return $retval;
         }
         else {
@@ -10459,7 +10459,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // no tutor found
         return false;
     }
-    
+
   /**
    * get the tutor(s) complete informations of the course_instance
    *
@@ -10527,7 +10527,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if (!$isSuper) {
 	        $sql =  "select id_istanza_corso,id_utente_tutor from tutor_studenti where id_utente_tutor='$id_tutor'";
         } else {
-	        $sql =  "select id_istanza_corso, $id_tutor AS id_utente_tutor FROM istanza_corso";        	
+	        $sql =  "select id_istanza_corso, $id_tutor AS id_utente_tutor FROM istanza_corso";
         }
         $res =  $db->getAll($sql);
         if(AMA_DB::isError($res)) {
@@ -10540,7 +10540,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         // no instance found
         return false;
     }
-    
+
     public function count_active_course_instances($timestamp) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
@@ -10554,7 +10554,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         return $result;
     }
-    
+
     /**
      * Get notes' count for a given given user and course instance in the selected provider
      *
@@ -10563,14 +10563,14 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @param courseInstanceId
      *
      * @param userId
-     * 
+     *
      *
      * @return number of notes on success, an AMA_Error object on failure
      */
     public function count_new_notes_in_course_instances($courseInstanceId,$userId) {
     	$db =& $this->getConnection();
     	if ( AMA_DB::isError( $db ) ) return $db;
-    
+
     	// select row into table nodo
     	$sql =  "SELECT COUNT(n.`id_nodo`)
     	FROM `nodo` n
@@ -10581,20 +10581,20 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     	WHERE `id_utente_studente` = $userId
     	ORDER BY `data_visita` DESC
     	LIMIT 1
-    	) h ON (h.`data_visita` < n.`data_creazione`)";    	
-    	
-    	$sql .=" WHERE n.`tipo` = ".ADA_NOTE_TYPE;    	
-    	 
-    	$sql.=" AND n.`id_istanza` = ".$courseInstanceId;    	    	
-    	
+    	) h ON (h.`data_visita` < n.`data_creazione`)";
+
+    	$sql .=" WHERE n.`tipo` = ".ADA_NOTE_TYPE;
+
+    	$sql.=" AND n.`id_istanza` = ".$courseInstanceId;
+
     	$result =  $db->getOne($sql);
     	if(AMA_DB::isError($result)) {
     	return new AMA_Error(AMA_ERR_GET);
     	}
-    	
+
     		return $result;
     	}
-    	
+
     	/**
     	 * gets the list of all nodes that have been visited and are to be removed from the
     	 * user whatsnew array
@@ -10606,11 +10606,11 @@ public function get_updates_nodes($userObj, $pointer)
     	{
     		$db =& $this->getConnection();
     		if ( AMA_DB::isError( $db ) ) return $db;
-    		
-    		$todel = array();    		
+
+    		$todel = array();
     		$node_id_string = '';
     		$whatsnew = $userObj->getwhatsnew();
-    		
+
     		// build the list of id_nodo stored in session var
     		foreach ($whatsnew[$pointer] as $num=>$item)
     		{
@@ -10627,17 +10627,17 @@ public function get_updates_nodes($userObj, $pointer)
 	    		 * let's execute the query that will return the list of the id_nodo to be
 	    		 * removed from the session whatsnew array
 	    		 */
-	    		    		
+
 	    	    $sql = "SELECT DISTINCT(B.id_nodo)
-							FROM nodo B LEFT JOIN history_nodi A ON A.id_nodo = B.id_nodo 
-							WHERE B.id_nodo IN(".$node_id_string.") 
+							FROM nodo B LEFT JOIN history_nodi A ON A.id_nodo = B.id_nodo
+							WHERE B.id_nodo IN(".$node_id_string.")
 							AND A.`id_utente_studente`=". $userObj->getId() ."
 							AND NOT(data_creazione>=data_visita OR ISNULL(data_visita))";
 	   			$todel = $db->getAll($sql);
     		}
    			return $todel;
     	}
-    	
+
     	/**
     	 * Get nodes' count for a given given user the selected provider
     	 *
@@ -10645,31 +10645,31 @@ public function get_updates_nodes($userObj, $pointer)
     	 *
     	 * @param userId user id to get new nodes for
     	 * @param maxNodes : maximum number of nodes to get, gets all nodes if zero or not passed
-    	 * 
+    	 *
     	 * @author giorgio 29/apr/2013
     	 *
     	 * @return assoc array containing id_nodo, id_istazna and nome of the matched new nodes
-    	 * 
+    	 *
     	 * on success, an AMA_Error object on failure
     	 */
     	public function get_new_nodes($userId, $maxNodes = 3) {
-    		
+
     		$nodeTypesArray = array ( ADA_LEAF_TYPE, ADA_GROUP_TYPE );
-    		
+
     		$db =& $this->getConnection();
     		if ( AMA_DB::isError( $db ) ) return $db;
-    		
+
     		$instancesArray = $this->get_course_instances_active_for_this_student ($userId);
     		$result = array();
-    		
+
     		if (!AMA_DB::isError($instancesArray) && is_array($instancesArray) && count($instancesArray)>0) {
 	    		foreach ($instancesArray as $instance) {
 	    			// check if course instance has been visited
 	    			$temp = $this->get_last_visited_nodes ($userId, $instance['id_istanza_corso'],1);
 	    			$hasbeenvisited = !empty($temp);
-	    			
+
 	    			if ($hasbeenvisited)
-	    			{    				
+	    			{
 	    				$last_time_visited_class = $temp[0]['data_uscita'];
 	    				// get student level
 	    				$studentlevel = $this->_get_student_level($userId, $instance['id_istanza_corso']);
@@ -10677,118 +10677,118 @@ public function get_updates_nodes($userObj, $pointer)
 	    				 * new nodes are:
 	    				 * 1. nodes the user has never visited
 	    				 * 2. ndoes with data creazione > of the maximum data_visita for that node
-	    				 * 
-	    				 *     so:			
+	    				 *
+	    				 *     so:
 	    				 */
-	    				
+
 	    				$sql = 'SELECT id_nodo, ID_ISTANZA, nome from nodo where data_creazione >= '. $last_time_visited_class .
-	    				' AND id_nodo LIKE \''.$instance['id_corso'].'\_%\' AND livello <=' . $studentlevel . 
+	    				' AND id_nodo LIKE \''.$instance['id_corso'].'\_%\' AND livello <=' . $studentlevel .
 	    				' AND tipo IN (' . implode (", ", $nodeTypesArray) .') ORDER BY data_creazione
 	    						 DESC LIMIT '. $maxNodes;
-	    				
+
 	    				$tmpresults = $db->getAll($sql, null, AMA_FETCH_ASSOC );
-	    				
+
 	    				if (!empty($tmpresults)) foreach ($tmpresults as $tempresult) array_push ($result, $tempresult);
-	    				
-	    				
+
+
 	    				// return ($db->getAll($sql, null, AMA_FETCH_ASSOC ));
-	    				
+
 	    				// 1. get nodes user has never visited
-	    				
-	//     				$sql = "SELECT DISTINCT(B.`id_nodo`) AS `id_nodo` , B.`id_istanza`, B.`nome` 
+
+	//     				$sql = "SELECT DISTINCT(B.`id_nodo`) AS `id_nodo` , B.`id_istanza`, B.`nome`
 	//     						FROM `nodo` B LEFT JOIN `history_nodi` A ON A.`id_nodo` = B.`id_nodo`
 	// 							WHERE B.`tipo` IN (". implode (", ", $nodeTypesArray) .")
 	// 							AND ISNULL (`data_visita`)";
-	// 					// $sql .= " AND (A.`id_utente_studente` =".$userId ." OR ISNULL(A.`id_utente_studente`))"; 				 
+	// 					// $sql .= " AND (A.`id_utente_studente` =".$userId ." OR ISNULL(A.`id_utente_studente`))";
 	//     				$sql .= " AND B.`id_nodo` LIKE '".$instance[id_corso]."_%'";
 	//     				$sql .= " AND B.`livello`<=" . $studentlevel;
 	// 					$sql .= " ORDER BY `data_creazione` DESC";
-	
+
 	// 					$nevervisitednodes = $db->getAll($sql, null, AMA_FETCH_ASSOC );
-						
+
 	// 					print_r ($nevervisitednodes);
-						
+
 	// 					$sql= "SELECT HN.id_nodo AS 'id_nodo', HN.data_visita AS 'max_data_visita'
 	// 						FROM history_nodi HN
-	// 						INNER JOIN (					
+	// 						INNER JOIN (
 	// 							SELECT id_nodo, MAX( data_visita ) AS maxdatetime
 	// 							FROM history_nodi
 	// 							GROUP BY id_nodo
 	// 							)	GROUPEDHN ON HN.id_nodo = GROUPEDHN.id_nodo
 	// 						AND HN.data_visita = GROUPEDHN.maxdatetime
-	// 						AND HN.`id_nodo` LIKE '".$instance[id_corso]."_%'		
+	// 						AND HN.`id_nodo` LIKE '".$instance[id_corso]."_%'
 	// 						AND HN.id_utente_studente =".$userId."
 	// 						ORDER BY id_nodo ASC";
-						
+
 	// 					$sql  = "SELECT `id_nodo`, `data_visita` AS `max_data_visita` FROM `history_nodi`";
 	// 					$sql .= " WHERE `id_utente_studente`=".$userId;
 	// 					$sql .= " AND `id_nodo` LIKE '".$instance[id_corso]."_%'";
 	// 					$sql .= " GROUP BY `id_nodo` HAVING MAX(`data_visita`) ";
 	// 					$sql .= " ORDER BY max_data_visita DESC";
-						
+
 	// 					$maximumdatas = $db->getAll($sql, null, AMA_FETCH_ASSOC );
-						
+
 	// 					print_r($nevervisitednodes);
-						
+
 	// 					$othernewnodes = array();
 	// 					foreach ($maximumdatas as $maxdatafornode)
 	// 					{
 	// 						$nodeId = $maxdatafornode['id_nodo'];
 	// 						$maxData = $maxdatafornode['max_data_visita'];
-							
-	// // 						print_r ("$nodeId - $maxData\r\n<br>"); 
-							
+
+	// // 						print_r ("$nodeId - $maxData\r\n<br>");
+
 	// 						// execute the query to get new nodes
 	// 						$sql ="SELECT DISTINCT(B.`id_nodo`) AS `id_nodo` , B.`id_istanza`, B.`nome`
 	// 						FROM `nodo` B LEFT JOIN `history_nodi` A ON A.`id_nodo` = B.`id_nodo`
 	// 						WHERE B.`tipo` IN (". implode (", ", $nodeTypesArray) .")";
-	// 						$sql .= " AND `data_creazione`>" . $maxData  ;						
+	// 						$sql .= " AND `data_creazione`>" . $maxData  ;
 	// 						$sql .= " AND A.`id_utente_studente` =".$userId;
 	// 						$sql .= " AND B.`id_nodo` = '".$nodeId."'";
 	// 						$sql .= " AND B.`livello`<=" . $studentlevel;
-	
+
 	// //  						print_r("<hr/>".$sql."<hr/>");
-							
-							
+
+
 	// 						$tempresults = $db->getAll($sql, null, AMA_FETCH_ASSOC );
 	// 						if (!empty($tempresults)) foreach ($tempresults as $tempresult)  array_push ($othernewnodes,$tempresult);
-	
-	//  						print_r ($othernewnodes); 
+
+	//  						print_r ($othernewnodes);
 	// 					}
 	// 					die();
-						
+
 	// 					$retarray = array_merge ($nevervisitednodes, $othernewnodes);
 	    			} // if hasbeenvisited
 	    		} // foreach instancesarray
     		}
-					
+
 					return $result;
-    		
-    		
+
+
 //     		// get id_corso of courses for which user has subscribed
 //     		$sql = "SELECT DISTINCT(B.`id_corso`)
 //     				FROM `iscrizioni` A, `istanza_corso` B
 //     				WHERE A.`id_utente_studente` =$userId
 //     				AND A.`id_istanza_corso` = B.`id_istanza_corso`";
-    		
+
 //     		$subscribedId = $db->getAll ($sql);
-    		
-//     		$regexp = '';    		
+
+//     		$regexp = '';
 //     		foreach ($subscribedId as $num=>$a)
 //     		{
 //     			foreach ( $a as $val )
-//     			{ 
-//     				$regexp .= $val."_";    				
+//     			{
+//     				$regexp .= $val."_";
 //     			}
 //     			if ($num < count($subscribedId)-1) $regexp .= "|";
 //     		}
-    		
+
 //     		// regexp now contains a regular expression with all course_id user is subscriped to..
 //     		// e.g 102_|107_ this will be used to compare agains id_nodo in nodo table.
-    		    		
+
 //     		// get course id, if none found return 0
 // //     		if ($courseId = $this->get_course_id_for_course_instance($courseInstanceId))
-// //     		{	    			    		
+// //     		{
 // 	    		// select row into table nodo
 // 	    		$sql =  "SELECT DISTINCT(n.`id_nodo`) AS `id_nodo` , n.`id_istanza`, n.`nome`
 // 	    		FROM `nodo` n
@@ -10802,36 +10802,36 @@ public function get_updates_nodes($userObj, $pointer)
 // 	    		) h ON (h.`data_visita` < n.`data_creazione`)";
 
 // 	    		$sql .= " WHERE n.`tipo` IN (". implode(",", $nodeTypesArray) .")";
-	    		
+
 // 	    		if ($regexp !== '') $sql .= " AND n.`id_nodo` REGEXP '$regexp'";
-	    			    
+
 // 	    		$sql .= " ORDER BY n.`data_creazione` DESC";
-	    		
-	    		
-	    		
+
+
+
 // 	    		// new query
 // // 	    		$sql ="SELECT DISTINCT(B.`id_nodo`) AS `id_nodo` , B.`id_istanza`, B.`nome`
 // // 	    		FROM `nodo` B LEFT JOIN `history_nodi` A ON A.`id_nodo` = B.`id_nodo`
 // // 	    		WHERE B.`tipo` IN (". implode (", ", $nodeTypesArray) .")
 // // 	    		AND (`data_creazione`>=`data_visita` OR ISNULL(`data_visita`))";
-	    		
+
 // // 	    		if ($regexp!== '') $sql .= " AND B.`id_nodo` REGEXP '". $regexp ."'";
 
-// // 	    		$sql .= " ORDER BY `data_creazione` DESC";	    		
-	    		
-	    				 
+// // 	    		$sql .= " ORDER BY `data_creazione` DESC";
+
+
 // 				// $sql .= " AND n.`id_nodo` LIKE '".$courseId."_%'";
 // 				if ($maxNodes > 0) $sql .= " LIMIT ".$maxNodes;
-				
+
 // 	    		$result =  $db->getAll($sql, null, AMA_FETCH_ASSOC );
-	    		    
+
 // 	    		if(AMA_DB::isError($result)) {
 // 	    		return new AMA_Error(AMA_ERR_GET);
 // 	    		}
 // //     		}
 // //     		else  $result=null;
-//     		return $result;    		
-    	}  
+//     		return $result;
+    	}
 
     public function get_registered_students_without_tutor() {
         $db =& $this->getConnection();
@@ -10952,7 +10952,7 @@ public function get_updates_nodes($userObj, $pointer)
     public function _get_user_info($id) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
-        
+
         // get a row from table UTENTE
         $query = "select nome, cognome, tipo, e_mail AS email, telefono, username, layout, ".
                 "indirizzo, citta, provincia, nazione, codice_fiscale, birthdate, sesso, ".
@@ -11010,7 +11010,7 @@ public function get_updates_nodes($userObj, $pointer)
     public function get_user_type($id) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
-        
+
         $result =  $db->getOne("select tipo from utente where id_utente=$id");
         if (AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -11198,18 +11198,18 @@ public function get_updates_nodes($userObj, $pointer)
    *
    * @access public
    *
-   * @ return an array: id_type_service, type_service(=service_level), name_service,description, custom fields  
+   * @ return an array: id_type_service, type_service(=service_level), name_service,description, custom fields
    *
    * @return an error if something goes wrong
    *
    */
     public function get_service_type($id_user=NULL) {
-        
+
     $service_sql = "SELECT id_tipo_servizio, livello_servizio,nome_servizio,descrizione_servizio,custom_1,custom_2,custom_3,hiddenFromInfo,isPublic  FROM service_type";
     $common_dh = AMA_Common_DataHandler::instance();
-    
+
     /* if isset $id_user it means that the admin is asking data for log_report.php, and he have to take data from common db */
-    if(isset($id_user)){  
+    if(isset($id_user)){
         $db=array($common_dh);
     }else{
         $db=array($this,$common_dh);
@@ -11228,7 +11228,7 @@ public function get_updates_nodes($userObj, $pointer)
 
     return $service_result;
     }
-    
+
     public function get_number_of_tutored_users($id_tutor) {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
@@ -11446,8 +11446,8 @@ public function get_updates_nodes($userObj, $pointer)
         }
         return $get_user_result;
     }
-    
-   
+
+
  /** Sara -14/01/2015
    * get some log data for a given tester
    * @return  $res_ar array
@@ -11473,28 +11473,28 @@ public function get_updates_nodes($userObj, $pointer)
                     $sql[$key]="SELECT COUNT(DISTINCT(`id_utente_studente`))  FROM `iscrizioni` WHERE `status` IN (". ADA_STATUS_SUBSCRIBED.",".ADA_STATUS_TERMINATED.")";
                     break;
                 case 'course':
-                    $sql[$key]="SELECT COUNT(`id_corso`) FROM `modello_corso`"; 
+                    $sql[$key]="SELECT COUNT(`id_corso`) FROM `modello_corso`";
                     break;
                 case 'service_level':
                     if(isset($Services_Type)){
                         foreach($Services_Type as $keyService_level=>$value){
-                            $sql['course_'.$keyService_level]="SELECT COUNT(`id_corso`) FROM `modello_corso` where `tipo_servizio`=$keyService_level"; 
-                        } 
+                            $sql['course_'.$keyService_level]="SELECT COUNT(`id_corso`) FROM `modello_corso` where `tipo_servizio`=$keyService_level";
+                        }
 
                     }
                     break;
                 case 'sessions_started':
-                    $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` >". time(); 
+                    $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_inizio` > 0 AND `data_fine` >". time();
                     break;
                 case'student_subscribedStatus_sessStarted':
                     $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status` IN (".ADA_STATUS_SUBSCRIBED.",".ADA_STATUS_TERMINATED.") AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
                     break;
                 case 'student_CompletedStatus_sessStarted':
                     $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`= ".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED." AND ic.`data_inizio` > 0 AND ic.`data_fine` >". time();
-                    break; 
+                    break;
                 case 'sessions_closed':
-                    $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_fine` <= " . time();  
-                    break; 
+                    $sql[$key]="SELECT COUNT(`id_istanza_corso`) FROM `istanza_corso` WHERE `data_fine` <= " . time();
+                    break;
                 case'student_subscribedStatus_sessEnd':
                     $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status` IN(".ADA_STATUS_SUBSCRIBED.",".ADA_STATUS_TERMINATED.") AND ic.`data_inizio` > 0 AND ic.`data_fine` <=". time();
                     break;
@@ -11504,7 +11504,7 @@ public function get_updates_nodes($userObj, $pointer)
                 case 'tot_student_subscribedStatus':
                     $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status` IN (".ADA_STATUS_SUBSCRIBED.','.ADA_STATUS_TERMINATED.') AND ic.`data_inizio` > 0' ;
                     break;
-                case 'tot_student_CompletedStatus': 
+                case 'tot_student_CompletedStatus':
                     $sql[$key]="SELECT COUNT(`id_utente_studente`) FROM `iscrizioni` AS i,`istanza_corso` AS ic  WHERE i.`id_istanza_corso`= ic.`id_istanza_corso` AND i.`status`=".ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED.' AND ic.`data_inizio` > 0' ;
                     break;
                 case 'tot_Session':
@@ -11536,7 +11536,7 @@ public function get_updates_nodes($userObj, $pointer)
     $db =& $this->getConnection();
     if ( AMA_DB::isError( $db ) ) return $db;
     $res_ar['provider'] = $tester;
-    foreach ($sql as $type => $query){   
+    foreach ($sql as $type => $query){
         $res =  $db->getOne($query);
         if(!AMA_DataHandler::isError($res)) {
             $res_ar[$type] = $res;
@@ -12253,42 +12253,42 @@ public function get_updates_nodes($userObj, $pointer)
       $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
       return $result;
     }
-    
+
     /**
      * @author giorgio 27/ago/2014
-     * 
-     * gets a menu tree_id from the provider database, if not found 
+     *
+     * gets a menu tree_id from the provider database, if not found
      * tries the common database and if still a menu tree_id is not
      * found for the given script, module and user_type tries the default
-     * 
+     *
      * @param string $module (module for the menu. e.g. browsing, comunica, modules/test)
      * @param string $script (script for the menu, derived from the URL)
      * @param string $user_type AMA_USER_TYPE
      * @param number $self_instruction non zero if course is in self instruction mode
-     * @param boolean $get_all set it to true to get also disabled elements. Defaults to false 
-     * 
+     * @param boolean $get_all set it to true to get also disabled elements. Defaults to false
+     *
      * @return boolean false | array (
      * 							'tree_id' the menu tree id to be used
      * 							'isVertical' non zero if this is a vertical menu
      * 							'dbToUse' the DataHandler where the menu was found
      * 						   )
-     * 
+     *
      * @access public
-     */   
+     */
     public function get_menutree_id($module, $script, $user_type, $self_instruction=0) {
-    	
+
     	$default_module = 'main';    // module name to be used as a default value
     	$default_script = 'default'; // script name to be used as a default value
     	$menu_found = false;
     	$retVal = array();
-    	
+
     	// get the query string as an array
-    	$queryStringArr = (strlen($_SERVER['QUERY_STRING'])>0) ? explode('&', $_SERVER['QUERY_STRING']) : array(); 
-    	
+    	$queryStringArr = (strlen($_SERVER['QUERY_STRING'])>0) ? explode('&', $_SERVER['QUERY_STRING']) : array();
+
     	$sql = 'SELECT tree_id, script, isVertical, linked_tree_id FROM menu_page WHERE module=? AND script LIKE ? AND user_type=? AND self_instruction=?';
-    	
+
     	$common_dh = AMA_Common_DataHandler::instance();
-    	
+
     	/**
     	 * Rules used to look for a menu:
     	 * - try passed module/script  in current provider, and if nothing is found
@@ -12299,7 +12299,7 @@ public function get_updates_nodes($userObj, $pointer)
     	 * - try main/default          in common  provider, and if nothing is found
     	 * - give up.
     	 */
-    	
+
     	foreach (array($module,$default_module) as $nummodule=>$currentModule) {
     		foreach (array($script,$default_script) as $numscript=>$currentScript) {
     			// skip main module/passed script as per above rules
@@ -12318,13 +12318,13 @@ public function get_updates_nodes($userObj, $pointer)
     						 * search if there's a query string and
     						 * load it in the mneuCandidate array
     						 */
-    						$querypos = strpos($menuCandidate['script'], '?');    						
+    						$querypos = strpos($menuCandidate['script'], '?');
 							if ($querypos!==false) {
 								$menuCandidate['queryString'] = substr($menuCandidate['script'], $querypos+1);
 							} else {
 								$menuCandidate['queryString'] = null;
 							}
-							
+
     						if (is_null($menuCandidate['queryString'])) {
     							/**
     							 * if menu candidate has no query string, it's the menu
@@ -12344,21 +12344,21 @@ public function get_updates_nodes($userObj, $pointer)
     							 * if menu candidate has a query string the menu is
     							 * the one with the highest number of matching params
     							 */
-    							
+
     							// make the array of the menuCandidate query string
     							$menuCandidateArr = explode ('&', $menuCandidate['queryString']);
     							// find matched parameters array
     							$matchedParams = array_intersect($menuCandidateArr, $queryStringArr);
     							if (count($matchedParams)>0) {
-    								
+
     								$score = count($matchedParams) / count($menuCandidateArr);
-    								
+
     								/**
     								 * if current candidate has a score higher than the bestScore or
     								 * if it has an equal score but with more mathched parameters,
     								 * than it is the new best match
     								 */
-    								
+
     								if ($score > $bestScore ||
     									($score == $bestScore && count($matchedParams)>$bestNumOfMatchedParams)) {
     									$bestScore = $score;
@@ -12397,18 +12397,18 @@ public function get_updates_nodes($userObj, $pointer)
 
     	return $retVal;
     }
-    
+
     /**
      * @author giorgio 27/ago/2014
-     * 
+     *
      * gets the left and right submenu trees
-     * 
+     *
      * @param number $tree_id the id of the menu tree to load
      * @param AMA_DataHandler $dbToUse the data handler to be used, either Common or Tester
      * @param boolean $get_all set it to true to get also disabled elements.
-     * 
+     *
      * @return array associative, with 'left' and 'right' keys for each submenu tree
-     * 
+     *
      * @access public
      */
     public function get_menu_children($tree_id, $dbToUse, $get_all = false) {
@@ -12420,11 +12420,11 @@ public function get_updates_nodes($userObj, $pointer)
     			   'MI.item_id=MT.item_id WHERE MT.tree_id=? AND MT.parent_id=0 AND MI.groupRight=?';
     		if (!$get_all) $sql .= ' AND MI.enabledON!="'.Menu::NEVER_ENABLED.'"';
     		$sql .= ' ORDER BY MI.order ASC';
-	    	
+
     		$res = $dbToUse->getAllPrepared($sql,array($tree_id,$sideIndex),AMA_FETCH_ASSOC);
-	    	
+
     		if (!AMA_DB::isError($res) && count($res)>0) {
-	    		
+
     			foreach ($res as $count=>$element) {
     				$res[$count]['children'] = $this->get_menu_children_recursive($tree_id,$element['item_id'],$dbToUse,$get_all);
     			}
@@ -12433,37 +12433,37 @@ public function get_updates_nodes($userObj, $pointer)
     			$retVal[$sideString] = null;
     		}
     	}
-    	return $retVal;    	    	
+    	return $retVal;
     }
-    
+
     /**
      * @author giorgio 19/ago/2014
-     * 
+     *
      * recursively gets all the children of a given menu item
-     * 
+     *
      * @param number $tree_id the id of the menu tree to load
      * @param number $parent_id the id of the parent to get children for
      * @param AMA_DataHandler $dbToUse the data handler to be used, either Common or Tester
      * @param boolean $get_all set it to true to get also disabled elements.
-     * 
+     *
      * @return array of found children or null if no children found
-     * 
+     *
      * @access private
      */
     private function get_menu_children_recursive($tree_id=0,$parent_id,$dbToUse,$get_all) {
-    	
+
     	$sql = 'SELECT MI.*, MT.extraClass AS menuExtraClass FROM `menu_items` AS MI JOIN `menu_tree` AS MT ON '.
     			'MI.item_id=MT.item_id WHERE MT.tree_id=? AND MT.parent_id=?';
     	if (!$get_all) $sql .= ' AND MI.enabledON!="'.Menu::NEVER_ENABLED.'"';
     	$sql .= ' ORDER BY MI.order ASC';
-    	
+
     	$res = $dbToUse->getAllPrepared($sql,array($tree_id,$parent_id),AMA_FETCH_ASSOC);
-    	
+
     	if (AMA_DB::isError($res) || count($res)<=0 || $res===false) return null;
     	else {
     		foreach ($res as $count=>$element) {
     			$res[$count]['children'] = $this->get_menu_children_recursive($tree_id, $element['item_id'], $dbToUse, $get_all);
-    		}    		
+    		}
     		return $res;
     	}
     }

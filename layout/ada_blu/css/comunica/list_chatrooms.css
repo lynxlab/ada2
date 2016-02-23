@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+@import url("default.css");
+#content_view {
+	float: left;
+	width: 100%;
+}
+#pagecontainer {
+	margin-bottom: -55px;
+}

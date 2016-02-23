@@ -6,23 +6,23 @@
  * @package		widget
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		giorgio <g.consorti@lynxlab.com>
- * 
+ *
  * @copyright	Copyright (c) 2013, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link 		widget
  * @version		0.1
  *
  * supported params you can pass either via XML or php array:
- *   
+ *
  *  name="course_id"	   optional,  value: course id from which to load the news
- *                                           if invalid or omitted, PUBLIC_COURSE_ID_FOR_NEWS is used 
+ *                                           if invalid or omitted, PUBLIC_COURSE_ID_FOR_NEWS is used
  *  name="showDescription" optional,  value: shows or hides the post description. values: 0 or nonzero
  *                                           if invalid or omitted, description will be hidden
  *	name="count"		   optional,  value: how many news to display
  *                                           if invalid or omitted NEWS_COUNT entries are displayed
- *                                           
- *  NOTE: THIS WIDGET WORKS ONLY IN SYNC MODE FOR SESSION SETTING PROBLEMS! 
- *  	  async XML param is IGNORED                                        
+ *
+ *  NOTE: THIS WIDGET WORKS ONLY IN SYNC MODE FOR SESSION SETTING PROBLEMS!
+ *  	  async XML param is IGNORED
  */
 
 /**
@@ -40,21 +40,21 @@ $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_T
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
-	
+
 	extract ($_GET);
 	if (!isset($widgetMode)) $widgetMode = ADA_WIDGET_ASYNC_MODE;
-	
+
 	/**
 	 * checks and inits to be done if this has been called in async mode
 	 * (i.e. with a get request)
 	 */
 	if(isset($_SERVER['HTTP_REFERER'])){
-		if($widgetMode!=ADA_WIDGET_SYNC_MODE && 
+		if($widgetMode!=ADA_WIDGET_SYNC_MODE &&
 			preg_match("#^".HTTP_ROOT_DIR."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1){
 			die ('Only local execution allowed.');
 		}
 	}
-	
+
 }
 
 /**
@@ -85,7 +85,7 @@ if (isset($testerName)) {
 	$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($testerName));
 	// setting of the global is needed to load the course object
 	$GLOBALS['dh'] = $tester_dh;
-	
+
 	// load course
 	$courseObj = new Course($course_id);
 	$courseOK = false;
@@ -111,23 +111,31 @@ if (isset($testerName)) {
 				array ( "COALESCE(if(nome='NULL' OR ISNULL(nome ),NULL, nome), '')", "testo" ) ,
 				"tipo IN (". ADA_LEAF_TYPE .",". ADA_GROUP_TYPE .") ORDER BY data_creazione DESC LIMIT ".$count,
 				$course_id);
-		
+
 		// watch out: $newscontent is NOT associative
 		$output = '';
 		$maxLength = 600;
 		if (!AMA_DB::isError($newscontent) && count($newscontent)>0) {
+			$newsContainer = CDOMElement::create('div','class:ui three column divided grid');
+			$newsContainer->setAttribute('data-courseID', $course_id);
+			$newsRow = CDOMElement::create('div','class:equal height row');
+			$continueRow = CDOMElement::create('div','class:continuelink row');
+			$newsContainer->addChild($newsRow);
+			$newsContainer->addChild($continueRow);
+
 			foreach ( $newscontent as $num=>$aNews ) {
-				$aNewsDIV = CDOMElement::create('div','class:news,id:news-'.($num+1));
-				$aNewsTitle = CDOMElement::create('a', 'class:newstitle,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+				$aNewsDIV = CDOMElement::create('div','class:column news,id:news-'.($num+1));
+				$newsRow->addChild($aNewsDIV);
+				$aNewsTitle = CDOMElement::create('a', 'class:newstitle ui header,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
 						$course_id.'&id_node='.$aNews[0]);
 				$aNewsTitle->addChild (new CText($aNews[1]));
 				$aNewsDIV->addChild ($aNewsTitle);
-	
+
 				// @author giorgio 01/ott/2013
 				// remove unwanted div ids: tabs
 				// NOTE: slider MUST be removed BEFORE tabs because tabs can contain slider and not viceversa
 				$removeIds = array ('slider','tabs');
-					
+
 				$html = new DOMDocument('1.0', ADA_CHARSET);
 				/**
 				 * HTML uses the ISO-8859-1 encoding (ISO Latin Alphabet No. 1) as default per it's specs.
@@ -135,12 +143,12 @@ if (isset($testerName)) {
 				 * are being suppressed with the @
 				 */
 				@$html->loadHTML('<meta http-equiv="content-type" content="text/html; charset='.ADA_CHARSET.'">'.$aNews[2]);
-	
+
 				foreach ($removeIds as $removeId) {
 					$removeElement = $html->getElementById($removeId);
 					if (!is_null($removeElement)) $removeElement->parentNode->removeChild($removeElement);
 				}
-					
+
 				// output in newstext only the <body> of the generated html
 				if ($showDescription) {
 					$newstext = '';
@@ -156,18 +164,21 @@ if (isset($testerName)) {
 						$addContinueLink = true;
 					}
 					else $addContinueLink = false;
-		
+
 					$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
 				}
-	
+
 				if ($addContinueLink) {
-					$contLink = CDOMElement::create('a', 'class:continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+					$contLink = CDOMElement::create('a', 'class:column continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
 							$course_id.'&id_node='.$aNews[0]);
 					$contLink->addChild (new CText(translateFN('Continua...')));
-					$aNewsDIV->addChild ($contLink);
+					$continueRow->addChild ($contLink);
+				} else {
+					$continueRow->addChild(CDOMElement::create('span','class:column'));
 				}
-				$output .= $aNewsDIV->getHtml();
+				// $output .= $aNewsDIV->getHtml();
 			}
+			$output = $newsContainer->getHtml();
 		} else $output = translateFN('Spiacente, non ci sono corsi che hanno l\'id richiesto');
 	} else $output = translateFN('Corso non valido o utente non iscritto al corso specificato');
 }  else $output = translateFN('Spiacente, non so a che fornitore di servizi sei collegato');
@@ -182,6 +193,6 @@ if (isset($testerName)) {
 		case ADA_WIDGET_ASYNC_MODE:
 		default:
 			echo $output;
-		
+
 }
 ?>

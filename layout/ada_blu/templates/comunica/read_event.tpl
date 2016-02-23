@@ -5,8 +5,8 @@
 </head>
 
 <body>
-<a name="top">
-</a>
+<a name="top"></a>
+<div id="pagecontainer">
 <div id="header">
 		 <template_field class="microtemplate_field" name="header_com">header_com</template_field>
 </div> 
@@ -14,7 +14,7 @@
     <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
 <!-- / menu --> 
 <!-- PERCORSO -->
-<div id="journey">
+<div id="journey" class="ui tertiary inverted teal segment">
 <i18n>dove sei: </i18n>
     <span>
         <i18n>messaggeria</i18n>
@@ -98,7 +98,10 @@
 <div id="bottomcont">
 </div>
 </div> <!--  / contenuto -->
+</div> <!-- / user_wrap -->
 </div> <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
 <!-- PIEDE -->
 <div id="footer">

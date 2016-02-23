@@ -5,6 +5,7 @@
     </head>
     <body>
         <a name="top"></a>
+        <div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -16,7 +17,7 @@
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
-            <div id="journey">
+            <div id="journey" class="ui tertiary inverted teal segment">
                 <i18n>dove sei: </i18n>
                 <span>
                     <template_field class="template_field" name="course_title">course_title</template_field>
@@ -77,34 +78,17 @@
             <!-- contenuto -->
             <div id="content_view">
                 <div id="contentcontent" class="contentcontent_view">
-                    <div id="info_nodo">
-                        <!--i18n>visite: </i18n-->
-                        <!--span>
-                            <template_field class="template_field_disabled" name="visited">visited</template_field>
-                        </span-->
-                    </div>
                     <div class="first">
                         <template_field class="template_field" name="media">media</template_field>
                         <template_field class="template_field" name="text">text</template_field>
                     </div>
                 </div>
-                <div id="bottomcont">
-                </div>
             </div>
             <!--  / contenuto -->
-            <!-- com_tools -->
-            <div id="com_tools">
-                <div id="topcom_t">
-                </div>
-                <div id="com_toolscontent">
-                    <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-                </div>
-                <div id="bottomcom_t">
-                </div>
-            </div>
-            <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
+        <div id="push"></div>
+        </div>
 
         <!-- PIEDE -->
         <div id="footer">

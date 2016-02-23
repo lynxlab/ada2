@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
 .dataTables_wrapper {
-	height: 335px;
+	height: 280px;
 }
 .dataTables_filter label {
 	width: auto;
@@ -15,4 +15,8 @@
 body {
 	margin:0;
 	padding:0;
+}
+
+#pagecontainer {
+	margin-bottom: -20px;
 }

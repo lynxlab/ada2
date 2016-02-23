@@ -1,9 +1,16 @@
 /* IMPOSTAZIONI GENERALI
 ----------------------------------------------- */
 @CHARSET "UTF-8";
+@import url("footer.css");
 
-html, body { font-family: Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:5px; color:#000; font-size: small;
-			 background: #fff; }
+html, body { font-family: "Helvetica Neue", "Helvetica", Arial, Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:5px; color:#000; font-size: small;
+			 background: #fff; height: 99.5%; }
+
+#container { border-bottom: none; }
+#pagecontainer { min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -15px; 
+}
+#pagecontainer > .ui.grid.ada.menucontainer { margin:0; }
+#footer, #push { height: 15px; clear: both; }			 
 
 A IMG {border:none;}
 
@@ -19,7 +26,9 @@ THEAD IMG, TFOOT IMG {vertical-align:middle;}
 
 TH { vertical-align:middle; text-transform: capitalize; }
 
+/*
 div, span, /*form,*/ a { font-style: inherit; margin: 0; padding: 0; border: 0; font-weight: inherit; font-family: inherit; text-align: left;vertical-align: baseline;}
+*/
 li, ol, ul { font-style: inherit; border: 0; font-weight: inherit; font-family: inherit; text-align: left; vertical-align: baseline;}
 
 tbody td { border-bottom:1px solid #ECECEA;	height:30px; line-height:1.5em;}
@@ -28,7 +37,7 @@ colgroup { }
 col { }
 caption {text-align: center; border-collapse: collapse; font-weight: bold; font-style: inherit;	font-size: 100%; line-height: 2; font-family: inherit;	vertical-align: baseline;	text-transform: uppercase;}
 
-a:link {color: Black; text-decoration: underline; }
+a:link {color: Black; text-decoration: none; }
 a:hover {color: Red; }
 a:visited {text-decoration: none; }
 
@@ -121,7 +130,7 @@ a:visited {text-decoration: none; }
 #container {
     background:#fff;
     padding:70px 10px 5px 10px;
-    border-bottom:10px solid #1665AD;
+/*     border-bottom:10px solid #1665AD; */
 }
 
 /*
@@ -179,7 +188,7 @@ a:visited {text-decoration: none; }
  * Content
 */
 #content {
-    min-height: 300px;
+    /* min-height: 300px; */
 }
 #bottomcont {
     height:0px;
@@ -231,9 +240,37 @@ a:visited {text-decoration: none; }
     margin-right: 0px;
 }
 #com_toolscontent {
-    background: #a0bfdb;
-    padding: 10px;
+    background: transparent;
+    padding: 0px;
     color:#fff;
+    /* compensate container margins */
+     /* margin-left: -10px;
+    margin-right: -10px;  */
+}
+
+#com_tools .ui.menu.ada > div.item:not(.disabled) {
+	cursor: pointer;	
+}
+
+#com_tools .ui.popup {
+	max-width: 40rem;
+}
+
+#com_tools .ui.popup table {
+	width: 40rem;
+	color: #000000;
+}
+
+#com_tools .ui.popup ul.user_online {
+	list-style-type: none;
+}
+
+#com_tools .ui.popup table>tbody>tr>td {
+	vertical-align: middle;
+}
+
+#com_tools .ui.popup table>tbody>tr:last-child>td {
+	border-bottom: none;
 }
 
 #topcom_t {
@@ -243,6 +280,8 @@ a:visited {text-decoration: none; }
 #bottomcom_t {
     height:5px;
 }
+
+#com_tools .ui.menu .item > span { display: none; }
 
 /*
  *
@@ -308,17 +347,16 @@ UL#menu a:hover { color: #eaff00; }
 
 
 #journey {
-	background: url(../img/journey-pattern.png) repeat-x;
-	padding-top: 0px;
-	padding-right: 0px;
-	padding-bottom: 0px;
-	padding-left: 10px;
-	margin-top:10px;
 	margin-bottom:5px;
+	line-height: 1.5rem;
+	padding: 0.2rem 1rem 0.2rem 5.4rem;
+    text-indent: -4.3rem;
 }
 
-#journey A {text-decoration:none;}
-#journey A:hover {color:#000; text-decoration:underline}
+#journey a { text-decoration:none; color: #147975; }
+#journey a:hover { text-decoration:underline; color: #17504E; }
+#journey a.selected { cursor: default; }
+#journey a.selected:hover { text-decoration: none; color:#147975; }
 
 
 /* SOTTOMENU */

@@ -1,0 +1,80 @@
+@CHARSET "UTF-8";
+
+#structIndex .preview_forum {
+	margin-top: 1rem;
+	padding: 1rem;
+	border: 1px solid #efefef;
+	border-radius: 5px;
+}
+
+#structIndex > ul > li.courseNode > ul.structIndex > li.courseNode {
+	border-bottom: 1px solid #cecece;
+	padding-bottom: 1rem;
+}
+
+#structIndex > ul > li.courseNode > ul.structIndex > li.courseNode:last-child {
+	border-bottom: none;
+}
+
+#structIndex span.visitsCount {
+	font-weight: normal;
+}
+
+#structIndex a.noteElement:after {
+     visibility: hidden;
+     display: block;
+     font-size: 0;
+     content: " ";
+     clear: both;
+     height: 0;
+}
+
+#structIndex a.previewMessage > img {
+	display: none;
+}
+/**
+ * zoom-in icon
+ */
+#structIndex a.previewMessage:after {
+	font-family: 'Icons';
+	content: '\f00e';
+	font-size: 1.1em;
+	margin-right: 0.5rem;
+	width: 1.3em;
+    font-weight: normal;	
+}
+
+#structIndex span.username {
+	margin: 0 1.7rem 0 1.7rem;
+    width: 20rem;
+    font-weight: normal;
+}
+
+/**
+ * user icon
+ */
+#structIndex span.username:before {
+	font-family: 'Icons';
+	content: '\f007';
+	font-size: 1.3em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+	font-weight: normal;		
+}
+
+/**
+ * adjust last viewed icon
+ */
+#structIndex > ul > li.courseNode li.courseNode span.ADA_LEAF_TYPE > img, 
+#structIndex > ul > li.courseNode li.courseNode span.ADA_GROUP_TYPE > img,
+#structIndex > ul > li.courseNode li.courseNode span.ADA_NOTE_TYPE > img {
+	zoom: 0.5;
+    vertical-align: middle;
+    margin-left: -10px;
+    margin-top: -2px;
+}
+
+#structIndex > ul > li.courseNode li.courseNode span.ADA_GROUP_TYPE > img,
+#structIndex > ul > li.courseNode li.courseNode span.ADA_LEAF_TYPE > img {
+	margin-left: 0;
+}	

@@ -118,6 +118,8 @@
             <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
 
         <!-- MENU A TENDINA -->
@@ -133,7 +135,7 @@
             <!-- / menu -->
 
             <! -- PERCORSO -->
-            <div id="journey">
+            <div id="journey" class="ui tertiary inverted teal segment">
                 <i18n>dove sei: </i18n>
                 <span>
                     <template_field class="template_field" name="path">path</template_field>
