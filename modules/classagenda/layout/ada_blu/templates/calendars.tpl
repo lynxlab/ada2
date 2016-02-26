@@ -2,6 +2,7 @@
 <html>
     <body>
         <a name="top"></a>
+        <div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -13,7 +14,7 @@
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
-            <div id="journey">
+            <div id="journey" class="ui tertiary inverted teal segment">
                 <i18n>dove sei: </i18n>
                 <span>
                     <template_field class="template_field" name="title">title</template_field>
@@ -82,6 +83,8 @@
             <!--  / contenuto -->
         </div>
         <!-- / contenitore -->
+        <div id="push"></div>
+		</div>
 
         <!-- piede -->
         <div id="footer">
