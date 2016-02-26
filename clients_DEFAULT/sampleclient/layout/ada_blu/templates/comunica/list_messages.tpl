@@ -73,7 +73,7 @@
 		<template_field class="template_field" name="menu_02">menu_02</template_field>
 </ul> <!-- / menu -->
 <!-- PERCORSO -->
-<div id="journey">
+<div id="journey" class="ui tertiary inverted teal segment">
 		 <i18n>dove sei: </i18n>
 		 <span>
 		 			 <i18n>messaggeria</i18n>

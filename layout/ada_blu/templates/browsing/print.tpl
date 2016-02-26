@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="../../css/browsing/default.css" type="text/css">
     </head>
     <body>
-        <a name="top">
-        </a>
+		<a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -14,7 +14,7 @@
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->
-            <div id="journey">
+            <div id="journey" class="ui tertiary inverted teal segment">
                 <i18n>dove sei: </i18n>
                 <span>
                     <template_field class="template_field" name="course_title">course_title</template_field>
@@ -100,6 +100,10 @@
                 <div id="contentcontent" class="contentcontent_view">
 
                     <div class="firstnode">
+	                    <h1 class="ui red header">
+	                    	<template_field class="template_field" name="title">title</template_field>
+	                    </h1>
+	                    <div class="ui divider"></div>                    
                         <template_field class="template_field" name="text">text</template_field>
                     </div>
 		    <hr>
@@ -114,14 +118,13 @@
 		       <template_field class="template_field" name="personal">personal</template_field>
 			<!--template_field class="template_field" name="exercises">exercises</template_field-->
 		  </div>
-
-                </div>
-                <div id="bottomcont">
                 </div>
             </div>
             <!--  / contenuto -->           
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
         <!-- piede -->
         <div id="footer">

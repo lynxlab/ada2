@@ -826,16 +826,18 @@ class CourseViewer
     	$textlink = $params['node']['nome'];
     	$link_to_note = CDOMElement::create('span');
     }
-    if (isset($link_to_note)) $link_to_note->addChild(new CText($textlink));    
-    
+    $link_to_note->setAttribute('class', 'noteElement');
+    if (isset($link_to_note)) $link_to_note->addChild(new CText($textlink));
+
     if (isset($link_to_note)) $list_item->addChild($link_to_note);
     if (isset($username)) $list_item->addChild($username);
 
 	if (!empty($params['node']['testo'])) {
 		$link_zoom = CDOMElement::create('a');
 		$link_zoom->setAttribute('href','javascript:void(0);');
-		$link_zoom->setAttribute('onclick',"$('messagePreview".$params['node']['id_nodo']."').toggle();");
+		$link_zoom->setAttribute('onclick',"\$j('#messagePreview".$params['node']['id_nodo']."').slideToggle();");
 		$link_zoom->setAttribute('title',translateFN('Anteprima Messaggio'));
+		$link_zoom->setAttribute('class', 'previewMessage');
 		$zoom = CDOMElement::create('img','src:img/zoom.png, width:16, height:16');
 		$link_zoom->addChild($zoom);
 		$list_item->addChild($link_zoom);
@@ -849,7 +851,9 @@ class CourseViewer
       if (isset($params['node']['numero_visite']) && $params['node']['numero_visite'] > 0) {
         $visits = $params['node']['numero_visite'];
       }
-      $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
+      $visit_item = CDOMElement::create('span','class:visitsCount');
+      $visit_item->addChild(new CText(translateFN("Visite") . " $visits"));
+      $list_item->addChild($visit_item);
     }
 
     if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {

@@ -1,4 +1,14 @@
 @CHARSET "UTF-8";
+
+#content {
+	width: 100%;
+	float: left;
+}
+
+#pagecontainer {
+	margin-bottom: -55px;
+}
+
 #completeRulesList caption {
 	margin-top: -26px;
 	color: #fff;

@@ -73,7 +73,7 @@ abstract class ADAGenericUser {
      * path to user's edit profile page
      */
     protected $editprofilepage;
-    
+
     /*
    * getters
     */
@@ -160,14 +160,14 @@ abstract class ADAGenericUser {
     public function getBirthDate() {
         return $this->birthdate;
     }
-    
+
     public function getBirthCity() {
     	return $this->birthcity;
     }
-    
+
     public function getBirthProvince() {
     	 return $this->birthprovince;
-    }    
+    }
 
     public function getGender() {
         return $this->sesso;
@@ -195,7 +195,7 @@ abstract class ADAGenericUser {
     public function getUserName() {
         return $this->username;
     }
-    
+
     public function getCap() {
         return $this->cap;
     }
@@ -208,11 +208,11 @@ abstract class ADAGenericUser {
         if ($this->avatar != '' && file_exists(ADA_UPLOAD_PATH.$this->id_user.'/'.$this->avatar)) {
             $imgAvatar = HTTP_UPLOAD_PATH.$this->id_user.'/'.$this->avatar;
         } else {
-            $imgAvatar = HTTP_UPLOAD_PATH.ADA_DEFAULT_AVATAR; 
-        }        
+            $imgAvatar = HTTP_UPLOAD_PATH.ADA_DEFAULT_AVATAR;
+        }
         return $imgAvatar;
     }
-    
+
     public function getTesters() {
         if(is_array($this->testers)) {
             return $this->testers;
@@ -233,12 +233,12 @@ abstract class ADAGenericUser {
         }
         return $this->homepage;
     }
-    
+
     public function getEditProfilePage()
     {
     	return  HTTP_ROOT_DIR . $this->editprofilepage;
     }
-    
+
     public function getUnreadMessagesCount() {
     	$msg_simple_count = 0;
     	// passing true means get unread message
@@ -246,7 +246,7 @@ abstract class ADAGenericUser {
     	foreach ($msg_simpleAr as $msg_simple_provider) {
     		$msg_simple_count += count($msg_simple_provider);
     	}
-    	return intval($msg_simple_count);    	
+    	return intval($msg_simple_count);
     }
 
     /*
@@ -305,11 +305,11 @@ abstract class ADAGenericUser {
     public function setBirthDate($birthdate) {
         $this->birthdate = $birthdate;
     }
-    
+
     public function setBirthCity($birthcity) {
     	$this->birthcity = $birthcity;
     }
-    
+
     public function setBirthProvince($birthprovince) {
     	$this->birthprovince = $birthprovince;
     }
@@ -338,14 +338,14 @@ abstract class ADAGenericUser {
     protected function setHomePage($home_page) {
         $this->homepage = $home_page;
     }
-    
+
     protected function setEditProfilePage ($relativeUrl) {
     	if (isset($relativeUrl) && strlen($relativeUrl)>0) {
     		// make it leading slash-agnostic
     		if ($relativeUrl{0}!== DIRECTORY_SEPARATOR) $relativeUrl = DIRECTORY_SEPARATOR .$relativeUrl;
-    		
+
     		if (is_file(ROOT_DIR . $relativeUrl)) $this->editprofilepage = $relativeUrl;
-    		else $this->editprofilepage = '';    		
+    		else $this->editprofilepage = '';
     	} else $this->editprofilepage = '';
     }
 
@@ -383,7 +383,7 @@ abstract class ADAGenericUser {
     public function setAvatar($avatar) {
         $this->avatar = $avatar;
     }
-    
+
 
     public function addTester($tester) {
         $tester = DataValidator::validate_testername($tester,MULTIPROVIDER);
@@ -525,7 +525,7 @@ class ADAGuest extends ADAGenericUser {
         $this->SerialNumber    = NULL;
         $this->avatar          = NULL;
         $this->testers = (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) ? array($GLOBALS['user_tester']) : array(ADA_PUBLIC_TESTER);
-        	
+
         $this->setHomePage(HTTP_ROOT_DIR);
         $this->setEditProfilePage('');
     }
@@ -572,13 +572,13 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $this->cap                    = isset($user_dataHa['cap']) ? $user_dataHa['cap'] : null;
         $this->SerialNumber           = isset($user_dataHa['matricola']) ? $user_dataHa['matricola'] : null;
         $this->avatar                 = isset($user_dataHa['avatar']) ? $user_dataHa['avatar'] : null;
-        
+
         $this->birthcity			  = isset($user_dataHa['birthcity']) ? $user_dataHa['birthcity'] : null;
         $this->birthprovince		  = isset($user_dataHa['birthprovince']) ? $user_dataHa['birthprovince'] : null;
 
 
     }
-    
+
     public function fillWithArrayData ($dataArr = null)
     {
     	if (!is_null($dataArr))
@@ -607,7 +607,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
     		$this->setBirthCity($dataArr['birthcity']);
     		$this->setBirthProvince($dataArr['birthprovince']);
     	}
-    }    
+    }
 
 // MARK: USARE MultiPort::getUserMessages
     public function get_messagesFN($id_user) {
@@ -651,14 +651,14 @@ abstract class ADALoggableUser extends ADAGenericUser {
      Viene passato $id_course_instance per filtrare l'istanza di corso
      su cui si sta lavorando.
         */
-        
+
         /**
          * @author giorgio 28/giu/2013
          * fixed bug: if neither course instance nor session course instance is set, then return null
          */
         if (!isset($id_course_instance) && (
         		!isset($sess_id_course_instance) || is_null($sess_id_course_instance))) return null;
-        
+
         if (!isset($id_course_instance))
             $id_course_instance = $sess_id_course_instance;
         $now = time();
@@ -690,6 +690,15 @@ abstract class ADALoggableUser extends ADAGenericUser {
                                     // ora bisogna controllare che la sessione sia la stessa
                                     $user_session_id = $user[3];
                                     if ($user_session_id == session_id()) {
+
+
+                                    	/**
+                                    	 * @author giorgio 17/feb/2016
+                                    	 * added continue; to remove 'io'
+                                    	 * from the online users list
+                                    	 */
+                                    	continue;
+
                                         $online_users_idAr[] = $user_id;
                                         //$online_usersAr[$user_id]['user']= "<img src=\"img/_student.png\" border=\"0\"> ".translateFN("io");
                                         $online_usersAr[]= translateFN("io");
@@ -837,7 +846,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
 			$dh = $GLOBALS['dh'];
 		}
         // called by browsing/student.php
-        
+
         if($type=="UT")
         {
             $last_accessAr = $this->_get_last_accessFN($id_course_instance,$dh,false);
@@ -871,9 +880,9 @@ abstract class ADALoggableUser extends ADAGenericUser {
      */
     private function _get_last_accessFN($id_course_instance="",$provider_dh, $return_dateonly=true) {
         // if used by student before entering a course, we must pass the DataHandler
-        if ($provider_dh==NULL)   { 
+        if ($provider_dh==NULL)   {
             $provider_dh = $GLOBALS['dh'];
-        }    
+        }
         //$error = $GLOBALS['error'];
         // $debug = $GLOBALS['debug'];
         $sess_id_user = $_SESSION['sess_id_user'];
@@ -886,21 +895,21 @@ abstract class ADALoggableUser extends ADAGenericUser {
         }
 
         if ($id_course_instance) {
-            
+
             $last_visited_node = $provider_dh->get_last_visited_nodes($id_user, $id_course_instance, 10);
             /*
             * vito, 10 ottobre 2008: $last_visited_node è Array([0]=>Array([id_nodo], ...))
             */
             if (!AMA_DB::isError($last_visited_node) && is_array($last_visited_node) && isset($last_visited_node[0])) {
-            	
+
 	            $last_visited_time =  ($return_dateonly) ? AMA_DataHandler::ts_to_date($last_visited_node[0]['data_uscita']) : $last_visited_node[0]['data_uscita'] ;
-	            
+
 	            return array($last_visited_node[0]['id_nodo'], $last_visited_time);
             } else return "-";
          } else {
             /*
              * Sara, 2/07/2014
-             * return the last access between all instances course 
+             * return the last access between all instances course
              */
             $serviceProviders=$this->getTesters();
             if(!empty($serviceProviders) && is_array($serviceProviders))
@@ -911,7 +920,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
                     $courseInstances_provider = $provider_dh->get_course_instances_for_this_student($this->getId());
                     if(AMA_DataHandler::isError($courseInstances_provider))
                     {
-                        $courseInstances_provider=new ADA_Error($courseInstances_provider);        
+                        $courseInstances_provider=new ADA_Error($courseInstances_provider);
                     }
                     else
                     {
@@ -924,7 +933,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
                 {
                     $Max=0;
                     $id_nodo=null;
-                    foreach($istance_testerAr as $istanceTs) 
+                    foreach($istance_testerAr as $istanceTs)
                     {
                         $courseInstancesAr=$istanceTs['istances'];
                         $pointer=$istanceTs['provider'];
@@ -935,7 +944,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
                             $last_access=$tester->get_last_visited_nodes($id_user,$id_instance,10);
                             if (!AMA_DB::isError($last_access) && is_array($last_access) && count($last_access)) {
                             	$last_accessAr= array($last_access[0]['id_nodo'], $last_access[0]['data_uscita']);
-                            	
+
                             	if($last_accessAr[1]>$Max)
                             	{
                             		$id_nodo=$last_accessAr[0];
@@ -943,7 +952,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
                             	}
                             }
                         }
-                     } 
+                     }
                        $Last_accessAr=array(0=>$id_nodo,1=>$Max);
                        return $Last_accessAr;
                 }
@@ -1009,7 +1018,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
         $visit_count = sizeof($history)-1;
         return $visit_count;
     }
-    
+
     /**
      * gets the last files for the user in course isntance shared docs area.
      *
@@ -1022,15 +1031,15 @@ abstract class ADALoggableUser extends ADAGenericUser {
     {
     	$dh        = $GLOBALS['dh'];
     	$common_dh = $GLOBALS['common_dh'];
-    	
-    	$retval = null;    
 
-    	$lastAccessArr = $this->_get_last_accessFN($id_course_instance,null,false);    	
+    	$retval = null;
+
+    	$lastAccessArr = $this->_get_last_accessFN($id_course_instance,null,false);
     	$lastAccess = (!is_array($lastAccessArr)) ? time() : intval($lastAccessArr[1]);
-    	
+
     	$id_course = $dh->get_course_id_for_course_instance($id_course_instance);
     	$course_ha = $dh->get_course($id_course);
-    	
+
     	if (!AMA_DataHandler::isError($course_ha)){
     		$author_id = $course_ha['id_autore'];
 	    	//il percorso in cui caricare deve essere dato dal media path del corso, e se non presente da quello di default
@@ -1042,16 +1051,16 @@ abstract class ADALoggableUser extends ADAGenericUser {
 	    	}
 	    	$download_path = ROOT_DIR . $media_path;
     	}
-    	
+
     	if (isset($download_path) && is_dir($download_path))
     	{
     		$sortedDir = array();
     		$handle = opendir($download_path);
-    		
+
     		while ($file = readdir($handle))
     		{
     			if ($file !='.' && $file != '..')
-    			{  			
+    			{
     				$ctime  = filectime($download_path . '/' . $file);
     				$filesPart = explode('_', $file,6);
     				// index 0 is the course instance id
@@ -1062,40 +1071,40 @@ abstract class ADALoggableUser extends ADAGenericUser {
     				 *  add files only if:
     				 *  + they belong to the passed instance OR
     				 *  	they've been added to the course by an author
-    				 *  + they've been modified after user last access   
-    				 */ 
-    				if (!AMA_DB::isError($file_senderArray) &&    				
-    					  ($file_id_course == $id_course_instance || 
-    					  ($file_senderArray['tipo'] == AMA_TYPE_AUTHOR && $file_id_course == $id_course)) && 
+    				 *  + they've been modified after user last access
+    				 */
+    				if (!AMA_DB::isError($file_senderArray) &&
+    					  ($file_id_course == $id_course_instance ||
+    					  ($file_senderArray['tipo'] == AMA_TYPE_AUTHOR && $file_id_course == $id_course)) &&
     				    $ctime >= $lastAccess)
     				{
     					$arrKey = $ctime . '-' . $file;
     					$sortedDir[$arrKey]['link'] = $file;
     					$sortedDir[$arrKey]['id_node'] = $id_course . '_' . ADA_DEFAULT_NODE;
     					$sortedDir[$arrKey]['id_course'] = $id_course;
-    					$sortedDir[$arrKey]['id_course_instance'] = $id_course_instance;    					
+    					$sortedDir[$arrKey]['id_course_instance'] = $id_course_instance;
     					$sortedDir[$arrKey]['displaylink'] = $filesPart[count($filesPart)-1];
     				}
     			}
-    		}    		
+    		}
     		closedir($handle);
-    		
+
     		if (!empty($sortedDir))
     		{
     			krsort($sortedDir);
-    			$retval = array_slice($sortedDir, 0,$maxFiles);    			
+    			$retval = array_slice($sortedDir, 0,$maxFiles);
     		}
     	}
     	return $retval;
     }
-    
+
     /**
      * sets the proper $_SESSION var of userObj and redirects to user home page
-     * 
+     *
      * @param ADALoggableUser $userObj user object to be used to set $_SESSION vars
      * @param boolean $remindMe true if remindme check box has been checked
      * @param string $language lang selection at login form: language to be set
-     * @param Object $loginProviderObj login provider class used, null if none used 
+     * @param Object $loginProviderObj login provider class used, null if none used
      */
     public static function setSessionAndRedirect($userObj, $remindMe, $language, $loginProviderObj = null, $redirectURL = null) {
     	if ($userObj->getStatus() == ADA_STATUS_REGISTERED)
@@ -1109,9 +1118,9 @@ abstract class ADALoggableUser extends ADAGenericUser {
     			ini_set('session.cookie_lifetime', 60 * 60 * 24 * ADA_SESSION_LIFE_TIME);  // day cookie lifetime
     		}
     		session_regenerate_id(true);
-    		 
+
     		$user_default_tester = $userObj->getDefaultTester();
-    		 
+
     		if (!MULTIPROVIDER && $userObj->getType()!=AMA_TYPE_ADMIN)
     		{
     			if ($user_default_tester!=$GLOBALS['user_provider'])
@@ -1124,7 +1133,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
     				exit();
     			}
     		}
-    		 
+
     		// user is a ADAuser with status set to 0 OR
     		// user is admin, author or switcher whose status is by default = 0
     		$_SESSION['sess_user_language'] = $language;
@@ -1133,39 +1142,39 @@ abstract class ADALoggableUser extends ADAGenericUser {
     		$_SESSION['sess_id_user_type'] = $userObj->getType();
     		$GLOBALS['sess_id_user_type']  = $userObj->getType();
     		$_SESSION['sess_userObj'] = $userObj;
-    	
+
     		/* unset $_SESSION['service_level'] to allow the correct label translatation according to user language */
     		unset($_SESSION['service_level']);
-    	
+
     		if($user_default_tester !== NULL) {
     			$_SESSION ['sess_selected_tester'] = $user_default_tester;
     			// sets var for non multiprovider environment
     			$GLOBALS ['user_provider'] = $user_default_tester;
     		}
-    		
+
     		if (!is_null($loginProviderObj)) {
     			$_SESSION['sess_loginProviderArr']['className'] = get_class($loginProviderObj);
     			$_SESSION['sess_loginProviderArr']['id'] = $loginProviderObj->getID();
     			$loginProviderObj->addLoginToHistory($userObj->getId());
-    		}    		
+    		}
     		if (is_null($redirectURL)) $redirectURL = $userObj->getHomePage();
     		header('Location:'.$redirectURL);
     		exit();
     	}
-    	
+
     	return false;
     }
 }
 
 /**
  * AdaAbstractUser class:
- * 
+ *
  * This is just a rename of the 'old' ADAUser class which is now declared
  * and implemented in its own 'ADAUser.inc.php' file required below.
- * 
+ *
  * This was made abstract in order to be 100% sure that nobody will ever
  * instate it. Must instantiate the proper ADAUser class instead.
- * 
+ *
  * The whole ADA system will than be able to use the usual ADAUser class,
  * but with extended methods and properties for each customization.
  *
@@ -1178,7 +1187,7 @@ require_once 'ADAUser.inc.php';
 
 abstract class ADAAbstractUser extends ADALoggableUser {
     //protected $history;
-    
+
 	protected  $whatsnew;
 
     public function __construct($user_dataAr=array()) {
@@ -1188,19 +1197,19 @@ abstract class ADAAbstractUser extends ADALoggableUser {
         $this->setEditProfilePage('browsing/edit_user.php');
         $this->history = NULL;
     }
-    
+
     /**
      * Must override setUserId method to get $whatsnew whenever we set $id_user
      *
-     *    
+     *
      * @param $user_id
      * @author giorgio 03/mag/2013
      */
-    public function setUserId($id_user) {    	
+    public function setUserId($id_user) {
     	parent::setUserId($id_user);
     	$this->setwhatsnew (MultiPort::get_new_nodes($this));
     }
-    
+
     /**
      * whatsnew getter
      * @return array returns whatsnew array, populated in the constructor
@@ -1211,19 +1220,19 @@ abstract class ADAAbstractUser extends ADALoggableUser {
     {
         return $this->whatsnew;
     }
-    
+
     /**
      * whatsnew setter.
      *
      * @param array $newwhatsnew	new array to be set as the whatsnew array
      *
-     * @return 
+     * @return
      */
     public function setwhatsnew($newwhatsnew)
     {
-        $this->whatsnew = $newwhatsnew;        
+        $this->whatsnew = $newwhatsnew;
     }
-    
+
     /**
      * updates $whatsnew array based on the values from the db.
      *
@@ -1448,7 +1457,7 @@ abstract class ADAAbstractUser extends ADALoggableUser {
 					$label4=>$corretto
 				);
 			}
-			$t = new Table();			
+			$t = new Table();
 			$t->initTable('0','center','1','1','90%','','','','','1','0','','default','exercise_table');
 			$t->setTable($data,translateFN("Esercizi e punteggio"),translateFN("Esercizi e punteggio"));
 			$res = $t->getTable();
@@ -1457,12 +1466,12 @@ abstract class ADAAbstractUser extends ADALoggableUser {
 		}
 		return $res;
 	} //end history_ex_done_FN
-        
+
 	/**
-	 * this function fix user certificate. 
-	 *       
+	 * this function fix user certificate.
+	 *
 	 * @return boolean
-	 */	 
+	 */
 	 public function Check_Requirements_Certificate() {
 	 	/* be implemented according to the use cases */
 	 	return true;
@@ -1486,23 +1495,23 @@ class ADAPractitioner extends ADALoggableUser {
         $this->isSuper = isset($user_dataAr['tipo']) && $user_dataAr['tipo']==AMA_TYPE_SUPERTUTOR;
         /**
          * @author giorgio 10/apr/2015
-         * 
+         *
          * a supertutor is a tutor with the isSuper property set to true
          */
         if ($this->isSuper && $this->tipo==AMA_TYPE_SUPERTUTOR) $this->tipo = AMA_TYPE_TUTOR;
         $this->setHomePage(HTTP_ROOT_DIR.'/tutor/tutor.php');
         $this->setEditProfilePage('tutor/edit_tutor.php');
     }
-    
+
     /**
      * converts the Practitioner to an ADAUser
-     * 
+     *
      * @return ADAUser
      */
     public function toStudent() {
     	return new ADAUser(array_merge(array('id'=>$this->getId()),$this->toArray()));
     }
-    
+
     /*
    * getters
     */
@@ -1513,7 +1522,7 @@ class ADAPractitioner extends ADALoggableUser {
     public function getProfile() {
         return $this->profilo;
     }
-    
+
     public function isSuper() {
     	return (bool) $this->isSuper;
     }
@@ -1528,11 +1537,11 @@ class ADAPractitioner extends ADALoggableUser {
     public function setProfile($profile) {
         $this->profilo = $profile;
     }
-    
+
     public function fillWithArrayData($user_dataAr=null) {
     	if (!is_null($user_dataAr)) {
     		parent::fillWithArrayData($user_dataAr);
-    		 
+
     		$this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : null;
     		$this->profilo = isset($user_dataAr['profilo']) ? $user_dataAr['profilo'] : null;
     	}
@@ -1571,7 +1580,7 @@ class ADAAuthor extends ADALoggableUser {
 
         $this->setHomePage(HTTP_ROOT_DIR.'/services/author.php');
         $this->setEditProfilePage('services/edit_author.php');
-        
+
     }
 }
 

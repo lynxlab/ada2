@@ -100,6 +100,7 @@ document.observe('dom:loaded', function() {
 		if ($j('li.item.userpopup').length>0 && $j('#status_bar').length>0) {
 			$j('#status_bar').hide();
 			$j('li.item.userpopup').popup({
+				variation: 'large',
 			    position: 'bottom center',
 			    html: $j('#status_bar').html(),
 			    on: 'click',
@@ -107,6 +108,45 @@ document.observe('dom:loaded', function() {
 		    		$j('.ada.menu .item.active').removeClass('active');
 			    }
 			  });
+		}
+
+		// enable com_tools popup
+		if ($j('div#com_tools').length>0) {
+			$j('.ui.menu .item','#com_tools').each (function() {
+				var popupContent = $j(this).children('span').first();
+				var totalRows = 0;
+				if ($j(this).hasClass('whosonline')) {
+					totalRows = popupContent.find("ul>li").length;
+				} else if ($j(this).hasClass('messages') || $j(this).hasClass('appointments')){
+					// maxium number of rows to display
+					var maxRows = 5;
+					totalRows = popupContent.find("table>tbody>tr").length;
+					if (totalRows > maxRows) {
+						popupContent.find("table>tbody>tr").each(function() {
+							if (totalRows > maxRows) {
+								$j(this).remove();
+								totalRows--;
+							}
+						});
+					}
+				}
+				// if the resulting popup have no rows, disable
+				// the respective link/button in the com_tools bar
+				if (totalRows>0) {
+					$j(this).popup({
+						position: 'top left',
+						html: popupContent.html(),
+						on: 'click',
+						target: $j(this),
+						offset: -50,
+						inline: true,
+						onShow: function() { $j(this).toggleClass('active'); },
+						onHide: function() { $j(this).toggleClass('active'); }
+					});
+				} else {
+					$j(this).addClass('disabled');
+				}
+			});
 		}
 
 	    // perform search on search icon click
@@ -179,12 +219,32 @@ document.observe('dom:loaded', function() {
 		});
     }
 
+    // if help div element is empty remove it
+    if ($j('#help').length>0 && $j('#help').html().trim().length<=0) {
+    	$j('#help').remove();
+    }
 
 });
 
 function navigationPanelToggle() {
 	if (IE_version==false || IE_version>8) {
-		$j('#menuright').sidebar({overlay:true}).sidebar('toggle');
+		// right panel pushes content if window width > 1280
+		var overlay = !$j('#menuright').sidebar('is open') && $j(window).width()<=1280;
+		$j('#menuright').sidebar({
+				overlay:overlay,
+				onShow: function() {
+					document.cookie = "closeRightPanel = ; expires = -1; path=/";
+				},
+				onHide: function() {
+					days = 365; //number of days to keep the cookie
+					myDate = new Date();
+					myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
+					document.cookie = "closeRightPanel = 1; " +
+					"expires = " + myDate.toGMTString() + "; " +
+					"path=/"; //creates the cookie: name|value|expiry
+				}
+			})
+			.sidebar('toggle');
 	} else {
 		$j('#menuright').toggle('fade');
 		if (!index_loaded) showIndex();

@@ -15,6 +15,13 @@
 <!-- / menu --> 
 <!-- contenitore -->
 <div id="container">
+                     <! -- PERCORSO -->
+            <div id="journey" class="ui tertiary inverted teal segment">
+            		 <i18n>dove sei: </i18n>
+            		 <span>
+            		 			 <i18n>chat</i18n>
+            		 </span>
+            	</div> <!-- / percorso -->
 <div id="user_wrap">
 <div id="label">
  <div class="topleft">
@@ -78,13 +85,6 @@
 </div>
 <!-- MENU A TENDINA -->
 
-                     <! -- PERCORSO -->
-            <div id="journey">
-            		 <i18n>dove sei: </i18n>
-            		 <span>
-            		 			 <i18n>chat</i18n>
-            		 </span>
-            	</div> <!-- / percorso -->
 </div> <!-- / MENU A TENDINA -->
 
 <!-- PIEDE -->

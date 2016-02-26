@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="../../css/services/default.css" type="text/css">
     </head>
     <body>
-        <a name="top">
-        </a>
+        <a name="top"></a>
+        <div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -17,7 +17,7 @@
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
-            <div id="journey">
+            <div id="journey" class="ui tertiary inverted teal segment">
                 <i18n>dove sei: </i18n>
                 <span>
                     <i18n>aggiungi esercizio</i18n>
@@ -85,6 +85,8 @@
             <!-- /com_tools -->
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
         <!-- PIEDE -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>

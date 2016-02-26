@@ -63,6 +63,7 @@ if ($userObj instanceof ADALoggableUser) {
     /*
      * Retrieve student's data
      */
+    $userObj->set_course_instance_for_history($sess_id_course_instance);
     $user_historyObj = $userObj->getHistoryInCourseInstance($sess_id_course_instance);
     $visited_nodes_table = $user_historyObj->history_nodes_visited_FN();
     $history = '';

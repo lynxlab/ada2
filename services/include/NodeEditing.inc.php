@@ -1094,8 +1094,8 @@ class NodeEditingViewer {
 
 //    if ($flags & EDITOR_INSERT_NODE_DATA)
 //    {
-        $span_node_data = CDOMElement::create('div','id:jsbutton_forjsnode_data_div');
-        $span_node_data->setAttribute('class', 'editor_input selected');
+        $span_node_data = CDOMElement::create('div','id:jsbutton_forjsnode_data_div,class:ui tiny active button');
+//         $span_node_data->setAttribute('class', 'editor_input selected');
         $span_node_data->setAttribute('onclick', "showMeHideOthers('jsbutton_forjsnode_data_div','jsnode_data_div');");
         $span_node_data->addChild(new CText(translateFN('Attributi nodo')));
 
@@ -1103,8 +1103,8 @@ class NodeEditingViewer {
 //    }
 
         if ( $flags & EDITOR_INSERT_EXTERNAL_LINK ) {
-            $span_external_link = CDOMElement::create('div','id:jsbutton_forjsid_divle');
-            $span_external_link->setAttribute('class', 'editor_input unselected');
+            $span_external_link = CDOMElement::create('div','id:jsbutton_forjsid_divle,class:ui tiny inactive button');
+//             $span_external_link->setAttribute('class', 'editor_input unselected');
             $span_external_link->setAttribute('onclick', "showMeHideOthers('jsbutton_forjsid_divle','jsid_divle');");
             $span_external_link->addChild(new CText(translateFN('Aggiungi link esterno')));
 
@@ -1112,8 +1112,8 @@ class NodeEditingViewer {
         }
 
         if ( $flags & EDITOR_INSERT_INTERNAL_LINK ) {
-            $span_internal_link = CDOMElement::create('div','id:jsbutton_forjsid_divli');
-            $span_internal_link->setAttribute('class', 'editor_input unselected');
+            $span_internal_link = CDOMElement::create('div','id:jsbutton_forjsid_divli,class:ui tiny inactive button');
+//             $span_internal_link->setAttribute('class', 'editor_input unselected');
             $span_internal_link->setAttribute('onclick', "showMeHideOthers('jsbutton_forjsid_divli','jsid_divli');");
             $span_internal_link->addChild(new CText(translateFN('Aggiungi link interno')));
 
@@ -1121,8 +1121,8 @@ class NodeEditingViewer {
         }
 
         if ( ($flags & EDITOR_UPLOAD_FILE) || ($flags & EDITOR_SELECT_FILE) ) {
-            $span_upload_file = CDOMElement::create('div','id:jsbutton_forjsid_divfu');
-            $span_upload_file->setAttribute('class', 'editor_input unselected');
+            $span_upload_file = CDOMElement::create('div','id:jsbutton_forjsid_divfu,class:ui tiny inactive button');
+//             $span_upload_file->setAttribute('class', 'editor_input unselected');
             $span_upload_file->setAttribute('onclick', "showMeHideOthers('jsbutton_forjsid_divfu','jsid_divfu');");
             $span_upload_file->addChild(new CText(translateFN('Aggiungi multimedia')));
 

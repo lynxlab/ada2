@@ -1,297 +1,69 @@
-#trebox {
-height: 400px;
-position: relative;
-/*background: url(../../img/3box.gif) bottom center no-repeat;*/
-  width: 980px;
-  margin: 0 auto;
+#content {
+	width: 100%;
+	float: left;
 }
 
-#blocco_uno {
-/*position: relative;*/
-width: 300px;
-height: 300px;
-margin-top: 70px;
-/*margin-left: 10%;*/
-float: left;
-background-color:#f7f7f7;
-border: 1px solid #dedede;
-border-radius: 20px;
+#contentcontent .ui.grid {
+	margin:0;
 }
 
-#blocco_due {
-/*position: relative;*/
-width: 300px;
-height: 300px;
-margin-top: 70px;
-margin-left: 35px;
-float: left;
-background-color:#f7f7f7;
-border: 1px solid #dedede;
-border-radius: 20px;
+#contentcontent .ui.grid>.row .column .header {
+	background: #cecece;
+	padding: 0.8rem;
+	vertical-align: middle;
+	margin:0;
 }
 
-#blocco_tre {
-/*position: relative;*/
-width: 300px;
-height: 300px;
-margin-top: 70px;
-margin-left: 35px;
-float: left;
-background-color:#f7f7f7;
-border: 1px solid #dedede;
-border-radius: 20px;
+#contentcontent .ui.grid>.equal.height.row {
+	border-collapse: separate;
+	border-spacing: 1rem 0;
 }
 
-#lista_blocco_uno {
-	position:relative;
-	/*padding-top:28px;
-	padding-left:65px;*/
-	margin: 0;
-	padding: 0;
+#contentcontent .ui.grid .column .ui.list {
+	margin: 1rem;
 }
 
-#lista_blocco_uno li {
-	/*padding-bottom:47px;*/
-	display:block;
-	width:300px;
-	height:60px;
-	margin-top: 0px;
+@media only screen and (max-width: 767px) {
+	#contentcontent .ui.stackable.grid>.row>.column {
+		padding-top :0 !important;
+	}	
+}
+
+#contentcontent .ui.grid .column {
+	border: 1px solid #cecece;
+	border-radius: 5px;
+	padding :0;
+}
+#contentcontent div.ui.list .item {
+	margin-top: 2rem;
+}
+
+#contentcontent h3.ui.header,
+#contentcontent div.ui.list .item a {
+	text-transform: capitalize;
+}
+
+#contentcontent div.ui.list .item .icon {
+	min-width: 1.5rem;
+	margin-right: 0.5rem;
 	
-        line-height: 35px;
-        margin-left:-38px;
-	text-indent: 65px;
-        
 }
 
-
-
-#lista_blocco_due {
-	position:relative;
-	/*padding-top:28px;
-	padding-left:65px;*/
-	margin: 0;
-	padding: 0;
+#contentcontent h3.ui.header .icon {
+	margin-right:0;
+	padding-right:0;
+	vertical-align: middle;
 }
 
-#lista_blocco_due li {
-	/*padding-bottom:47px;*/
-        //margin-left:-38px;
-        line-height: 35px;
-        margin-left:-38px;
-	text-indent: 65px;
-        
+#contentcontent .ui.info.message .message a {
+	font-weight: bold;
+	color: #4D8796;
 }
 
+#contentcontent .ui.info.message .message a:hover {
+	color: #84B3BF;
+} 
 
-
-#lista_blocco_tre {
-	position:relative;
-	/*padding-top:28px;
-	padding-left:65px;*/
-	margin: 0;
-	padding: 0;
-}
-
-#lista_blocco_tre li {
-	/*padding-bottom:47px;*/
-}
-
-
-#cosacedinuovo {
-	position:relative;
-	height:53px;
-	line-height:53px;
-	text-indent:30px;
-	/*padding-top:15px;
-	padding-left:25px;*/
-	font-size: 22px;
-	color: #4c5e80;
-	font-family: "Times New Roman", Times, serif;
-        border-bottom: 2px #dedede solid;
-/*        background: url(../../img/news.png) bottom right no-repeat;*/
-}
-
-#new_nodes{
-   // margin-left: -33px;
-}
-.icon-block-user {
-  position: absolute;
-  top: -12px;
-  right: 15px;
-}
-
-#corsodilingua {
-	position:relative;
-	height:53px;
-	line-height:53px;
-	text-indent:30px;
-	/*padding-top:15px;
-	padding-left:25px;*/
-	font-size: 22px;
-	color: #4c5e80;
-	font-family: "Times New Roman", Times, serif;
-        border-bottom: 2px #dedede solid;
-}
-
-
-#laclasse {
-	position:relative;
-	height:53px;
-	line-height:53px;
-	text-indent:30px;
-	/*padding-top:15px;
-	padding-left:15px;*/
-	font-size: 22px;
-	color: #4c5e80;
-	font-family: "Times New Roman", Times, serif;
-        border-bottom: 2px #dedede solid;
-}
-
-#msg_forum {
-	position:relative;
-	padding-top:1px;
-	padding-left:30px;
-	margin-top: 5px !important;
-	font-size: 12px;
-	color: #666666;
-}
-
-#gostart {
-	display:block;
-	position:relative;
-	padding-top:1px;
-	padding-left:1px;
-	font-size: 12px;
-	color: #666666;
-	width:300px;
-	height:60px;
-	margin-top: 5px;
-	text-indent: 65px;
-	line-height: 60px;
-}
-
-#gostart a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	text-indent: 65px;
-}
-
-#gostart a:hover{
-	/*background:url(../../img/inizia-hover.png) 31px 17px no-repeat;*/
-}
-
-#goclasse {
-	position:relative;
-	padding-top:1px;
-	padding-left:1px;
-	font-size: 12px;
-	color: #666666;
-}
-
-#goclasse a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	margin-top: 5px;
-	line-height: 35px;
-        margin-left:-38px;
-	text-indent: 65px;
-}
-
-#goclasse a:hover{
-	/*background:url(../../img/classe-hover.png) 30px 20px no-repeat;*/
-}
-
-
-#msg {
-	position:relative;
-	padding-top:0px;
-	padding-left:1px;
-	margin-top: 0px !important;
-	font-size: 12px;
-	color: #666666;
-}
-
-#gocontinue {
-	position:relative;
-	padding-top:1px;
-	padding-left:1px;
-	font-size: 12px;
-	color: #666666;
-}
-
-#gocontinue a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	line-height: 60px;
-	text-indent: 65px;
-}
-
-#gocontinue a:hover{
-	/*background:url(../../img/continua-hover.png) 31px 17px no-repeat;*/
-}
-
-#goforum {
-	position:relative;
-	padding-top:1px;
-	padding-left:1px;
-	font-size: 12px;
-	color: #666666;
-}
-
-#goforum a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	line-height: 35px;
-        margin-left:-38px;
-	text-indent: 65px;
-}
-
-#goforum a:hover{
-	/*background:url(../../img/forum-hover.png) 30px 15px no-repeat;*/
-}
-
-
-
-#msg_agenda {
-	position:relative;
-	padding-top:1px;
-	padding-left:1px;
-	font-size: 12px;
-	color: #666666;
-}
-
-#goindex {
-	position:relative;
-	padding-top:1px;
-	padding-left:1px;
-	font-size: 12px;
-	color: #666666;
-}
-
-#goindex a:link {
-	display:block;
-	width:300px;
-	height:60px;
-	/*line-height: 60px;*/
-	text-indent: 65px;
-       
-}
-
-#goindex a:hover{
-	/*background:url(../../img/indice-hover.png) 30px 20px no-repeat;*/
-}
-
-#gochat {
-	position:relative;
-	padding-top:1px;
-	padding-left:1px;
-	font-size: 12px;
-	color: #666666;
-}
 
 /*
  * table.doDataTable jQuery dataTable

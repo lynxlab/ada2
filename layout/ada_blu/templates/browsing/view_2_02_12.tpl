@@ -4,8 +4,8 @@
         <link rel="stylesheet" href="../../css/browsing/default.css" type="text/css">
     </head>
     <body>
-        <a name="top">
-        </a>
+        <a name="top"></a>
+		<div id="pagecontainer">
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
@@ -14,7 +14,7 @@
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->
-            <div id="journey">
+            <div id="journey" class="ui tertiary inverted teal segment">
                 <i18n>dove sei: </i18n>
                 <span>
                     <template_field class="template_field" name="course_title">course_title</template_field>
@@ -213,6 +213,8 @@
             <!-- / menudestra  -->
         </div>
         <!-- / contenitore -->
+		<div id="push"></div>
+		</div>
 
         <!-- menu -->
         <div id="mainmenu">

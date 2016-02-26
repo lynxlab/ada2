@@ -33,7 +33,7 @@ class Subscription
     static public function findPresubscriptionsToClassRoom($classRoomId) {
         $dh = $GLOBALS['dh'];
         $result = $dh->get_presubscribed_students_for_course_instance($classRoomId);
-       
+
         if(AMA_DataHandler::isError($result)) {
             return array();
         } else {
@@ -57,7 +57,7 @@ class Subscription
     /**
      * Given a classroom identifier, retrieves all the presubscriptions to the
      * classroom, if any.
-     * 
+     *
      * @param integer $classRoomId
      * @return array an array of Subscriptions
      */
@@ -89,7 +89,7 @@ class Subscription
     static public function addSubscription(Subscription $s) {
         $dh = $GLOBALS['dh'];
         if($s->getSubscriptionStatus() == ADA_STATUS_SUBSCRIBED) {
-            
+
             $result = $dh->course_instance_student_presubscribe_add(
                     $s->getClassRoomId(),
                     $s->getSubscriberId(),
@@ -130,7 +130,7 @@ class Subscription
             );
         }
         if(AMA_DataHandler::isError($result)) {
-            
+
         }
 
         return $result;
@@ -156,16 +156,16 @@ class Subscription
         $this->_subscriberId = $userId;
         $this->_classRoomId = $classRoomId;
         $this->_startStudentLevel = $startStudentLevel;
-        
+
         if($subscriptionDate == 0) {
             $this->_subscriptionDate = time();
         } else {
             $this->_subscriptionDate = $subscriptionDate;
         }
 
-        $this->_subscriberFullname = '';        
+        $this->_subscriberFullname = '';
         $this->_subscriberUsername = '';
-        $this->_subscriptionStatus = ADA_STATUS_PRESUBSCRIBED; 
+        $this->_subscriptionStatus = ADA_STATUS_PRESUBSCRIBED;
     }
     /**
      *
@@ -232,24 +232,10 @@ class Subscription
     }
 
     public function subscriptionStatusAsString() {
-        switch($this->_subscriptionStatus) {
-            case ADA_STATUS_REGISTERED:
-                return translateFN('Registrato');
-            case ADA_STATUS_PRESUBSCRIBED:
-                return translateFN('Preiscritto');
-            case ADA_STATUS_SUBSCRIBED:
-                return translateFN('Iscritto');
-            case ADA_STATUS_REMOVED:
-                return translateFN('Rimosso');
-            case  ADA_STATUS_VISITOR:
-                return translateFN('In visita');
-            case ADA_STATUS_TERMINATED:
-            	return translateFN('Terminato');
-        }
+    	return self::subscriptionStatusArray()[$this->_subscriptionStatus];
     }
 
-
-    public function subscriptionStatusArray() {
+    public static function subscriptionStatusArray() {
         return array(
             ADA_STATUS_REGISTERED => translateFN('Registrato'),
             ADA_STATUS_PRESUBSCRIBED => translateFN('Preiscritto'),
@@ -257,13 +243,13 @@ class Subscription
             ADA_STATUS_REMOVED => translateFN('Rimosso'),
             ADA_STATUS_VISITOR => translateFN('In visita'),
         	ADA_STATUS_TERMINATED => translateFN('Terminato')
-        );        
+        );
     }
 
     private $_subscriberId;
-    private $_subscriberFullname;  
+    private $_subscriberFullname;
     private $_classRoomId;
     private $_subscriptionDate;
-    private $_subscriptionStatus; 
-    private $_subscriptionCode; 
+    private $_subscriptionStatus;
+    private $_subscriptionCode;
 }

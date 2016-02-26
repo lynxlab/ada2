@@ -7,6 +7,11 @@
 }
 */
 
+.first {
+ 	margin:0;
+ 	padding:0;
+}
+ 
 #mainmenu {
     z-index: 0;
 }
@@ -21,13 +26,13 @@
 	font-family: Georgia, "Times New Roman", Times, serif;
 	font-size: 16px;
 	color: #6e6e6e;
-	margin-top:15px;
-	margin-bottom:25px;
-	padding-top:10px;
+/* 	margin-top:15px; */
+/* 	margin-bottom:25px; */
+/* 	padding-top:10px; */
 	padding-left:10px;
 	padding-right:10px;
-	padding-bottom:25px;
-	line-height: 25px;
+/* 	padding-bottom:25px; */
+/* 	line-height: 25px; */
 	border-bottom: 1px solid #999999;
 }
 
