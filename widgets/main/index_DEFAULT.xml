@@ -61,10 +61,12 @@
 	<field>fbRSS</field>
 	<id>facebook</id>
 	<module>getFacebook.php</module>
-	<param name="id" value="YOUR_FACEBOOK_ID_HERE" />
-	<!-- <param name="format" value="atom10" /> -->	
+	<param name="fbname" value="YOUR_FACEBOOK_USER_OR_PAGE_NAME_HERE" />
+	<param name="showDescription" value="1" />
+	<param name="showImage" value="1" />
+	<!-- param name="id" value="YOUR_FACEBOOK_ID_HERE" / -->
 	<!-- <param name="count" value="10" /> -->
-	<!-- <param name="showDescription" value="1" /> -->
+	<!-- <param name="circularImage" value="1" /> -->
 </widget>
 
 <widget>
@@ -73,6 +75,7 @@
 	<module>getTwitter.php</module>
 	<param name="screen_name" value="YOUR_TWITTER_SCREEN_NAME_HERE" />
 	<param name="showImage" value="1" />
+	<!-- <param name="circularImage" value="1" /> -->	
 	<!-- <param name="count" value="10" /> -->
 </widget>
 </widgets>
