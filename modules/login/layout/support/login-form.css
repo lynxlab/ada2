@@ -1,29 +1,75 @@
-@CHARSET "UTF-8";
+@CHARSET 'UTF-8';
 
 button.hybridLogin.login {
-  float: none;
+   float: none;
   display: block;
-  margin-top: 10px;
-  width: 100%;
+   margin-top: 10px;
   color: #fff;
   background-repeat: no-repeat;
   background-size: 32px;
   background-position: left center;
-  min-height: 32px;
-  cursor: pointer;
+  cursor: pointer; */
   text-align: left;
-  padding-left: 36px;
-  border-radius: 5px;	
 }
 
 #google-button {
-  background-color: #F20000;
-  border: 1px solid #8c8c8c;
-  background-image: url("google.png");
+  background-color: #D34836;
 }
 
 #facebook-button {
-  background-color: #0917A6;
-  border: 1px solid #0B2238;
-  background-image: url("facebook.png");
+  background-color: #3B579D;  
+}
+
+#ldap-button::before,
+#ada-button::before {
+	font-family: 'Icons';
+	content: '\f090';
+	font-size: 1.2em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+}
+
+#google-button::before {
+	font-family: 'Icons';
+	content: '\f0d5';
+	font-size: 1.2em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+}
+
+#facebook-button::before {
+	font-family: 'Icons';
+	content: '\f09a';
+	font-size: 1.2em;
+	vertical-align: middle;
+	margin-right: 0.5rem;
+}
+
+div#language_selection {
+	width: 18em;
+	border: .1em solid rgba(0,0,0,.1);
+	overflow: hidden;
+	background-repeat: no-repeat;
+    background-position: 97% 50%;
+    background-color: #fff;
+    background-image:
+        url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHZlcnNpb249IjEuMSIgaWQ9InBfc2VsZWN0X2Fycm93ZG93biIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA1MTIgNTEyIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjU2LDM1Mkw5NiwxOTguNDA2TDE0MS43MTksMTYwTDI1NiwyNzUuMTg4TDM3MC4yODEsMTYwTDQxNiwxOTguNDA2TDI1NiwzNTJ6Ii8+DQo8L3N2Zz4=");   
+}
+
+select#p_selected_language {
+	background: transparent;
+	color: rgba(0,0,0,.5);
+	border:0 none;
+	width: 20em;
+	padding: 0.5em;
+	line-height: 1; 
+}
+
+#login_form #p_username,
+#login_form #p_password {
+	color: rgba(0,0,0,.5);	
+	width: 17em;
+	padding: 0.5em;
+	border: .1em solid rgba(0,0,0,.1);
+	border-radius: 0;
 }
