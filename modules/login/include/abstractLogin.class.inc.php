@@ -1,7 +1,7 @@
 <?php
 /**
  * LOGIN MODULE
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
@@ -20,64 +20,64 @@ abstract class abstractLogin implements iLogin
 	 * @var number
 	 */
 	protected  $id = null;
-	
+
 	/**
 	 * login button label
-	 * 
+	 *
 	 * @var string
 	 */
 	protected  $buttonLabel = null;
-	
+
 	/**
 	 * provider name
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $name = null;
-	
+
 	/**
 	 * login provider's own options array
-	 * 
+	 *
 	 * @var array
 	 */
 	protected  $options = null;
-	
+
 	/**
 	 * options id that had a successful login
 	 * to be written in the login history table
 	 */
 	protected $successfulOptionsID = null;
-	
+
 	/**
 	 * datahandler to be used
-	 * 
+	 *
 	 * @var AMALoginDataHandler
 	 */
 	private $dataHandler;
-	
+
 	public function __construct($id=null) {
 		if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider'])) {
 			$dsn = MultiPort::getDSN($GLOBALS['user_provider']);
 		} else $dsn = null;
-		
+
 		$this->dataHandler = AMALoginDataHandler::instance($dsn);
-		
+
 		if (is_null($id)) {
 			$id = $this->dataHandler->getLoginProviderIDFromClassName(get_class($this));
 		}
-		
+
 		$this->id = intval($id);
 	}
-	
+
 	public function __destruct() {
 		$this->dataHandler->disconnect();
 	}
-	
+
 	/**
 	 * loads the button label from the DB
-	 * 
+	 *
 	 * @return string, the loaded label
-	 * 
+	 *
 	 * @access public
 	 */
 	public function loadButtonLabel () {
@@ -86,7 +86,7 @@ abstract class abstractLogin implements iLogin
 		}
 		return $this->buttonLabel;
 	}
-	
+
 	/**
 	 * loads the provider name from the DB
 	 *
@@ -96,16 +96,16 @@ abstract class abstractLogin implements iLogin
 	 */
 	public function loadProviderName () {
 		if (is_null($this->name)) {
-			$this->name = $this->dataHandler->loadProviderName($this->id); 
+			$this->name = $this->dataHandler->loadProviderName($this->id);
 		}
 		return $this->name;
 	}
-	
+
 	/**
 	 * loads provider's own options from the DB
-	 * 
+	 *
 	 * @return array the loaded options array
-	 * 
+	 *
 	 * @access public
 	 */
 	public  function loadOptions() {
@@ -114,19 +114,19 @@ abstract class abstractLogin implements iLogin
 		}
 		return $this->options;
 	}
-	
+
 	/**
 	 * gets a list of the available login providers found in the DB
-	 * 
+	 *
 	 * If in a multiprovider environment, common db is used
 	 * else first it's searched the provider db and if no
 	 * module_login_providers table is found there, use common
-	 * 
+	 *
 	 * @param bool $enabled true if only enabled providers, false if only disabled, null for all providers
-	 * @param bool $getData true, to return all provider's data. defaults to false: return className only 
-	 * 
+	 * @param bool $getData true, to return all provider's data. defaults to false: return className only
+	 *
 	 * @return array with provider id as the key and implementing className as value
-	 * 
+	 *
 	 * @access public
 	 */
 	public static function getLoginProviders($enabled = true, $getData=false) {
@@ -138,9 +138,9 @@ abstract class abstractLogin implements iLogin
 		if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider'])) {
 			$dsn = MultiPort::getDSN($GLOBALS['user_provider']);
 		} else $dsn = null;
-		
+
 		$res = AMALoginDataHandler::instance($dsn)->getLoginProviders($enabled,' `displayOrder` ASC');
-		
+
 		if (!AMA_DB::isError($res) && is_array($res) && count($res)>0) {
 			foreach ($res as $provider) {
 				if ($getData===false) {
@@ -154,51 +154,51 @@ abstract class abstractLogin implements iLogin
 			return $retArr;
 		} else return null;
 	}
-	
+
 	/**
 	 * can be overriden by derived class to draw the button
 	 * and handle its onclick event properly
-	 * 
+	 *
 	 * @param boolean $returnHtml true if html string is required
 	 */
 	protected function render($returnHtml)
 	{
 		$buttonLabel = $this->loadButtonLabel();
 		$id = $this->loadProviderName();
-		if (!is_null($id)) $id = strtolower($id).'-button'; 
+		if (!is_null($id)) $id = strtolower($id).'-button';
 		if (strlen($buttonLabel)>0) {
 			$button = CDOMElement::create('button','id:'.$id.',type:button');
-			$button->setAttribute('class', get_class($this).' login');
+			$button->setAttribute('class', get_class($this).' ui login small button');
 			$button->setAttribute('onclick', 'javascript:'.
 					'$j(\'#selectedLoginProvider\').val(\''.get_class($this).'\');'.
 					'$j(\'#selectedLoginProviderID\').val(\''.$this->id.'\');'.
 					'$j(this).parents(\'form\').first().submit();');
 			$button->addChild (new CText(translateFN($buttonLabel)));
-			
+
 			return (($returnHtml) ? $button->getHtml() : $button);
 		} else return null;
 	}
-	
+
 	/**
 	 * checks if a user with the passed username exists in the ADA DB
-	 * 
+	 *
 	 * @param string $username username to check
-	 * 
+	 *
 	 * @return ADALoggableUser|null
 	 */
 	public function checkADAUser ($username) {
 		return MultiPort::findUserByUsername($username);
 	}
-	
+
 	/**
 	 * adds a user whose data are coming from the login provider to the proper ADA DB
-	 * 
+	 *
 	 * @param array $userArr array of user data to be added
-	 * @param function $successCallback callback function accepting a ADALoggableUser parameter to be called just before returning 
+	 * @param function $successCallback callback function accepting a ADALoggableUser parameter to be called just before returning
 	 * @param function $errorCallback callback function accepting no parameters to be called just before redirecting
-	 * 
+	 *
 	 * @return ADALoggableUser|null (redirects if MultiPort::addUser fails)
-	 * 
+	 *
 	 * @access public
 	 */
 	public function addADAUser ($userArr, $successCallback=null, $errorCallback=null) {
@@ -210,7 +210,7 @@ abstract class abstractLogin implements iLogin
 		$userObj->setType(isset($userArr['tipo']) ? $userArr['tipo']: AMA_TYPE_STUDENT);
 		$userObj->setStatus(ADA_STATUS_REGISTERED);
 		$userObj->setPassword(sha1(time())); // force unguessable password
-		
+
 		/**
 		 * save the user in the appropriate provider
 		 */
@@ -219,9 +219,9 @@ abstract class abstractLogin implements iLogin
 		} else {
 			$regProvider = array (ADA_PUBLIC_TESTER);
 		}
-		
+
 		$id_user = Multiport::addUser($userObj,$regProvider);
-		
+
 		if($id_user < 0) {
 			if (!is_null($errorCallback)) call_user_func($errorCallback);
 			$message = translateFN('Impossibile procedere. Un utente con questi dati esiste?')
@@ -237,76 +237,76 @@ abstract class abstractLogin implements iLogin
 			return $retObj;
 		}
 	}
-	
+
 	/**
 	 * id getter
-	 * 
+	 *
 	 * @return number id of the class
-	 * 
+	 *
 	 * @access public
 	 */
 	public function getID() {
 		return $this->id;
 	}
-	
+
 	/**
 	 * successfulOptionsID getter
-	 * 
+	 *
 	 * @return id of the succesful login option set
-	 * 
+	 *
 	 * @access public
 	 */
 	public function getSuccessfulOptionsID() {
 		return $this->successfulOptionsID;
 	}
-	
+
 	/**
 	 * successfulOptionsID setter
-	 * 
+	 *
 	 * @param number $id the id to set
-	 * 
+	 *
 	 * @access public
 	 */
 	public function setSuccessfulOptionsID($id) {
 		$this->successfulOptionsID = $id;
 	}
-	
+
 	/**
 	 * gets all option sets for the login provider
-	 * 
+	 *
 	 * @return array
-	 * 
+	 *
 	 * @access public
 	 */
 	public function getAllOptions() {
 		return $this->dataHandler->getAllOptions($this->id);
 	}
-	
+
 	/**
 	 * gets the proper login provider object from session
 	 * stored $_SESSION['sess_loginProviderArr']['className'] and
 	 * $_SESSION['sess_loginProviderArr']['id'] variables
-	 * 
+	 *
 	 * @return Object the instantiated class
-	 * 
+	 *
 	 * @access public
 	 */
 	public static function getLoginProviderFromSession() {
-		
-		if (isset($_SESSION['sess_loginProviderArr']) && 
+
+		if (isset($_SESSION['sess_loginProviderArr']) &&
 			is_array($_SESSION['sess_loginProviderArr']) &&
 			isset($_SESSION['sess_loginProviderArr']['className']) &&
 			isset($_SESSION['sess_loginProviderArr']['id'])) {
-				
+
 				require_once MODULES_LOGIN_PATH . '/include/'.
 							$_SESSION['sess_loginProviderArr']['className'].'.class.inc.php';
-				
+
 				return new $_SESSION['sess_loginProviderArr']['className']($_SESSION['sess_loginProviderArr']['id']);
 		} else {
 			return null;
-		}		
+		}
 	}
-	
+
 	/**
 	 * generate HTML for login provider configuration page
 	 */
@@ -317,25 +317,25 @@ abstract class abstractLogin implements iLogin
 		$configIndexDIV->addChild($noConfigSpan);
 		return $configIndexDIV;
 	}
-	
+
 	/**
 	 * adds a row to the login history table
-	 * 
+	 *
 	 * WARNING! Multiple sets of options are supported only for LDAP class
-	 * 
+	 *
 	 * @param number $userID user id that has logged in
 	 * @param number $time unix timestamp of the login
-	 * 
+	 *
 	 * @access public
 	 */
 	public function addLoginToHistory ($userID, $time = null) {
 		if (is_null($time)) $time = time();
 		$this->dataHandler->addLoginToHistory($userID, $time, $this->id, $this->successfulOptionsID);
 	}
-	
+
 	/**
 	 * gets the login button as an ADA CDOMElement object
-	 * 
+	 *
 	 * (non-PHPdoc)
 	 * @see iLogin::getCDOMElement()
 	 */
@@ -343,10 +343,10 @@ abstract class abstractLogin implements iLogin
 	{
 		return $this->render(false);
 	}
-	
+
 	/**
 	 * gets the login button as an HTML string
-	 * 
+	 *
 	 * (non-PHPdoc)
 	 * @see iLogin::getHtml()
 	 */

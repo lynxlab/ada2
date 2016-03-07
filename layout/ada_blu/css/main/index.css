@@ -64,6 +64,7 @@ html,body {
 #container .ui-widget-content {
  	background: none;
  	background-color: #f5f5f5	;
+ 	color: rgba(0,0,0,.5);
  	
 }
 
@@ -71,7 +72,7 @@ html,body {
 #container a:hover { color: #1263A0; }
 
 .portlet-header .ui-icon { float: right; }
-.portlet-content { padding: 0.4em; }
+/* .portlet-content { padding: 0.4em; } */
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 .ui-sortable-placeholder * { visibility: hidden; }
 
@@ -103,7 +104,6 @@ html,body {
 }
 
 .RSSContent a { margin-top: 10px; display: inline-block; }
-.facebookContainer,
 .twitterContainer { margin-bottom: 15px; overflow: hidden; text-overflow: ellipsis; }
 
 #newscont .continuelink.row { margin:0; padding:0; }
@@ -111,3 +111,17 @@ html,body {
 #newscont p.newscontent { color: #767676; line-height: 1.5rem; }
 #newscont a.newstitle { color: #777; }
 #newscont a.newstitle:hover { color: #1263A0; }
+
+.ADAwidget .ui.basic.feed.segment { padding:0; }
+.ADAwidget .ui.basic.feed.segment .event { padding-top:0; }
+.ADAwidget .ui.basic.feed.segment .event:last-child { margin-bottom:0; }
+.ADAwidget .ui.basic.feed.segment .content { padding-top:0; padding-right:0; }
+.ADAwidget .RSSContent,
+.ADAwidget .ui.basic.feed.segment .event:not(:last-child) .content { padding-bottom: 0.75em; }
+.ADAwidget .RSSContent:not(:last-child),
+.ADAwidget .ui.basic.feed.segment .event:not(:last-child) .content,
+.ADAwidget .ui.basic.feed.segment .event:not(:last-child) .label { border-bottom: .1em solid rgba(0,0,0,.1); }
+.ADAwidget .ui.basic.feed.segment .extra.text { margin-top:0.5em; padding:0; border:none; }
+.ADAwidget .ui.basic.feed.segment .label img:not(.circular) { border-radius:0; }
+.ADAwidget .ui.basic.feed.segment .header a { font-weight: bold; }
+
