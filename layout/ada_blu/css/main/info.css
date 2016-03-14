@@ -16,6 +16,8 @@
 #contentcontent .dataTables_wrapper .paging_full_numbers a:hover,
 .dataTables_wrapper thead th:hover:not(.sorting_disabled) { background-color: #cecece; }
 
+.dataTables_wrapper table.dataTable>tbody>tr:hover { cursor: pointer; }
+
 /**
  * Table pagination
  */ 
