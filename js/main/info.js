@@ -60,6 +60,12 @@ function initDoc(multiprovider) {
 	        infotable_filter.addClass("ui form");
 	        infotable_filter.after("<div class='clearfix'></div>");
 	        $j(this).fadeIn();
+	        // hook row click to more_info_link click
+	        $j('tr','#infotable').click(function(el) {
+	        	if  ($j('a.more_info_link',$j(this)).attr('href').trim().length>0) {
+	        		document.location.href = $j('a.more_info_link',$j(this)).attr('href').trim();
+	        	}
+	        });
 	    }
 	});
 }

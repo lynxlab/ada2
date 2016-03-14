@@ -572,7 +572,8 @@ if ($op !== false && $op == 'course_info') {
 
                         $more_info_link = BaseHtmlLib::link("info.php?op=course_info&id=$serviceId",
                         		'<i class="big icon info"></i>');
-                        $more_info_link->setAttribute('title', translateFN('More info'));
+                        $more_info_link->setAttribute('title', strip_tags(translateFN('More info')));
+                        $more_info_link->setAttribute('class', 'more_info_link');
 
                         if (!MULTIPROVIDER) {
                         	$tbody_data[] = array(
