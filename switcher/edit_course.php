@@ -5,19 +5,19 @@
  *
  * The switcher can use this module to update the informations about an existing
  * course.
- * 
  *
- * @package		
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2010, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
@@ -94,7 +94,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     'service_min_meetings' => $service_dataAr[5],
                     'service_max_meetings' => $service_dataAr[6],
                     'service_meeting_duration' => $service_dataAr[7]
-                );                
+                );
                 $result = $common_dh->set_service($service_dataAr[0], $update_serviceDataAr);
                 if (AMA_Common_DataHandler::isError($result)) {
                      $form = new CText("Si è verificato un errore durante l'aggiornamento dei dati del corso");
@@ -104,7 +104,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     header('Location: list_courses.php');
                     exit();
                 }
-            }            
+            }
         } else {
              $form = new CText("Si è verificato un errore durante l'aggiornamento dei dati del corso");
         }
@@ -172,9 +172,10 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_MASKEDINPUT,
-		JQUERY_NO_CONFLICT
+		JQUERY_NO_CONFLICT,
+		ROOT_DIR .'/js/switcher/edit_content.js'
 );
 
-$optionsAr['onload_func'] = 'initDateField();';
+$optionsAr['onload_func'] = 'initDateField();  includeFCKeditor(\'descrizione\');';
 
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

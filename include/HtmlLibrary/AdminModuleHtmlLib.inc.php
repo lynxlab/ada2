@@ -101,7 +101,7 @@ class AdminModuleHtmlLib
     );
      */
     $layoutsAr = Layout::getLayouts();
-    
+
     $user_layout = FormElementCreator::addSelect('user_layout', 'Layout', $layoutsAr, $user_dataAr);
     $form->addChild($user_layout);
     $user_address = FormElementCreator::addTextInput('user_address','Indirizzo', $user_dataAr, $errorsAr);
@@ -121,10 +121,10 @@ class AdminModuleHtmlLib
 
     $user_birthdate = FormElementCreator::addDateInput('user_birthdate','Data di nascita', $user_dataAr, $errorsAr);
     $form->addChild($user_birthdate);
-    
+
     $user_birthcity = FormElementCreator::addTextInput('user_birthcity','Comune o stato estero di nascita', $user_dataAr, $errorsAr);
     $form->addChild($user_birthcity);
-    
+
     $user_birthprovince = FormElementCreator::addTextInput('user_birthprovince','Provincia di nascita', $user_dataAr, $errorsAr);
     $form->addChild($user_birthprovince);
 
@@ -159,11 +159,11 @@ class AdminModuleHtmlLib
   static public function getEditServiceForm($testersAr = array(), $service_dataAr = array(), $errorsAr = array()) {
     return self::getFormForService('edit_service.php',$testersAr, $service_dataAr, $errorsAr);
   }
-  
+
   static public function getEditNewsForm($newsmsg, $fileToEdit, $reqType) {
     return self::getFormForNews('edit_content.php',$newsmsg, $fileToEdit, $reqType);
   }
-  
+
   static public function getTestersActivityReport($testers_dataAr=array()) {
     $thead_dataAr = array(
       translateFN('Tester'),
@@ -216,15 +216,24 @@ class AdminModuleHtmlLib
     $thead = array(
       translateFN('Id'),
       translateFN('Nome'),
-      translateFN('Descrizione'),
+//       translateFN('Descrizione'),
       translateFN('Livello'),
       translateFN('Durata'),
       translateFN('Min. incontri'),
       translateFN('Max incontri'),
       translateFN('Durata max incontro'),
-      translateFN('id provincia'),
+//       translateFN('id provincia'),
       translateFN('id del corso')
     );
+
+    /**
+     * @author giorgio 14/mar/2016
+     * remove descrizione field from $services_on_this_testerAr
+     */
+    array_walk ($services_on_this_testerAr, function (&$item) {
+    	if (isset($item['descrizione'])) unset ($item['descrizione']);
+    });
+
     $table = BaseHtmlLib::tableElement('',$thead,$services_on_this_testerAr);
     //$link = CDOMElement::create('a','href:manage_tester_services.php?id_tester='.$id_tester);
     //$link->addChild(new CText(translateFN('Associa/disassocia un servizio')));
@@ -363,24 +372,24 @@ class AdminModuleHtmlLib
       'default'      => 'default',
       'masterstudio' => 'masterstudio'
     );
- * 
+ *
  */
-    
-    
-             
+
+
+
     $layoutsAr = array(
       'none'         => translateFN('seleziona un layout')
-    );            
-    $layoutObj = new UILayout();    
-    $availableLayout = $layoutObj->getAvailableLayouts(); 
-    
+    );
+    $layoutObj = new UILayout();
+    $availableLayout = $layoutObj->getAvailableLayouts();
+
     foreach ($availableLayout as $familyLayoutIdentifier=>$familyLayoutValue){
         $layoutsAr[$familyLayoutIdentifier] = $familyLayoutValue;
     }
-    
-     
-    
-                
+
+
+
+
     $user_layout = FormElementCreator::addSelect('user_layout', 'Layout', $layoutsAr, $user_dataAr);
     $form->addChild($user_layout);
     $user_address = FormElementCreator::addTextInput('user_address','Indirizzo', $user_dataAr, $errorsAr);
@@ -400,10 +409,10 @@ class AdminModuleHtmlLib
 
     $user_birthdate = FormElementCreator::addDateInput('user_birthdate','Data di Nascita', $user_dataAr, $errorsAr);
     $form->addChild($user_birthdate);
-    
+
     $user_birthcity = FormElementCreator::addTextInput('user_birthcity','Comune o stato estero di nascita', $user_dataAr, $errorsAr);
     $form->addChild($user_birthcity);
-    
+
     $user_birthprovince = FormElementCreator::addTextInput('user_birthprovince','Provincia di nascita', $user_dataAr, $errorsAr);
     $form->addChild($user_birthprovince);
 
@@ -616,13 +625,13 @@ class AdminModuleHtmlLib
 
         $reqTypeForm = CDOMElement::create('hidden','id:reqType, name:type');
         $reqTypeForm->setAttribute('value', $type);
-        $form->addChild ($reqTypeForm); 
+        $form->addChild ($reqTypeForm);
 
         $buttons = FormElementCreator::addSubmitAndResetButtons();
         $form->addChild($buttons);
 
         return $form;
   }
-  
+
 }
 ?>
