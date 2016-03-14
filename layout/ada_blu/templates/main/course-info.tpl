@@ -48,10 +48,10 @@
                             <div class="topright">
                                 <div class="bottomleft">
                                     <div class="bottomright">
-                                        <div class="contentlabel">
-                                            <h1>
-                                                <template_field class="template_field" name="label">label</template_field>
-                                            </h1>
+                                        <div class="contentlabel">                                        
+                                          <h1 class="ui large dividing header">
+    										<template_field class="template_field" name="label">label</template_field>
+										  </h1>
                                         </div>
                                     </div>
                                 </div>
@@ -69,7 +69,60 @@
                             <template_field class="template_field" name="help">help</template_field>
                         </div>
                         <template_field class="template_field" name="data">data</template_field>
+                        <template_field class="template_field" name="errorMSG">errorMSG</template_field>
+                        
+                        <div id="courseInfo" class="ui stackable grid">
+							<div class="equal height row">
+								<div class="first six wide column">
+									<!-- course info segment -->
+									<div class="courseinfo">							
+		            					<div class="ui top attached segment">
+											<i class="book large icon"></i><template_field class="template_field" name="course_title">course_title</template_field>
+										</div>
+										<div class="ui attached segment item">
+											<div class="item">
+		            							<template_field class="template_field" name="course_description">course_description</template_field>
+		            						</div>
+		            					</div>
+										<div class="ui bottom attached segment">
+											<div class="item">
+										    	<i class="certificate icon"></i><template_field class="template_field" name="course_credits">course_credits</template_field>
+										  	</div>								  	
+										  	<div class="item">
+										    	<i class="empty flag icon"></i><template_field class="template_field" name="course_language">course_language</template_field>
+										  	</div>
+										  	<div class="item">
+										    	<i class="time icon"></i><template_field class="template_field" name="course_duration">course_duration</template_field>
+										  	</div>
+										</div>
+									</div>
+									<!-- /course info segment --> 
+									<!-- index segment -->
+									<a name="courseIndex"></a>
+									<div class="courseindex">
+										<div class="ui top attached segment item">
+											<i class="sitemap large icon"></i><i18n>Indice</i18n>
+										</div>
+										<div class="ui attached segment">
+											<div class="item">
+		            							<template_field class="template_field" name="course_index">course_index</template_field>
+		            						</div>
+	            						</div>
+										
+									</div>
+									<!-- /index segment -->
+								</div>
+								<!-- /first column -->
+								
+								<!-- this will generate the second column if needed -->
+								<template_field class="template_field" name="instancesColumn">instancesColumn</template_field>
+								
+							</div>
+							<!-- /equal height row -->				
+						</div>
+						<!-- /courseInfo -->
                     </div>
+                    <!-- /first -->
                 </div>
             </div>
             <!--  / contenuto -->

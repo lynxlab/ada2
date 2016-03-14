@@ -6,9 +6,15 @@ function includeFCKeditor(textarea_name) {
    oFCKeditor.BasePath = '../external/fckeditor/';
    oFCKeditor.Width = '100%';
    oFCKeditor.Height = '350';
-   oFCKeditor.ToolbarSet = 'Default';
-   oFCKeditor.ReplaceTextarea(); 
-  } 
+   if (textarea_name!='descrizione') {
+	   oFCKeditor.ToolbarSet = 'Default';
+   } else {
+	   oFCKeditor.ToolbarSet = 'editcourse';
+   }
+   oFCKeditor.Config["StylesXmlPath"] = '../fckADAstyles.xml';
+   oFCKeditor.Config['TemplatesXmlPath'] = '../fckADAtemplates.xml';
+   oFCKeditor.ReplaceTextarea();
+  }
 
 
 /**
@@ -16,7 +22,7 @@ function includeFCKeditor(textarea_name) {
  *
  * creates and returns an instance of FCKeditor.
  * .@param FCKeditorID - the id of the textarea to be replaced by FCKeditor
- * .@return oFCKeditor - FCKeditor instance 
+ * .@return oFCKeditor - FCKeditor instance
  */
 function createEditor(FCKeditorID, Plain_textID) {
 	$(FCKeditorID).value = ADAToFCKeditor($(Plain_textID).value);

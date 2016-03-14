@@ -54,8 +54,12 @@ class CourseViewer
    * @param  string  $container_div_name
    * @return string  -
    */
-  public static function displayMainIndex($userObj, $id_course, $expand_index, $order, $id_course_instance=NULL, $container_div_name=NULL){
-    $dh = $GLOBALS['dh'];
+  public static function displayMainIndex($userObj, $id_course, $expand_index, $order, $id_course_instance=NULL, $container_div_name=NULL, $dhToUse=null){
+  	if (!is_null($dhToUse)) {
+  		$dh = $dhToUse;
+  	} else {
+	    $dh = $GLOBALS['dh'];
+  	}
 
     // vito, 3 ottobre 2008
     $container_div = "";
@@ -140,10 +144,10 @@ class CourseViewer
     $index = CDOMElement::create('div', "id:$container_div");
 
     if ( $order == 'alfa' ) {
-      $index->addChild(self::ordered($course_data, $callback, $callback_params,$id_toc));
+      $index->addChild(self::ordered($course_data, $callback, $callback_params,$id_toc, $dh));
     }
     else {
-      $index->addChild(self::struct($course_data, $id_toc, $expand_index, $callback, $callback_params));
+      $index->addChild(self::struct($course_data, $id_toc, $expand_index, $callback, $callback_params, $dh));
     }
 
     return $index;
@@ -376,12 +380,16 @@ class CourseViewer
    * @param unknown_type $callback_params
    * @return unknown
    */
-  public static function ordered($course_data, $callback, $callback_params=array(),$id_toc) {
+  public static function ordered($course_data, $callback, $callback_params=array(),$id_toc,$dhToUse=null) {
     $list = CDOMElement::create('ul');
     /*
      * Ottiene le informazioni sul nodo principale
      */
-    $dh = $GLOBALS['dh'];
+    if (!is_null($dhToUse)) {
+    	$dh = $dhToUse;
+    } else {
+    	$dh = $GLOBALS['dh'];
+    }
     $node_info = $dh->get_node_info($id_toc);
     if(!AMA_DataHandler::isError($node_info)) {
       $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona'=> $node_info['icon']/*'group.png'*/, 'livello'=>$node_info['level']);
@@ -415,7 +423,7 @@ class CourseViewer
    * @param unknown_type $callback_params
    * @return unknown
    */
-  public static function struct($course_data, $id_toc, $expand_index, $callback, $callback_params=array()) {
+  public static function struct($course_data, $id_toc, $expand_index, $callback, $callback_params=array(),$dhToUse=null) {
 
     $lda = self::buildLda($course_data);
     $s   = array();
@@ -424,7 +432,11 @@ class CourseViewer
     /*
      * Ottiene le informazioni sul nodo principale
      */
-    $dh = $GLOBALS['dh'];
+   	if (!is_null($dhToUse)) {
+  		$dh = $dhToUse;
+  	} else {
+	    $dh = $GLOBALS['dh'];
+  	}
     $node_info = $dh->get_node_info($id_toc);
     if(!AMA_DataHandler::isError($node_info)) {
       $principale = array('id_nodo' => $id_toc, 'id_nodo_parent' => $id_toc, 'nome' => $node_info['name']/*translateFN('Principale')*/, 'tipo' => ADA_GROUP_TYPE, 'icona'=> $node_info['icon']/*'group.png'*/,'root'=>true, 'livello'=>$node_info['level']);
