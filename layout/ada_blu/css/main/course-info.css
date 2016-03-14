@@ -1,0 +1,71 @@
+@CHARSET "UTF-8";
+
+#courseInfo,
+#errorMSG { display: none; }
+#content { width: 100%; float: left; }
+#contentcontent ul li { border: none; color: initial; }
+#contentcontent .ui.grid { margin:0; }
+#contentcontent .ui.grid>.equal.height.row { border-collapse: separate; border-spacing: 1rem 0; }
+
+/* first column main */
+#contentcontent .ui.grid .first.column,
+#contentcontent .ui.grid .second.column {
+	padding:0;
+	font-size: 1.1rem;
+}
+/* blocks header and footer */
+#contentcontent .ui.grid .column .top.segment,
+#contentcontent .ui.grid .column .bottom.segment {
+	background: #eaeaea;	
+}
+
+#contentcontent .ui.grid .column .top.segment {
+	line-height: 2rem;
+	font-size: 1.2rem;
+	font-weight: bold;
+	text-transform: capitalize;
+}
+
+/* margin between columns blocks */
+#contentcontent .ui.grid .column>*:not(:first-child) {
+	margin-top: 2rem;
+}
+
+#contentcontent .ui.grid .column>*:last-child {
+	margin-bottom: 2rem;
+}
+
+/* courseinfo footer items */
+#contentcontent .ui.grid .first.column .courseinfo .bottom.segment .item:not(:last-child) {
+	float:left;
+	display:inline-block;
+	margin-right: 1rem;
+}
+
+/* courseindex list */
+#contentcontent .ui.grid .first.column .courseindex ul {
+	padding-left: 1.2rem;
+	margin:0;
+}
+#contentcontent .ui.grid .first.column .courseindex ul li {
+	color: #666;
+	line-height: 2.5rem;
+}
+
+/* instances info list */
+#contentcontent .ui.grid .second.column .horizontal.list {
+	width: 100%;
+	margin:0; 
+}
+
+#contentcontent .ui.grid .second.column .horizontal.list .item {
+	width: 100%;
+	margin:0;
+	text-overflow: ellipsis;
+}
+
+@media only screen and (max-width: 767px) {
+	#contentcontent .ui.stackable.grid>.row>.column {
+		padding-top :0 !important;
+	}
+}

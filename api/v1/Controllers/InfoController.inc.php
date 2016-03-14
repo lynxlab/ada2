@@ -3,7 +3,7 @@
  * InfoController.inc.php
  *
  * @package        API
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2014, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           API
@@ -20,7 +20,7 @@ class InfoController extends AbstractController implements AdaApiInterface {
 
 	/**
 	 * Info own array key mappings
-	 * 
+	 *
 	 * @var array
 	 */
 	private static $_userKeyMappings = array (
@@ -28,8 +28,8 @@ class InfoController extends AbstractController implements AdaApiInterface {
 
 	/**
 	 * GET method.
-	 * 
-	 * 
+	 *
+	 *
 	 * (non-PHPdoc)
 	 * @see \AdaApi\AdaApiInterface::get()
 	 */
@@ -61,26 +61,26 @@ class InfoController extends AbstractController implements AdaApiInterface {
 				throw new APIException('Wrong Parameters', 400);
 			}
 		}
-		
+
 		if (isset($userProvider)) {
 			$userProviderInfo = $this->common_dh->get_tester_info_from_pointer($userProvider);
 			$user_provider_id = (!\AMA_DB::isError($userProviderInfo)) ? $userProviderInfo[0] : null;
 		} else {
 			// this means to get courses on all testers
 			$user_provider_id = null;
-		}	
-		
+		}
+
 		if (!MULTIPROVIDER && is_null($user_provider_id)) {
 			throw new APIException('Selected provider '.$userProvider.' is not found in the DB',404);
 		}
-		
+
 		$publishedServices = $this->common_dh->get_published_courses($user_provider_id);
-		
+
 		/**
 		 * following code reflects info.php ada file
 		 */
 		foreach ($publishedServices as $service) {
-			
+
 			$serviceId = $service ['id_servizio'];
 			$coursesAr = $this->common_dh->get_courses_for_service ($serviceId);
 			if (! \AMA_DB::isError ($coursesAr)) {
@@ -93,9 +93,9 @@ class InfoController extends AbstractController implements AdaApiInterface {
 					if ($courseId != PUBLIC_COURSE_ID_FOR_NEWS) {
 						$newTesterId = $courseData ['id_tester'];
 						if ($newTesterId != $currentTesterId) { // stesso corso su altro tester ?
-							$testerInfoAr = $this->common_dh->get_tester_info_from_id ($newTesterId);
+							$testerInfoAr = $this->common_dh->get_tester_info_from_id ($newTesterId, AMA_FETCH_ASSOC);
 							if (! \AMA_DB::isError ($testerInfoAr)) {
-								$tester = $testerInfoAr [10];
+								$tester = $testerInfoAr ['puntatore'];
 								$tester_dh = \AMA_DataHandler::instance (\MultiPort::getDSN ($tester));
 								$currentTesterId = $newTesterId;
 								$course_dataHa = $tester_dh->get_course ($courseId);
@@ -103,7 +103,7 @@ class InfoController extends AbstractController implements AdaApiInterface {
 										'data_inizio_previsto',
 										'durata',
 										'data_fine',
-										'title' 
+										'title'
 								), $courseId);
 								if (is_array ($instancesAr) && count ($instancesAr) > 0) {
 									$Flag_course_has_instance = true;
@@ -119,7 +119,8 @@ class InfoController extends AbstractController implements AdaApiInterface {
 						if (defined ('PUBLIC_COURSE_ID_FOR_NEWS') && PUBLIC_COURSE_ID_FOR_NEWS != $courseData ['id_corso']) {
 							$returnArray [] = array (
 									'name'=>$service ['nome'],
-									'description'=>$service ['descrizione']
+									'description'=>$service ['descrizione'],
+									'provider'=>array('pointer'=>$testerInfoAr ['puntatore'],'name'=>$testerInfoAr ['nome']),
 							);
 							if (!is_null($more_info_link)) {
 								$returnArray[count($returnArray)-1]['link'] = $more_info_link;
@@ -129,15 +130,15 @@ class InfoController extends AbstractController implements AdaApiInterface {
 				}
 			}
 		}
-		
+
 		if (count($returnArray)) {
 			return $returnArray;
 		} else {
 			throw new APIException('No courses found',404);
 		}
 	}
-	
-	public function post   (array $params = array()) {}	
+
+	public function post   (array $params = array()) {}
 	public function put    (array $params = array()) {}
 	public function delete (array $params = array()) {}
 }

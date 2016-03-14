@@ -47,192 +47,285 @@ $op = isset($_GET['op']) ? DataValidator::validate_string($_GET['op']) : false;
 $today_date = today_dateFN();
 
 //$self = 'list_chatrooms'; // x template
-//$self = whoami();
+$self = whoami();
 
 
-if($op !== false && $op == 'course_info') {
+if ($op !== false && $op == 'course_info') {
+	$self = 'course-info';
     $serviceId = DataValidator::is_uinteger($_GET['id']);
-    if($serviceId !== false && $serviceId > 0) {
 
-        $coursesAr = $common_dh->get_courses_for_service($serviceId);
+    if ($serviceId !== false && $serviceId > 0) {
+    	$coursesAr = $common_dh->get_courses_for_service($serviceId);
+   	}
 
-        $thead_data = array(translateFN('edizione'),translateFN('data inizio previsto'), translateFN('data fine'),translateFN('crediti'), translateFN('azioni'));
-        //$thead_data = array(translateFN('nome'), translateFN('data inizio previsto'), translateFN('durata'), translateFN('data fine'), translateFN('tutor'), translateFN('azioni'));
-        $tbody_data = array();
+    if (isset($coursesAr) && !AMA_Common_DataHandler::isError($coursesAr) && is_array($coursesAr) && count($coursesAr)>0) {
+    	$currentTesterId = 0;
+    	$currentTester = '';
+    	$tester_dh = null;
+    	// This will be used to populate the template fields
+    	$courseInfoContent = array();
 
-        if(!AMA_Common_DataHandler::isError($coursesAr)) {
+    	foreach ($coursesAr as $courseData) {
 
-            $currentTesterId = 0;
-            $currentTester = '';
-            $tester_dh = null;
+    		$newTesterId = $courseData['id_tester'];
+    		if ($newTesterId != $currentTesterId) {
+    			$testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId,AMA_FETCH_ASSOC);
+    			if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+    				$provider_name = $testerInfoAr['nome'];
+    				$tester = $testerInfoAr['puntatore'];
+    				$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+    				$currentTesterId = $newTesterId;
+    				$courseId = $courseData['id_corso'];
+    				$course_dataHa = $tester_dh->get_course($courseId);
+    				if (!AMA_DataHandler::isError($course_dataHa)) {
+    					// supponiamo che tutti i dati di un servizio (su tester diversi) abbiano lo stesso valore
+    					// quindi prendiamo solo l'ultimo
+    					$courseInfoContent['course_title'] = $course_dataHa['titolo'];
+    					$courseInfoContent['course_description'] = $course_dataHa['descr'];
+    					$creditsLbl = 'Credit'.(intval($course_dataHa['crediti'])===1?'o':'i');
+    					$courseInfoContent['course_credits'] = intval($course_dataHa['crediti'])>0 ? $course_dataHa['crediti'] .' '.translateFN($creditsLbl) : null;
+    					$courseInfoContent['course_language'] = Translator::getLanguageInfoForLanguageId($course_dataHa['id_lingua'])['nome_lingua'];
+    					$courseInfoContent['course_duration'] = intval($course_dataHa['duration_hours'])>0 ? $course_dataHa['duration_hours'].' '.translateFN('ore') : null;
+    					// displayMainIndex uses $hide_visits as a global... set it :(
+    					$hide_visits = 1; // default: no visits countg
+    					$main_index = CourseViewer::displayMainIndex($userObj, $courseId, 1, 'struct', null,'structIndex', $tester_dh);
+    					if ($main_index instanceof CBaseElement) {
+    						$courseInfoContent['course_index'] = $main_index->getHtml();
+    					}
+    				} else {
+    					$courseInfoContent['course_title'] = translateFN('Il corso');
+    				}
+    			}
+    		} // if($newTesterId != $currentTesterId)
 
-            foreach($coursesAr as $courseData) {
+    		// instances loop
+    		$courseId = $courseData['id_corso'];
+    		$timestamp = time();
 
-                $newTesterId = $courseData['id_tester'];
-                if($newTesterId != $currentTesterId) {
-                    $testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId,'AMA_FETCH_ASSOC');
-                    if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
-                        $provider_name = $testerInfoAr[1];
-                        $tester = $testerInfoAr[10];
-                        // $tester = $testerInfoAr['puntatore'];
-                        // get_tester_info_from_id usa $db->getRow quindi restituisce un array numerico
-                        $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-                        $currentTesterId = $newTesterId;
-                        $courseId = $courseData['id_corso'];
-                        $course_dataHa = $tester_dh->get_course($courseId);
-                        if (!AMA_DataHandler::isError($course_dataHa)) {
-                            $credits =  $course_dataHa['crediti'];
-                            // supponiamo che tutti i corsi di un servizio (su tester diversi) abbiano lo stesso numero di crediti
-                            // quindi prendiamo solo l'ultimo
-                        } else {
-                            $credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
-                        }
+    		$instancesAr = $tester_dh->course_instance_subscribeable_get_list(
+    				array('data_inizio_previsto', 'durata', 'data_fine', 'title','price','self_instruction','duration_hours','tipo_servizio'),
+    				$courseId);
 
-                    }
-                }
+    		$CourseIstanceIscription=$tester_dh->course_users_instance_get($courseId);
+    		$id_node=$courseId.'_0';
 
-                $courseId = $courseData['id_corso'];
-                $timestamp = time();
-              //ISTANZE CORSO NON INIZIATE
-                $instancesAr = $tester_dh->course_instance_subscribeable_get_list(
-                        array('data_inizio_previsto', 'durata', 'data_fine', 'title'),
-                        $courseId);
+    		if(!AMA_DB::isError($instancesAr) && is_array($instancesAr) && count($instancesAr) > 0) {
+    			foreach($instancesAr as $instance) {
+    				$instanceId = $instance[0];
+    				$flagSubscribe_link=false;
+    				$isEnded = ($instance[3] > 0 && $instance[3] < time()) ? true : false;
+    				if ($isEnded) {
+    					$subscribe_link = BaseHtmlLib::link("#",'<i class="ban circle icon"></i>'.translateFN('corso terminato'));
+    					$subscribe_link->setAttribute('class', 'red ui labeled icon right floated button');
+    					$flagSubscribe_link=true;
+    				} else {
+    					foreach($CourseIstanceIscription  as $courseIstance) {
+    						$id_istanza=$courseIstance['id_istanza_corso'];
 
-                $CourseIstanceIscription=$tester_dh->course_users_instance_get($courseId);
-                $id_node=$courseId.'_0';
+    						if ($id_istanza == $instanceId) {
+    							$id_utente = $courseIstance ['id_utente'];
+    							if ($id_utente == $userObj->getId ()) {
+    								/**
+    								 * Subscribe button
+    								 */
+    								$statusUr = $courseIstance ['status'];
+    								if ($statusUr == ADA_STATUS_SUBSCRIBED || $statusUr == ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+    									if ($userObj->tipo == AMA_TYPE_VISITOR) {
+    										$subscribe_link = BaseHtmlLib::link ("#",'<i class="checkmark icon"></i>'.translateFN ( 'Già iscritto' ));
+    										$subscribe_link->setAttribute('class', 'green ui labeled icon right floated button');
+    										$flagSubscribe_link = true;
+    									}
+    									if ($userObj->tipo == AMA_TYPE_STUDENT) {
+    										$subscribe_link = BaseHtmlLib::link ("browsing/view.php?id_node=$id_node&id_course=$courseId&id_course_instance=$id_istanza",
+    												'<i class="angle right icon"></i>'.translateFN ('Accedi'));
+    										$subscribe_link->setAttribute('class', 'blue ui labeled icon right floated button');
+    										$flagSubscribe_link = true;
+    									}
+    								} else {
+    									$subscribe_link = BaseHtmlLib::link ("info.php?op=subscribe&provider=$currentTesterId&course=$courseId&instance=$instanceId",
+    											'<i class="signup icon"></i>'.translateFN ('iscriviti'));
+    									$subscribe_link->setAttribute('class', 'green ui labeled icon right floated button');
+    									$flagSubscribe_link = true;
+    								}
+    							}
+    						} // if ($id_istanza == $instanceId)
 
-                if(is_array($instancesAr) && count($instancesAr) > 0) {
-                    foreach($instancesAr as $instance) {
-                        $instanceId = $instance[0];
-                $flagSubscribe_link=false;
-                $isEnded = ($instance[3] > 0 && $instance[3] < time()) ? true : false;
-                   if($isEnded)
-                        {
-                             $subscribe_link = BaseHtmlLib::link(
-                                   "#",
-                                   translateFN('corso terminato'));
-                       $flagSubscribe_link=true;
-                        }
-                        else
-                        {
-                            foreach($CourseIstanceIscription  as $courseIstance)
-                           {
+    					}
 
-                              $id_istanza=$courseIstance['id_istanza_corso'];
+    					if (!$flagSubscribe_link) {
+    						$subscribe_link = BaseHtmlLib::link ("info.php?op=subscribe&provider=$currentTesterId&course=$courseId&instance=$instanceId",
+    								'<i class="signup icon"></i>'.translateFN ('iscriviti'));
+    						$subscribe_link->setAttribute('class', 'green ui labeled icon right floated button');
+    					}
+    				} // else of if ($isEnded)
 
-                              if($id_istanza==$instanceId)
-                              {
-                                $id_utente=$courseIstance['id_utente'];
-                                   if($id_utente==$userObj->getId())
-                                       {
-                                           $statusUr=$courseIstance['status'];
-                                           if($statusUr==ADA_STATUS_SUBSCRIBED || $statusUr==ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED)
-                                           {
-                                               if($userObj->tipo==AMA_TYPE_VISITOR)
-                                               {
-                                                   $subscribe_link = BaseHtmlLib::link("info.php",
-                                                   translateFN('Già iscritto'));
-                                                   $flagSubscribe_link=true;
-                                               }
-                                               if($userObj->tipo==AMA_TYPE_STUDENT)
-                                               {
-                                                   $subscribe_link = BaseHtmlLib::link("browsing/view.php?id_node=$id_node&id_course=$courseId&id_course_instance=$id_istanza",translateFN('Accedi'));
-                                                   $flagSubscribe_link=true;
-                                               }
-                                           }
-                                           else {
-                                           $subscribe_link = BaseHtmlLib::link(
-                                               "info.php?op=subscribe&provider=$currentTesterId&course=$courseId&instance=$instanceId",
-                                               translateFN('iscriviti'));
-                                               $flagSubscribe_link=true;
-                                           }
-                                       }
-                                   }
-                           }
-                           if(!$flagSubscribe_link)
-                            {
-                              $subscribe_link = BaseHtmlLib::link(
-                              "info.php?op=subscribe&provider=$currentTesterId&course=$courseId&instance=$instanceId",
-                              translateFN('iscriviti'));
-                            }
+    				/*
+    				 * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
+    				 * per ogni istanza corso (qualcosa che vada a sostituire course_instance_get_list solo in questo caso.
+    				 */
+    				$tutorId = $tester_dh->course_instance_tutor_get($instanceId);
+    				if(!AMA_DataHandler::isError($tutorId) && $tutorId !== false) {
+    					$tutor_infoAr = $tester_dh->get_tutor($tutorId);
+    					if(!AMA_DataHandler::isError($tutor_infoAr)) {
+    						$tutorFullName = $tutor_infoAr['nome'] . ' ' . $tutor_infoAr['cognome'];
+    					} else {
+    						$tutorFullName = translateFN('Utente non trovato');
+    					}
+    				} else {
+    					$tutorFullName = translateFN('Ancora non assegnato');
+    				}
 
-                           }
+    				/**
+    				 * Get instance information
+    				 */
+    				$duration = sprintf("%d giorni", $instance[2]);
+    				$scheduled = AMA_DataHandler::ts_to_date($instance[1]);
+    				$end_date =  AMA_DataHandler::ts_to_date($instance[3]);
+    				$nome_instanza = $instance[4];
+    				// instance price
+    				if (intval($instance[5])>0) {
+    					$instanceData['price'] = array(
+    						'order' => 0,
+    						'icon' => 'money',
+    						'header' => translateFN('Prezzo'),
+    						'data' =>
+    							ADA_CURRENCY_SYMBOL.' '.
+    							number_format($instance[5],ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP)
+    					);
+    				}
 
+    				// instance tutor or self instruction
+    				if (intval($instance[6])>=0) {
+    					$instanceData['tutor'] = array(
+    						'order' => 4,
+    						'icon' => 'user',
+    						'header' => translateFN('Tutor'),
+    						'data' => (intval($instance[6])===0 ? $tutorFullName : translateFN('Corso in autoistruzione'))
+    					);
+    				}
 
-                        /*
-                         * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
-                         * per ogni istanza corso (qualcosa che vada a sostituire course_instance_get_list solo in questo caso.
-                         */
-                         $tutorId = $tester_dh->course_instance_tutor_get($instanceId);
-                         if(!AMA_DataHandler::isError($tutorId) && $tutorId !== false) {
-                            $tutor_infoAr = $tester_dh->get_tutor($tutorId);
-                            if(!AMA_DataHandler::isError($tutor_infoAr)) {
-                                $tutorFullName = $tutor_infoAr['nome'] . ' ' . $tutor_infoAr['cognome'];
-                            } else {
-                                $tutorFullName = translateFN('Utente non trovato');
-                            }
-                         } else {
-                             $tutorFullName = translateFN('Ancora non assegnato');
-                         }
+    				// instance duration hours
+    				if (intval($instance[7])>0) {
+    					$instanceData['durata'] = array(
+    						'order' => 2,
+    						'icon' => 'time',
+    						'header' => translateFN('Durata'),
+    						'data' => $instance[7].' '.(intval($instance[7])===1 ? translateFN('ora'): translateFN('ore'))
+    					);
+    				}
 
-                        $duration = sprintf("%d giorni", $instance[2]);
-                        $scheduled = AMA_DataHandler::ts_to_date($instance[1]);
-                        $end_date =  AMA_DataHandler::ts_to_date($instance[3]);
-                        $nome_instanza = $instance[4];
-                        $course_infoAr = $tester_dh->get_course_info_for_course_instance($instanceId);
-                        /*
-                         * The first element of the array come from concat_ws
-                         * the key of the array is like this [concat_ws(' ',u.nome,u.cognome)]
-                         * the best way to get the value  is to access directly the value
-                         */
-                        list($key,$author_name) = each($course_infoAr);
-                        /*
-                         * The first element of the array come from concat_ws
-                         */
-                        $label = translateFN('Corso') .': '. $course_infoAr['nome'].' - '.$course_infoAr['titolo'] . ' - '
-                                 . translateFN('Ente').': '.$provider_name; //.' - ' . translateFN('Autore'). ': '. $author_name;
+    				// instance service type
+    				if (strlen($instance[8])>0) {
+    					$servicelevel=null;
+    					/* if isset $_SESSION['service_level'] it means that the istallation supports course type */
+    					if(isset($_SESSION['service_level'][$instance[8]])){
+    						$servicelevel=$_SESSION['service_level'][$instance[8]];
+    					}
+    					if(!isset($servicelevel) || is_null($servicelevel)){$servicelevel=DEFAULT_SERVICE_TYPE_NAME;}
 
-//                        print_r($value);
-//                        $output = array_slice($course_infoAr, 0, 1);
-//                        print_r($output);
+    					$instanceData['servicelevel'] = array(
+    						'order' => 1,
+    						'icon' => 'browser',
+    						'header' => translateFN('Tipo di corso'),
+    						'data' => translateFN($servicelevel)
+    					);
+    				}
 
-                        /*
-                        $tbody_data[] = array(
-							$nome_instanza,
-                            $scheduled,
-                            $duration,
-                            $end_date,
-                            $tutorFullName,
-                            $subscribe_link
-                        );
-                         *
-                         */
-                        $tbody_data[] = array(
-                            $nome_instanza,
-                            $scheduled ,
-                           // $duration, why?
-                            $end_date,
-                           // $tutorFullName, why?
-                            $credits,
-                            $subscribe_link
-                        );
-                    }
-                }
-            }
-        }
-        if(count($tbody_data) > 0) {
-            $data = BaseHtmlLib::tableElement('', $thead_data, $tbody_data);
-        } else {
-            $course_infoAr = $tester_dh->get_course($courseId);
-//            print_r($course_infoAr);
-            $label = translateFN('Corso') .': '. $course_infoAr['nome'].' - '.$course_infoAr['titolo'] . ' - '
-                     . translateFN('Ente').': '.$provider_name;
+    				// instance start and end dates
+    				if (strlen($scheduled)>0 || strlen($end_date)>0) {
+    					$dates = '';
+    					if (strlen($scheduled)>0) $dates .= translateFN('Dal').' '.$scheduled;
+    					if (strlen($end_date)>0) $dates .= ' '.translateFN('al').' '.$end_date;
+    					if (strlen($dates)>0) {
+	    					$instanceData['dates'] = array(
+	    							'order' => 3,
+	    							'icon' => 'calendar',
+	    							'header' => translateFN('Date'),
+	    							'data' => $dates
+	    					);
+    					}
+    				}
 
-            $data = new CText(translateFN('Al momento non sono presenti edizioni del corso a cui puoi iscriverti'));
-        }
+    				$course_infoAr = $tester_dh->get_course_info_for_course_instance($instanceId);
+    				/*
+    				 * The first element of the array come from concat_ws
+    				 * the key of the array is like this [concat_ws(' ',u.nome,u.cognome)]
+    				 * the best way to get the value  is to access directly the value
+    				 */
+    				list($key,$author_name) = each($course_infoAr);
+    				/*
+    				 * The first element of the array come from concat_ws
+    				 */
+    				$label = translateFN('Corso') .': '. $course_infoAr['nome'].' - '.$course_infoAr['titolo'] . ' - '
+    						. translateFN('Fornito Da').': '.$provider_name; //.' - ' . translateFN('Autore'). ': '. $author_name;
+
+    				if (!isset($instancesCDOM)) $instancesCDOM = CDOMElement::create('div','class:second two wide column');
+
+    				// a container for the current instance
+    				$container = CDOMElement::create('div','class:classinfo');
+    				$instancesCDOM->addChild($container);
+
+    				// instance name
+    				$instanceNameDIV = CDOMElement::create('div','class:ui top attached segment item');
+    				$instanceNameDIV->addChild(new CText('<i class="users large icon"></i>'.$nome_instanza));
+    				$container->addChild($instanceNameDIV);
+
+    				// instance data
+    				if (isset($instanceData) && is_array($instanceData) && count($instanceData)>0) {
+
+    					// sort instanceData by 'order' field
+    					usort($instanceData, function ($item1, $item2) {
+    						if ($item1['order'] == $item2['order']) return 0;
+    						return $item1['order'] < $item2['order'] ? -1 : 1;
+    					});
+
+    					$instanceDataSEGMENT = CDOMElement::create('div','class:ui attached segment');
+	    				$instanceDataDIV = CDOMElement::create('div','class:ui horizontal floated list');
+	    				$instanceDataSEGMENT->addChild($instanceDataDIV);
+	    				foreach ($instanceData as $aData) {
+	    					$instanceDataITEM = CDOMElement::create('div','class:item');
+	    					$instanceDataCONTENT = CDOMElement::create('div','class:content');
+	    					$instanceDataHEADER = CDOMElement::create('div','class:header');
+	    					$instanceDataHEADER->addChild(new CText($aData['header']));
+	    					$instanceDataCONTENT->addChild($instanceDataHEADER);
+	    					$instanceDataCONTENT->addChild(new CText($aData['data']));
+
+	    					$instanceDataITEM->addChild(CDOMElement::create('i','class:big icon '.$aData['icon']));
+	    					$instanceDataITEM->addChild($instanceDataCONTENT);
+		    				$instanceDataDIV->addChild($instanceDataITEM);
+	    				}
+	    				unset($instanceData);
+	    				$container->addChild($instanceDataSEGMENT);
+    				}
+
+    				// subscribe link
+    				if (isset($subscribe_link) && $subscribe_link instanceof CElement) {
+	    				$subscribeDIV = CDOMElement::create('div','class:ui bottom attached segment');
+	    				$subscribeITEM = CDOMElement::create('div','class:item');
+	    				$subscribeITEM->addChild($subscribe_link);
+	    				$subscribeDIV->addChild($subscribeITEM);
+	    				$container->addChild($subscribeDIV);
+    				}
+
+    				$courseInfoContent['instancesColumn'] = $instancesCDOM->getHtml();
+    			} // foreach($instancesAr as $instance)
+    		} // if(!AMA_DB::isError($instancesAr) && is_array($instancesAr) && count($instancesAr) > 0)
+    	} // foreach ($coursesAr as $courseData)
+
     } else {
-        $data = new CText('Corso non trovato');
+    	$errorMSG = CDOMElement::create('div','id:errorMSG,class:ui error icon large message');
+    	$errorMSG->addChild(CDOMElement::create('i','class:attention icon'));
+    	$MSGcontent = CDOMElement::create('div','class:content');
+    	$MSGheader = CDOMElement::create('div','class:header');
+
+    	$errorMSG->addChild($MSGcontent);
+    	$MSGcontent->addChild($MSGheader);
+
+    	$MSGheader->addChild(new CText(translateFN('Corso non trovato')));
     }
+
+    $optionsAr['onload_func'] = 'initDoc('.intval(isset($errorMSG)).');';
+
 } else if($op !== false && $op == 'subscribe') {
     $providerId = DataValidator::is_uinteger($_GET['provider']);
     $courseId = DataValidator::is_uinteger($_GET['course']);
@@ -242,10 +335,10 @@ if($op !== false && $op == 'course_info') {
     if($userObj instanceof ADAUser) {
 
         if($providerId !== false && $courseId !== false && $instanceId !== false) {
-            $testerInfoAr = $common_dh->get_tester_info_from_id($providerId);
+            $testerInfoAr = $common_dh->get_tester_info_from_id($providerId,AMA_FETCH_ASSOC);
             if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
-                $tester = $testerInfoAr[10];
-                $provider_name = $testerInfoAr[1];
+                $tester = $testerInfoAr['puntatore'];
+                $provider_name = $testerInfoAr['nome'];
 
                 $testersAr[0] = $tester; // it is a pointer (string)
                 $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
@@ -359,10 +452,10 @@ if($op !== false && $op == 'course_info') {
     $courseId = DataValidator::is_uinteger($_GET['course']);
     $instanceId = DataValidator::is_uinteger($_GET['instance']);
     $studentId = DataValidator::is_uinteger($_GET['student']);
-    $testerInfoAr = $common_dh->get_tester_info_from_id($providerId);
+    $testerInfoAr = $common_dh->get_tester_info_from_id($providerId,AMA_FETCH_ASSOC);
     if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
-        $tester = $testerInfoAr[10];
-        $provider_name = $testerInfoAr[1];
+        $tester = $testerInfoAr['puntatore'];
+        $provider_name = $testerInfoAr['nome'];
 
         $testersAr[0] = $tester; // it is a pointer (string)
         $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
@@ -432,9 +525,9 @@ if($op !== false && $op == 'course_info') {
 			header ('Location: '.HTTP_ROOT_DIR.'/info.php');
 			die();
 		}
-		$thead_data = array(translateFN('nome'), translateFN('descrizione'), translateFN('crediti'), translateFN('informazioni'));
+		$thead_data = array(translateFN('corso'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
 	} else {
-		$thead_data = array(translateFN('nome'), translateFN('provider'), translateFN('descrizione'), translateFN('crediti'), translateFN('informazioni'));
+		$thead_data = array(translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
 		$publishedServices = $common_dh->get_published_courses();
 	}
 
@@ -454,10 +547,10 @@ if($op !== false && $op == 'course_info') {
                         $Flag_course_has_instance=false;
                         $newTesterId = $courseData['id_tester'];
                         if($newTesterId != $currentTesterId) { // stesso corso su altro tester ?
-                        	$testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId);
+                        	$testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId,AMA_FETCH_ASSOC);
                         	if(!AMA_DB::isError($testerInfoAr)) {
-                        		$providerName = $testerInfoAr[1];
-                        		$tester = $testerInfoAr[10];
+                        		$providerName = $testerInfoAr['nome'];
+                        		$tester = $testerInfoAr['puntatore'];
                         		$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
                         		$currentTesterId = $newTesterId;
                         		$course_dataHa = $tester_dh->get_course($courseId);
@@ -476,11 +569,10 @@ if($op !== false && $op == 'course_info') {
                                 }
                         	}
                         }
-                        if($Flag_course_has_instance) {
-                        	$more_info_link = BaseHtmlLib::link("info.php?op=course_info&id=$serviceId",translateFN('More info'));
-                        } else {
-                        	$more_info_link = BaseHtmlLib::link("info.php",translateFN('No instances available'));
-                        }
+
+                        $more_info_link = BaseHtmlLib::link("info.php?op=course_info&id=$serviceId",
+                        		'<i class="big icon info"></i>');
+                        $more_info_link->setAttribute('title', translateFN('More info'));
 
                         if (!MULTIPROVIDER) {
                         	$tbody_data[] = array(
@@ -505,13 +597,18 @@ if($op !== false && $op == 'course_info') {
                		$credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
                }
         }
-        $data = BaseHtmlLib::tableElement('', $thead_data, $tbody_data);
+        $data = BaseHtmlLib::tableElement('id:infotable,class:ui padded table', $thead_data, $tbody_data);
+        $optionsAr['onload_func'] = 'initDoc('.intval(MULTIPROVIDER).');';
     } else {
         $data = new CText(translateFN('Non sono stati pubblicati corsi'));
     }
 }
 $title = translateFN('Corsi ai quali puoi iscriverti');
 $help = '';
+
+$layout_dataAr['JS_filename'] = array(
+		JQUERY_DATATABLE
+);
 
 $content_dataAr = array(
     'course_title' => $title,
@@ -520,10 +617,16 @@ $content_dataAr = array(
     'status' => $status,
     'label' => isset($label) ? $label : null,
     'help' => $help,
-    'data' => $data->getHtml()
+    'data' => isset($data) ? $data->getHtml() : null,
+	'errorMSG' => isset($errorMSG) ? $errorMSG->getHtml() : null,
 );
+
+/**
+ * Merge courseInfoContent into $content_dataAr
+ */
+if (isset($courseInfoContent)) $content_dataAr = array_merge($content_dataAr, $courseInfoContent);
 
 /**
  * Sends data to the rendering engine
  */
-ARE::render($layout_dataAr, $content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr, NULL, (isset($optionsAr) ? $optionsAr : NULL));

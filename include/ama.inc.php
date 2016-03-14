@@ -1659,14 +1659,14 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         return $testers_result;
     }
-    public function get_tester_info_from_id($id_tester) {
+    public function get_tester_info_from_id($id_tester, $fetchmode = null) {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
         $testers_sql = "SELECT id_tester,nome,ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione FROM tester "
-                . "WHERE id_tester = $id_tester";
+                . "WHERE id_tester = ?";
 
-        $testers_result = $db->getRow($testers_sql);
+        $testers_result = $db->getRow($testers_sql, $id_tester, $fetchmode);
         if(self::isError($testers_result)) {
             return new AMA_Error(AMA_ERR_GET);
         }
@@ -5447,7 +5447,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $timestamp = AMA_DataHandler::date_to_ts($today_date);
 //        $timestamp = time();
 //        return $this->course_instance_find_list($field_list_ar, "id_corso=$courseId AND self_registration=1 AND data_inizio=0 AND data_inizio_previsto >= $timestamp and durata > 0  ORDER BY data_inizio_previsto ASC");
-        return $this->course_instance_find_list($field_list_ar, "id_corso=$courseId AND self_registration=1 AND open_subscription=1 ORDER BY data_inizio_previsto ASC");
+        return $this->course_instance_find_list($field_list_ar, "id_corso=$courseId AND self_registration=1 AND open_subscription=1 ORDER BY data_inizio_previsto DESC");
     }
 
     /**

@@ -122,6 +122,20 @@ FCKConfig.ToolbarSets["Default"] = [
 	['FitWindow','ShowBlocks','-','About']		// No comma for the last row.
 ] ;
 
+FCKConfig.ToolbarSets["editcourse"] = [
+	['Source','-','Cut','Copy','Paste','PasteText','PasteWord'],
+	['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+	'/',
+	['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'],
+	['OrderedList','UnorderedList','-','Outdent','Indent','Blockquote','CreateDiv'],
+	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
+	['Link','Unlink','Anchor'],
+	['Image','Flash','Table','Rule','Smiley','SpecialChar'],
+	'/',
+	['Style','FontFormat','FontName','FontSize'],
+	['Templates','TextColor','BGColor']
+] ;
+
 FCKConfig.ToolbarSets["Test"] = [
 	['Cut','Copy','Paste','PasteText','PasteWord', 'FitWindow'],
 	['ShowBlocks','-','About','Source'],
