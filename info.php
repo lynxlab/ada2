@@ -85,7 +85,8 @@ if ($op !== false && $op == 'course_info') {
     					$creditsLbl = 'Credit'.(intval($course_dataHa['crediti'])===1?'o':'i');
     					$courseInfoContent['course_credits'] = intval($course_dataHa['crediti'])>0 ? $course_dataHa['crediti'] .' '.translateFN($creditsLbl) : null;
     					$courseInfoContent['course_language'] = Translator::getLanguageInfoForLanguageId($course_dataHa['id_lingua'])['nome_lingua'];
-    					$courseInfoContent['course_duration'] = intval($course_dataHa['duration_hours'])>0 ? $course_dataHa['duration_hours'].' '.translateFN('ore') : null;
+    					$durationLbl = 'Or'.(intval($course_dataHa['duration_hours'])===1?'a':'e');
+    					$courseInfoContent['course_duration'] = intval($course_dataHa['duration_hours'])>0 ? $course_dataHa['duration_hours'].' '.translateFN($durationLbl) : null;
     					// displayMainIndex uses $hide_visits as a global... set it :(
     					$hide_visits = 1; // default: no visits countg
     					$main_index = CourseViewer::displayMainIndex($userObj, $courseId, 1, 'struct', null,'structIndex', $tester_dh);
