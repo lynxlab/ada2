@@ -64,6 +64,7 @@ if ($op !== false && $op == 'course_info') {
     	$tester_dh = null;
     	// This will be used to populate the template fields
     	$courseInfoContent = array();
+		$courseInfoContent['firstcol_wideness'] = '';
 
     	foreach ($coursesAr as $courseData) {
 
@@ -72,6 +73,83 @@ if ($op !== false && $op == 'course_info') {
     			$testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId,AMA_FETCH_ASSOC);
     			if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
     				$provider_name = $testerInfoAr['nome'];
+    				$courseInfoContent['provider_name'] = $testerInfoAr['nome'];
+
+    				if (isset($testerInfoAr['descrizione']) && strlen($testerInfoAr['descrizione'])>0) {
+    					$courseInfoContent['provider_description'] = $testerInfoAr['descrizione'];
+    				}
+
+    				if (isset($_SESSION['mobile-detect']) && $_SESSION['mobile-detect']->isMobile()) {
+    					$courseInfoContent['provider_phone'] = BaseHtmlLib::link('tel:'.$testerInfoAr['telefono'], $testerInfoAr['telefono'])->getHtml();
+    				} else {
+    					$courseInfoContent['provider_phone'] = $testerInfoAr['telefono'];
+    				}
+
+
+    				if (isset($testerInfoAr['indirizzo']) && strlen($testerInfoAr['indirizzo'])>0) {
+    					$provAddress = $testerInfoAr['indirizzo'];
+    					if (isset($testerInfoAr['provincia']) && strlen($testerInfoAr['provincia'])>0) {
+    						$provAddress .= ' - '.$testerInfoAr['provincia'];
+	    					if (isset($testerInfoAr['citta']) && strlen($testerInfoAr['citta'])>0) {
+	    						$provAddress .= '('.strtoupper($testerInfoAr['citta']).')';
+	    					}
+    					}
+
+    					// open street map magic to get address, map and link
+    					$OSMsearchURL = 'http://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&q='.urlencode($provAddress);
+    					// create curl resource
+    					$ch = curl_init();
+    					// set url
+    					curl_setopt($ch, CURLOPT_URL, $OSMsearchURL);
+    					//return the transfer as a string
+    					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    					curl_setopt($ch,CURLOPT_USERAGENT, PORTAL_NAME.' v'.ADA_VERSION);
+    					curl_setopt($ch, CURLOPT_FAILONERROR, true);
+    					$result = curl_exec($ch);
+    					if (curl_getinfo($ch, CURLINFO_HTTP_CODE)===200) {
+    						$OSMJson = json_decode($result);
+    						if ($OSMJson!==false) {
+    							$OSMJson = reset($OSMJson);
+    							if (property_exists($OSMJson, 'importance') && $OSMJson->importance>0.5) {
+    								$provAddress = $testerInfoAr['indirizzo']; // full address with street number
+    								if (property_exists($OSMJson, 'address')) {
+    									$OSMaddress = $OSMJson->address;
+    									if (property_exists($OSMaddress, 'postcode')) {
+    										$provAddress .= ', '.$OSMaddress->postcode;
+    									}
+    									if (property_exists($OSMaddress, 'city')) {
+    										$provAddress .= ' - '.$OSMaddress->city;
+    									}
+    									if (property_exists($OSMaddress, 'county')) {
+    										$provAddress .= '('.$OSMaddress->county.')';
+    									}
+    								}
+    							}
+
+    							if (property_exists($OSMJson, 'osm_type') && property_exists($OSMJson, 'osm_id')) {
+    								$OSMLink = BaseHtmlLib::link('http://www.openstreetmap.org/'.$OSMJson->osm_type.'/'.$OSMJson->osm_id, $provAddress);
+    								$OSMLink->setAttribute('target', '_blank');
+    								$courseInfoContent['provider_address'] = $OSMLink->getHtml();
+    							}
+
+    							if (property_exists($OSMJson, 'lat') && property_exists($OSMJson, 'lon')) {
+    								$OSMImg = CDOMElement::create('img','id:providermap');
+    								$OSMImg->setAttribute('data-providermap',HTTP_ROOT_DIR .
+    										'/widgets/staticmap/staticmap.php?center='.$OSMJson->lat.','.$OSMJson->lon.
+    										'&zoom=17&size=360x213&maptype=mapnik&markers='.$OSMJson->lat.','.$OSMJson->lon.',ol-marker');
+    								$courseInfoContent['provider_address_map'] = $OSMImg->getHtml();
+    							}
+    						}
+    					} else {
+	    					$courseInfoContent['provider_address'] = $provAddress;
+    					}
+    					curl_close($ch);
+    				}
+
+    				if (isset($testerInfoAr['e_mail']) && strlen($testerInfoAr['e_mail'])>0) {
+    					$courseInfoContent['provider_email'] = BaseHtmlLib::link('mailto:'.$testerInfoAr['e_mail'], $testerInfoAr['e_mail'])->getHtml();
+    				}
+
     				$tester = $testerInfoAr['puntatore'];
     				$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
     				$currentTesterId = $newTesterId;
@@ -184,14 +262,14 @@ if ($op !== false && $op == 'course_info') {
     				$end_date =  AMA_DataHandler::ts_to_date($instance[3]);
     				$nome_instanza = $instance[4];
     				// instance price
-    				if (intval($instance[5])>0) {
+    				if (intval($instance[5])>=0) {
+    					$priceLbl = (intval($instance[5])===0 ? translateFN('Gratuito') : ADA_CURRENCY_SYMBOL.' '.
+    								 number_format($instance[5],ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP));
     					$instanceData['price'] = array(
     						'order' => 0,
     						'icon' => 'money',
-    						'header' => translateFN('Prezzo'),
-    						'data' =>
-    							ADA_CURRENCY_SYMBOL.' '.
-    							number_format($instance[5],ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP)
+    						'header' => translateFN('Costo'),
+    						'data' => $priceLbl
     					);
     				}
 
@@ -260,7 +338,12 @@ if ($op !== false && $op == 'course_info') {
     				$label = translateFN('Corso') .': '. $course_infoAr['nome'].' - '.$course_infoAr['titolo'] . ' - '
     						. translateFN('Fornito Da').': '.$provider_name; //.' - ' . translateFN('Autore'). ': '. $author_name;
 
-    				if (!isset($instancesCDOM)) $instancesCDOM = CDOMElement::create('div','class:second two wide column');
+    				if (!isset($instancesCDOM)) {
+    					// set first column wideness
+    					$courseInfoContent['firstcol_wideness'] = 'eleven wide';
+    					// instatiate second column
+    					$instancesCDOM = CDOMElement::create('div','class:secondcol five wide column');
+    				}
 
     				// a container for the current instance
     				$container = CDOMElement::create('div','class:classinfo');
