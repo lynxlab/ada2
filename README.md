@@ -78,6 +78,10 @@ HOW TO INSTALL
     copy widgets/main/index_DEFAULT.XML in widgets/main/index.xml
     see widgets/main/index.xml in order to know how to configure
 
+18. copy modules/test/config/config_DEFAULT.inc.php in modules/test/config/config.inc.php
+    and edit the copied file to suite your needs. Basically only the ``ADA_REDIRECT_TO_TEST`` constant can be
+    either ``true`` or ``false`` whether you want ADA test nodes to be redirected to modules test node or not.
+
 
 CUSTOMIZE THE LAYOUT
 --------------
