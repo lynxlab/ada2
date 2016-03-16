@@ -33,4 +33,4 @@ Sample response is:
 {"access_token":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","expires_in":3600,"token_type":"bearer","scope":null}
 ```
 
-This is it for this module, further documentation is in the _[ADA API](https://github.com/lynxlab/ada/tree/ada-api/api)_ folder.
+This is it for this module, further documentation is in the _[ADA API](https://github.com/lynxlab/ada/tree/master/api)_ folder.
