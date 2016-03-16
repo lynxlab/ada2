@@ -24,5 +24,17 @@ function initDoc(isError) {
 
 		$j('#errorMSG').remove();
 		$j('#courseInfo').fadeIn();
+
+		if ($j('img#providermap').length>0) {
+			if ($j('img#providermap').data('providermap').length>0) {
+				$j('img#providermap').attr('src',$j('img#providermap').data('providermap'));
+					$j('img#providermap').click(function() {
+						var linkObj = $j(this).parents('.item').first().children('a').first();
+						if (linkObj.length>0) {
+							$j(linkObj)[0].click();
+						}
+					});
+			}
+		}
 	}
 }

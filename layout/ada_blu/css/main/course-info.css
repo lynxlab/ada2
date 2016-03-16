@@ -4,15 +4,31 @@
 #errorMSG { display: none; }
 #content { width: 100%; float: left; }
 #contentcontent ul li { border: none; color: initial; }
-#contentcontent .ui.grid { margin:0; }
-#contentcontent .ui.grid>.equal.height.row { border-collapse: separate; border-spacing: 1rem 0; }
 
-/* first column main */
-#contentcontent .ui.grid .first.column,
-#contentcontent .ui.grid .second.column {
-	padding:0;
-	font-size: 1.1rem;
+/**
+ * let equal height row give border to its cells
+ */ 
+#contentcontent .ui.grid>.equal.height.row { 
+	border-collapse: separate; border-spacing: 1rem 0; 
 }
+#contentcontent .ui.grid>.equal.height.row>.column {
+	padding:0;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 0 0 1px #DDD;
+    box-shadow: 0 0 0 1px #DDD;
+}
+#contentcontent .ui.grid>.equal.height.row>.column .segment:not(.top) {
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+/* column main */
+#contentcontent .ui.grid .column {
+	/* padding:0; */
+	font-size: 1.1rem;	
+}
+
 /* blocks header and footer */
 #contentcontent .ui.grid .column .top.segment,
 #contentcontent .ui.grid .column .bottom.segment {
@@ -26,45 +42,66 @@
 	text-transform: capitalize;
 }
 
-/* margin between columns blocks */
-#contentcontent .ui.grid .column>*:not(:first-child) {
+/* margin between column elements */
+#contentcontent .ui.grid>.column>*:not(:first-child) {
 	margin-top: 2rem;
 }
 
-#contentcontent .ui.grid .column>*:last-child {
-	margin-bottom: 2rem;
-}
-
 /* courseinfo footer items */
-#contentcontent .ui.grid .first.column .courseinfo .bottom.segment .item:not(:last-child) {
+#contentcontent .ui.grid .column .courseinfo .bottom.segment .item:not(:last-child) {
 	float:left;
 	display:inline-block;
 	margin-right: 1rem;
 }
 
 /* courseindex list */
-#contentcontent .ui.grid .first.column .courseindex ul {
+#contentcontent .ui.grid .column .courseindex ul {
 	padding-left: 1.2rem;
 	margin:0;
 }
-#contentcontent .ui.grid .first.column .courseindex ul li {
+#contentcontent .ui.grid .column .courseindex ul li {
 	color: #666;
 	line-height: 2.5rem;
 }
 
+/**
+ * Provider info
+ */
+#contentcontent .ui.grid>.equal.height.row>.column .providerinfo .segment .item {
+	line-height: 1.5rem;
+	margin-bottom: 1.5rem;
+}
+#contentcontent .ui.grid>.equal.height.row>.column .providerinfo .segment .item:last-child {
+	margin-bottom: 0;
+}
+
+img#providermap {
+	display: block;
+	margin-left: 1.6rem;
+	margin-top: 1rem;
+}
+
+img#providermap:hover {
+	cursor: pointer;
+	opacity: 0.5;
+}
+
 /* instances info list */
-#contentcontent .ui.grid .second.column .horizontal.list {
+#contentcontent .ui.grid .column .classinfo .horizontal.list {
 	width: 100%;
 	margin:0; 
 }
 
-#contentcontent .ui.grid .second.column .horizontal.list .item {
+#contentcontent .ui.grid .column .classinfo .horizontal.list .item {
 	width: 100%;
 	margin:0;
 	text-overflow: ellipsis;
 }
 
 @media only screen and (max-width: 767px) {
+	#contentcontent {
+		overflow: visible;
+	}
 	#contentcontent .ui.stackable.grid>.row>.column {
 		padding-top :0 !important;
 	}
