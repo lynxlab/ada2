@@ -75,15 +75,20 @@
 	margin-bottom: 0;
 }
 
-img#providermap {
+#providermap {
 	display: block;
-	margin-left: 1.6rem;
-	margin-top: 1rem;
+	margin-left: 3rem;
 }
 
-img#providermap:hover {
+#providermap>img {
+	padding: 0.2rem;
+	-webkit-box-shadow: 0 0 0 1px #DDD;
+    box-shadow: 0 0 0 1px #DDD;	
+}
+
+#providermap:hover {
 	cursor: pointer;
-	opacity: 0.5;
+	opacity: 0.6;
 }
 
 /* instances info list */

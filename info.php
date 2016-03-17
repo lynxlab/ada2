@@ -72,6 +72,11 @@ if ($op !== false && $op == 'course_info') {
     		if ($newTesterId != $currentTesterId) {
     			$testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId,AMA_FETCH_ASSOC);
     			if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+
+    				$layout_dataAr['widgets']['provider_address_map'] = array (
+    						'isActive'=>0
+    				);
+
     				$provider_name = $testerInfoAr['nome'];
     				$courseInfoContent['provider_name'] = $testerInfoAr['nome'];
 
@@ -91,59 +96,20 @@ if ($op !== false && $op == 'course_info') {
     					if (isset($testerInfoAr['provincia']) && strlen($testerInfoAr['provincia'])>0) {
     						$provAddress .= ' - '.$testerInfoAr['provincia'];
 	    					if (isset($testerInfoAr['citta']) && strlen($testerInfoAr['citta'])>0) {
-	    						$provAddress .= '('.strtoupper($testerInfoAr['citta']).')';
+	    						$provAddress .= ' ('.strtoupper($testerInfoAr['citta']).')';
 	    					}
     					}
 
-    					// open street map magic to get address, map and link
-    					$OSMsearchURL = 'http://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&q='.urlencode($provAddress);
-    					// create curl resource
-    					$ch = curl_init();
-    					// set url
-    					curl_setopt($ch, CURLOPT_URL, $OSMsearchURL);
-    					//return the transfer as a string
-    					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    					curl_setopt($ch,CURLOPT_USERAGENT, PORTAL_NAME.' v'.ADA_VERSION);
-    					curl_setopt($ch, CURLOPT_FAILONERROR, true);
-    					$result = curl_exec($ch);
-    					if (curl_getinfo($ch, CURLINFO_HTTP_CODE)===200) {
-    						$OSMJson = json_decode($result);
-    						if ($OSMJson!==false) {
-    							$OSMJson = reset($OSMJson);
-    							if (property_exists($OSMJson, 'importance') && $OSMJson->importance>0.5) {
-    								$provAddress = $testerInfoAr['indirizzo']; // full address with street number
-    								if (property_exists($OSMJson, 'address')) {
-    									$OSMaddress = $OSMJson->address;
-    									if (property_exists($OSMaddress, 'postcode')) {
-    										$provAddress .= ', '.$OSMaddress->postcode;
-    									}
-    									if (property_exists($OSMaddress, 'city')) {
-    										$provAddress .= ' - '.$OSMaddress->city;
-    									}
-    									if (property_exists($OSMaddress, 'county')) {
-    										$provAddress .= '('.$OSMaddress->county.')';
-    									}
-    								}
-    							}
+    					$addressLink = BaseHtmlLib::link('https://www.google.com/maps/place/'.urlencode($provAddress), $provAddress);
+    					$addressLink->setAttribute('target', '_blank');
+    					$courseInfoContent['provider_address'] = $addressLink->getHtml();
 
-    							if (property_exists($OSMJson, 'osm_type') && property_exists($OSMJson, 'osm_id')) {
-    								$OSMLink = BaseHtmlLib::link('http://www.openstreetmap.org/'.$OSMJson->osm_type.'/'.$OSMJson->osm_id, $provAddress);
-    								$OSMLink->setAttribute('target', '_blank');
-    								$courseInfoContent['provider_address'] = $OSMLink->getHtml();
-    							}
-
-    							if (property_exists($OSMJson, 'lat') && property_exists($OSMJson, 'lon')) {
-    								$OSMImg = CDOMElement::create('img','id:providermap');
-    								$OSMImg->setAttribute('data-providermap',HTTP_ROOT_DIR .
-    										'/widgets/staticmap/staticmap.php?center='.$OSMJson->lat.','.$OSMJson->lon.
-    										'&zoom=17&size=360x213&maptype=mapnik&markers='.$OSMJson->lat.','.$OSMJson->lon.',ol-marker');
-    								$courseInfoContent['provider_address_map'] = $OSMImg->getHtml();
-    							}
-    						}
-    					} else {
-	    					$courseInfoContent['provider_address'] = $provAddress;
-    					}
-    					curl_close($ch);
+    					// configure map widget
+    					$layout_dataAr['widgets']['provider_address_map'] = array (
+    						'url' => 'https://maps.googleapis.com/maps/api/staticmap?center='.urlencode($provAddress).'&zoom=17&size=338x199&maptype=roadmap'.
+	    					'&markers=size:mid%7C'.urlencode($provAddress),
+	    					'isActive'=>1
+	    				);
     				}
 
     				if (isset($testerInfoAr['e_mail']) && strlen($testerInfoAr['e_mail'])>0) {

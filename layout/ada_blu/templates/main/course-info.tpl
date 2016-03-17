@@ -118,17 +118,18 @@
 														<i class="thumbs up outline large icon"></i><i18n>Fornito da</i18n> <template_field class="template_field" name="provider_name">provider_name</template_field>
 													</div>
 													<div class="ui attached content segment">
-														<div class="item"><template_field class="template_field" name="provider_description">provider_description</template_field>
+														<div class="item">
+															<template_field class="template_field" name="provider_description">provider_description</template_field>
 													  	</div>
 														<div class="item">
-													    	<i class="map marker icon"></i><template_field class="template_field" name="provider_address">provider_address</template_field>
+													    	<i class="map marker big icon"></i><template_field class="template_field" name="provider_address">provider_address</template_field>
 													    	<template_field class="template_field" name="provider_address_map">provider_address_map</template_field>
 													  	</div>								  	
 													  	<div class="item">
-													    	<i class="phone sign icon"></i><template_field class="template_field" name="provider_phone">provider_phone</template_field>
+													    	<i class="phone sign big icon"></i><template_field class="template_field" name="provider_phone">provider_phone</template_field>
 													  	</div>
 													  	<div class="item">
-													    	<i class="mail icon"></i><template_field class="template_field" name="provider_email">provider_email</template_field>
+													    	<i class="mail big icon"></i><template_field class="template_field" name="provider_email">provider_email</template_field>
 													  	</div>
 				            						</div>
 												</div>
