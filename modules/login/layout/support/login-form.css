@@ -63,6 +63,7 @@ select#p_selected_language {
 	width: 20em;
 	padding: 0.5em;
 	line-height: 1; 
+	-webkit-appearance:none;
 }
 
 #login_form #p_username,
