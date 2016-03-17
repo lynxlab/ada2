@@ -43,7 +43,7 @@
 .dataTables_wrapper .sorting::after,
 .dataTables_wrapper .sorting_asc::after,
 .dataTables_wrapper .sorting_desc::after {
-	font-family: 'Basic Icons';
+	font-family: 'Icons';
 	content: '\f0dc';
 	font-size: 1em;
 	vertical-align: middle;

@@ -24,5 +24,14 @@ function initDoc(isError) {
 
 		$j('#errorMSG').remove();
 		$j('#courseInfo').fadeIn();
+
+		if ($j('#providermap').length>0) {
+			$j('#providermap').click(function() {
+				var linkObj = $j(this).parents('.item').first().children('a').first();
+				if (linkObj.length>0) {
+					$j(linkObj)[0].click();
+				}
+			});
+		}
 	}
 }

@@ -51,3 +51,57 @@ div.firstnode .ui.header:nth-child(-n+2) {
 div#content_view .ui.accordion:last-child {
 	display:none;
 }
+
+/**
+ * equal height row in a semantic ui grid
+ */
+ 
+.firstnode .equal.height.row {
+	border-spacing: 1rem;
+	margin-top: 0;
+}
+
+.firstnode .equal.height.row>.column {
+	padding:0;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 0 0 1px #DDD;
+    box-shadow: 0 0 0 1px #DDD;
+}
+
+.firstnode .ui.grid>.equal.height.row>.column .segment:not(.top) {
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+/* blocks header and footer */
+.firstnode .ui.grid .column .top.segment,
+.firstnode .ui.grid .column .bottom.segment {
+	background: #eaeaea;	
+}
+
+/**
+ * Responsiveness
+ */
+@media only screen and (max-width: 767px) {
+	.firstnode .ui.grid .column .top.segment,
+	.firstnode .ui.grid .column .bottom.segment {
+		background: transparent;
+		-webkit-box-shadow: none;
+	    box-shadow: none;	
+	}
+	#contentcontent .firstnode .ui.grid>.row {
+		padding-top:0 !important;
+		margin-top:0 !important;
+	}
+	
+	#contentcontent .firstnode .ui.grid>.row>.column {
+		border-bottom: 1px solid #ddd;
+		padding-top:0 !important; 
+		margin-top:0 !important;
+	}
+	
+	#contentcontent .firstnode .ui.grid>.row:last-child>.column:last-child {
+		border: none;
+	}	
+} 

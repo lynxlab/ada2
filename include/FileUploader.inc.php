@@ -183,6 +183,10 @@ class FileUploader
 //        imagejpeg($new_img,$this->_tmpName);
     }
 
+    public function getType() {
+    	return $this->_type;
+    }
+
 
     private $_name;
     private $_tmpName;

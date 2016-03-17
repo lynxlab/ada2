@@ -64,6 +64,7 @@ if ($op !== false && $op == 'course_info') {
     	$tester_dh = null;
     	// This will be used to populate the template fields
     	$courseInfoContent = array();
+		$courseInfoContent['firstcol_wideness'] = '';
 
     	foreach ($coursesAr as $courseData) {
 
@@ -71,7 +72,50 @@ if ($op !== false && $op == 'course_info') {
     		if ($newTesterId != $currentTesterId) {
     			$testerInfoAr = $common_dh->get_tester_info_from_id($newTesterId,AMA_FETCH_ASSOC);
     			if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+
+    				$layout_dataAr['widgets']['provider_address_map'] = array (
+    						'isActive'=>0
+    				);
+
     				$provider_name = $testerInfoAr['nome'];
+    				$courseInfoContent['provider_name'] = $testerInfoAr['nome'];
+
+    				if (isset($testerInfoAr['descrizione']) && strlen($testerInfoAr['descrizione'])>0) {
+    					$courseInfoContent['provider_description'] = $testerInfoAr['descrizione'];
+    				}
+
+    				if (isset($_SESSION['mobile-detect']) && $_SESSION['mobile-detect']->isMobile()) {
+    					$courseInfoContent['provider_phone'] = BaseHtmlLib::link('tel:'.$testerInfoAr['telefono'], $testerInfoAr['telefono'])->getHtml();
+    				} else {
+    					$courseInfoContent['provider_phone'] = $testerInfoAr['telefono'];
+    				}
+
+
+    				if (isset($testerInfoAr['indirizzo']) && strlen($testerInfoAr['indirizzo'])>0) {
+    					$provAddress = $testerInfoAr['indirizzo'];
+    					if (isset($testerInfoAr['provincia']) && strlen($testerInfoAr['provincia'])>0) {
+    						$provAddress .= ' - '.$testerInfoAr['provincia'];
+	    					if (isset($testerInfoAr['citta']) && strlen($testerInfoAr['citta'])>0) {
+	    						$provAddress .= ' ('.strtoupper($testerInfoAr['citta']).')';
+	    					}
+    					}
+
+    					$addressLink = BaseHtmlLib::link('https://www.google.com/maps/place/'.urlencode($provAddress), $provAddress);
+    					$addressLink->setAttribute('target', '_blank');
+    					$courseInfoContent['provider_address'] = $addressLink->getHtml();
+
+    					// configure map widget
+    					$layout_dataAr['widgets']['provider_address_map'] = array (
+    						'url' => 'https://maps.googleapis.com/maps/api/staticmap?center='.urlencode($provAddress).'&zoom=17&size=338x199&maptype=roadmap'.
+	    					'&markers=size:mid%7C'.urlencode($provAddress),
+	    					'isActive'=>1
+	    				);
+    				}
+
+    				if (isset($testerInfoAr['e_mail']) && strlen($testerInfoAr['e_mail'])>0) {
+    					$courseInfoContent['provider_email'] = BaseHtmlLib::link('mailto:'.$testerInfoAr['e_mail'], $testerInfoAr['e_mail'])->getHtml();
+    				}
+
     				$tester = $testerInfoAr['puntatore'];
     				$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
     				$currentTesterId = $newTesterId;
@@ -184,14 +228,14 @@ if ($op !== false && $op == 'course_info') {
     				$end_date =  AMA_DataHandler::ts_to_date($instance[3]);
     				$nome_instanza = $instance[4];
     				// instance price
-    				if (intval($instance[5])>0) {
+    				if (intval($instance[5])>=0) {
+    					$priceLbl = (intval($instance[5])===0 ? translateFN('Gratuito') : ADA_CURRENCY_SYMBOL.' '.
+    								 number_format($instance[5],ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP));
     					$instanceData['price'] = array(
     						'order' => 0,
     						'icon' => 'money',
-    						'header' => translateFN('Prezzo'),
-    						'data' =>
-    							ADA_CURRENCY_SYMBOL.' '.
-    							number_format($instance[5],ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP)
+    						'header' => translateFN('Costo'),
+    						'data' => $priceLbl
     					);
     				}
 
@@ -260,7 +304,12 @@ if ($op !== false && $op == 'course_info') {
     				$label = translateFN('Corso') .': '. $course_infoAr['nome'].' - '.$course_infoAr['titolo'] . ' - '
     						. translateFN('Fornito Da').': '.$provider_name; //.' - ' . translateFN('Autore'). ': '. $author_name;
 
-    				if (!isset($instancesCDOM)) $instancesCDOM = CDOMElement::create('div','class:second two wide column');
+    				if (!isset($instancesCDOM)) {
+    					// set first column wideness
+    					$courseInfoContent['firstcol_wideness'] = 'eleven wide';
+    					// instatiate second column
+    					$instancesCDOM = CDOMElement::create('div','class:secondcol five wide column');
+    				}
 
     				// a container for the current instance
     				$container = CDOMElement::create('div','class:classinfo');

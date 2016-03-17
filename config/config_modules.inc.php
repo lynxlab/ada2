@@ -126,4 +126,17 @@
 	else {
 		define('MODULES_LOGIN', false);
 	}
+	
+	//defines for module slideimport
+	define ('MODULES_SLIDEIMPORT_PATH', MODULES_DIR.'/slideimport');
+	if (file_exists(MODULES_SLIDEIMPORT_PATH.'/index.php'))
+	{
+		require_once(MODULES_SLIDEIMPORT_PATH.'/config/config.inc.php');
+	
+		define('MODULES_SLIDEIMPORT', true);
+		define('MODULES_SLIDEIMPORT_HTTP', HTTP_ROOT_DIR.'/modules/slideimport');
+	}
+	else {
+		define('MODULES_SLIDEIMPORT', false);
+	}
 ?>

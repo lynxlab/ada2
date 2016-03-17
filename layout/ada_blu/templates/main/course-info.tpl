@@ -72,8 +72,7 @@
                         <template_field class="template_field" name="errorMSG">errorMSG</template_field>
                         
                         <div id="courseInfo" class="ui stackable grid">
-							<div class="equal height row">
-								<div class="first six wide column">
+								<div class="firstcol <template_field class="template_field" name="firstcol_wideness">firstcol_wideness</template_field> column">
 									<!-- course info segment -->
 									<div class="courseinfo">							
 		            					<div class="ui top attached segment">
@@ -97,28 +96,53 @@
 										</div>
 									</div>
 									<!-- /course info segment --> 
-									<!-- index segment -->
-									<a name="courseIndex"></a>
-									<div class="courseindex">
-										<div class="ui top attached segment item">
-											<i class="sitemap large icon"></i><i18n>Indice</i18n>
-										</div>
-										<div class="ui attached segment">
-											<div class="item">
-		            							<template_field class="template_field" name="course_index">course_index</template_field>
-		            						</div>
-	            						</div>
-										
+									<!-- index and provider grid -->
+									<div class="ui stackable grid">
+									  	<div class="two column equal height row">
+											<div class="column">
+												<a name="courseIndex"></a>
+												<div class="courseindex">
+													<div class="ui top attached segment item">
+														<i class="sitemap large icon"></i><i18n>Indice</i18n>
+													</div>
+													<div class="ui attached segment">
+														<div class="item">
+					            							<template_field class="template_field" name="course_index">course_index</template_field>
+					            						</div>
+				            						</div>
+												</div>
+		    								</div>
+										    <div class="column">
+										      <div class="providerinfo">
+													<div class="ui top attached segment">
+														<i class="thumbs up outline large icon"></i><i18n>Fornito da</i18n> <template_field class="template_field" name="provider_name">provider_name</template_field>
+													</div>
+													<div class="ui attached content segment">
+														<div class="item">
+															<template_field class="template_field" name="provider_description">provider_description</template_field>
+													  	</div>
+														<div class="item">
+													    	<i class="map marker big icon"></i><template_field class="template_field" name="provider_address">provider_address</template_field>
+													    	<template_field class="template_field" name="provider_address_map">provider_address_map</template_field>
+													  	</div>								  	
+													  	<div class="item">
+													    	<i class="phone sign big icon"></i><template_field class="template_field" name="provider_phone">provider_phone</template_field>
+													  	</div>
+													  	<div class="item">
+													    	<i class="mail big icon"></i><template_field class="template_field" name="provider_email">provider_email</template_field>
+													  	</div>
+				            						</div>
+												</div>
+										    </div>
+	  								    </div>
 									</div>
-									<!-- /index segment -->
+									<!-- /index and provider grid -->
 								</div>
 								<!-- /first column -->
 								
 								<!-- this will generate the second column if needed -->
 								<template_field class="template_field" name="instancesColumn">instancesColumn</template_field>
 								
-							</div>
-							<!-- /equal height row -->				
 						</div>
 						<!-- /courseInfo -->
                     </div>
