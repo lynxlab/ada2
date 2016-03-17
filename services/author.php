@@ -1,19 +1,19 @@
-<?php 
+<?php
 /**
  * AUTHOR.
- * 
- * @package		
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
@@ -71,13 +71,13 @@ $dataHa = $dh->find_courses_list_by_key($field_list_ar, $key, $search_fields_ar)
 
 if (AMA_DataHandler::isError($dataHa)){
   /*
-   * Qui, se codice di errore == AMA_ERR_NOT_FOUND, tutto ok, semplicemente non 
+   * Qui, se codice di errore == AMA_ERR_NOT_FOUND, tutto ok, semplicemente non
    * ci sono corsi.
    * Altrimenti ADA_Error
    */
    $err_msg = $dataHa->getMessage();
   //header("Location: $error?err_msg=$msg");
-} 
+}
 else {
   // courses array
   $course_dataHa = array();
@@ -97,7 +97,7 @@ else {
     // vito, 8 apr 2009
     $confirm_dialog_message = translateFN('Sei sicuro di voler eliminare questo corso?');
     $onclick = "confirmCriticalOperationBeforeRedirect('$confirm_dialog_message','delete_course.php?id_course=$id_course');";
-     
+
     $row = array(
       translateFN('Nome')=>$nome,
       translateFN('Titolo')=>$titolo,
@@ -109,6 +109,9 @@ else {
       //translateFN('XML')=> "<a href=\"author_report.php?mode=xml&amp;id_course=$id_course\"><img src=\"img/xml.png\" border=0></a>",
       //translateFN('Elimina')=> "<a href=\"#\" onclick=\"$onclick\"><img src=\"img/delete.png\" border=0></a>"
     );
+    if (defined('MODULES_SLIDEIMPORT') && MODULES_SLIDEIMPORT) {
+    	$row['Importa'] = "<a href=\"".MODULES_SLIDEIMPORT_HTTP."/?id_course=$id_course\"><img src=\"".MODULES_SLIDEIMPORT_HTTP."/layout/img/slideimport.png\" border=0></a>";
+    }
     array_push($course_dataHa,$row);
   }
   $caption = translateFN("Corsi inviati e attivi il")." $ymdhms";

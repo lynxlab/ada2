@@ -254,7 +254,7 @@ class NodeEditing {
         $path_to_icon = $root_dir.'/templates/browsing/'.$template_family;
 //        if(trim($node_data['icon']) == "" || !file_exists($path_to_icon.'/'.$node_data['icon'])) {
 //        if(trim($node_data['icon']) == "" || !file_exists($node_data['icon'])) {
-        if(!file_exists($node_data['icon'])) {
+        if(!isset($node_data['icon']) || !file_exists($node_data['icon'])) {
             $node_data['icon'] = 'nodo.png';
         }
 
