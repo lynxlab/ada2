@@ -7,7 +7,7 @@
 	margin:0;
 }
 
-#contentcontent .ui.grid>.row .column .header {
+#contentcontent .ui.grid>.row .column>.header {
 	background: #cecece;
 	padding: 0.8rem;
 	vertical-align: middle;
@@ -19,7 +19,7 @@
 	border-spacing: 1rem 0;
 }
 
-#contentcontent .ui.grid .column .ui.list {
+#contentcontent .ui.grid .column:not(.firstcol) .ui.list {
 	margin: 1rem;
 }
 
@@ -34,12 +34,18 @@
 	border-radius: 5px;
 	padding :0;
 }
-#contentcontent div.ui.list .item {
+
+#contentcontent .column.firstcol div.ui.list .item .list .content {
+	line-height: 2rem;
+}
+
+#contentcontent .column.secondcol div.ui.list .item,
+#contentcontent .column.thirdcol div.ui.list .item {
 	margin-top: 2rem;
 }
 
 #contentcontent h3.ui.header,
-#contentcontent div.ui.list .item a {
+#contentcontent div.ui.list .item a:not(.button) {
 	text-transform: capitalize;
 }
 

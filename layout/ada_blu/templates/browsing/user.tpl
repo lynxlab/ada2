@@ -67,7 +67,7 @@
 					<div class="ui three column stackable grid">
 										
 						<div class="equal height row">
-							<div class="column">
+							<div class="firstcol column">
 								<h3 class="ui header">
 									<i class="info large icon"></i><i18n>Informazioni</i18n>
 								</h3>
@@ -78,7 +78,7 @@
 								</div>									
 							</div>
 							
-							<div class="column">
+							<div class="secondcol column">
 								<h3 class="ui header">
 									<i class="book large icon"></i><i18n>il corso</i18n>
 								</h3>
@@ -98,7 +98,7 @@
 								</div>							
 							</div>
 							
-							<div class="column">
+							<div class="thirdcol column">
 								<h3 class="ui header">
 									<i class="ok circle large icon"></i><i18n>Stato</i18n>
 								</h3>				
