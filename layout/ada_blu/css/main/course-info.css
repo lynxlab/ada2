@@ -86,7 +86,7 @@
     box-shadow: 0 0 0 1px #DDD;	
 }
 
-#providermap:hover {
+#providermap>img:hover {
 	cursor: pointer;
 	opacity: 0.6;
 }
