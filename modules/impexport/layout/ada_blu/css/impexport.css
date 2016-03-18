@@ -2,6 +2,11 @@
 	margin-bottom: -55px;
 }
 
+#content {
+	width: 100%;
+	float:left;
+}
+
 div.fform.form {
 	padding: 10px;
 	margin-left: auto;
@@ -18,7 +23,8 @@ legend.form {
 	font-weight: bold;
 }
 
-label.form {
+li.form label {
+	margin-left:0;
 	display: inline-block;
 	line-height: 1.8;
 	vertical-align: top;
@@ -127,8 +133,8 @@ form[name=importStep1Form] input[type=submit] {
 	display: none;
 }
 
-.exportFormStep2,.divImportSN {
-	text-align: center;
+.first .exportFormStep2,.divImportSN {
+	text-align: left;
 	width: 95%;
 	margin: 0 auto;
 }
