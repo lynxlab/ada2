@@ -33,7 +33,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	 * checks and inits to be done if this has been called in async mode
 	 * (i.e. with a get request)
 	 */
-	if(isset($_SERVER['HTTP_REFERER'])){
+	if(isset($_SERVER['HTTP_REFERER']) || is_null($_SERVER['HTTP_REFERER'])){
 		if(preg_match("#^".HTTP_ROOT_DIR."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1){
 			die ('Only local execution allowed.');
 		}
@@ -85,7 +85,13 @@ if (isset($settings['staticmapAPI']) && isset($settings['staticmapAPI']['apiKEY'
 		}
 	} else $signedURL = $originalUrl;
 
-	$output = CDOMElement::create('img','src:'.$signedURL)->getHtml();
+
+	$image = file_get_contents($signedURL);
+	if (strlen($image)>0) {
+		$output = CDOMElement::create('img');
+		$output->setAttribute('src', 'data:image/png;base64,'.base64_encode($image));
+		$output = $output->getHtml();
+	} else $output = '';
 
 } else die ('Non static map credentials found.');
 
