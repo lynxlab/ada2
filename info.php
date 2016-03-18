@@ -49,6 +49,13 @@ $today_date = today_dateFN();
 //$self = 'list_chatrooms'; // x template
 $self = whoami();
 
+/**
+ * Negotiate page language if needed
+ */
+if (!isset($_SESSION['sess_user_language'])) {
+	Translator::loadSupportedLanguagesInSession();
+	$_SESSION['sess_user_language'] = Translator::negotiateLoginPageLanguage();
+}
 
 if ($op !== false && $op == 'course_info') {
 	$self = 'course-info';
