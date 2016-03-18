@@ -67,7 +67,7 @@
 					<div class="ui three column stackable grid">
 										
 						<div class="equal height row">
-							<div class="column">
+							<div class="firstcol column">
 								<h3 class="ui header">
 									<i class="info large icon"></i><i18n>Informazioni</i18n>
 								</h3>
@@ -78,7 +78,7 @@
 								</div>									
 							</div>
 							
-							<div class="column">
+							<div class="secondcol column">
 								<h3 class="ui header">
 									<i class="book large icon"></i><i18n>il corso</i18n>
 								</h3>
@@ -92,10 +92,13 @@
 								  <div class="item">
 								    <i class="sitemap icon"></i><template_field class="template_field" name="goindex">goindex</template_field>
 								  </div>
+								  <div class="item">
+								    <i class="users icon"></i><template_field class="template_field" name="goforum">goforum</template_field>
+								  </div>  
 								</div>							
 							</div>
 							
-							<div class="column">
+							<div class="thirdcol column">
 								<h3 class="ui header">
 									<i class="ok circle large icon"></i><i18n>Stato</i18n>
 								</h3>				
@@ -155,15 +158,6 @@
 	</div>
 	<!-- / contenitore -->
 	
-    <!-- com_tools -->
-    <div class="clearfix"></div>
-    <div id="com_tools">
-        <div id="com_toolscontent">
-            <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
-        </div>
-    </div>
-    <!-- /com_tools -->
-        
 	<!-- PIEDE -->
 	<div id="footer">
 		<template_field class="microtemplate_field" name="footer">footer</template_field>
