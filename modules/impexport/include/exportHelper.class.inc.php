@@ -45,22 +45,22 @@ class exportHelper
 	 * @var unknown
 	 */
 	private static $_outputFileName = "ADAExport";
-	
+
 	/**
 	 * Module's own log file to log import progress, and if something goes wrong
 	 * @var string
 	 */
 	private $_logFile;
-	
+
 	/**
 	 * array of exported ADA nodes id
 	 * @var array
 	 */
 	public $exportedNONTestNodeArray;
-	
+
 	/**
 	 * holds the exported TEST nodes to be saved as XML
-	 * 
+	 *
 	 * @var DOMElement
 	 */
 	public $testNodeXMLElement;
@@ -73,12 +73,12 @@ class exportHelper
 	public function __construct($exportCourse) {
 		$this->mediaFilesArray = array();
 		$this->mediaFilesPath = substr(MEDIA_PATH_DEFAULT, 1);
-		
+
 		$this->exportedNONTestNodeArray = array();
-		
+
 		// make the module's own log dir if it's needed
 		if (!is_dir(MODULES_IMPEXPORT_LOGDIR)) mkdir (MODULES_IMPEXPORT_LOGDIR, 0777, true);
-		
+
 		/**
 		 * sets the log file name that will be used from now on!
 		 */
@@ -110,12 +110,12 @@ class exportHelper
 		if (AMA_DB::isError($nodeInfo)) return;
 
 		unset ($nodeInfo['author']);
-		
+
 		// add the $nodeId to the exported nodes array
 		if (!in_array($nodeId, $this->exportedNONTestNodeArray)) $this->exportedNONTestNodeArray[] = $nodeId;
-		
+
 		if ($count++ % 2) $this->_logMessage(__METHOD__.' Exporting ADA node_id='.$nodeId.' num. '.($count));
-		
+
 		/**
 		 * NOTE: Following fields will be modified or omitted and must be calculated when importing:
 		 *
@@ -159,7 +159,7 @@ class exportHelper
 		// set the position object
 		$XMLnode->appendChild ( self::buildPosizioneXML($domtree, $nodeInfo['position']) );
 		unset ($nodeInfo);
-			
+
 		// get the list of the links from the node
 		$nodeLinksArr = $dh->get_node_links($nodeId);
 		if (!empty ($nodeLinksArr) && !AMA_DB::isError($nodeLinksArr))
@@ -250,9 +250,9 @@ class exportHelper
 		{
 			if( function_exists('memory_get_usage') ) $mem = memory_get_usage();
 			else $mem = 'N/A';
-			
+
 			$this->_logMessage(__METHOD__.' Exporting ADA TEST Node num. '.($count++).' nodeId='.$nodeId.' memory_get_usage()='.$mem );
-			
+
 // 			$XMLElement =& $XMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
 			if (is_null($XMLElement)) {
 			  $this->testNodeXMLElement->appendChild(self::buildTestXML($domtree, $nodeInfo));
@@ -478,7 +478,7 @@ class exportHelper
 	{
 		// make filePath leading slash agnostic
 		if ($filePath{0}!=='/') $filePath = '/' . $filePath;
-		$filePath = html_entity_decode (urldecode($filePath), ENT_COMPAT | ENT_HTML401 , ADA_CHARSET);		
+		$filePath = html_entity_decode (urldecode($filePath), ENT_COMPAT | ENT_HTML401 , ADA_CHARSET);
 		if (is_file(ROOT_DIR.$filePath) || is_file ($filePath))
 		{
 			$this->_logMessage(__METHOD__.' really adding to media array: '.ROOT_DIR.$filePath);
@@ -490,7 +490,7 @@ class exportHelper
 			$this->_logMessage(__METHOD__.' NOT ADDED to media array: '.ROOT_DIR.$filePath);
 		}
 		$this->_logMessage(__METHOD__.'size of array IS: '.count($this->mediaFilesArray[$course_id]));
-		
+
 	}
 
 	/**
@@ -507,10 +507,10 @@ class exportHelper
 				$_SESSION['sess_userObj']->username.'_'.date("Ymd").'.zip';
 
 		$zip = new ZipArchive();
-		$zipStatus = $zip->open($zipFileName, ZipArchive::OVERWRITE);
+		$zipStatus = $zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
 		$zip->addFromString(XML_EXPORT_FILENAME, $XMLFile);
-		
+
 		$this->_logMessage(__METHOD__.' Beginning zip file creation');
 		if ($zipStatus===true) $this->_logMessage(__METHOD__.' ZIP file: '.$zipFileName. ' was SUCCESFULLY CREATED');
 		else $this->_logMessage(__METHOD__.' ZipArchive::open call returned error code '. $zipStatus . ' check php.net');
@@ -522,17 +522,17 @@ class exportHelper
 				foreach ($mediaFiles as $mediaFile)
 				{
 					$this->_logMessage(__METHOD__.' file name guessed from node text is: '.$mediaFile);
-					
+
 					// build outFileName by removing services/media/<id author>/
 					// from the mediaFile
 					$regExp = '/'.preg_quote($this->mediaFilesPath,'/').'\d+\/(.+)/';
 					if (preg_match($regExp, $mediaFile, $matches)) $outFileName = $matches[1];
 					else $outFileName = $mediaFile;
-					
+
 					$zipStatus = false;
 					if (is_file(ROOT_DIR.'/'.$mediaFile))
 						$zipStatus = $zip->addFile(ROOT_DIR.'/'.urldecode($mediaFile), $course_id.'/'.urldecode($outFileName));
-					
+
 					$this->_logMessage(__METHOD__.(($zipStatus) ? ' SUCCESSFULLY ' : ' UNSUCCESSFULLY' ).
 							' zipped '.ROOT_DIR.'/'.urldecode($mediaFile).'==>'.$course_id.'/'.urldecode($outFileName));
 				}
@@ -542,11 +542,11 @@ class exportHelper
 		}
 
 		$this->_logMessage(__METHOD__.' closing zip, hang on...');
-				
+
 		$closedOk = $zip->close();
-		
+
 		$this->_logMessage(__METHOD__.' is returning '.(($closedOk) ? $zipFileName : 'null').', form now on it\'s just a matter of sending out headers and zip file');
-		
+
 		if ($closedOk) return $zipFileName;
 		else return null;
 	}
@@ -628,7 +628,7 @@ class exportHelper
 			// a relative path (no more, it will be substituted with other abs path)
 			$value = str_replace(HTTP_ROOT_DIR, '<http_root/>', $value);
 			$value = str_replace (parse_url(HTTP_ROOT_DIR, PHP_URL_PATH),'<http_path/>',$value);
-			
+
 			$regExp = '/\/?('.preg_quote($this->mediaFilesPath,'/').')(\d+)\/([^\"]+)/';
 		}
 		else if ($name==='icon')
@@ -645,21 +645,21 @@ class exportHelper
 		if (isset ($regExp))
 		{
 			if (preg_match_all($regExp, $value, $matches)>0) {
-			
+
 				foreach ($matches[0] as $match) {
 					$this->_logMessage(__METHOD__.' would add to media array of course '. $course_id .': '.$match);
-					$this->addFileToMediaArray($course_id,$match);					
+					$this->addFileToMediaArray($course_id,$match);
 				}
-				
+
 				$replacement = '<id_autore/>';
 				$value = preg_replace($regExp, "/$1".$replacement."/$3", $value);
 			}
 			unset ($regExp);
 		}
-		
+
 		return $value;
 	}
-	
+
 	/**
 	 * logs a message in the log file defined in the logFile private property.
 	 *
