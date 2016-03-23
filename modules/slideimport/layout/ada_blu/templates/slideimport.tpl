@@ -61,7 +61,7 @@
 						<!-- /steps -->
 
                     	<!-- dropzone -->
-                    	<div id="slideImportContainer" class="ui center aligned basic segment">
+                    	<div id="slideImportContainer" class="ui aligned basic segment">
                     		<h2 class="ui header">
 								<i class="upload big icon"></i>
 								<div class="content">
@@ -86,7 +86,7 @@
 			             <!-- /loader -->
                         
                         <!-- preview box -->
-                        <div id="previewBox" class="ui center aligned basic segment">
+                        <div id="previewBox" class="ui aligned basic segment">
                         	<h2 class="ui header">
 								<i class="docs basic  big icon"></i>
 								<div class="content">
@@ -136,7 +136,7 @@
                         <div class="clearfix"></div>
                         
                         <!-- import settings -->
-						<div id="selectCourseContainer" class="ui center aligned basic segment">
+						<div id="selectCourseContainer" class="ui aligned basic segment">
 							<h2 class="ui header">
 								<i class="settings large icon"></i>
 								<div class="content">
