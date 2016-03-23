@@ -1,25 +1,23 @@
-<h3>Welcome in ADA 2.1 ! </h3>
-<p>
-<img src="docs/news/DSC_1349.JPG" border="0" width="400"><br/><br/>
-ADA 2.0 is an Open Source software that allows you to create, administer and follow courses via the Internet or intranet with ease, 
-flexibility and customization.
-</p>
-To login as a student, use the following data:<br/>
+<h3>Welcome in ADA 2.1 !</h3>
+<p><img src="services/media/1/e-learn-users-txt.png" border="0" width="446" height="215" alt="" /><br />
+<br />
+ADA 2.0 is an Open Source software that allows you to create, administer and follow courses via the Internet or intranet with ease,  flexibility and customization.</p>
+<p>To login as a student, use the following data:</p>
 <ul>
-<li>username: studente_ada</li>
-<li>password: studente_ada</li>
+    <li>username: studente_ada</li>
+    <li>password: studente_ada</li>
 </ul>
-<br/>
-To login as a tutor, use the following data:<br/>
+<p><br />
+To login as a tutor, use the following data:</p>
 <ul>
-<li>username: tutor_ada </li>
-<li>password:  tutor_ada </li>
+    <li>username: tutor_ada</li>
+    <li>password:  tutor_ada</li>
 </ul>
-<br/><br/>
-<hr>
-Watch this demo <a href="http://ada.lynxlab.com/demo/ADA_Overview/ADA_Overview.swf"  target="_blank">tutorial</a> to have a general idea of the platform
-<br/><br/>
-ADA is a opensource platform released under <a href="http://ada.lynxlab.com/ada20/browsing/external_link.php?file=gpl.txt" target="_blank">GPL license</a>. <br/>
-You can watch who has worked on it <a href="credits.php">credits</a>.<br/>
-<br/>
-You can find some other informations about the development of ADA at <a href="http://www.lynxlab.com/en/ada20.html" target="_blank">the official site</a>.<br/>
+<p></p>
+<hr />
+<p>Watch this demo <a href="http://ada.lynxlab.com/demo/ADA_Overview/ADA_Overview.swf" target="_blank">tutorial</a> to have a general idea of the platform <br />
+<br />
+ADA is a opensource platform released under <a href="http://ada.lynxlab.com/ada20/browsing/external_link.php?file=gpl.txt" target="_blank">GPL license</a>. <br />
+You can watch who has worked on it <a href="credits.php">credits</a>.<br />
+<br />
+You can find some other informations about the development of ADA at <a href="http://www.lynxlab.com/en/ada20.html" target="_blank">the official site</a>.</p>

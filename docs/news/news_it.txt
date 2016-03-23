@@ -1,5 +1,5 @@
 <h3>Benvenuti in ADA 2.1 !</h3>
-<p><img align="right" width="446" vspace="5" hspace="2" height="215" src="/services/media/1/e-learn-users-txt.png" alt="" />ADA è una piattaforma di e-learning progettata e mantenuta da <a target="_blank" href="http://www.lynxlab.com">Lynx</a> fin dal 2000.</p>
+<p><img align="right" width="446" vspace="5" hspace="2" height="215" src="services/media/1/e-learn-users-txt.png" alt="" />ADA è una piattaforma di e-learning progettata e mantenuta da <a target="_blank" href="http://www.lynxlab.com">Lynx</a> fin dal 2000.</p>
 <p>Per fare login come amministratore puoi usare lo username <strong>adminAda</strong> con password <strong>adminAda</strong>.</p>
 <p>Il provider 0 ha alcunni utenti già registrati.</p>
 <p><strong>Coordinatore</strong>:</p>
@@ -21,8 +21,8 @@
 <hr />
 <p>Se vuoi avere un'idea generale della piattaforma, guarda questo <a target="_blank" href="http://ada.lynxlab.com/demo/ADA_Overview/ADA_Overview.swf">tutorial</a> dedicato ad un'installazione di ADA per i corsi di Lingua. <br />
 <br />
-ADA è una piattaforma opensource rilasciata con licenza <a target="_blank" href="http://ada.lynxlab.com/ada20/browsing/external_link.php?file=gpl.txt">GPL</a>. <br />
-Se vuoi sapere chi l'ha sviluppata, leggi i <a href="http://ada.lynxlab.com/ada20/credits.php">crediti</a>.<br />
+ADA è una piattaforma opensource rilasciata con licenza <a target="_blank" href="browsing/external_link.php?file=gpl.txt">GPL</a>. <br />
+Se vuoi sapere chi l'ha sviluppata, leggi i <a href="credits.php">crediti</a>.<br />
 <br />
-Altre informazioni sullo sviluppo di ADA le trovi nel nostro <a target="_blank" href="http://www.lynxlab.com/it/ada20.html">sito</a>.<br />
+Altre informazioni sullo sviluppo di ADA le trovi nel nostro <a target="_blank" href="http://lynxlab.com/ada21.html">sito</a>.<br />
 Buona navigazione.</p>
