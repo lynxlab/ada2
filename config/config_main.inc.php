@@ -107,8 +107,18 @@ define('ADA_COURSEINSTANCE_STATUS_PUBLIC',   2);
 /**
  * ADA generic services types
  */
-define('DEFAULT_SERVICE_TYPE', 1);
-define('ADA_SERVICE_TUTORCOMMUNITY', 2);
+define('ADA_SERVICE_ONLINECOURSE', 1);
+define('ADA_SERVICE_PRESENCECOURSE', 2);
+define('ADA_SERVICE_MIXEDCOURSE', 3);
+define('ADA_SERVICE_TUTORCOMMUNITY', 4);
+define('DEFAULT_SERVICE_TYPE', ADA_SERVICE_ONLINECOURSE);
+
+/**
+ * Take the ADA generic services types defined in config/config_main.inc.php
+ * and group them in onLine and presence service types
+ */
+$GLOBALS['onLineServiceTypes'] = array (ADA_SERVICE_ONLINECOURSE, ADA_SERVICE_TUTORCOMMUNITY);
+$GLOBALS['presenceServiceTypes'] = array (ADA_SERVICE_PRESENCECOURSE, ADA_SERVICE_MIXEDCOURSE);
 
 /**
  * ADA token
