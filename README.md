@@ -71,14 +71,17 @@ HOW TO INSTALL
 
 15. change the permission of the directory docs/ the web server must be able to write in it
 
-16. change the informations of the news editing the file: browsing/news_language (ex.: news_en is the news in english) 
+16. change the permission of the directory log/ the web server must be able to write in it
+
+17. change the informations of the news editing the file: browsing/news_language (ex.: news_en is the news in english) 
     or using edit_news.php after logon as admin
 
-17. configure the widgets loaded in home page
+18. configure the widgets loaded in home page
     copy widgets/main/index_DEFAULT.XML in widgets/main/index.xml
     see widgets/main/index.xml in order to know how to configure
+    to enable the RSS widget cache, set proper permission to the widgets/cache
 
-18. copy modules/test/config/config_DEFAULT.inc.php in modules/test/config/config.inc.php
+19. copy modules/test/config/config_DEFAULT.inc.php in modules/test/config/config.inc.php
     and edit the copied file to suite your needs. Basically only the ``ADA_REDIRECT_TO_TEST`` constant can be
     either ``true`` or ``false`` whether you want ADA test nodes to be redirected to modules test node or not.
 
