@@ -1,0 +1,22 @@
+@CHARSET "UTF-8";
+@import url("dropzone.css");
+@import url("showHideDiv.css");
+
+div#messagesContainer>* { display: none; }
+
+div.ui.form,
+div.ui.selection.dropdown>.menu>.item { font-size: initial; }
+
+div.ui.selection.dropdown>.placeholder.text,
+.dz-message { color: rgba(0,0,0,.4); }
+
+div.ui.selection.dropdown>.menu>.item:hover,
+#formmailDZ { background-color: rgba(0,0,0,.04); }
+
+#formmailDZ { border: 1px dashed #00AEA6; border-radius: 5px; margin-bottom: 1rem; }
+#formmailDZ .dz-message { margin: 0 auto; display: block; font-weight: 400; }
+#formmailDZ.dz-started { padding: 0.9em 0 0.9em 0; }
+#formmailDZ.dz-started .dz-message { display: none; } 
+#formmailDZ.dz-drag-hover { background-color: rgba(0,0,0,.2); }
+
+#modalSentOK p.content { font-size: 1.4rem; }
