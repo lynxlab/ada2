@@ -264,6 +264,8 @@ function switchToFCKeditor(template_family) {
 	$(ADA_MEDIA_INPUT).show();
 	$(FCKEDITOR_DIV).show();
 	$(ADA_MEDIA_BUTTONS).show();
+	// restore active panel
+	$j('#'+ADA_MEDIA_BUTTONS).children('.button.active').trigger('click');
 	$(ADA_MEDIA_DIV).show();
 }
 
@@ -363,7 +365,7 @@ function ADAMediaTagToImgTag(matched_string, type, value) {
 		icon = FCKEDITOR_ICONS_PATH + FCKEDITOR_ICON_EXTERNAL_LINK;
 	}
 
-	return '<img title="' + value + '" alt="" src="' + icon + '" />';
+	return '<img title="' + value + '" alt="" src="' + icon + '" data-parseada="1" />';
 }
 
 function ADALinkTagToImgTag(matched_string, type, value) {
@@ -373,7 +375,7 @@ function ADALinkTagToImgTag(matched_string, type, value) {
 		icon = FCKEDITOR_ICONS_PATH + FCKEDITOR_ICON_INTERNAL_LINK;
 	}
 
-	var string = '<img title="' + value + '" alt="" src="' + icon + '" />';
+	var string = '<img title="' + value + '" alt="" src="' + icon + '" data-parseada="1" />';
 	return string;
 }
 
@@ -381,21 +383,29 @@ function ADALinkTagToImgTag(matched_string, type, value) {
  * function ADAToFCKeditor
  *
  * used to convert ADA <media> tags into <img> tags.
- * .@param input_text - textarea content
- * .@return output - parsed text with replaced tags
+ * @param input_text - textarea content
+ * @return output - parsed text with replaced tags
  */
 
 function ADAToFCKeditor(input_text) {
-	var media_tag = /<MEDIA TYPE="([0-9]+)" VALUE="([a-zA-Z0-9_\-\/\.?~+%=&,$'():;*@\[\]]+)">/g;
+	if (input_text.length>0) {
+		var copied = $j("<div>"+input_text+"</div>");
 
-	// vito, 27 mar 2009
-	//var internal_link_tag = /<LINK TYPE="(INTERNAL)" VALUE="([0-9]+_[0-9]+)">/g;
-	var internal_link_tag = /<LINK TYPE="(INTERNAL)" VALUE="([0-9]+)">/g;
+		copied.find('media, link[type="internal"]').each(function(i,e) {
+			if ('undefined' != typeof $j(e).attr('type')) {
+				var elementType = ('undefined' != typeof $j(e).attr('type') ? $j(e).attr('type') : null);
+				var elementValue = ('undefined' != typeof $j(e).attr('value') ? $j(e).attr('value') : null);
 
-	var output_text = input_text.replace(media_tag, ADAMediaTagToImgTag);
+				if ($j(e).prop("tagName").toLowerCase() === "media" && parseInt($j(e).attr('type'))>0) {
+					$j(e).replaceWith(ADAMediaTagToImgTag(null, elementType, elementValue));
+				} else if ($j(e).prop("tagName").toLowerCase() === "link" && parseInt($j(e).attr('value'))>0) {
+					$j(e).replaceWith(ADALinkTagToImgTag(null, elementType, elementValue));
+				}
+			}
+		});
 
-	output_text = output_text.replace(internal_link_tag, ADALinkTagToImgTag);
-	return output_text;
+		return copied.html();
+	} else return input_text;
 }
 
 function ImgTagToADATag(matched_string, title, src) {
@@ -442,29 +452,29 @@ function ImgTagToADATag(matched_string, title, src) {
 	if (src == FCKEDITOR_ICONS_PATH + FCKEDITOR_ICON_EXTERNAL_LINK) {
 		type = ADA_MEDIA_EXTERNAL_LINK;
 	}
-	return '<' + tag + ' TYPE="' + type + '" VALUE="' + title + '">';
-}
-
-function RevImgTagToADATag(matched_string, src, title) {
-	return ImgTagToADATag(matched_string, title, src);
+	return '<' + tag + ' TYPE="' + type + '" VALUE="' + title + '" />';
 }
 
 /**
  * function FCKeditorToADA
  *
- * used to convert <img> tags into ADA <media> tags. Because of FCKeditor handling of tag attributes,
- * we need to parse text for <img title src alt /> and <img alt src title /> :(
- * .@param input_text - textarea content
- * .@return output - parsed text with replaced tags
+ *  used to convert <img> tags into ADA <media> tags.
+ *  @param input_text - textarea content
+ *  @return output - parsed text with replaced tags
  */
 function FCKeditorToADA(input_text) {
-	var image_tag = /<img title="([a-zA-Z0-9_\-\/\.?~+%=&,$'():;*@\[\]]+)" alt="" src="([-a-zA-Z0-9_\/:\.]+)" \/>/g;
-	var rev_image_tag = /<img src="([-a-zA-Z0-9_\/:\.]+)" alt="" title="([a-zA-Z0-9_\-\/\.?~+%=&,$'():;*@\[\]]+)" \/>/g;
+	if (input_text.length>0) {
+		var copied = $j("<div>"+input_text+"</div>");
 
-	var output_text = input_text.replace(image_tag, ImgTagToADATag);
+		copied.find('img[data-parseada="1"]').replaceWith(function() {
+			var elementSrc = ('undefined' != typeof $j(this).attr('src') ? $j(this).attr('src') : null);
+			var elementTitle = ('undefined' != typeof $j(this).attr('title') ? $j(this).attr('title') : null);
+			return ImgTagToADATag(null, elementTitle, elementSrc);
+		});
 
-	output_text = output_text.replace(rev_image_tag, RevImgTagToADATag);
-	return output_text;
+		return copied.html();
+
+	} else return input_text;
 }
 
 /*
@@ -487,7 +497,7 @@ function addExternalLink() {
 	 */
 	if (validateExternalLink(external_link)) {
 		oFCKeditor.InsertHtml('<img title="' + external_link + '" alt="" src="'
-				+ FCKEDITOR_ICONS_PATH + FCKEDITOR_ICON_EXTERNAL_LINK + '" />');
+				+ FCKEDITOR_ICONS_PATH + FCKEDITOR_ICON_EXTERNAL_LINK + '" data-parseada="1" />');
 		addToExternalLinkSelector(ADA_MEDIA_EXTERNAL_LINK, external_link);
 		// vito, 10 giugno 2009
 		//external_link_div.hide();
@@ -530,7 +540,7 @@ function addInternalLink(node) {
 	var internal_link_div = $(INTERNAL_LINK_DIV);
 	var oFCKeditor = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_NAME);
 	oFCKeditor.InsertHtml('<img title="' + idnode + '" alt="" src="'
-			+ FCKEDITOR_ICONS_PATH + FCKEDITOR_ICON_INTERNAL_LINK + '" />');
+			+ FCKEDITOR_ICONS_PATH + FCKEDITOR_ICON_INTERNAL_LINK + '" data-parseada="1" />');
 	// vito, 10 giugno 2009
 	//internal_link_div.hide();
 }
@@ -584,7 +594,7 @@ function addMultimedia(file_to_add) {
 
 		var oFCKeditor = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_NAME);
 		oFCKeditor.InsertHtml('<img title="' + filename + '" alt="" src="'
-				+ icon + '" />');
+				+ icon + '" data-parseada="1" />');
 
 		// corregge segnalazione #80
 		//add_multimedia_div.hide();
