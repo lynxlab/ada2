@@ -1,0 +1,6 @@
+/[0-9]*/
+*
+!default_avatar.png
+!models/
+!switcher/
+

@@ -43,20 +43,20 @@ class DataValidator
     }
     return FALSE;
   }
-  
+
   public static function validate_birthdate ($date) {
   	$ok = self::validate_date_format($date);
   	if ($ok)
   	{
   		list ($giorno, $mese, $anno) = explode ("/",$date);
-  		
+
   		$check = mktime(0, 0, 0, $mese, $giorno, $anno);
   		$today = mktime(0, 0, 0, date("m"), date("d"), date("y"));
-  		
+
   		if ($check > $today)  { $ok = false; }
-  		else if ($anno < 1900){ $ok = false; } 
+  		else if ($anno < 1900){ $ok = false; }
   		else if (!checkdate($mese, $giorno, $anno)) { $ok = false; }
-  		
+
   	}
   	return $ok;
   }
@@ -186,7 +186,7 @@ class DataValidator
     }
     return false;
   }
-  
+
     public static function validate_password_modified($password, $passwordcheck) {
     if(isset($password) && !empty($password) && isset($passwordcheck)
        && !empty($passwordcheck) && $password == $passwordcheck
@@ -198,11 +198,11 @@ class DataValidator
     }
     if(isset($password) && !empty($password) && !isset($passwordcheck))
     {
-       return false; 
+       return false;
     }
     if((isset($password) && empty($password)) && ( isset($passwordcheck) && empty($passwordcheck)))
     {
-      return true;  
+      return true;
     }
     return false;
   }
@@ -239,25 +239,13 @@ class DataValidator
 
   public static function validate_url($url) {
     if(isset($url) && !empty($url)) {
+    	/**
+    	 * Regular Expression for URL validation by Diego Perini
+    	 * Pls refer to https://gist.github.com/dperini/729294
+    	 * for details and upgrades
+    	 */
 
-    /*
-	 * regular expression for url matching
-	 *
-	 * allowed_protocols = (?:http|https|ftp)
-	 * separator         = (?::\/\/)
-     * authentication    = (?:[a-z0-9]+(?::[a-z0-9]+)?@)
-	 * domain_name       = (?:(?:[a-z0-9][a-z0-9\-_\[\]]*\.)+(?:aero|arpa|biz|com|cat|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|mobi|[a-z]{2}))
-	 * ipv4_address      = (?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})
-	 * ipv6_address      = (?:[0-9a-fA-F]{1,4}(?:\:[0-9a-fA-F]{1-4}){7}))
-	 * port              = (?::[0-9]{1,5})
-	 * directory         = (?:\/[a-z0-9_\-\.~+%=&,$'():;*@\[\]]*)*?(?:\/?[?a-z0-9+_\-\.\/%=&,$'():;*@\[\]]*)
-	 * query             = (?:\/[a-z0-9_\-\.~+%=&,$'():;*@\[\]]*)*?(?:\/?[?a-z0-9+_\-\.\/%=&,$'():;*@\[\]]*)
-	 * anchor            = (?:#[a-z0-9_\-\.~+%=&,$'():;*@\[\]]*)
-	 *
-	 * url_pattern = allowed_protocols separator authentication? (?:domain_name|ipv4_address|ipv6_address) port? directory? query? anchor?
-	 */
-      // al momento non è presente la parte relativa ad authentication
-      $url_pattern = '(?:http|https|ftp)(?::\/\/)(?:(?:(?:[a-z0-9][a-z0-9\-_\[\]]*\.)+(?:aero|arpa|biz|com|cat|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|mobi|[a-z]{2}))|(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})|(?:[0-9a-fA-F]{1,4}(?:\:[0-9a-fA-F]{1-4}){7}))(?::[0-9]{1,5})?(?:\/[a-z0-9_\-\.~+%=&,$\'():;*@\[\]]*)*?(?:\/?[?a-z0-9+_\-\.\/%=&,$\'():;*@\[\]]*)?(?:#[a-z0-9_\-\.~+%=&,$\'():;*@\[\]]*)?$/i';
+      $url_pattern = '_^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$_iuS';
 
       if(preg_match($url_pattern, $url)) {
         return $url;

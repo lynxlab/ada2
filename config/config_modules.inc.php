@@ -24,7 +24,7 @@
 
 	//defines for module newsletter
 	define('MODULES_NEWSLETTER_PATH', MODULES_DIR.'/newsletter');
-	if (file_exists(MODULES_NEWSLETTER_PATH.'/index.php'))
+	if (file_exists(MODULES_NEWSLETTER_PATH.'/config/config.inc.php'))
 	 {
 		require_once(MODULES_NEWSLETTER_PATH.'/config/config.inc.php');
 

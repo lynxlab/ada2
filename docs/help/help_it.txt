@@ -1,1 +1,1 @@
-<p>Se hai bisogno di aiuto, consulta il <a href="browsing/view.php?id_node=1_30&amp;id_course=1">manuale</a></p>
+<p>Se hai bisogno di aiuto, consulta il <a href="browsing/view.php?id_node=1_0&amp;id_course=1">manuale</a></p>

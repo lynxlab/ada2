@@ -191,7 +191,7 @@ define('ADA_NOREPLY_MAIL_ADDRESS','noreply@lynxlab.com');
 /**
  * ADA version
  */
-define('ADA_VERSION','2.1alpha0');
+define('ADA_VERSION','2.2');
 
 /**
  * URL

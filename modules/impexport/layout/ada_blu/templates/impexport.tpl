@@ -94,6 +94,8 @@
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->
+        
+        <span id="emptyURLMSG" style="display:none;"><i18n>Inserire una url da cui importare</i18n></span>
 
     </body>
 </html>

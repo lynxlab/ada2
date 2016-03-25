@@ -30,7 +30,7 @@
       allowedExtensions:  "",
       invalidExtError:    "Invalid File Type",
       maxSize:      0,
-      sizeError:      "Size of the file is greather than allowed",
+      sizeError:      "Size of the file is greater than allowed",
       onFileError:        function(file,error){},
       onFileSuccess:      function(file,data){}
     };

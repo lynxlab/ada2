@@ -30,7 +30,7 @@
       allowedExtensions:  "",
       invalidExtError:    "Invalid File Type",
       maxSize:      0,
-      sizeError:      "Size of the file is greather than allowed",
+      sizeError:      "Size of the file is greater than allowed",
       onFileError:        function(file,error){},
       onFileSuccess:      function(file,data){}
     };
@@ -105,7 +105,7 @@
                 }
                 else{
                   options.onFileError(file,data);
-                  errorMsg = ( (data!=null || data!="") ) ? data : options.sizeError;  
+                  errorMsg = ( (data!=null || data!="") ) ? data : options.sizeError;
                   obj.next('a').next('div').find('.file:first').remove();
                   if((options.theme == "bootstrap")&&(options.showErrorAlerts==true)){
                     obj.next('a').next('div').prepend('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button> '+errorMsg+'</div>');
@@ -129,7 +129,7 @@
                   contentType: false,
                   processData: false
           });
-      return error;      
+      return error;
     }
     //Function that updates bars progress
     function progressHandlingFunction(e){
