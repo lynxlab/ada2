@@ -39,8 +39,8 @@ fieldset.form ol.form {
 fieldset.form li.form {
 	list-style: none;
 	padding: 5px;
-	margin: 0;
-	border-bottom: 1px solid #aaaaaa;
+	margin: 0 0 2rem 0;
+	border-bottom: 1px solid #aaaaaa;	
 }
 
 fieldset.form fieldset.form {
@@ -126,6 +126,17 @@ div.show_error {
 .hidden {
 	display: none;
 }
+
+#importUrlFSet,
+#importUrlFSet ol>li { padding:0; }
+#l_importUrlFSet,
+#importUrlFSet ol>li { margin-bottom: 1rem; display: block; }
+#importUrlFSet ol>li:last-child { text-align: right; }
+#importUrlBtn { padding: 0.4rem; }
+#importUrlFSet label.form { display: inline-block; margin-left: 0; }
+#importUrlFSet input.form { float: none; margin-top: 1px; margin-left: 1rem; width: 80%; text-align: left; }
+#importUrlStatus { float: right; font-style: italic; color: rgba(0,0,0,0.4); }
+a.btn-pekeupload.disabled { opacity: 0.6; }
 /*
 * hide submit on form that uploads import file
 */

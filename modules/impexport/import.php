@@ -129,6 +129,7 @@ else
 
 		$step1DIV = CDOMElement::create('div','class:importFormStep1');
 		$step1DIV->addChild (new CText($form1->getHtml()));
+		$step1DIV->addChild(CDOMElement::create('span','id:importUrlStatus'));
 
 		$step2DIV = CDOMElement::create('div','class:importFormStep2');
 		$step2DIV->setAttribute('style', 'display:none');

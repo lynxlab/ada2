@@ -97,13 +97,12 @@ class importHelper
 	 * @var string
 	 */
 	private $_selectedNodeID;
-	
+
 	/**
 	 * starting time of the running import
 	 * @var string
 	 */
 	private $_importStartTime;
-	
 
 	/**
 	 * @var string char for separating courseId from nodeId (e.g. 110_0) in tabella nodo
@@ -139,7 +138,10 @@ class importHelper
 	public function __construct( $postDatas )
 	{
 		// 		$this->_importFile = $postDatas['importFileName'];
-		$this->_importFile = basename ( $_SESSION['importHelper']['filename']);
+		if (isset($_SESSION['importHelper']['filename'])) {
+			$this->_importFile = basename ( $_SESSION['importHelper']['filename']);
+		} else $this->_importFile = null;
+
 		if (strlen($this->_importFile)<=0) $this->_importFile = $postDatas['importFileName'];
 		$this->_assignedAuthorID = $postDatas['author'];
 		$this->_selectedTester = $_SESSION['sess_selected_tester'];
@@ -151,15 +153,15 @@ class importHelper
         /**
          * if the selected node does not contain the course separator character,
          * assume that the import is done on the node 0 of the course
-         */		
+         */
 		if (strpos($this->_selectedNodeID,self::$courseSeparator)===false) $this->_selectedNodeID .= self::$courseSeparator.'0';
-		
+
 		$this->_recapArray = array();
 		$this->_linksArray = null;
 
 		$this->_common_dh = $GLOBALS['common_dh'];
 		$this->_dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($this->_selectedTester));
-		
+
 		$this->_importStartTime = $this->_dh->date_to_ts('now');
 
 		unset ( $_SESSION['importHelper']['filename']);
@@ -200,7 +202,7 @@ class importHelper
 
 		$zipFileName = ADA_UPLOAD_PATH.$this->_importFile;
 		$zip = new ZipArchive();
-			
+
 		if ($zip->open($zipFileName)) {
 			$XMLfile = $zip->getFromName(XML_EXPORT_FILENAME);
 			$XMLObj = new SimpleXMLElement($XMLfile);
@@ -231,7 +233,7 @@ class importHelper
 					"_".date('d-m-Y_His').".log";
 
 					$this->_logMessage('**** IMPORT STARTED at '.date('d/m/Y H:i:s'). '(timestamp: '.$this->_dh->date_to_ts('now').') ****');
-						
+
 					$this->_progressSetTitle( (string) $course->titolo);
 					/**
 					 * ADDS THE COURSE TO THE APPROPIATE TABLES
@@ -261,7 +263,7 @@ class importHelper
 					 */
 					foreach ($this->_specialNodes as $groupName)
 					{
-							
+
 						$method = '_import'.ucfirst(strtolower($groupName));
 
 						$this->_logMessage(__METHOD__.' Saving '.$groupName.' by calling method: '.$method);
@@ -442,7 +444,7 @@ class importHelper
 		else $this->_recapArray[$courseNewID]['extended-nodes']++;
 
 		$this->_logMessage(__METHOD__.' Successfully built extended node array: '.print_r($retval,true));
-			
+
 		return $retval;
 	}
 
@@ -588,7 +590,7 @@ class importHelper
 
 					$this->_logMessage(__METHOD__.' Successfully saved survey');
 				}
-					
+
 			}
 		}
 		if (self::$_DEBUG) echo '</pre>';
@@ -766,7 +768,7 @@ class importHelper
 		$resourcesArr = array( 0=>'unused' );
 
 		$currentElement = $xml;
-			
+
 		$outArr ['id'] = (string) $currentElement['id'];
 		$outArr ['id_parent'] = (string) $currentElement['parent_id'];
 
@@ -823,7 +825,7 @@ class importHelper
 				else  {
 					$outArr['parent_id'] = $courseNewID.self::$courseSeparator.$outArr['id_parent'];
 				}
-					
+
 			}
 			// 			else
 				// 			{
@@ -840,7 +842,6 @@ class importHelper
 					$outArr['icon'] = str_replace('<root_dir/>', ROOT_DIR, $outArr['icon']);
 					$outArr['icon'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['icon']);
 					$outArr['icon'] = str_replace('<http_path/>', parse_url(HTTP_ROOT_DIR, PHP_URL_PATH), $outArr['icon']);
-						
 
 					$outArr['text'] = str_replace('<id_autore/>', $this->_assignedAuthorID, $outArr['text']);
 					$outArr['text'] = str_replace('<http_root/>', HTTP_ROOT_DIR, $outArr['text']);
@@ -963,12 +964,12 @@ class importHelper
 					$this->_logMessage('Generated name will be over maximum allowed size, I\'ll give up and generate an error message.');
 					$rename_count = -1; // this will force an exit from the while loop
 				} else
-				{				
+				{
 					$this->_logMessage($courseArr['nome'].' will generate a duplicate key, rename attempt #'.++$rename_count);
 					$courseArr['nome'] .= '-DUPLICATE';
 				}
 			}
-			else 
+			else
 			{
 				$this->_logMessage('Successfully created new corse with name:'.$courseArr['nome'].' and id: '.$courseNewID);
 			}
@@ -1028,7 +1029,7 @@ class importHelper
 		{
 			$this->_logMessage(__METHOD__." Candidates for updating: \n".print_r($nodesToUpdate, true));
 			$this->_logMessage(__METHOD__." This is the replacement NODE ids array \n".print_r($this->_courseNodeIDMapping,true));
-				
+
 			/**
 			 * build up source and replacements array
 			 * replacements are going to have a random string as
@@ -1042,16 +1043,16 @@ class importHelper
 			 * the result will be that all 1 become 7, and all 7 become 23 and at the and
 			 * all of the three links will point to 23.
 			*/
-				
+
 			$randomStr = '#'.substr(md5(time()), 0, 8);
-				
+
 			$prefix = '<LINK TYPE="INTERNAL" VALUE="';
 			$suffix = '">';
 			$suffix2 = '"'.$randomStr.'>';
-				
+
 			$search = array();
 			$replace = array();
-				
+
 			foreach ($this->_courseNodeIDMapping as $oldID=>$newID)
 			{
 				$oldID = str_replace($this->_courseOldID.self::$courseSeparator, '', $oldID);
@@ -1099,36 +1100,36 @@ class importHelper
 
 			$delimiter = '#';
 			$regExp = '/'.preg_quote('id_test=','/').'(\d+)'.'/';
-			
+
 			$search = array();
 			$replace = array();
-			
+
 			foreach ($this->_testNodeIDMapping as $oldID=>$newID) {
 				$search[] = 'id_test='.$oldID.$delimiter;
 				$replace[] = 'id_test='.$newID;
-			}			
-			
+			}
+
 			foreach ($nodesToUpdate as $arrElem)
 			{
 				foreach ($arrElem as $nodeID)
 				{
 					$this->_logMessage(__METHOD__.' UPDATING NODE id='.$nodeID);
-					$nodeInfo = $this->_dh->get_node_info($nodeID);	
+					$nodeInfo = $this->_dh->get_node_info($nodeID);
 					/**
 					 * First put a delimiter just after the linked id_test to prevent
 					 * this situation:
 					 * 	id_test=2 ..blablabla... id_test=24
 					 * without an end delimiter, how can you subsitute id_test=2
 					 * BUT NOT id_test=24 ???
-					 * 
+					 *
 					 * NOTE: This is done in the 3rd argument of str_ireplace
 					 */
-															
+
 					$nodeInfo['text'] = str_ireplace(
-							$search, 
+							$search,
 							$replace,
 							preg_replace($regExp, 'id_test=$1'.$delimiter, $nodeInfo['text']));
-					
+
 					$this->_dh->set_node_text($nodeID, $nodeInfo['text']);
 				}
 			}
@@ -1157,9 +1158,9 @@ class importHelper
 				{
 					$linkArray['id_nodo'] = $this->_courseNodeIDMapping[$linkArray['id_nodo']];
 					$linkArray['id_nodo_to'] = $this->_courseNodeIDMapping[$linkArray['id_nodo_to']];
-						
+
 					$res = $this->_dh->add_link($linkArray);
-						
+
 					if (!AMA_DB::isError($res))
 					{
 						if (!isset($this->_recapArray[$courseNewID]['links'])) $this->_recapArray[$courseNewID]['links']=1;

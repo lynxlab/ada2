@@ -19,6 +19,7 @@ ini_set('display_errors', '0'); error_reporting(E_ALL);
 session_start();
 
 
+header('Content-Type: application/json');
 if (isset($_SESSION['importProgress']))
 {
 	echo json_encode($_SESSION['importProgress']);
