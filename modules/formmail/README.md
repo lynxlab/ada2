@@ -13,4 +13,5 @@ providers' databases. These tables should have been created during the ADA insta
 * Copy or rename the module config/config_DEFAULT.inc.php to config/config.inc.php.
 
 To enable the FormMail feature and help menu items for user types other than `AMA_TYPE_SWITCHER`:
-* grab the SQL from the `ada_formmail_module-menu.sql` file and before executing, make sure to replace the **6** at row 13 (``SET @usertype := 6;``) with the number defined in the `/config/config_main.inc.php` file which corresponds to the desired user type.
+* add the user types defines to be enabled in the `$allowedTypes` array inside the `menuEnableFormMail` in the module `config/config.inc.php`, e.g. to add the tutor user type the array should look like:
+```php $allowedTypes = array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR); ```
