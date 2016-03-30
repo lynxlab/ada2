@@ -419,24 +419,17 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 
 /*
  * classe per lo span che mostra il + prima del nome del nodo
- */
-.viewNodeChildren
-{
-    padding: 5px;
-    margin-right: 5px;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-/*
  * classe per lo span che mostra il - prima del nome del nodo
  */
+.viewNodeChildren,
 .hideNodeChildren
 {
-    padding: 5px;
-    margin-right: 5px;
-    font-size: 18px;
-   cursor: pointer;
+    font-size: 1.2rem;
+    width: 1rem;
+    display: inline-block;
+    text-align: center;
+    font-weight: 800;
+    cursor: pointer;
 }
 
 
