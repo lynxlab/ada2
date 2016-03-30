@@ -60,14 +60,14 @@ if (MULTIPROVIDER) {
  * URL
  * DO NOT REMOVE the trailing // *js_import*
  */
-if (!defined('HTTP_ROOT_DIR')) define('HTTP_ROOT_DIR','http://localhost/ada20'); // *js_import*
+if (!defined('HTTP_ROOT_DIR')) define('HTTP_ROOT_DIR','http://localhost/ada22'); // *js_import*
 
 define('ADA_DEFAULT_AVATAR','default_avatar.png');
 
 /**
  * portal name string - displayed in window titlebar
 */
-if (!defined('PORTAL_NAME')) define('PORTAL_NAME','ADA 2.1 local git');
+if (!defined('PORTAL_NAME')) define('PORTAL_NAME','ADA 2.2');
 
 
 /**
