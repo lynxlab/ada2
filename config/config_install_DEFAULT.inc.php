@@ -321,13 +321,6 @@ $AgendaSpool_rtc = RTC_TIME;
 $ChatSpool_ntc = CS_NTC_TIME;
 $ChatSpool_rtc = CS_RTC_TIME;
 
-/**
- * OLD LOGGING FUNCTION
- * @deprecated
- */
-$log_filename = ROOT_DIR."/trace.log";
-$log_treshold = DB_LOG;
-
 $language = ADA_MESSAGE_LANGUAGE;
 
 $tpl_fileextension = ".tpl"; // .html,  .dwt, ...
@@ -507,10 +500,6 @@ define('ADA_MAX_SCORE',100);
 
 // path to the standard error page
 $error = HTTP_ROOT_DIR.'/admin/error.php';
-
-// logging parameters
-$log_filename = ROOT_DIR.'/trace.log';
-$log_treshold = DB_LOG;
 
 /**
  * Preferences array

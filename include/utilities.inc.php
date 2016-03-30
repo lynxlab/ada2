@@ -435,37 +435,6 @@ function whoami(){
 }
 
 ///////////////////////////////
-
-/*
- * vito 14 nov 2008: added the $filename parameter, used to specify a
- * different file in which execute logging
- */
-function log_this($msg, $level, $filename=NULL){
-
-  // $log_treshold = 0; // no log  at all
-  // $log_treshold = 5; // logging all db operations
-  // $log_treshold = 4; // logging only the beginning of db operations
-
-  // vito, 14 nov 2008
-  if ($filename == NULL) {
-    $log_filename = $GLOBALS['log_filename'];
-  }
-  else {
-    $log_filename = $GLOBALS['root_dir'].DIRECTORY_SEPARATOR.$filename;
-  }
-
-  $log_treshold= $GLOBALS['log_treshold'];
-  //$debug= $GLOBALS['debug'];
-  if ($level <= $log_treshold){
-    $log_message = date ("d/m H:i:s - ").$msg."\n";
-    $fp = fopen($log_filename, "a+");
-    if ($fp){
-      fwrite($fp, $log_message);
-      fclose($fp);
-    }
-  }
-}
-///////////////////////////////
 // HTM Entities IN and OUT
 
 function get_htmlspecialchars( $given, $quote_style = ENT_QUOTES ){
@@ -718,7 +687,7 @@ function redirect($url) {
 	exit();
 }
 /**
- * 
+ *
  * @param type $num
  * @param type $digits
  * @return number truncated at digits

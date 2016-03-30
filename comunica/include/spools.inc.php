@@ -103,7 +103,6 @@ class Spool extends Abstract_AMA_DataHandler
       $sql = 'SELECT id_messaggio FROM messaggi WHERE data_ora=? AND tipo=? AND id_group=? AND titolo=? AND id_mittente=?';
 
 
-      //log_this("checking unique key by performing query: $sql", 4);
       // verify key uniqueness
       //$id =  $db->getOne($sql);
       $id = parent::getOnePrepared($sql, array($timestamp,$type,$id_group,$title,$sender_id));
@@ -114,7 +113,6 @@ class Spool extends Abstract_AMA_DataHandler
       if ($id) {
         return new AMA_Error(AMA_ERR_UNIQUE_KEY);
       }
-      // log_this("key uniqueness verified", 4);
     }
 
     // insert a row into table messaggi
@@ -125,17 +123,12 @@ class Spool extends Abstract_AMA_DataHandler
 
     $sql = 'INSERT INTO messaggi(data_ora,tipo,id_group,titolo,id_mittente,priorita,testo,flags) VALUES(?,?,?,?,?,?,?,?)';
 
-    //log_this("performing query: $sql", 4);
-
     //$res = parent::executeCritical( $sql );
     $res = parent::executeCriticalPrepared($sql,array($timestamp,$type,$id_group,$title,$sender_id,$priority,$body,$flags));
     if (AMA_DB::isError($res)) {
-      //log_this("query failed: $res", 4);
       // $res is an AMA_Error object
       return $res;
     }
-
-    //log_this("query succeeded", 4);
 
     // get the id of the last inserted message
 
@@ -1073,12 +1066,12 @@ class SimpleSpool extends Spool
    * @param   $recipients_ids_ar - list of recipients ids
    *
    * @return  an AMA_Error object if something goes wrong
-   * 
+   *
    * (non-PHPdoc)
    * @see Spool::add_message()
-   * 
+   *
    * @author giorgio 20/ott/2014
-   * 
+   *
    * added $check_on_uniqueness parameters to make the
    * definition compatible with Spool::add_message()
    *
@@ -1341,15 +1334,15 @@ class AgendaSpool extends Spool
    * @param   $recipients_ids_ar - list of recipients ids
    *
    * @return  an AMA_Error object if something goes wrong
-   * 
+   *
    * (non-PHPdoc)
    * @see Spool::add_message()
-   * 
+   *
    * @author giorgio 20/ott/2014
-   * 
+   *
    * added $check_on_uniqueness parameters to make the
    * definition compatible with Spool::add_message()
-   * 
+   *
    **/
   public function add_message($message_ha, $recipients_ids_ar, $check_on_uniqueness = false) {
 
@@ -1429,12 +1422,12 @@ class ChatSpool extends Spool
    *
    * (non-PHPdoc)
    * @see Spool::add_message()
-   * 
+   *
    * @author giorgio 20/ott/2014
-   * 
+   *
    * added $check_on_uniqueness parameters to make the
    * definition compatible with Spool::add_message()
-   * 
+   *
    **/
   public function add_message($message_ha, $recipients_ids_ar= array(), $check_on_uniqueness = false) {
     $this->clean();

@@ -103,7 +103,6 @@ switch($exit_reason){
     }
     else{
       // removes user form database
-      //log_this("UTENTE $id_user ESCE DALLA CHAT", 4);
       $user_exits = $chatroomObj->quit_chatroomFN($id_user,$id_user,$id_chatroom);
       if (AMA_DataHandler::isError($user_exits))
       {
