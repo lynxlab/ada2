@@ -156,10 +156,10 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            	/**
 	            	 * @author giorgio 03/apr/2015
 	            	 *
-	            	 * if user is subscribed and the subscription date + subscription_duration
+	            	 * if user is subscribed or completed and the subscription date + subscription_duration
 	            	 * falls after 'now', must set the subscription status to terminated
 	            	 */
-	            	if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
+	            	if (in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_COMPLETED))) {
 	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione'])===0) {
 	            			$c['data_iscrizione']=time();
 	            		}
@@ -274,10 +274,10 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            	/**
 	            	 * @author giorgio 03/apr/2015
 	            	 *
-	            	 * if user is subscribed and the subscription date + subscription_duration
+	            	 * if user is subscribed or completed and the subscription date + subscription_duration
 	            	 * falls after 'now', must set the subscription status to terminated
 	            	 */
-	            	if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
+	            	if (in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_COMPLETED))) {
 	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione'])===0) $c['data_iscrizione']=time();
 	            		if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 	            		$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
@@ -510,10 +510,10 @@ else {
 		/**
 		 * @author giorgio 03/apr/2015
 		 *
-		 * if user is subscribed and the subscription date + subscription_duration
+		 * if user is subscribed or completed and the subscription date + subscription_duration
 		 * falls after 'now', must set the subscription status to terminated
 		 */
-		if ($subscription_status == ADA_STATUS_SUBSCRIBED) {
+		if (in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_COMPLETED))) {
 			if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione'])===0) $c['data_iscrizione']=time();
 			if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 			$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));

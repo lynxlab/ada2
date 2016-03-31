@@ -242,6 +242,7 @@ class Subscription
             ADA_STATUS_SUBSCRIBED => translateFN('Iscritto'),
             ADA_STATUS_REMOVED => translateFN('Rimosso'),
             ADA_STATUS_VISITOR => translateFN('In visita'),
+        	ADA_STATUS_COMPLETED => translateFN('Completato'),
         	ADA_STATUS_TERMINATED => translateFN('Terminato')
         );
     }
