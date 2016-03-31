@@ -178,7 +178,6 @@ if (count($errors) == 0) {
     $code = $res->errorMessage();
     exitWith_JSON_Error(translateFN("Errore nell'invio del messaggio $code"));
   }
-  //	log_this("$read_res", 4);
 }// end if count
 
 $data =  array('id_chatroom'=> $id_chatroom);

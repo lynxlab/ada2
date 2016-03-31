@@ -480,7 +480,8 @@ else {
 
 	} else {
 		//$last_node_visitedObj = BaseHtmlLib::link("view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId",translateFN('Continua'));
-		$last_node_visitedObj = BaseHtmlLib::link("#",translateFN(''));
+		$last_node_visitedObj = CDOMElement::create('span','class:disabled');
+		$last_node_visitedObj->addChild(new CText(translateFN('Continua')));
 		$last_node_visited_link = $last_node_visitedObj->getHtml();
 	}
 
@@ -496,6 +497,15 @@ else {
 		$gostart_link = $gostart->getHtml();
 		$last_node_visited_link = '';
 
+	} elseif (!$isStarted) {
+		$goindex  = CDOMElement::create('span','class:disabled');
+		$goindex->addChild(new CText(translateFN('Indice')));
+		$goindex_link = $goindex->getHtml();
+		$goforum   = CDOMElement::create('span','class:disabled');
+		$goforum->addChild(new CText(translateFN('Forum')));
+		$goforum_link = $goforum->getHtml();
+		$gohistory = CDOMElement::create('span','class:disabled');
+		$gohistory->addChild(new CText(translateFN('Cronologia')));
 	} elseif ($isStarted && !$isEnded) {
 		/**
 		 * @author giorgio 03/apr/2015
@@ -527,15 +537,6 @@ else {
 		$goforum_link = $goforum->getHtml();
 		$gohistory = BaseHtmlLib::link('history.php?id_course='.$courseId.'&id_course_instance='.$courseInstanceId, translateFN('Cronologia'));
 
-		/**
-		 * @author giorgio 22/feb/2016
-		 * get course description
-		 */
-		$cd_res = $provider_dh->find_courses_list(array('descrizione'),'id_corso='.$courseId);
-		if (!AMA_DB::isError($cd_res) && is_array($cd_res) && count($cd_res)>0) {
-			$cd_el = reset($cd_res);
-			$course_description = $cd_el['descrizione'];
-		}
 
 		$enddateForTemplate = AMA_DataHandler::ts_to_date(min($c['data_fine'], $subscritionEndDate));
 
@@ -548,6 +549,16 @@ else {
 // 				$goindex_link = '';
 			}
 		}
+	}
+
+	/**
+	 * @author giorgio 22/feb/2016
+	 * get course description
+	 */
+	$cd_res = $provider_dh->find_courses_list(array('descrizione'),'id_corso='.$courseId);
+	if (!AMA_DB::isError($cd_res) && is_array($cd_res) && count($cd_res)>0) {
+		$cd_el = reset($cd_res);
+		$course_description = $cd_el['descrizione'];
 	}
 
 	require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
@@ -575,7 +586,7 @@ else {
 	$content_dataAr['course_title'] = $c['titolo'].' - '.$c['title'];
 	$content_dataAr['status'] = $status;
 	$content_dataAr['course_description'] = isset($course_description) ? $course_description: null;
-	$content_dataAr['enddate'] = isset($enddateForTemplate) ? $enddateForTemplate : null;
+	$content_dataAr['enddate'] = isset($enddateForTemplate) ? $enddateForTemplate : '-';
 	$content_dataAr['gohistory'] = isset($gohistory) ? $gohistory->getHtml() : null;
 	$content_dataAr['subscription_status'] = Subscription::subscriptionStatusArray()[$subscription_status];
 	$content_dataAr['messages'] = $user_messages->getHtml();

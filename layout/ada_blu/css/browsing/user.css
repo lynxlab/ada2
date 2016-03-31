@@ -45,8 +45,13 @@
 }
 
 #contentcontent h3.ui.header,
-#contentcontent div.ui.list .item a:not(.button) {
+#contentcontent div.ui.list .item a:not(.button),
+#contentcontent div.ui.list .item span.disabled {
 	text-transform: capitalize;
+}
+
+#contentcontent div.ui.list .item span.disabled {
+	opacity: 0.4;
 }
 
 #contentcontent div.ui.list .item .icon {

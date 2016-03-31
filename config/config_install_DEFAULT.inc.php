@@ -80,14 +80,14 @@ if (MULTIPROVIDER) {
  * URL
  * DO NOT REMOVE the trailing // *js_import*
  */
-if (!defined('HTTP_ROOT_DIR')) define('HTTP_ROOT_DIR','http://localhost/ada20'); // *js_import*
+if (!defined('HTTP_ROOT_DIR')) define('HTTP_ROOT_DIR','http://localhost/ada22'); // *js_import*
 
 define('ADA_DEFAULT_AVATAR','default_avatar.png');
 
 /**
  * portal name string - displayed in window titlebar
 */
-if (!defined('PORTAL_NAME')) define('PORTAL_NAME','ADA 2.1 local git');
+if (!defined('PORTAL_NAME')) define('PORTAL_NAME','ADA 2.2');
 
 
 /**
@@ -341,13 +341,6 @@ $AgendaSpool_rtc = RTC_TIME;
 $ChatSpool_ntc = CS_NTC_TIME;
 $ChatSpool_rtc = CS_RTC_TIME;
 
-/**
- * OLD LOGGING FUNCTION
- * @deprecated
- */
-$log_filename = ROOT_DIR."/trace.log";
-$log_treshold = DB_LOG;
-
 $language = ADA_MESSAGE_LANGUAGE;
 
 $tpl_fileextension = ".tpl"; // .html,  .dwt, ...
@@ -527,10 +520,6 @@ define('ADA_MAX_SCORE',100);
 
 // path to the standard error page
 $error = HTTP_ROOT_DIR.'/admin/error.php';
-
-// logging parameters
-$log_filename = ROOT_DIR.'/trace.log';
-$log_treshold = DB_LOG;
 
 /**
  * Preferences array
