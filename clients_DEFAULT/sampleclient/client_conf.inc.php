@@ -29,8 +29,8 @@ if (!MULTIPROVIDER)
 	 * URL
 	 * DO NOT REMOVE the trailing // *js_import*
 	 */
-	define('HTTP_ROOT_DIR','http://sampleprovider.localhost/ada20'); // *js_import*
-	define('PORTAL_NAME','ADA 2.1 SAMPLE PROVIDER');
+	define('HTTP_ROOT_DIR','http://sampleprovider.localhost/ada22'); // *js_import*
+	define('PORTAL_NAME','ADA 2.2 SAMPLE PROVIDER');
 
 	/**
 	 * Currency symbol
