@@ -1,14 +1,14 @@
 <?php
 /**
  * LOGIN MODULE -hybridLogin.php - performs user login using hybrid lybrary
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @version		0.1
  */
- 
+
 /**
  * Base config file
  */
@@ -31,22 +31,22 @@ require_once MODULES_LOGIN_PATH . '/include/hybridLogin.class.inc.php';
 require_once MODULES_LOGIN_PATH . '/include/Hybrid/Auth.php';
 
 if(isset($_GET['id']))
-{	
+{
 	$remindme = isset($_GET['remindme']) ? intval($_GET['remindme']) : 0;
 	$selectedLanguage = isset($_GET['lang']) ? trim($_GET['lang']) : null;
 	$hybridLogin = new hybridLogin(intval($_GET['id']));
-	$hybridLogin->loadHybridAuth();
-	
+
 	try {
-		$hybridLogin->authenticate();
+		$hybridLogin->loadHybridAuth();
+		$successfulOptionsID = $hybridLogin->authenticate();
 		$user_profile = $hybridLogin->getUserProfile();
-	    
+
 	    if ($user_profile && isset($user_profile->identifier)) {
-	    	
-	    	$adaUser = $hybridLogin->buildADAUserFromProviderObj($user_profile);	    	
+
+	    	$adaUser = $hybridLogin->buildADAUserFromProviderObj($user_profile);
 	    	/**
 	    	 * look if user is already in ADA DB
-	    	 */	    	
+	    	 */
 	    	$userObj = $hybridLogin->checkADAUser($adaUser['email']);
 
 	    	if (!is_object($userObj) || !$userObj instanceof ADALoggableUser) {
@@ -61,7 +61,7 @@ if(isset($_GET['id']))
 		    				$hybridLogin->addADAErrorCallBack();
 		    			});
 	    	}
-	    	
+
 	    	/**
 	    	 * At this point, either the $userObj was already in
 	    	 * ADA DB or had just been created by the above code
@@ -75,7 +75,7 @@ if(isset($_GET['id']))
 	    		 */
 	    		if (!is_null($language)) $selectedLanguage = $language;
 	    		// WARNING!! only one set of options is supported on this login provider
-	    		$hybridLogin->setSuccessfulOptionsID(1);
+	    		$hybridLogin->setSuccessfulOptionsID($successfulOptionsID);
 	    		// set session and redirect
 	    		ADALoggableUser::setSessionAndRedirect($userObj, $remindme, $selectedLanguage, $hybridLogin);
 	    	} else {
@@ -83,11 +83,11 @@ if(isset($_GET['id']))
 	    		$hybridLogin->logOutFromProvider();
 	    		throw new Exception(null,9);
 	    	}
-	    }           
+	    }
     }
-    
+
     catch( Exception $e )
-    { 
+    {
     	 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
          switch( $e->getCode() )
          {
@@ -108,19 +108,19 @@ if(isset($_GET['id']))
                 case 9 : $message = "Problema nel generare l'oggetto utente di ADA"; break;
                 default : $message = ""; break;
         }
- 
+
         $message .= "<br /><br /><b>".translateFN("Messaggio d'errore originale").":</b> " . $e->getMessage();
- 
+
         $messagespan = CDOMElement::create('span','class: login-error-message');
         $messagespan->addChild(new CText(translateFN($message)));
-        
+
         $content_dataAr = array(
 			'help' => translateFN('Problema Autenticazione ').$hybridLogin->loadProviderName(),
 			'data' => $messagespan->getHtml()
 		);
         $self = 'login-error';
         ARE::render(null, $content_dataAr);
-        
+
     }
 }
 ?>

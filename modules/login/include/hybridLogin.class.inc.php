@@ -1,7 +1,7 @@
 <?php
 /**
  * LOGIN MODULE
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
@@ -20,36 +20,36 @@ class hybridLogin extends AbstractLogin
 	 * class for managing options data
 	 */
 	const MANAGEMENT_CLASS = 'hybridManagement';
-		
+
 	/**
 	 * Hybrid_Auth object
 	 */
 	private $hybridauth = null;
-	
+
 	/**
 	 * Hybrid_Provider_Adapter object
 	 */
 	private $authProvider = null;
-	
+
 	public function __construct($id=null)
 	{
 		parent::__construct($id);
 	}
-	
+
 	/**
 	 * sets the hybridauth object.
 	 * MUST be called before any attempt to authenticate with the provider
-	 * 
+	 *
 	 * @access public
 	 */
 	public function loadHybridAuth()
 	{
 		$this->hybridauth = new Hybrid_Auth($this->getConfigFromOptions());
 	}
-	
+
 	/**
 	 * performs user login using hybridLogin.php redirection
-	 * 
+	 *
 	 * (non-PHPdoc)
 	 * @see iLogin::doLogin()
 	 */
@@ -58,23 +58,23 @@ class hybridLogin extends AbstractLogin
 		redirect(MODULES_LOGIN_HTTP . '/hybridLogin.php?id='.$this->id.
 				'&remindme='.intval($remindMe).'&lang='.$language);
 	}
-	
+
 	/**
 	 * callback method for addADA success handling, called by
 	 * parent::addADAUser just before redirecting
-	 * 
+	 *
 	 * This will download user avatar image to proper location
-	 *  
+	 *
 	 * @param ADALoggableUser $userObj
 	 * @param string $downloadURL
-	 * 
+	 *
 	 * @access public
 	 */
 	public function addADASuccessCallBack($userObj, $downloadURL, $avatar)
 	{
 
 		if (is_object($userObj) && $userObj instanceof ADALoggableUser) {
-			
+
 			if (!is_null($avatar) && !is_null($downloadURL)) {
 				$destDir = ADA_UPLOAD_PATH.$userObj->getId();
 				if (!is_dir($destDir)) mkdir($destDir);
@@ -106,30 +106,30 @@ class hybridLogin extends AbstractLogin
 			}
 		}
 	}
-	
+
 	/**
 	 * callback method for addADA error handling, called by
-	 * parent::addADAUser just before redirecting 
-	 * 
+	 * parent::addADAUser just before redirecting
+	 *
 	 * @access public
 	 */
 	public function addADAErrorCallBack()
 	{
 		$this->logOutFromProvider();
 	}
-	
+
 	/**
 	 * get config array for Hybrid_Auth from options stored in the DB
-	 * 
+	 *
 	 * @return array config array for Hybrid_Auth
-	 * 
+	 *
 	 * @access public
 	 */
 	public function getConfigFromOptions()
 	{
 		$options = $this->loadOptions();
 		$providerName = ucfirst(strtolower($this->loadProviderName()));
-		
+
 		switch ($providerName) {
 			case 'Google':
 			case 'Facebook':
@@ -158,16 +158,19 @@ class hybridLogin extends AbstractLogin
 		}
 		return $config;
 	}
-	
+
 	/**
 	 * Authenticates to the login provider
+	 *
+	 * @return number successfulOptionsID (note that only one option set is supported for this login provider)
 	 *
 	 * @access public
 	 */
 	public function authenticate() {
 		$this->authProvider = $this->hybridauth->authenticate($this->loadProviderName());
+		return intval($this->options['providers_options_id']);
 	}
-	
+
 	/**
 	 * Gets user profile from login provider
 	 *
@@ -177,7 +180,7 @@ class hybridLogin extends AbstractLogin
 		if (is_null($this->authProvider)) $this->authenticate();
 		return $this->authProvider->getUserProfile();
 	}
-	
+
 	/**
 	 * Logs out from the login provider
 	 *
@@ -186,14 +189,14 @@ class hybridLogin extends AbstractLogin
 	public function logOutFromProvider() {
 		return $this->authProvider->logout();
 	}
-	
+
 	/**
 	 * Builds ADA user array from a user_profile coming from login provider
-	 * 
+	 *
 	 * @param stdClass $user_profile
-	 * 
+	 *
 	 * @return array an array filled with user data, ready to be saved
-	 * 
+	 *
 	 * @access public
 	 */
 	public function buildADAUserFromProviderObj($user_profile) {
@@ -205,7 +208,7 @@ class hybridLogin extends AbstractLogin
 		} else if (isset($user_profile->email) && strlen($user_profile->email)>0) {
 			$email = $user_profile->email;
 		} else $email = null;
-		
+
 		/**
 		 * prepare birthdate
 		 */
@@ -214,14 +217,14 @@ class hybridLogin extends AbstractLogin
 					sprintf("%02d",$user_profile->birthMonth) .'/' .
 					$user_profile->birthYear;
 		} else $birthDate = null;
-		 
+
 		/**
 		 * prepare gender
 		 */
 		if (strtolower($user_profile->gender) == 'male') $gender = 'M';
 		else if (strtolower($user_profile->gender) == 'female') $gender = 'F';
 		else $gender = null;
-		 
+
 		/**
 		 * prepare avatar
 		 */
@@ -230,7 +233,7 @@ class hybridLogin extends AbstractLogin
 			$avatar = strtok(basename($user_profile->photoURL),'?');
 			if (stristr($avatar, '.')===false) $avatar .= '.png';
 		} else $avatar = null;
-		 
+
 		/**
 		 * prepare language
 		 */
@@ -239,7 +242,7 @@ class hybridLogin extends AbstractLogin
 			if (strlen($user_profile->language)>2) {
 				$lang = substr($user_profile->language, 0,2);
 			} else $lang = $user_profile->language;
-			
+
 			foreach (Translator::getSupportedLanguages() as $supportedLang) {
 				if (strtolower($supportedLang['codice_lingua']) === strtolower($lang)) {
 					$language = $supportedLang['id_lingua'];
@@ -247,7 +250,7 @@ class hybridLogin extends AbstractLogin
 				}
 			}
 		}
-		 
+
 		/**
 		 * build user array
 		 */
@@ -270,32 +273,32 @@ class hybridLogin extends AbstractLogin
 				'matricola' => '',
 				'stato' => ''
 		);
-		
+
 		return $adaUser;
 	}
-	
+
 	/**
 	 * generate HTML for login provider configuration page
 	 */
 	public function generateConfigPage() {
 		$optionSetList = $this->loadOptions();
-		
+
 		if (isset($optionSetList['providers_options_id']) && intval($optionSetList['providers_options_id'])>0) {
 			$optionID = intval($optionSetList['providers_options_id']);
 		} else $optionID = null;
-		
+
 		// If no option id return abstract config page (aka 'no options to configure' message)
 		if (is_null($optionID)) return parent::generateConfigPage();
-		
+
 		$configIndexDIV = CDOMElement::create('div','id:configindex');
-		
+
 		$newButton = CDOMElement::create('button');
 		$newButton->setAttribute('class', 'newButton tooltip top');
 		$newButton->setAttribute('title', translateFN('Clicca per creare un nuova chiave'));
 		$newButton->setAttribute('onclick', 'javascript:addOptionRow();');
 		$newButton->addChild (new CText(translateFN('Nuova Chiave')));
 		$configIndexDIV->addChild($newButton);
-		
+
 		$tableOutData = array();
 		if (!AMA_DB::isError($optionSetList)) {
 			unset ($optionSetList['optionscount']);
@@ -310,7 +313,7 @@ class hybridLogin extends AbstractLogin
 			foreach ($optionSetList as $i=>$elementArr) {
 				$links = array();
 				$linksHtml = "";
-			
+
 				for ($j=0;$j<1;$j++) {
 					switch ($j) {
 						case 0:
@@ -319,7 +322,7 @@ class hybridLogin extends AbstractLogin
 							$link = 'deleteOptionSet($j(this), '.$optionID.', \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
 							break;
 					}
-			
+
 					if (isset($type)) {
 						$links[$j] = CDOMElement::create('li','class:liactions');
 						$linkshref = CDOMElement::create('button');
@@ -337,21 +340,21 @@ class hybridLogin extends AbstractLogin
 					foreach ($links as $link) $linksul->addChild ($link);
 					$linksHtml = $linksul->getHtml();
 				} else $linksHtml = '';
-			
+
 				$tableOutData[$i] = array (
 						$labels[0]=>$i,
 						$labels[1]=>str_replace(array("\r\n", "\r", "\n"), "<br />", $elementArr),
 						$labels[2]=>$linksHtml);
 			}
-			
+
 			$emptyrow = array(array_shift($tableOutData));
 			$EmptyTable = BaseHtmlLib::tableElement('id:empty'.strtoupper(get_class($this)),$labels,$emptyrow);
 			$EmptyTable->setAttribute('style', 'display:none');
-			
+
 			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper(get_class($this)).'List',
 					$labels,$tableOutData,'',translateFN('Opzioni '.strtoupper($this->loadProviderName())));
 			$OutTable->setAttribute('data-optionid', $optionID);
-			
+
 			$configIndexDIV->addChild($EmptyTable);
 			$configIndexDIV->addChild($OutTable);
 
@@ -364,5 +367,5 @@ class hybridLogin extends AbstractLogin
 		}
 		return $configIndexDIV;
 	}
-	
+
 }
