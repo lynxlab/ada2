@@ -77,7 +77,7 @@ function validateContent(elements, regexps, formName) {
 			id = $(element).id;
 		}
 
-		if (value != null) {
+		if (value != null && typeof value == 'string') {
 			if(!value.match(regexp)) {
 				if($(label)) {
 					$(label).addClassName('error');
