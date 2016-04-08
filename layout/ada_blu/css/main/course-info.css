@@ -54,6 +54,12 @@
 	margin-right: 1rem;
 }
 
+/* compensate margin when showing one column only */
+#contentcontent .firstcol.sixteen.wide.column>.ui.stackable.grid {
+	margin-left:  -1%;
+	margin-right: -1%;
+}
+
 /* courseindex list */
 #contentcontent .ui.grid .column .courseindex ul {
 	padding-left: 1.2rem;
