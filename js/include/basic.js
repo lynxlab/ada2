@@ -49,7 +49,7 @@ function closeMe() {
 }
 
 function reloadParent() {
-  window.opener.location.reload();  
+  window.opener.location.reload();
 }
 
 function close_page(message) {
@@ -76,34 +76,34 @@ function validateContent(elements, regexps, formName) {
 			value = $(element).getValue();
 			id = $(element).id;
 		}
-		
-		if (value != null) {
+
+		if (value != null && typeof value == 'string') {
 			if(!value.match(regexp)) {
 				if($(label)) {
-					$(label).addClassName('error');					
+					$(label).addClassName('error');
 				}
 				error_found = true;
 			}
 			else {
-				
+
 				if($(label)) {
 					$(label).removeClassName('error');
 				}
 				/**
 				 * giorgio, if element it's a date field it may validate the regexp,
 				 * but could be an invalid date. Must check it.
-				 * NOTE: assumption is made that a date field 
+				 * NOTE: assumption is made that a date field
 				 * contains 'date' (NOT case sensitive) in its id.
 				 */
-				
+
 				if (id.match(/date/i))
-				{			
+				{
 				 ok = null;
 				 dateArray = value.split("/");
 				 d = new Date (dateArray[2], dateArray[1]-1, dateArray[0]);
-				 now = new Date();				 
+				 now = new Date();
 				 if ( parseInt(dateArray[2]) < 1900) ok = false;
-				 else if ( id.match(/birthdate/i) && (d.getTime() > now.getTime())) ok = false; 
+				 else if ( id.match(/birthdate/i) && (d.getTime() > now.getTime())) ok = false;
 				 else if (d.getFullYear() == dateArray[2] && d.getMonth() + 1 == dateArray[1] && d.getDate() == dateArray[0])
 					 ok = true;
 				 else ok = false;
@@ -111,7 +111,7 @@ function validateContent(elements, regexps, formName) {
 				 if (!ok)
 					 {
 						if($(label)) {
-							$(label).addClassName('error');					
+							$(label).addClassName('error');
 						}
 						error_found = true;
 					 }
@@ -138,20 +138,20 @@ function validateContent(elements, regexps, formName) {
 
 /**
  * @author giorgio 08/mag/2015
- * 
+ *
  * cookie-policy banner management, in plain javascript
  */
 function checkCookie() {
 
 	elem = document.getElementById("cookies");
-	
+
 	if (readCookie("ada_comply_cookie") == null) {
 		document.getElementById("cookies").style.display = 'block';
 		document.getElementById("cookie-accept").onclick = function(e) {
 			  days = 365; //number of days to keep the cookie
 			  myDate = new Date();
 			  myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
-			  document.cookie = "ada_comply_cookie = comply_yes; expires = " + myDate.toGMTString(); //creates the cookie: name|value|expiry
+			  document.cookie = "ada_comply_cookie = comply_yes; expires = " + myDate.toGMTString() + "; path=/"; //creates the cookie: name|value|expiry|path
 			  if (elem != null) elem.parentNode.removeChild(elem);
 		}
 	}
