@@ -71,7 +71,7 @@ if ($op !== false && $op == 'course_info') {
     	$tester_dh = null;
     	// This will be used to populate the template fields
     	$courseInfoContent = array();
-		$courseInfoContent['firstcol_wideness'] = '';
+		$courseInfoContent['firstcol_wideness'] = 'sixteen wide';
 
     	foreach ($coursesAr as $courseData) {
 
