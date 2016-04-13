@@ -1659,6 +1659,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         return $testers_result;
     }
+
     public function get_tester_info_from_id($id_tester, $fetchmode = null) {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
@@ -4186,7 +4187,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 				FROM `iscrizioni` i
 				JOIN `istanza_corso` ic ON (ic.`id_istanza_corso`=i.`id_istanza_corso`)
 				JOIN `modello_corso` c ON (c.`id_corso`=ic.`id_corso`)
-				WHERE i.`status` IN (".($presubscription?"1":"2,3,4").")";
+				WHERE i.`status` IN (".(implode(',', $status_Ar)).")";
 
 		if (is_array($id_user) AND !empty($id_user)) {
 			$sql.= " AND i.`id_utente_studente` IN (".implode(',',$id_user).")";
@@ -4225,22 +4226,17 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
 	$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
 
-        $sql = 'SELECT U.id_utente, U.username, U.tipo, U.nome, U.cognome, U.avatar, I.status,I.data_iscrizione';
+        $sql = 'SELECT U.*, I.status,I.data_iscrizione';
 
          if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
         {
-            $sql=$sql.', I.codice FROM utente AS U, iscrizioni AS I '
+            $sql=$sql.', I.codice';
+        }
+
+        $sql=$sql.' FROM utente AS U, iscrizioni AS I '
              . ' WHERE I.id_istanza_corso ='.$id_course_instance
              . ' AND I.status IN ('.implode(',',$status_Ar).')'
              . ' AND U.id_utente = I.id_utente_studente';
-        }
-        else
-        {
-            $sql=$sql.' FROM utente AS U, iscrizioni AS I '
-             . ' WHERE I.id_istanza_corso ='.$id_course_instance
-             . ' AND I.status IN ('.implode(',',$status_Ar).')'
-             . ' AND U.id_utente = I.id_utente_studente';
-        }
 
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
@@ -4290,22 +4286,17 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-        $sql = 'SELECT U.id_utente, U.nome, U.cognome, I.status,I.data_iscrizione';
+        $sql = 'SELECT U.*, I.status,I.data_iscrizione';
 
         if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
         {
-            $sql = $sql.', I.codice FROM utente AS U, iscrizioni AS I '
-             . ' WHERE I.id_istanza_corso ='.$id_course_instance
-             . ' AND I.status = '.ADA_STATUS_PRESUBSCRIBED
-             . ' AND U.id_utente = I.id_utente_studente';
+        	$sql=$sql.', I.codice';
         }
-        else
-        {
-            $sql = $sql.' FROM utente AS U, iscrizioni AS I '
-             . ' WHERE I.id_istanza_corso ='.$id_course_instance
-             . ' AND I.status = '.ADA_STATUS_PRESUBSCRIBED
-             . ' AND U.id_utente = I.id_utente_studente';
-        }
+
+        $sql = $sql.' FROM utente AS U, iscrizioni AS I '
+	               . ' WHERE I.id_istanza_corso ='.$id_course_instance
+             	   . ' AND I.status = '.ADA_STATUS_PRESUBSCRIBED
+             	   . ' AND U.id_utente = I.id_utente_studente';
 
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
@@ -5248,7 +5239,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-        $sql = 'SELECT distinct U.id_utente, U.nome, U.cognome, U.username, IC.id_corso, I.id_utente_studente, I.id_istanza_corso, IC.data_inizio, I.status FROM
+        $sql = 'SELECT distinct U.id_utente, U.nome, U.cognome, U.username, U.codice_fiscale,IC.id_corso, I.id_utente_studente, I.id_istanza_corso, IC.data_inizio, I.status FROM
         iscrizioni AS I, istanza_corso AS IC, utente AS U
         WHERE IC.id_corso = '.$id.' AND I.id_istanza_corso = IC.id_istanza_corso AND U.id_utente = I.id_utente_studente order by U.cognome';
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
@@ -10284,7 +10275,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $update_tutor_sql = 'UPDATE tutor SET tariffa=?, profilo=? WHERE id_utente_tutor=?';
         $valuesAr = array(
-                0,//$tutor_ha['tariffa'],
+                $this->or_zero($tutor_ha['tariffa']),
                 $tutor_ha['profilo'],
                 $id
         );
