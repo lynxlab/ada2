@@ -54,10 +54,12 @@ if (isset($_GET['url']) && strlen(trim($_GET['url']))>0 &&
 		$imagick->readimage($fileName.'['.$pageNum.']');
 		$width = $imagick->getimagewidth();
 		$height = $imagick->getimageheight();
-		$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
-
-		$imagick->setImageFormat('png');
-		header('Content-type: image/png');
+		//$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
+		$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_TRIANGLE,1);
+//		$imagick->setImageFormat('png');
+		$imagick->setImageFormat(IMAGE_FORMAT);
+//		header('Content-type: image/png');
+		header('Content-type: '.IMAGE_HEADER_PREVIEW);
 		echo $imagick->getimageblob();
 	}
 }

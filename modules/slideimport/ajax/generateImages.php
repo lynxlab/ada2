@@ -61,9 +61,14 @@ if (isset($_GET['selectedPages']) && is_array($_GET['selectedPages']) && count($
 				$imagick->readimage($fileName.'['.($selectedPage-1).']');
 				$width = $imagick->getimagewidth();
 				$height = $imagick->getimageheight();
-				$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
-				$imagick->setImageFormat('png');
-				if ($imagick->writeimage($media_path . DIRECTORY_SEPARATOR . $selectedPage.'.png') !== true) {
+				//$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
+				$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_TRIANGLE,1);
+				$imagick->transformImageColorspace(Imagick::COLORSPACE_SRGB);
+				//$imagick->setImageFormat('png');
+				$imagick->setImageFormat(IMAGE_FORMAT);
+				$imagick->setImageCompressionQuality(IMAGE_COMPRESSION_QUALITY);
+//				if ($imagick->writeimage($media_path . DIRECTORY_SEPARATOR . $selectedPage.'.png') !== true) {
+				if ($imagick->writeimage($media_path . DIRECTORY_SEPARATOR . $selectedPage.'.'.IMAGE_FORMAT) !== true) {
 					// delete all files and dir on error
 					delTree($media_path);
 					$error = 1;
