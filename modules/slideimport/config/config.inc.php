@@ -18,6 +18,10 @@ define ('MODULES_SLIDEIMPORT_UPLOAD_SESSION_VAR','slideimportFile');
 define ('IMPORT_IMAGE_HEIGHT', 600);
 define ('IMPORT_PREVIEW_HEIGHT', 210);
 
+define ('IMAGE_FORMAT','jpg');
+define ('IMAGE_COMPRESSION_QUALITY',90);
+define ('IMAGE_HEADER_PREVIEW','image/jpeg');
+
 /**
  * Define IMPORT_MIME_TYPE as a subset of ADA_MIME_TYPE
  */

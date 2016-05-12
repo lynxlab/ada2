@@ -99,13 +99,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 	   	if (!$asSlideShow && $hasFrontPage) {
    			reset($selectedPages);
    			$selectedPage = array_shift($selectedPages);
-   			$node_data['text'] = str_replace('%filenamehere%', $selectedPage.'.png', $imgtemplate);
+   			$node_data['text'] = str_replace('%filenamehere%', $selectedPage.'.jpg', $imgtemplate);
    			/**
    			 * cursed _add_media method in ama.inc.php starts inserting resources from array index 1!!!
    			 */
    			$node_data['resources_ar'] = array( 1 =>
    				array_merge($resource_data, array(
-   					'nome_file' => $info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.png',
+   					'nome_file' => $info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.'.IMAGE_FORMAT,
    					'titolo' => translateFN('Pagina').' '.$selectedPage
    			)));
 	   	}
@@ -155,14 +155,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 					$child_data['parent_id'] = $createdNodeID;
 					$child_data['name'] = translateFN('Pagina').' '.$selectedPage;
 					$child_data['title'] = $child_data['name'];
-					$child_data['text'] = str_replace('%filenamehere%', $selectedPage.'.png', $imgtemplate);
+					$child_data['text'] = str_replace('%filenamehere%', $selectedPage.'.jpg', $imgtemplate);
 
 					/**
 					 * cursed _add_media method in ama.inc.php starts inserting resources from array index 1!!!
 					 */
 					$child_data['resources_ar'] = array( 1 =>
 						array_merge($resource_data, array(
-								'nome_file' => $info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.png',
+								'nome_file' => $info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.' . IMAGE_FORMAT,
 								'titolo' => !$asSlideShow ? $child_data['name'] : ($selectedPage.' - '.$nodeBaseName)
 						)));
 
@@ -180,14 +180,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 					// be incorrectly listed as last one in the navigation panel/resource section
 					$GLOBALS['dh']->add_only_in_risorsa_esterna(array_merge($resource_data, array (
 						'id_nodo' => $createdNodeID,
-						'nome_file' => $info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.png',
+						'nome_file' => $info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.' . IMAGE_FORMAT,
 						'titolo' => $selectedPage.' - '.$nodeBaseName)));
 					// external resource will be linked to the node afterwards
 				}
 
 				if ($asSlideShow) {
 					// img object
-					$imgPath = $slideShowPath .$selectedPage . '.png';
+					$imgPath = $slideShowPath .$selectedPage . '.' . IMAGE_FORMAT;
 					$img = CDOMElement::create('img');
 					$img->setAttribute('alt', '');
 					$img->setAttribute('title', $selectedPage.' - '.$nodeBaseName);
@@ -202,7 +202,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 					} else {
 						$nivo->addChild($img);
 					}
-					$slideShowupdateMedia[$info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.png'] = _IMAGE;
+					$slideShowupdateMedia[$info['filename'] . DIRECTORY_SEPARATOR . $selectedPage . '.' . IMAGE_FORMAT] = _IMAGE;
 
 				}
 			} // end foreach selectedPages
