@@ -121,7 +121,7 @@ class DFSNavigationBar
          * Esiste fratello con ordine n-1?
          */
         if($n->order >= 1) {
-            $result = $dh->child_exists($n->parent_id, $n->order - 1, $userLevel);
+            $result = $dh->child_exists($n->parent_id, $n->order - 1, $userLevel, '<=');
             if(!AMA_DataHandler::isError($result) && $result != null) {
                 $found = false;
                 $id = $result;
@@ -154,17 +154,12 @@ class DFSNavigationBar
         $dh = $GLOBALS['dh'];
 
         if ($n->type == ADA_GROUP_TYPE) {
-            $result = $dh->child_exists($n->id, 0, $userLevel);
-            if(AMA_DataHandler::isError($result) || $result == null) {
-                $result = $dh->child_exists($n->id, 1, $userLevel);
-                if (!AMA_DataHandler::isError($result)) {
-                    $this->_nextNode = $result;
-                }
-            } else {
-                $this->_nextNode = $result;
+            $result = $dh->child_exists($n->id, 0, $userLevel, '>=');
+            if (!AMA_DataHandler::isError($result)) {
+            	$this->_nextNode = $result;
             }
         } else {
-            $result = $dh->child_exists($n->parent_id, $n->order + 1, $userLevel);
+            $result = $dh->child_exists($n->parent_id, $n->order + 1, $userLevel, '>=');
             if (!AMA_DataHandler::isError($result) && $result != null) {
                 $this->_nextNode = $result;
                 return;
@@ -181,7 +176,7 @@ class DFSNavigationBar
                        return;
                     }
 
-                    $result = $dh->child_exists($parentId, $order + 1, $userLevel);
+                    $result = $dh->child_exists($parentId, $order + 1, $userLevel, '>=');
                     if (!AMA_DataHandler::isError($result) && $result != null) {
                         $this->_nextNode = $result;
                         $found = true;
