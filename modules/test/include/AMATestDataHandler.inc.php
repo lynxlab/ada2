@@ -75,7 +75,7 @@ class AMATestDataHandler extends AMA_DataHandler {
         }
 		$data['data_creazione'] = time();
         //fine validazione campi
-		
+
         $keys = array_keys($data);
 		$array_values = array_values($data);
 		$placeholders = array_fill(0, count($data), '?');
@@ -786,7 +786,7 @@ class AMATestDataHandler extends AMA_DataHandler {
 				`ripetibile` = ?
 				WHERE `id_history_test` = ?";
 
-		$sql = "UPDATE `module_test_history_test` t 
+		$sql = "UPDATE `module_test_history_test` t
 				SET t.`punteggio_realizzato` =
 				(
 					SELECT SUM(a.`punteggio`)
@@ -1124,7 +1124,7 @@ class AMATestDataHandler extends AMA_DataHandler {
      */
     public function test_getCourseTest($where) {
         // $values = array($id_node);
-        $sql = "SELECT t.*, n.`titolo`
+        $sql = "SELECT t.*, n.`titolo`, n.`data_creazione`
                 FROM `".self::$PREFIX."course_survey` t
 				JOIN `".self::$PREFIX."nodes` n ON (n.`id_nodo` = t.`id_test`)
                 WHERE true";
@@ -1165,7 +1165,7 @@ class AMATestDataHandler extends AMA_DataHandler {
             return $res;
         }
     }
-    
+
     /**
      * Deletes all nodes that are NOT surveys and are
      * associated to the passed courseId
@@ -1180,34 +1180,34 @@ class AMATestDataHandler extends AMA_DataHandler {
      */
     public function test_removeCourseNodes($courseId) {
     	$clause = array('id_nodo_riferimento'=>'LIKE '.$courseId.'\_%');
-    	 
+
     	$nodeTypes = array(ADA_TYPE_TEST);
-    	 
+
     	$nodesToDel = array();
     	foreach ($nodeTypes as $nodeType) {
     		$res = $this->test_getNodes(array_merge($clause,array('tipo'=>'LIKE '.$nodeType.'%')));
     		if (!AMA_DB::isError($res)) $nodesToDel = array_merge($nodesToDel, $res);
     		else return $res;
     	}
-    
+
     	if (count($nodesToDel)>0) {
     		foreach ($nodesToDel as $nodeToDel) {
     			$res = $this->test_deleteNodeTest($nodeToDel['id_nodo']);
     			if (AMA_DB::isError($res)) return $res;
     		}
     	}
-    	 
+
     	if (!AMA_DB::isError($res)) {
     		$res = $this->queryPrepared('DELETE FROM `'.self::$PREFIX.'course_survey` WHERE `id_corso`=?', $courseId);
     		if (AMA_DB::isError($res)) return $res;
     	}
-    	 
+
     	return true;
     }
-    
+
     /**
      * @author giorgio 30/ott/2014
-     * 
+     *
      * methods for accessing and manipulating the history_esercizi table
      */
 
@@ -1226,7 +1226,7 @@ class AMATestDataHandler extends AMA_DataHandler {
      * @param $correction   NOT USED IN MODULES_TEST, kept for compatibility reasons.
      * @param $ripetibile   NOT USED IN MODULES_TEST, kept for compatibility reasons.
      * @param $attach       NOT USED IN MODULES_TEST, kept for compatibility reasons.
-     * 
+     *
      * @return number|AMA_Error inserted row id or AMA_Error object
      *
      * (non-PHPdoc)
@@ -1237,22 +1237,22 @@ class AMATestDataHandler extends AMA_DataHandler {
     	if (!AMA_DB::isError($result)) return $this->getConnection()->lastInsertId();
     	else return $result;
     }
-    
+
     /**
      * updates the exit time of a node in history_esercizi
-     * 
+     *
      * @param $student_id   the id of the student
      * @param $course_id    the id of the instance of course the student is navigating
      * @param $node_id      the node to be registered in the history
-     * 
+     *
      * @return mixed
      */
     public function update_exit_time_ex_history($student_id, $course_instance_id, $node_id) {
     	$sql = 'UPDATE `history_esercizi` SET `data_uscita`=? WHERE `data_visita`=`data_uscita` AND '.
       	'`id_utente_studente` = ? AND `id_nodo` = ? AND `id_istanza_corso`= ?';
-    	
+
     	return $this->queryPrepared($sql, array(time(), $student_id, $node_id, $course_instance_id));
-    	
+
     }
-    
+
 }

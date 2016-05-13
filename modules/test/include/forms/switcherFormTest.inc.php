@@ -29,7 +29,7 @@ class SwitcherFormTest extends FormTest {
 		if (!empty($test_list)) {
 			$checkboxes = array();
 			foreach($test_list as $v) {
-				$checkboxes[$v['id_test']] = $v['titolo'];
+				$checkboxes[$v['id_test']] = $v['titolo'].' (ID:'.$v['id_test'].'  creato il: '.AMA_DataHandler::ts_to_date($v['data_creazione']).')';
 				$test_ids[] = $v['id_test'];
 			}
 			$this->addCheckboxes('delete_test[]', translateFN('Seleziona i sondaggi da rimuovere dal corso').':', $checkboxes, null);
@@ -41,7 +41,7 @@ class SwitcherFormTest extends FormTest {
 		$empty = true;
 		foreach($tmp_tests as $v) {
 			if (!in_array($v['id_nodo'],$test_ids)) {
-				$options[$v['id_nodo']] = $v['titolo'];
+				$options[$v['id_nodo']] = $v['titolo'].' (ID:'.$v['id_nodo'].'  creato il: '.AMA_DataHandler::ts_to_date($v['data_creazione']).')';
 				$empty = false;
 			}
 		}
