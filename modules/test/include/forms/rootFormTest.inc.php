@@ -10,7 +10,7 @@
  */
 
 class RootFormTest extends FormTest {
-	
+
 	protected function content() {
 		//nome
 		if (!empty($this->data['nome'])) {
@@ -50,6 +50,7 @@ class RootFormTest extends FormTest {
 			ADA_NEXT_NODE_TEST_RETURN => translateFN('Mostra link al nodo successivo del corso'),
 			ADA_INDEX_TEST_RETURN => translateFN('Mostra link all\'indice del corso'),
 			ADA_COURSE_INDEX_TEST_RETURN => translateFN('Mostra link all\'elenco dei corsi'),
+			ADA_COURSE_FIRSTNODE_TEST_RETURN => translateFN('Mosta link al nodo iniziale del corso')
 		);
 		if (isset($this->data['return'])) {
 			$defaultValue = $this->data['return'];
