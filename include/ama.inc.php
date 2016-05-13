@@ -5375,7 +5375,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $query = "select id_istanza_corso$more_fields from istanza_corso $clause";
         $courses_ar =  $db->getAll($query);
         if (AMA_DB::isError($courses_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+            $courses_ar = new AMA_Error(AMA_ERR_GET);
         }
         //
         // return nested array
