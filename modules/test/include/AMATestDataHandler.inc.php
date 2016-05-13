@@ -1113,7 +1113,7 @@ class AMATestDataHandler extends AMA_DataHandler {
     }
 
     /**
-     * retrieve course_test records
+     * retrieve course_survey records
      *
      * @access public
      *
@@ -1122,7 +1122,7 @@ class AMATestDataHandler extends AMA_DataHandler {
      * @return an error if something goes wrong or an array (empty if the node doesn't exists)
      *
      */
-    public function test_getCourseTest($where) {
+    public function test_getCourseSurveys($where) {
         // $values = array($id_node);
         $sql = "SELECT t.*, n.`titolo`, n.`data_creazione`
                 FROM `".self::$PREFIX."course_survey` t

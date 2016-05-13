@@ -88,7 +88,7 @@ class SwitcherManagementTest {
 	public function delete($id_test) {
 		$dh = $GLOBALS['dh'];
 		
-		$coursetest = $dh->test_getCourseTest(array('id_corso'=>$this->courseObj->id,'id_test'=>$id_test));
+		$coursetest = $dh->test_getCourseSurveys(array('id_corso'=>$this->courseObj->id,'id_test'=>$id_test));
 		if ($dh->isError($coursetest) || empty($coursetest[0])) {
 			return false;
 		}

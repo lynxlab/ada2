@@ -553,7 +553,7 @@ abstract class NodeTest
 				if (!$isView) $redirectTo = HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$nodeObj->id;
 			}
 		} else {
-			$res = $test_db->test_getCourseTest(array('id_nodo'=>$nodeObj->id));
+			$res = $test_db->test_getCourseSurveys(array('id_nodo'=>$nodeObj->id));
 			if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
 				$node = array_shift($res);
 				if ($_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {

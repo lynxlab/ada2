@@ -24,7 +24,7 @@ class SwitcherFormTest extends FormTest {
 		$this->setName('switcherForm');
 
 		//lista dei test presenti
-		$test_list = $dh->test_getCourseTest(array('id_corso'=>$this->id_course)); //getting already present test list
+		$test_list = $dh->test_getCourseSurveys(array('id_corso'=>$this->id_course)); //getting already present test list
 		$test_ids = array();
 		if (!empty($test_list)) {
 			$checkboxes = array();

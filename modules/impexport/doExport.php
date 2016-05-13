@@ -152,7 +152,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 
 			if ($exportSurvey) {
 				// get surveys
-				$surveysArr = $dh_test->test_getCourseTest (array('id_corso'=>$course_id));
+				$surveysArr = $dh_test->test_getCourseSurveys (array('id_corso'=>$course_id));
 			} else {
 				$surveysArr = array();
 			}
