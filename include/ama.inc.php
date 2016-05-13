@@ -6917,24 +6917,37 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * it is not a note or a private note.
      *
      * @param string $parent_node_id
-     * @param integere $child_order
+     * @param integer $child_order
+     * @param string operator comparison operator to be used in ordine clause. Can be one of: >, <, =, !=, >=, <=. Defaluts to =
      * @return string the id of the child, or an AMA_Error
      */
-    public function child_exists($parent_node_id, $child_order, $user_level=ADA_MAX_USER_LEVEL) {
+    public function child_exists($parent_node_id, $child_order, $user_level=ADA_MAX_USER_LEVEL, $operator='=') {
 
+    	$allowedOperators = array (
+    			'>' => array('sortorder'=>'ASC'),
+    			'=' => array('sortorder'=>'ASC'),
+    			'>='=> array('sortorder'=>'ASC'),
+    			'!='=> array('sortorder'=>'ASC'),
+    			'<' => array('sortorder'=>'DESC'),
+    			'<='=> array('sortorder'=>'DESC')
+    	);
 
-        $sql = 'SELECT id_nodo FROM nodo WHERE livello <= ? AND id_nodo_parent=? AND ordine=? AND tipo NOT IN (2,21)';
-        $values = array(
-            $user_level,
-            $parent_node_id,
-            $child_order
-        );
-        $result = $this->getOnePrepared($sql, $values);
-        if (AMA_DB::isError($result)) {
-            return new AMA_Error(AMA_ERR_GET);
-        }
-        return $result;
+    	if (array_key_exists($operator, $allowedOperators)) {
+
+	        $sql = 'SELECT id_nodo FROM nodo WHERE livello <= ? AND id_nodo_parent=? AND ordine'.$operator.'? AND tipo NOT IN (2,21) ORDER BY ordine '.$allowedOperators[$operator]['sortorder'];
+	        $values = array(
+	            $user_level,
+	            $parent_node_id,
+	            $child_order
+	        );
+	        $result = $this->getOnePrepared($sql, $values);
+	        if (AMA_DB::isError($result)) {
+	            return new AMA_Error(AMA_ERR_GET);
+	        }
+	        return $result;
+    	} else return new AMA_Error(AMA_ERR_WRONG_ARGUMENTS);
     }
+
     /**
      * Returns the id of the last child of the given node if it exists and if
      * it is not a note or a private note.
