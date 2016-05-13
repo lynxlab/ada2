@@ -58,6 +58,7 @@ if (MODULES_TEST) {
 $exportCourse = (isset($_GET['selCourse']) && (intval($_GET['selCourse'])>0)) ? intval ($_GET['selCourse']) : 0;
 $exportNode = (isset($_GET['selNode']) && (trim($_GET['selNode'])!=='')) ? trim ($_GET['selNode']) : '';
 $exportMedia = !(isset($_GET['exportMedia']) && (intval($_GET['exportMedia'])>0));
+$exportSurvey = !(isset($_GET['exportSurvey']) && (intval($_GET['exportSurvey'])>0));
 
 if ($exportCourse>0 && $exportNode!=='') {
 	$nodesToExport =  array( $exportCourse=>array($exportNode) );
@@ -92,7 +93,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 {
 	// need an Import/Export DataHandler
 	$dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-	
+
 	$course_data = $dh->get_course ($course_id);
 
 	if (!empty($course_data) && !AMA_DB::isError($course_data))
@@ -137,7 +138,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 		// is kept for possible future uses!
 		foreach ($XMLNodeChildren as &$XMLNodeChild) $XMLAllNodes->appendChild($XMLNodeChild);
 		unset ($XMLNodeChildren);
-		
+
 		// at least XMLAllNodes should be always set, anyway...
 		if (isset($XMLAllNodes))   $XMLcourse->appendChild($XMLAllNodes);
 		unset ($XMLAllNodes);
@@ -148,9 +149,13 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 			// need an AMATestDataHandler, so disconnect the AMAImpExportDataHandler and reconnect
 			$dh->disconnect();
 			$dh_test = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-			
-			// get surveys
-			$surveysArr = $dh_test->test_getCourseTest (array('id_corso'=>$course_id));
+
+			if ($exportSurvey) {
+				// get surveys
+				$surveysArr = $dh_test->test_getCourseTest (array('id_corso'=>$course_id));
+			} else {
+				$surveysArr = array();
+			}
 			// build an array of test root nodes id that MUST be exported
 			$surveyRootNodes = array();
 
@@ -187,12 +192,20 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 			// get tests
 			$testsArr = $dh_test->test_getNodes(array('id_corso'=>$course_id,'id_nodo_parent'=>null,'id_nodo_radice'=>null,
 					'id_nodo_riferimento'=>$exportHelper->exportedNONTestNodeArray,'id_istanza'=>0));
-			
+
+			if (!$exportSurvey) {
+				// If user requested to NOT export surveys,
+				// remove them from the testsArr array
+				$testsArr = array_filter($testsArr, function($element) {
+					return $element['tipo']{0} != ADA_TYPE_SURVEY;
+				});
+			}
+
 			if (!empty ($testsArr) && !AMA_DB::isError($testsArr))
 			{
 				// $XMLAllTests =& $domtree->createElement('tests');
 				$exportHelper->testNodeXMLElement = $domtree->createElement('tests');
-				
+
 				foreach ($testsArr as &$testElement)
 				{
 					// if this node is in the array of root nodes that MUST
@@ -214,7 +227,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 				if (!isset($exportHelper->testNodeXMLElement) || is_null($exportHelper->testNodeXMLElement)) {
 				  $exportHelper->testNodeXMLElement = $domtree->createElement('tests');
 				}
-				
+
 				foreach ($surveyRootNodes as &$rootNode)
 					// export the node and all of its kids recursively
 					$exportHelper->exportTestNodeChildren($course_id, $rootNode, $domtree, $dh_test); //, $XMLAllTests);
