@@ -513,16 +513,16 @@ abstract class RootTest extends NodeTest
 	 *
 	 * @param $return_html choose the return type
 	 * @return an object of CDOMElement or a string containing html
-	 * 
+	 *
 	 * (non-PHPdoc)
 	 * @see NodeTest::render()
-	 * 
+	 *
 	 * @author giorgio 20/ott/2014
-	 * 
+	 *
 	 * added feedback, rating and rating_answer parameters
 	 * that are not used here, but are needed to make the
 	 * declaration compatible with NodeTest::render()
-	 */	
+	 */
 	public function render($return_html=true,$feedback=false,$rating=false,$rating_answer=false) {
 		$html = $this->renderingHtml($ref);
 
@@ -643,7 +643,7 @@ abstract class RootTest extends NodeTest
 				$div->addChild($reset);
 				$div->addChild(new CText('&nbsp;'));
 				$div->addChild($submit);
-				
+
 				$out->addChild(CDOMElement::create('div','class:clearfix'));
 				$out->addChild($div);
 			}
@@ -839,27 +839,58 @@ abstract class RootTest extends NodeTest
 				$return_link = null;
 			break;
 			case ADA_NEXT_NODE_TEST_RETURN:
-				$label = translateFN('Procedi');
-				$node_obj = new Node($this->id_nodo_riferimento);
-				if (!empty($node_obj->next_id)) {
+				$node_obj = null;
+				if (!is_null($this->id_nodo_riferimento)) {
+					$node_obj = new Node($this->id_nodo_riferimento);
+				} else {
+					$survey = $dh->test_getCourseSurveys(array('id_test'=>$this->id_nodo,'id_corso'=>$this->id_corso));
+					if (!AMA_DB::isError($survey) && is_array($survey) && count($survey)==1) {
+						$survey = array_shift($survey);
+						$node_obj = new Node($survey['id_nodo']);
+					}
+				}
+				if (!is_null($node_obj) && !empty($node_obj->next_id)) {
+					$label = translateFN('Procedi');
 					$return_link = HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$node_obj->next_id;
+					$buttonClass = 'ui right labeled icon green button';
+					$buttonIcon = 'right arrow';
 				}
 			break;
 			case ADA_INDEX_TEST_RETURN:
 				$label = translateFN('Torna all\'indice del corso');
 				$return_link = HTTP_ROOT_DIR.'/browsing/main_index.php';
+				$buttonClass = 'ui labeled icon purple button';
+				$buttonIcon = 'sitemap';
 			break;
 			case ADA_COURSE_INDEX_TEST_RETURN:
 				$label = translateFN('Torna all\'elenco dei corsi');
 				$return_link = HTTP_ROOT_DIR.'/browsing/user.php';
+				$buttonClass = 'ui labeled icon orange button';
+				$buttonIcon = 'home';
+			break;
+			case ADA_COURSE_FIRSTNODE_TEST_RETURN:
+				$course_obj = new Course($this->id_corso);
+				if (strlen($course_obj->id_nodo_iniziale)>0) {
+					$label = translateFN('Torna all\'inizio del corso');
+					$return_link = HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$this->id_corso.'_'.$course_obj->id_nodo_iniziale;
+					$buttonClass = 'ui right labeled icon blue button';
+					$buttonIcon = 'repeat';
+				}
 			break;
 		}
 
 		if (!is_null($return_link)) {
 			$a = CDOMElement::create('a','href:'.$return_link);
+			if (isset($buttonClass) && strlen($buttonClass)>0) {
+				$a->setAttribute('class', $buttonClass);
+			}
+			if (isset($buttonIcon) && strlen($buttonIcon)>0) {
+				$a->addChild(CDOMElement::create('i','class: '.$buttonIcon.' icon'));
+			}
 			$a->addChild(new CText($label));
 			$div = CDOMElement::create('div','id:return_link');
 			$div->addChild($a);
+			$html->addChild(CDOMElement::create('div','class:clearfix'));
 			$html->addChild($div);
 		}
 
