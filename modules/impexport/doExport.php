@@ -132,7 +132,7 @@ foreach ($nodesToExport as $course_id=>$nodeList)
 		// loop the nodes to be exported
 		foreach ($nodeList as &$aNodeId)
 		{
-			$XMLNodeChildren[] = $exportHelper->exportCourseNodeChildren($course_id, $aNodeId, $domtree, $dh, true);
+			$XMLNodeChildren[] = $exportHelper->exportCourseNodeChildren($course_id, $aNodeId, $domtree, $dh, true, $exportSurvey);
 		}
 		// now add all the children to the all nodes element, this array
 		// is kept for possible future uses!
