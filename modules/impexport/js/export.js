@@ -23,7 +23,7 @@ function goToExportStepTwo() {
 	var surveyCheck = document.getElementsByName('nosurvey');
 
 	for (var index in mediaCheck) if (typeof mediaCheck[index] === 'object') exportMedia = exportMedia || mediaCheck[index].checked ;
-	for (var index in surveyCheck) if (typeof surveyCheck[index] === 'object') exportSurvey = exportSurvey || surveyCheck[index].checked ;
+	for (var index in surveyCheck) if (typeof surveyCheck[index] === 'object') exportSurvey = exportSurvey && surveyCheck[index].checked ;
 
 	if (courseID > 0) {
 

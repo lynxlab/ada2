@@ -97,17 +97,29 @@ class exportHelper
 	 * @param DOMDocument $domtree the XML object to append nodes to
 	 * @param AMAImportExportDataHandler $dh the dataHandler used to retreive datas
 	 * @param boolean $mustRecur if set to true, will do recursion for exporting children
+	 * @param boolean $exportSurvey if set to true, will export nodes linked to surveys
 	 *
 	 * @return void on error | DOMElement pointer to the exported root XML node
 	 *
 	 * @access public
 	 */
-	public function exportCourseNodeChildren($course_id, $nodeId, &$domtree, &$dh, $mustRecur = false)
+	public function exportCourseNodeChildren($course_id, $nodeId, &$domtree, &$dh, $mustRecur = false, $exportSurvey)
 	{
 		static $count=0;
 		// first export all passed node data
 		$nodeInfo = $dh->get_node_info($nodeId);
 		if (AMA_DB::isError($nodeInfo)) return;
+
+		if (MODULES_TEST && !$exportSurvey && $nodeInfo['type'][0]==ADA_PERSONAL_EXERCISE_TYPE) {
+			// check if nodeInfo['id'] is linked to a survey
+			$dh_test = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+			$surveysArr = $dh_test->test_getCourseSurveys(array('id_corso'=>$course_id,'id_nodo'=>$nodeId));
+			if (AMA_DB::isError($surveysArr) || (!AMA_DB::isError($surveysArr) && is_array($surveysArr) && count($surveysArr)>0)) {
+				// do not export the node
+				$this->_logMessage(__METHOD__.' Skipping survey as per passed parameter, linked node has id='.$nodeId);
+				return;
+			}
+		}
 
 		unset ($nodeInfo['author']);
 
@@ -220,10 +232,8 @@ class exportHelper
 			{
 				foreach ($childNodesArray as &$childNodeId)
 				{
-					$XMLnode->appendChild
-					(
-							self::exportCourseNodeChildren($course_id, $childNodeId, $domtree, $dh, $mustRecur)
-					);
+					$temp = self::exportCourseNodeChildren($course_id, $childNodeId, $domtree, $dh, $mustRecur, $exportSurvey);
+					if (!is_null($temp)) $XMLnode->appendChild($temp);
 				}
 			}
 			unset ($childNodesArray);
