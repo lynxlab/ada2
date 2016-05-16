@@ -32,8 +32,10 @@ class FormSelectExportCourse extends FForm {
 		$this->addCheckboxes('nomedia', translateFN('Se si pensa di assegnare il corso importato allo stesso autore di quello esporato, si può evitare di esportare i files multimediali')
 							 , array ('1'=>translateFN('Non esportare i media')), null);
 
-		$this->addCheckboxes('nosurvey', 'Se si pensa di importare il corso in una piattaforma in cui esistano già dei sondaggi per il corso, si può evitare di esportarli'
-				, array ('1'=>translateFN('Non esportare i sondaggi')), 1);
+		if (MODULES_TEST) {
+			$this->addCheckboxes('nosurvey', 'Se si pensa di importare il corso in una piattaforma in cui esistano già dei sondaggi per il corso, si può evitare di esportarli'
+					, array ('1'=>translateFN('Non esportare i sondaggi')), 1);
+		}
 
 
 		$this->setSubmitValue(translateFN('Avanti')."&nbsp;&gt;&gt;");
