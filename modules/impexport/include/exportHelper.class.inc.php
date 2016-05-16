@@ -489,8 +489,9 @@ class exportHelper
 		} else {
 			$this->_logMessage(__METHOD__.' NOT ADDED to media array: '.ROOT_DIR.$filePath);
 		}
-		$this->_logMessage(__METHOD__.'size of array IS: '.count($this->mediaFilesArray[$course_id]));
-
+		if (isset($this->mediaFilesArray[$course_id])) {
+			$this->_logMessage(__METHOD__.'size of array IS: '.count($this->mediaFilesArray[$course_id]));
+		}
 	}
 
 	/**

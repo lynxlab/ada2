@@ -44,43 +44,22 @@ $self = whoami();
 include_once 'include/browsing_functions.inc.php';
 
 /*
- * 
+ *
 */
 include_once ROOT_DIR . '/services/include/exercise_classes.inc.php';
 
 $id_node = $nodeObj->id;
 
 //redirect to test module if necessary
-if (MODULES_TEST && strpos($nodeObj->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0 ) {
-	$test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-	$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$nodeObj->id));
-	if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
-		$node = array_shift($res);
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR && ADA_REDIRECT_TO_TEST) {
-                      header('Location: '.MODULES_TEST_HTTP.'/index.php?id_test='.$node['id_nodo']);
-		} else {
-                      header('Location: '.HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$nodeObj->id);
-		}
-		exit();
-	} else {
-            if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
-                $res = $test_db->test_getCourseTest(array('id_nodo'=>$nodeObj->id));
-                $node = array_shift($res);
-		if ($_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR && ADA_REDIRECT_TO_TEST) {
-                    header('Location: '.MODULES_TEST_HTTP.'/index.php?id_test='.$node['id_test']);
-		} else {
-                    header('Location: '.HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$nodeObj->id);
-		}
-                exit();
-            }
-        }
+if (MODULES_TEST && ADA_REDIRECT_TO_TEST && strpos($nodeObj->type,(string) constant('ADA_PERSONAL_EXERCISE_TYPE')) === 0) {
+		NodeTest::checkAndRedirect($nodeObj);
 }
 
 switch($op) {
     case 'answer':
         if (isset($useranswer)) {
             $exercise   = ExerciseDAO::getExercise($id_node);
-            
+
             $correttore = ExerciseCorrectionFactory::create($exercise->getExerciseFamily());
             $correttore->rateStudentAnswer($exercise, $useranswer, $sess_id_user, $sess_id_course_instance);
 

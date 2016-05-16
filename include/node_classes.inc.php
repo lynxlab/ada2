@@ -2251,7 +2251,7 @@ function next_nodeFN($orderParm = 'ordine'){
                  // we should test the node level *before* returning it
                  // $child_level = $child['livello'];
 
-                    if ($node_type == ADA_LEAF_TYPE || $node_type == ADA_GROUP_TYPE) {
+                    if ($node_type == ADA_LEAF_TYPE || $node_type == ADA_GROUP_TYPE || Node::isNodeExercise($node_type)) {
 
                         if (
                             ($child_type == ADA_LEAF_TYPE) ||

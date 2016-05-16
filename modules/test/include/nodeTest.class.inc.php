@@ -106,7 +106,7 @@ abstract class NodeTest
 	 * @param $feedback "show feedback" flag on rendering
 	 * @param $rating "show rating" flag on rendering
 	 * @param $rating_answer "show correct answer" on rendering
-	 * 
+	 *
 	 * @return an object of CDOMElement
 	 */
 	protected abstract function renderingHtml(&$ref=null,$feedback=false,$rating=false,$rating_answer=false);
@@ -295,7 +295,7 @@ abstract class NodeTest
 						}
 						//this attach nodes to the right element
 						else if (!is_null($parent) && isset($objects[$parent])) {
-							$objects[$id] = NodeTest::readNode($v,$objects[$parent]);							
+							$objects[$id] = NodeTest::readNode($v,$objects[$parent]);
 							$objects[$parent]->addChild($objects[$id]);
 							//once the row is attach, it can be deleted
 							unset($data[$k]);
@@ -522,7 +522,52 @@ abstract class NodeTest
 		 *
 		 * Actual test admission check on user level is
 		 * done by RootTest::checkStudentLevel method
-		 */		
+		 */
 		return Node::parseInternalLinkMedia($text,-1, null, null, null);
+	}
+
+	/**
+	 * Checks if the passed nodeObj has a linked test node or survey
+	 * and does the redirection to proper url if needed
+	 *
+	 * @param Node $nodeObj the object to be checked
+	 */
+	public static function checkAndRedirect($nodeObj) {
+
+		$isView = (strstr($_SERVER['PHP_SELF'], 'view.php') !== false);
+
+		$redirectTo = '';
+		$node = null;
+		$test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+		$res = $test_db->test_getNodes(array('id_nodo_riferimento'=>$nodeObj->id));
+
+		if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
+			$node = array_shift($res);
+		}
+
+		// Redirect only if found node is not a survey
+		if (!is_null($node) &&  $node['tipo']{0} != ADA_TYPE_SURVEY) {
+			if ($_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {
+				$redirectTo  = MODULES_TEST_HTTP.'/index.php?id_test='.$node['id_nodo'];
+			} else {
+				if (!$isView) $redirectTo = HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$nodeObj->id;
+			}
+		} else {
+			$res = $test_db->test_getCourseSurveys(array('id_nodo'=>$nodeObj->id));
+			if (!empty($res) && count($res) == 1 && !AMA_DataHandler::isError($res)) {
+				$node = array_shift($res);
+				if ($_SESSION['sess_id_user_type'] != AMA_TYPE_AUTHOR) {
+					$redirectTo = MODULES_TEST_HTTP.'/index.php?id_test='.$node['id_test'];
+				} else {
+					if (!$isView) $redirectTo = HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$nodeObj->id;
+				}
+			}
+		}
+		// Do redirect if needed
+		if (strlen($redirectTo)>0) {
+			/*Remove the last item to NavigationHistory to increase the value of back button correctly*/
+			$_SESSION['sess_navigation_history']->removeLastItem();
+			redirect($redirectTo);
+		}
 	}
 }

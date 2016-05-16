@@ -1,5 +1,6 @@
 var tree;
 var exportMedia = false;
+var exportSurvey = true;
 /**
  * Init document
  */
@@ -17,11 +18,13 @@ function goToExportStepTwo() {
 
 	var courseSelect = document.getElementById('course');
 	var courseID = courseSelect.options[courseSelect.selectedIndex].value;
-	
+
 	var mediaCheck = document.getElementsByName('nomedia');
-	
+	var surveyCheck = document.getElementsByName('nosurvey');
+
 	for (var index in mediaCheck) if (typeof mediaCheck[index] === 'object') exportMedia = exportMedia || mediaCheck[index].checked ;
-	
+	for (var index in surveyCheck) if (typeof surveyCheck[index] === 'object') exportSurvey = exportSurvey || surveyCheck[index].checked ;
+
 	if (courseID > 0) {
 
 		$j('.exportFormStep1').effect('drop', function() {
@@ -36,15 +39,15 @@ function goToExportStepTwo() {
 			useContextMenu : false,
 			autoOpen : 0
 		});
-		
+
 		tree.tree('loadDataFromUrl', HTTP_ROOT_DIR
 				+ '/modules/impexport/getNodeList.php?courseID=' + courseID,
-				null, function() {					
+				null, function() {
 					var rootNode = tree.tree('getNodeById', courseID + "_0");
-					tree.tree('selectNode', rootNode);	
+					tree.tree('selectNode', rootNode);
 					tree.slideDown ('slow', function () {
 						$j('#courseTreeLoading').hide( function() { $j('.step2buttons').effect('fade'); } );
-							
+
 					});
 				});
 
@@ -66,10 +69,10 @@ function doExport() {
 	$j('.exportFormStep2').effect('drop', function() {
 		$j('.exportFormStep3').effect('slide');
 	});
-	
+
 	var selCourse = $j('#selCourse').text();
 	var selNode = $j('#selNode').text();
-	
+
 	self.document.location.href = HTTP_ROOT_DIR + '/modules/impexport/doExport.php?selCourse='+selCourse+'&selNode='+selNode+
-		(exportMedia ? '&exportMedia=1' : '');
+		(exportMedia ? '&exportMedia=1' : '') + (exportSurvey ? '&exportSurvey=1' : '');
 }
