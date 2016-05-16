@@ -40,6 +40,14 @@ fieldset.form li.form {
 	list-style: none;
 	padding: 5px;
 	margin: 0 0 2rem 0;
+}
+
+fieldset.form li.form:not(:first-child) {
+	margin-bottom:0; 
+	border-bottom: none;
+}
+
+fieldset.form li.form:not(:last-child) {
 	border-bottom: 1px solid #aaaaaa;	
 }
 

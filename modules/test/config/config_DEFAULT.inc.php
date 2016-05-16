@@ -15,7 +15,8 @@ define('ADA_LEAF_ANSWER',						5); // risposta
 define('ADA_NO_TEST_RETURN',					0); // no link
 define('ADA_NEXT_NODE_TEST_RETURN',				1); // display a link that points to next course node
 define('ADA_INDEX_TEST_RETURN',					2); // display a link that points to course's index
-define('ADA_COURSE_INDEX_TEST_RETURN',			3); // display a link that points to courses' index
+define('ADA_COURSE_INDEX_TEST_RETURN',			3); // display a link that points to user's home page
+define('ADA_COURSE_FIRSTNODE_TEST_RETURN',		4); // display a link that points to course's zero node
 
 //interaction flag (third character of column "tipo") applies to ADA_TYPE_TEST/ADA_TYPE_SURVEY node
 define('ADA_RATING_TEST_INTERACTION',			0); // with feedback, show rating and points for each answer
