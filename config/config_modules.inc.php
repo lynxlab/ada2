@@ -155,4 +155,17 @@ if (!defined('MODULES_FORMMAIL')) {
 		define('MODULES_FORMMAIL', false);
 	}
 }
+
+if (!defined('MODULES_SCORM')) {
+	// defines for module scorm
+	define ('MODULES_SCORM_PATH', MODULES_DIR.'/scorm');
+	if (file_exists(MODULES_SCORM_PATH.'/config/config.inc.php')) {
+
+		require_once(MODULES_SCORM_PATH.'/config/config.inc.php');
+		define('MODULES_SCORM', true);
+		define('MODULES_SCORM_HTTP', HTTP_ROOT_DIR.'/modules/scorm');
+	} else {
+		define('MODULES_SCORM', false);
+	}
+}
 ?>
