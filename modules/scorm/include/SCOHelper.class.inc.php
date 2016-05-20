@@ -148,6 +148,8 @@ class SCOHelper {
 			}
 			if (is_object($itemList->item($i)->getElementsByTagNameNS($adlcp,'datafromlms')->item(0))) {
 				$itemData[$identifier]['datafromlms'] = $itemList->item($i)->getElementsByTagNameNS($adlcp,'datafromlms')->item(0)->nodeValue;
+			} else if (is_object($itemList->item($i)->getElementsByTagNameNS($adlcp,'dataFromLMS')->item(0))) {
+				$itemData[$identifier]['datafromlms'] = $itemList->item($i)->getElementsByTagNameNS($adlcp,'dataFromLMS')->item(0)->nodeValue;
 
 			} else {
 				$itemData[$identifier]['datafromlms'] = null;
@@ -220,7 +222,11 @@ class SCOHelper {
 			$dependencies = $resourceData[$identifier]['dependencies'];
 			if (is_array($dependencies)) {
 				foreach ($dependencies as $d => $dependencyidentifier) {
-					$files = array_merge($files,self::resolveIMSManifestDependencies($dependencyidentifier, $resourceData));
+				      if (is_array($files)) {
+				      	$files = array_merge($files,resolveIMSManifestDependencies($dependencyidentifier));
+				      } else {
+				      	$files = resolveIMSManifestDependencies($dependencyidentifier);
+				      }
 					unset($resourceData[$identifier]['dependencies'][$d]);
 				}
 				$files = array_unique($files);

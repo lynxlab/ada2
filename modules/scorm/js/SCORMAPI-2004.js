@@ -8,15 +8,14 @@
  * @link           scorm
  * @version        0.1
  */
-var loadOnly = true;
 
 // executes the callback function after the script had been loaded
 // but we don't need any function to be executed here
 loadScript ('js/SCORMAPI-1.2.js', function() {});
 
-function scorm_API_13(scoobject, scoid) {
+function scorm_API_13(options) {
 
-	var api12 = new scorm_API_12(scoobject, scoid);
+	var api12 = new scorm_API_12(options);
 
     this.Initialize = api12.LMSInitialize;
     this.Terminate = api12.LMSFinish;
@@ -27,8 +26,14 @@ function scorm_API_13(scoobject, scoid) {
     this.GetErrorString = api12.LMSGetErrorString;
     this.GetDiagnostic = api12.LMSGetDiagnostic;
     this.version = '1.0';
-	this.scoobject = scoobject;
-	this.scoid = scoid;
 
-    console.log('*** SCORM v2004 RTE API loaded ***');
+	this.isAPI12 = api12.isAPI12;
+	this.isAPI13 = api12.isAPI13;
+
+	this.scoobject = api12.scoobject;
+	this.scoid = api12.scoid;
+	this.datafromlms = api12.datafromlms;
+	this.masteryscore = api12.masteryscore;
+
+    if (this.isAPI13 && debug) console.log('*** SCORM v2004 RTE API loaded ***');
 } ;

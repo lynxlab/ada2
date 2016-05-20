@@ -24,14 +24,13 @@ $variableToClearAR = array('node', 'layout', 'course', 'user');
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array ( AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER, AMA_TYPE_SUPERTUTOR );
+$allowedUsersAr = array ( AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER, AMA_TYPE_SUPERTUTOR );
 
 /**
  * Get needed objects
  * This is generated from ADA Eclipse Developer Plugin, use it as an example!
  */
 $neededObjAr = array (
-		AMA_TYPE_VISITOR =>    array ('layout'),
 		AMA_TYPE_STUDENT =>    array ('layout'),
 		AMA_TYPE_TUTOR =>      array ('layout'),
 		AMA_TYPE_AUTHOR =>     array ('layout'),
@@ -56,8 +55,8 @@ $GLOBALS['dh'] = AMAScormDataHandler::instance(MultiPort::getDSN($_SESSION['sess
 $isError = false;
 $extraContentArr = array();
 
-if (isset($SCOobject) && strlen($SCOobject)>0 && isset($SCOid) && strlen($SCOid)) {
-	if (isset($SCOversion) && in_array($SCOversion, $GLOBALS['MODULES_SCORM_SUPPORTED_SCHEMAVARSIONS'])) {
+if (isset($SCOobject) && strlen($SCOobject)>0 && isset($SCOid) && strlen($SCOid)>0) {
+	if (isset($SCOversion) && in_array($SCOversion, $GLOBALS['MODULES_SCORM_SUPPORTED_SCHEMAVERSIONS'])) {
 		if (isset($SCOhref) && strlen($SCOhref)>0 && is_file(SCO_BASEDIR . DIRECTORY_SEPARATOR . $SCOobject. DIRECTORY_SEPARATOR . $SCOhref )) {
 			$extraContentArr['launchURL'] = MODULES_SCORM_HTTP . SCO_OBJECTS_DIR . '/' . $SCOobject . '/' . $SCOhref;
 			if (isset($SCOparameters) && strlen($SCOparameters)>0) {
@@ -90,8 +89,17 @@ $content_dataAr = array(
 
 if (count($extraContentArr)>0) $content_dataAr = array_merge($content_dataAr, $extraContentArr);
 
-$optionsAr['onload_func'] = 'initDoc('.intval($isError).',\''.urlencode($SCOobject).
-							'\',\''.urlencode($SCOid).'\',\''.urlencode($SCOversion).'\');';
+$initParams = array(
+		'SCOObject' => $SCOobject,
+		'SCOid' => $SCOid,
+		'SCOversion' => $SCOversion
+);
+if (isset($SCOdatafromlms) && strlen($SCOdatafromlms)>0) $initParams['datafromlms'] = $SCOdatafromlms;
+if (isset($SCOmasteryscore) && strlen($SCOmasteryscore)>0) $initParams['masteryscore'] = $SCOmasteryscore;
+
+$json = urlencode(json_encode($initParams));
+
+$optionsAr['onload_func'] = 'initDoc('.intval($isError).',\''.$json.'\');';
 
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
 ?>

@@ -24,14 +24,13 @@ $variableToClearAR = array('node', 'layout', 'course', 'user');
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array ( AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER, AMA_TYPE_SUPERTUTOR );
+$allowedUsersAr = array ( AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER, AMA_TYPE_SUPERTUTOR );
 
 /**
  * Get needed objects
  * This is generated from ADA Eclipse Developer Plugin, use it as an example!
  */
 $neededObjAr = array (
-		AMA_TYPE_VISITOR =>    array ('layout'),
 		AMA_TYPE_STUDENT =>    array ('layout'),
 		AMA_TYPE_TUTOR =>      array ('layout'),
 		AMA_TYPE_AUTHOR =>     array ('layout'),
@@ -62,8 +61,8 @@ if (isset($SCOobject) && strlen($SCOobject)>0) {
 
 		$SCOData = SCOHelper::readIMSManifestFile(SCO_BASEDIR. DIRECTORY_SEPARATOR . $SCOobject . DIRECTORY_SEPARATOR . SCO_MANIFEST_XML);
 
-		if (array_key_exists($SCOData['schemaversion'], $GLOBALS['MODULES_SCORM_SUPPORTED_SCHEMAVARSIONS'])) {
-			$SCOVersion = $GLOBALS['MODULES_SCORM_SUPPORTED_SCHEMAVARSIONS'][$SCOData['schemaversion']];
+		if (array_key_exists($SCOData['schemaversion'], $GLOBALS['MODULES_SCORM_SUPPORTED_SCHEMAVERSIONS'])) {
+			$SCOVersion = $GLOBALS['MODULES_SCORM_SUPPORTED_SCHEMAVERSIONS'][$SCOData['schemaversion']];
 			unset ($SCOData['schemaversion']);
 
 			if (isset($SCOData['organizationTitle']) && strlen($SCOData['organizationTitle'])>0) {
@@ -81,7 +80,9 @@ if (isset($SCOobject) && strlen($SCOobject)>0) {
 				foreach ($SCOData as $id=>$SCOElement) {
 					$linkQuery['SCOid'] = $id;
 					$linkQuery['SCOhref'] = (strlen($SCOElement['base'])>0 ? $SCOElement['base'] : '') . $SCOElement['href'];
-					if (strlen($SCOElement['parameters'])) $linkQuery['SCOparameters'] = $SCOElement['parameters'];
+					if (strlen($SCOElement['parameters'])>0) $linkQuery['SCOparameters'] = $SCOElement['parameters'];
+					if (strlen($SCOElement['datafromlms'])>0) $linkQuery['SCOdatafromlms'] = $SCOElement['datafromlms'];
+					if (strlen($SCOElement['masteryscore'])>0) $linkQuery['SCOmasteryscore'] = $SCOElement['masteryscore'];
 
 					$divItem = CDOMElement::create('div','class:item');
 					$link = BaseHtmlLib::link($baseHREF.http_build_query($linkQuery), $SCOElement['title']);
@@ -103,7 +104,7 @@ if (isset($SCOobject) && strlen($SCOobject)>0) {
 				$errorMSG = translateFN('Questo SCO non dichiara numero di versione');
 			}
 
-			$extraContentArr['errorMSG'] = $errorMSG . ', '.translateFN('le versioni supportate sono').': '.implode(', ', array_keys($GLOBALS['MODULES_SCORM_SUPPORTED_SCHEMAVARSIONS']));
+			$extraContentArr['errorMSG'] = $errorMSG . ', '.translateFN('le versioni supportate sono').': '.implode(', ', array_keys($GLOBALS['MODULES_SCORM_SUPPORTED_SCHEMAVERSIONS']));
 			$isError = true;
 		}
 	} else {
