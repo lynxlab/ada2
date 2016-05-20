@@ -4,7 +4,7 @@ Implementation and installation notes:
 
 * Make sure the ``SCOObjects`` directory is readable and writable by the webserver.
 
-* The only implemented and default mode is _credit_, that's to say that the learner will be credited for performance in the SCO. Looks like is up to ADA to determine whetere the SCO shall be _credit_ or _no-credit_ and this choice shall be object of future implementations, if and where needed.
+* The only implemented and default mode is _credit_, that's to say that the learner will be credited for performance in the SCO. Looks like is up to ADA to determine wheter the SCO shall be _credit_ or _no-credit_ and this choice shall be object of future implementations, if and where needed.
 
 * **cmi.core.lesson_mode** is not supported for time being. This, together, with the _credit_ mode will affect the calculation of **cmi.core.lesson_status**. Pls referer to [http://www.vsscorm.net/2009/07/24/step-22-progress-and-completion-cmi-core-lesson_status/](http://www.vsscorm.net/2009/07/24/step-22-progress-and-completion-cmi-core-lesson_status) for a detailed explanation.
 
