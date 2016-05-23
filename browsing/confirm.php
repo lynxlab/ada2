@@ -277,7 +277,7 @@ case 'set_new_password':
     $text = translateFN('Benvenuto') . ' ' .$userObj->getUserName()
           . '<br />'
           //. translateFN('Ora devi impostare la tua password. Puoi usare lettere, numeri e trattini. Lunghezza minima 8 lettere');
-          .  translateFN('Ora devi impostare una password di tua scelta. La lunghezza minima della password è di 8 caratteri, e puoi usare lettere (maiuscole e minuscole), numeri e trattini');
+          .  translateFN('Ora devi impostare una password di tua scelta. La lunghezza minima della password è di 8 caratteri, e puoi usare lettere (maiuscole e minuscole), numeri e trattini bassi.');
     $formData = array(
       'userId' => $userObj->getId(),
       'token' => $token
