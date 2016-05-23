@@ -397,9 +397,11 @@ function ADAToFCKeditor(input_text) {
 				var elementValue = ('undefined' != typeof $j(e).attr('value') ? $j(e).attr('value') : null);
 
 				if ($j(e).prop("tagName").toLowerCase() === "media" && parseInt($j(e).attr('type'))>0) {
-					$j(e).replaceWith(ADAMediaTagToImgTag(null, elementType, elementValue));
+					var media2img = ADAMediaTagToImgTag(null, elementType, elementValue);
+					$j(e).replaceWith(media2img+$j(e).html());
 				} else if ($j(e).prop("tagName").toLowerCase() === "link" && parseInt($j(e).attr('value'))>0) {
-					$j(e).replaceWith(ADALinkTagToImgTag(null, elementType, elementValue));
+					var link2img = ADALinkTagToImgTag(null, elementType, elementValue);
+					$j(e).replaceWith(link2img+$j(e).html());
 				}
 			}
 		});
