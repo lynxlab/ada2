@@ -21,13 +21,14 @@
 require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
 
 $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT, AMA_TYPE_TUTOR,
-                        AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN);
+                        AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER);
 $neededObjAr = array(
     AMA_TYPE_VISITOR => array('layout'),
     AMA_TYPE_STUDENT => array('layout'),
     AMA_TYPE_TUTOR => array('layout'),
     AMA_TYPE_AUTHOR => array('layout'),
-    AMA_TYPE_ADMIN => array('layout')
+    AMA_TYPE_ADMIN => array('layout'),
+	AMA_TYPE_SWITCHER => array('layout')
 );
 /**
  * Performs basic controls before entering this module
