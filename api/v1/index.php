@@ -3,7 +3,7 @@
  * index.php
  *
  * @package        API
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2014, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           API
@@ -37,7 +37,7 @@ $endpoints = array (
 );
 
 /**
- * Define an array of public endpoints, 
+ * Define an array of public endpoints,
  * that will bypass the OAuth2 authentication
  */
 $publicEndpoints = array (
@@ -95,20 +95,20 @@ $app->add(new FormatSupported($format!==false));
 
 /**
  * add a middleware to handle and
- * convert input content types 
+ * convert input content types
  */
 $app->add(new \Slim\Middleware\ContentTypes());
 
 /**
  * If the endpoint is not in the publicEndpoints array,
  * add a middleware class to check if a valid
- * access token has been provided either in 
+ * access token has been provided either in
  * the Authorize HTTP Header or in the METHOD body
- * 
+ *
  * This object will hold the authorized user ID as well
  */
 $oAuth2Obj = new OAuth2Auth();
-if (!in_array(ltrim($resourceUri,'/'), $publicEndpoints)) {
+if (array_key_exists(ltrim($resourceUri,'/'), $endpoints) && !in_array(ltrim($resourceUri,'/'), $publicEndpoints)) {
 	$app->add($oAuth2Obj);
 }
 
@@ -121,7 +121,7 @@ $app->add(new CleanQueryString(array('format')));
 /**
  * Cycle the endpoints array and map the declared methods
  * to the corresponding controllerclass.
- * 
+ *
  * NOTE: the use of the $template parameter in the render call
  * that is used to set the root node element in XML and
  * ignored in JSON and PHP-serialized output formats.
@@ -137,7 +137,7 @@ foreach ($endpoints as $endpoint=>$config) {
 		 */
 		$app->$method ('/'.$endpoint.'(.:format)',
 				function ($format=null)
-				use ($app, $oAuth2Obj, $endpoint, $config) {			
+				use ($app, $oAuth2Obj, $endpoint, $config) {
 					try {
 						$method = strtolower ($app->request->getMethod ());
 						$controllerClass = __NAMESPACE__.'\\'.$config['controllerclass'];
@@ -151,9 +151,9 @@ foreach ($endpoints as $endpoint=>$config) {
 					} catch (APIException $e) {
 						$controller->handleException ($e);
 					}
-				});		
+				});
 	}
 }
-	
+
 $app->run ();
 ?>

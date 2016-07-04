@@ -35,7 +35,7 @@ class NodeEditing {
         $media_value = '(?:[a-zA-Z0-9_\-]+\.[a-zA-Z0-9]{3,4})';
 
 //        $extract_media_tags = '/<(?:LINK|MEDIA) TYPE="('.$media_type.')" VALUE="([a-zA-Z0-9_\-\/\.?~+%=&,$\'\(\):;*@\[\]]+)">/';
-        $extract_media_tags = '/<(?:LINK|MEDIA) TYPE="([0-5]+|INTERNAL)" VALUE="([a-zA-Z0-9_\-\/\.?~+%=&,$\'\(\):;*@\[\]]+)">/';
+        $extract_media_tags = '/<(?:LINK|MEDIA) TYPE="([0-5]+|INTERNAL)" VALUE="([a-zA-Z0-9_\-\/\.?~+%=&,$\'\(\):;*@\[\]]+)">/i';
 
         $media_tags_found   = array();
 
