@@ -80,7 +80,7 @@ class AMA_PDO_wrapper
 		$matched = array();
 		preg_match('/^([a-z]+):\/\/(\S*):(\S*)@(\S*)\/(\S*)$/', $dsn, $matched);
 		list ( , $dbtype, $username, $password, $dbhost, $dbname ) = $matched;
-			
+
 		/**
 		 * Ok, let's make the connection by instatiatiating the object
 		 */
@@ -117,7 +117,7 @@ class AMA_PDO_wrapper
 	 *
 	 * @param PDOStatement $stmt the execute statement to count rows for. defaults to null
 	 * @return integer value with the number of rows, 0 on failure.
-	 * 
+	 *
 	 * @access public
 	 */
 	public function affectedRows($stmt=null) {
@@ -143,15 +143,15 @@ class AMA_PDO_wrapper
 		 * if $params is a scalar, let's transform it into a one-element array
 		 */
 		if (!is_array($params)) $values = array ($params);
-		
+
 		try {
 			$stmt = $this->connection_object->prepare($query);
 			$stmt->execute($params);
 			if (is_null($col)) $retval = $stmt->fetchAll ($fetchmode);
 			else if (is_numeric($col) && intval($col)>=0) $retval = $stmt->fetchAll($fetchmode,intval($col));
-			else throw new PDOException("Soemthing went wrong in query execution ".__FILE__." line: ".__LINE__);			
+			else throw new PDOException("Soemthing went wrong in query execution ".__FILE__." line: ".__LINE__);
 		} catch (PDOException $e) {
-			$retval = self::handleException($e); 
+			$retval = self::handleException($e);
 		}
 		return $retval;
 	}
@@ -188,19 +188,19 @@ class AMA_PDO_wrapper
 	*/
 	public function &getAssoc($query, $force_array = false, $params = array(), $fetchmode = null, $group = false) {
 		$force_array = $group; // SEE ABOVE BUG
-		
+
 		/**
 		 * if $params is a scalar, let's transform it into a one-element array
 		 */
 		if (!is_array($params)) $params = array ($params);
-		
+
 		try {
 			$stmt = $this->connection_object->prepare($query);
 			$stmt->execute($params);
 			// build an array like MDB2 getAssoc would
 			$tmparray = array();
 			while ($row=$stmt->fetch($fetchmode)){
-					
+
 				$firstRow = current($row);
 				$index = $firstRow;
 				array_shift($row);
@@ -209,19 +209,20 @@ class AMA_PDO_wrapper
 				{
 					$tmparray[$index][$key] = $value;
 				}
-					
+
 				// if force_array is false and two columns only are selected,
 				// MDB2 would return a scalar instead of array, let me emulate this
 				if (!$force_array && count($tmparray[$index])===1)
 				{
 					unset ($tmparray[$index]);
 					$tmparray[$index] = $value;
-				}					
+				}
 			}
 			$retval =& $tmparray;
 			return $retval;
 		} catch (PDOException $e) {
-			return self::handleException($e);
+			$retval = self::handleException($e);
+			return $retval;
 		}
 	}
 
@@ -232,7 +233,7 @@ class AMA_PDO_wrapper
 	 *
 	 * @param string query - the SELECT query statement to be executed.
 	 * @param numeric col the number of column to get.
-	 * @param array params to be bounded to the query 
+	 * @param array params to be bounded to the query
 	 * @return field value on success, a PDOException on failure.
 	 *
 	 * @access public
@@ -247,7 +248,7 @@ class AMA_PDO_wrapper
 	 * the first row of the result set and then frees the result set.
 	 *
 	 * @param string query - the SELECT query statement to be executed.
-	 * @param array params to be bounded to the query 
+	 * @param array params to be bounded to the query
 	 * @return field value on success, a PDOException on failure.
 	 *
 	 * @access public
@@ -261,7 +262,7 @@ class AMA_PDO_wrapper
 	 * from a query result
 	 *
 	 * @param string query - the SELECT query statement to be executed.
-	 * @param array params to be bounded to the query 
+	 * @param array params to be bounded to the query
 	 * @param numeric fetchmode - the fetchmode to be used.
 	 * @return field value on success, a PDOException on failure.
 	 *
@@ -272,7 +273,7 @@ class AMA_PDO_wrapper
 		 * if $params is a scalar, let's transform it into a one-element array
 		 */
 		if (!is_array($params)) $params = array ($params);
-		
+
 		try {
 			$stmt = $this->connection_object->prepare($query);
 			$stmt->execute($params);
@@ -298,7 +299,8 @@ class AMA_PDO_wrapper
 			$retval = $this->connection_object->query($query);
 			return $retval;
 		} catch (PDOException $e) {
-			return self::handleException($e);
+			$retval = self::handleException($e);
+			return $retval;
 		}
 	}
 
@@ -316,20 +318,20 @@ class AMA_PDO_wrapper
 			if (!is_bool($retval)) return $retval;
 			else return 0;
 		} catch (PDOException $e) {
-			$retval = self::handleException($e); 
+			$retval = self::handleException($e);
 			return $retval;
 		}
 	}
-	
+
 	/**
 	 * Calls columnCount method.
 	 *
 	 * @param PDOStatement $stmt the execute statement to count columns for. defaults to null
 	 * @return integer value with the number of columns, 0 on failure.
-	 * 
+	 *
 	 * @access public
 	 */
-	public function numCols($stmt=null) {		
+	public function numCols($stmt=null) {
 		if ($stmt instanceof PDOStatement) return $stmt->columnCount();
 		else return 0;
 	}
@@ -355,9 +357,9 @@ class AMA_PDO_wrapper
 	 * Calls execute method on passed PDOStatement with passed values
 	 *
 	 * @param PDOStatement $stmt
-	 * @param array $values params to be bounded to the query 
+	 * @param array $values params to be bounded to the query
 	 * @return PDOStatement the executed statement from which yuo're going to fetch or false on failure
-	 * 
+	 *
 	 * @access public
 	 */
 	public function &execute($stmt, $values) {
@@ -365,20 +367,20 @@ class AMA_PDO_wrapper
 		 * if $values is a scalar, let's transform it into a one-element array
 		 */
 		if (!is_array($values)) $values = array ($values);
-		
+
 		if ($stmt instanceof PDOStatement)
 		{
 			$success = $stmt->execute($values);
-			if ($success === true) return $stmt;			
-		}		
+			if ($success === true) return $stmt;
+		}
 		return false;
 	}
-	
+
 	/**
 	 * Calls AMAPDO free method.
 	 *
 	 * @return bool true on success
-	 * 
+	 *
 	 * @access public
 	 */
 	public function free() {
@@ -406,7 +408,7 @@ class AMA_PDO_wrapper
 
 	/**
 	 * Calls lastInsertId
-	 * 
+	 *
 	 * @param  string $table not used
 	 * @param  string $field not used
 	 * @return string representing the row ID of the last row that was inserted into the database or a PDOException if not supported by the DBMS
@@ -414,7 +416,7 @@ class AMA_PDO_wrapper
 	public function lastInsertID($table=null, $field=null) {
 		try {
 			$retval = $this->connection_object->lastInsertID();
-			return $retval; 
+			return $retval;
 		} catch (PDOException $e) {
 			return self::handleException($e);
 		}
