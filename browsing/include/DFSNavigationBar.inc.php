@@ -155,8 +155,9 @@ class DFSNavigationBar
 
         if ($n->type == ADA_GROUP_TYPE) {
             $result = $dh->child_exists($n->id, 0, $userLevel, '>=');
-            if (!AMA_DataHandler::isError($result)) {
+            if (!AMA_DataHandler::isError($result) && $result !== FALSE) {
             	$this->_nextNode = $result;
+            	return;
             }
         } else {
             $result = $dh->child_exists($n->parent_id, $n->order + 1, $userLevel, '>=');
@@ -164,11 +165,12 @@ class DFSNavigationBar
                 $this->_nextNode = $result;
                 return;
             }
-            $found = false;
-            $id = $n->id;
-            while(!$found) {
-                $node_info = $dh->get_node_info($id);
-                if(!AMA_DataHandler::isError($node_info)) {
+        }    
+        $found = false;
+        $id = $n->id;
+        while(!$found) {
+            $node_info = $dh->get_node_info($id);
+            if(!AMA_DataHandler::isError($node_info)) {
                     $parentId = $node_info['parent_id'];
                     $order = $node_info['ordine'];
 
@@ -184,7 +186,6 @@ class DFSNavigationBar
                         $id = $parentId;
                     }
                 }
-            }
         }
     }
     /**
