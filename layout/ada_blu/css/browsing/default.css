@@ -582,8 +582,15 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 	padding :0;
 }
 
-#contentcontent div.media.sound div.jp-progress,
 #contentcontent div.media.sound div.jp-time-holder {
+    top: 30px;
+    font-size: 0.85em;
+    line-height: 1em;
+    color: #666;
+    width: 38%;
+    left: 90px;
+}
+#contentcontent div.media.sound div.jp-progress {
 	width: 40%;
 	left: 27%;
 	top: 12px;
