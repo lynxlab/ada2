@@ -424,7 +424,7 @@ if ($op !== false && $op == 'course_info') {
                             $MSGtext->addChild (new CText(' '.translateFN('per tornare alla tua home page')));
 
                             if ($course_instance_infoAR['price'] > 0) {
-                                $args = '?provider='.$providerId.'&course='.$courseId.'&instance='.$instanceId;
+                                $args = '?provider='.$providerId.'&id_course='.$courseId.'&id_course_instance='.$instanceId;
                                 header('Location: ' . HTTP_ROOT_DIR . '/browsing/student_course_instance_subscribe.php'.$args);
                                 exit();
                             } else {

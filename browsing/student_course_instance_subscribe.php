@@ -54,16 +54,17 @@ $today_date = today_dateFN();
 //$id_studente = $_REQUEST['id_student'];
 
 $providerId = DataValidator::is_uinteger($_GET['provider']);
-$courseId = DataValidator::is_uinteger($_GET['course']);
-$instanceId = DataValidator::is_uinteger($_GET['instance']);
+$courseId = DataValidator::is_uinteger($_GET['id_course']);
+$instanceId = DataValidator::is_uinteger($_GET['id_course_instance']);
 
 
-$testerInfoAr = $common_dh->get_tester_info_from_id($providerId,'AMA_FETCH_ASSOC');
+$testerInfoAr = $common_dh->get_tester_info_from_id($providerId,AMA_FETCH_ASSOC);
+//var_dump($testerInfoAr);
 if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
-    $provider_name = $testerInfoAr[1];
-    $tester = $testerInfoAr[10];
+    $provider_name = $testerInfoAr['nome'];
+    $tester = $testerInfoAr['puntatore'];
     $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-    $currentTesterId = $newTesterId;
+//	var_dump($newTesterId);die();
     $GLOBALS['dh'] = $tester_dh;
     /*
      * Instance Object
@@ -130,7 +131,7 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
             $form = new InstancePaypalForm();
             $form->fillWithArrayData($formData);
             $data = $form->getHtml();
-//            print_r($data);
+//            print_r($form);
             //$form->fillWithRequestData($request);
         }
     }
