@@ -98,12 +98,13 @@
             <table border="0" cellpadding="10" cellspacing="0">
             <tr>
             <td>
+            
             <!-- PayPal Logo -->
-            <a href="#" onclick="javascript:window.open('https://www.paypal.com/it/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=400, height=350');"><img  src="https://www.paypalobjects.com/WEBSCR-640-20101108-1/it_IT/IT/i/bnr/bnr_horizontal_solution_PP_178wx80h.gif" border="0" alt="Che cos'&egrave; PayPal"></a>
-            <!-- PayPal Logo -->
+<a href="https://www.paypal.com/it/webapps/mpp/paypal-popup" title="Come funziona PayPal" onclick="javascript:window.open('https://www.paypal.com/it/webapps/mpp/paypal-popup','WIPaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700'); return false;"><img src="https://www.paypalobjects.com/webstatic/mktg/logo-center/logo_paypal_carte.jpg" border="0" alt="Marchi di accettazione PayPal" /></a>
+			<!-- PayPal Logo -->
             </td>
             <td class="pay_submit">
-                <template_field class="template_field" name="data">data</template_field>
+                	<template_field class="template_field" name="data">data</template_field>
             </td>
             </tr>
             </table>
