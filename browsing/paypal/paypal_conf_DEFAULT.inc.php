@@ -14,6 +14,9 @@
 define ( 'PAYPAL_ACCOUNT', 'xxxxxxxxxxxxxxxxxxxxx@lynxlab.com' ); // business
 define ( 'PAYPAL_ACTION', 'https://www.sandbox.paypal.com/cgi-bin/webscr' ); // form action
 
+// production account
+//define('PAYPAL_ACTION',  'https://www.paypal.com/cgi-bin/webscr'); // form action
+
 define ( 'PAYPAL_RETURN_PAGE', 'http://localhost/ada22/grazie.htm' ); // default return page. Overwrite by form
 define ( 'COURSE_AMOUNT', '10.00' ); // dovrà essere nel DB dell'istanza corso
 define ( 'CURRENCY_CODE', 'EUR' ); // currency_code
