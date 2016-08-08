@@ -174,10 +174,12 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     );
 }
 $help = '';
+$optionsAr['onload_func'] = 'initDoc();';
+
 //print_r($content_dataAr);
 /**
  * Sends data to the rendering engine
  */
-ARE::render($layout_dataAr, $content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);
 
 ?>

@@ -590,7 +590,10 @@ $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_GROUP_WORD_TYPE][EDIT_OPER
                                                                                     EDITOR_SHOW_NODE_ORDER |
                                                                                     EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES;
 
-
+$ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_AUTHOR][ADA_PERSONAL_EXERCISE_TYPE][EDIT_OPERATION] = EDITOR_SHOW_NODE_POSITION | EDITOR_SHOW_PARENT_NODE_SELECTOR |
+                                                                                    EDITOR_SELECT_EXTERNAL_LINK | EDITOR_SHOW_NODE_LEVEL|
+                                                                                    EDITOR_SHOW_NODE_ORDER |
+                                                                                    EDITOR_ALLOW_SWITCHING_BETWEEN_EDITING_MODES;                                                                                    
 
 //  $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_STUDENT][ADA_NOTE_TYPE][ADD_OPERATION]  = 0;
 //  $ADA_ELEMENT_VIEWING_PREFERENCES[AMA_TYPE_STUDENT][ADA_NOTE_TYPE][EDIT_OPERATION] = 0;
