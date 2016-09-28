@@ -1155,7 +1155,7 @@ class Html extends Generic_HTML
     <meta name="author" content="$author">
     <meta name="template" content="$this->template">
     <meta name="family" content="$this->family">
-    <meta name="module" content="$this->module_dir">
+    <meta name="ADA-module" content="$this->module_dir">
     <meta name="class" content="HTML">
     <meta name="outputClasses" content="NEW">
     <meta name="description" content="$description">
@@ -1225,7 +1225,7 @@ EOT;
         <meta name=\"author\" content=\"$author\">
         <meta name=\"template\" content=\"$template_name\">
         <meta name=\"family\" content=\"$family_name\">
-        <meta name=\"module\" content=\"$module_dir\">
+        <meta name=\"ADA-module\" content=\"$module_dir\">
         <meta name=\"widgets\" content=\"$widget_filename\">";
         if (isset($layoutObj->menu)) { 
         	$this->htmlheader .= "
