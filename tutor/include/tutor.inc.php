@@ -87,7 +87,8 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
 // added type parameter that defaults to 'xls'
 function get_student_coursesFN($id_course_instance,$id_course,$order="",$type='HTML') {
 // wrapper for Class Student_class (in courses_class.inc.php)
-    $student_classObj = New Student_class($id_course_instance);
+	// 2nd parameter empty string means get all students
+    $student_classObj = New Student_class($id_course_instance, '');
     return $student_classObj->get_class_reportFN($id_course,$order,'',$type);
 
 }
