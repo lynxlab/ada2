@@ -10,6 +10,7 @@
 class TutorManagementTest {
 	
 	protected $student;
+	protected $id_student;
 	protected $test;
 	protected $history_test;
 	protected $action;
@@ -75,6 +76,7 @@ class TutorManagementTest {
 					$this->returnError = true;
 				}
 				$this->student = $student;
+				$this->id_student = $id_student;
 
 			break;
 		}
@@ -165,7 +167,10 @@ class TutorManagementTest {
 	protected function list_tests($student = false) {
 		$dh = $GLOBALS['dh'];
 
-		$historyTest = $dh->test_getHistoryTestJoined(array('id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id),$this->tipo);
+		$params = array('id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id); 		
+		if ($student || $this->student) $params['id_utente'] = $this->id_student;
+		
+		$historyTest = $dh->test_getHistoryTestJoined($params,$this->tipo);
 		if ($dh->isError($historyTest)) {
 			$this->returnError = true;
 			return;
@@ -266,7 +271,10 @@ class TutorManagementTest {
 	protected function list_history_tests($student = false) {
 		$dh = $GLOBALS['dh'];
 
-		$historyTest = $dh->test_getHistoryTestJoined(array('id_nodo'=>$this->test['id_nodo'],'id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id),$this->tipo);
+		$params = array('id_nodo'=>$this->test['id_nodo'],'id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id);
+		if ($student || $this->student) $params['id_utente'] = $this->id_student;
+		
+		$historyTest = $dh->test_getHistoryTestJoined($params,$this->tipo);
 		if ($dh->isError($historyTest)) {
 			$this->returnError = true;
 			return;
