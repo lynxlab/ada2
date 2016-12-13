@@ -1280,10 +1280,10 @@ class Student_class {
     var $student_list;
 
 
-    function Student_class($id_course_instance) {
+    function Student_class($id_course_instance, $status=null) {
         $dh = $GLOBALS['dh'];
         // constructor
-        $status = ADA_STATUS_SUBSCRIBED; // we want only subscribed students
+        if (is_null($status)) $status = ADA_STATUS_SUBSCRIBED; // we want only subscribed students
         $dataHa = $dh->course_instance_students_presubscribe_get_list($id_course_instance,$status); // Get student list of selected course
 
         if (AMA_DataHandler::isError($dataHa)) { // || (!is_array($dataHa))){ ** Se non e' un array non deve chiamare getMessage 12/05/2004
@@ -1556,7 +1556,8 @@ class Student_class {
                 $utime = dt2tsFN($ymdhms);
                 $dati['date'] = $report_generation_TS;
 
-                if (!empty($id_student) and ($status_student == ADA_STATUS_SUBSCRIBED OR $status_student == ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED)) {
+                $goodStatuses = array(ADA_STATUS_SUBSCRIBED, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
+                if (!empty($id_student) && in_array($status_student, $goodStatuses)) {
 
                     $studentObj = MultiPort::findUser($id_student);//new Student($id_student,$id_instance);
 
