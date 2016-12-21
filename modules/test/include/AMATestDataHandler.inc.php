@@ -971,20 +971,24 @@ class AMATestDataHandler extends AMA_DataHandler {
 
 				$domande = unserialize($v['domande']);
 
-				$sql = "SELECT
-							t.`tipo` as test_tipo,
-							q.`id_nodo`,q.`tipo`, q.`correttezza` as max_punti_domanda,
-							SUM(a.`correttezza`) as sum_punti,MAX(a.`correttezza`) as max_punti
-						FROM `".self::$PREFIX."nodes` q
-						JOIN `".self::$PREFIX."nodes` a ON (a.`id_nodo_parent` = q.`id_nodo`)
-						JOIN `".self::$PREFIX."nodes` t ON (t.`id_nodo` = q.`id_nodo_radice`)
-						WHERE q.`id_nodo` IN (".implode(',',$domande).")
-						GROUP BY t.`tipo`, q.`id_nodo`, q.`tipo`";
-				$res = $this->getAllPrepared($sql, null, AMA_FETCH_ASSOC);
-				if (self::isError($res)) return $res;
+				if (!empty($domande)) {
+					$sql = "SELECT
+								t.`tipo` as test_tipo,
+								q.`id_nodo`,q.`tipo`, q.`correttezza` as max_punti_domanda,
+								SUM(a.`correttezza`) as sum_punti,MAX(a.`correttezza`) as max_punti
+							FROM `".self::$PREFIX."nodes` q
+							JOIN `".self::$PREFIX."nodes` a ON (a.`id_nodo_parent` = q.`id_nodo`)
+							JOIN `".self::$PREFIX."nodes` t ON (t.`id_nodo` = q.`id_nodo_radice`)
+							WHERE q.`id_nodo` IN (".implode(',',$domande).")
+							GROUP BY t.`tipo`, q.`id_nodo`, q.`tipo`";
+					$res2 = $this->getAllPrepared($sql, null, AMA_FETCH_ASSOC);
+					if (self::isError($res2)) return $res2;
 
-				if (!empty($res)) {
-					foreach($res as $i) {
+				} else $res2 = array();
+
+
+				if (!empty($res2)) {
+					foreach($res2 as $i) {
 						if ($i['test_tipo']{0} == ADA_TYPE_TEST) {
 							$key = 'max_score_test';
 						}
