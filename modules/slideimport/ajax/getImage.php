@@ -54,12 +54,15 @@ if (isset($_GET['url']) && strlen(trim($_GET['url']))>0 &&
 		$imagick->readimage($fileName.'['.$pageNum.']');
 		$width = $imagick->getimagewidth();
 		$height = $imagick->getimageheight();
-		//$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
-		$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_TRIANGLE,1);
-//		$imagick->setImageFormat('png');
-		$imagick->setImageFormat(IMAGE_FORMAT);
-//		header('Content-type: image/png');
+
+		$res = $imagick->getimageresolution();
+		$bg = new Imagick();
+		$bg->setresolution($res["x"],$res["y"]); //setting the same image resolution
+		//create a white background image with the same width and height
+		$bg->newimage($imagick->getimagewidth(), $imagick->getimageheight(), 'white');
+		$bg->compositeimage($imagick, Imagick::COMPOSITE_OVER, 0, 0); //merging both images
+		$bg->setimageformat(IMAGE_FORMAT);
 		header('Content-type: '.IMAGE_HEADER_PREVIEW);
-		echo $imagick->getimageblob();
+		echo $bg->getimageblob();
 	}
 }
