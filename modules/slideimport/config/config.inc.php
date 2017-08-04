@@ -15,7 +15,7 @@
  */
 define ('MODULES_SLIDEIMPORT_UPLOAD_SESSION_VAR','slideimportFile');
 
-define ('IMPORT_IMAGE_HEIGHT', 600);
+define ('IMPORT_IMAGE_HEIGHT', 800);
 define ('IMPORT_PREVIEW_HEIGHT', 210);
 
 define ('IMAGE_FORMAT','jpg');
