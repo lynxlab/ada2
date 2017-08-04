@@ -62,13 +62,20 @@ if (isset($_GET['selectedPages']) && is_array($_GET['selectedPages']) && count($
 				$width = $imagick->getimagewidth();
 				$height = $imagick->getimageheight();
 				//$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_LANCZOS,1);
-				$imagick->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_TRIANGLE,1);
-				$imagick->transformImageColorspace(Imagick::COLORSPACE_SRGB);
+
+				$res = $imagick->getimageresolution();
+				$bg = new Imagick();
+				$bg->setresolution($res["x"],$res["y"]); //setting the same image resolution
+				//create a white background image with the same width and height
+				$bg->newimage($imagick->getimagewidth(), $imagick->getimageheight(), 'white');
+				$bg->compositeimage($imagick, Imagick::COMPOSITE_OVER, 0, 0); //merging both images
+				$bg->resizeImage(intval($baseHeight*($width/$height)),$baseHeight,Imagick::FILTER_TRIANGLE,1);
+// 				$imagick->transformImageColorspace(Imagick::COLORSPACE_SRGB);
 				//$imagick->setImageFormat('png');
-				$imagick->setImageFormat(IMAGE_FORMAT);
-				$imagick->setImageCompressionQuality(IMAGE_COMPRESSION_QUALITY);
+				$bg->setImageFormat(IMAGE_FORMAT);
+				$bg->setImageCompressionQuality(IMAGE_COMPRESSION_QUALITY);
 //				if ($imagick->writeimage($media_path . DIRECTORY_SEPARATOR . $selectedPage.'.png') !== true) {
-				if ($imagick->writeimage($media_path . DIRECTORY_SEPARATOR . $selectedPage.'.'.IMAGE_FORMAT) !== true) {
+				if ($bg->writeimage($media_path . DIRECTORY_SEPARATOR . $selectedPage.'.'.IMAGE_FORMAT) !== true) {
 					// delete all files and dir on error
 					delTree($media_path);
 					$error = 1;
