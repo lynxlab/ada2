@@ -110,7 +110,7 @@ else {
       //translateFN('Elimina')=> "<a href=\"#\" onclick=\"$onclick\"><img src=\"img/delete.png\" border=0></a>"
     );
     if (defined('MODULES_SLIDEIMPORT') && MODULES_SLIDEIMPORT) {
-    	$row['Importa'] = "<a href=\"".MODULES_SLIDEIMPORT_HTTP."/?id_course=$id_course\"><img src=\"".MODULES_SLIDEIMPORT_HTTP."/layout/img/slideimport.png\" border=0></a>";
+    	$row[translateFN('Importa')] = "<a href=\"".MODULES_SLIDEIMPORT_HTTP."/?id_course=$id_course\"><img src=\"".MODULES_SLIDEIMPORT_HTTP."/layout/img/slideimport.png\" border=0></a>";
     }
     array_push($course_dataHa,$row);
   }
