@@ -136,47 +136,49 @@ if (isset($testerName)) {
 				// NOTE: slider MUST be removed BEFORE tabs because tabs can contain slider and not viceversa
 				$removeIds = array ('slider','tabs');
 
-				$html = new DOMDocument('1.0', ADA_CHARSET);
-				/**
-				 * HTML uses the ISO-8859-1 encoding (ISO Latin Alphabet No. 1) as default per it's specs.
-				 * So add a meta the should do the encoding hint, and output some PHP warings as well that
-				 * are being suppressed with the @
-				 */
-				@$html->loadHTML('<meta http-equiv="content-type" content="text/html; charset='.ADA_CHARSET.'">'.$aNews[2]);
+				if (strlen(trim($aNews[2]))>0) {
+					$html = new DOMDocument('1.0', ADA_CHARSET);
+					/**
+					 * HTML uses the ISO-8859-1 encoding (ISO Latin Alphabet No. 1) as default per it's specs.
+					 * So add a meta the should do the encoding hint, and output some PHP warings as well that
+					 * are being suppressed with the @
+					 */
+					@$html->loadHTML('<meta http-equiv="content-type" content="text/html; charset='.ADA_CHARSET.'">'.trim($aNews[2]));
 
-				foreach ($removeIds as $removeId) {
-					$removeElement = $html->getElementById($removeId);
-					if (!is_null($removeElement)) $removeElement->parentNode->removeChild($removeElement);
-				}
-
-				// output in newstext only the <body> of the generated html
-				if ($showDescription) {
-					$newstext = '';
-					foreach ($html->getElementsByTagName('body')->item(0)->childNodes as $child) {
-						$newstext .= $html->saveXML($child);
+					foreach ($removeIds as $removeId) {
+						$removeElement = $html->getElementById($removeId);
+						if (!is_null($removeElement)) $removeElement->parentNode->removeChild($removeElement);
 					}
-					// strip off html tags
-					$newstext = strip_tags($newstext);
-					// check if content is too long...
-					if (strlen($newstext) > $maxLength) {
-						// cut the content to the first $maxLength characters of words (the $ in the regexp does the trick)
-						$newstext = preg_replace('/\s+?(\S+)?$/', '', substr($newstext, 0, $maxLength+1));
-						$addContinueLink = true;
+
+					// output in newstext only the <body> of the generated html
+					if ($showDescription) {
+						$newstext = '';
+						foreach ($html->getElementsByTagName('body')->item(0)->childNodes as $child) {
+							$newstext .= $html->saveXML($child);
+						}
+						// strip off html tags
+						$newstext = strip_tags($newstext);
+						// check if content is too long...
+						if (strlen($newstext) > $maxLength) {
+							// cut the content to the first $maxLength characters of words (the $ in the regexp does the trick)
+							$newstext = preg_replace('/\s+?(\S+)?$/', '', substr($newstext, 0, $maxLength+1));
+							$addContinueLink = true;
+						}
+						else $addContinueLink = false;
+
+						$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
 					}
-					else $addContinueLink = false;
 
-					$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
+					if ($addContinueLink) {
+						$contLink = CDOMElement::create('a', 'class:column continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+								$course_id.'&id_node='.$aNews[0]);
+						$contLink->addChild (new CText(translateFN('Continua...')));
+						$continueRow->addChild ($contLink);
+					} else {
+						$continueRow->addChild(CDOMElement::create('span','class:column'));
+					}
+					// $output .= $aNewsDIV->getHtml();
 				}
-
-				if ($addContinueLink) {
-					$contLink = CDOMElement::create('a', 'class:column continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
-							$course_id.'&id_node='.$aNews[0]);
-					$contLink->addChild (new CText(translateFN('Continua...')));
-					$continueRow->addChild ($contLink);
-				} else {
-					$continueRow->addChild(CDOMElement::create('span','class:column'));
-				}
-				// $output .= $aNewsDIV->getHtml();
 			}
 			$output = $newsContainer->getHtml();
 		} else $output = translateFN('Spiacente, non ci sono corsi che hanno l\'id richiesto');
