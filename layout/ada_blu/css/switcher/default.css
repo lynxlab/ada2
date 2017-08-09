@@ -6,6 +6,11 @@
 	width: 100%;
 	float: left;
 }
+
+ul.inline_menu {
+	margin:0;
+}
+
 ul.inline_menu li {
     margin:0px;
     padding: 5px 0px;
