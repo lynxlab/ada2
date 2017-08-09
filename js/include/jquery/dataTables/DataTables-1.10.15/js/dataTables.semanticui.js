@@ -200,6 +200,49 @@ $(document).on( 'init.dt', function (e, ctx) {
 		var api = new $.fn.dataTable.Api( ctx );
 
 		$( 'div.dataTables_length select', api.table().container() ).dropdown();
+
+		var selectObj = $( 'div.dataTables_length select', api.table().container() );
+		if (selectObj.is(':visible') || !selectObj.hasClass('dropdown')) {
+
+			selectObj.hide();
+			var selectValue = selectObj.val();
+			var selectText = $( "option:selected", selectObj ).text();
+
+			var menuoptions = $('<div class="menu">');
+			$('option', selectObj).each(function() {
+				var thishtml = '<div class="item';
+				if (selectValue == $(this).attr('value')) { thishtml += ' active'; }
+				thishtml += '" data-value="'+$(this).attr('value')+'">'+$(this).html()+'</div>';
+				menuoptions.append($(thishtml));
+			});
+
+			var menu = $('<div class="ui dropdown selection">').
+				append('<div class="default text">'+selectText+'</div>').
+				append('<i class="dropdown icon"></i>').
+				append(menuoptions);
+			selectObj.after(menu);
+			$( 'div.dataTables_length .ui.dropdown.selection', api.table().container() ).dropdown({
+				onChange: function(value, text) {
+					selectObj.val(value).trigger('change');
+				}
+			});
+		}
+
+		// input filter in semantic ui style
+
+		var infotable_filter = $( 'div.dataTables_filter', api.table().container() );
+		var input = infotable_filter.find("input").clone(true);
+		var placeholder = infotable_filter.find("label").text().trim().slice(0,-1);
+		// capitalize first letter
+		placeholder = placeholder.charAt(0).toUpperCase() + placeholder.slice(1);
+		input.attr("placeholder",placeholder);
+		infotable_filter.find("input").remove();
+		infotable_filter.find("label").remove();
+		infotable_filter.append(input);
+		infotable_filter.append('<i class="filter icon"></i>');
+		infotable_filter.children().wrapAll('<div class="ui right floated basic segment"><div class="ui left labeled icon input field"></div></div>');
+		infotable_filter.addClass("ui form");
+		infotable_filter.after("<div class='clearfix'></div>");
 	}
 } );
 
