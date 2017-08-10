@@ -1,14 +1,14 @@
 <?php
 /**
  * LOGIN MODULE - config page for option sets of the provider type
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @version		0.1
  */
- 
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
@@ -46,7 +46,7 @@ foreach (abstractLogin::getLoginProviders(null) as $id=>$className) {
 	}
 }
 
-if (isset($loginObj) && is_object($loginObj) && is_a($loginObj, 'abstractLogin')) {	
+if (isset($loginObj) && is_object($loginObj) && is_a($loginObj, 'abstractLogin')) {
 	$data = $loginObj->generateConfigPage()->getHtml();
 	$title = translateFN('Configurazioni '.ucfirst(strtolower($loginObj->loadProviderName())));
 	$optionsAr['onload_func'] = 'initDoc(\''.$providerClassName.'\');';
@@ -69,6 +69,7 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		MODULES_LOGIN_PATH . '/js/jquery.jeditable.mini.js',
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_REDRAW,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
@@ -76,7 +77,7 @@ $layout_dataAr['JS_filename'] = array(
 );
 $layout_dataAr['CSS_filename'] = array(
 		JQUERY_UI_CSS,
-		JQUERY_DATATABLE_CSS,
+		SEMANTICUI_DATATABLE_CSS,
 		MODULES_LOGIN_PATH.'/layout/tooltips.css'
 );
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
