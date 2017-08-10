@@ -2,19 +2,19 @@
 
 /**
  * List instances - this module provides list instances functionality
- * 
- * 
- * @package		
+ *
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2010, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
@@ -125,7 +125,7 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
                 $actions
             );
         }
-        $data = BaseHtmlLib::tableElement('', $thead_data, $tbody_data);
+        $data = BaseHtmlLib::tableElement('id:list_instances, class:'.ADA_SEMANTICUI_TABLECLASS, $thead_data, $tbody_data);
     } else {
         $data = new CText(translateFN('Non sono state trovate istanze per il corso selezionato'));
     }
@@ -136,6 +136,26 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
 
 $label = translateFN('Lista istanze del corso'). ' '.$course_title;
 $help = translateFN('Da qui il provider admin può vedere la lista delle istanze del corso selezionato');
+
+$layout_dataAr['CSS_filename'] = array (
+		JQUERY_UI_CSS,
+		SEMANTICUI_DATATABLE_CSS,
+);
+$layout_dataAr['JS_filename'] = array(
+		JQUERY,
+		JQUERY_UI,
+		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
+		JQUERY_DATATABLE_DATE,
+		JQUERY_NO_CONFLICT
+);
+
+$optionsAr = array('onload_func' => "\$j('#list_instances').DataTable({
+        'oLanguage':
+            {
+                'sUrl': HTTP_ROOT_DIR + '/js/include/jquery/dataTables/dataTablesLang.php'
+            }
+});");
 
 $content_dataAr = array(
     'user_name' => $user_name,
@@ -149,4 +169,4 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml()
 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

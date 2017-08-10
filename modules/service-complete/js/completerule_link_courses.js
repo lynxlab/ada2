@@ -60,7 +60,6 @@ function initButtons()
 
 function initDataTables() {
 	datatable = $j('#linkedRulesTable').dataTable( {
-		 		"bJQueryUI": true,
                 "bFilter": true,
                 "bInfo": false,
                 "bSort": true,
@@ -72,6 +71,9 @@ function initDataTables() {
                                   "bVisible":    false },
                                 null,
                                 { "bSearchable" : false, "bSortable" : false, "sWidth" : "25%"}
-                            ]
+                            ],
+                "oLanguage": {
+                    "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+                 }
 	}).show();
 }

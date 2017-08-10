@@ -61,13 +61,13 @@ require_once ROOT_DIR . '/include/Forms/CourseInstanceSubscriptionsForm.inc.php'
 if(!($courseObj instanceof Course) || !$courseObj->isFull()) {
     $data = new CText(translateFN('Corso non trovato'));
     $data=$data->getHtml();
-} 
+}
 else if(!($courseInstanceObj instanceof Course_instance) || !$courseInstanceObj->isFull()) {
     $data = new CText(translateFN('Istanza corso non trovata'));
     $data=$data->getHtml();
-} 
+}
 else {
-    
+
     $courseId = $courseObj->getId();
     $instanceId = $courseInstanceObj->getId();
     $presubscriptions = Subscription::findPresubscriptionsToClassRoom($instanceId);
@@ -80,6 +80,7 @@ else {
         );
         $dataAr=array();
         $result_table = BaseHtmlLib::tableElement('id:course_instance_Table', $thead_data,$dataAr);
+        $result_table->setAttribute('class', $result_table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
         $table = $result_table->getHtml();
     } else {
         //first: make associative arrays by ID of presubscription
@@ -114,10 +115,10 @@ else {
         $arrayUsers=array();
         $arrayUsers= array_merge($arrayUsers,$presubscriptions);
         $arrayUsers= array_merge($arrayUsers,$subscriptions);
-      
+
         $dataAr=array();
         $tooltipDiv=CDOMElement::create('div');
-        
+
         $thead_data = array(
             translateFN('Hidden_status'),
             translateFN('Id'),
@@ -126,19 +127,19 @@ else {
             translateFN('Id_istance'),
             translateFN('Data iscrizione'),
             translateFN('Livello')
-             
+
             );
         if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN)){
-            array_push($thead_data,translateFN('Codice iscrizione')); 
+            array_push($thead_data,translateFN('Codice iscrizione'));
         }
         if(defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE)){
-            array_push($thead_data,translateFN('Certificato'));  
+            array_push($thead_data,translateFN('Certificato'));
         }
         foreach($arrayUsers as $user)
         {
 
             $name = $user->getSubscriberFullname();
-           
+
             /* add tooltip */
             if (isset($student_subscribed_course_instance[$user->getSubscriberId()])) {
             	$UserInstances = $student_subscribed_course_instance[$user->getSubscriberId()];
@@ -160,23 +161,23 @@ else {
             $span_label->setAttribute('class', 'UserName tooltip');
             $span_label->setAttribute('id', $user->getSubscriberId());
             $span_label->addChild(new CText($name));
-            
+
             $Tooltip=CDOMElement::create('div');
             $Tooltip->setAttribute('title', $title);
             //$Tooltip->setAttribute('class', 'UserName tooltip');
             $Tooltip->setAttribute('id', 'user_tooltip_'.$user->getSubscriberId());
             $tooltipDiv->addChild($Tooltip);
-            
+
             $title = '';
 
             /* select user status */
 
-            $select=CDOMElement::create('select', 'class:select_status');  
+            $select=CDOMElement::create('select', 'class:select_status');
 
             $option_Presubscribed = CDOMElement::create('option');
             $option_Presubscribed->setAttribute('value', ADA_STATUS_PRESUBSCRIBED);
             $option_Presubscribed->addChild(new CText(translateFN("Preiscritto")));
-            
+
 
             $option_Subscribed = CDOMElement::create('option');
             $option_Subscribed->setAttribute('value', ADA_STATUS_SUBSCRIBED);
@@ -193,7 +194,7 @@ else {
             $option_Completed = CDOMElement::create('option');
             $option_Completed->setAttribute('value', ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
             $option_Completed->addChild(new CText(translateFN("Completato")));
-            
+
             $option_Terminated = CDOMElement::create('option');
             $option_Terminated->setAttribute('value', ADA_STATUS_TERMINATED);
             $option_Terminated->addChild(new CText(translateFN("Terminato")));
@@ -211,7 +212,7 @@ else {
                     $span_selected = CDOMElement::create('span');
                     $span_selected->setAttribute('class', 'hidden_status');
                     $span_selected->addChild(new CText(translateFN("Iscritto")));
-                    
+
                     break;
                 case ADA_STATUS_REMOVED:
                     $option_Removed->setAttribute('selected','selected');
@@ -239,7 +240,7 @@ else {
                 	$span_selected = CDOMElement::create('span');
                 	$span_selected->setAttribute('class', 'hidden_status');
                 	$span_selected->addChild(new CText(translateFN("Terminato")));
-                	
+
                 	break;
             }
 
@@ -265,15 +266,15 @@ else {
 //            $span_idUser = CDOMElement::create('span');
 //            $span_idUser->setAttribute('class', 'idUser');
 //            $span_idUser->addChild(new CText($user->getSubscriberId()));
-//            
+//
             $span_instance = CDOMElement::create('span');
             $span_instance->setAttribute('class', 'id_instance');
             $span_instance->addChild(new CText($instanceId));
-            
+
 //             $span_data = CDOMElement::create('span');
 //             $span_data->setAttribute('class', 'date');
 //             $span_data->addChild(new CText($data_iscrizione));
-                    
+
             $userArray = array(translateFN('Hidden_status')=>$span_selected->getHtml(),translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$span_instance->getHtml(),translateFN('Data iscrizione')=>$data_iscrizione,translateFN('Livello')=>$livello);
 
             if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
@@ -288,7 +289,7 @@ else {
                $certificate = $UserCertificateObj->Check_Requirements_Certificate($user->getSubscriberId());
                if($certificate)
                {
-                 
+
                    $linkCertificate = CDOMElement::create('a','href:../browsing/userCertificate.php?id_user='.$user->getSubscriberId().'&id_instance='.$instanceId);
                    $linkCertificate->setAttribute('class', 'linkCertificate');
                    $imgDoc = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/document.png');
@@ -307,11 +308,12 @@ else {
                $userArray[translateFN('Certificato')] = $linkCertificate->getHtml();
             }
 
-            
-            array_push($dataAr,$userArray); 
+
+            array_push($dataAr,$userArray);
         }
-         
+
         $result_table = BaseHtmlLib::tableElement('id:course_instance_Table', $thead_data, $dataAr);
+        $result_table->setAttribute('class', $result_table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
         $table = $result_table->getHtml();
     }
 }
@@ -350,17 +352,18 @@ $content_dataAr = array(
 );
 $layout_dataAr['CSS_filename'] = array (
             JQUERY_UI_CSS,
-            JQUERY_DATATABLE_CSS,
+            SEMANTICUI_DATATABLE_CSS,
             );
 $layout_dataAr['JS_filename'] = array(
             JQUERY,
             JQUERY_UI,
             JQUERY_DATATABLE,
+			SEMANTICUI_DATATABLE,
 			JQUERY_DATATABLE_REDRAW,
             JQUERY_DATATABLE_DATE,
             ROOT_DIR. '/js/include/jquery/dataTables/selectSortPlugin.js',
             JQUERY_NO_CONFLICT
-           
+
             );
 
 

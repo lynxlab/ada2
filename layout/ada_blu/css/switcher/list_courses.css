@@ -40,10 +40,10 @@ and open the template in the editor.
 /**
  * DataTables styles
 */ 
-
 #table_list_courses { width: 100% !important; }
-#table_list_courses tbody td { height: 2.5em; border:none; vertical-align: middle;}
-#table_list_courses thead th { padding-right: 5px; border-bottom: 1px solid #999;}
+#table_list_courses tbody td > table td { border: none; }
+#table_list_courses tbody td { height: 2.5em; vertical-align: middle;}
+#table_list_courses thead th { padding-right: 5px; }
 #table_list_courses .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%;}
 #table_list_courses .DataTables_sort_icon { float: right; margin-top: -20px; }
 #table_list_courses_previous,

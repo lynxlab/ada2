@@ -1,14 +1,14 @@
 <?php
 /**
  * LOGIN MODULE - module config main page
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @version		0.1
  */
- 
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
@@ -37,10 +37,10 @@ require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 require_once MODULES_LOGIN_PATH .'/config/config.inc.php';
 $self = whoami();
 
-$loginProviders = abstractLogin::getLoginProviders(null,true); 
+$loginProviders = abstractLogin::getLoginProviders(null,true);
 
 if (!is_null($loginProviders) && is_array($loginProviders)) {
-			
+
 	/**
 	 * generate HTML for 'New Provider' button and the table
 	 */
@@ -51,10 +51,11 @@ if (!is_null($loginProviders) && is_array($loginProviders)) {
 	$newButton->setAttribute('onclick', 'javascript:editProvider(null);');
 	$newButton->addChild (new CText(translateFN('Nuovo Provider')));
 	$configIndexDIV->addChild($newButton);
+	$configIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
 	$tableOutData = array();
-		
+
 	if (!AMA_DB::isError($loginProviders)) {
-	
+
 		$labels = array (translateFN('id'), translateFN('ordine'), translateFN('className'),  translateFN('Nome'),
 				translateFN('Abilitato'), translateFN('Bottone'),
 				translateFN('azioni'));
@@ -62,7 +63,7 @@ if (!is_null($loginProviders) && is_array($loginProviders)) {
 		foreach ($loginProviders as $i=>$elementArr) {
 			$links = array();
 			$linksHtml = "";
-			$skip = $elementArr['className']==MODULES_LOGIN_DEFAULT_LOGINPROVIDER && !$hasDefault;	
+			$skip = $elementArr['className']==MODULES_LOGIN_DEFAULT_LOGINPROVIDER && !$hasDefault;
 			for ($j=0;$j<6;$j++) {
 				switch ($j) {
 					case 0:
@@ -103,7 +104,7 @@ if (!is_null($loginProviders) && is_array($loginProviders)) {
 						$link = 'moveProvider($j(this),'.$i.',1);';
 						break;
 				}
-	
+
 				if (isset($type)) {
 					$links[$j] = CDOMElement::create('li','class:liactions');
 					$linkshref = CDOMElement::create('button');
@@ -121,7 +122,7 @@ if (!is_null($loginProviders) && is_array($loginProviders)) {
 				foreach ($links as $link) $linksul->addChild ($link);
 				$linksHtml = $linksul->getHtml();
 			} else $linksHtml = '';
-			
+
 			$tableOutData[$i] = array (
 					$labels[0]=>$i,
 					$labels[1]=>$elementArr['displayOrder'],
@@ -131,11 +132,12 @@ if (!is_null($loginProviders) && is_array($loginProviders)) {
 					$labels[5]=>$elementArr['buttonLabel'],
 					$labels[6]=>$linksHtml);
 		}
-	
+
 		$OutTable = BaseHtmlLib::tableElement('id:loginProvidersList',
 				$labels,$tableOutData,'',translateFN('Elenco dei login provider'));
+		$OutTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);
 		$configIndexDIV->addChild($OutTable);
-	
+
 		// if there are more than 10 rows, repeat the add new button below the table
 		if (count($loginProviders)>10) {
 			$bottomButton = clone $newButton;
@@ -164,6 +166,7 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_REDRAW,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
@@ -171,7 +174,7 @@ $layout_dataAr['JS_filename'] = array(
 );
 $layout_dataAr['CSS_filename'] = array(
 		JQUERY_UI_CSS,
-		JQUERY_DATATABLE_CSS,
+		SEMANTICUI_DATATABLE_CSS,
 		MODULES_LOGIN_PATH.'/layout/tooltips.css'
 );
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);

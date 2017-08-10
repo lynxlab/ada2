@@ -16,12 +16,13 @@ function createDataTable(filter)
     var descriptionCol=lastCol-1;
     var titleCol=lastCol-2;
     oTable = $j('#table_list_courses').dataTable({
-        "bJQueryUI": true,
+        "bJQueryUI": false,
         "bFilter": true,
         "bInfo": true,
         "bSort": true,
         "bAutoWidth": true,
         "bPaginate" : true,
+        "aaSorting": [[ 1, "asc" ]],
         "aoColumnDefs": [
         {
             "aTargets": [0],
@@ -44,16 +45,6 @@ function createDataTable(filter)
         "oLanguage": 
         {
            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-        },
-        "fnDrawCallback":
-            function () {
-                // put the sort icon outside of the DataTables_sort_wrapper div
-                // for better display styling with CSS
-                $j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
-                sortIcon = $j(this).find('span').clone();
-                $j(this).find('span').remove();
-                $j(this).parents('th').append(sortIcon);
-            });
         }
     });
     

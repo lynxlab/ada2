@@ -3,7 +3,7 @@
  * SERVICE-COMPLETE MODULE.
  *
  * @package        service-complete module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2013, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           service-complete
@@ -70,7 +70,7 @@ if (!AMA_DB::isError($rulesList))
 	{
 		$links = array();
 		$linksHtml = "";
-			
+
 		for ($j=0;$j<3;$j++)
 		{
 			switch ($j)
@@ -91,7 +91,7 @@ if (!AMA_DB::isError($rulesList))
 					$link = 'deleteRule ($j(this), '.$ruleAr['id'].' , \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
 					break;
 			}
-				
+
 			if (isset($type))
 			{
 				$links[$j] = CDOMElement::create('li','class:liactions');
@@ -121,17 +121,19 @@ if (!AMA_DB::isError($rulesList))
 	$historyTable = new Table();
 	$historyTable->initTable('0','center','1','1','90%','','','','','1','0','','default','completeRulesList');
 	$historyTable->setTable($rulesData,translateFN('Elenco delle regole di completamento'),translateFN('Elenco delle regole di completamento'));
-
+	$histData = $historyTable->getTable();
+	$histData= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $histData, 1); // replace first occurence of class
 
 	$rulesIndexDIV->addChild($newButton);
-	$rulesIndexDIV->addChild(new CText($historyTable->getTable()));
+	$rulesIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
+	$rulesIndexDIV->addChild(new CText($histData));
 	// if there are more than 10 rows, repeat the add new button below the table
 	if ($i>10)
 	{
 		$bottomButton = clone $newButton;
 		$bottomButton->setAttribute('class', 'newButton bottom');
 		$rulesIndexDIV->addChild($bottomButton);
-	} 
+	}
 } // if (!AMA_DB::isError($rulesList))
 else
 {
@@ -157,7 +159,7 @@ else
 	);
 }
 
-array_push($layout_dataAr['CSS_filename'], JQUERY_DATATABLE_CSS);
+array_push($layout_dataAr['CSS_filename'], SEMANTICUI_DATATABLE_CSS);
 array_push($layout_dataAr['CSS_filename'], MODULES_SERVICECOMPLETE_PATH.'/layout/tooltips.css');
 
 $content_dataAr = array(
@@ -173,6 +175,7 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT

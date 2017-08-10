@@ -14,7 +14,10 @@ function initDataTables() {
         'bSort': true,
         'bAutoWidth': true,
 		'bDeferRender': true,
-        'bPaginate': false
+        'bPaginate': false,
+        "oLanguage": {
+            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+         }
 	});
 	fileSharingTable.show();
 }

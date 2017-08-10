@@ -72,10 +72,10 @@ if (!AMA_DB::isError($newslettersList))
 		$isSending = $dh->isSending ( $newsletterAr['id'] );
 		if (AMA_DB::isError($sentDetails)) $displayDetailsLink = false;
 		else $displayDetailsLink = ( count($sentDetails) > 0 );
-			
+
 		$links = array();
 		$linksHtml = "";
-			
+
 		for ($j=0;$j<5;$j++)
 		{
 			switch ($j)
@@ -97,7 +97,7 @@ if (!AMA_DB::isError($newslettersList))
 					$title = translateFN('Clicca per i dettagli della newsletter');
 					$link = 'self.document.location.href=\'details_newsletter.php?id='.$newsletterAr['id'].'\';';
 					$disabled = (!$displayDetailsLink);
-						
+
 					break;
 				case 3:
 					$type = 'copy';
@@ -112,7 +112,7 @@ if (!AMA_DB::isError($newslettersList))
 					$disabled = $isSending;
 					break;
 			}
-				
+
 			if (isset($type))
 			{
 				$links[$j] = CDOMElement::create('li','class:liactions');
@@ -149,14 +149,17 @@ if (!AMA_DB::isError($newslettersList))
 
 
 	$newsletterIndexDIV->addChild($newButton);
-	$newsletterIndexDIV->addChild(new CText($historyTable->getTable()));
+	$newsletterIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
+	$histData = $historyTable->getTable();
+	$histData= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $histData, 1); // replace first occurence of class
+	$newsletterIndexDIV->addChild(new CText($histData));
 	// if there are more than 10 rows, repeat the add new button below the table
 	if ($i>10)
 	{
 		$bottomButton = clone $newButton;
 		$bottomButton->setAttribute('class', 'newButton bottom');
 		$newsletterIndexDIV->addChild($bottomButton);
-	} 
+	}
 } // if (!AMA_DB::isError($newslettersAr))
 else
 {
@@ -182,7 +185,7 @@ else
 	);
 }
 
-array_push($layout_dataAr['CSS_filename'], JQUERY_DATATABLE_CSS);
+array_push($layout_dataAr['CSS_filename'], SEMANTICUI_DATATABLE_CSS);
 array_push($layout_dataAr['CSS_filename'], MODULES_NEWSLETTER_PATH.'/layout/tooltips.css');
 
 $content_dataAr = array(
@@ -198,6 +201,7 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT

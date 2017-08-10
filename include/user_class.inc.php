@@ -1461,6 +1461,7 @@ abstract class ADAAbstractUser extends ADALoggableUser {
 			$t->initTable('0','center','1','1','90%','','','','','1','0','','default','exercise_table');
 			$t->setTable($data,translateFN("Esercizi e punteggio"),translateFN("Esercizi e punteggio"));
 			$res = $t->getTable();
+			$res= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $res, 1); // replace first occurence of class
 		}else{
 			$res = translateFN("Nessun esercizio.");
 		}

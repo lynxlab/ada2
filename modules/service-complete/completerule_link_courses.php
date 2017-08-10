@@ -54,19 +54,19 @@ try {
 		// there are post datas, save them
 		$linkCourse = $_POST['linkCourse'];
 		$conditionSetId = (isset($_POST['conditionSetId']) && intval($_POST['conditionSetId'])>0) ? intval($_POST['conditionSetId']) : null;
-		
+
 		$savedOK = false;
-		
+
 		if (!empty($linkCourse) && !is_null($conditionSetId))
 		{
 			$savedOK = $GLOBALS['dh']->linkCoursesToConditionSet($conditionSetId, $linkCourse);
 			if ($savedOK) $msg = translateFN('collegamenti salvati');
 			else $msg = translateFN('problemi con il salvataggio');
-			
+
 		} else {
 			$msg = translateFN('niente da salvare');
 		}
-		
+
 		/// if it's an ajax request, output html and die
 		if (isset($_POST['requestType']) && trim($_POST['requestType'])==='ajax')
 		{
@@ -75,49 +75,49 @@ try {
 		} else {
 			// this is used if not saving using AJAX
 			$containedElement = CDOMElement::create('div','class:saveResults nonAjax');
-				
+
 			$spanmsg = CDOMElement::create('span','class:saveResultstext');
 			$spanmsg->addChild (new CText($msg));
-				
+
 			$button = CDOMElement::create('button','id:saveResultsbutton');
 			$button->addChild (new CText(translateFN('OK')));
-				
+
 			if ($savedOK) $href='self.document.location.href=\''.MODULES_SERVICECOMPLETE_HTTP.'\'';
 			else $href = 'history.go(-1);';
-				
+
 			$button->setAttribute('onclick', 'javascript:'.$href);
-				
+
 			$containedElement->addChild ($spanmsg);
 			$containedElement->addChild ($button);
-				
+
 			$data = $containedElement->getHtml();
 		}
 	} else {
 		// build the form, possibly passing data to be edited
 		$formData = null;
-				
+
 		$conditionSetId = (isset($_GET['conditionSetId']) && intval($_GET['conditionSetId'])>0) ? intval($_GET['conditionSetId']) : 0;
-		
+
 		if ($conditionSetId>0)
 		{
 			$conditionSetToEdit = $GLOBALS['dh']->getCompleteConditionSet($conditionSetId);
 			$helpmsg = translateFN('Regola selezionata per il collegamento').': '.$conditionSetToEdit->description;
-			
+
 			$linkedCoursesArr = $GLOBALS['dh']->get_linked_courses_for_conditionset($conditionSetId);
 			if (!AMA_DB::isError($linkedCoursesArr) && !empty($linkedCoursesArr))
 			{
 				foreach ($linkedCoursesArr as $linkedCourse) $formData['linkedCourses'][] = $linkedCourse[0];
 			}
 			else $formData['linkedCourses'] = array();
-				
+
 			$formData['conditionSetId'] = $conditionSetToEdit->getID();
-			
+
 			require_once MODULES_SERVICECOMPLETE_PATH.'/include/management/linkRulesManagement.inc.php';
 			$management = new LinkRulesManagement();
 			$form_return = $management->form($formData);
-			
+
 			$data = $form_return['html'];
-					
+
 		} else {
 			$helpmsg .= translateFN ('nessuna regola da collegare');
 		}
@@ -146,7 +146,7 @@ else
 	);
 }
 
-array_push($layout_dataAr['CSS_filename'], JQUERY_DATATABLE_CSS);
+array_push($layout_dataAr['CSS_filename'], SEMANTICUI_DATATABLE_CSS);
 array_push($layout_dataAr['CSS_filename'], MODULES_SERVICECOMPLETE_PATH.'/layout/tooltips.css');
 
 $content_dataAr = array(
@@ -163,6 +163,7 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT

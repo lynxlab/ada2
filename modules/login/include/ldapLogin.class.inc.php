@@ -1,7 +1,7 @@
 <?php
 /**
  * LOGIN MODULE
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
@@ -15,15 +15,15 @@
 class ldapLogin extends AbstractLogin
 {
 	const INVALID_USERNAME_EXECEPTION_CODE = 49;
-	
+
 	/**
 	 * class for managing options data
 	 */
 	const MANAGEMENT_CLASS = 'ldapManagement';
-	
+
 	/**
 	 * performs user login using an LDAP server
-	 * 
+	 *
 	 * (non-PHPdoc)
 	 * @see iLogin::doLogin()
 	 */
@@ -36,7 +36,7 @@ class ldapLogin extends AbstractLogin
 		if (!is_null($allOptions)) {
 			if ($allOptions['optionscount']<=1) $allOptions = array ($allOptions);
 			unset($allOptions['optionscount']);
-			
+
 			foreach ($allOptions as $option_id=>$options) {
 				// disabled options are not returned at all by loadOptions
 				$loginResult = $this->doLoginAttempt($name, $pass, $remindMe, $language, $options);
@@ -53,7 +53,7 @@ class ldapLogin extends AbstractLogin
 		}
 		return new Exception(implode('<br/>', $errorMessages));
 	}
-	
+
 	private function doLoginAttempt($name, $pass, $remindMe, $language, $options)
 	{
 		try {
@@ -61,7 +61,7 @@ class ldapLogin extends AbstractLogin
 			 * If invalid name or password, throw exception
 			 */
 			if ($name === false || $pass === false) throw new Exception(null,self::INVALID_USERNAME_EXECEPTION_CODE);
-			
+
 			/**
 			 * check LDAP configuration in module's option table
 			 */
@@ -73,7 +73,7 @@ class ldapLogin extends AbstractLogin
 						'basedn' => 'Impostare il dn di ricerca in LDAP',
 						'usertype' => 'Specificare il ruolo utente WISP'
 				);
-				
+
 				foreach ($mandatoryOptions as $optionName=>$errorMessage) {
 					if (!array_key_exists($optionName, $options) || strlen($options[$optionName])<=0) {
 						$errorMessage = translateFN($errorMessage) .
@@ -88,16 +88,16 @@ class ldapLogin extends AbstractLogin
 			ldap_set_option($handle, LDAP_OPT_PROTOCOL_VERSION, 3 );
 			ldap_set_option($handle, LDAP_OPT_REFERRALS, 0);
 			ldap_set_option($handle, LDAP_OPT_NETWORK_TIMEOUT,  30); /* 30 second timeout */
-			
+
 			// this will output a warning in the webserver log on failure
 			$bind = ldap_bind($handle, 'uid='.$name.','.$options['authdn'], $pass);
-			
+
 			if ($bind !==false) {
 				/**
 				 * look if user is already in ADA DB
 				 */
 				$userObj = $this->checkADAUser($name);
-				
+
 				if (!is_object($userObj) || !$userObj instanceof ADALoggableUser) {
 					/**
 					 * If user is not in ADA DB, try loading his data from LDAP
@@ -108,7 +108,7 @@ class ldapLogin extends AbstractLogin
 					 */
 					if ($result!==false) $entries = ldap_get_entries($handle, $result);
 					else throw new Exception(ldap_err2str(ldap_errno($handle)), ldap_errno($handle));
-					
+
 					if ($entries!==false && is_array($entries) && count($entries)>0) {
 						$entries = $entries[0];
 						/**
@@ -123,15 +123,15 @@ class ldapLogin extends AbstractLogin
 								// concatenate $namefilter to passed filter and restore the last ')'
 								$query = $substr.$namefilter.')';
 							} else $query = $namefilter;
-							
+
 							$groupres = ldap_search($handle, $options['basedn'], $query);
-							if ($groupres!==false) $groupentries = ldap_get_entries($handle, $groupres); 
+							if ($groupres!==false) $groupentries = ldap_get_entries($handle, $groupres);
 							else throw new Exception(ldap_err2str(ldap_errno($handle)), ldap_errno($handle));
-							
+
 							if ($groupentries!==false && is_array($groupentries) && count($groupentries)>0) {
 								if($groupentries['count']>0) {
 									// all went ok here: user has been found, user data has been loaded
-									// and user memberUid was found on the passed basedn, create ADA user 
+									// and user memberUid was found on the passed basedn, create ADA user
 									$userType = $options['usertype'];
 									/**
 									 * build user array
@@ -147,18 +147,18 @@ class ldapLogin extends AbstractLogin
 											'avatar' => '',
 											'birthcity' => ''
 									);
-									
+
 									if (isset($handle) && !is_null($handle)) ldap_unbind($handle);
 									return $this->addADAUser($adaUser);
 								}
 							}
-							
+
 							return new Exception(translateFN('Utente non trovato nel dn fornito per').' '.$options['name']);
 						}
-						
+
 					}
 				} // user not found in ADA
-				
+
 				/**
 				 * At this point, either the $userObj was already in
 				 * ADA DB or had just been created by the above code
@@ -178,7 +178,7 @@ class ldapLogin extends AbstractLogin
 			return new Exception($e->getMessage().' '.translateFN('di').' '.$options['name']);
 		}
 	}
-	
+
 	/**
 	 * generate HTML for login provider configuration page
 	 */
@@ -190,24 +190,25 @@ class ldapLogin extends AbstractLogin
 		$newButton->setAttribute('onclick', 'javascript:editOptionSet(null);');
 		$newButton->addChild (new CText(translateFN('Nuova Fonte')));
 		$configIndexDIV->addChild($newButton);
+		$configIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
 		$tableOutData = array();
 		$optionSetList = $this->getAllOptions();
-		
+
 		if (!AMA_DB::isError($optionSetList)) {
-		
+
 			$labels = array (translateFN('nome'), translateFN('host'),  translateFN('stato'),
 					translateFN('azioni'));
 			foreach ($optionSetList as $i=>$elementArr) {
 				$isEnabled = intval($elementArr['enabled'])===1;
 				unset ($elementArr['enabled']);
 				unset ($elementArr['order']);
-				
+
 				$keys = array_keys($elementArr);
 				$values = array_values($elementArr);
-				
+
 				$links = array();
 				$linksHtml = "";
-		
+
 				for ($j=0;$j<5;$j++) {
 					switch ($j) {
 						case 0:
@@ -236,7 +237,7 @@ class ldapLogin extends AbstractLogin
 							$link = 'moveOptionSet($j(this),'.$i.',1);';
 							break;
 					}
-		
+
 					if (isset($type)) {
 						$links[$j] = CDOMElement::create('li','class:liactions');
 						$linkshref = CDOMElement::create('button');
@@ -253,18 +254,19 @@ class ldapLogin extends AbstractLogin
 					foreach ($links as $link) $linksul->addChild ($link);
 					$linksHtml = $linksul->getHtml();
 				} else $linksHtml = '';
-		
+
 				$tableOutData[$i] = array (
 						$labels[0]=>$elementArr['name'],
 						$labels[1]=>$elementArr['host'],
 						$labels[2]=>(($isEnabled) ? translateFN('Abilitata') : translateFN('Disabilitata') ),
 						$labels[3]=>$linksHtml);
 			}
-		
+
 			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper(get_class($this)).'List',
 					$labels,$tableOutData,'',translateFN('Elenco delle fonti '.strtoupper($this->loadProviderName())));
+			$OutTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);
 			$configIndexDIV->addChild($OutTable);
-		
+
 			// if there are more than 10 rows, repeat the add new button below the table
 			if (count($optionSetList)>10) {
 				$bottomButton = clone $newButton;

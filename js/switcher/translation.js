@@ -30,7 +30,12 @@ function initDataTable()
                 var content=JSONObj.html;
                 
                 $j('.translationResults').html(content); 
-                $j('#table_result').dataTable({"bJQueryUI": true});
+                $j('#table_result').dataTable({
+                    "paging":   false,
+                    "ordering": false,
+                    "info":     false,
+                    "searching":false
+                });
             }
             $j('.translationData').effect('drop', function() {
                     $j('.translationResults').effect('slide');
@@ -52,9 +57,7 @@ function createDataTable()
 {
  $j(document).ready(function() {
    oTable= $j('#table_result').dataTable( {
-        "bJQueryUI": true,
-     
-        
+	   "aaSorting": [[ 1, "asc" ]],
         "aoColumnDefs": [
             {
                "aTargets": [ 0 ], 
