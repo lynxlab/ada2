@@ -148,7 +148,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         $tbody_data[] = $tmpArray;
     }
     $data = BaseHtmlLib::tableElement('id:table_users', $thead_data, $tbody_data);
-    $data->setAttribute('class', $data->getAttribute('class').' ui padded table');
+    $data->setAttribute('class', $data->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
 } else {
     $data = CDOMElement::create('span');
     $data->addChild(new CText(translateFN('Non sono stati trovati utenti')));

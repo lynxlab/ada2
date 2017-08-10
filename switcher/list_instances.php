@@ -125,7 +125,7 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
                 $actions
             );
         }
-        $data = BaseHtmlLib::tableElement('id:list_instances, class:ui padded table', $thead_data, $tbody_data);
+        $data = BaseHtmlLib::tableElement('id:list_instances, class:'.ADA_SEMANTICUI_TABLECLASS, $thead_data, $tbody_data);
     } else {
         $data = new CText(translateFN('Non sono state trovate istanze per il corso selezionato'));
     }

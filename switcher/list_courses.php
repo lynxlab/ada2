@@ -148,7 +148,7 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
         $tbody_data[] = array($imgDetails,$courseId, $course[1],translateFN($servicelevel),  $course[2], $course[3], $actions);
     }
     $data = BaseHtmlLib::tableElement('id:table_list_courses', $thead_data, $tbody_data);
-    $data->setAttribute('class', $data->getAttribute('class').' ui padded table');
+    $data->setAttribute('class', $data->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
 } else {
     $data = new CText(translateFN('Non sono stati trovati corsi'));
 }

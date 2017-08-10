@@ -80,7 +80,7 @@ else {
         );
         $dataAr=array();
         $result_table = BaseHtmlLib::tableElement('id:course_instance_Table', $thead_data,$dataAr);
-        $result_table->setAttribute('class', $result_table->getAttribute('class').' ui padded table');
+        $result_table->setAttribute('class', $result_table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
         $table = $result_table->getHtml();
     } else {
         //first: make associative arrays by ID of presubscription
@@ -313,7 +313,7 @@ else {
         }
 
         $result_table = BaseHtmlLib::tableElement('id:course_instance_Table', $thead_data, $dataAr);
-        $result_table->setAttribute('class', $result_table->getAttribute('class').' ui padded table');
+        $result_table->setAttribute('class', $result_table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
         $table = $result_table->getHtml();
     }
 }

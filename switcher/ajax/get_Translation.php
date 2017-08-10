@@ -60,7 +60,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $temp_results=array(translateFN("")=>$msgEr);
             array_push($total_results,$temp_results);
             $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
-            $result_table->setAttribute('class', $result_table->getAttribute('class').' ui padded table');
+            $result_table->setAttribute('class', $result_table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
             $result=$result_table->getHtml();
             $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessun input sottomesso"),"html"=>$result);
         }
@@ -85,7 +85,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $temp_results=array(translateFN("")=>$msgEr);
                 array_push($total_results,$temp_results);
                 $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
-                $result_table->setAttribute('class', $result_table->getAttribute('class').' ui padded table');
+                $result_table->setAttribute('class', $result_table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
                 $result=$result_table->getHtml();
                 $retArray=array("status"=>"ERROR","msg"=>  translateFN("Nessuna frase trovata"),"html"=>$result);
             }
@@ -121,7 +121,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
 
                 $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
-                $result_table->setAttribute('class', $result_table->getAttribute('class').' ui padded table');
+                $result_table->setAttribute('class', $result_table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
                 $result=$result_table->getHtml();
                 $retArray=array("status"=>"OK","msg"=>  translateFN("Ricerca eseguita con successo"),"html"=>$result);
             }
