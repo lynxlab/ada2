@@ -12,7 +12,6 @@
 function initDoc() {
 	
 	var commonDataTableOptions = {
-	 		"bJQueryUI": true,
 	        "bFilter": true,
 	        "bInfo": true,
 	        "bSort": true,
@@ -20,17 +19,7 @@ function initDoc() {
 	        "bPaginate" : true,	        
 	        "oLanguage": {
 	        	"sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-	        },
-			"fnDrawCallback":
-				function () {
-					// put the sort icon outside of the DataTables_sort_wrapper div
-					// for better display styling with CSS
-					$j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
-						sortIcon = $j(this).find('span').clone();
-						$j(this).find('span').remove();
-						$j(this).parents('th').append(sortIcon);
-					});
-				}
+	        }
 		};
 	
 	

@@ -56,14 +56,14 @@ $content_dataAr = array(
 		'user_type' => $user_type,
 		'messages' => $user_messages->getHtml(),
 		'agenda' => $user_agenda->getHtml(),
-		'status' => $status,		
+		'status' => $status,
 		'help' => $data['help'],
 		'title' => $data['title'],
 		'data' => $data['htmlObj']->getHtml()
 );
 
-$layout_dataAr ['JS_filename'] =  array ( JQUERY, JQUERY_UI, JQUERY_DATATABLE );
-$layout_dataAr ['CSS_filename'] = array ( JQUERY_UI_CSS, JQUERY_DATATABLE_CSS );
+$layout_dataAr ['JS_filename'] =  array ( JQUERY, JQUERY_UI, JQUERY_DATATABLE, SEMANTICUI_DATATABLE );
+$layout_dataAr ['CSS_filename'] = array ( JQUERY_UI_CSS, SEMANTICUI_DATATABLE_CSS );
 
 //	$optionsAr ['onload_func'] = 'initDoc(\''.htmlentities(json_encode($datetimesAr)).'\',\''.htmlentities(json_encode($inputProposalNames)).'\','.MAX_PROPOSAL_COUNT.');';
 
