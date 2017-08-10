@@ -53,7 +53,6 @@ function initDataTables() {
 	
 	if ($j('#complete'+configProvider.toUpperCase()+'List').length>0)		
 		return $j('#complete'+configProvider.toUpperCase()+'List').dataTable( {
-			 		"bJQueryUI": true,
 	                "bFilter": true,
 	                "bInfo": true,
 	                "bSort": sortable,
@@ -66,13 +65,6 @@ function initDataTables() {
 	                },
 					"fnDrawCallback":
 						function () {
-							// put the sort icon outside of the DataTables_sort_wrapper div
-							// for better display styling with CSS
-							$j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
-								sortIcon = $j(this).find('span').clone();
-								$j(this).find('span').remove();
-								$j(this).parents('th').append(sortIcon);
-							});
 							// hide move up button from actions of first row
 							$j(this).find('td.actions').first().find('button.upButton').hide();
 							// hide move down button from actions of last row

@@ -53,7 +53,6 @@ function initDoc(id_course, id_course_instance){
     if (colDefs == null) colDefs=[];
     if (moreColDefs != null) for (var x=0; x<moreColDefs.length; x++) colDefs.push(moreColDefs[x]);
     datatable = $j('table.doDataTable').dataTable({
-		"bJQueryUI": true,
         "bFilter": true,
         "bInfo": true,
         "bSort": true,
@@ -62,16 +61,6 @@ function initDoc(id_course, id_course_instance){
         "aoColumnDefs": colDefs,
         "oLanguage": {
            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-        },
-       "fnDrawCallback":
-            function () {
-                // put the sort icon outside of the DataTables_sort_wrapper div
-                // for better display styling with CSS
-                $j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
-                sortIcon = $j(this).find('span').clone();
-                $j(this).find('span').remove();
-                $j(this).parents('th').append(sortIcon);
-            });
         }
 	});
 
@@ -170,21 +159,10 @@ function toggleTutorDetails(tutor_id,imgObj) {
           oTable.fnOpen( nTr, JSONObj.html, 'details' );
           if(JSONObj.status==='OK'){
               $j('.tutor_table').not('.dataTable').dataTable({
-              "bJQueryUI": true,
-              'aoColumnDefs': JSONObj.columnDefs,
-              "oLanguage": {
-                    "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-              },
-              "fnDrawCallback":
-                  function () {
-                      // put the sort icon outside of the DataTables_sort_wrapper div
-                      // for better display styling with CSS
-                      $j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
-                      sortIcon = $j(this).find('span').clone();
-                      $j(this).find('span').remove();
-                      $j(this).parents('th').append(sortIcon);
-                      });
-                 } 
+	              'aoColumnDefs': JSONObj.columnDefs,
+	              "oLanguage": {
+	                    "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+	              } 
               });
           }
      })

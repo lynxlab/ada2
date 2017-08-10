@@ -210,7 +210,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            );
 	        }
 
-	        $data = BaseHtmlLib::tableElement('class:doDataTable', $thead_dataAr, $tbody_dataAr);
+	        $data = BaseHtmlLib::tableElement('class:doDataTable '.ADA_SEMANTICUI_TABLECLASS, $thead_dataAr, $tbody_dataAr);
 	    } elseif ($found == 1) {
 
 	    	/**
@@ -320,7 +320,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	                ts2dFN($end_date),
 	                $access_link
 	            );
-	            $data = BaseHtmlLib::tableElement('class:doDataTable', $thead_dataAr, $tbody_dataAr);
+	            $data = BaseHtmlLib::tableElement('class:doDataTable '.ADA_SEMANTICUI_TABLECLASS, $thead_dataAr, $tbody_dataAr);
 	        }
 	    } else {
 	    	$data = CDOMElement::create('div','class:ui info icon large message');
@@ -602,13 +602,14 @@ else {
 
 $layout_dataAr['CSS_filename'] = array (
 		JQUERY_UI_CSS,
-		JQUERY_DATATABLE_CSS,
+		SEMANTICUI_DATATABLE_CSS,
 		'user.css' // this file may use different templates, force user.css inclusion here
 );
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		ROOT_DIR.'/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
 		JQUERY_NO_CONFLICT,

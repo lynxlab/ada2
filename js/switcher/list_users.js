@@ -32,22 +32,11 @@ function toggleDetails(user_id,imgObj) {
             oTable.fnOpen( nTr, JSONObj.html, 'details' );
             if(JSONObj.status==='OK'){
                 $j('.User_table').not('.dataTable').dataTable({
-                "bJQueryUI": true,
-                'aoColumnDefs': JSONObj.columnDefs,
-                "oLanguage": 
-                {
-                      "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-                },
-                "fnDrawCallback":
-                    function () {
-                        // put the sort icon outside of the DataTables_sort_wrapper div
-                        // for better display styling with CSS
-                        $j(this).find("thead th div.DataTables_sort_wrapper").each(function(){
-                        sortIcon = $j(this).find('span').clone();
-                        $j(this).find('span').remove();
-                        $j(this).parents('th').append(sortIcon);
-                        });
-                   } 
+	                'aoColumnDefs': JSONObj.columnDefs,
+	                "oLanguage": 
+	                {
+	                      "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+	            	} 
                 });
             }
        })
@@ -65,11 +54,11 @@ function toggleDetails(user_id,imgObj) {
 function createDataTable() {
     
     oTable = $j('#table_users').dataTable({
-        "bJQueryUI": true,
         "bFilter": true,
         "bInfo": true,
         "bSort": true,
         "bAutoWidth": true,
+        "aaSorting": [[ 1, "asc" ]],
         'aoColumnDefs': [{"aTargets": [ 0 ],"sClass":"expandCol"},{ "bSortable": false, "aTargets": [ 4 ],"sClass":"actionCol" } ],
         "oLanguage": 
         {

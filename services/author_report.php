@@ -37,7 +37,7 @@ $self =  whoami();  // = author_report!
 include_once 'include/author_functions.inc.php';
 
 $menu = '';
-/* 
+/*
  * 2. Building nodes summary
 */
 if ((empty($id_node)) OR (!isset($mode))) {
@@ -84,20 +84,21 @@ switch ($mode) {
             }
             $caption = translateFN('Dettaglio delle visite al nodo').' '.$id_node;
             $tObj = BaseHtmlLib::tableElement('id:authorZoom',array_keys(reset($visits_dataHa)),$visits_dataHa,null,$caption);
-            $tObj->setAttribute('class', 'default_table doDataTable');
+            $tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
             $tabled_visits_dataHa = $tObj->getHtml();
             $optionsAr['onload_func'] = 'initDoc();';
             $layout_dataAr['CSS_filename'] = array (
             		JQUERY_UI_CSS,
-            		JQUERY_DATATABLE_CSS,
+            		SEMANTICUI_DATATABLE_CSS,
             );
             $layout_dataAr['JS_filename'] = array(
             		JQUERY,
             		JQUERY_UI,
             		JQUERY_DATATABLE,
+            		SEMANTICUI_DATATABLE,
             		JQUERY_DATATABLE_DATE,
             		JQUERY_NO_CONFLICT
-            );            
+            );
         }
         else {
             $tabled_visits_dataHa = translateFN('Nessun dato disponibile');
@@ -187,19 +188,20 @@ switch ($mode) {
             $tabled_visits_dataHa = translateFN("Nessun corso assegnato all'autore.");
         }
         else {
-            $caption = translateFN('Corso:')." <strong>$course_title</strong> ".translateFN('- Report al ')." <strong>$ymdhms</strong>";            
+            $caption = translateFN('Corso:')." <strong>$course_title</strong> ".translateFN('- Report al ')." <strong>$ymdhms</strong>";
             $tObj = BaseHtmlLib::tableElement('id:authorReport, class: doDataTable',array_keys($visits_dataHa[0]),$visits_dataHa,null,$caption);
-            $tObj->setAttribute('class', 'default_table doDataTable');
+            $tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
             $tabled_visits_dataHa = $tObj->getHtml();
             $optionsAr['onload_func'] = 'initDoc();';
             $layout_dataAr['CSS_filename'] = array (
             		JQUERY_UI_CSS,
-            		JQUERY_DATATABLE_CSS,
+            		SEMANTICUI_DATATABLE_CSS,
             );
             $layout_dataAr['JS_filename'] = array(
             		JQUERY,
             		JQUERY_UI,
             		JQUERY_DATATABLE,
+            		SEMANTICUI_DATATABLE,
             		ROOT_DIR . '/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
             		JQUERY_NO_CONFLICT
             );

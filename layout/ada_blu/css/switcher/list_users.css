@@ -40,9 +40,9 @@ and open the template in the editor.
 /**
  * DataTables styles
  */
-.dataTables_wrapper { width: 100% !important; }
-.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; font-weight: bold;  font-size: 0.7em; color: #585857; }
-.dataTables_wrapper tbody td { height: 2.5em; border:none; vertical-align: middle; }
+.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; font-weight: bold;  font-size: 0.7em; }
+.dataTables_wrapper tbody td > table td { border: none; }
+.dataTables_wrapper tbody td { height: 2.5em; vertical-align: middle; }
 .dataTables_wrapper thead th { padding-right: 5px; }
 .dataTables_wrapper .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 .dataTables_wrapper .DataTables_sort_icon { float: right; margin-top: -20px;margin-left: 75px; }

@@ -11,7 +11,7 @@
 * @link search
 * @version 0.1
 */
- 
+
 /**
 * Base config file
 */
@@ -59,7 +59,7 @@ else { */
   $id_course=$_SESSION['sess_id_course'];
 
 if (isset($submit)) { //&& (!empty($s_node_text))) {
-  
+
     $out_fields_ar = array('nome','titolo','testo','tipo');
     $clause='';
     $or = ' OR ';
@@ -275,6 +275,7 @@ $summary = translateFN("Elenco dei nodi che soddisfano la ricerca al ") . $ymdhm
 $caption = translateFN("Sono stati trovati")." $group_count ".translateFN("gruppi").", $node_count ".translateFN("nodi");
 $tObj->setTable($total_results,$caption,$summary);
 $search_results = $tObj->getTable();
+$search_results= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $search_results, 1); // replace first occurence of class
 // diretto:
 //header("Location: view.php?id_node=$res_id_node");
 }

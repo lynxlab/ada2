@@ -3,7 +3,7 @@
  * SERVICE-COMPLETE MODULE.
  *
  * @package        service-complete module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2013, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           service-complete
@@ -54,23 +54,23 @@ try {
 		// there are post datas, save them
 		$conditionPOST = $_POST['condition'];
 		$conditionParamsPOST = $_POST['param'];
-		
+
 		$savedOK = false;
 
 		fixPOSTArray ($conditionPOST,$conditionParamsPOST);
-		
+
 		if (!empty($conditionPOST))
-		{		
+		{
 			$conditionSetId = (isset($_POST['conditionSetId']) && intval($_POST['conditionSetId'])>0) ? intval($_POST['conditionSetId']) : null;
 			$description = (isset($_POST['description']) && trim($_POST['description'])!=='') ? trim($_POST['description']) : '';
-			
+
 			if ($description!=='')
 			{
 				$saveCondition = new CompleteConditionSet($conditionSetId, $description);
 				$saveCondition->setOperation(Operation::buildOperationTreeFromPOST($conditionPOST));
-				
+
 				$savedOK = $GLOBALS['dh']->saveCompleteConditionSet($saveCondition);
-				
+
 				if ($savedOK) $msg = translateFN('set di condizioni salvato');
 				else $msg = translateFN('problemi con il salvataggio');
 			} else {
@@ -79,7 +79,7 @@ try {
 		} else {
 			$msg = translateFN('niente da salvare');
 		}
-		
+
 		/// if it's an ajax request, output html and die
 		if (isset($_POST['requestType']) && trim($_POST['requestType'])==='ajax')
 		{
@@ -88,27 +88,27 @@ try {
 		} else {
 			// this is used if not saving using AJAX
 			$containedElement = CDOMElement::create('div','class:saveResults nonAjax');
-			
+
 			$spanmsg = CDOMElement::create('span','class:saveResultstext');
 			$spanmsg->addChild (new CText($msg));
-			
+
 			$button = CDOMElement::create('button','id:saveResultsbutton');
 			$button->addChild (new CText(translateFN('OK')));
-			
+
 			if ($savedOK) $href='self.document.location.href=\''.MODULES_SERVICECOMPLETE_HTTP.'\'';
 			else $href = 'history.go(-1);';
-			
+
 			$button->setAttribute('onclick', 'javascript:'.$href);
-			
+
 			$containedElement->addChild ($spanmsg);
 			$containedElement->addChild ($button);
-			
+
 			$data = $containedElement->getHtml();
-		}		
+		}
 	} else {
 		// build the form, possibly passing data to be edited
 		$formData = null;
-		
+
 		$conditionSetId = (isset($_GET['conditionSetId']) && intval($_GET['conditionSetId'])>0) ? intval($_GET['conditionSetId']) : 0;
 
 		if ($conditionSetId>0)
@@ -120,22 +120,22 @@ try {
 				$formData['conditionSetId'] = $conditionSetToEdit->getID();
 				$formData['condition'] = $conditionSetToEdit->getOperandsForPriority();
 			}
-			$helpmsg = translateFN('Modifica della regola');	
+			$helpmsg = translateFN('Modifica della regola');
 		} else {
 			$helpmsg = translateFN('Crea una nuova regola');
 		}
-	
+
 		require_once MODULES_SERVICECOMPLETE_PATH.'/include/management/completeRulesManagement.inc.php';
 		$management = new CompleteRulesManagement();
 		$form_return = $management->form($formData);
-		
+
 		$data = $form_return['html'];
 
 		}
 	}  catch (Exception $e) {
 			$data = $e->getMessage();
 	}
-	
+
 $containerDIV->addChild (new CText($data));
 $data = $containerDIV->getHtml();
 /**
@@ -155,7 +155,6 @@ else
 	);
 }
 
-array_push($layout_dataAr['CSS_filename'], JQUERY_DATATABLE_CSS);
 array_push($layout_dataAr['CSS_filename'], MODULES_SERVICECOMPLETE_PATH.'/layout/tooltips.css');
 
 $content_dataAr = array(
@@ -166,7 +165,7 @@ $content_dataAr = array(
 		'status' => $status,
 		'title' => translateFN('complete module'),
 		'help' => $helpmsg,
-		'data' => $data		
+		'data' => $data
 );
 
 $layout_dataAr['JS_filename'] = array(

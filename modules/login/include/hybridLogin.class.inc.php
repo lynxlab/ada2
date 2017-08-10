@@ -298,6 +298,7 @@ class hybridLogin extends AbstractLogin
 		$newButton->setAttribute('onclick', 'javascript:addOptionRow();');
 		$newButton->addChild (new CText(translateFN('Nuova Chiave')));
 		$configIndexDIV->addChild($newButton);
+		$configIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
 
 		$tableOutData = array();
 		if (!AMA_DB::isError($optionSetList)) {
@@ -350,10 +351,12 @@ class hybridLogin extends AbstractLogin
 			$emptyrow = array(array_shift($tableOutData));
 			$EmptyTable = BaseHtmlLib::tableElement('id:empty'.strtoupper(get_class($this)),$labels,$emptyrow);
 			$EmptyTable->setAttribute('style', 'display:none');
+			$EmptyTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);
 
 			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper(get_class($this)).'List',
 					$labels,$tableOutData,'',translateFN('Opzioni '.strtoupper($this->loadProviderName())));
 			$OutTable->setAttribute('data-optionid', $optionID);
+			$OutTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);
 
 			$configIndexDIV->addChild($EmptyTable);
 			$configIndexDIV->addChild($OutTable);

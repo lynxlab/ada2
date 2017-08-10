@@ -52,7 +52,7 @@ $courseInstances = array();
 /**
  * change the two below call to active to let the closed
  * instances completely disappear from the HTML table
- * 
+ *
  * NOTE: below method call refers to student but work ok for tutor as well
 */
 
@@ -71,25 +71,25 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 			translateFN('Data fine'),
 			translateFN('Azioni')
 	);
-	
+
 	$tbody_dataAr = array();
 	foreach($courseInstances as $c) {
 		$courseId = $c['id_corso'];
 		$nodeId = $courseId . '_0';
 		$courseInstanceId = $c['id_istanza_corso'];
 		$subscription_status = $c['status'];
-	
-	
+
+
 		$started = ($c['data_inizio'] > 0 && $c['data_inizio'] < time()) ? translateFN('Si') : translateFN('No');
 		$start_date = ($c['data_inizio'] > 0) ? $c['data_inizio'] : $c['data_inizio_previsto'];
-		
+
 		if (isset($c['data_iscrizione']) && intval($c['data_iscrizione'])>0) $start_date = intval($c['data_iscrizione']);
-		
+
 		$isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 		$isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
 		$access_link = BaseHtmlLib::link("#",
 				translateFN('Attendi apertura corso'));
-		
+
 		if (!$isEnded && isset($c['duration_subscription']) && intval($c['duration_subscription'])>0) {
 			$duration = $c['duration_subscription'];
 			$end_date = $common_dh->add_number_of_days($duration, $start_date);
@@ -120,7 +120,7 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 					$subscription_status = ADA_STATUS_TERMINATED;
 				}
 			}
-	
+
 			$link = CDOMElement::create('a','href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$nodeId.'&id_course='.$courseId.'&id_course_instance='.$courseInstanceId);
 			if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED || $subscription_status == ADA_STATUS_COMPLETED) {
 				$link->addChild(new CText(translateFN('Rivedi i contenuti')));
@@ -131,7 +131,7 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 			// skip to next iteration if tutor community has not been started by the switcher
 			continue;
 		}
-	
+
 		$tbody_dataAr[] = array(
 				$c['titolo'].' - '.$c['title'], // titolo is course and title is instance
 				$started,
@@ -141,9 +141,9 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 				$link
 		);
 	}
-	
+
 	$tObj = BaseHtmlLib::tableElement('id:tutorCommunitiesTable', $thead_dataAr, $tbody_dataAr);
-	$tObj->setAttribute('class', 'default_table doDataTable');
+	$tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
 	$data = $tObj->getHtml();
 } else {
 	$data = translateFN('Non sei iscritto a nessuna comunità di tutor');
@@ -165,12 +165,13 @@ $content_dataAr = array(
 
 $layout_dataAr['CSS_filename'] = array (
 		JQUERY_UI_CSS,
-		JQUERY_DATATABLE_CSS,
+		SEMANTICUI_DATATABLE_CSS,
 );
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		ROOT_DIR.'/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
 		JQUERY_NO_CONFLICT

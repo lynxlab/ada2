@@ -91,6 +91,7 @@ switch ($mode) {
         $summary = translateFN("Dettaglio dell'esercizio").$id_node;
         $tObj->setTable($exercise_dataHa,$caption,$summary);
         $tabled_exercise_dataHa = $tObj->getTable();
+        $tabled_exercise_dataHa= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $tabled_exercise_dataHa, 1); // replace first occurence of class
 
         break;
 
@@ -98,7 +99,7 @@ switch ($mode) {
         $field_list_ar = array('id_nodo','data_visita');
         $clause = "";
         $dataHa = $dh->_find_ex_history_list($field_list_ar, $clause);
-        
+
         if (AMA_DataHandler::isError($dataHa)) {
             $msg = $dataHa->getMessage();
             print $msg;
@@ -124,6 +125,7 @@ switch ($mode) {
         $summary = translateFN("Elenco degli esercizi eseguiti");
         $tObj->setTable($exercise_dataHa,$caption,$summary);
         $tabled_exercise_dataHa = $tObj->getTable();
+        $tabled_exercise_dataHa= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $tabled_exercise_dataHa, 1); // replace first occurence of class
 }
 
 $banner = include ROOT_DIR.'/include/banner.inc.php';
