@@ -158,7 +158,7 @@ table.dataTable tr.even .linkCertificate
 /**
  * DataTables styles
  */
-.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; top: -10px; font-weight: bold;   color: #fff; }
+.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; top: -10px; font-weight: bold; }
 .dataTables_wrapper tbody td { height: 2.5em; vertical-align: middle; }
 .dataTables_wrapper thead th { padding-right: 5px; }
 .dataTables_wrapper .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }

@@ -40,7 +40,7 @@ and open the template in the editor.
 /**
  * DataTables styles
  */
-.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; font-weight: bold;  font-size: 0.7em; color: #585857; }
+.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; font-weight: bold;  font-size: 0.7em; }
 .dataTables_wrapper tbody td > table td { border: none; }
 .dataTables_wrapper tbody td { height: 2.5em; vertical-align: middle; }
 .dataTables_wrapper thead th { padding-right: 5px; }
