@@ -70,9 +70,9 @@ switch ($op) {
 			$imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli del tutor'));
 			$imgDetails->setAttribute('style', 'cursor:pointer;');
 			$imgDetails->setAttribute('class', 'tooltip');
-			
+
 			$mh = MessageHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-			
+
 			foreach ($tutorsAr as $aTutor) {
 				// open details button
 				$imgDetails->setAttribute('onclick',"toggleTutorDetails(".$aTutor[0].",this);");
@@ -82,7 +82,7 @@ switch ($op) {
 				if (!AMA_DataHandler::isError($msgs_ha)) {
 					$receivedMessages = count($msgs_ha);
 				}
-				// sent messages				
+				// sent messages
 				$sentMessages = 0;
 				$msgs_ha = $mh->get_sent_messages($aTutor[0], ADA_MSG_SIMPLE);
 				if (!AMA_DataHandler::isError($msgs_ha)) {
@@ -98,9 +98,9 @@ switch ($op) {
 				translateFN('username'),
 				translateFN('Msg Ric'),
 				translateFN('Msg Inv')
-		);		
+		);
 		$tObj = BaseHtmlLib::tableElement('id:listTutors',$thead,$tableDataAr,null,translateFN('Elenco dei tutors'));
-        $tObj->setAttribute('class', 'default_table doDataTable');
+        $tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
         $data = $tObj->getHtml();
 		break;
     case 'student_level':
@@ -133,7 +133,7 @@ switch ($op) {
             // load
             $courses_student = get_student_courses_from_dbFN($id_course, $id_instance);
         }
-        
+
         if (!is_null($courses_student)) {
         	if (isset($courses_student['report_generation_date']) && !is_null($courses_student['report_generation_date'])) {
         		$report_generation_TS = $courses_student['report_generation_date'];
@@ -142,7 +142,7 @@ switch ($op) {
         	$thead = array_shift($courses_student);
         	$tfoot = array_pop($courses_student);
         	$tObj = BaseHtmlLib::tableElement('id:table_Report',$thead,$courses_student,$tfoot,null);
-        	$tObj->setAttribute('class', 'default_table doDataTable');
+        	$tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
         	$data = $tObj->getHtml();
         } else {
         	if ($mode=='update') {
@@ -155,13 +155,13 @@ switch ($op) {
 //         		$data .= "</a>";
 				/**
 				 * @author giorgio 27/ott/2014
-				 * 
+				 *
 				 * if no class report was ever generated, redirect the user to the mode=update page
 				 */
         		redirect("$http_root_dir/tutor/tutor.php?op=student&id_instance=$id_instance&id_course=$id_course&mode=update");
-        	}        	
+        	}
         }
-        
+
         $info_course = $dh->get_course($id_course); // Get title course
         if  (AMA_DataHandler::isError($info_course)) {
             $msg = $info_course->getMessage();
@@ -181,7 +181,7 @@ switch ($op) {
             $sess_id_course = $id_course;
 
             $chat_link = "<a href=\"$http_root_dir/comunica/chat.php\" target=_blank>".translateFN('chat di classe') .'</a>';
-            
+
             $instance_course_ha = $dh->course_instance_get($id_instance); // Get the instance courses data
             $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
 
@@ -195,23 +195,23 @@ switch ($op) {
            	if (isset($report_generation_TS)) {
            		$updateDIV = CDOMElement::create('div','class:updatelink');
            		$updateSPAN = CDOMElement::create('span');
-           		$updateSPAN->addChild(new CText(translateFN('Report aggiornato al').' '.ts2dFN($report_generation_TS)));           		
-           		$updateLink = CDOMElement::create('a','href:javascript:void(0);');           		
-           		$confirmMessage = translateFN('Questa operazione può richiedere qualche minuto');           		
+           		$updateSPAN->addChild(new CText(translateFN('Report aggiornato al').' '.ts2dFN($report_generation_TS)));
+           		$updateLink = CDOMElement::create('a','href:javascript:void(0);');
+           		$confirmMessage = translateFN('Questa operazione può richiedere qualche minuto');
            		$updateLink->setAttribute('onclick', 'javascript:'.
            				'if (confirm(decodeURI(\''.urlencode($confirmMessage).'\').replace(/\+/g, \' \'))) '.
            				'self.document.location.href=\''.
            				$http_root_dir.
            				'/tutor/tutor.php?op=student&id_instance='.$id_instance.
-           				'&id_course='.$id_course.'&mode=update'.           				
-           				'\';');           		
+           				'&id_course='.$id_course.'&mode=update'.
+           				'\';');
            		$updateLink->addChild(new CText(' '.translateFN("Aggiorna il report")));
            		$updateDIV->addChild($updateSPAN);
            		$updateDIV->addChild($updateLink);
         		$help .= $updateDIV->getHtml();
            	}
         }
-        
+
         break;
 
     case 'student_notes':   // nodi inseriti dallo studente
@@ -299,9 +299,9 @@ switch ($op) {
             $summary = translateFN("Nodi inseriti nel forum del corso");
             $tObj->setTable($added_nodesHa,$caption,$summary);
             $added_notesHa = $tObj->getTable();
-            $data = $added_notesHa;
+            $data = preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $added_notesHa, 1); // replace first occurence of class
             $status = translateFN('note aggiunte dallo studente');
-         
+
 //           $data['chat_users']=$online_users;
             $help = translateFN('Da qui il Tutor può leggere le note aggiunte nel forum da questo studente.');
         }
@@ -330,7 +330,7 @@ switch ($op) {
                    . translateFN('chat').'</a>';
 
         $data = get_student_dataFN($id_student, $id_instance);
-
+        $data = preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $data, 1); // replace first occurence of class
 //        $student_activity_index = get_student_indexattFN($id_instance,$id_course,$id_student);
 
         $status = translateFN('caratteristiche dello studente');
@@ -340,17 +340,17 @@ switch ($op) {
 
     case 'export': // outputs the users of selected course as a file excel
     // $courses_student = get_student_courses_tableFN($id_instance, $id_course);
-    
+
     	/**
 		 * @author giorgio 14/mag/2013
-		 * 
+		 *
 		 * set allowed types of export and if $type is not in the list
 		 * than default to xls type export.
 		 *
     	 */
-    	$allowed_export_types = array ('xls' , 'pdf');    	
+    	$allowed_export_types = array ('xls' , 'pdf');
     	if (!in_array($type, $allowed_export_types)) $type = 'xls';
-    	
+
     	// get needed data
     	$courses_student = get_student_coursesFN($id_instance, $id_course,'', ($type=='xls') ? 'HTML' : 'FILE');
 
@@ -366,27 +366,27 @@ switch ($op) {
     		$instance_title = '';
     	} else {
     		$start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
-    		$instance_title = $instance_course_ha['title'];    		
+    		$instance_title = $instance_course_ha['title'];
     	}
-    	
+
     	$caption = translateFN("Studenti del corso") . " <strong>$course_title</strong>  - ".
     			translateFN("Classe")." ".$instance_title." (".
     			$id_instance.") - " . translateFN("Iniziato il ")."&nbsp;<strong>$start_date</strong>" ;
-    	    	
+
     	// build up filename to be streamed out
     	$filename = 'course_'.$id_course.'_class_'.$id_instance.'.'.$type;
-    	
+
     	if ($type==='pdf')
     	{
     		require_once ROOT_DIR.'/include/PdfClass.inc.php';
-    		
+
     		$pdf = new PdfClass('landscape', strip_tags(html_entity_decode($courses_student['caption'])) );
-    		
+
     		$pdf->addHeader(strip_tags(html_entity_decode($caption)),
     						ROOT_DIR.'/layout/'.$userObj->template_family.'/img/header-logo.png', 14)
     			->addFooter( translateFN("Report")." ". translateFN("generato")." ". translateFN("il")." ". date ("d/m/Y")." ".
     					     translateFN("alle")." ".date ("H:i:s") );
-    			    		    	
+
 	    	// prepare header row
 	    	foreach ($courses_student[0] as $key=>$val)
 	    	{
@@ -395,19 +395,19 @@ switch ($op) {
 	    		if (preg_match('/img/', $val) !== 0 ) continue;
 	    		$cols[$key] = strip_tags($val);
 	    	}
-	    	
+
 	    	array_shift($courses_student);
 	    	// prepare data rows
 	    	$data = array(); $i=0;
 	    	foreach ($courses_student as $num=>$elem)
 	    	{
     			foreach ($elem as $key=>$val) $data[$i][$key]=strip_tags($val);
-    			$i++;    					    		
+    			$i++;
 	    	}
 	    	$pdf->ezTable ($data, $cols,
 	    				   array ('width'=>$pdf->ez['pageWidth'] - $pdf->ez['leftMargin'] - $pdf->ez['rightMargin']) );
 			$pdf->saveAs($filename);
-    	} 	     	
+    	}
     	else if ($type === 'xls'){
     		$tObj = BaseHtmlLib::tableElement('id:table_Report',array_shift($courses_student),$courses_student,array(),null);
 	        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
@@ -464,7 +464,7 @@ if (!empty($id_instance))
 		if (!isset($node)) $node=null;
 		$nodeObj = read_node_from_DB($node);
 	}
-	
+
 	if (!ADA_Error::isError($nodeObj) AND isset($courseObj->id)) {
 		$_SESSION['sess_id_course'] = $courseObj->id;
 		$node_path = $nodeObj->findPathFN();
@@ -496,12 +496,13 @@ $content_dataAr = array(
 
 $layout_dataAr['CSS_filename'] = array (
 		JQUERY_UI_CSS,
-		JQUERY_DATATABLE_CSS,
+		SEMANTICUI_DATATABLE_CSS,
 );
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		ROOT_DIR.'/js/include/jquery/dataTables/formattedNumberSortPlugin.js',
 		JQUERY_NO_CONFLICT

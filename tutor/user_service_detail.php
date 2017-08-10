@@ -140,6 +140,7 @@ else {
       $tbody_data[] = array($eguidance_date, $eguidance_type, $eguidance_form, $download_csv);
     }
     $eguidance_data = BaseHtmlLib::tableElement('',$thead_data,$tbody_data);
+    $eguidance_data->setAttribute('class', $eguidance_data->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
   }
 
   /*
@@ -174,6 +175,7 @@ else {
       $tbody_data[] = array(ts2dFN($appointment[0]), ADAEventProposal::removeEventToken($appointment[1]));
     }
     $appointments_data = BaseHtmlLib::tableElement('', $thead_data, $tbody_data);
+    $appointments_data->setAttribute('class', $appointments_data->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
   }
   $data = $appointments_data->getHtml()
         . $user_data->getHtml()
