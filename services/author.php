@@ -116,17 +116,18 @@ else {
   }
   $caption = translateFN("Corsi inviati e attivi il")." $ymdhms";
   $tObj = BaseHtmlLib::tableElement('id:authorTable, class:doDataTable',array_keys(reset($course_dataHa)),$course_dataHa,null,$caption);
-  $tObj->setAttribute('class', 'default_table doDataTable');
+  $tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
   $total_course_data = $tObj->getHtml();
   $optionsAr['onload_func'] = 'initDoc();';
   $layout_dataAr['CSS_filename'] = array (
   		JQUERY_UI_CSS,
-  		JQUERY_DATATABLE_CSS,
+  		SEMANTICUI_DATATABLE_CSS,
   );
   $layout_dataAr['JS_filename'] = array(
   		JQUERY,
   		JQUERY_UI,
   		JQUERY_DATATABLE,
+  		SEMANTICUI_DATATABLE,
   		JQUERY_DATATABLE_DATE,
   		JQUERY_NO_CONFLICT
   );

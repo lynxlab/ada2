@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  *
  * @package     Default
  * @author		Stefano Penge <steve@lynxlab.com>
@@ -40,7 +40,7 @@ include_once 'include/author_functions.inc.php';
  * Module
  */
 $menu  = '<a href="index.php">' . translateFN('home') . '</a><br>'
-       . "<a href=\"../browsing/view.php?id_node=$id_node\">" 
+       . "<a href=\"../browsing/view.php?id_node=$id_node\">"
        . translateFN('torna') . '</a><br>';
 
 $status = translateFN('zoom di un nodo');
@@ -76,7 +76,7 @@ if ($count_visits) {
     $summary = translateFN('Dettaglio delle visite al nodo').' '.$id_node;
     $tObj->setTable($visits_dataHa,$caption,$summary);
     $tabled_visits_dataHa = $tObj->getTable();
-
+    $tabled_visits_dataHa= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $tabled_visits_dataHa, 1); // replace first occurence of class
 }  else {
     $tabled_visits_dataHa = translateFN('Nessun dato disponibile');
 }
