@@ -86,7 +86,7 @@ else {
   // $id_course_instance = DataValidator::is_uinteger($_GET['id_course_instance']);
   $id_user = $_SESSION['sess_id_user'];
   $id_course_instance = $_SESSION['sess_id_course_instance'];
-  
+
   if($id_user === FALSE || $id_course_instance === FALSE) {
     $errObj = new ADA_Error(NULL,
                              translateFN("Dati in input per il modulo user_servide_detail non corretti"),
@@ -96,7 +96,7 @@ else {
   /*
    * User data to display
    */
-  
+
   // $tutoredUserObj = MultiPort::findUser($id_user);
   $user_data = TutorModuleHtmlLib::getEguidanceSessionUserDataTable($userObj);
 
@@ -137,7 +137,7 @@ else {
 
       $tbody_data[] = array($eguidance_date, $eguidance_type, $eguidance_form, $download_csv);
     }
-    $eguidance_data = BaseHtmlLib::tableElement('',$thead_data,$tbody_data);
+    $eguidance_data = BaseHtmlLib::tableElement('class:'.ADA_SEMANTICUI_TABLECLASS,$thead_data,$tbody_data);
   }
 
   /*
@@ -171,7 +171,7 @@ else {
     foreach($msgs_ha as $appointment) {
       $tbody_data[] = array(ts2dFN($appointment[0]), ADAEventProposal::removeEventToken($appointment[1]));
     }
-    $appointments_data = BaseHtmlLib::tableElement('', $thead_data, $tbody_data);
+    $appointments_data = BaseHtmlLib::tableElement('class:'.ADA_SEMANTICUI_TABLECLASS, $thead_data, $tbody_data);
   }
   $data = $appointments_data->getHtml()
         . $user_data->getHtml()

@@ -73,7 +73,7 @@ if (isset($op) && $op == 'list') {
         $history .= $visited_nodes_table;
         $history .= '</p>';
 } else {
-        
+
 // Sommario
         $history .= '<p align="center">';
         $history .= $user_historyObj->history_summary_FN($sess_id_course);
@@ -148,6 +148,7 @@ if (isset($op) && $op == 'list') {
 // Ultime 10 visite
         $history .= '<p>';
         $history .= $user_historyObj->history_last_nodes_FN('10');
+        $history= preg_replace('/class="/', 'class="historytable '.ADA_SEMANTICUI_TABLECLASS.' ', $history, 1); // replace first occurence of class
         $history .= '</p>';
     }
 } else {

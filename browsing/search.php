@@ -92,7 +92,7 @@ if (!is_null($submit)) {
     $clause='';
     $or = ' OR ';
     $and = ' AND ';
-    
+
 /*
  * Versione campo unico
  *
@@ -137,7 +137,7 @@ if (!is_null($submit)) {
             if (!empty($s_node_text)){
                 $count++;
             }
-            
+
             $resHa=$courseObj->executeSearch(trim($s_node_name),trim($s_node_title),trim($s_node_text),$dh,$count,$sess_id_user);
         }
 
@@ -147,8 +147,8 @@ if (!is_null($submit)) {
        $clause = '('.$clause.')'.$and.' ((tipo <> '.ADA_PRIVATE_NOTE_TYPE.') OR (tipo ='.ADA_PRIVATE_NOTE_TYPE.' AND id_utente = '.$sess_id_user.'))';
        $resHa = $dh->find_course_nodes_list($out_fields_ar, $clause,$_SESSION['sess_id_course']);
     }
- 
- 
+
+
     if (!AMA_DataHandler::isError($resHa) and is_array($resHa) and !empty($resHa)){
         $total_results = array();
         $group_count=0;
@@ -201,7 +201,7 @@ if (!is_null($submit)) {
             translateFN('Titolo'),
             translateFN('Keywords')
        );
-        $result_table = BaseHtmlLib::tableElement('id:table_result', $thead_data, $total_results);
+        $result_table = BaseHtmlLib::tableElement('id:table_result,class:'.ADA_SEMANTICUI_TABLECLASS, $thead_data, $total_results);
         $results=$result_table->getHtml();
         $results='Risultati: '.$results;
      }
@@ -233,7 +233,7 @@ search form
 */
 
 // versione con campo UNICO
- 
+
  $l_search = 'standard_node';
  $form_dataHa = array(
   // SEARCH FIELDS
@@ -287,18 +287,18 @@ if($form_AdvancedSearch->isValid()) {
             's_node_text' => ($_GET['s_node_text']),
             's_AdvancedForm'=>($_GET['s_AdvancedForm'])
         );
-    
+
     $form_AdvancedSearch->fillWithArrayData($AdvancedSearchAr);
     $advancedSearch_form=$form_AdvancedSearch->getHtml();
-    
+
 }
 }
 else
 {
-  $form_AdvancedSearch = new AdvancedSearchForm(false,'search.php');  
+  $form_AdvancedSearch = new AdvancedSearchForm(false,'search.php');
   $action=whoami().".php";
   $advancedSearch_form = $form_AdvancedSearch->getHtml();
-  
+
 }
 $online_users_listing_mode = 2;
 $online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance,$online_users_listing_mode);
@@ -379,12 +379,13 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_UI,
        	JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_NO_CONFLICT,
 		JQUERY_MASKEDINPUT);
 
 $layout_dataAr['CSS_filename'] = array (
 		JQUERY_UI_CSS,
-		JQUERY_DATATABLE_CSS);
+		SEMANTICUI_DATATABLE_CSS);
 
 if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
 {
