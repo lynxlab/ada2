@@ -57,20 +57,21 @@ $newButton->setAttribute('title', translateFN('Clicca per creare un nuovo luogo'
 $newButton->setAttribute('onclick', 'javascript:editVenue(null);');
 $newButton->addChild (new CText(translateFN('Nuovo Luogo')));
 $venuesIndexDIV->addChild($newButton);
+$venuesIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
 
 $venuesData = array();
 $venuesList = $GLOBALS['dh']->classroom_getAllVenues();
 
 if (!AMA_DB::isError($venuesList)) {
-	
-	$labels = array (translateFN('nome'), translateFN('Nominativo di contatto'), 
-					 translateFN('Telefono del contatto'), translateFN('E-Mail del contatto'), 
+
+	$labels = array (translateFN('nome'), translateFN('Nominativo di contatto'),
+					 translateFN('Telefono del contatto'), translateFN('E-Mail del contatto'),
 					 translateFN('azioni'));
 
 	foreach ($venuesList as $i=>$venueAr) {
 		$links = array();
 		$linksHtml = "";
-			
+
 		for ($j=0;$j<2;$j++) {
 			switch ($j) {
 				case 0:
@@ -84,7 +85,7 @@ if (!AMA_DB::isError($venuesList)) {
 					$link = 'deleteVenue($j(this), '.$venueAr['id_venue'].' , \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
 					break;
 			}
-				
+
 			if (isset($type)) {
 				$links[$j] = CDOMElement::create('li','class:liactions');
 
@@ -103,7 +104,7 @@ if (!AMA_DB::isError($venuesList)) {
 			foreach ($links as $link) $linksul->addChild ($link);
 			$linksHtml = $linksul->getHtml();
 		} else $linksHtml = '';
-		
+
 		if (DataValidator::validate_email($venueAr['contact_email'])) {
 			$emailHref = CDOMElement::create('a');
 			$emailHref->setAttribute('href', 'mailto:'.$venueAr['contact_email']);
@@ -117,19 +118,20 @@ if (!AMA_DB::isError($venuesList)) {
 				$labels[0]=>$venueAr['name'],
 				$labels[1]=>$venueAr['contact_name'],
 				$labels[2]=>$venueAr['contact_phone'],
-				$labels[3]=>$emailOut,				
+				$labels[3]=>$emailOut,
 				$labels[4]=>$linksHtml);
 	}
-	
+
 	$venuesTable = BaseHtmlLib::tableElement('id:completeVenuesList',$labels,$venuesData,'',translateFN('Elenco dei luoghi'));
+	$venuesTable->setAttribute('class', $venuesTable->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
 	$venuesIndexDIV->addChild($venuesTable);
-	
+
 	// if there are more than 10 rows, repeat the add new button below the table
 	if ($i>10) {
 		$bottomButton = clone $newButton;
 		$bottomButton->setAttribute('class', 'newButton bottom');
 		$venuesIndexDIV->addChild($bottomButton);
-	} 
+	}
 } // if (!AMA_DB::isError($venuesList))
 
 
@@ -148,6 +150,7 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT
@@ -155,7 +158,7 @@ $layout_dataAr['JS_filename'] = array(
 
 $layout_dataAr['CSS_filename'] = array(
 		JQUERY_UI_CSS,
-		JQUERY_DATATABLE_CSS,
+		SEMANTICUI_DATATABLE_CSS,
 		MODULES_CLASSROOM_PATH.'/layout/tooltips.css'
 );
 

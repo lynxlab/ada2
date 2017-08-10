@@ -57,12 +57,13 @@ $newButton->setAttribute('title', translateFN('Clicca per creare una nuova aula'
 $newButton->setAttribute('onclick', 'javascript:editClassroom(null);');
 $newButton->addChild (new CText(translateFN('Nuova Aula')));
 $classroomsIndexDIV->addChild($newButton);
+$classroomsIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
 
 $classRoomsData = array();
 $classroomsList = $GLOBALS['dh']->classroom_getAllClassrooms();
 
 if (!AMA_DB::isError($classroomsList)) {
-	
+
 	$labels = array (translateFN('nome'), translateFN('Luogo'),
 					 translateFN('Posti'), translateFN('Computer'),
 					 translateFN('Comodità'), translateFN('azioni'));
@@ -70,7 +71,7 @@ if (!AMA_DB::isError($classroomsList)) {
 	foreach ($classroomsList as $i=>$classroomAr) {
 		$links = array();
 		$linksHtml = "";
-		
+
 		for ($j=0;$j<2;$j++) {
 			switch ($j) {
 				case 0:
@@ -84,10 +85,10 @@ if (!AMA_DB::isError($classroomsList)) {
 					$link = 'deleteClassroom($j(this), '.$classroomAr['id_classroom'].' , \''.urlencode(translateFN("Questo cancellerà l'elemento selezionato")).'\');';
 					break;
 			}
-		
+
 			if (isset($type)) {
 				$links[$j] = CDOMElement::create('li','class:liactions');
-		
+
 				$linkshref = CDOMElement::create('button');
 				$linkshref->setAttribute('onclick','javascript:'.$link);
 				$linkshref->setAttribute('class', $type.'Button tooltip');
@@ -97,15 +98,15 @@ if (!AMA_DB::isError($classroomsList)) {
 				unset ($type);
 			}
 		}
-		
+
 		if (!empty($links)) {
 			$linksul = CDOMElement::create('ul','class:ulactions');
 			foreach ($links as $link) $linksul->addChild ($link);
 			$linksHtml = $linksul->getHtml();
 		} else $linksHtml = '';
-		
+
 		$commonIconClass = 'tooltip';
-		
+
 		if (intval($classroomAr['internet'])==1) {
 			$facilities[] = CDOMElement::create('img','src:'.MODULES_CLASSROOM_HTTP.'/layout/images/'.
 							'globe.png,class:'.$commonIconClass.',title:'.translateFN('Internet'));
@@ -122,7 +123,7 @@ if (!AMA_DB::isError($classroomsList)) {
 			$facilities[] = CDOMElement::create('img','src:'.MODULES_CLASSROOM_HTTP.'/layout/images/'.
 							'wheelchair.png,class:'.$commonIconClass.',title:'.translateFN('Accesso disabili'));
 		}
-		
+
 		if (isset($facilities) && count($facilities)>0) {
 			$spanFacilities = CDOMElement::create('span','class:facilities');
 			foreach ($facilities as $facility) $spanFacilities->addChild($facility);
@@ -130,20 +131,21 @@ if (!AMA_DB::isError($classroomsList)) {
 		} else {
 			unset ($spanFacilities);
 		}
-		
-					
+
+
 		$classroomsData[$i] = array (
 				$labels[0]=>$classroomAr['name'],
 				$labels[1]=>$classroomAr['venue_name'],
 				$labels[2]=>$classroomAr['seats'],
 				$labels[3]=>$classroomAr['computers'],
 				$labels[4]=>(isset($spanFacilities)) ? $spanFacilities->getHtml() : 'N/A',
-				$labels[5]=>$linksHtml);		
+				$labels[5]=>$linksHtml);
 	}
-	
+
 	$classroomsTable = BaseHtmlLib::tableElement('id:completeClassroomsList',$labels,$classroomsData,'',translateFN('Elenco delle aule'));
+	$classroomsTable->setAttribute('class', $classroomsTable->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
 	$classroomsIndexDIV->addChild($classroomsTable);
-	
+
 	// if there are more than 10 rows, repeat the add new button below the table
 	if ($i>10) {
 		$bottomButton = clone $newButton;
@@ -167,6 +169,7 @@ $content_dataAr = array(
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_DATATABLE,
+		SEMANTICUI_DATATABLE,
 		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT
@@ -174,7 +177,7 @@ $layout_dataAr['JS_filename'] = array(
 
 $layout_dataAr['CSS_filename'] = array(
 		JQUERY_UI_CSS,
-		JQUERY_DATATABLE_CSS,
+		SEMANTICUI_DATATABLE_CSS,
 		MODULES_CLASSROOM_PATH.'/layout/tooltips.css'
 );
 
