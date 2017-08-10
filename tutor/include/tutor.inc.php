@@ -47,7 +47,7 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
                         	$registro = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcallhistory.php?id_course_instance='.$id_instance.'"><img src="img/registro.png"  alt="'.translateFN('registro').'" title="'.translateFN('registro').'" class="tooltip" border="0"></a>';
                     	}
 	                    $data_inizio = AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], "%d/%m/%Y");
-	
+
 		                $dati_corso[$num_courses][$id_corso_key]= $instance_course_ha['id_corso'];
 						$dati_corso[$num_courses][$titolo_key] = $titolo;
 	                    $dati_corso[$num_courses][$id_classe_key] =  $id_instance;
@@ -71,7 +71,7 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
         	$tObj = BaseHtmlLib::tableElement('id:listCourses',
         			array(	$id_corso_key, $titolo_key, $id_classe_key,
         					$nome_key, $data_inizio_key, $durata_key, $azioni_key) ,$dati_corso,null,$caption);
-        	$tObj->setAttribute('class', 'default_table doDataTable');
+        	$tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
         	$courses_list = $tObj->getHtml();
         } else {
             $courses_list = $msg;

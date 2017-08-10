@@ -343,7 +343,7 @@ class ADA_Esercizio {
         $this->testo     = $testo;
         $this->dati      = $dati;
         if ($student_answer == null) {
-            $this->risposta['ripetibile'] = true; 
+            $this->risposta['ripetibile'] = true;
         } else {
             $this->risposta  = $student_answer;
         }
@@ -789,7 +789,7 @@ class ExerciseViewer //extends AbsExerciseViewer
 			$shuffled[$key] = $a[$key];
 			unset($a[$key]);
 		}
-        
+
         return $shuffled;
     }
 
@@ -1340,7 +1340,7 @@ class Standard_ExerciseViewer extends ExerciseViewer {
             );
             $i++;
         }
-        $div->addChild(BaseHtmlLib::tableElement('', $thead_data, $tbody_data));
+        $div->addChild(BaseHtmlLib::tableElement('class:'.ADA_SEMANTICUI_TABLECLASS, $thead_data, $tbody_data));
         return $div->getHtml();
     }
 
@@ -2197,7 +2197,7 @@ class Cloze_ExerciseViewer extends ExerciseViewer {
         $div_rating->addChild(new CText(translateFN('Punteggio:').' '));
         $div_rating->addChild(new CText($exercise->getRating()));
         $div->addChild($div_rating);
-        
+
         return $div;
     }
 
@@ -3048,7 +3048,7 @@ $http_root_dir = $GLOBALS['http_root_dir'];
         $form->addChild($div_buttons);
 
         $div->addChild($form);
-        
+
         return $div->getHtml();
     }
 

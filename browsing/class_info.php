@@ -92,11 +92,12 @@ if(!AMA_DataHandler::isError($courseInstances)) {
              $caption = "<strong>".translateFN("Elenco degli iscritt* al corso ")."</strong>";
              $summary = translateFN("Elenco degli iscritt* al corso ");
              $tObj->setTable($student_listHa,$caption,$summary);
-             
+
              $data = $tObj->getTable();
+             $data= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $data, 1); // replace first occurence of class
      } else {
             $data =   translateFN("Errore nei dati");
-     }   
+     }
 } else {
         $data = translateFN('Non sei iscritto a nessuna classe');
 }
@@ -135,7 +136,7 @@ $content_dataAr = array(
 //    'profilo' => $profilo,
 
     // 'data' => $data->getHtml(),
-     
+
     'data' => $data,
 
     'messages' => $user_messages->getHtml(),

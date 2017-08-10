@@ -85,7 +85,6 @@ function initButtons()
 
 function initDataTables() {
 	datatable = $j('#completeRulesList').dataTable( {
-		 		"bJQueryUI": true,
                 "bFilter": true,
                 "bInfo": false,
                 "bSort": true,
@@ -97,7 +96,10 @@ function initDataTables() {
                                   "bVisible":    false },
                                 null,
                                 { "bSearchable" : false, "bSortable" : false, "sWidth" : "15%"}
-                            ]
+                            ],
+                "oLanguage": {
+                    "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+                 }
 	}).show();
 }
 

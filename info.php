@@ -655,7 +655,7 @@ if ($op !== false && $op == 'course_info') {
                		$credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
                }
         }
-        $data = BaseHtmlLib::tableElement('id:infotable,class:ui padded table', $thead_data, $tbody_data);
+        $data = BaseHtmlLib::tableElement('id:infotable,class:'.ADA_SEMANTICUI_TABLECLASS, $thead_data, $tbody_data);
         $optionsAr['onload_func'] = 'initDoc('.intval(MULTIPROVIDER).');';
     } else {
         $data = new CText(translateFN('Non sono stati pubblicati corsi'));

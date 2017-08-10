@@ -181,13 +181,14 @@ switch ($op) {
         $layout_dataAr['JS_filename'] = array(
         		JQUERY,
         		JQUERY_DATATABLE,
+        		SEMANTICUI_DATATABLE,
         		JQUERY_DATATABLE_DATE,
         		JQUERY_NO_CONFLICT
         );
         $layout_dataAr['CSS_filename']= array(
-        		JQUERY_DATATABLE_CSS
+        		SEMANTICUI_DATATABLE_CSS
         );
-        $optionsAr['onload_func'] = 'dataTablesExec()';        
+        $optionsAr['onload_func'] = 'dataTablesExec()';
 
 }
 // CHAT, BANNER etc

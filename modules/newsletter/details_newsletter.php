@@ -53,36 +53,37 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET'  &&
 {
 	$idNewsletter = intval ($_GET['id']);
 	$newsletterAr = $dh->get_newsletter ($idNewsletter);
-	
+
 	if (!AMA_DB::isError($newsletterAr) && $newsletterAr!==false)
 	{
 		$historyAr = $dh->get_newsletter_history ($idNewsletter);
-			
+
 			$labels = array ( translateFN('filtro'), translateFN('data di invio'), translateFN('n. utenti') );
-			
+
 			$historyData = array();
-			
+
 			foreach ($historyAr as $i=>$historyEl)
-			{			
+			{
 				$historyData[$i] = array(
 						$labels[0] => convertFilterArrayToString(json_decode($historyEl['filter'],true),$dh,false),
 						$labels[1] => $historyEl['datesent'],
 						$labels[2] => ($historyEl['status']!=MODULES_NEWSLETTER_HISTORY_STATUS_SENDING) ? $historyEl['recipientscount'] : (translateFN('Invio in corso').'...')
 				);
 			}
-			
+
 			$historyTable = new Table();
 			$historyTable->initTable('0','center','1','1','90%','','','','','1','0','','default','newsletterHistoryDetails');
 			$historyTable->setTable($historyData,translateFN('Stroico Newsletter').' - '.$newsletterAr['subject'],translateFN('Stroico Newsletter').' - '.$newsletterAr['subject']);
-			
-			$containerDIV->addChild(new CText($historyTable->getTable()));	
+			$histData = $historyTable->getTable();
+			$histData= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $histData, 1); // replace first occurence of class
+			$containerDIV->addChild(new CText($histData));
 	}
-	else 
+	else
 	{
 		$containerDIV->addChild (new CText(translateFN('Newsletter non trovata, id= ').$idNewsletter));
 	} // if (!AMA_DB::isError($newsletterAr))
-	
-} 
+
+}
 else {
 	$containerDIV->addChild (new CText(translateFN('Nessuna newsletter da inviare')));
 }
@@ -106,7 +107,7 @@ else
 	);
 }
 
-array_push($layout_dataAr['CSS_filename'], JQUERY_DATATABLE_CSS);
+array_push($layout_dataAr['CSS_filename'], SEMANTICUI_DATATABLE_CSS);
 
 $content_dataAr = array(
 		'user_name' => $user_name,
@@ -123,7 +124,8 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_UI,
 		JQUERY_MASKEDINPUT,
 		JQUERY_DATATABLE,
-		JQUERY_DATATABLE_DATE,		
+		SEMANTICUI_DATATABLE,
+		JQUERY_DATATABLE_DATE,
 		JQUERY_NO_CONFLICT,
 		MODULES_NEWSLETTER_PATH.'/js/jquery.cascade-select.js'
 );

@@ -258,6 +258,14 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 	margin-right: 0.5rem;
 	color: #005D00;
 }
+
+table.historytable .ADA_GROUP_TYPE::before,
+table.historytable .ADA_LEAF_TYPE::before,
+table.historytable .ADA_NOTE_TYPE::before,
+table.historytable .ADA_EXERCISE::before,
+table.historytable .NODE_NOT_VIEWABLE::before {
+	float:left;
+}
 /*
  * classe per l'elemento che contiene un nodo Termine di tipo gruppo
  */
@@ -529,10 +537,11 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
    float: left;
    width: 40%;
 }
-#result_AdvancedSearch
+#result_AdvancedSearch,
+#result_SimpleSearch
 {
   float:right;
-  width: 50%;
+  width: 60%;
 }
 
 /*for simple search*/
@@ -545,11 +554,6 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 {
     float: left;
     width: 40%;
-}
-#result_SimpleSearch
-{
-   float:right;
-   width: 50%;
 }
 
 /*for self_instruction*/

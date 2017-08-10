@@ -571,3 +571,5 @@ html, body {
   border-right: 10px;
   margin-right:20px;
 }
+
+.dataTables_wrapper { width: 97%; margin: 0 auto; }
