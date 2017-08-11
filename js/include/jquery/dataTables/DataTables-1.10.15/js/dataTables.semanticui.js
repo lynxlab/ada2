@@ -59,6 +59,23 @@ $.extend( true, DataTable.defaults, {
 				"<'right aligned nine wide column'p>"+
 			">"+
 		">",
+		buttondom:
+			"<'ui stackable grid'"+
+			"<'row'"+
+				"<'eight wide column'l>"+
+				"<'right aligned eight wide column'f>"+
+			">"+
+			"<'row dt-semanticUI dt-buttons'"+
+				"<'sixteen wide column'B>"+
+			">"+
+			"<'row dt-table'"+
+				"<'sixteen wide column'tr>"+
+			">"+
+			"<'row'"+
+				"<'seven wide column'i>"+
+				"<'right aligned nine wide column'p>"+
+			">"+
+		">",
 	renderer: 'semanticUI'
 } );
 
@@ -243,6 +260,9 @@ $(document).on( 'init.dt', function (e, ctx) {
 		infotable_filter.children().wrapAll('<div class="ui right floated basic segment"><div class="ui left labeled icon input field"></div></div>');
 		infotable_filter.addClass("ui form");
 		infotable_filter.after("<div class='clearfix'></div>");
+
+		// fix .dt-buttons row style
+		$( 'div.row.dt-semanticUI.dt-buttons', api.table().container() ).css({ 'margin-top':0 });
 	}
 } );
 
