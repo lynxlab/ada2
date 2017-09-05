@@ -420,7 +420,7 @@ class JS {
 		$JS_dir = $rel_pref."js/$module_dir/";
 	}
 
-        $JS_files[]= $rel_pref."external/lib/js/prototype-1.6.0.1.js";
+        $JS_files[]= $rel_pref."external/lib/js/prototype-1.7.3.js";
         $JS_files[]= $rel_pref."external/lib/js/scriptaculous/scriptaculous.js";
         $JS_files[]= $JS_dir."default.js";
         if (!in_array($JS_dir.$node_type.".js",$JS_files)) $JS_files[]= $JS_dir.$node_type.".js";
