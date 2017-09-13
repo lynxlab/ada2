@@ -59,6 +59,7 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
 	                    if(defined('MODULES_CLASSAGENDA') && (MODULES_CLASSAGENDA)) {
 	                    	$dati_corso[$num_courses][$azioni_key] .= $presenze;
 	                    	$dati_corso[$num_courses][$azioni_key] .= $registro;
+	                    }
 
 	                    if (defined('MODULES_TEST') && MODULES_TEST) {
 	                    	$survey_title=translateFN('Report Sondaggi');
