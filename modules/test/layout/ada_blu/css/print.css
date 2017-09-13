@@ -13,13 +13,21 @@
 	font-weight: bold;
 }
 
+#contentcontent tr.counts td:not(:first-child),
+#contentcontent tr.labels td:not(:first-child) {
+    text-align: right;
+    border-left: 1px solid rgb(236, 236, 234);
+    padding-right: 1em;
+    vertical-align: middle;
+}
+
 #contentcontent table.survey tr.counts td:not(:first-child) {
 	/* background: red; */
 	text-align: right;
 }
 
 #contentcontent table.survey tr.labels > td:first-child {
-    width: 80em;
+    width: 70%;
 }
 
 #contentcontent table.survey > caption {
