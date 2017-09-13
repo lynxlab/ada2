@@ -219,12 +219,12 @@ class SurveyTest extends RootTest
 				$topicCell = CDOMElement::create('td');
 				if (strlen($topicData['titolo'])>0) $label = $topicData['titolo'];
 				else if (strlen($topicData['nome'])>0) $label = $topicData['nome'];
-				$topicCell->addChild(new CText(nl2br(trim(strip_tags($label)))));
-				$topicRow->addChild($topicCell);
-				$surveyBody->addChild($topicRow);
-				if ($asArray) $rowsArray[$rowsCount++] = array(trim(strip_tags($label)));
 
 				if (count($topicData['questions'])>0) {
+					$topicCell->addChild(new CText(nl2br(trim(strip_tags($label)))));
+					$topicRow->addChild($topicCell);
+					$surveyBody->addChild($topicRow);
+					if ($asArray) $rowsArray[$rowsCount++] = array(trim(strip_tags($label)));
 					$qCount = 0;
 					foreach ($topicData['questions'] as $questionID => $questionData) {
 						$questionRow = CDOMElement::create('tr','class:questionrow');

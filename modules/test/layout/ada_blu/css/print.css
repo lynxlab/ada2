@@ -1,9 +1,9 @@
 @CHARSET "UTF-8";
 @import url("../../../../../layout/ada_blu/css/print.css");
 
-#contentcontent .surveyreport.container .dt-buttons,
+#contentcontent #buttonsBar,
 #contentcontent table.survey thead {
-	display: none;
+	display: none !important;
 }
 
 #contentcontent table.survey tr.topic {
