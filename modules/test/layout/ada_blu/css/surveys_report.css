@@ -1,0 +1,59 @@
+@import url("index.css");
+
+#pagecontainer { margin-bottom: -55px; }
+#content_view {
+	width: 100%;
+	float: left;
+}
+
+#contentcontent .surveyreport.container .ui.grid>.row {
+	margin-top:0;
+}
+
+#contentcontent table.survey {
+	margin-bottom: 5em;
+}
+
+#contentcontent tr.labels,
+#contentcontent tr.counts {
+	background-color: transparent;
+}
+
+/* #contentcontent tr.labels td, */
+#contentcontent tr.counts td {
+	border-bottom:none;
+}
+
+#contentcontent tr.counts td:not(:first-child) {
+	/* background: red; */
+	text-align: right;
+}
+
+#contentcontent tr.topic {
+	background: #ececea;
+	border-bottom-color: #a9a9a9;
+	text-transform: capitalize;
+	font-weight: bold;
+}
+
+tr.labels > td:first-child {
+    width: 80em;
+}
+
+table.ui.survey tr.questionrow > td {
+	padding: 0;
+}
+
+#contentcontent table.survey {
+	font-size: 1.1em;
+}
+
+#contentcontent table.survey > caption {
+	font-size: 1.3em;
+}
+
+
+#contentcontent table.survey thead,
+#contentcontent #buttonsBar {
+	display: none;
+}

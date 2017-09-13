@@ -570,4 +570,62 @@ abstract class NodeTest
 			redirect($redirectTo);
 		}
 	}
+
+	/**
+	 * Tries to flatten the node tree (i.e. discarding parents to prevent circular references) and builds an array with it
+	 *
+	 * @return array[]
+	 */
+	public function toArray() {
+		$retArray = array();
+		if (!empty($this->_children)) {
+			if (!isset($retArray[$this->id_nodo])) {
+				$retArray[$this->id_nodo] = array('id' => $this->id_nodo, 'nome' => $this->nome, 'titolo' => $this->titolo, 'topics' => array());
+			}
+
+			/** @var TopicTest $topic */
+			foreach($this->_children as $topic) {
+				if (!isset($retArray[$this->id_nodo]['topics'][$topic->id_nodo])) {
+					$retArray[$this->id_nodo]['topics'][$topic->id_nodo] = array(
+						'id' => $topic->id_nodo,
+						'nome' => $topic->nome,
+						'titolo' => $topic->titolo,
+						'questions' => array()
+					);
+				}
+
+				if (!empty($topic->_children)) {
+					/** @var QuestionTest $question */
+					foreach ($topic->_children as $question) {
+						if (!isset($retArray[$this->id_nodo]['topics'][$topic->id_nodo]['questions'][$question->id_nodo])) {
+							$retArray[$this->id_nodo]['topics'][$topic->id_nodo]['questions'][$question->id_nodo] = array(
+								'id' => $question->id_nodo,
+								'nome' => $question->nome,
+								'titolo' => $question->titolo,
+								'consegna' => $question->consegna,
+								'answers' => array()
+							);
+						}
+
+						if (!empty($question->_children)) {
+							/** @var AnswerTest $answer */
+							foreach ($question->_children as $answer) {
+								if (!isset($retArray[$this->id_nodo]['topics'][$topic->id_nodo]['questions'][$question->id_nodo]['answers'][$answer->id_nodo])) {
+									$retArray[$this->id_nodo]['topics'][$topic->id_nodo]['questions'][$question->id_nodo]['answers'][$answer->id_nodo] = array(
+										'id' => $answer->id_nodo,
+										'nome' => $answer->nome,
+										'titolo' => $answer->titolo,
+										'testo' => $answer->testo,
+										'consegna' => $answer->consegna,
+										'correttezza' => $answer->correttezza
+									);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	return $retArray;
+	}
 }
