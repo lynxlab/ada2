@@ -1,0 +1,31 @@
+@CHARSET "UTF-8";
+@import url("../../../../../layout/ada_blu/css/print.css");
+
+#contentcontent .surveyreport.container .dt-buttons,
+#contentcontent table.survey thead {
+	display: none;
+}
+
+#contentcontent table.survey tr.topic {
+	background: #ececea;
+	border-bottom-color: #a9a9a9;
+	text-transform: capitalize;
+	font-weight: bold;
+}
+
+#contentcontent table.survey tr.counts td:not(:first-child) {
+	/* background: red; */
+	text-align: right;
+}
+
+#contentcontent table.survey tr.labels > td:first-child {
+    width: 80em;
+}
+
+#contentcontent table.survey > caption {
+	font-size: 1.2em;
+}
+
+#contentcontent table.survey {
+	margin-bottom: 5em;
+}
