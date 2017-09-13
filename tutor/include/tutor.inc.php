@@ -53,6 +53,13 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
 	                    $dati_corso[$num_courses][$durata_key] = $durata_corso;
 	                    $dati_corso[$num_courses][$azioni_key] = $naviga;
 	                    $dati_corso[$num_courses][$azioni_key] .= $valuta;
+
+	                    if (defined('MODULES_TEST') && MODULES_TEST) {
+	                    	$survey_title=translateFN('Report Sondaggi');
+	                    	$survey_img= CDOMElement::create('img', 'src:img/_exer.png,alt:view,class:tooltip,title:'.$survey_title);
+	                    	$survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP.'/surveys_report.php?id_course_instance='.$id_instance.'&id_course='.$id_course, $survey_img->getHtml());
+	                    	$dati_corso[$num_courses][$azioni_key] .= $survey_link->getHtml();
+	                    }
                     }
                 }
             }
