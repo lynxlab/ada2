@@ -19,6 +19,14 @@
 	background-color: transparent;
 }
 
+#contentcontent tr.counts td:not(:first-child),
+#contentcontent tr.labels td:not(:first-child) {
+    text-align: right;
+    border-left: 1px solid rgb(236, 236, 234);
+    padding-right: 1em;
+    vertical-align: middle;
+}
+
 /* #contentcontent tr.labels td, */
 #contentcontent tr.counts td {
 	border-bottom:none;
