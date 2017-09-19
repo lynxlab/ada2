@@ -128,6 +128,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $form = new CourseModelForm($authors, $languages);
+        $form->addFileSection();
 
         if ($courseObj instanceof Course && $courseObj->isFull()) {
             $formData = array(
@@ -177,5 +178,7 @@ $layout_dataAr['JS_filename'] = array(
 );
 
 $optionsAr['onload_func'] = 'initDateField();  includeFCKeditor(\'descrizione\');';
-
+if ($courseObj instanceof Course && $courseObj->isFull()) {
+	$optionsAr['onload_func'] = 'initEditCourse('.$userObj->getId().','.$courseObj->getId().');';
+}
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);
