@@ -26,6 +26,7 @@
  */
 class Course extends Course_Old
 {
+	const MEDIA_PATH_DEFAULT = ROOT_DIR. MEDIA_PATH_DEFAULT.'courses/';
     var $publicCourse;
         
     public function __construct($courseId) {

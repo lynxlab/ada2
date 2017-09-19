@@ -118,3 +118,48 @@ div.fform form fieldset fieldset { border: 1px dotted grey; margin-bottom: 10px;
 div.fform form fieldset fieldset label { margin-left:0; width: 45%; display: inline-block; }
 div.fform form fieldset fieldset #module_classbudget_references,
 div.fform form fieldset fieldset #module_classbudget_notes { width: 95%; }
+
+#fileData li.form:first-child {
+    display: none;
+}
+
+#fileData li.form:last-child {
+    border: none;
+    text-align: right;
+}
+
+.uploadMSG {
+	padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: left;
+}
+
+#uploadErrorMSG {
+    background: #ffb4b4;
+    color: #9c3e3e;
+}
+
+#uploadOkMSG {
+    background: #c2f3c2;
+    color: #008400;
+}
+
+#courseAttachments tr td:last-child {
+	text-align: center;
+}
+#courseAttachments tr td:last-child i.icon {
+	padding: 5px;
+}
+#courseAttachments tr td:last-child i.icon.trash:before {
+	padding:0.2em;
+	border-radius: 5px;
+}
+#courseAttachments tr td:last-child i.icon.trash:hover:before {
+	background: #ff6666;
+	color: #fff;	
+}
+
+li.form.attachments {
+	border: none;
+}
