@@ -5,19 +5,19 @@
  *
  * The switcher can use this module to view the informations about an existing
  * course.
- * 
  *
- * @package		
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2010, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
@@ -82,4 +82,9 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml()
 );
 
-ARE::render($layout_dataAr, $content_dataAr);
+$layout_dataAr['JS_filename'] = array(
+		ROOT_DIR .'/js/switcher/edit_content.js'
+);
+$optionsAr['onload_func'] = 'buildCourseAttachmentsTable('.$courseObj->getId().', false, $j(\'ul.view_info\'));';
+
+ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);

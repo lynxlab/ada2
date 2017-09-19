@@ -106,4 +106,19 @@ class CourseModelForm extends FForm {
         $this->addHidden('media_path');
         $this->addHidden('static_mode');
     }
+
+    /**
+     * Adds an upload file section to the form
+     */
+    public function addFileSection() {
+    	$fileSection = array();
+    	$fileSection[] = FormControl::create(FormControl::INPUT_HIDDEN, 'fieldUploadName', '')->withData('uploadFile');
+    	$fileSection[] = FormControl::create(FormControl::INPUT_TEXT, 'filetitle', translateFN('Titolo del file'));
+    	$fileSection[] = FormControl::create(FormControl::INPUT_TEXT, 'filedescr', translateFN('Descrizione del file'));
+    	$fileSection[] = FormControl::create(FormControl::INPUT_TEXT, 'filekeywords', translateFN('Parole chiave del file'));
+    	$fileSection[] = FormControl::create(FormControl::INPUT_FILE, 'uploadFile', translateFN('Scegli un file'));
+    	$fileSection[] = FormControl::create(FormControl::INPUT_BUTTON, 'saveFileButton', translateFN('Carica file'))->setAttribute('disabled', 'disabled');
+    	$this->addFieldset(translateFN('Carica un file'),'fileData')->withData($fileSection);
+    	$this->addHidden('fileDeleteConfirmMSG')->withData(translateFN('Confermi la cancellazione del file?'));
+    }
 }

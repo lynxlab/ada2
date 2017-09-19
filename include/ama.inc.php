@@ -8808,11 +8808,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *
      * copyright  - if the resource has a copytight or not (boolean)
      *
+     * @param bool forceDuplicate true to force duplicate filename insertion. defaults to false
      * @return
      *  - the id of the resource just inserted on success
      *  - an Error on failure
      */
-    public function add_risorsa_esterna($res_ha) {
+    public function add_risorsa_esterna($res_ha, $forceDuplicate = false) {
 
         ADALogger::log_db("entered add_risorsa_esterna");
 
@@ -8856,7 +8857,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if (AMA_DB::isError($id)) {
             return new AMA_Error(AMA_ERR_GET);
         }
-        if (empty($id)) {
+        if (empty($id) || $forceDuplicate) {
             // insert a row into table risorsa_esterna
             $sql  = "insert into risorsa_esterna (nome_file, tipo, copyright,id_utente, keywords, titolo, descrizione, pubblicato, lingua)";
             $sql .= " values ($nome_file, $tipo, $copyright, $id_utente, $keywords, $titolo, $descrizione, $pubblicato, $lingua)";
@@ -8869,6 +8870,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
             // preleva l'id della risorsa appena inserita
             $sql = "select id_risorsa_ext from risorsa_esterna where nome_file=$nome_file";
+            if ($forceDuplicate) $sql .= ' ORDER BY id_risorsa_ext DESC';
             ADALogger::log_db("getting resources: $sql");
             $id = $db->getOne($sql);
             if (AMA_DB::isError($id)) {
