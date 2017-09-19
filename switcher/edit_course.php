@@ -179,6 +179,6 @@ $layout_dataAr['JS_filename'] = array(
 
 $optionsAr['onload_func'] = 'initDateField();  includeFCKeditor(\'descrizione\');';
 if ($courseObj instanceof Course && $courseObj->isFull()) {
-	$optionsAr['onload_func'] = 'initEditCourse('.$userObj->getId().','.$courseObj->getId().');';
+	$optionsAr['onload_func'] .= 'initEditCourse('.$userObj->getId().','.$courseObj->getId().');';
 }
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);
