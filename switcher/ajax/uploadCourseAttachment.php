@@ -42,35 +42,39 @@ $error = true;
 $data = '';
 if (isset($_FILES) && count($_FILES)>0) {
 	$fileUploader = new FileUploader(Course::MEDIA_PATH_DEFAULT.$courseID.'/',  $fieldUploadName);
-	// prepare data to be saved
-	$extRes = array(
-		'nome_file' => $fileUploader->getFileName(),
-		'tipo' => array_key_exists($fileUploader->getType(), $GLOBALS['ADA_MIME_TYPE']) ? $GLOBALS['ADA_MIME_TYPE'][$fileUploader->getType()]['type'] : -1,
-		'id_nodo' => $courseID,
-		'keywords' => isset($filekeywords) ? trim($filekeywords) : null,
-		'titolo' => isset($filetitle) ? trim($filetitle) : null,
-		'pubblicato' => 1,
-		'copyright' => null,
-		'lingua' => null,
-		'descrizione' => isset($filedescr) ? $filedescr: null,
-		'id_utente' => $userID
-	);
-	// 2nd param forces duplicate filename insertion
-	$res = $GLOBALS['dh']->add_risorsa_esterna($extRes, true);
-	if (!AMA_DB::isError($res)) {
-		if($fileUploader->upload() == false) {
-			$GLOBALS['dh']->_del_risorse_nodi($courseID, $extRes);
-			$GLOBALS['dh']->remove_risorsa_esterna($extRes);
-			$data = $fileUploader->getErrorMessage();
-		} else {
-			$data = sprintf(translateFN('File %s caricato correttamente'), $fileUploader->getFileName());
-			$error = false;
-		}
-	} else $data = $res->getMessage();
+	$checkFileArr = $GLOBALS['dh']->get_risorsa_esterna_info_from_filename($fileUploader->getFileName(), $courseID);
 
+	if (!AMA_DB::isError($checkFileArr) && $checkFileArr !== false && count($checkFileArr)>0) {
+		$data = sprintf(translateFN('Il file %s già esiste per questo corso'), $checkFileArr['nome_file']);
+	} else {
+		// file not found for the passed course, add it
+		// prepare data to be saved
+		$extRes = array(
+			'nome_file' => $fileUploader->getFileName(),
+			'tipo' => array_key_exists($fileUploader->getType(), $GLOBALS['ADA_MIME_TYPE']) ? $GLOBALS['ADA_MIME_TYPE'][$fileUploader->getType()]['type'] : -1,
+			'id_nodo' => $courseID,
+			'keywords' => isset($filekeywords) ? trim($filekeywords) : null,
+			'titolo' => isset($filetitle) ? trim($filetitle) : null,
+			'pubblicato' => 1,
+			'copyright' => null,
+			'lingua' => null,
+			'descrizione' => isset($filedescr) ? $filedescr: null,
+			'id_utente' => $userID
+		);
+		// 2nd param forces duplicate filename insertion (if the same file is found linked to a different node/course)
+		$res = $GLOBALS['dh']->add_risorsa_esterna($extRes, true);
+		if (!AMA_DB::isError($res)) {
+			if($fileUploader->upload() == false) {
+				$GLOBALS['dh']->_del_risorse_nodi($courseID, $extRes);
+				$GLOBALS['dh']->remove_risorsa_esterna($extRes);
+				$data = $fileUploader->getErrorMessage();
+			} else {
+				$data = sprintf(translateFN('File %s caricato correttamente'), $fileUploader->getFileName());
+				$error = false;
+			}
+		} else $data = $res->getMessage();
+	}
 } else $data = translateFN('Array files vuoto');
-
-
 
 if ($error) header(' ', true, 500);
 header('Content-Type: application/json');
