@@ -28,7 +28,6 @@ if (!defined('COURSE_MEDIA_PATH')) define('COURSE_MEDIA_PATH', ROOT_DIR. MEDIA_P
 class Course extends Course_Old
 {
 	const MEDIA_PATH_DEFAULT = COURSE_MEDIA_PATH;
-	public static $MEDIA_PATH_DEFAULT = ROOT_DIR. MEDIA_PATH_DEFAULT.'courses/';
     var $publicCourse;
         
     public function __construct($courseId) {
