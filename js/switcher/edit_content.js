@@ -177,7 +177,7 @@ function deleteCourseAttachment (resID, courseID) {
 			beforeSend: function() { $j('.uploadMSG').remove(); }
 		})
 		.done(function(){
-			buildCourseAttachmentsTable(courseID);
+			buildCourseAttachmentsTable(courseID, true);
 		})
 		.fail(function(response) {
 			$j('table#courseAttachments').parents().first().append('<div id="uploadErrorMSG" class="uploadMSG">'+response.responseJSON.message+'</div>');
