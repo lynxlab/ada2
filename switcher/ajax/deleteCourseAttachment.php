@@ -48,6 +48,8 @@ if (array_key_exists('resourceID', $_POST) && intval($_POST['resourceID'])>0) {
 			$res = $GLOBALS['dh']->remove_risorsa_esterna($resourceID);
 			if (!AMA_DB::isError($res) && !AMA_DB::isError($resInfo) && array_key_exists('nome_file', $resInfo)) {
 				unlink (Course::MEDIA_PATH_DEFAULT.$courseID.'/'. str_replace(' ', '_', $resInfo['nome_file']));
+				// this will remove the courseID dir only if it's empty
+				@rmdir(Course::MEDIA_PATH_DEFAULT.$courseID);
 				$error = false;
 				$data = translateFN('Risorsa cancellata');
 			} else $data = $res->getMessage();
