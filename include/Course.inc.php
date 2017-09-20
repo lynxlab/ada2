@@ -24,9 +24,11 @@
  * Si potrebbe quindi fondere le due classi (Course e Course_Old) ed eliminare la classe
  * padre (Course_Old)
  */
+if (!defined('COURSE_MEDIA_PATH')) define('COURSE_MEDIA_PATH', ROOT_DIR. MEDIA_PATH_DEFAULT.'courses/');
 class Course extends Course_Old
 {
-	const MEDIA_PATH_DEFAULT = ROOT_DIR. MEDIA_PATH_DEFAULT.'courses/';
+	const MEDIA_PATH_DEFAULT = COURSE_MEDIA_PATH;
+	public static $MEDIA_PATH_DEFAULT = ROOT_DIR. MEDIA_PATH_DEFAULT.'courses/';
     var $publicCourse;
         
     public function __construct($courseId) {
