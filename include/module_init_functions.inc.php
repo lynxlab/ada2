@@ -20,7 +20,7 @@
  */
 function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $trackPageToNavigationHistory = true) {
   //ADALogger::log('session control FN');
-  
+
   if(!session_start()) {
     /*
      * As of PHP 5.3.0 if session fails to star for some reason,
@@ -28,21 +28,21 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
      */
       ADALogger::log('session failed to start');
   }
-  
+
   /**
    * giorgio 11/ago/2013
    * if it's not multiprovider and we're asking for index page,
    * sets the selected provider by detecting it from the filename that's executing
    */
    if (!MULTIPROVIDER) {
-   	 
+
 	list($client) = explode ('.',preg_replace('/(http[s]?:\/\/)/', '', $_SERVER['SERVER_NAME']));
-	
+
 	if (isset($client) && !empty ($client) && is_dir(ROOT_DIR.'/clients/'.$client))
-  	{	  		
+  	{
   		// $_SESSION['sess_user_provider'] = $client;
   		$GLOBALS['user_provider'] = $client;
-  		// other session vars per provider may go here...  		  		
+  		// other session vars per provider may go here...
   	}
   	else unset ($GLOBALS['user_provider']);
 //   	if (isset($_SESSION['sess_user_provider']) && !empty($_SESSION['sess_user_provider']))
@@ -51,7 +51,7 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 //   	if (isset($GLOBALS['user_provider']) && $_COOKIE['ada_provider']!=$GLOBALS['ada_provider'])
 //   		setcookie('ada_provider',$GLOBALS['user_provider'],+time()+ 86400 *365 ,'/');
   } // end if !MULTIPROVIDER
-  
+
   /*
    * Navigation history
    */
@@ -59,19 +59,19 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 
   $debug_backtrace = debug_backtrace();
   $level = sizeof($debug_backtrace) - 1;
-  
+
   /**
    * giorgio 06/set/2013
    * detect mobile device feature
-   */  
+   */
   if (!isset($_SESSION['mobile-detect']))
-  { 
+  {
   	$_SESSION['mobile-detect'] = new Mobile_Detect();
   }
-  
+
   /**
    * @author giorgio 10/nov/2014
-   * 
+   *
    * sets the IE-version session variable to a float holding
    * the IE version or false if non-IE or IE version >= 11.0
    */
@@ -83,7 +83,7 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
   		$_SESSION['IE-version'] = false;
   	}
   }
-  
+
   if ($trackPageToNavigationHistory) {
 	$caller_file     = $debug_backtrace[$level]['file'];
 	if ( !isset($_SESSION['sess_navigation_history']) ) {
@@ -135,12 +135,12 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
   	 * If parameter_controlFN has put an array in the 'course' key
   	 * this means that the user is asking for a node that belongs to
   	 * a course for which the user is subscribed to more than one instance.
-  	 * 
+  	 *
   	 *  The list of the insance id is passed in the 'course key as an
   	 *  array and must be passed to the browsing/select_instance script
-  	 *  that is responsible for asking the user to select an instance. 
+  	 *  that is responsible for asking the user to select an instance.
   	 */
-  	if (is_array($parm_errorHa['course'])) {  		
+  	if (is_array($parm_errorHa['course'])) {
   		$errObj = new ADA_Error(
   		  NULL,
   		  NULL,
@@ -164,9 +164,9 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 
   if($parm_errorHa['course_instance']) {
     // FIXME: passare messaggio di errore
-    // TODO: forse il controllo su ADAGuest in questo if puo' essere rimosso, 
-    // dato che non settiamo $parm_errorHa['coutrse_instance'] nel caso in cui 
-    // l'utente e' sul tester pubblico (ADAGuest e' solo sul tester pubblico) 
+    // TODO: forse il controllo su ADAGuest in questo if puo' essere rimosso,
+    // dato che non settiamo $parm_errorHa['coutrse_instance'] nel caso in cui
+    // l'utente e' sul tester pubblico (ADAGuest e' solo sul tester pubblico)
     if (!($sess_userObj instanceof ADAAuthor) &&
    !($sess_userObj instanceof  ADAGuest) // ??? steve 6/9
     ) {
@@ -249,7 +249,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   $_SESSION['sess_id_user'] = $sess_id_user;
   if($sess_userObj instanceof ADAGenericUser) {
     $_SESSION['sess_userObj'] = $sess_userObj;
-    
+
     /*
      * Check if this user is allowed to access the current module
      */
@@ -264,9 +264,9 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   }
 
   $id_profile = $sess_userObj->getType();
-  
+
   /*
-   * Get needed object for this user from $neededObjAr 
+   * Get needed object for this user from $neededObjAr
    */
   if(is_array($neededObjAr) && isset($neededObjAr[$id_profile]) && is_array($neededObjAr[$id_profile])) {
     $thisUserNeededObjAr = $neededObjAr[$id_profile];
@@ -276,22 +276,22 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   }
 
   /*
-   * 
+   *
    * 'default_tester' AL MOMENTO VIENE RICHIESTO SOLO DA USER.php
    * QUI ABBIAMO NECESSITA' DI CANCELLARE LA VARIABILE DI SESSIONE
    * sess_id_course.
-   * Gia' che ci siamo facciamo unset anche di sess_id_node 
+   * Gia' che ci siamo facciamo unset anche di sess_id_node
    * e di sess_id_course_instance
-   * 
-   * Tester selection: 
-   * 
-   * se ho richiesto la connessione al database del tester di default, 
+   *
+   * Tester selection:
+   *
+   * se ho richiesto la connessione al database del tester di default,
    * controllo che il tipo di utente sia ADAUser (al momento e' l'unico ad
    * avere questa necessita').
-   * 
+   *
    * se non ho richiesto la connessione al tester di default, allora verifico
    * se l'utente e' di tipo ADAUser, e ottengo la connessione al database
-   * tester appropriato. 
+   * tester appropriato.
    */
   if(in_array('default_tester',$thisUserNeededObjAr) && $id_profile == AMA_TYPE_STUDENT) {
     $_SESSION['sess_selected_tester'] = NULL;
@@ -306,21 +306,21 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     	$id_course      = DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/);
   	else
   		$id_course = false;
-  	
+
   	if (isset($_SESSION['sess_id_course']))
     	$sess_id_course = DataValidator::is_uinteger($_SESSION['sess_id_course']);
   	else
   		$sess_id_course = false;
-  	
+
   	if (isset($_REQUEST['id_node']))
   		$req_id_node = DataValidator::validate_node_id($_REQUEST['id_node']);
   	else
   		$req_id_node = false;
-    
+
     if ($id_course === FALSE && $sess_id_course === FALSE && $req_id_node!==FALSE) {
     	$id_course = substr($req_id_node, 0, strpos($req_id_node, '_'));
     }
-    
+
     if($id_course !== FALSE && $id_course !== $sess_id_course) {
 
       $tester_infoAr = $common_dh->get_tester_info_from_id_course($id_course);
@@ -329,12 +329,12 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
       }
       else {
         $selected_tester = $tester_infoAr['puntatore'];
-      } 
-      $_SESSION['sess_selected_tester'] = $selected_tester;  
+      }
+      $_SESSION['sess_selected_tester'] = $selected_tester;
     }
   }
-  
-  /* 
+
+  /*
    * ADA tester data handler
    * Data validation on $sess_selected_tester is performed by MultiPort::getDSN()
    */
@@ -350,9 +350,9 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
   {
   	$sess_selected_tester = isset($_SESSION['sess_selected_tester']) ? $_SESSION['sess_selected_tester'] : null;
   }
-  
+
   //$dh = AMA_DataHandler::instance(MultiPort::getDSN($sess_selected_tester));
-  
+
   $sess_selected_tester_dsn = MultiPort::getDSN($sess_selected_tester);
   $_SESSION['sess_selected_tester_dsn'] = $sess_selected_tester_dsn;
 
@@ -368,14 +368,14 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
    */
   // TODO: portare in sessione $nodeObj?
   if(in_array('node',$thisUserNeededObjAr)) {
-    $id_node      = isset($_REQUEST['id_node']) ? DataValidator::validate_node_id($_REQUEST['id_node']/*$GLOBALS['id_node']*/) : false; 
+    $id_node      = isset($_REQUEST['id_node']) ? DataValidator::validate_node_id($_REQUEST['id_node']/*$GLOBALS['id_node']*/) : false;
     $sess_id_node = isset($_SESSION['sess_id_node']) ? DataValidator::validate_node_id($_SESSION['sess_id_node']) : false;
-    
+
     if($id_node !== FALSE) {
         $dataHa = $dh->get_node_info($id_node);
 
         if (AMA_DataHandler::isError($dataHa) || !is_array($dataHa)) {
-          $invalid_node = TRUE;            
+          $invalid_node = TRUE;
         } else {
           $_SESSION['sess_id_node'] = $id_node;
         }
@@ -384,7 +384,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
         $dataHa = $dh->get_node_info($sess_id_node);
 
         if (AMA_DataHandler::isError($dataHa) || !is_array($dataHa)) {
-          $invalid_node = TRUE;            
+          $invalid_node = TRUE;
         } else {
           $_SESSION['sess_id_node'] = $sess_id_node;
         }
@@ -392,10 +392,10 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     else {
       $invalid_node = TRUE;
     }
-    
+
     /**
      * @author giorgio 18/mag/2015
-     * 
+     *
      * Could be that a non-student has request a node from
      * the default tester in a multiprovider environment
      * Check this before giving up an marking the node as invalid
@@ -410,27 +410,27 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
    * Course object
    */
   if(in_array('course',$thisUserNeededObjAr)) {
-    
+
     $id_course      = isset($_REQUEST['id_course']) ? DataValidator::is_uinteger($_REQUEST['id_course']/*$GLOBALS['id_course']*/) : false;
     $sess_id_course = isset ($_SESSION['sess_id_course']) ? DataValidator::is_uinteger($_SESSION['sess_id_course']) : false;
     /* extracting the course id from node id, if given */
     if (isset($_SESSION['sess_id_node']) && !$invalid_node && $id_course === false) {
 //    if ($nodeObj instanceof Node){
       $courseIdFromNodeId =  substr($_SESSION['sess_id_node'], 0, strpos($_SESSION['sess_id_node'], '_'));
-      $sess_courseObj = read_course($courseIdFromNodeId);  
-      
+      $sess_courseObj = read_course($courseIdFromNodeId);
+
       if (ADA_Error::isError($sess_courseObj)) {
           unset($_SESSION['sess_courseObj']);
-          $invalid_course = TRUE;      
+          $invalid_course = TRUE;
       }
       else if ($sess_userObj instanceof ADAGuest  && !$sess_courseObj->getIsPublic ()) {
           unset($_SESSION['sess_courseObj']);
           $invalid_course = TRUE;
       } else {
           $_SESSION['sess_courseObj'] = $sess_courseObj;
-          $_SESSION['sess_id_course'] = $courseIdFromNodeId;          
+          $_SESSION['sess_id_course'] = $courseIdFromNodeId;
       }
-    }    
+    }
     elseif($id_course !== FALSE) {
       $sess_courseObj = read_course($id_course);
       if (ADA_Error::isError($sess_courseObj)) {
@@ -461,7 +461,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
       unset($_SESSION['sess_courseObj']);
       $invalid_course = TRUE;
     }
-    
+
     /**
      * @author giorgio 18/mag/2015
      *
@@ -475,7 +475,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     		$invalid_node = false;
     		$sess_courseObj = $_SESSION['sess_courseObj']; // SESSION set by checkAndSetPublicTester
     	}
-    }    
+    }
   }
   else {
     unset($_SESSION['sess_courseObj']);
@@ -487,85 +487,93 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
    *  $_SESSION['sess_id_course'] (that is the course_id the user is going into)
    * 	IS NOT EQUAL TO
    *  $sess_id_course (that is the course_id the user is coming form)
-   *  
+   *
    *  The user has clicked a cross course link, and is handled by unsetting the
    *  $_SESSION['sess_id_course_instance'] and looking for a course instance
    *  to which the user is subscribed.
-   *  
-   */  
-  if ( $invalid_course === FALSE && $invalid_node === FALSE && 
-  	   isset ($sess_courseObj) && !$sess_courseObj->getIsPublic () &&
+   *
+   */
+  if ( $invalid_course === FALSE && $invalid_node === FALSE &&
+  	   isset ($sess_courseObj) && !$sess_courseObj->getIsPublic () && !$sess_courseObj->getAutoSubscription() &&
   	   in_array($sess_userObj->getType(), array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR)) &&
   	   is_numeric($sess_id_course) &&
   	   intval($_SESSION['sess_id_course']) !== intval($sess_id_course) ) {
-  	
+
   	/**
   	 * unset sess_id_course_instance
   	 */
   	unset ($_SESSION['sess_id_course_instance']);
-  	
-  	/**
-  	 * Try to find an instance of target course where used is subscribed
-  	 */
-  	$getAll = true;
-  	
-  	/**
-  	 * Need to get instance the user is allowed to browse, based on user type
-  	 */
-  	switch ($sess_userObj->getType()) {
-  		case AMA_TYPE_STUDENT:
-  			$instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
-  			break;
-  		case AMA_TYPE_TUTOR:
-  			$instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
-  			if (AMA_DB::isError($instances) || !is_array($instances) || count($instances)<=0) $instances = array();
-  			$tutorInstances = $dh->get_tutors_assigned_course_instance($sess_userObj->getId(),$_SESSION['sess_id_course'],$sess_userObj->isSuper());
-  			if (!AMA_DB::isError($tutorInstances) && is_array($tutorInstances) && count($tutorInstances)>0) {  				
-  				/**
-  				 * the returned array is array[id_tutor]=>array[key]=>array['id_istanza_corso']
-  				 * and needs to be converted to reflect the structre returned in student case
-  				 */
-  				foreach($tutorInstances[$sess_userObj->getId()] as $tutorInstance) {
-  					$instances[]['id_istanza_corso'] = $tutorInstance['id_istanza_corso'];
-  				}
-  			}
-  			break;
-  	}
-  	
-  	if (!AMA_DB::isError($instances) && count($instances)>0) {
-  		if (count($instances)==1) {
-  			/**
-  			 * User is subscribed to one instance only, good!
-  			 * Set the $target_course_instance var and proceed
-  			 */
-  			$target_course_instance = $instances[0]['id_istanza_corso'];
-  		} else if (count($instances)>1 && !isset($_REQUEST['id_course_instance'])) {
-  			/**
-  			 * If there's more than one instance, must build an array of
-  			 * found instances to ask the user to select one.
-  			 * 
-  			 * This array is returned in the 'course' key of the returned
-  			 * array and so $invalid_course must be populated accordingly.
-  			 * 
-  			 * The node that was requested is returned in the 'node' key of
-  			 * the returned array and so $invalid_node must be populated. 
-  			 */
-  			foreach ($instances as $instance) {
-  				$invalid_course[] = $instance['id_istanza_corso'];
-  				$invalid_node = $_SESSION['sess_id_node'];
-  			}
-  		} else if (isset($_REQUEST['id_course_instance'])) {
-  			$target_course_instance = $_REQUEST['id_course_instance'];
-  		}
+  	if ($sess_courseObj->getAutoSubscription()) {
+  		// must keep the course valid if it's autosubscription and no instance,
+  		// so that the below code will be able to make a new instance for the course
+  		$invalid_course = false;
   	} else {
-  		/**
-  		 * Mark the course as invalid, and unset session var
-  		 */
-  		$invalid_course = TRUE;
-  		unset ($_SESSION['sess_id_course']);
+
+	  	/**
+	  	 * Try to find an instance of target course where used is subscribed
+	  	 */
+	  	$getAll = true;
+
+	  	/**
+	  	 * Need to get instance the user is allowed to browse, based on user type
+	  	 */
+	  	switch ($sess_userObj->getType()) {
+	  		case AMA_TYPE_STUDENT:
+	  			$instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
+	  			break;
+	  		case AMA_TYPE_TUTOR:
+	  			$instances = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $_SESSION['sess_id_course'], $getAll);
+	  			if (AMA_DB::isError($instances) || !is_array($instances) || count($instances)<=0) $instances = array();
+	  			$tutorInstances = $dh->get_tutors_assigned_course_instance($sess_userObj->getId(),$_SESSION['sess_id_course'],$sess_userObj->isSuper());
+	  			if (!AMA_DB::isError($tutorInstances) && is_array($tutorInstances) && count($tutorInstances)>0) {
+	  				/**
+	  				 * the returned array is array[id_tutor]=>array[key]=>array['id_istanza_corso']
+	  				 * and needs to be converted to reflect the structre returned in student case
+	  				 */
+	  				foreach($tutorInstances[$sess_userObj->getId()] as $tutorInstance) {
+	  					$instances[]['id_istanza_corso'] = $tutorInstance['id_istanza_corso'];
+	  				}
+	  			}
+	  			break;
+	  	}
+
+	  	if (!AMA_DB::isError($instances) && count($instances)>0) {
+	  		if (count($instances)==1) {
+	  			/**
+	  			 * User is subscribed to one instance only of a non autosubscription, good!
+	  			 * Set the $target_course_instance var and proceed
+	  			 */
+	  			if (!$sess_courseObj->getAutoSubscription()) {
+		  			$target_course_instance = $instances[0]['id_istanza_corso'];
+	  			}
+	  		} else if (count($instances)>1 && !isset($_REQUEST['id_course_instance'])) {
+	  			/**
+	  			 * If there's more than one instance, must build an array of
+	  			 * found instances to ask the user to select one.
+	  			 *
+	  			 * This array is returned in the 'course' key of the returned
+	  			 * array and so $invalid_course must be populated accordingly.
+	  			 *
+	  			 * The node that was requested is returned in the 'node' key of
+	  			 * the returned array and so $invalid_node must be populated.
+	  			 */
+	  			foreach ($instances as $instance) {
+	  				$invalid_course[] = $instance['id_istanza_corso'];
+	  				$invalid_node = $_SESSION['sess_id_node'];
+	  			}
+	  		} else if (isset($_REQUEST['id_course_instance'])) {
+	  			$target_course_instance = $_REQUEST['id_course_instance'];
+	  		}
+	  	} else {
+	  		/**
+	  		 * Mark the course as invalid, and unset session var
+	  		 */
+	  		$invalid_course = TRUE;
+	  		unset ($_SESSION['sess_id_course']);
+	  	}
   	}
   }
-  
+
   /*
    * Course_instance object
    */
@@ -574,7 +582,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
      * Se ci troviamo nel tester pubblico, allora non dobbiamo leggere un'istanza corso
      * dato che non ce ne sono.
      */
-        
+
     if(!$invalid_course && !$sess_courseObj->getIsPublic ()) {
 
       if (isset($target_course_instance)) {
@@ -584,20 +592,83 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
       } else {
       	$id_course_instance = false;
       }
-      
-      $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) : false;      
+
+      /**
+       * @author giorgio 22/set/2017
+       * Autosubscription course section: if the user comes from
+       * a view.php?id_node=<AUTOSUBCRIPTION NODE ID> pick the correct instance
+       */
+      if ($id_course_instance === false && $sess_courseObj->getAutoSubscription()) {
+      	/**
+      	 * If you want to take some acions when an autosubscription course
+      	 * has no instances, remove the false from the if condition an do
+      	 * the implementation in the if block
+      	 */
+      	if (!$dh->course_has_instances($sess_courseObj->getId())) {
+      		/**
+      		 * take no instances actions here
+      		 */
+      	} else {
+      		/**
+      		 * @author giorgio 22/set/2017
+      		 * Business logic to select an instance of an autosubscription course:
+      		 *
+      		 * first take max id_istanza_corso of the instances subscribed by the user
+      		 * then take the max id_istanza_corso of the subscribeable instances
+      		 *
+      		 * if both are not set, it's an error and redirect the user to the homepage
+      		 * else the id_istanza_corso to be bicked it's the maximum between the two
+      		 */
+      		$maxSubscribedID = 0;
+      		$maxSubscribeableID = 0;
+      		$getAll = true;
+
+      		// check if student is subscribed to some instance of the course (that is an autosubscription one)
+      		$autoInstancesArr = $dh->get_course_instance_for_this_student_and_course_model($sess_userObj->getId(), $sess_courseObj->getId(), $getAll);
+      		if (!AMA_DB::isError($autoInstancesArr) && count($autoInstancesArr)>0) {
+      			// sort by id_istanza_corso DESC
+      			usort($autoInstancesArr, function($a, $b) {
+      				return $b['id_istanza_corso']-$a['id_istanza_corso'];
+      			});
+      			$temp = reset($autoInstancesArr);
+      			$maxSubscribedID = intval($temp['id_istanza_corso']);
+      			unset($temp);
+      		}
+      		unset($autoInstancesArr);
+
+      		// get max subscribeable course instance id
+      		$autoInstancesArr = $dh->course_instance_find_list(array(), "id_corso=".$sess_courseObj->getId().
+      				" AND `data_inizio`>0 AND `durata`>0".
+      				" AND `self_registration`=1 AND `open_subscription`=1".
+      				" ORDER BY `id_istanza_corso` DESC LIMIT 0,1");
+
+      		if (!AMA_DB::isError($autoInstancesArr) && count($autoInstancesArr)>0) {
+      			$temp = reset($autoInstancesArr);
+      			$maxSubscribeableID = intval($temp['id_istanza_corso']);
+      			unset($temp);
+      		}
+      		unset($autoInstancesArr);
+
+      		if ($maxSubscribeableID !== 0 || $maxSubscribedID !== 0) {
+      			$id_course_instance = max($maxSubscribeableID, $maxSubscribedID);
+      		}
+      	}
+      }
+
+      $sess_id_course_instance = isset($_SESSION['sess_id_course_instance']) ? DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) : false;
       if($id_course_instance !== FALSE) {
         $course_instanceObj = read_course_instance_from_DB($id_course_instance);
         if (ADA_Error::isError($course_instanceObj)) {
           $invalid_course_instance = TRUE;
         } else {
-            
+
             $UserType = $sess_userObj->getType();
               switch ($sess_userObj->getType()) {
                   case AMA_TYPE_STUDENT:
                       $studentLevel = $dh->_get_student_level($sess_id_user, $id_course_instance);
                       if (AMA_DataHandler::isError($studentLevel)) {
-                          $invalid_course_instance = TRUE;
+                      	  if ($sess_courseObj->getAutoSubscription()) $invalid_course_instance = false;
+                      	  else $invalid_course_instance = TRUE;
                       }
                       break;
                   case AMA_TYPE_TUTOR:
@@ -610,7 +681,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
 	                      }
                   	  }
                       break;
-                  default:    
+                  default:
     //                  $invalid_course_instance = TRUE;
                       break;
               }
@@ -624,8 +695,8 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
         $instanceIdRequired = array();
         if (isset($_SESSION['sess_id_node']) && !$invalid_node) {
 //        if ($nodeObj instanceof Node) { // required a node
-              $instanceIdRequired[] = isset($dataHa['instance']) ? $dataHa['instance'] : null; 
-              if ($instanceIdRequired[0] == 0) { // the node is NOT a note 
+              $instanceIdRequired[] = isset($dataHa['instance']) ? $dataHa['instance'] : null;
+              if ($instanceIdRequired[0] == 0) { // the node is NOT a note
                     $field_list_ar = array();
                     if (isset($_SESSION['sess_id_course']) && !$invalid_course) {
                         $courseIdRequired = $_SESSION['sess_id_course'];
@@ -634,14 +705,14 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
                            $invalid_course_instance = TRUE;
                         }
                     } else {
-                        $invalid_course_instance = TRUE;                        
+                        $invalid_course_instance = TRUE;
                     }
                     $instanceIdRequired = array();
                     foreach ($InstanceIdList as $InstanceId) {
-                        array_push($instanceIdRequired, $InstanceId[0]); 
+                        array_push($instanceIdRequired, $InstanceId[0]);
                     }
               } // end if NOTE
-          } // end if node         
+          } // end if node
           elseif ($sess_courseObj instanceof Course) {
                     $courseIdRequired = $sess_courseObj->id;
                     $InstanceIdList = $dh->course_instance_get_list(array(), $courseIdRequired);
@@ -650,7 +721,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
                     }
                     $instanceIdRequired = array();
                     foreach ($InstanceIdList as $InstanceId) {
-                        array_push($instanceIdRequired, $InstanceId[0]); 
+                        array_push($instanceIdRequired, $InstanceId[0]);
                     }
           }
 //          var_dump($instanceIdRequired,$sess_id_course_instance);
@@ -664,7 +735,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
                   break;
               case AMA_TYPE_SWITCHER:
               case AMA_TYPE_AUTHOR:
-              default:    
+              default:
                     break;
           } //end switch UserType
           $course_instanceObj = read_course_instance_from_DB($sess_id_course_instance);
@@ -674,7 +745,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
           $_SESSION['sess_id_course_instance'] = $sess_id_course_instance;
       }
       else {
-       $invalid_course_instance = TRUE;      
+       $invalid_course_instance = TRUE;
       }
     } //end isUserBrowsingThePublicTester
   } // end if in_array
@@ -781,15 +852,15 @@ function clear_dataFN($variableToClearAr=array()) {
     $GLOBALS['layout_template'] = 'templates/default/default';
   }
 }
-    
+
 /**
  *  Sara-14/01/2015
  *  set array session containing services_type definition.
  */
 function loadServiceTypes(){
- 
+
   if (!isset($_SESSION['service_level'])){
-    if($GLOBALS['dh'] instanceof AMA_DataHandler) {  
+    if($GLOBALS['dh'] instanceof AMA_DataHandler) {
         $servicesTypeAr =  $GLOBALS['dh']->get_service_type();
         if(!empty($servicesTypeAr) && !AMA_DB::isError($servicesTypeAr)){
             foreach($servicesTypeAr as $servicesType){
@@ -803,10 +874,10 @@ function loadServiceTypes(){
                     		$_SESSION['service_level_info'][$serviceLevel][$key] = $val;
                     	}
                     }
-                    
+
                 }
             }
-        } 
+        }
         else{
             if(defined('DEFAULT_SERVICE_TYPE') && defined('DEFAULT_SERVICE_TYPE_NAME')){
                 $_SESSION['service_level'][DEFAULT_SERVICE_TYPE]=translateFN(DEFAULT_SERVICE_TYPE_NAME);}
@@ -818,10 +889,10 @@ function loadServiceTypes(){
 /**
  * checks if the passed object type and id are coming from the public tester.
  * If true sets the needed GLOBALS['dh'] session variables accordingly.
- * 
+ *
  * @param string $objType either 'course' or 'node'
  * @param string $objID object id to be checked and loaded if need be
- * 
+ *
  * return true if invalid has to be set to true on the caller
  */
 function checkAndSetPublicTester($objType, $objID) {
@@ -830,9 +901,9 @@ function checkAndSetPublicTester($objType, $objID) {
 		$tmp_id_course = isset($_REQUEST['id_course']) ? DataValidator::is_uinteger($_REQUEST['id_course']) : false;
 		if ($tmp_id_course === false) $tmp_id_course =  (isset($_REQUEST['id_node'])) ? substr($_REQUEST['id_node'], 0, strpos($_REQUEST['id_node'], '_')) : false;
 		if ($tmp_id_course === false) $tmp_id_course = isset ($_SESSION['sess_id_course']) ? DataValidator::is_uinteger($_SESSION['sess_id_course']) : false;
-		if ($tmp_id_course === false) $tmp_id_course =  (isset($_SESSION['sess_id_node'])) ? substr($_SESSION['sess_id_node'], 0, strpos($_SESSION['sess_id_node'], '_')) : false;		
+		if ($tmp_id_course === false) $tmp_id_course =  (isset($_SESSION['sess_id_node'])) ? substr($_SESSION['sess_id_node'], 0, strpos($_SESSION['sess_id_node'], '_')) : false;
 	} else $tmp_id_course = $objID;
-	
+
 	if ($tmp_id_course !== false) {
 		// get the tester for the passed id_course
 		$tester_infoAr = $common_dh->get_tester_info_from_id_course($tmp_id_course);
@@ -851,7 +922,7 @@ function checkAndSetPublicTester($objType, $objID) {
 			if (!AMA_DB::isError($dh)) {
 				// check the object
 				if ($objType=='node') {
-					$dataHa = $dh->get_node_info($objID);					
+					$dataHa = $dh->get_node_info($objID);
 					if (AMA_DB::isError($dataHa) || !is_array($dataHa)) {
 						$retval = true;
 						// restore the saved datahandler
@@ -870,11 +941,11 @@ function checkAndSetPublicTester($objType, $objID) {
 					if (AMA_DB::isError($sess_courseObj) || !$sess_courseObj instanceof Course) {
 						$retval = true;
 						// restore the saved datahandler
-						$GLOBALS['dh'] = $olddh;						
+						$GLOBALS['dh'] = $olddh;
 					} else {
 						$retval = false;
 						$_SESSION['sess_courseObj'] = $sess_courseObj;
-						$_SESSION['sess_id_course'] = $objID;					
+						$_SESSION['sess_id_course'] = $objID;
 					}
 				}
 			}
