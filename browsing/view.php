@@ -66,8 +66,41 @@ if (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) 
 
 if ($userObj instanceof ADAGuest) {
     $self = 'guest_view';
-} else if ($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {
-    $self='viewSelfInstruction';
+} else if ($userObj->tipo==AMA_TYPE_STUDENT) {
+	/**
+	 * before doing anything, check if the passed node is in an autosubscribe course
+	 */
+	if (isset($courseObj) && $courseObj instanceof Course && $courseObj->getAutoSubscription()) {
+		// then check if user is subscribed to the instance
+		$subCheck = $dh->get_subscription($userObj->getId(), $courseInstanceObj->getId());
+		if (AMA_DB::isError($subCheck) && $subCheck->getCode() == AMA_ERR_NOT_FOUND) {
+			// subscribe: mimc the info.php / subscribe section behaviour
+			// 00. add the user to the session provider
+			if (false !== Multiport::setUser($userObj,array($_SESSION['sess_selected_tester']))) {
+				// 01. presubscribe
+				$temp = $dh->course_instance_student_presubscribe_add($courseInstanceObj->getId(), $userObj->getId(),$courseInstanceObj->getStartLevelStudent());
+				if (!AMA_DB::isError($temp) || $temp->code == AMA_ERR_UNIQUE_KEY) {
+					// 02. subscribe
+					$temp= $dh->course_instance_student_subscribe($courseInstanceObj->getId(), $userObj->getId(),ADA_STATUS_SUBSCRIBED, $courseInstanceObj->getStartLevelStudent());
+					if (AMA_DB::isError($temp)) {
+						// handle subscription error if needed
+					} else {
+						// handle subscription success if needed
+					}
+				} else {
+					// handle presubscription error if needed
+				}
+			} else {
+				// handle add to provider error if needed
+			}
+		}
+	}
+	/**
+	 * done autosubscribe checks and possibly done the subscription
+	 */
+
+	if ($self_instruction) $self='viewSelfInstruction';
+	else $self = whoami();
     // $self='tutorSelfInstruction';
 } else if ($userObj->tipo == AMA_TYPE_AUTHOR) {
 	$self = 'viewAuthor';
