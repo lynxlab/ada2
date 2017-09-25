@@ -9782,7 +9782,8 @@ INSERT INTO `service_type` (`id_tipo_servizio`, `livello_servizio`, `nome_serviz
 (2, 4, 'Comunità di Tutor', NULL, NULL, NULL, NULL, 1, 0),
 (3, 99, 'Corso Pubblico', NULL, NULL, NULL, NULL, 1, 1),
 (4, 2, 'Corso in presenza', NULL, NULL, NULL, NULL, 0, 0),
-(5, 3, 'Corso misto online e presenza', NULL, NULL, NULL, NULL, 0, 0);
+(5, 3, 'Corso misto online e presenza', NULL, NULL, NULL, NULL, 0, 0),
+(6, 5, 'Iscrizione automatica', NULL, NULL, NULL, NULL, 1, 0);
 
 -- --------------------------------------------------------
 
