@@ -4914,7 +4914,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $res_ar =  $db->getRow($sql);
         if (AMA_DB::isError($res_ar)) {
-            return new AMA_Error(AMA_ERR_GET);
+        	$err = new AMA_Error(AMA_ERR_GET);
+            return $err;
         }
         if (is_array($res_ar)) {
             $ret_ha['istanza_id'] = $res_ar[0];
@@ -4927,14 +4928,15 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         // vito, 7 luglio 2009, se non è un array allora non ho ottenuto i dati che
         // mi servivano e restituisco un errore
-        return new AMA_Error(AMA_ERR_NOT_FOUND);
+        $err = new AMA_Error(AMA_ERR_NOT_FOUND);
+        return $err;
     }
 
     public function get_course_instances_for_this_student($id_student, $extra_fields=false) {
         $sql = 'SELECT C.id_corso, C.titolo, C.crediti, IC.id_istanza_corso,'
              . ' IC.data_inizio, IC.durata, IC.data_inizio_previsto, IC.data_fine, I.status';
         if ($extra_fields) {
-            $sql .= ' ,IC.title,I.data_iscrizione,IC.duration_subscription, C.tipo_servizio, IC.self_instruction';
+            $sql .= ' ,IC.title,I.data_iscrizione,IC.duration_subscription, C.tipo_servizio, IC.self_instruction, IC.tipo_servizio as `istanza_tipo_servizio`';
         }
         $sql .=' FROM modello_corso AS C, istanza_corso AS IC, iscrizioni AS I'
              . ' WHERE I.id_utente_studente=?'

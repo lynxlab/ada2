@@ -29,7 +29,8 @@ class Course extends Course_Old
 {
 	const MEDIA_PATH_DEFAULT = COURSE_MEDIA_PATH;
     var $publicCourse;
-        
+    var $autoSubscription;
+
     public function __construct($courseId) {
         parent::__construct($courseId);
         if (isset($_SESSION['service_level_info'][$this->getServiceLevel()]['isPublic'])) {
@@ -39,6 +40,7 @@ class Course extends Course_Old
         } else {
         	$this->publicCourse = false;
         }
+	    $this-> autoSubscription = array_key_exists('autosubscribeServiceTypes', $GLOBALS) && in_array($this->getServiceLevel(), $GLOBALS['autosubscribeServiceTypes']);
     }
     public function getId() {
         return parent::getId();
@@ -96,5 +98,8 @@ class Course extends Course_Old
     }
     public function getServiceLevel() {
     	return $this->service_level;
+    }
+    public function getAutoSubscription() {
+    	return $this->autoSubscription;
     }
 }

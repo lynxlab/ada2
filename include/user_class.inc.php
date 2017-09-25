@@ -737,7 +737,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
                             }
                         }
 
-                        return  $online_usersAr;
+                        return  (isset($online_usersAr) ? $online_usersAr : null);
                     } else {
                         return  translate("Nessuno");
                     }
