@@ -8,7 +8,7 @@
  */
 
 class TutorManagementTest {
-	
+
 	protected $student;
 	protected $id_student;
 	protected $test;
@@ -112,15 +112,15 @@ class TutorManagementTest {
 		$tests = array();
 		if (!empty($historyTest)) {
 			foreach($historyTest as $k=>$r) {
-				$tests[$r['id_nodo']]['id_course'] = $r['id_corso'];
-				$tests[$r['id_nodo']]['id_instance'] = $r['id_istanza_corso'];
-				$tests[$r['id_nodo']]['id_utente'] = $r['id_utente'];
-				$tests[$r['id_nodo']]['cognome'] = $r['cognome'];
-				$tests[$r['id_nodo']]['nome'] = $r['nome'];
+				$tests[$r['id_utente']]['id_course'] = $r['id_corso'];
+				$tests[$r['id_utente']]['id_instance'] = $r['id_istanza_corso'];
+				$tests[$r['id_utente']]['id_utente'] = $r['id_utente'];
+				$tests[$r['id_utente']]['cognome'] = $r['cognome'];
+				$tests[$r['id_utente']]['nome'] = $r['nome'];
 				if (!isset($tests[$r['id_nodo']]['count'])) {
-					$tests[$r['id_nodo']]['count'] = 0;
+					$tests[$r['id_utente']]['count'] = 0;
 				}
-				$tests[$r['id_nodo']]['count']++;
+				$tests[$r['id_utente']]['count']++;
 			}
 		}
 
@@ -167,9 +167,9 @@ class TutorManagementTest {
 	protected function list_tests($student = false) {
 		$dh = $GLOBALS['dh'];
 
-		$params = array('id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id); 		
+		$params = array('id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id);
 		if ($student || $this->student) $params['id_utente'] = $this->id_student;
-		
+
 		$historyTest = $dh->test_getHistoryTestJoined($params,$this->tipo);
 		if ($dh->isError($historyTest)) {
 			$this->returnError = true;
@@ -273,7 +273,7 @@ class TutorManagementTest {
 
 		$params = array('id_nodo'=>$this->test['id_nodo'],'id_corso'=>$this->courseObj->id,'id_istanza_corso'=>$this->course_instanceObj->id);
 		if ($student || $this->student) $params['id_utente'] = $this->id_student;
-		
+
 		$historyTest = $dh->test_getHistoryTestJoined($params,$this->tipo);
 		if ($dh->isError($historyTest)) {
 			$this->returnError = true;
