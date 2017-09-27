@@ -55,7 +55,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 	public function set_student($id_student ,$user_dataAr, $extraTableName = false, $userObj=null, &$idFromPublicTester = null) {
 		$db =& $this->getConnection();
 		if ( AMA_DB::isError( $db ) ) return $db;
-	
+
 		/*
 		 * if we're not saving extra fields, just call the parent
 		 * BUT: if we're saving extra fields, we do not call the parent because we want
@@ -72,9 +72,9 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 				// usually is the 'studente' table
 				$user_id_sql =  'SELECT '.ADAUser::getExtraTableKeyProperty().
 				' FROM '.$extraTableName.' WHERE '.ADAUser::getExtraTableKeyProperty().'=?';
-	
+
 				$user_id = $this->getOnePrepared($user_id_sql, array($id_student));
-	
+
 				// if it's an error return it right away
 				if (AMA_DB::isError($user_id)) $retval = $user_id;
 				else
@@ -99,7 +99,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 							}
 							$saveQry .= " WHERE ".ADAUser::getExtraTableKeyProperty()."=".$id_student;
 						}
-						
+
 						// build valuesAr with extraFields only
 						foreach ($extraFields as $field)
 						{
@@ -123,23 +123,23 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 			else if (in_array($extraTableName, ADAUser::getLinkedTables()))
 			{ // stored in tableprefix_$extraTableName
 				$uniqueField = $extraTableName::getKeyProperty();
-					
+
 				$tblPrefix = ADAUser::getTablesPrefix();
-					
+
 				$fieldList = $extraTableName::getFields();
-	
+
 				// search for the unique field int the fieldList array
 				$pos = array_search($uniqueField, $fieldList,true);
 				// if found unset it since it doesn't need to be saved
 				if ($pos!==false) unset ($fieldList[$pos]);
-					
+
 				$rowsToSave = $user_dataAr[$extraTableName];
-					
+
 				foreach ($rowsToSave as $rowToSave)
 				{
 					// if row element is not to be saved, continue to next element
-					if ($rowToSave['_isSaved']==1) continue;
-	
+					if (isset($rowToSave['_isSaved']) && $rowToSave['_isSaved']==1) continue;
+
 					if ($rowToSave[$uniqueField]>0)
 					{
 						$saveQry  = "UPDATE ".$tblPrefix.$extraTableName." SET ";
@@ -167,12 +167,12 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 						$saveQry .= implode (", ", $fieldList)." ) VALUES ( ".$nextID;
 						$saveQry .= str_repeat(" ,?", count($fieldList)) . " )";
 					}
-	
+
 					unset ($rowToSave[$uniqueField]);
 					// prepare the array to be passed to the query
 					$valuesArr = array();
 					foreach ($fieldList as $field) {
-							
+
 						if (isset($rowToSave[$field]))
 						{
 							// check if it's a date and convert it to timestamp
@@ -183,7 +183,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 						}
 						else $valuesArr[] = null;
 					}
-	
+
 					$result = $this->queryPrepared($saveQry,$valuesArr);
 					if (AMA_DB::isError($result)) {
 						$retval = $result;
@@ -206,17 +206,17 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 		}
 		return $retval; // return insertedId on success, else the erorr
 	}
-	
+
 	/**
 	 * loads and prepares all extra fields to be put in the
 	 * object via the setExtra method called in the multiport
-	 * 
+	 *
 	 * NOTE: this MUST be implemented if user class hasExtra is true.
 	 * can be empty or removed (no, it won't be called) if hasExtra is false.
 	 *
 	 * @param int $userId
 	 * @return array extra user data stored in the object
-	 * 
+	 *
 	 * @access public
 	 */
 	public function getExtraData (ADAUser $userObj)
@@ -231,7 +231,7 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 		          " FROM ".ADAUser::getExtraTableName().
 		          " WHERE ".ADAUser::getExtraTableKeyProperty()."=?";
 		$returnArr = $this->getRowPrepared($selQry,array($userObj->getId()),AMA_FETCH_ASSOC);
-			
+
 		/**
 		 * load data form tables that have a 1:n relationship with studente table.
 		 *
@@ -253,22 +253,22 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 					$selQry = "SELECT ". implode(", ", $table::getFields()) .
 					" FROM ".$tablesPrefix.$table." WHERE ".$table::getForeignKeyProperty()."=?".
 					" ORDER BY ".$table::getKeyProperty()." ASC";
-		
+
 					$extraArr = $this->getAllPrepared($selQry, array($userObj->getId()),AMA_FETCH_ASSOC);
-						
+
 					foreach ($extraArr as $extraKey=>$extraElement) {
 						foreach ($extraElement as $key=>$val) {
 							if (stripos($key,"date") !==false)
 								$extraArr[$extraKey][$key] = ts2dFN($val);
 						}
-					}						
+					}
 					if (!empty($extraArr)) $returnArr[$table] = $extraArr;
 				}
 			}
 		}
 		return $returnArr;
 	}
-	
+
 	/**
 	 * remove_user_extraRow
 	 *
@@ -285,17 +285,17 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 	{
 		$db =& $this->getConnection();
 		if ( AMA_DB::isError( $db ) ) return $db;
-	
+
 		$tablesPrefix = ADAUser::getTablesPrefix();
-	
+
 		$delQry = "DELETE FROM ".$tablesPrefix.$extraTableClass.
 		" WHERE ".$extraTableClass::getForeignKeyProperty()."=? AND ".$extraTableClass::getKeyProperty()."=?";
-	
+
 		$result = $this->queryPrepared($delQry, array ($user_id, $extraTableId));
-	
+
 		return $result;
-	}	
-	
+	}
+
 	public function disconnect() {
 		parent::disconnect();
 		self::$instance = NULL;
