@@ -142,6 +142,7 @@ class TutorManagementTest {
 
 			$caption = sprintf(translateFN('Studenti che hanno effettuato %s'),$this->plurale);
 			$table = BaseHtmlLib::tableElement('', $thead, $tbody, $thead, $caption);
+			$table->setAttribute('class', $table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
 			$html = $table->getHtml();
 		}
 		else {
@@ -239,6 +240,7 @@ class TutorManagementTest {
 
 			$caption = sprintf(translateFN('%s effettuati dallo studente %s %s per il corso "%s"'),$this->plurale,$this->student['cognome'],$this->student['nome'],$nome_istanza);
 			$table = BaseHtmlLib::tableElement('', $thead, $tbody, $thead, $caption);
+			$table->setAttribute('class', $table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
 			$html = $table->getHtml();
 		}
 		else {
@@ -312,6 +314,7 @@ class TutorManagementTest {
 
 			$caption = sprintf(translateFN('Tentativi effettuati dallo studente %s %s per il %s "%s"'),$this->student['cognome'],$this->student['nome'],$this->singolare,$this->test['titolo']);
 			$table = BaseHtmlLib::tableElement('', $thead, $tbody, $thead, $caption);
+			$table->setAttribute('class', $table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
 			$html = $table->getHtml();
 		}
 		else {
