@@ -59,14 +59,14 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	 *
 	 *  filter course instance that are associated to a level of service having:
 	 *  - nonzero value in isPublic, so that all instances of public courses will not be shown here
-	 *  - zero value in IsPublic and the service level in the $GLOBALS['autosubscribeServiceTypes'] array, to hide autosubscription instances
+	 *  - zero value in IsPublic and the service level in the $GLOBALS['userHiddenServiceTypes'] array, to hide autosubscription instances
 	 */
 	$courseInstances = array_filter($courseInstances, function($courseInstance) {
 		if (is_null($courseInstance['tipo_servizio'])) $courseInstance['tipo_servizio'] = DEFAULT_SERVICE_TYPE;
 		$actualServiceType = !is_null($courseInstance['istanza_tipo_servizio']) ? $courseInstance['istanza_tipo_servizio']: $courseInstance['tipo_servizio'];
 		if (intval($_SESSION['service_level_info'][$actualServiceType]['isPublic'])!==0) {
 			$filter = false;
-		} else if (in_array($actualServiceType, $GLOBALS['autosubscribeServiceTypes'])) {
+		} else if (in_array($actualServiceType, $GLOBALS['userHiddenServiceTypes'])) {
 			$filter = false;
 		}
 		return (isset($filter) ? $filter : true);
