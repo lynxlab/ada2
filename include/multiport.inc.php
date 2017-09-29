@@ -232,7 +232,7 @@ class MultiPort
   	 *
   	 */
   	if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider'])>0) {
-  		
+
   		$tester_dh = AMA_DataHandler::instance(self::getDSN($GLOBALS['user_provider']));
   		if (!is_null($tester_dh)) {
   			/**
@@ -240,7 +240,7 @@ class MultiPort
              * already exists in the selected provider
   			 */
   			$user_id = $tester_dh->find_students_list(null, 'username =\''.$userObj->getUserName().'\'');
-//   			var_dump($user_id); 
+//   			var_dump($user_id);
 //   			var_dump(count($user_id)); die();
   			if (AMA_DB::isError($user_id)) {
   				return ADA_ADD_USER_ERROR;
@@ -249,7 +249,7 @@ class MultiPort
   					return ADA_ADD_USER_ERROR_USER_EXISTS_TESTER;
   				} else {
   					/**
-  					 * set $user_id=0 to resume normal operation 
+  					 * set $user_id=0 to resume normal operation
   					 */
   					$user_id = 0;
   					/**
@@ -262,11 +262,11 @@ class MultiPort
   					 */
   					unset ($tester_dh);
   				} // if (count($user_id)>0)
-  			} // if (AMA_DB::isError($user_id)) 
+  			} // if (AMA_DB::isError($user_id))
   		} else {
   			return ADA_ADD_USER_ERROR_TESTER;
   		} // if (!is_null($tester_dh))
-  	} else {  		
+  	} else {
   		$user_id = $userObj->getId();
   		/**
          * set $tester_dh to null for future check
@@ -275,7 +275,7 @@ class MultiPort
   	} // if (!MULTIPROVIDER &&.....)
 
   	$common_dh = AMA_Common_DataHandler::instance();
-  	
+
     if ($user_id == 0){
       /* If the user isn't in common DB yet
        * add this user to ADA main database
@@ -397,6 +397,8 @@ class MultiPort
             else {
               return ADA_ADD_USER_ERROR_TESTER;
             }
+          } else {
+          	$userObj->addTester($tester);
           }
       }
 /*
@@ -424,7 +426,7 @@ class MultiPort
    * @param  $testers array
    * @return boolean
    */
-  static public function setUser(ADALoggableUser $userObj, $new_testers = array(), $update_user_data = FALSE, $extraTableName=false ) {      
+  static public function setUser(ADALoggableUser $userObj, $new_testers = array(), $update_user_data = FALSE, $extraTableName=false ) {
     $user_id = $userObj->getId();
     $testers = $userObj->getTesters();
     $testers_to_add = array();
@@ -437,7 +439,7 @@ class MultiPort
 
     $common_dh = AMA_Common_DataHandler::instance();
     $user_dataAr = $userObj->toArray();
-    
+
     if ($update_user_data) {
       $result = $common_dh->set_user($user_id, $user_dataAr);
       if (AMA_Common_DataHandler::isError($result)) {
@@ -446,9 +448,9 @@ class MultiPort
     }
 
     if ($update_user_data) {
-    	
+
     	$idFromPublicTester=0;
-    	
+
       foreach($testers as $tester) {
         $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
         //
@@ -458,7 +460,7 @@ class MultiPort
 		   * @author giorgio
 		   * if it's an extraTable I need set_student to return me the id of the inserted
 		   * record in the table on DEFAULT that will be used as an id for all other providers
-           */ 
+           */
           $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj, $idFromPublicTester);
           break;
 
@@ -507,20 +509,20 @@ class MultiPort
         case AMA_TYPE_STUDENT:
           $result = $tester_dh->add_student($user_dataAr);
           $result = $tester_dh->set_student($user_id,$user_dataAr, $extraTableName, $userObj);
-          
+
           if ($userObj->hasExtra()) {
-          	
+
           	if (method_exists('ADAUser','getExtraTableName')) {
           		$tableName = ADAUser::getExtraTableName();
           		if (strlen($tableName)>0) {
           			$tester_dh->set_student($user_id,$user_dataAr, $tableName, $userObj);
           		}
           	}
-          	
+
           	if (method_exists('ADAUser','getLinkedTables')) {
           		$linkedTables = ADAUser::getLinkedTables();
           		if (is_array($linkedTables) && count($linkedTables)>0) {
-          			
+
           			foreach ($linkedTables as $tableName) {
           				// force the record to be saved in the provider we're adding the user
           				if (isset($user_dataAr[$tableName]) && is_array($user_dataAr[$tableName])) {
@@ -533,13 +535,13 @@ class MultiPort
                                                         {
                                                             $user_dataAr[$tableName][$i]['_isSaved'] = 1;
                                                         }
-                                                 }   
+                                                 }
           					//$result = $tester_dh->set_student($user_id,$user_dataAr, $tableName, $userObj, $storedID);
                                           }
                                    }
-                          }          
+                          }
                  }
-           }          
+           }
           break;
 
         case AMA_TYPE_AUTHOR:
@@ -582,7 +584,7 @@ class MultiPort
         $userObj->addTester($tester_to_add);
       }
     }
-    
+
     if (isset($result)) return $result;
   }
 
@@ -659,7 +661,7 @@ class MultiPort
         if(DataValidator::is_uinteger($id_course_instance) !== FALSE) {
           $userObj->set_course_instance_for_history($id_course_instance);
         }
-        elseif (isset($_SESSION['sess_id_course_instance']) && 
+        elseif (isset($_SESSION['sess_id_course_instance']) &&
         		DataValidator::is_uinteger($_SESSION['sess_id_course_instance']) !== FALSE) {
           $userObj->set_course_instance_for_history($_SESSION['sess_id_course_instance']);
         }
@@ -670,7 +672,7 @@ class MultiPort
         $user_testersAr = $common_dh->get_testers_for_user($userObj->getId());
         if(AMA_Common_DataHandler::isError($user_testersAr)) {
           $errObj = new ADA_Error($user_testersAr,'An error occurred while retrieving user testers in MultiPort::finduser');
-        }        
+        }
         $userObj->setTesters($user_testersAr);
         $return = $userObj;
         break;
@@ -690,7 +692,7 @@ class MultiPort
         }
         $userObj->setTesters($user_testersAr);
         //Load user profile info from default tester
-        $tester = $userObj->getDefaultTester();        
+        $tester = $userObj->getDefaultTester();
         $tester_dsn = self::getDSN($tester);
         if($tester_dsn != NULL) {
           $tester_dh = AMA_DataHandler::instance($tester_dsn);
@@ -724,7 +726,7 @@ class MultiPort
         $return = NULL;
         break;
     }
-    
+
     if (!is_null($return) && $return instanceof ADAUser)
     {
     	/**
@@ -743,9 +745,9 @@ class MultiPort
     			$return = $userObj;
     		}
                 $tester_dh->disconnect();
-    	}    	    	
+    	}
     }
-    
+
     return $return;
   }
 
@@ -851,7 +853,7 @@ class MultiPort
                             $userObj->setExtras($extraAr);
                     }
             $tester_dh->disconnect();
-            }    	    	
+            }
         }
         return $userObj;
         break;
@@ -1176,7 +1178,7 @@ class MultiPort
           // NOTE: qui sarebbe utile invece il conto dei giorni restanti...
           $data_inizio_previsto = $one_course_instance['data_inizio_previsto'];
           $data_fine = $one_course_instance['data_fine'];
-          
+
 
           $service_completed = $data_fine < $now;
          $sub_courses = $tester_dh->get_subscription($user_id, $id_course_instance);
@@ -1442,7 +1444,7 @@ class MultiPort
     }
      *
      */
-    
+
     /*
      * Get messagges not yet read
      */
@@ -1955,7 +1957,7 @@ class MultiPort
 
     return $testers_activity_dataAr;
   }
-  
+
   /**
    * count_new_notes
    * @author giorgio 24/apr/2013
@@ -1967,66 +1969,66 @@ class MultiPort
    *
    * @return int count of new noTes or noDes
    */
-  
-  
+
+
   static public function count_new_notes(ADALoggableUser $userObj, $courseInstanceId) {
-  
+
   	if($userObj instanceof ADAGuest) {
   		return  0;
   	}
   	$common_dh = $GLOBALS['common_dh'];
-  
+
   	$testers_activity_dataAr = array();
   	$testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
-  
+
   	if(AMA_Common_DataHandler::isError($testers_infoAr)) {
   		return array();
   	}
   	$userId = $userObj->getId();
-  
+
   	$result = 0;
-  	
+
   	foreach($testers_infoAr as $tester_infoAr) {
-  		$tester_dsn = self::getDSN($tester_infoAr['puntatore']);  		
+  		$tester_dsn = self::getDSN($tester_infoAr['puntatore']);
   		if($tester_dsn != NULL) {
   			$tester_dh = AMA_DataHandler::instance($tester_dsn);
   			$result +=  $tester_dh->count_new_notes_in_course_instances( $courseInstanceId, $userId);
   		}
-  	}  	  	  	  
+  	}
   	return $result;
   }
-  
+
   /**
-   * updates new nodes in session by unsetting visited nodes 
+   * updates new nodes in session by unsetting visited nodes
    *
    * @param ADALoggableUser $userObj	user to get new nodes array for
    *
    * @return array contains id_nodo, id_istanza and titolo of the new nodes
-   * 
+   *
    * @access public
-   * 
+   *
    * @author giorgio 30/apr/2013
-   */  
+   */
    public static function update_new_nodes_in_session ($userObj)
    {
-   		
-   		
+
+
    		if($userObj instanceof ADAGuest) {
    			return  0;
    		}
    		$common_dh = $GLOBALS['common_dh'];
-   		
+
    		$testers_activity_dataAr = array();
    		$testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
-   		
+
    		if(AMA_Common_DataHandler::isError($testers_infoAr)) {
    			return array();
    		}
    		$userId = $userObj->getId();
    		$whatsnew = $userObj->getwhatsnew();
-   		
+
    		$result = array();
-   		 
+
    		foreach($testers_infoAr as $tester_infoAr) {
    			$tester_dsn = self::getDSN($tester_infoAr['puntatore']);
    			if($tester_dsn != NULL) {
@@ -2041,11 +2043,11 @@ class MultiPort
    				}
    			}
    		}
-		$userObj->setwhatsnew ($whatsnew);   		
+		$userObj->setwhatsnew ($whatsnew);
    		return $userObj->getwhatsnew();
    }
-  
-  
+
+
   /**
    * gets new nodes array for given courseinstance and user
    * directly called by user class constructor to get all new nodes to be put in the sess_userObj object.
@@ -2053,9 +2055,9 @@ class MultiPort
    * @param ADALoggableUser $userObj	user to get new nodes array for
    *
    * @return array contains id_nodo, id_istanza and titolo of the new nodes
-   * 
+   *
    * @access public
-   * 
+   *
    * @author giorgio 29/apr/2013
    */
 
@@ -2065,17 +2067,17 @@ class MultiPort
   		return  0;
   	}
   	$common_dh = $GLOBALS['common_dh'];
-  
+
   	$testers_activity_dataAr = array();
   	$testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
-  
+
   	if(AMA_Common_DataHandler::isError($testers_infoAr)) {
   		return array();
   	}
   	$userId = $userObj->getId();
-  
+
   	$result = array();
-  	
+
   	foreach($testers_infoAr as $tester_infoAr) {
   		if (!isset($result[$tester_infoAr['puntatore']])) $result[$tester_infoAr['puntatore']] = array();
   		$tester_dsn = self::getDSN($tester_infoAr['puntatore']);
@@ -2100,11 +2102,11 @@ class MultiPort
    * @return boolean true if there's some new messages for passed user in passed course instance
    */
   static public function checkWhatsNew($userObj, $courseInstanceId, $courseId=0)
-  {  	
+  {
   	  // new nodes in course
-  	  
+
   	  $userObj->updateWhatsNew();
-  	
+
   	  $count_new_nodes = 0;
   	   foreach ($userObj->getwhatsnew() as $whatsnewintester)
   	   {
@@ -2112,29 +2114,29 @@ class MultiPort
   	    	{
   	    		if (strpos($whatsnewelem['id_nodo'],$courseId)!==false) $count_new_nodes++;
   	    	}
-  	   }  	     	   
-      // new messages in forum, AKA NOTES!!! 
+  	   }
+      // new messages in forum, AKA NOTES!!!
 	  $msg_forum_count = MultiPort::count_new_notes($userObj,$courseInstanceId);
-	  	  	  
-	  return ( ($count_new_nodes >0) || ($msg_forum_count>0) );	  
+
+	  return ( ($count_new_nodes >0) || ($msg_forum_count>0) );
   }
-  
+
   /**
    * removeUserExtraData
-   * 
+   *
    * Removes a row from the user extra datas.
-   * 
+   *
    * @author giorgio 20/giu/2013
-   * 
+   *
    * @param ADALoggableUser $userObj user for which to delete the row
    * @param int $extraTableId	row id to be deleted
    * @param string $extraTableClass class of row to be deleted
-   * 
+   *
    * @return boolean on error | query result
-   * 
+   *
    * @access public
    */
-  
+
   static public function removeUserExtraData (ADALoggableUser $userObj ,$extraTableId=null, $extraTableClass=false )
   {
   	if ($extraTableId!==null && $extraTableClass!==false)
@@ -2147,16 +2149,16 @@ class MultiPort
   		if ($user_id == 0) {
   			return FALSE;
   		}
-  		
+
   		foreach($testers as $tester) {
   			$tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
   			$result = $tester_dh->remove_user_extraRow($user_id, $extraTableId, $extraTableClass);
   		}
   		return $result;
   	}
-  	else return false;  
+  	else return false;
   }
-  
+
   /*
    * Used by admin/log_report.php
    */
@@ -2200,8 +2202,8 @@ class MultiPort
     }
 
     return $log_dataAr;
-    } 
-  
+    }
+
 }
 
 ?>
