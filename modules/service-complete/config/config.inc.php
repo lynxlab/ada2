@@ -3,7 +3,7 @@
  * SERVICE-COMPLETE MODULE.
  *
  * @package        service-complete module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2013, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           service-complete
@@ -19,5 +19,9 @@ define ('NUM_RULES_SET',3);
 
 $GLOBALS['completeClasses'][]  = 'completeConditionTime';
 $GLOBALS['completeClasses'][]  = 'completeConditionLevel';
+if (defined('MODULES_TEST') && MODULES_TEST) {
+	// hide this completeCondition if no MODULES_TEST
+	$GLOBALS['completeClasses'][]  = 'completeConditionAnsweredSurvey';
+}
 
 ?>

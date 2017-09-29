@@ -388,6 +388,7 @@ abstract class ADAGenericUser {
     public function addTester($tester) {
         $tester = DataValidator::validate_testername($tester,MULTIPROVIDER);
         if($tester !== FALSE) {
+        	$this->setTesters($this->getTesters());
             array_push($this->testers, $tester);
             return TRUE;
         }

@@ -255,11 +255,12 @@ class AMA_DataHandler extends AMA_Tester_DataHandler
 					" ORDER BY ".$table::getKeyProperty()." ASC";
 
 					$extraArr = $this->getAllPrepared($selQry, array($userObj->getId()),AMA_FETCH_ASSOC);
-
-					foreach ($extraArr as $extraKey=>$extraElement) {
-						foreach ($extraElement as $key=>$val) {
-							if (stripos($key,"date") !==false)
-								$extraArr[$extraKey][$key] = ts2dFN($val);
+					if (!AMA_DB::isError($extraArr) && is_array($extraArr) && count($extraArr)>0) {
+						foreach ($extraArr as $extraKey=>$extraElement) {
+							foreach ($extraElement as $key=>$val) {
+								if (stripos($key,"date") !==false)
+									$extraArr[$extraKey][$key] = ts2dFN($val);
+							}
 						}
 					}
 					if (!empty($extraArr)) $returnArr[$table] = $extraArr;
