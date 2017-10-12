@@ -225,7 +225,7 @@ class Menu
      *
      * @access private
      */
-    private function buildCommon ($DOMitem, $item) {
+    private function buildCommon ($DOMitem, $item, $isDropDown = false) {
 
     	// add the icon
     	if (!is_null($item['icon'])) {
@@ -275,6 +275,7 @@ class Menu
     		}
     		$span = CDOMElement::create('span','class:menulabel');
     		$span->addChild(new CText($label));
+    		if ($isDropDown) $span->addChild($this->buildDropDownIcon());
     		$DOMitem->addChild($span);
     	}
     }
@@ -338,12 +339,12 @@ class Menu
     	$DOMitem->setAttribute('class', trim($baseClass.$item['extraClass']));
 
     	$HREFItem = CDOMElement::create('a','href:#,onclick:javascript:return false;');
-    	$this->buildCommon($HREFItem, $item);
+    	$this->buildCommon($HREFItem, $item, !$firstLevel);
     	$DOMitem->addChild($HREFItem);
 
     	if (!is_null($item['extraHTML'])) $DOMitem->addChild(new CText($item['extraHTML']));
 
-    	$DOMitem->addChild($this->buildDropDownIcon());
+    	if ($firstLevel) $DOMitem->addChild($this->buildDropDownIcon());
 
     	$subContainer = CDOMElement::create('ul','class:menu');
     	if (!is_null($item['menuExtraClass'])) {
@@ -542,11 +543,21 @@ class Menu
     		 */
     		$enabledObj = json_decode($item['enabledON']);
     		if (json_last_error() == JSON_ERROR_NONE) {
-    			if (property_exists($enabledObj, 'func') && function_exists($enabledObj->func)) {
+    			$callFunc = null;
+    			if (property_exists($enabledObj, 'func') &&  is_callable($enabledObj->func, false, $callFunc)) {
     				if (!property_exists($enabledObj, 'params')) {
-    					return call_user_func($enabledObj->func) === true;
+    					return call_user_func($callFunc) === true;
     				} else {
-    					return call_user_func($enabledObj->func, (array)$enabledObj->params) === true;
+    					$callParams = (array)$enabledObj->params;
+    					foreach ($callParams as $pKey=>$pVal) {
+    						$callParamsFunc = null;
+    						if (is_object($pVal) && property_exists($pVal, 'func') && is_callable($pVal->func, false, $callParamsFunc)) {
+    							if (!is_null($callParamsFunc)) {
+    								$callParams[$pKey] = call_user_func($callParamsFunc, property_exists($pVal, 'params') ? $pVal->params : null);
+    							}
+    						}
+    					}
+    					return call_user_func($callFunc, $callParams) === true;
     				}
     			} else {
     				// if object has not a valid function, return false

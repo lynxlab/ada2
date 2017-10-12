@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `menu_tree` (
 --
 -- `menu_items` table changes for revised enabled feature
 --
-ALTER TABLE `menu_items` ADD `enabledON` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%' ;
+ALTER TABLE `menu_items` ADD `enabledON` VARCHAR(10240) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%' ;
 UPDATE `menu_items` SET `enabledON` = '%ALWAYS%' WHERE enabled=1;
 UPDATE `menu_items` SET `enabledON` = '%NEVER%'  WHERE enabled=0;
 ALTER TABLE `menu_items` DROP `enabled`;

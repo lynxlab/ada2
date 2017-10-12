@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `menu_items` (
   `groupRight` int(1) NOT NULL DEFAULT '0',
   `specialItem` int(1) NOT NULL DEFAULT '0',
   `order` int(3) unsigned NOT NULL DEFAULT '0',
-  `enabledON` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%'
+  `enabledON` varchar(10240) COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%'
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --
