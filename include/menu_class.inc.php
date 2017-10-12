@@ -543,11 +543,21 @@ class Menu
     		 */
     		$enabledObj = json_decode($item['enabledON']);
     		if (json_last_error() == JSON_ERROR_NONE) {
-    			if (property_exists($enabledObj, 'func') && function_exists($enabledObj->func)) {
+    			$callFunc = null;
+    			if (property_exists($enabledObj, 'func') &&  is_callable($enabledObj->func, false, $callFunc)) {
     				if (!property_exists($enabledObj, 'params')) {
-    					return call_user_func($enabledObj->func) === true;
+    					return call_user_func($callFunc) === true;
     				} else {
-    					return call_user_func($enabledObj->func, (array)$enabledObj->params) === true;
+    					$callParams = (array)$enabledObj->params;
+    					foreach ($callParams as $pKey=>$pVal) {
+    						$callParamsFunc = null;
+    						if (is_object($pVal) && property_exists($pVal, 'func') && is_callable($pVal->func, false, $callParamsFunc)) {
+    							if (!is_null($callParamsFunc)) {
+    								$callParams[$pKey] = call_user_func($callParamsFunc, property_exists($pVal, 'params') ? $pVal->params : null);
+    							}
+    						}
+    					}
+    					return call_user_func($callFunc, $callParams) === true;
     				}
     			} else {
     				// if object has not a valid function, return false
