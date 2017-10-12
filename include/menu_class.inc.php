@@ -225,7 +225,7 @@ class Menu
      *
      * @access private
      */
-    private function buildCommon ($DOMitem, $item) {
+    private function buildCommon ($DOMitem, $item, $isDropDown = false) {
 
     	// add the icon
     	if (!is_null($item['icon'])) {
@@ -275,6 +275,7 @@ class Menu
     		}
     		$span = CDOMElement::create('span','class:menulabel');
     		$span->addChild(new CText($label));
+    		if ($isDropDown) $span->addChild($this->buildDropDownIcon());
     		$DOMitem->addChild($span);
     	}
     }
@@ -338,12 +339,12 @@ class Menu
     	$DOMitem->setAttribute('class', trim($baseClass.$item['extraClass']));
 
     	$HREFItem = CDOMElement::create('a','href:#,onclick:javascript:return false;');
-    	$this->buildCommon($HREFItem, $item);
+    	$this->buildCommon($HREFItem, $item, !$firstLevel);
     	$DOMitem->addChild($HREFItem);
 
     	if (!is_null($item['extraHTML'])) $DOMitem->addChild(new CText($item['extraHTML']));
 
-    	$DOMitem->addChild($this->buildDropDownIcon());
+    	if ($firstLevel) $DOMitem->addChild($this->buildDropDownIcon());
 
     	$subContainer = CDOMElement::create('ul','class:menu');
     	if (!is_null($item['menuExtraClass'])) {
