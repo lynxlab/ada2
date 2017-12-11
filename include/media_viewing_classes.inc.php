@@ -591,17 +591,25 @@ class ExternalLinkViewer {
                 	$spanLink->addChild($linkImg);
                 	$spanLink->addChild(new CText($cleaned_string));
 
-                	if (stripos($media_value,'https')===0) {
+                	/**
+                	 * @author giorgio 11/dec/2017
+                	 *
+                	 * open all external links in a blank window
+                	 * (remove comment to the if/else block to restore
+                	 * behaviour of opening non https links inside an iframe)
+                	 */
+                	$href = $media_value;
+//                 	if (stripos($media_value,'https')===0) {
                 		/**
                 		 * @author giorgio 09/set/2015
                 		 *
                 		 * if link is https do not show it in an iframe
                 		 * as it will cause security problems
                 		 */
-                		$href = $media_value;
-                	} else {
-	                	$href = HTTP_ROOT_DIR.'/browsing/external_link.php?id='.$id;
-                	}
+//                 		$href = $media_value;
+//                 	} else {
+// 	                	$href = HTTP_ROOT_DIR.'/browsing/external_link.php?id='.$id;
+//                 	}
                 	$link = BaseHtmlLib::link($href, $spanLink);
                 	$link->setAttribute('target', '_blank');
                 	$link->setAttribute('data-type', 'link');
