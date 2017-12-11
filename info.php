@@ -582,9 +582,9 @@ if ($op !== false && $op == 'course_info') {
 			header ('Location: '.HTTP_ROOT_DIR.'/info.php');
 			die();
 		}
-		$thead_data = array(translateFN('corso'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
+		$thead_data = array('ID', translateFN('corso'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
 	} else {
-		$thead_data = array(translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
+		$thead_data = array('ID', translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
 		$publishedServices = $common_dh->get_published_courses();
 	}
 
@@ -634,6 +634,7 @@ if ($op !== false && $op == 'course_info') {
 
                         if (!MULTIPROVIDER) {
                         	$tbody_data[] = array(
+                        			$courseId,
                         			$service['nome'],
                         			$service['descrizione'],
                         			$credits,
@@ -642,6 +643,7 @@ if ($op !== false && $op == 'course_info') {
                         	);
                         } else {
                         	$tbody_data[] = array(
+                        			$courseId,
                         			$service['nome'],
                         			$providerName,
                         			$service['descrizione'],

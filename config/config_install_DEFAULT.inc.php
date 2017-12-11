@@ -217,6 +217,11 @@ define ("ADA_PRINT_CERTIFICATE",FALSE);
  */
 define('DEFAULT_SERVICE_TYPE_NAME','Corso Online');
 
+/*
+ * Set medias rendered with jPlayer to autoplay
+ */
+define ('JPLAYER_AUTOPLAY', false);
+
 /**
  * Environment constants and global variables.
  * This section can be modified only by an expert installer.

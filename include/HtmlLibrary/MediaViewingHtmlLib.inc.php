@@ -37,8 +37,9 @@ class MediaViewingHtmlLib {
 		 */
 		if ($format=='never') $jplayerCode .= 'poster: "'.HTTP_ROOT_DIR.'/layout/"+ADA_TEMPLATE_FAMILY+"/img/header-logo.png",';
 		$jplayerCode .= $format.': "'.$url.'"
-									});
-								},
+									})';
+		if (defined('JPLAYER_AUTOPLAY') && JPLAYER_AUTOPLAY) $jplayerCode .= '.jPlayer("play")';
+		$jplayerCode .= ';},
 								play: function() {
 									$j(this).jPlayer("pauseOthers");
 								},

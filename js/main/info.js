@@ -1,5 +1,5 @@
 function initDoc(multiprovider) {
-	var columnsConf = [{ "sWidth": (multiprovider ? "50%" : "94%")}];
+	var columnsConf = [{ "bVisible": false },{ "sWidth": (multiprovider ? "50%" : "94%")}];
 
 	if (multiprovider) {
 		columnsConf.push({ "sWidth": "44%" });
@@ -14,7 +14,7 @@ function initDoc(multiprovider) {
         "bInfo" : false,
         "bPaginate" : true,
         "aoColumns": columnsConf,
-        "aaSorting": [[ 0, "asc" ]],
+        "aaSorting": [[ 0, "desc" ]],
 	    "bLengthChange": false,
         "oLanguage": {
            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
