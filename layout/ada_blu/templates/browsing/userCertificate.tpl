@@ -6,13 +6,12 @@
     <body>
         <a name="top"></a>
         <!-- testata -->
+        <template_field class="template_field" name="logo">logo</template_field>
+        <template_field class="template_field" name="logoProvider">logoProvider</template_field>
       
         <div class="header_Certificate">
-           <template_field class="template_field" name="logo">logo</template_field>
-           <template_field class="template_field" name="logoProvider">logoProvider</template_field>
-          
         </div> 
-        
+		<div class="clearfix"></div>          
         <!-- / testata -->
 
         <!-- contenitore -->
