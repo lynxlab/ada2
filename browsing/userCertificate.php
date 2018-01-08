@@ -49,7 +49,17 @@ $self = whoami();
 
 $title =  translateFN('Attestato di frequenza');
 
-$logo='<img src="'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/header-logo.png"  />';
+$logo='<img class="usercredits_logo" src="'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/header-logo.png"  />';
+$logoProvider = null;
+if (MULTIPROVIDER===false) {
+	$providerImg = HTTP_ROOT_DIR.'/clients/'.$client.'/layout/'.ADA_TEMPLATE_FAMILY.'/img/'.'header-logo.png';
+	if (function_exists('get_headers')) {
+		$headers = @get_headers($providerImg);
+		if(strpos($headers[0],'404') === false) {
+			$logoProvider='<img class="usercredits_logoProvider" src="'.$providerImg.'"  />';
+		}
+	}
+}
 
 if(isset($_GET['id_user']))
 {
@@ -85,6 +95,7 @@ if(!is_null($codFisc) && stripos($codFisc,'NULL')===false && strlen($codFisc)>0)
 }
 if(!is_null($courseObj->getTitle()) && stripos($courseObj->getTitle(),'NULL')===false && strlen($courseObj->getTitle())>0){
     $mainSentence = '<strong>'.$courseObj->getTitle().'</strong>';
+    $courseDurationSentence = translateFN('Monte ore maturato: ').'<strong>'.$courseObj->getDurationHours().translateFN(' ore </strong>');
 }
 
 $UserCertificateObj->set_course_instance_for_history($id_instance);
@@ -115,7 +126,7 @@ $signature = translateFN('Il Rappresentante Legale del Provider: ').$responsabil
 $content_dataAr   = array(
  'logo'=> $logo, 
  'title'=> $title,
- 'logoProvider'=>null,
+ 'logoProvider'=>$logoProvider,
  'userFullName'=>$userFullName,
  'birthSentence'=>$birthSentence,
  'CodeFiscSentence'=>$CodeFiscSentence,
@@ -124,7 +135,9 @@ $content_dataAr   = array(
  'data_Sentence'=>$data_Sentence,
  'providerSentence'=>$providerSentence,
  'placeAndDate'=>$placeAndDate,
- 'signature'=>$signature
+ 'signature'=>$signature,
+ 'courseDescription' => (isset($courseObj) && $courseObj instanceof Course) ? $courseObj->getDescription() : null,
+ 'courseDurationSentence' => isset($courseDurationSentence) ? $courseDurationSentence : null
  );
 ARE::render($layout_dataAr, $content_dataAr,ARE_PDF_RENDER,array('outputfile'=>translateFN('Attestato').'-['.$codice_corso.']-['.$id_user.']'));
 

@@ -1,13 +1,24 @@
 @import url("../print.css");
 
 /* rules for user certificate */
+body {
+	margin: 1em 1em 0 1em;
+}
 
+.usercredits_logo {
+	width:20%;
+	float:right;
+}
 
+.usercredits_logoProvider {
+	width: 10%;
+	float:left;
+}
 
 .header_Certificate{
     
     margin-top: 5%;
-    margin-left: 43%;
+    text-align: center;
 }
 .title_Certificate{
     margin-top: 1%;
@@ -30,14 +41,13 @@
 }
 
 .Certificate_datails{
-    margin-left: 3%;
     margin-top: 10px;
 }
 .placeAndDate{
-   margin-left: 3%;
    margin-top: 7%; 
 }
 .signature{
-   margin-left: 50%;
-   margin-top: -20px; 
+   width: 80%;
+   text-align:right;
+   margin-top: 20px; 
 }
