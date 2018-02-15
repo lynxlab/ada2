@@ -4226,7 +4226,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
 	$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
 
-        $sql = 'SELECT U.*, I.status,I.data_iscrizione';
+        $sql = 'SELECT U.*, I.status,I.data_iscrizione,I.laststatusupdate';
 
          if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
         {
@@ -4286,7 +4286,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-        $sql = 'SELECT U.*, I.status,I.data_iscrizione';
+        $sql = 'SELECT U.*, I.status,I.data_iscrizione,I.laststatusupdate';
 
         if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
         {
@@ -4489,8 +4489,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         $data_iscrizione = time();
         // insert a row into table iscrizioni
-        $sql1 =  "insert into iscrizioni (id_utente_studente, id_istanza_corso, livello, status,data_iscrizione)";
-        $sql1 .= " values ($id_studente, $id_istanza_corso, $livello, 1,$data_iscrizione);";
+        $sql1 =  "insert into iscrizioni (id_utente_studente, id_istanza_corso, livello, status,data_iscrizione,laststatusupdate)";
+        $sql1 .= " values ($id_studente, $id_istanza_corso, $livello, 1,$data_iscrizione,$data_iscrizione);";
         $res = $db->query($sql1);
         // FIXME: usare executeCritical?
         if (AMA_DB::isError($res)) {// || $db->affectedRows()==0)
@@ -4822,11 +4822,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      * @param $user_level if null than this field is not updated
      * @return unknown_type
      */
-    public function course_instance_student_subscribe($id_course_instance, $student,$status=2, $user_level=1) {
+    public function course_instance_student_subscribe($id_course_instance, $student,$status=2, $user_level=1, $lastupdateTS=null) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-        $sql = "update iscrizioni set status=$status";
+        if (is_null($lastupdateTS)) $lastupdateTS = time();
+        $sql = "update iscrizioni set status=$status, laststatusupdate=$lastupdateTS";
         if (!is_null($user_level)) $sql.=", livello=$user_level";
         $sql.=" where id_istanza_corso=$id_course_instance and id_utente_studente=$student";
         //vito, 2 feb 2009
@@ -4861,7 +4862,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $n = count($studenti_ar);
         if ($n>0) {
-            $sql = "update iscrizioni set status=1 where id_istanza_corso=$id_corso ";
+        	$lastupdateTS = time();
+            $sql = "update iscrizioni set status=1, laststatusupdate=$lastupdateTS where id_istanza_corso=$id_corso ";
         }
         else {
             return 0;
