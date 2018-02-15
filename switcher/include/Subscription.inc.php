@@ -43,6 +43,8 @@ class Subscription
                 $subscription = new Subscription($r['id_utente'], $classRoomId,$r['data_iscrizione']);
                 $subscription->setSubscriberFullname($r['nome'] . ' ' . $r['cognome']);
                 $subscription->setSubscriptionStatus($r['status']);
+                $subscription->setLastStatusUpdate($r['laststatusupdate']);
+                $subscription->_loadedStatus = $subscription->getSubscriptionStatus();
                 if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
                 {
                     $subscription->setSubscriptionCode($r['codice']);
@@ -74,6 +76,8 @@ class Subscription
                 $subscription = new Subscription($r['id_utente'], $classRoomId,$r['data_iscrizione']);
                 $subscription->setSubscriberFullname($r['nome'] . ' ' . $r['cognome']);
                 $subscription->setSubscriptionStatus($r['status']);
+                $subscription->setLastStatusUpdate($r['laststatusupdate']);
+                $subscription->_loadedStatus = $subscription->getSubscriptionStatus();
                 if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
                 {
                     $subscription->setSubscriptionCode($r['codice']);
@@ -101,7 +105,8 @@ class Subscription
                         $s->getClassRoomId(),
                         $s->getSubscriberId(),
                         ADA_STATUS_SUBSCRIBED,
-                        $s->getStartStudentLevel()
+                        $s->getStartStudentLevel(),
+                		$s->getLastStatusUpdate()
                 );
             }
 
@@ -126,7 +131,8 @@ class Subscription
                     $s->getClassRoomId(),
                     $s->getSubscriberId(),
                     $s->getSubscriptionStatus(),
-            		$s->getStartStudentLevel()
+            		$s->getStartStudentLevel(),
+            		$s->getLastStatusUpdate()
             );
         }
         if(AMA_DataHandler::isError($result)) {
@@ -218,17 +224,28 @@ class Subscription
         return $this->_subscriptionCode;
     }
 
+    /**
+     * @return number last status update timestamp
+     */
+    public function getLastStatusUpdate() {
+    	return $this->_lastStatusUpdate;
+    }
+
     public function setSubscriberFullname($fullname) {
         $this->_subscriberFullname = $fullname;
     }
     public function setSubscriptionStatus($status) {
         $this->_subscriptionStatus = $status;
+        if ($this->_loadedStatus != $status) $this->setLastStatusUpdate(time());
     }
     public function setStartStudentLevel($startStudentLevel) {
     	$this->_startStudentLevel = $startStudentLevel;
     }
     public function setSubscriptionCode($code) {
     	$this->_subscriptionCode = $code;
+    }
+    public function setLastStatusUpdate($timestamp) {
+    	$this->_lastStatusUpdate = $timestamp;
     }
 
     public function subscriptionStatusAsString() {
@@ -253,4 +270,6 @@ class Subscription
     private $_subscriptionDate;
     private $_subscriptionStatus;
     private $_subscriptionCode;
+    private $_lastStatusUpdate;
+    private $_loadedStatus;
 }
