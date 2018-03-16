@@ -214,7 +214,7 @@ array(
           // vito 14 gennaio
 	  //	  if ($REQUEST_METHOD == "POST"){
 	  if ($_SERVER['REQUEST_METHOD'] == "POST"){
-	  
+
 	    /*
 	     * vito 14 gennaio 2009 sostituito $HTTP_POST_VARS con $_POST
 	     */
@@ -225,7 +225,7 @@ array(
 
 	      // Trim all submitted data
 	      $create_chat_form = $_POST;
-	      while (list($key, $value) = each($create_chat_form)){
+	      foreach ($create_chat_form as $key => $value){
 	        $$key = $value;
 	      }
 
@@ -349,7 +349,7 @@ array(
 	        $chatroom_ha['start_time']= $start_data;
 	        $chatroom_ha['end_time']= $end_data;
 	        $chatroom_ha['id_course_instance']= $_POST['id_course_instance'];
-	        	
+
 	        // add chatroom_ha to the database
 	        $chatroom = Chatroom::add_chatroomFN($chatroom_ha);
 
@@ -365,7 +365,7 @@ array(
 	          // message display
 	          $err_msg = translateFN("<b>La chatroom e' stata creata con successo!</b>");
 	          // construct link for edit the chat if needed
-	          
+
 	          $form_data = array(
 	          array(
 		                          'label'=>'Titolo *',

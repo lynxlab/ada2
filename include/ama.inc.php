@@ -4688,7 +4688,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
         $n = count($students_ar);
         if($n>0) {
-            while(list($key,$value)=each($students_ar)) {
+        	foreach ($students_ar as $key => $value) {
                 $res_ar[$key]['id_utente_studente'] = $value[0];
                 // $res_ar[$key]['istanza_corso'] = $value[1];
                 $res_ar[$key]['livello'] = $value[2];
@@ -4773,7 +4773,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $n = count($students_ar);
         if($n>0) {
-            while(list($key,$value)=each($students_ar)) {
+        	foreach ($students_ar as $key => $value) {
                 //   $res_ar[$key]['id_utente_studente'] = $value[0];
                 $res_ar[$key]['istanza_corso'] = $value[1];
                 //  $res_ar[$key]['livello'] = $value[2];

@@ -210,7 +210,7 @@ function dt2tsFN ($date){
 
   $anno =(int)$date_ar[2];
 
-  $unix_date = mktime(0,0,0,$mese,$giorno,$anno,-1);
+  $unix_date = mktime(0,0,0,$mese,$giorno,$anno);
   return $unix_date;
 
 }
@@ -348,7 +348,7 @@ function masort ($array, $arg,$sort_order=1,$sort_method=SORT_STRING) {
 function list_array ($array) {
   // CONVERTE UN ARRAY IN STRINGA
   $str='';
-  while (list ($key, $value) = each ($array)) {
+  foreach ($array as $key => $value){
     $str .= "<b>$key:</b> $value<br>\n";
   }
   return $str;
@@ -359,8 +359,9 @@ function list_array ($array) {
 
 function print_vars($obj) {
   $arr = get_object_vars($obj);
-  while (list($prop, $val) = each($arr))
-  echo "\t$prop = $val<br>\n";
+  foreach ($arr as $prop => $val){
+	  echo "\t$prop = $val<br>\n";
+  }
 }
 
 function print_methods($obj) {
@@ -603,6 +604,7 @@ function read_dir($dir,$ext=""){
 			    {
 			      //$elencofile[$i]['file'] = $dir."/".$file;
 			      // vito, 30 mar 2009
+			      if (!is_array($elencofile)) $elencofile = array();
 			      $elencofile[$i]['path_to_file'] = $dir."/".$file;
 			      $filetime = date("d/m/y",filemtime($dir."/".$file));
 			      $elencofile[$i]['data'] = $filetime;

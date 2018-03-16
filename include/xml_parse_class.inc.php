@@ -138,8 +138,8 @@ class course_xml_file_process{
                 $this->initerror = translateFN("Errore nel tipo di file");
 				return false;
 			} else
-				return true;	
-		}	else 
+				return true;
+		}	else
 			return false;
     }
 
@@ -558,7 +558,7 @@ class course_xml_file_process{
 
         // intersezione array e rinomina file dell'intersezione
         $intersect_ar = array_intersect($files_to,$this->dati_media_ar);
-        while(list($key, $val) = each($intersect_ar)){
+        foreach ($intersect_ar as $key => $val){
             //$info = stat($dir_to.'/'.$val);
             rename($dir_to.$val,$dir_to.date("Y_m_d_H_i_s_").$val) ;
         }
@@ -618,7 +618,7 @@ class course_xml_file_process{
          //vito, 27 mar 2009: here we need to parse the text of the node in order to convert internal links
          //$data_ha['text'] = $this->html_prepare($this->dati_nodo_ar[$this->livello]['TEXT']) ;
          $prepared_text = $data_ha['text'] = $this->html_prepare($this->dati_nodo_ar[$this->livello]['TEXT']) ;
-         
+
          // vito, 26 may 2009
          if($this->need_to_call_addslashes) {
            $pattern     = '/<LINK TYPE=INTERNAL VALUE=\\\"([0-9]+)\\\">/';
@@ -626,7 +626,7 @@ class course_xml_file_process{
          else {
            $pattern     = '/<LINK TYPE=INTERNAL VALUE="([0-9]+)">/';
          }
-         
+
          $replacement = '<LINK TYPE="INTERNAL" VALUE="\\1">';
          $data_ha['text'] = preg_replace($pattern, $replacement, $prepared_text);
 
@@ -735,7 +735,7 @@ class course_xml_file_process{
        * since it will be called by AMA
        */
       //if(get_magic_quotes_gpc()) {
-      if($this->need_to_call_addslashes){  
+      if($this->need_to_call_addslashes){
         return addslashes(nl2br($stringa));
       }
       return nl2br($stringa);

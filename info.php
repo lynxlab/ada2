@@ -304,7 +304,7 @@ if ($op !== false && $op == 'course_info') {
     				 * the key of the array is like this [concat_ws(' ',u.nome,u.cognome)]
     				 * the best way to get the value  is to access directly the value
     				 */
-    				list($key,$author_name) = each($course_infoAr);
+    				$author_name = reset($course_infoAr);
     				/*
     				 * The first element of the array come from concat_ws
     				 */
@@ -489,7 +489,7 @@ if ($op !== false && $op == 'course_info') {
                  * the key of the array is like this [concat_ws(' ',u.nome,u.cognome)]
                  * the best way to get the value  is to access directly the value
                  */
-                list($key,$author_name) = each($course_infoAr);
+                $author_name = reset($course_infoAr);
                 /*
                  * The first element of the array come from concat_ws
                  */
