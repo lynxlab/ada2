@@ -2526,7 +2526,7 @@ class Link  extends Resource
   var $action;
 
 
-  function link($id_link){
+  function __construct($id_link){
     //global $dh,$error;
     // constructor
     $dh =   $GLOBALS['dh'];

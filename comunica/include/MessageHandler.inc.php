@@ -30,7 +30,7 @@ class MessageHandler
    *
    * @param string $dsn - a valid data source name
    */
-  public function MessageHandler($dsn = NULL) {
+  public function __construct($dsn = NULL) {
     $this->dsn = $dsn;
   }
 

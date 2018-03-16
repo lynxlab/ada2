@@ -32,7 +32,7 @@ class Stack
    * @access public
    *
    */
-  function Stack() {
+  function __construct() {
     $this->stack_ar = array();
   }
 
@@ -69,7 +69,7 @@ class Stack
   /**
    * Push an element onto the stack
    *
-   * @param $element - the hash containing the name of the function and the 
+   * @param $element - the hash containing the name of the function and the
    * parameters array
    *
    * @access public
