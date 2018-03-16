@@ -914,7 +914,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
         //ADALogger::log_db('AMA_Common_DataHandler: get instance for main db connection');
     	$callerClassName = get_called_class();
-    	if (get_class(self::$instance) !== $callerClassName) self::$instance = null;
+    	if (!is_null(self::$instance) && get_class(self::$instance) !== $callerClassName) self::$instance = null;
 
         if(self::$instance == null) {
             //ADALogger::log_db('AMA_Common_DataHandler: creating a new instance of AMA_Common_DataHandler');
@@ -2945,7 +2945,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      */
     static function instance($dsn = null) {
     	$callerClassName = get_called_class();
-    	if (get_class(self::$instance) !== $callerClassName) self::$instance = null;
+    	if (!is_null(self::$instance) && get_class(self::$instance) !== $callerClassName) self::$instance = null;
 
         if(self::$instance === NULL) {
             self::$instance = new $callerClassName($dsn);
