@@ -750,7 +750,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
                         foreach ($dataHa as $user) {
                             $user_id = $user[2];
                             if (!in_array($user_id,$online_users_idAr)) {
-                                $userObj = new User($user_id);
+                                $userObj = MultiPort::findUser($user_id);
                                 $time = date("H:i:s",$user[1]);
                                 $online_users_idAr[] = $user_id;
                                 $online_usersAr[$user_id]['user'] = $userObj->username;

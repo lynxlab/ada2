@@ -179,7 +179,7 @@ class Course_Old {
                             $alt = translateFN("Nodo inferiore");
                             $icon = "_nodo.png";
                             if (!isset($hide_visits) OR $hide_visits==0) {
-                                $visit_count  = User::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
+                                $visit_count  = ADAUser::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
                             }
                             if  (empty($visit_count)) {
                                 if ($with_icons)
@@ -217,7 +217,7 @@ class Course_Old {
                             $alt = translateFN("Approfondimento");
                             $icon = "_gruppo.png";
                             if (!isset($hide_visits) OR $hide_visits==0) {
-                                $visit_count  = User::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
+                                $visit_count  = ADAUser::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
                             }
                             if  (empty($visit_count)) {
                                 if ($with_icons)
@@ -310,7 +310,7 @@ class Course_Old {
                                             case AMA_TYPE_STUDENT:
                                             default:
                                                 if (!isset($hide_visits) OR $hide_visits==0) {
-                                                    $visit_count  = User::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
+                                                    $visit_count  = ADAUser::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
                                                 }
                                                 break;
                                             case AMA_TYPE_TUTOR:
@@ -360,7 +360,7 @@ class Course_Old {
                                             case AMA_TYPE_STUDENT:
                                             default:
                                                 if (!isset($hide_visits) OR $hide_visits==0) {
-                                                    $visit_count  = User::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
+                                                    $visit_count  = ADAUser::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
                                                 }
                                                 break;
                                             case AMA_TYPE_TUTOR:
@@ -495,16 +495,16 @@ class Course_Old {
 
 		return $dh->get_course_max_level($this->id);
 	}
-        
+
         /* sara - Execute advaced search: first in AND, then progressively in OR
-         * 
-         * es: 
-         * 
+         *
+         * es:
+         *
          * field_1 AND field_2 AND field_3 if empty:
          * field_1 AND field_2 OR field_3  if empty:
          * field_1 OR field_2 AND field_3  if empty:
          * field_1 OR field_2 OR field_3
-         * 
+         *
          */
         function executeSearch($name,$title,$text,$dh,$count,$id_user)
         {
@@ -710,7 +710,7 @@ class Course_instance_Old {
                         $alt = translateFN("Nodo inferiore");
                         $icon = "_nodo.png";
                         if (!isset($hide_visits) OR $hide_visits==0) {
-                            $visit_count  = User::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
+                            $visit_count  = ADAUser::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
                         }
                         if  (empty($visit_count)) {
                             $index_item = "<img name=\"nodo\" alt=\"$alt\" src=\"img/$icon\">&nbsp;<b><a href=view.php?id_node=".$id_child.">".$child_dataHa['name']."</a></b>\n";
@@ -727,7 +727,7 @@ class Course_instance_Old {
                         $alt = translateFN("Approfondimento");
                         $icon = "_gruppo.png";
                         if (!isset($hide_visits) OR $hide_visits==0) {
-                            $visit_count  = User::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
+                            $visit_count  = ADAUser::is_visited_by_userFN($id_child,$sess_id_course_instance,$sess_id_user);
                         }
                         if  (empty($visit_count)) {
                             $index_item .= "<img name=\"nodo\" alt=$alt src=\"img/$icon\">&nbsp;<b><a href=view.php?id_node=".$id_child.">".$child_dataHa['name']."</a></b>\n";
@@ -800,13 +800,13 @@ class Course_instance_Old {
                                         break;
                                     case AMA_TYPE_TUTOR:
                                         if (!isset($hide_visits) OR $hide_visits==0) {
-                                            $visit_count  = User::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course);
+                                            $visit_count  = ADAUser::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course);
                                         }
                                         break;
 
                                     case AMA_TYPE_AUTHOR:
                                         if (!isset($hide_visits) OR $hide_visits==0) {
-                                            $visit_count  = User::is_visitedFN($id_child);
+                                            $visit_count  = ADAUser::is_visitedFN($id_child);
                                         }
                                     case AMA_TYPE_ADMIN:
                                         break;
@@ -826,7 +826,7 @@ class Course_instance_Old {
                                     $index_item .= "<img  name=\"attuale\" alt=\"attuale\" src=\"img/_anchor.png\">";
 
                                 // is someone else there?
-                                $is_someone = User::is_someone_thereFN($sess_id_course_instance,$id_child);
+                                $is_someone = ADAUser::is_someone_thereFN($sess_id_course_instance,$id_child);
                                 if ($is_someone>=1)
                                     $index_item .= "<img  name=\"altri\" alt=\"altri\" src=\"img/_student.png\">";
 
@@ -838,12 +838,12 @@ class Course_instance_Old {
                                 switch ($id_profile) {
                                     case AMA_TYPE_TUTOR:
                                         if (!isset($hide_visits) OR $hide_visits==0) {
-                                            $visit_count  = User::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course);
+                                            $visit_count  = ADAUser::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course);
                                         }
                                         break;
                                     case AMA_TYPE_AUTHOR:
                                         if (!isset($hide_visits) OR $hide_visits==0) {
-                                            $visit_count  = User::is_visitedFN($id_child);
+                                            $visit_count  = ADAUser::is_visitedFN($id_child);
                                         }
                                 } // end switch $id_profile
 
@@ -860,7 +860,7 @@ class Course_instance_Old {
                                     $index_item .= "<img  name=\"attuale\" alt=\"attuale\" src=\"img/_anchor.png\">";
 
                                 // is someone else there?
-                                $is_someone = User::is_someone_thereFN($sess_id_course_instance,$id_child);
+                                $is_someone = ADAUser::is_someone_thereFN($sess_id_course_instance,$id_child);
                                 if ($is_someone>=1)
                                     $index_item .= "<img  name=\"altri\" alt=\"altri\" src=\"img/_student.png\">";
 
@@ -1042,7 +1042,7 @@ class Course_instance_Old {
                         }
                         if ($is_note_visibile) {
                             if ((($id_profile == AMA_TYPE_TUTOR)  OR ($id_profile == AMA_TYPE_STUDENT)) AND (!isset($hide_visits) OR $hide_visits==0))
-                                $visit_count  = "(".User::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course).")";
+                                $visit_count  = "(".ADAUser::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course).")";
                             else
                                 $visit_count = "";
                             switch ($mode) {
@@ -1073,7 +1073,7 @@ class Course_instance_Old {
                                     }
 
                                     // is someone else there?
-                                    $is_someone = User::is_someone_thereFN($sess_id_course_instance,$id_child);
+                                    $is_someone = ADAUser::is_someone_thereFN($sess_id_course_instance,$id_child);
                                     if ($is_someone>=1)
                                         if ($with_icons)
                                             $index_item .= "&nbsp;<img  name=\"altri\" alt=\"altri\" src=\"img/_student.png\">";
@@ -1219,7 +1219,7 @@ class Course_instance_Old {
                             if ($is_note_visibile) {
 
                                 if ((($id_profile == AMA_TYPE_TUTOR) OR ($id_profile == AMA_TYPE_STUDENT)) AND (!isset($hide_visits) OR $hide_visits==0))
-                                    $visit_count  = "(".User::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course).")";
+                                    $visit_count  = "(".ADAUser::is_visited_by_classFN($id_child,$sess_id_course_instance,$sess_id_course).")";
                                 else
                                     $visit_count = "";
 
@@ -1280,7 +1280,7 @@ class Student_class {
     var $student_list;
 
 
-    function Student_class($id_course_instance, $status=null) {
+    function __construct($id_course_instance, $status=null) {
         $dh = $GLOBALS['dh'];
         // constructor
         if (is_null($status)) $status = ADA_STATUS_SUBSCRIBED; // we want only subscribed students
@@ -1323,10 +1323,10 @@ class Student_class {
 
         /**
          * @author giorgio 27/ott/2014
-         * from now on, passing a null date to read_class_data 
+         * from now on, passing a null date to read_class_data
          * will get the most updated class report, so it's
          * safe to get rid of the following 2 lines of code
-         *  
+         *
          */
 //         $ymdhms = today_dateFN();
 //         $utime = dt2tsFN($ymdhms);
@@ -1344,7 +1344,7 @@ class Student_class {
             /*
            * vito, 27 mar 2009. Add links to table data.
             */
-            
+
             $totalHistory = 0;
             $totalExercies = 0;
             $totalExerciesMax = 0;
@@ -1361,34 +1361,34 @@ class Student_class {
             $totalIndex = 0;
             $totalLevel = 0;
             $row = -1;
-            
+
             $returnArray = array();
             if (isset($report_dataHa['report_generation_date'])) {
             	$report_generation_TS = $report_dataHa['report_generation_date'];
             	unset ($report_dataHa['report_generation_date']);
             } else $report_generation_TS = null;
-            
+
             foreach ($report_dataHa as $currentReportRow) {
             	// returnArray elements order (keys) MUST be
             	// the same as returned by get_class_report_from_db
-            	$returnArray[++$row]['id'] = $currentReportRow['id_stud'];            	       
+            	$returnArray[++$row]['id'] = $currentReportRow['id_stud'];
                 $returnArray[$row]['student'] = '<a href="tutor.php?op=zoom_student&id_student='.$currentReportRow['id_stud'].'&id_course='.$id_course.'&id_instance='.$id_course_instance.'">'. $currentReportRow['student'] .'</a>';
                 $returnArray[$row]['history']  = '<a href="tutor_history.php?id_student='.$currentReportRow['id_stud'].'&id_course='.$id_course.'&id_course_instance='.$id_course_instance.'">'. $currentReportRow['visits'] .'</a>';
                 $returnArray[$row]['last_access'] = '<a href="tutor_history_details.php?period=1&id_student='.$currentReportRow['id_stud'].'&id_course='.$id_course.'&id_course_instance='.$id_course_instance.'">'. substr(ts2dFN($currentReportRow['date']),0,-5) .'</a>';
                 $returnArray[$row]['exercises'] = '<a href="tutor_exercise.php?id_student='.$currentReportRow['id_stud'].'&id_course_instance='.$id_course_instance.'" class="dontwrap">'. $currentReportRow['score'] .
                 	' '.translateFN('su').' '.$currentReportRow['exercises']*ADA_MAX_SCORE.'</a>';
-                
+
                 if (MODULES_TEST) {
                 	$st_score_test = $currentReportRow['score_test'];
                 	$st_score_norm_test = str_pad($st_score_test,5, "0", STR_PAD_LEFT);
                 	$st_exer_number_test = $currentReportRow['exercises_test'];
                 	$returnArray[$row]['exercises_test'] = '<!-- '.$st_score_norm_test.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=test&id_course_instance='.$id_course_instance.'&id_course='.$id_course.'&id_student='.$currentReportRow['id_stud'].'" class="dontwrap">'.$st_score_test.' '.translateFN('su').' '.$st_exer_number_test.'</a>';
-                		
+
                 	$st_score_survey = $currentReportRow['score_survey'];
                 	$st_score_norm_survey = str_pad($st_score_survey,5, "0", STR_PAD_LEFT);
                 	$st_exer_number_survey = $currentReportRow['exercises_survey'];
-                	$returnArray[$row]['exercises_survey'] = '<!-- '.$st_score_norm_survey.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=survey&id_course_instance='.$id_course_instance.'&id_course='.$id_course.'&id_student='.$currentReportRow['id_stud'].'" class="dontwrap">'.$st_score_survey.' '.translateFN('su').' '.$st_exer_number_survey.'</a>';                	
-                }                                
+                	$returnArray[$row]['exercises_survey'] = '<!-- '.$st_score_norm_survey.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=survey&id_course_instance='.$id_course_instance.'&id_course='.$id_course.'&id_student='.$currentReportRow['id_stud'].'" class="dontwrap">'.$st_score_survey.' '.translateFN('su').' '.$st_exer_number_survey.'</a>';
+                }
                 $returnArray[$row]['added_notes'] = '<a href="tutor.php?op=student_notes&id_student='.$currentReportRow['id_stud'].'&id_instance='.$id_course_instance.'">'. $currentReportRow['notes_out'] .'</a>';
                 $returnArray[$row]['read_notes'] = ($currentReportRow['notes_in']>0) ? $currentReportRow['notes_in'] : '-';
                 $returnArray[$row]['message_count_in'] = $currentReportRow['msg_in'];
@@ -1397,13 +1397,13 @@ class Student_class {
                 $returnArray[$row]['bookmarks'] = $currentReportRow['bookmarks'];
                 $returnArray[$row]['index'] = $currentReportRow['indice_att'];
                 $returnArray[$row]['level'] = '<span id="studentLevel_'.$currentReportRow['id_stud'].'">'.$currentReportRow['level'].'</span>';
-                $forceUpdate = false; 
+                $forceUpdate = false;
                 $linksHtml = $this->generateLevelButtons($currentReportRow['id_stud'], $forceUpdate);
                 $returnArray[$row]['level_plus'] = (!is_null($linksHtml)) ? $linksHtml : '-';
 
 
                 // UPDATE TOTALS
-                
+
                 $totalHistory         += $currentReportRow['visits'];
                 $totalExercies        += $currentReportRow['exercises'];
                 $totalExerciesMax     += $currentReportRow['exercises']*ADA_MAX_SCORE;
@@ -1419,9 +1419,9 @@ class Student_class {
                 $totalBookmarks       += $currentReportRow['bookmarks'];
                 $totalIndex           += $currentReportRow['indice_att'];
                 $totalLevel           += $currentReportRow['level'];
-                
-            } 
-            
+
+            }
+
             // generate and add footer (average) row
             $total = ++$row;
             $returnArray[++$row] = array(
@@ -1431,39 +1431,39 @@ class Student_class {
             		'last_access' => '-',
             		'exercises' => round($totalExercies/$total,2).' '.translateFN('su').' '.floor($totalExerciesMax/$total)
             );
-            
+
             if (MODULES_TEST) {
             	$returnArray[$row]['exercises_test'] = round($totalTest/$total,2).' '.translateFN('su').' '.
             		floor($totalTestMax/$total);
             	$returnArray[$row]['exercises_survey'] = round($totalSurvey/$total,2).' '.translateFN('su').' '.
             		floor($totalSurveyMax/$total);
             }
-            
-            $returnArray[$row]['added_notes'] = round ($totalAddedNodes/$total,2); 
+
+            $returnArray[$row]['added_notes'] = round ($totalAddedNodes/$total,2);
             $returnArray[$row]['read_notes'] = round ($totalReadNotes/$total,2);
             $returnArray[$row]['message_count_in'] = round($totalMessageCountIn/$total,2);
             $returnArray[$row]['message_count_out'] = round($totalMessageCountOut/$total,2);
             $returnArray[$row]['chat'] = round($totalChat/$total,2);
             $returnArray[$row]['bookmarks'] = round($totalBookmarks/$total,2);
             $returnArray[$row]['index'] = round($totalIndex/$total,2);
-            $returnArray[$row]['level'] = '<span id="averageLevel">'.round($totalLevel/$total,2).'</span>'; 
+            $returnArray[$row]['level'] = '<span id="averageLevel">'.round($totalLevel/$total,2).'</span>';
             $returnArray[$row]['level_plus'] = '-';
-            
+
             // TABLE LABELS
 
             $table_labels[0] = $this->generate_class_report_header();
 
             /**
              * @author giorgio 27/ott/2014
-             * 
+             *
              * unset the unwanted columns data and labels. unwanted cols are defined in config/config_class_report.inc.php
              */
 
             $arrayToUse = 'reportHTMLColArray';
             $this->clean_class_reportFN($arrayToUse, $table_labels, $returnArray);
-            
+
            	return array('report_generation_date'=>$report_generation_TS) + array_merge($table_labels,$returnArray);
-            
+
         }
         return null;
     }
@@ -1527,10 +1527,10 @@ class Student_class {
             $tot_level = 0;
             /**
              * @author giorgio 27/ott/2014
-             * 
+             *
              * change to:
              * $report_generation_TS = time();
-             * 
+             *
              * to have full date & time generation of report
              * but be warned that table log_classi may grow A LOT!
              */
@@ -1568,7 +1568,7 @@ class Student_class {
                     	if ($studentObj instanceof ADAPractitioner) {
                     		/**
                     		 * @author giorgio 14/apr/2015
-                    		 * 
+                    		 *
                     		 * If student is actually a tutor, build a new student
                     		 * object for history and evaluation purposes
                     		 */
@@ -1627,7 +1627,7 @@ class Student_class {
                         } else {
                             $read_notes = "<!-- 0 -->-";
                         }
-                        
+
                         $st_history_count = "0";
                         $debug=0;
                         $st_history_count = $studentObj->total_visited_nodesFN($id_student,ADA_LEAF_TYPE);
@@ -1793,9 +1793,9 @@ class Student_class {
                         $dati_stude[$num_student]['level'] = '<span id="studentLevel_'.$id_student.'">'.$student_level.'</span>';
                         $forceUpdate = false;
                         $linksHtml = $this->generateLevelButtons($id_student,$forceUpdate);
-                        
+
                         $dati_stude[$num_student]['level_plus'] = (!is_null($linksHtml)) ? $linksHtml : '-';
-                        
+
                         // inserting a row in table log_classi
 
                         $this->log_class_data($id_course,$id_instance,$dati);
@@ -1857,44 +1857,44 @@ class Student_class {
 
             /**
              * @author giorgio 16/mag/2013
-             * 
+             *
              * unset the unwanted columns data and labels. unwanted cols are defined in config/config_class_report.inc.php
              */
 
             $arrayToUse = 'report'.$type.'ColArray';
             $this->clean_class_reportFN($arrayToUse, $table_labels, $dati_stude);
-            
+
            	return array('report_generation_date'=>$report_generation_TS) + array_merge($table_labels,$dati_stude);
         } else {
         	return null;
         }
     }    // end function get_class_reportFN{}
-    
+
     /**
      * generates buttons for increasing and decreasing user level
-     * 
+     *
      * @param number  $id_student
      * @param boolean $forceUpdate true if the javascript must reload the page in update mode
-     * 
+     *
      * @return string|NULL
      */
     private function generateLevelButtons($id_student,$forceUpdate) {
     	// convert $forceUpdate to string to be properly passed to the JS
     	$forceUpdate = ($forceUpdate) ? 'true' : 'false';
-    	
+
     	$ButtonPlus =  CDOMElement::create('button','class: button_Increase');
     	$ButtonPlus->setAttribute('onclick','javascript:updateLevel('.$id_student.',1,'.$forceUpdate.');');
-    	
+
     	$ButtonMinus = CDOMElement::create('button','class: button_Decrease');
     	$ButtonMinus->setAttribute('onclick','javascript:updateLevel('.$id_student.',-1,'.$forceUpdate.');');
-    	
+
     	$links = array();
     	$links[0] = CDOMElement::create('li','class:liactions');
     	$links[0]->addChild ($ButtonPlus);
-    	
+
     	$links[1] = CDOMElement::create('li','class:liactions');
     	$links[1]->addChild ($ButtonMinus);
-    	
+
     	if(!empty($links)){
     		$linksul = CDOMElement::create('ul','class:ulactions');
     		foreach ($links as $link) $linksul->addChild ($link);
@@ -1902,57 +1902,57 @@ class Student_class {
     	}
     	return null;
     }
-    
+
     /**
      * @author giorgio 24/ott/2014
-     * 
+     *
      * generate class report table header
-     * 
+     *
      * @return array the generated table header array
-     * 
+     *
      * @access private
      */
     private function generate_class_report_header() {
-    	
+
     	$tableHeader['id'] = translateFN("Id");
     	$tableHeader['student'] = translateFN("Studente");
     	$tableHeader['history'] = translateFN("Visite");
     	$tableHeader['last_access'] = translateFN("Recente");
     	$tableHeader['exercises'] = translateFN("Punti A");
-    	
+
     	if (MODULES_TEST) {
     		$tableHeader['exercises_test'] = translateFN("Punti Test");
     		$tableHeader['exercises_survey'] = translateFN("Punti Sondaggio");
     	}
-    		
+
     	$tableHeader['added_notes'] = translateFN("Note Scri");
     	$tableHeader['read_notes'] = translateFN("Note Let");
     	$tableHeader['message_count_in'] = translateFN("Msg Ric");
     	$tableHeader['message_count_out'] = translateFN("Msg Inv");
     	$tableHeader['chat'] = translateFN("Chat ");
     	$tableHeader['bookmarks'] = translateFN("Bkms ");
-    		
+
     	$tableHeader['index'] = translateFN("Attivita'");
     	$tableHeader['level'] = translateFN("Livello");
     	$tableHeader['level_plus'] = translateFN("Modifica livello");
-    	
-    	return $tableHeader;    	
+
+    	return $tableHeader;
     }
-    
+
     /**
      * @author giorgio 24/ott/2014
-     * 
+     *
      * remove unwanted columns from the class report
      * unwanted cols are defined in config/config_class_report.inc.php
-     * 
+     *
      * @param array $arrayToUse
      * @param array $table_labels NOTE: passed by ref, this method will modify the array!
      * @param array $dati_stude   NOTE: passed by ref, this method will modify the array!
-     * 
+     *
      * @access private
      */
     private function clean_class_reportFN($arrayToUse, &$table_labels, &$dati_stude) {
-    	
+
     	if ( CONFIG_CLASS_REPORT && is_array($GLOBALS[$arrayToUse]) && count($GLOBALS[$arrayToUse]) )
     	{
     		foreach  ( $GLOBALS[$arrayToUse] as $reportCol )
@@ -1962,14 +1962,14 @@ class Student_class {
     				preg_match("/^REPORT_COLUMN_([A-Z_]*)$/", $reportCol, $output_array);
     				$arrayKey = strtolower($output_array[1]);
     				unset ($table_labels[0][$arrayKey]);
-    	
+
     				foreach ($dati_stude as $key=>$oneRow)
     				{
     					unset ($dati_stude[$key][$arrayKey]);
     				}
     			}
     		}
-    	}    	
+    	}
     }
 
     function log_class_data($id_course,$id_course_instance,$dati_stude) {
