@@ -531,7 +531,7 @@ function dirTree($path) {
   /*
    **** dato un percorso ritorna l'elenco delle directory ****
    */
-  $dirlist = "";
+  $dirlist = array();
   if ( $handle = opendir ( $path ) )  {
     while ( false !== ( $file = readdir ( $handle ) ) ) {
       if ( $file != '.' && $file != '..' ) {
