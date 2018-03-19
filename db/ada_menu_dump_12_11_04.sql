@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `menu_items` (
   `specialItem` int(1) NOT NULL DEFAULT '0',
   `order` int(3) unsigned NOT NULL DEFAULT '0',
   `enabledON` varchar(10240) COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%'
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=138 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=138 ;
 
 
 
@@ -230,7 +230,7 @@ CREATE TABLE IF NOT EXISTS `menu_page` (
   `self_instruction` int(1) NOT NULL DEFAULT '0' COMMENT 'nonzero if course is in self instruction mode',
   `isVertical` int(1) NOT NULL DEFAULT '0' COMMENT 'nonzero if it''s a vertical menu',
   `linked_tree_id` int(11) DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=158 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=158 ;
 
 --
 -- Dump dei dati per la tabella `menu_page`
@@ -442,7 +442,7 @@ CREATE TABLE IF NOT EXISTS `menu_tree` (
   `parent_id` int(10) unsigned NOT NULL DEFAULT '0',
   `item_id` int(10) unsigned NOT NULL DEFAULT '0',
   `extraClass` varchar(255) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `menu_tree`

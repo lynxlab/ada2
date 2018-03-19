@@ -16,7 +16,7 @@ CREATE TABLE `module_formmail_helptype` (
   `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `recipient` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `user_type` tinyint(2) UNSIGNED NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -34,7 +34,7 @@ CREATE TABLE `module_formmail_history` (
   `selfSent` tinyint(1) UNSIGNED NOT NULL,
   `sentOK` tinyint(1) UNSIGNED NOT NULL,
   `sentTimestamp` int(10) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Indici per le tabelle scaricate
