@@ -90,6 +90,7 @@ class AMA_PDO_wrapper
 						  PDO::ATTR_DEFAULT_FETCH_MODE => AMA_FETCH_DEFAULT,
 						  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 			             ));
+			$this->connection_object->exec('SET SESSION sql_mode = \'\';');
 		}
 		catch (PDOException $e) {
 			$this->connection_object = self::handleException($e);
