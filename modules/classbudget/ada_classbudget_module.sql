@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `module_classbudget_budget_instance` (
   `budget` decimal(8,2) unsigned DEFAULT NULL,
   `references` text COLLATE utf8_unicode_ci,
   `notes` text COLLATE utf8_unicode_ci
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Indexes for dumped tables
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `module_classbudget_cost_classroom` (
   `id_classroom` int(10) unsigned NOT NULL,
   `id_istanza_corso` int(10) unsigned NOT NULL,
   `hourly_rate` decimal(6,2) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Indexes for dumped tables
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `module_classbudget_cost_item` (
   `price` decimal(8,2) DEFAULT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `applied_to` int(2) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Indexes for dumped tables
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `module_classbudget_cost_tutor` (
   `id_tutor` int(10) unsigned NOT NULL,
   `id_istanza_corso` int(10) unsigned NOT NULL,
   `hourly_rate` decimal(7,2) DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Indexes for dumped tables

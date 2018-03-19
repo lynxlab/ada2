@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `module_classagenda_calendars` (
   `id_istanza_corso` int(10) unsigned NOT NULL,
   `id_classroom` int(10) unsigned DEFAULT NULL,
   `id_utente_tutor` int(10) unsigned NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --
 -- Indexes for dumped tables
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `module_classagenda_rollcall` (
   `module_classagenda_calendars_id` int(10) NOT NULL,
   `entertime` int(11) unsigned NOT NULL,
   `exittime` int(11) unsigned DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Indexes for dumped tables
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `module_classagenda_reminder_history` (
   `module_classagenda_calendars_id` int(10) unsigned NOT NULL,
   `html` text COLLATE utf8_unicode_ci NOT NULL,
   `creation_date` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Indexes for dumped tables

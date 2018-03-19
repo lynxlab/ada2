@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `module_classroom_classrooms` (
   `projector` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `mobility_impaired` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `hourly_rate` decimal(6,2) DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 -- --------------------------------------------------------
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `module_classroom_venues` (
   `contact_phone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `contact_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `map_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;
 
 --
 -- Indexes for dumped tables
