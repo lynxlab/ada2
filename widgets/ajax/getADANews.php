@@ -151,6 +151,7 @@ if (isset($testerName)) {
 					}
 
 					// output in newstext only the <body> of the generated html
+					$addContinueLink = false;
 					if ($showDescription) {
 						$newstext = '';
 						foreach ($html->getElementsByTagName('body')->item(0)->childNodes as $child) {
@@ -164,7 +165,6 @@ if (isset($testerName)) {
 							$newstext = truncateHtml($newstext, $maxLength, '');
 							$addContinueLink = true;
 						}
-						else $addContinueLink = false;
 
 						$aNewsDIV->addChild (new CText("<p class='newscontent'>".$newstext.'</p>'));
 					}
