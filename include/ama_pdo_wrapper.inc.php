@@ -90,10 +90,40 @@ class AMA_PDO_wrapper
 						  PDO::ATTR_DEFAULT_FETCH_MODE => AMA_FETCH_DEFAULT,
 						  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 			             ));
-			$this->connection_object->exec('SET SESSION sql_mode = \'\';');
+			$this->setupConnection();
 		}
 		catch (PDOException $e) {
 			$this->connection_object = self::handleException($e);
+		}
+	}
+
+	/**
+	 * method to setup the connection, executes whatever is needed to
+	 * have a properly working db connection
+	 */
+	private function setupConnection() {
+		/*
+		 * remove unwanted sql modes for compatibility with AMA code
+		 */
+		$stmt = $this->connection_object->prepare('SELECT @@SESSION.sql_mode;');
+		if ($stmt->execute()) {
+			$modes = array();
+			$removeModes = array('STRICT_', 'ONLY_FULL_GROUP_BY');
+			foreach ($stmt->fetchAll() as $modeArrs) {
+				foreach ($modeArrs as $modeStr) {
+					$modes = array_filter(explode(',', $modeStr), function($mode) use ($modes, $removeModes) {
+						if (!in_array($mode, $modes)) {
+							foreach ($removeModes as $removeMode) {
+								if (strpos($mode, $removeMode)!==false) return false;
+							}
+						}
+						return true;
+					});
+				}
+			}
+			if (count($modes)>0) {
+				$this->connection_object->exec('SET SESSION sql_mode = \''.implode(',', $modes).'\';');
+			}
 		}
 	}
 
