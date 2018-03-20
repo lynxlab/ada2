@@ -49,6 +49,7 @@ class AMA_PDO_wrapper
 	 */
 	public function __construct($dsn, $options = false) {
 		$this->connect($dsn, $options);
+		$this->setupConnection();
 	}
 
 	/**
@@ -90,7 +91,7 @@ class AMA_PDO_wrapper
 						  PDO::ATTR_DEFAULT_FETCH_MODE => AMA_FETCH_DEFAULT,
 						  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 			             ));
-			$this->setupConnection();
+
 		}
 		catch (PDOException $e) {
 			$this->connection_object = self::handleException($e);
