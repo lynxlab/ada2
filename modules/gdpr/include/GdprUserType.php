@@ -30,7 +30,6 @@ class GdprUserType extends GdprBase {
 	 */
 	const NONE = 2;
 	const MANAGER = 1;
-	const FAKE = 3;
 
 	protected $id;
 	protected $description;
