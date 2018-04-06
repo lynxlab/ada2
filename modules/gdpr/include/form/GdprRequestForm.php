@@ -35,7 +35,7 @@ class GdprRequestForm extends GdprAbstractForm {
 			foreach ($selectOptions as $reqType) {
 				$opt = \CDOMElement::create('option','value:'.$reqType->getId());
 				$opt->addChild(new \CText(ucfirst(strtolower(translateFN($reqType->getDescription())))));
-				if (count($reqType->getExtra())>0) {
+				if (!is_null($reqType->getExtra()) && count($reqType->getExtra())>0) {
 					foreach ($reqType->getExtra() as $key => $val) {
 						$opt->setAttribute('data-'.$key, $val);
 					}
