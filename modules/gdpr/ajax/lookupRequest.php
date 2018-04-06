@@ -34,7 +34,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
-$GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $data = new stdClass();
 $data->title = '<i class="basic error icon"></i>'.translateFN('Errore ricerca richiesta');
@@ -60,7 +59,7 @@ try {
 	} else if (array_key_exists('requestUUID', $postParams) && !Uuid::isValid(trim($postParams['requestUUID']))) {
 		throw new GdprException(translateFN("L'ID pratica non è valido"));
 	} else {
-		$result = $GLOBALS['dh']->lookupRequest(trim($postParams['requestUUID']));
+		$result = AMAGdprDataHandler::lookupRequest(trim($postParams['requestUUID']));
 		$data = new stdClass();
 		$data->saveResult = $result;
 		$data->status = 'OK';
