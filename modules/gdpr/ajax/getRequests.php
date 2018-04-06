@@ -84,7 +84,7 @@ try {
 			function(GdprRequest $el) use ($showAll) {
 				$retArr = array();
 				$retArr['uuid'] = $el->getUuid();
-				if (intval($_SESSION['sess_userObj']->getType()) === AMA_TYPE_SWITCHER) {
+				if ($showAll) {
 					$retArr['generatedBy'] = $el->getGeneratedBy();
 				}
 				$retArr['generateDate'] = ts2dFN($el->getGeneratedTs()).' '.ts2tmFN($el->getGeneratedTs());
