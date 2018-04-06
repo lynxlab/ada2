@@ -1,7 +1,4 @@
 <?php
-use Lynxlab\ADA\Module\GDPR\GdprAPI;
-use Lynxlab\ADA\Module\GDPR\GdprUser;
-
 /**
  * Edit user - this module provides edit user functionality
  *
@@ -187,26 +184,6 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
    MultiPort::setUser($userToEditObj,array(),true);
-
-   if (defined('MODULES_GDPR') && true === MODULES_GDPR && $userToEditObj->getType() == AMA_TYPE_SWITCHER && array_key_exists('user_gdpr', $_POST)) {
-      	try {
-      		require_once MODULES_GDPR_PATH.'/include/GdprAPI.php';
-      		$gdprAPI = new GdprAPI();
-      		$gdprUser = $gdprAPI->getGdprUserByID($userToEditObj);
-      		if (false !== $gdprUser) {
-      			foreach ($gdprUser->getType() as $gdprType) $gdprUser->removeType($gdprType);
-      		} else {
-      			$gdprUser = GdprAPI::createGdprUserFromADALoggable($userToEditObj);
-      		}
-      		if (!is_array($_POST['user_gdpr'])) $_POST['user_gdpr'] = array($_POST['user_gdpr']);
-      		foreach ($_POST['user_gdpr'] as $gdprType) {
-      			$gdprUser->addType($gdprType);
-      		}
-      		$gdprAPI->saveGdprUser($gdprUser);
-      	} catch (\Exception $e) {
-      		// handle excpetion here if needed
-      	}
-      }
 
    $navigationHistoryObj = $_SESSION['sess_navigation_history'];
    $location = $navigationHistoryObj->lastModule();
