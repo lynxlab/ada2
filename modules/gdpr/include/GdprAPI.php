@@ -26,10 +26,11 @@ class GdprAPI {
 	/**
 	 * constructor
 	 */
-	public function __construct() {
+	public function __construct($tester = null) {
+		if (is_null($tester)) $tester = $_SESSION['sess_selected_tester'];
 		if (isset($GLOBALS['dh']) && !($GLOBALS['dh'] instanceof AMAGdprDataHandler)) $GLOBALS['dh']->disconnect();
 		if (!($GLOBALS['dh'] instanceof AMAGdprDataHandler)) {
-			$GLOBALS['dh'] = AMAGdprDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+			$GLOBALS['dh'] = AMAGdprDataHandler::instance(\MultiPort::getDSN($tester));
 		}
 		$this->_dh = $GLOBALS['dh'];
 	}
