@@ -116,7 +116,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 * @throws GdprException
 	 * @return array
 	 */
-	public function lookupRequest ($uuid) {
+	public static function lookupRequest ($uuid) {
 		$retVal = array('uuid' => $uuid);
 		$found = false;
 
@@ -124,9 +124,9 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 		if (!\AMA_DB::isError($testers_infoAr)) {
 			while (!$found && $tester = current($testers_infoAr)) {
 				if (!$found) {
-					$dbToUse = self::instance(\MultiPort::getDSN($tester['puntatore']));
+					$GLOBALS['dh'] = AMAGdprDataHandler::instance(\MultiPort::getDSN($tester['puntatore']));
 					try {
-						$found = $found || (count($dbToUse->findBy('GdprRequest',array('uuid'=>$uuid)))>0);
+						$found = $found || (count($GLOBALS['dh']->findBy('GdprRequest',array('uuid'=>$uuid)))>0);
 					} catch (\Exception $e) {}
 				}
 				next($testers_infoAr);
@@ -178,7 +178,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 
 		$sql = sprintf ("SELECT %s FROM `%s`", implode(',',array_map(function($el){ return "`$el`"; }, $properties)), $className::table);
 
-		if (count($whereArr)>0) {
+		if (!is_null($whereArr) && count($whereArr)>0) {
 			$invalidProperties = array_diff(array_keys($whereArr),$properties);
 			if (count($invalidProperties)>0) {
 				throw new GdprException(translateFN('Proprietà WHERE non valide: ').implode(', ', $invalidProperties));
@@ -201,7 +201,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			}
 		}
 
-		if (count($orderByArr)>0) {
+		if (!is_null($orderByArr) && count($orderByArr)>0) {
 			$invalidProperties = array_diff(array_keys($orderByArr),$properties);
 			if (count($invalidProperties)>0) {
 				throw new GdprException(translateFN('Proprietà ORDER BY non valide: ').implode(', ', $invalidProperties));
@@ -217,7 +217,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			}
 		}
 
-		$result = $this->getAllPrepared($sql, count($whereArr)>0 ? array_values($whereArr): array(), AMA_FETCH_ASSOC);
+		$result = $this->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr)>0) ? array_values($whereArr): array(), AMA_FETCH_ASSOC);
 		if (\AMA_DB::isError($result)) {
 			throw new GdprException($result->getMessage(), $result->getCode());
 		} else {
