@@ -1,0 +1,10 @@
+@import url("common.css");
+
+input#requestUUID { font-family: monospace; font-weight: bold; font-size: 1.2em; }
+#checkimg_error { margin: 0; }
+#chkimg, #checkimgreload { display: none; }
+#checkimgreload { position: absolute; top:0; right: 25px; opacity: 1; }
+#checkimgreload:hover { cursor: pointer; }
+.captchacontainer { height: 150px; }
+#contentcontent .first .ui.error.message  { font-size: 1.2em; }
+#lookupMessage small { font-size: 0.5em; position: absolute; bottom: 5px; right: 10px; } 

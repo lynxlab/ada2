@@ -1,0 +1,7 @@
+@import url("common.css");
+
+td.uuid { font-family: monospace; font-weight: bold; }
+td.access { color: #00b600; }
+td.edit { color: #ff9600; }
+td.delete { color: #ff0808; }
+td.onhold { color:#1f5dc8; }
