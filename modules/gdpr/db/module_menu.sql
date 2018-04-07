@@ -12,7 +12,9 @@ SET @modulepath = '%MODULES_GDPR_HTTP%';
 /* get the authorTree */
 SELECT @authorTree := `tree_id` FROM `menu_page` WHERE `module` = 'services' AND `script` = 'author.php' AND `user_type`=1;
 /* get the studentTree */
-SELECT @studentTree := `tree_id` FROM `menu_page` WHERE `module` = 'browsing' AND `script` = 'view.php' AND `user_type`=3;
+SELECT @studentTree := `tree_id` FROM `menu_page` WHERE `module` = 'browsing' AND `script` = 'view.php' AND `self_instruction`=0 AND `user_type`=3;
+/* get the studentSelfInstructionTree */
+SELECT @studentSelfInstructionTree := `tree_id` FROM `menu_page` WHERE `module` = 'browsing' AND `script` = 'view.php' AND `self_instruction`=1 AND `user_type`=3;
 /* get the tutorTree */
 SELECT @tutorTree := `tree_id` FROM `menu_page` WHERE `module` = 'tutor' AND `script` = 'default' AND `user_type`=4;
 /* get the visitorTree (aka home page, not logged user) */
@@ -57,6 +59,9 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 	(@studentTree, 0, @moduletree, ''),
 		(@studentTree, @moduletree, @newrequest, ''),
 		(@studentTree, @moduletree, @myrequests, ''),
+	(@studentSelfInstructionTree, 0, @moduletree, ''),
+		(@studentSelfInstructionTree, @moduletree, @newrequest, ''),
+		(@studentSelfInstructionTree, @moduletree, @myrequests, ''),		
 	(@tutorTree, 0, @moduletree, ''),
 		(@tutorTree, @moduletree, @newrequest, ''),
 		(@tutorTree, @moduletree, @myrequests, ''),
