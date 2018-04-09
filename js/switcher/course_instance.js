@@ -103,13 +103,14 @@ function saveStatus(select)
     var idUser=null;
     var idInstance=null;
     var indexColumn=null;
-    var re = /\d{1,2}\/{1}\d{1,2}\/{1}\d{2,4}/; 
+    var dateRegexp = /\d{1,2}\/{1}\d{1,2}\/{1}\d{2,4}/;
+    var htmlRegexp = /<[a-z][\s\S]*>/; 
     
     $j.each(aData,function(i,val){
     	/**
-    	 * if val is a (sort of) date, skip to next iteration
+    	 * if val is a (sort of) date or not html, skip to next iteration
     	 */    	
-    	if (re.test(val)) {
+    	if (dateRegexp.test(val) || !htmlRegexp.test(val)) {
     		return;
     	} else if( 'undefined' !== typeof $j(val).attr('class') && $j(val).attr('class').indexOf('UserName')!=-1) {
             idUser=$j(val).attr('id');// text();
