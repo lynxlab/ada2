@@ -87,13 +87,27 @@ try {
 				if ($showAll) {
 					$retArr['generatedBy'] = $el->getGeneratedBy();
 				}
-				$retArr['generateDate'] = ts2dFN($el->getGeneratedTs()).' '.ts2tmFN($el->getGeneratedTs());
+				$retArr['generatedDate'] = ts2dFN($el->getGeneratedTs()).' '.ts2tmFN($el->getGeneratedTs());
 				$retArr['closedDate'] = is_null($el->getClosedTs()) ? null : ts2dFN($el->getClosedTs()).' '.ts2tmFN($el->getClosedTs());
 				$retArr['type'] = $el->getType()->toArray();
 				$retArr['content'] = $el->getContent();
+				$actions = array();
+
 				if ($showAll) {
-					$retArr['actions'] = '';
+					if (is_null($el->getClosedTs()) && GdprActions::canDo(GdprActions::FORCE_CLOSE_REQUEST)) {
+						$closeBtn = CDOMElement::create('button','type:button,class:ui tiny button');
+						$closeBtn->setAttribute('onclick','clickHandlers.closeRequest($j(this),\''.$el->getUuid().'\');');
+						$closeBtn->addChild(new CText(translateFN('chiudi')));
+						$actions[] = $closeBtn;
+					}
 				}
+
+				$retArr['actions'] = array_reduce($actions, function($carry, $item) {
+					if (strlen($carry) <= 0) $carry = '';
+					$carry .= ($item instanceof \CBase ? $item->getHtml() : '');
+					return $carry;
+				});
+
 				return $retArr;
 			}, $requests);
 	} else $data['data'] = array();
