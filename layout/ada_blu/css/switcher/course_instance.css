@@ -40,7 +40,7 @@ and open the template in the editor.
 .table_result{
     display:none;
     margin-top: 0;
-    width: 70%;
+    width: auto;
     margin-left: 110%;
 
 }
