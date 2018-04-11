@@ -81,6 +81,26 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	}
 
 	/**
+	 * closes the request with the passed uuid, and set closed by as the optional userID
+	 *
+	 * @param string $uuid
+	 * @param integer $closedBy
+	 * @throws GdprException
+	 */
+	public function closeRequest($uuid, $closedBy=null) {
+		if (is_null($closedBy)) $closedBy = $_SESSION['sess_userObj']->getId();
+		$tmp = $tmp = $this->findBy('GdprRequest',array('uuid'=>$uuid));
+		$request = reset($tmp);
+		if ($request instanceof GdprRequest) {
+			$result = $this->executeCriticalPrepared($this->sqlUpdate(GdprRequest::table, array('closedTs', 'closedBy'), 'uuid'),
+					array($this->date_to_ts('now'), $closedBy, $request->getUuid()));
+			if (\AMA_DB::isError($result)) {
+				throw new GdprException($result->getMessage(), $result->getCode());
+			}
+		} else throw new GdprException(translateFN('Pratica non trovata'));
+	}
+
+	/**
 	 * save gdpr user data, with type
 	 *
 	 * @param array $data
@@ -248,6 +268,22 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 */
 	public function findAll($className, array $orderBy = null) {
 		return $this->findBy($className, null, $orderBy);
+	}
+
+	/**
+	 * Builds an sql update query as a string
+	 *
+	 * @param string $table
+	 * @param array $fields
+	 * @param string $whereField
+	 * @return string
+	 */
+	private function sqlUpdate($table, array $fields, $whereField) {
+		return sprintf("UPDATE `%s` SET %s WHERE `%s`=?;",
+				$table,
+				implode(',', array_map(function($el) { return "`$el`=?"; }, $fields)),
+				$whereField
+		);
 	}
 
 	/**
