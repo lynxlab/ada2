@@ -11,16 +11,17 @@
  */
 require_once 'lib/classes/FForm.inc.php';
 /**
- * 
+ *
  */
 class UserRemovalForm extends FForm {
-    public function  __construct() {
+    public function  __construct($isRestore = false) {
         parent::__construct();
         $this->addRadios(
-                'delete',
-                translateFN("Vuoi davvero disabilitare l'utente selezionato?"),
+                $isRestore ? 'restore': 'delete',
+                translateFN("Vuoi davvero ".($isRestore ? "abilitare" : "disabilitare")." l'utente selezionato?"),
                 array(0 => translateFN('No'), 1 => translateFN('Si')),
                 0);
         $this->addHidden('id_user');
+        $this->addHidden('isRestore')->withData($isRestore ? 1 :0);
     }
 }

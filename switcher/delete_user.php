@@ -39,32 +39,36 @@ require_once ROOT_DIR . '/include/Forms/UserRemovalForm.inc.php';
 /*
  * YOUR CODE HERE
  */
+$restore = isset($_REQUEST['restore']);
+$prefix = $restore ? '' : 'dis';
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $userId = DataValidator::is_uinteger($_POST['id_user']);
-    if($userId !== false && isset($_POST['delete']) && intval($_POST['delete'])===1) {
+    $postKey = $restore ? 'restore' : 'delete';
+    if($userId !== false && isset($_POST[$postKey]) && intval($_POST[$postKey])===1) {
         $userToDeleteObj = MultiPort::findUser($userId);
         if($userToDeleteObj instanceof ADALoggableUser) {
-            $userToDeleteObj->setStatus(ADA_STATUS_PRESUBSCRIBED);
+            $userToDeleteObj->setStatus($restore ? ADA_STATUS_REGISTERED : ADA_STATUS_PRESUBSCRIBED);
             MultiPort::setUser($userToDeleteObj,array(), true);
-            $data = new CText(sprintf(translateFN("L'utente \"%s\" è stato disabilitato."),
+            $data = new CText(sprintf(translateFN("L'utente \"%s\" è stato {$prefix}abilitato."),
                               $userToDeleteObj->getFullName()));
         } else {
             $data = new CText(translateFN('Utente non trovato') . '(3)');
         }
     } else {
-        $data = new CText(translateFN('Utente non disabilitato.'));
+        $data = new CText(translateFN("Utente non {$prefix}abilitato."));
     }
 } else {
     $userId = DataValidator::is_uinteger($_GET['id_user']);
+    $restore = (isset($_GET['restore']) && intval($_GET['restore'])===1);
     if($userId === false) {
         $data = new CText(translateFN('Utente non trovato') . '(1)');
     } else {
         $userToDeleteObj = MultiPort::findUser($userId);
         if($userToDeleteObj instanceof ADALoggableUser) {
             $formData = array(
-              'id_user' => $userId  
+              'id_user' => $userId
             );
-            $data = new UserRemovalForm();
+            $data = new UserRemovalForm($restore);
             $data->fillWithArrayData($formData);
         } else {
             $data = new CText(translateFN('Utente non trovato') . '(2)');
@@ -72,8 +76,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-$label = translateFN('Cancellazione utente');
-$help = translateFN('Da qui il provider admin può disabilitare un utente esistente');
+$label = ucfirst(strtolower(translateFN($prefix.'abilitazione utente')));
+$help = translateFN('Da qui il provider admin può '.$prefix.'abilitare un utente esistente');
 
 $content_dataAr = array(
     'user_name' => $user_name,
