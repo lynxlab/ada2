@@ -17,6 +17,7 @@ namespace Lynxlab\ADA\Module\GDPR;
 class GdprActions {
 
 	const ACCESS_ALL_REQUESTS = 1;
+	const FORCE_CLOSE_REQUEST = 2;
 
 	private static $CANDOARR = null;
 
@@ -27,6 +28,10 @@ class GdprActions {
 				if ($gdprUser instanceof GdprUser) {
 					return ((new GdprAPI())->getGdprUserByID($_SESSION['sess_userObj'])->hasTypes(GdprUserType::MANAGER));
 				} else return false;
+			},
+			self::FORCE_CLOSE_REQUEST => function() {
+				// use the same logic as ACCESS_ALL_REQUESTS action
+				return call_user_func(self::getCanDoArr()[self::ACCESS_ALL_REQUESTS]);
 			}
 		);
 	}
