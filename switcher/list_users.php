@@ -43,7 +43,7 @@ include_once 'include/switcher_functions.inc.php';
  */
 
 $type = DataValidator::validate_not_empty_string($_GET['list']);
-$fieldsAr = array('nome','cognome','username','tipo');
+$fieldsAr = array('nome','cognome','username','tipo','stato');
 switch($type) {
     case 'authors':
         $usersAr = $dh->get_authors_list($fieldsAr);
@@ -61,7 +61,6 @@ switch($type) {
     	 *
     	 * if we're listing students, let's add the stato field as well
     	 */
-    	array_push($fieldsAr, 'stato');
         $usersAr = $dh->get_students_list($fieldsAr);
         $profilelist = translateFN('lista degli studenti');
         break;
@@ -74,15 +73,14 @@ if(is_array($usersAr) && count($usersAr) > 0) {
        translateFN('id'),
        translateFN('nome e cognome'),
        translateFN('username'),
-       translateFN('azioni')
+       translateFN('azioni'),
+       translateFN('Confermato')
     );
     /**
      * @author giorgio 29/mag/2013
      *
      * if we're listing students, let's add the stato field as well
      */
-
-    if ($type!='authors' && $type!='tutors') array_push ($thead_data, translateFN('Confermato'));
 
     $tbody_data = array();
     $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
@@ -147,21 +145,14 @@ if(is_array($usersAr) && count($usersAr) > 0) {
 
         $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actionsArr);
         /**
-         * @author giorgio 29/mag/2013
+         * @author giorgio 11/apr/2018
          *
-         * if we're listing students, let's add the stato field as well
+         * add the stato field for all user types
          */
-        if ($type!='authors' && $type!='tutors')  $isConfirmed = ($user[5] == ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No");
+        $isConfirmed = ($user[5] == ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No");
 
-        $tmpArray = array($imgDetails->getHtml(),$userId, $User_fullname->getHtml(), $span_UserName->getHtml(), $actions);
+        $tmpArray = array($imgDetails->getHtml(),$userId, $User_fullname->getHtml(), $span_UserName->getHtml(), $actions, $isConfirmed);
         unset($imgDetails);
-
-        /**
-         * @author giorgio 29/mag/2013
-         *
-         * if we're listing students, let's add the stato field as well
-         */
-        if ($type!='authors' && $type!='tutors') array_push ($tmpArray, $isConfirmed);
 
         $tbody_data[] = $tmpArray;
     }
