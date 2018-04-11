@@ -74,6 +74,7 @@ try {
 
 	$layout_dataAr['CSS_filename']= array(
 		JQUERY_UI_CSS,
+		JQUERY_DATATABLE_CSS,
 		SEMANTICUI_DATATABLE_CSS
 	);
 	$optionsAr['onload_func'] = 'initDoc(\''.$tableID.'\','.htmlentities(json_encode($dataForJS, JSON_FORCE_OBJECT), ENT_COMPAT, ADA_CHARSET).');';
