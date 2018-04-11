@@ -87,20 +87,22 @@ if(is_array($usersAr) && count($usersAr) > 0) {
     $tbody_data = array();
     $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
     $view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
-    $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:view');
+    $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:delete');
+    $undelete_img = CDOMElement::create('img', 'src:img/revert.png,alt:undelete');
 
     foreach($usersAr as $user) {
         $userId = $user[0];
         if ($user[4]==AMA_TYPE_SUPERTUTOR) {
         	$imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/supertutoricon.png');
         	$imgDetails->setAttribute('title', translateFN('Super Tutor'));
-        } else {
+        } else if($user[5] == ADA_STATUS_REGISTERED) {
 	        $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
 	        $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli dell\'utente'));
 	        $imgDetails->setAttribute('onclick',"toggleDetails($userId,this);");
 	        $imgDetails->setAttribute('style', 'cursor:pointer;');
         }
-        $imgDetails->setAttribute('class', 'imgDetls tooltip');
+        if (isset($imgDetails)) $imgDetails->setAttribute('class', 'imgDetls tooltip');
+        else $imgDetails = CDOMElement::create('span');
 
 
 //        $span_idUser = $userId;
@@ -116,19 +118,34 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         $span_UserName->setAttribute('class', 'UserName');
         $span_UserName->addChild(new CText($user[3]));
 
-        $edit_link = BaseHtmlLib::link("edit_user.php?id_user=$userId&usertype=".$user[4], $edit_img->getHtml());
-        $edit_link->setAttribute('class', 'tooltip');
-        $edit_link->setAttribute('title', translateFN('Modifica dati utente'));
+        $actionsArr = array();
 
-        $view_link = BaseHtmlLib::link("view_user.php?id_user=$userId", $view_img->getHtml());
-        $view_link->setAttribute('class', 'tooltip');
-        $view_link->setAttribute('title', translateFN('Visualizza dati utente'));
+        if ($user[5] == ADA_STATUS_REGISTERED) {
+	        $edit_link = BaseHtmlLib::link("edit_user.php?id_user=$userId&usertype=".$user[4], $edit_img->getHtml());
+	        $edit_link->setAttribute('class', 'tooltip');
+	        $edit_link->setAttribute('title', translateFN('Modifica dati utente'));
+	        $actionsArr[] = $edit_link;
 
-        $delete_link = BaseHtmlLib::link("delete_user.php?id_user=$userId",$delete_img->getHtml());
-        $delete_link->setAttribute('class', 'tooltip');
-        $delete_link->setAttribute('title', translateFN('Cancella utente'));
+	        $view_link = BaseHtmlLib::link("view_user.php?id_user=$userId", $view_img->getHtml());
+	        $view_link->setAttribute('class', 'tooltip');
+	        $view_link->setAttribute('title', translateFN('Visualizza dati utente'));
+	        $actionsArr[] = $view_link;
 
-        $actions = BaseHtmlLib::plainListElement('class:inline_menu',array($edit_link, $view_link, $delete_link));
+	        $delete_link = BaseHtmlLib::link("delete_user.php?id_user=$userId",$delete_img->getHtml());
+	        $delete_link->setAttribute('class', 'tooltip');
+	        $delete_link->setAttribute('title', translateFN('Cancella utente'));
+	        $actionsArr[] = $delete_link;
+        } else {
+        	/*
+        	 * GDPR anonymize link goes here
+        	 */
+        	$undelete_link = BaseHtmlLib::link("delete_user.php?restore=1&id_user=$userId",$undelete_img->getHtml());
+	        $undelete_link->setAttribute('class', 'tooltip');
+	        $undelete_link->setAttribute('title', translateFN('Ripristina utente'));
+	        $actionsArr[] = $undelete_link;
+        }
+
+        $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actionsArr);
         /**
          * @author giorgio 29/mag/2013
          *
@@ -137,6 +154,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         if ($type!='authors' && $type!='tutors')  $isConfirmed = ($user[5] == ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No");
 
         $tmpArray = array($imgDetails->getHtml(),$userId, $User_fullname->getHtml(), $span_UserName->getHtml(), $actions);
+        unset($imgDetails);
 
         /**
          * @author giorgio 29/mag/2013
