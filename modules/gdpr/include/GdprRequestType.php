@@ -58,7 +58,40 @@ class GdprRequestType extends GdprBase {
 	 * @return boolean
 	 */
 	public function hasMandatoryContent() {
-		return in_array($this->getType(), array(self::EDIT));
+		/*
+		 * add '{\"showonselected\":\"requestContent\"} to the extra field in the db
+		 * to show the field with ID requestContent and
+		 * add in the array the type that has the mandatory content, if any
+		 * (e.g. self::EDIT)
+		 */
+		return in_array($this->getType(), array());
+	}
+
+	/**
+	 * Get GdrpAction const linked to this RequestType
+	 *
+	 * @return number|NULL
+	 */
+	public function getLinkedAction() {
+		$actionsArr = self::getLinkedActionsArray();
+		if (array_key_exists($this->getType(), $actionsArr)) {
+			return $actionsArr[$this->getType()];
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the linking between GdprRequestType and GdprActions
+	 *
+	 * @return number[]
+	 */
+	private static function getLinkedActionsArray() {
+		return array(
+			self::ACCESS => GdprActions::REQUEST_TYPE_ACCESS,
+			self::EDIT => GdprActions::REQUEST_TYPE_EDIT,
+			self::ONHOLD => GdprActions::REQUEST_TYPE_ONHOLD,
+			self::DELETE => GdprActions::REQUEST_TYPE_DELETE
+		);
 	}
 
 	/**
