@@ -5,6 +5,10 @@
 	width: auto;
 }
 
+#ADAJAX small {
+	font-weight: 600;
+}
+
 .saveResults.popup {
     background: rgba(22, 101, 173, 0.9);
     padding: 5px 0px 15px 0px;    
