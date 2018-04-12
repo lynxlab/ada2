@@ -5,7 +5,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @version		0.1
  */
-var clickHandlers = {};
 
 function initDoc(tableID, options) {
 
@@ -51,8 +50,8 @@ function initDoc(tableID, options) {
 	if (showall) columns.push({ "data": "actions",
 		"orderable" : false,
 		"searchable": false,
-		"className": "dt-body-center",
-		"width": "8%"
+		"className": "dt-body-right",
+		"width": "10%"
 	});
 	
 	var requestTypeClassNames = [ '', 'access', 'edit', 'onhold', 'delete' ];
@@ -76,59 +75,73 @@ function initDoc(tableID, options) {
 			"columns": columns
 		});
 
-	clickHandlers.closeRequest = function (buttonObj, requestUUID) {
-		if (!buttonObj.hasClass('disabled')) {			
-		    var url = "ajax/forceCloseRequest.php";
-		    var showHidePromise;
-		    var reloadCallback = null;
-		    var clickedIndex = tableObj.cell(buttonObj.parents('td').first()).index();
-		    return $j.ajax({
-		    	type: "POST",
-		    	url: url,
-		    	data: { requestUUID: requestUUID, debug: debug ? 1 :0 },
-		    	beforeSend: function() {
-		    		buttonObj.addClass('disabled');
-		    	}
-		    })
-		    .done(function(response) {
-		    	if (debug) console.log('done callback got ', response);
-		    	reloadCallback = function() {
-		    		tableObj.row(clickedIndex.row).nodes().to$().addClass('yellow-highlight');
-		    		setTimeout(function() {
-		    			tableObj.row(clickedIndex.row).nodes().to$().removeClass('yellow-highlight');
-		    		},5000);
-		    	};
-		    })
-		    .fail(function(response) {
-		    	if (debug) console.log('fail callback ', response);
-		    	if ('responseJSON' in response) {
+	$j('table#list_requests').on('click', 'button[data-requestuuid]', function() {
+		return handleRequest(tableObj, $j(this), $j.extend({}, $j(this).data(), {debug: debug ? 1 :0}));
+	});
+}
 
-		    		if (debug) {
-						console.groupCollapsed(url+' fail');
-						if ('errorMessage' in response.responseJSON) {
-							console.error('message: %s', response.responseJSON.errorMessage);
-						}
-						if ('errorTrace' in response.responseJSON) {
-							console.error('stack trace %s', response.responseJSON.errorTrace);
-						}
-						console.groupEnd();
-		    		}
+function handleRequest(tableObj, buttonObj, objData) {
+	if (!buttonObj.hasClass('disabled')) {
+		var isclose = objData.isclose || false,
+			debug = objData.debug || false,
+	    	url = "ajax/handleRequest.php",
+	    	showHidePromise, 
+	    	reloadCallback = null,
+	    	clickedIndex = tableObj.cell(buttonObj.parents('td').first()).index(),
+	    	reloadData = true;
+	    return $j.ajax({
+	    	type: "POST",
+	    	url: url,
+	    	data: objData,
+	    	beforeSend: function() {
+	    		buttonObj.addClass('disabled');
+	    	}
+	    })
+	    .done(function(response) {
+	    	if (debug) console.log('done callback got ', response);
+	    	if ('redirecturl' in response && response.redirecturl.trim().length>0) {
+	    		reloadData = false;
+	    		// if response has a redirect, obey at once!
+	    		document.location.href = response.redirecturl.trim();
+	    	}
+	    	reloadCallback = function() {
+	    		tableObj.row(clickedIndex.row).nodes().to$().addClass('yellow-highlight');
+	    		setTimeout(function() {
+	    			tableObj.row(clickedIndex.row).nodes().to$().removeClass('yellow-highlight');
+	    		},5000);
+	    	};
+	    })
+	    .fail(function(response) {
+	    	if (debug) console.log('fail callback ', response);
+	    	if ('responseJSON' in response) {
 
-		    		showHidePromise = showHideDiv(response.responseJSON.title, response.responseJSON.message, false);
+	    		if (debug) {
+					console.groupCollapsed(url+' fail');
+					if ('errorMessage' in response.responseJSON) {
+						console.error('message: %s', response.responseJSON.errorMessage);
+					}
+					if ('errorTrace' in response.responseJSON) {
+						console.error('stack trace %s', response.responseJSON.errorTrace);
+					}
+					console.groupEnd();
+	    		}
 
-		    	} else {
-		    		var errorText = response.statusText;
-		    		if ('responseText' in response && response.responseText.length>0) errorText += '<br/>'+response.responseText;
-		    		showHidePromise = showHideDiv('Error ' + response.status, errorText, false);
-		    	}	
-		    })
-		    .always(function(response) {
-		    	if (debug) console.log('always callback');
-		    	$j.when(showHidePromise).then(function(){
-		    		// reload data, will enable the disabled button
-		    		tableObj.ajax.reload(reloadCallback, false);
-		    	});
-		    });
-		}
-	};
+	    		showHidePromise = showHideDiv(response.responseJSON.title, response.responseJSON.message, false);
+
+	    	} else {
+	    		var errorText = response.statusText;
+	    		if ('responseText' in response && response.responseText.length>0) errorText += '<br/>'+response.responseText;
+	    		showHidePromise = showHideDiv('Error ' + response.status, errorText, false);
+	    	}	
+	    })
+	    .always(function(response) {
+	    	if (debug) console.log('always callback');
+	    	if (reloadData) {
+	    		$j.when(showHidePromise).then(function(){
+	    			// reload data, will enable the disabled button
+	    			tableObj.ajax.reload(reloadCallback, false);
+	    		});
+	    	}
+	    });
+	}
 }
