@@ -10,8 +10,9 @@
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
-use Ramsey\Uuid\Uuid;
 use Lynxlab\ADA\Module\GDPR\GdprRequest;
+use Lynxlab\ADA\Module\GDPR\GdprRequestType;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Base config file
@@ -93,20 +94,23 @@ try {
 				$retArr['content'] = $el->getContent();
 				$actions = array();
 
-				if ($showAll) {
-					if (is_null($el->getClosedTs()) && GdprActions::canDo(GdprActions::FORCE_CLOSE_REQUEST)) {
-						$closeBtn = CDOMElement::create('button','type:button,class:ui tiny button');
-						$closeBtn->setAttribute('onclick','clickHandlers.closeRequest($j(this),\''.$el->getUuid().'\');');
-						$closeBtn->addChild(new CText(translateFN('chiudi')));
-						$actions[] = $closeBtn;
+				if ($showAll && is_null($el->getClosedTs()) && $el->getType() instanceof GdprRequestType) {
+					// actions are only available when showAll is true and request is not closed
+					if (GdprActions::canDo($el->getType()->getLinkedAction(), $el)) {
+						$actions[] = $el->getActionButton();
+					}
+					if (GdprActions::canDo(GdprActions::FORCE_CLOSE_REQUEST, $el)) {
+						$actions[] = $el->getActionButton(true);
 					}
 				}
 
-				$retArr['actions'] = array_reduce($actions, function($carry, $item) {
-					if (strlen($carry) <= 0) $carry = '';
-					$carry .= ($item instanceof \CBase ? $item->getHtml() : '');
-					return $carry;
-				});
+				if ($showAll || count($actions)>0) {
+					$retArr['actions'] = array_reduce($actions, function($carry, $item) {
+						if (strlen($carry) <= 0) $carry = '';
+						$carry .= ($item instanceof \CBase ? $item->getHtml() : '');
+						return $carry;
+					});
+				}
 
 				return $retArr;
 			}, $requests);
