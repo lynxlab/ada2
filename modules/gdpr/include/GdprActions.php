@@ -16,22 +16,69 @@ namespace Lynxlab\ADA\Module\GDPR;
  */
 class GdprActions {
 
+	/**
+	 * global actions, not performed on the single request
+	 *
+	 * @var integer
+	 */
 	const ACCESS_ALL_REQUESTS = 1;
 	const FORCE_CLOSE_REQUEST = 2;
 
+	/**
+	 * request actions, performed on the request depending on its type
+	 *
+	 * @var integer
+	 */
+	const REQUEST_TYPE_ACCESS = 3;
+	const REQUEST_TYPE_EDIT = 4;
+	const REQUEST_TYPE_ONHOLD = 5;
+	const REQUEST_TYPE_DELETE = 6;
+
 	private static $CANDOARR = null;
 
+	/**
+	 * gets the canDo array
+	 *
+	 * @return NULL[]
+	 */
 	private static function getCanDoArr() {
 		return array(
 			self::ACCESS_ALL_REQUESTS => function () {
 				$gdprUser = (new GdprAPI())->getGdprUserByID($_SESSION['sess_userObj']);
 				if ($gdprUser instanceof GdprUser) {
-					return ((new GdprAPI())->getGdprUserByID($_SESSION['sess_userObj'])->hasTypes(GdprUserType::MANAGER));
+					return $gdprUser->hasTypes(GdprUserType::MANAGER);
 				} else return false;
 			},
 			self::FORCE_CLOSE_REQUEST => function() {
 				// use the same logic as ACCESS_ALL_REQUESTS action
 				return call_user_func(self::getCanDoArr()[self::ACCESS_ALL_REQUESTS]);
+			},
+			self::REQUEST_TYPE_ACCESS => function($object = null, $userType = null) {
+				// first check if the session user is a GdprUser as well
+				$gdprUser = (new GdprAPI())->getGdprUserByID($_SESSION['sess_userObj']);
+				if ($gdprUser instanceof GdprUser) {
+					// if it is, use module gdpr logic
+					return $gdprUser->hasTypes(GdprUserType::MANAGER);
+				} else {
+					// only GdprRequests object are supported
+					if ($object instanceof GdprRequest) {
+						return $object->getGeneratedBy() == $_SESSION['sess_userObj']->getId();
+					}
+				}
+				// deny the action by default
+				return false;
+			},
+			self::REQUEST_TYPE_EDIT => function($object = null, $userType = null) {
+				// use the same logic as REQUEST_TYPE_ACCESS action
+				return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], array($object, $userType));
+			},
+			self::REQUEST_TYPE_ONHOLD => function($object = null, $userType = null) {
+				// use the same logic as REQUEST_TYPE_ACCESS action
+				return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], array($object, $userType));
+			},
+			self::REQUEST_TYPE_DELETE => function($object = null, $userType = null) {
+				// use the same logic as REQUEST_TYPE_ACCESS action
+				return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], array($object, $userType));
 			}
 		);
 	}
@@ -47,27 +94,28 @@ class GdprActions {
 	}
 
 	/**
-	 * Checks if a user has the rights to to an action. If the action is an
-	 * array the method will return true if the userType can do at least one
+	 * Checks if a user has the rights to to an action on the optional passed object.
+	 * If the action is an array the method will return true if the userType can do at least one
 	 * of the actions in the group
 	 *
 	 * @param int|array $actionID
+	 * @param unknown $object the object you are checking if the user has permission to do the action
 	 * @param int $userType, if null it will be set to the session user type
 	 * @return boolean
 	 */
-	public static function canDo ($actionID, $userType = null) {
+	public static function canDo ($actionID, $object = null, $userType = null) {
 		if (is_null(self::$CANDOARR)) self::$CANDOARR = self::getCanDoArr();
 		if (is_null($userType) && array_key_exists('sess_userObj', $_SESSION)) $userType = $_SESSION['sess_userObj']->getType();
 		if (is_null($userType) || intval($userType)<=0) return false;
 		if (is_array($actionID)) {
 			foreach ($actionID as $anAction) {
-				if (self::canDo($anAction, $userType)) return true;
+				if (self::canDo($anAction, $object, $userType)) return true;
 			}
 			return false;
 		} else {
 			if (array_key_exists($actionID, self::$CANDOARR)) {
 				if (is_callable(self::$CANDOARR[$actionID])) {
-					return call_user_func(self::$CANDOARR[$actionID], $userType);
+					return call_user_func_array(self::$CANDOARR[$actionID], array($object, $userType));
 				} else {
 					return in_array(intval($userType), self::$CANDOARR[$actionID]);
 				}
