@@ -83,14 +83,16 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	/**
 	 * closes the request with the passed uuid, and set closed by as the optional userID
 	 *
-	 * @param string $uuid
+	 * @param string|GdprRequest $request
 	 * @param integer $closedBy
 	 * @throws GdprException
 	 */
-	public function closeRequest($uuid, $closedBy=null) {
+	public function closeRequest($request, $closedBy=null) {
 		if (is_null($closedBy)) $closedBy = $_SESSION['sess_userObj']->getId();
-		$tmp = $tmp = $this->findBy('GdprRequest',array('uuid'=>$uuid));
-		$request = reset($tmp);
+		if (!($request instanceof GdprRequest)) {
+			$tmp = $tmp = $this->findBy('GdprRequest',array('uuid'=>$request));
+			$request = reset($tmp);
+		}
 		if ($request instanceof GdprRequest) {
 			$result = $this->executeCriticalPrepared($this->sqlUpdate(GdprRequest::table, array('closedTs', 'closedBy'), 'uuid'),
 					array($this->date_to_ts('now'), $closedBy, $request->getUuid()));
