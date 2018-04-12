@@ -43,10 +43,14 @@ try {
 	$postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 	$result = $GLOBALS['dh']->saveRequest($postParams);
 	$data->saveResult = $result;
-	$data->saveResult = array('requestUUID' => $data->saveResult->getUuid());
+	$data->saveResult = array('requestUUID' => $result->getUuid());
 	$data->title = '<i class="info icon"></i>'.translateFN('Richiesta salvata');
 	$data->status = 'OK';
 	$data->message = translateFN('La richiesta è stata salvata correttamente');
+	if (property_exists($result, 'redirecturl')) {
+		$data->saveResult['redirecturl'] = $result->redirecturl;
+		$data->message .= '<br/><small>'.translateFN('Aspetta che si carichi la pagina per evaderla').'</small>';
+	}
 } catch (\Exception $e) {
 	header(' ', true, 400);
 	$data->title .= ' ('.$e->getCode().')';
