@@ -8,12 +8,12 @@
 
 function initDoc(formName) {
 
-	var debugForm = false;	
+	var debugForm = false;
 
 	$j('form[name="'+formName+'"]')
 		.on('change', 'select#requestType', function() {
 			var aForm = $j($j(this).parents('form').first());
-			
+
 			// hide all shownonselected ids
 			$j('[data-showonselected]', this).each(function() {
 				var target = $j($j('#'+$j(this).data('showonselected'), aForm).parents('li.form').first());
@@ -46,6 +46,16 @@ function initDoc(formName) {
 		    	if (debugForm) console.log('done callback got ', response);
 		    	 showHidePromise = showHideDiv(response.title, response.message, true);
 		    	 $j.when(showHidePromise).then(function(){
+		    		 if ('saveResult' in response && 'redirecturl' in response.saveResult) {
+	    		    	if (response.saveResult.redirecturl.trim().length>0) {
+	    		    		if (debugForm) {
+	    		    			console.log("Redirect to %s", response.saveResult.redirecturl.trim());
+	    		    		}
+	    		    		// if response has a redirect, obey at once!
+	    		    		document.location.replace(response.saveResult.redirecturl.trim());
+	    		    	}
+		    		 }
+
 		    		 if ('saveResult' in response && 'requestUUID' in response.saveResult) {
 		    			 aForm.parents('div.fform').first().transition({
 		    				 animation: 'fade',
@@ -56,7 +66,7 @@ function initDoc(formName) {
 		    				 }
 		    			 });
 		    		 }
-		    		 
+
 		    	 });
 		    })
 		    .fail(function(response) {
@@ -80,7 +90,7 @@ function initDoc(formName) {
 		    		var errorText = response.statusText;
 		    		if ('responseText' in response && response.responseText.length>0) errorText += '<br/>'+response.responseText;
 		    		showHidePromise = showHideDiv('Error ' + response.status, errorText, false);
-		    	}	
+		    	}
 		    })
 		    .always(function(response) {
 		    	if (debugForm) console.log('always callback');
