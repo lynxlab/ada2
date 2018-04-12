@@ -50,7 +50,7 @@ try {
 	if (intval($_SESSION['sess_userObj']->getType()) === AMA_TYPE_VISITOR && $showUUID !== true) {
 		throw new GdprException(translateFN("L'utente non registrato può solo vedere il suo numero di pratica"));
 	} else if ($showAll === true && !GdprActions::canDo(GdprActions::ACCESS_ALL_REQUESTS)) {
-		throw new GdprException(translateFN("Solo il coordinatore può vedere tutte le richieste"));
+		throw new GdprException(translateFN("Solo un utente abilitato può vedere tutte le richieste"));
 	}
 
 	if ($showUUID && !UUid::isValid(trim($_REQUEST['uuid']))) {
