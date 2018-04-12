@@ -77,7 +77,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			throw new GdprException($result->getMessage(), $result->getCode());
 		}
 
-		return $request;
+		return $request->afterSave();
 	}
 
 	/**
