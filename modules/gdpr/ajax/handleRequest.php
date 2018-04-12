@@ -10,6 +10,7 @@
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
+use Lynxlab\ADA\Module\GDPR\GdprRequest;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -43,16 +44,28 @@ $data->message = translateFN('Errore sconosciuto');
 
 try {
 	$postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-	if (!array_key_exists('requestUUID', $postParams)) {
+	$isClose = array_key_exists('isclose', $postParams) && intval($postParams['isclose'])===1;
+
+	if (!array_key_exists('requestuuid', $postParams)) {
 		throw new GdprException(translateFN("L'ID pratica non può essere vouto"));
-	} else if (array_key_exists('requestUUID', $postParams) && !Uuid::isValid(trim($postParams['requestUUID']))) {
+	} else if (array_key_exists('requestuuid', $postParams) && !Uuid::isValid(trim($postParams['requestuuid']))) {
 		throw new GdprException(translateFN("L'ID pratica non è valido"));
-	} else if (!GdprActions::canDo(GdprActions::FORCE_CLOSE_REQUEST)) {
+	}
+	// so far so good, load the request
+	$tmp = $GLOBALS['dh']->findBy('GdprRequest',array('uuid'=>trim($postParams['requestuuid'])));
+	$request = reset($tmp);
+	if (!($request instanceof GdprRequest)) {
+		throw new GdprException(translateFN("ID pratica non trovato"));
+	} else if (($isClose && !GdprActions::canDo(GdprActions::FORCE_CLOSE_REQUEST, $request)) ||
+			   (!is_null($request->getType()) && !GdprActions::canDo($request->getType()->getLinkedAction(), $request))) {
 		throw new GdprException(translateFN("Utente non abilitato all'azione richiesta"));
 	} else {
-		$GLOBALS['dh']->closeRequest(trim($postParams['requestUUID']));
-		$data = new stdClass();
-		$data->saveResult = true;
+		if ($isClose) {
+			$data = new stdClass();
+			$request->close();
+		} else {
+			$data = $request->handle();
+		}
 		$data->status = 'OK';
 	}
 } catch (\Exception $e) {
