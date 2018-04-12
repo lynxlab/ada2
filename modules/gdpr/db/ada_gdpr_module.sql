@@ -123,8 +123,8 @@ ALTER TABLE `module_gdpr_userTypes`
 INSERT INTO `module_gdpr_requestTypes` (`id`, `type`, `description`, `extra`) VALUES
 (1, 4, 'Cancellazione', NULL),
 (2, 1, 'Accesso', NULL),
-(3, 2, 'Modifca', '{\"showonselected\":\"requestContent\"}'),
-(4, 3, 'Blocca', NULL);
+(3, 2, 'Modifica', NULL),
+(4, 3, 'Limita', NULL);
 
 --
 -- Dump dei dati per la tabella `module_gdpr_userTypes`
