@@ -25,6 +25,9 @@ class GdprRequest extends GdprBase {
 	 */
 	const table =  AMAGdprDataHandler::PREFIX . 'requests';
 
+	const actionButtonLabel = 'evadi';
+	const closeButtonLabel = 'chiudi';
+
 	protected $uuid;
 	protected $generatedBy;
 	protected $generatedTs;
@@ -62,6 +65,68 @@ class GdprRequest extends GdprBase {
 			unset($data['type']);
 		}
 		return parent::fromArray($data);
+	}
+
+	/**
+	 * Gets the action button object
+	 *
+	 * @param boolean $isClose
+	 * @return NULL|\CBaseElement
+	 */
+	public function getActionButton($isClose = false) {
+		$button = \CDOMElement::create('button','type:button,class:ui tiny button');
+		$button->addChild(new \CText(translateFN($isClose ? self::closeButtonLabel : self::actionButtonLabel)));
+		$button->setAttribute('data-requestuuid', $this->getUuid());
+		$button->setAttribute('data-isclose', $isClose ? 1 :0);
+		if ($isClose) {
+			$button->setAttribute('class', $button->getAttribute('class').' red');
+		}
+		return $button;
+	}
+
+	/**
+	 * Close a request
+	 *
+	 * @param integer $closedBy
+	 * @return \Lynxlab\ADA\Module\GDPR\GdprRequest
+	 */
+	public function close($closedBy = null) {
+		$GLOBALS['dh']->closeRequest($this, $closedBy);
+		return $this;
+	}
+
+	/**
+	 * Performs the action on the request
+	 *
+	 * @throws GdprException
+	 */
+	public function handle() {
+		if ($this->getType()->getType() == GdprRequestType::EDIT) {
+			$this->redirecturl = $_SESSION['sess_userObj']->getEditProfilePage();
+			if (GdprActions::canDo(GdprActions::ACCESS_ALL_REQUESTS)) {
+				$this->redirecturl = str_replace('edit_switcher.php', 'edit_user.php', $this->redirecturl).'?id_user='.$this->getGeneratedBy();
+				$this->close();
+			}
+
+		} else {
+			throw new GdprException('AZIONE NON IMPLEMENTATA');
+		}
+		return $this;
+	}
+
+	/**
+	 * Method that performs additional actions on the request after it's been saved
+	 * usually called by the datahandler save methods just before returning
+	 *
+	 * @return \Lynxlab\ADA\Module\GDPR\GdprRequest
+	 */
+	public function afterSave() {
+		if (GdprActions::canDo($this->getType()->getLinkedAction(), $this)) {
+			if ($this->getType()->getType() == GdprRequestType::EDIT) {
+				return $this->handle()->close();
+			}
+		}
+		return $this;
 	}
 
 	/**
