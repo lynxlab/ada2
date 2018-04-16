@@ -1,0 +1,7 @@
+@CHARSET "UTF-8";
+@media print {
+	div#help,
+	span.jHeader {
+		display: none;
+	}
+}
