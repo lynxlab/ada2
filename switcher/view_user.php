@@ -25,12 +25,15 @@ $variableToClearAR = array('node', 'layout', 'course', 'course_instance');
 /**
  * Users (types) allowed to access this module.
  */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_SWITCHER);
 
 /**
  * Performs basic controls before entering this module
  */
 $neededObjAr = array(
+	AMA_TYPE_STUDENT => array('layout'),
+	AMA_TYPE_TUTOR => array('layout'),
+	AMA_TYPE_AUTHOR => array('layout'),
     AMA_TYPE_SWITCHER => array('layout')
 );
 
@@ -43,7 +46,15 @@ include_once ROOT_DIR . '/admin/include/AdminUtils.inc.php';
  * YOUR CODE HERE
  */
 require_once ROOT_DIR . '/include/Forms/UserProfileForm.inc.php';
-$userId = DataValidator::is_uinteger($_GET['id_user']);
+$userId = false;
+if ($_SESSION['sess_userObj']->getType() == AMA_TYPE_SWITCHER) {
+	$userId = DataValidator::is_uinteger($_GET['id_user']);
+}
+
+if ($userId === false && isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj'] instanceof ADALoggableUser) {
+	$userId = $_SESSION['sess_userObj']->getId();
+}
+
 if($userId === false) {
     $data = new CText('Utente non trovato');
 }
@@ -74,7 +85,7 @@ else {
 
         $data = BaseHtmlLib::labeledListElement('class:view_info', $user_dataAr);
     }
-}    
+}
 
 $label = translateFN('Profilo utente');
 $help = translateFN('Da qui il provider admin può visualizzare il profilo di un utente esistente');
@@ -90,5 +101,11 @@ $content_dataAr = array(
     'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
 );
+$options = null;
+if (isset($_GET['pdfExport']) && intval($_GET['pdfExport'])===1) {
+	$options['outputfile'] = $viewedUserObj->getFullName().'-'.date("d m Y");
+	$options['forcedownload'] = true;
+}
 
-ARE::render($layout_dataAr, $content_dataAr);
+ARE::render($layout_dataAr, $content_dataAr, NULL, $options);
+
