@@ -31,7 +31,7 @@ hr
 }
 
 * {
-	font-family: sans-serif;
+	font-family: sans-serif !important;
 }
 
 .content_small {
@@ -40,4 +40,9 @@ hr
 
 #container {
 	padding-top:0px;
+}
+
+div#footer {
+	position: absolute;
+	bottom:0;
 }
