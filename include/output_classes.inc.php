@@ -255,11 +255,12 @@ class ARE
 
         	$orientation   = isset($options['orientation'])       ? $options['orientation'] : '';
         	$outputfile    = isset($options['outputfile'])        ? $options['outputfile'] : '';
+        	$forcedownload = isset($options['forcedownload'])        ? $options['forcedownload'] : '';
 
         	// must be called $html_renderer for below code, but it's not :)
         	$html_renderer = new PDF($layout_template, $layout_CSS, $user_name, $course_title,
         			$node_title, $meta_keywords, $author, $meta_refresh_time,
-        			$meta_refresh_url,$onload_func, $layoutObj, $outputfile, $orientation);
+        			$meta_refresh_url,$onload_func, $layoutObj, $outputfile, $orientation, $forcedownload);
         } else {
         	$html_renderer = new HTML($layout_template, $layout_CSS, $user_name, $course_title,
         			$node_title, $meta_keywords, $author, $meta_refresh_time,
@@ -1078,7 +1079,7 @@ class  Generic_Html extends Output
       	$dompdf->loadHtml($data);
       	$dompdf->render();
 
-      	$dompdf->stream($this->outputfile.'.pdf', array('Attachment'=>0));
+      	$dompdf->stream($this->outputfile.'.pdf', array('Attachment'=>$this->forcedownload));
       	die();
         break;
     }
@@ -1335,12 +1336,14 @@ EOT;
 class PDF extends HTML {
 	var $outputfile;
 	var $orientation;
+	var $forcedownload;
 
 	public function __construct($template,$CSS_filename,$user_name,$course_title,$node_title="",$meta_keywords="",$author="",$meta_refresh_time="",
-			    $meta_refresh_url="",$onload_func="",$layoutObj=NULL,$outputfile="ada",$orientation="landscape")
+			    $meta_refresh_url="",$onload_func="",$layoutObj=NULL,$outputfile="ada",$orientation="landscape", $forcedownload = false)
 	{
 		$this->outputfile = $outputfile;
 		$this->orientation = $orientation;
+		$this->forcedownload = $forcedownload;
 
 		parent::__construct($template,$CSS_filename,$user_name,$course_title,$node_title,$meta_keywords,$author,$meta_refresh_time,$meta_refresh_url,$onload_func,$layoutObj);
 	}
