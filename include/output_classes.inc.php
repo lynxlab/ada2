@@ -875,7 +875,7 @@ class  Generic_Html extends Output
         if (file_exists($stylesheet)){
           // this is for standard browsers
           $stylesheet = str_replace($root_dir,$http_root_dir,$stylesheet);
-          $html_css_code .= "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\">\n";
+          $html_css_code .= "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen,print\">\n";
         }
 
 
@@ -902,7 +902,7 @@ class  Generic_Html extends Output
 
 	        if (file_exists($ie_stylesheet)){
 	            $ie_stylesheet = str_replace($root_dir,$http_root_dir,$ie_stylesheet);
-	          	$html_css_code .= $cond_com_begin."<link rel=\"stylesheet\" href=\"$ie_stylesheet\" type=\"text/css\" media=\"screen\">\n".$cond_com_end;
+	          	$html_css_code .= $cond_com_begin."<link rel=\"stylesheet\" href=\"$ie_stylesheet\" type=\"text/css\" media=\"screen,print\">\n".$cond_com_end;
 	        }
         }
         /* end mod	*/
