@@ -103,12 +103,18 @@ class GdprRequest extends GdprBase {
 	public function handle() {
 		if ($this->getType()->getType() == GdprRequestType::EDIT) {
 			$this->redirecturl = $_SESSION['sess_userObj']->getEditProfilePage();
+			$this->redirectlabel = translateFN('Modifica i tuoi dati');
 			if (GdprActions::canDo(GdprActions::ACCESS_ALL_REQUESTS)) {
 				$this->redirecturl = str_replace('edit_switcher.php', 'edit_user.php', $this->redirecturl).'?id_user='.$this->getGeneratedBy();
 				$this->close();
 			}
-
-		} else {
+		} else if ($this->getType()->getType() == GdprRequestType::ACCESS) {
+			$this->redirectlabel = translateFN('Scarica PDF con i tuoi dati');
+			$this->redirecturl = HTTP_ROOT_DIR . '/switcher/view_user.php?pdfExport=1&id_user='.$this->getGeneratedBy();
+			$this->reloaddata = true;
+			$this->close();
+		}
+		else {
 			throw new GdprException('AZIONE NON IMPLEMENTATA');
 		}
 		return $this;
@@ -123,6 +129,8 @@ class GdprRequest extends GdprBase {
 	public function afterSave() {
 		if (GdprActions::canDo($this->getType()->getLinkedAction(), $this)) {
 			if ($this->getType()->getType() == GdprRequestType::EDIT) {
+				return $this->handle()->close();
+			} else if ($this->getType()->getType() == GdprRequestType::ACCESS) {
 				return $this->handle()->close();
 			}
 		}
