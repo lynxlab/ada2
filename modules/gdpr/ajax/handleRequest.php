@@ -62,6 +62,7 @@ try {
 	} else {
 		if ($isClose) {
 			$data = new stdClass();
+			$data->reloaddata = true;
 			$request->close();
 		} else {
 			$data = $request->handle();
