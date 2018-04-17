@@ -99,8 +99,8 @@ function handleRequest(tableObj, buttonObj, objData) {
 	    })
 	    .done(function(response) {
 	    	if (debug) console.log('done callback got ', response);
+	    	reloadData = 'reloaddata' in response && response.reloaddata;
 	    	if ('redirecturl' in response && response.redirecturl.trim().length>0) {
-	    		reloadData = false;
 	    		// if response has a redirect, obey at once!
 	    		document.location.href = response.redirecturl.trim();
 	    	}
