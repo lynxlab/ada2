@@ -46,27 +46,34 @@ function initDoc(formName) {
 		    	if (debugForm) console.log('done callback got ', response);
 		    	 showHidePromise = showHideDiv(response.title, response.message, true);
 		    	 $j.when(showHidePromise).then(function(){
-		    		 if ('saveResult' in response && 'redirecturl' in response.saveResult) {
-	    		    	if (response.saveResult.redirecturl.trim().length>0) {
-	    		    		if (debugForm) {
-	    		    			console.log("Redirect to %s", response.saveResult.redirecturl.trim());
-	    		    		}
-	    		    		// if response has a redirect, obey at once!
-	    		    		document.location.replace(response.saveResult.redirecturl.trim());
-	    		    	}
-		    		 }
-
-		    		 if ('saveResult' in response && 'requestUUID' in response.saveResult) {
-		    			 aForm.parents('div.fform').first().transition({
-		    				 animation: 'fade',
-		    				 complete: function() {
-		    					 aForm.parents('div.fform').first().remove();
-		    					 $j('#requestUUID','.ui.success.message').html(response.saveResult.requestUUID);
-		    					 $j('.ui.success.message').transition('fade')
+		    		 if ('saveResult' in response) {
+		    			 if ('redirecturl' in response.saveResult && response.saveResult.redirecturl.trim().length>0) {
+		    				 if (debugForm) {
+		    					 console.log("Redirect to %s", response.saveResult.redirecturl.trim());
 		    				 }
-		    			 });
+		    				 $j('#redirectBtn').show().click(function() {
+		    					 if (!$j(this).hasClass('disabled')) {
+		    						 $j(this).addClass('disabled')
+		    						 // if response has a redirect, do it!
+		    						 document.location.replace(response.saveResult.redirecturl.trim());
+		    					 }
+		    					 
+		    				 });
+		    			 }
+		    			 if ('redirectlabel' in response.saveResult && response.saveResult.redirectlabel.trim().length>0) {
+		    				 $j('#redirectBtn').show().children('#redirectLbl').first().html(response.saveResult.redirectlabel.trim());
+		    			 }
+		    			 if ('requestUUID' in response.saveResult) {
+		    				 aForm.parents('div.fform').first().transition({
+		    					 animation: 'fade',
+		    					 complete: function() {
+		    						 aForm.parents('div.fform').first().remove();
+		    						 $j('#requestUUID','.ui.success.message').html(response.saveResult.requestUUID);
+		    						 $j('.ui.success.message').transition('fade')
+		    					 }
+		    				 });
+		    			 }
 		    		 }
-
 		    	 });
 		    })
 		    .fail(function(response) {
