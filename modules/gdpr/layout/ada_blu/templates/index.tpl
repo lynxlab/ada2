@@ -72,6 +72,10 @@
 						      <i18n>Il tuo numero di pratica è</i18n>: <span id="requestUUID" class="requestUUID"></span>
 						    </div>
 						    <p><i18n>Scrivi questo numero in un posto sicuro! Dovrà essere usato per ogni comunicazione relativa alla richiesta</i18n></p>
+						    <p class="newRequestButtons">
+						    	<button type="button" id="redirectBtn" class="ui orange button" style="display:none;"><span id="redirectLbl"><i18n>clicca qui per evadere la pratica</i18n></span></button>
+						    	<a href="list.php" id="requestsListBtn" class="ui purple button"><i18n>Vai all'elenco richieste</i18n></a>
+						    </p>
 						  </div>
 						</div>
                     </div>
