@@ -94,7 +94,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			$request = reset($tmp);
 		}
 		if ($request instanceof GdprRequest) {
-			$result = $this->executeCriticalPrepared($this->sqlUpdate(GdprRequest::table, array('closedTs', 'closedBy'), 'uuid'),
+			$result = $this->queryPrepared($this->sqlUpdate(GdprRequest::table, array('closedTs', 'closedBy'), 'uuid'),
 					array($this->date_to_ts('now'), $closedBy, $request->getUuid()));
 			if (\AMA_DB::isError($result)) {
 				throw new GdprException($result->getMessage(), $result->getCode());
