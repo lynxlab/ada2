@@ -49,7 +49,9 @@ try {
 	$data->message = translateFN('La richiesta è stata salvata correttamente');
 	if (property_exists($result, 'redirecturl')) {
 		$data->saveResult['redirecturl'] = $result->redirecturl;
-		$data->message .= '<br/><small>'.translateFN('Aspetta che si carichi la pagina per evaderla').'</small>';
+	}
+	if (property_exists($result, 'redirectlabel')) {
+		$data->saveResult['redirectlabel'] = $result->redirectlabel;
 	}
 } catch (\Exception $e) {
 	header(' ', true, 400);
