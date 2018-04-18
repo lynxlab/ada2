@@ -51,3 +51,8 @@ function showHideDiv ( title, message, isOK ) {
 	return thePromise;
 }
 
+function semanticConfirm(selector, callbacks) {
+	$j(selector)
+	  .modal('setting', $j.extend({}, {closable: false}, callbacks || {}))
+	  .modal('show');
+}
