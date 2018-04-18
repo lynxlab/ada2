@@ -68,6 +68,15 @@ class GdprRequestType extends GdprBase {
 	}
 
 	/**
+	 * returns true if the request type must show a confirm modal before the action is handled
+	 *
+	 * @return boolean
+	 */
+	public function confirmBeforeHandle() {
+		return (count($this->getExtra())>0 && array_key_exists('confirmhandle', $this->getExtra()) && $this->getExtra()['confirmhandle'] === true);
+	}
+
+	/**
 	 * Get GdrpAction const linked to this RequestType
 	 *
 	 * @return number|NULL
