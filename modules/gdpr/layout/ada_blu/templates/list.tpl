@@ -81,5 +81,33 @@
         </div>
         <!-- / piede -->
 
+	  	<div id="confirmModal" class="ui basic modal">
+	    	<div class="header">
+	      		<i18n>Conferma evasione richiesta</i18n>
+	    	</div>
+	    	<div class="content">
+	      		<div class="left">
+	        		<i class="question icon"></i>
+	      		</div>
+	      		<div class="right">
+	        		<p class="confirmText" data-requesttype="3"><i18n>Questo impedirà accessi futuri all'utente che ha fatto la richiesta.</i18n></p>
+	        		<p class="confirmText" data-requesttype="4"><i18n>Questo renderà <b>illegibili</b> e <b>irrecuperabili</b> i dati dell'utente.</i18n></p>
+	        		<p class="confirmQuestion"><i18n>Confermi l'operazione?</i18n></p>
+	      		</div>
+	    	</div>
+	    	<div class="actions">
+	      		<div class="two fluid ui buttons">
+	        		<div class="ui negative labeled icon button">
+	          			<i class="remove icon"></i>
+	          			<i18n>No</i18n>
+	        		</div>
+	        		<div class="ui positive right labeled icon button">
+	          			<i18n>Sì</i18n>
+	          			<i class="checkmark icon"></i>
+	        		</div>
+	      		</div>
+	    	</div>
+	  	</div>
+  
     </body>
 </html>
