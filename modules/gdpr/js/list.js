@@ -16,7 +16,7 @@ function initDoc(tableID, options) {
 			"width" : "20%",
 			"className" : "uuid",
 		    "createdCell": function (td, cellData, rowData, row, col) {
-		        if (cellData.trim().length >0 && 'generatedBy' in rowData) {
+		        if (showall && cellData.trim().length >0 && 'generatedBy' in rowData) {
 		          $j(td).attr('title', rowData.generatedBy);
 		        }
 		      }
@@ -41,21 +41,27 @@ function initDoc(tableID, options) {
 		    "render": function ( data, type, row, meta ) {
 		    	return (null === data) ? '' : data ;
 		    }
-		},
-		{ "data": "content",
-			"className" : "nl2br"
-		}		
+		}
 	];
-	
-	if (showall) columns.push({ "data": "actions",
-		"orderable" : false,
-		"searchable": false,
-		"className": "dt-body-right",
-		"width": "10%"
-	});
-	
+
+	if (showall) {
+		columns.push(
+			{ 
+				"data": "content",
+				"className" : "nl2br"
+			},
+			{ 
+				"data": "actions",
+				"orderable" : false,
+				"searchable": false,
+				"className": "dt-body-right",
+				"width": "10%"
+			}
+		);
+	}
+
 	var requestTypeClassNames = [ '', 'access', 'edit', 'onhold', 'delete' ];
-	
+
 	var tableObj = $j('#'+tableID)
 		.DataTable({
 			"deferRender": true,

@@ -91,7 +91,6 @@ try {
 				$retArr['generatedDate'] = ts2dFN($el->getGeneratedTs()).' '.ts2tmFN($el->getGeneratedTs());
 				$retArr['closedDate'] = is_null($el->getClosedTs()) ? null : ts2dFN($el->getClosedTs()).' '.ts2tmFN($el->getClosedTs());
 				$retArr['type'] = $el->getType()->toArray();
-				$retArr['content'] = $el->getContent();
 				$actions = array();
 
 				if ($showAll && is_null($el->getClosedTs()) && $el->getType() instanceof GdprRequestType) {
@@ -105,6 +104,9 @@ try {
 				}
 
 				if ($showAll || count($actions)>0) {
+					if ($showAll) {
+						$retArr['content'] = $el->getContent();
+					}
 					$retArr['actions'] = array_reduce($actions, function($carry, $item) {
 						if (strlen($carry) <= 0) $carry = '';
 						$carry .= ($item instanceof \CBase ? $item->getHtml() : '');

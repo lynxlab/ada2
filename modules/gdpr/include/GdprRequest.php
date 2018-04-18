@@ -180,10 +180,11 @@ class GdprRequest extends GdprBase {
 			'Numero pratica',
 			'Tipo',
 			'Creata il',
-			'Chiusa il',
-			'Testo'
+			'Chiusa il'
 		);
-		if ($showall) $headerArr[] = 'Azioni';
+		if ($showall) {
+			$headerArr= array_merge($headerArr, array('Testo/Note', 'Azioni'));
+		}
 
 		return array_map(function ($el) {
 			return ucwords(strtolower(translateFN($el)));
