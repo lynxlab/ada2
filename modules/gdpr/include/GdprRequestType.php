@@ -73,7 +73,7 @@ class GdprRequestType extends GdprBase {
 	 * @return boolean
 	 */
 	public function confirmBeforeHandle() {
-		return (count($this->getExtra())>0 && array_key_exists('confirmhandle', $this->getExtra()) && $this->getExtra()['confirmhandle'] === true);
+		return (is_array($this->getExtra()) && array_key_exists('confirmhandle', $this->getExtra()) && $this->getExtra()['confirmhandle'] === true);
 	}
 
 	/**
