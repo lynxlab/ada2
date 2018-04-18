@@ -38,7 +38,7 @@ require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 $GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $data = new stdClass();
-$data->title = '<i class="basic error icon"></i>'.translateFN('Errore ricerca richiesta');
+$data->title = '<i class="basic error icon"></i>'.translateFN('Errore evasione richiesta');
 $data->status = 'ERROR';
 $data->message = translateFN('Errore sconosciuto');
 
