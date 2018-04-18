@@ -77,9 +77,14 @@ class GdprRequest extends GdprBase {
 		$button = \CDOMElement::create('button','type:button,class:ui tiny button');
 		$button->addChild(new \CText(translateFN($isClose ? self::closeButtonLabel : self::actionButtonLabel)));
 		$button->setAttribute('data-requestuuid', $this->getUuid());
+		$button->setAttribute('data-requesttype', $this->getType()->getType());
 		$button->setAttribute('data-isclose', $isClose ? 1 :0);
 		if ($isClose) {
 			$button->setAttribute('class', $button->getAttribute('class').' red');
+		} else {
+			if ($this->getType()->confirmBeforeHandle()) {
+				$button->setAttribute('data-confirmhandle', 1);
+			}
 		}
 		return $button;
 	}
@@ -113,6 +118,33 @@ class GdprRequest extends GdprBase {
 			$this->redirecturl = HTTP_ROOT_DIR . '/switcher/view_user.php?pdfExport=1&id_user='.$this->getGeneratedBy();
 			$this->reloaddata = true;
 			$this->close();
+		} else if (in_array($this->getType()->getType(), array(GdprRequestType::ONHOLD, GdprRequestType::DELETE))) {
+			$selfUserErrMessages = array(
+				GdprRequestType::ONHOLD => 'Impossibile disabilitare te stesso',
+				GdprRequestType::DELETE => 'Impossibile cancellare te stesso'
+			);
+            $this->reloaddata = true;
+			/**
+			 * Check on user type to prevent multiport to do its error handling if no user found
+			 */
+			if (!\AMA_DB::isError($GLOBALS['common_dh']->get_user_type ($this->getGeneratedBy()))) {
+				$targetUser = \MultiPort::findUser(intval($this->getGeneratedBy()));
+				if($targetUser instanceof \ADALoggableUser) {
+					if ($_SESSION['sess_userObj']->getId() != $targetUser->getId()) {
+						if ($this->getType()->getType() == GdprRequestType::ONHOLD) {
+			            	$targetUser->setStatus(ADA_STATUS_PRESUBSCRIBED);
+						} else if ($this->getType()->getType() == GdprRequestType::DELETE) {
+							if ($targetUser->getStatus() == ADA_STATUS_PRESUBSCRIBED) {
+								$targetUser->anonymize();
+							} else throw new GdprException(translateFN("Prima di cancellare un utente, deve essere disattivato"));
+						}
+						\MultiPort::setUser($targetUser ,array(), true);
+		            	$this->close();
+					} else {
+						throw new GdprException(translateFN($selfUserErrMessages[$this->getType()->getType()]));
+					}
+				}
+			} else throw new GdprException(translateFN("Impossibile trovare l'utente che ha fatto la richiesta"));
 		}
 		else {
 			throw new GdprException('AZIONE NON IMPLEMENTATA');
