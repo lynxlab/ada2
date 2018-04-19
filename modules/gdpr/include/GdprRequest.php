@@ -156,14 +156,17 @@ class GdprRequest extends GdprBase {
 	 * Method that performs additional actions on the request after it's been saved
 	 * usually called by the datahandler save methods just before returning
 	 *
+	 * @param bool $isUpdate
 	 * @return \Lynxlab\ADA\Module\GDPR\GdprRequest
 	 */
-	public function afterSave() {
-		if (GdprActions::canDo($this->getType()->getLinkedAction(), $this)) {
-			if ($this->getType()->getType() == GdprRequestType::EDIT) {
-				return $this->handle()->close();
-			} else if ($this->getType()->getType() == GdprRequestType::ACCESS) {
-				return $this->handle()->close();
+	public function afterSave($isUpdate) {
+		if (!$isUpdate) {
+			if (GdprActions::canDo($this->getType()->getLinkedAction(), $this)) {
+				if ($this->getType()->getType() == GdprRequestType::EDIT) {
+					return $this->handle()->close();
+				} else if ($this->getType()->getType() == GdprRequestType::ACCESS) {
+					return $this->handle()->close();
+				}
 			}
 		}
 		return $this;
