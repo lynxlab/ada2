@@ -108,6 +108,7 @@
 	      		</div>
 	    	</div>
 	  	</div>
-  
+	  	<span id="notEditableMSG" style="display:none;"><i18n>Note non modificabili</i18n></span>
+  		<span id="clickToEditMSG" style="display:none;"><span class="editablePlaceholder"><i18n>Clic per modificare</i18n></span></span>
     </body>
 </html>
