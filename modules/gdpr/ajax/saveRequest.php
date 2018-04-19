@@ -9,6 +9,8 @@
 
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
+use Lynxlab\ADA\Module\GDPR\GdprException;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Base config file
@@ -41,17 +43,28 @@ $data->message = translateFN('Errore nel salvataggio della richiesta');
 
 try {
 	$postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-	$result = $GLOBALS['dh']->saveRequest($postParams);
-	$data->saveResult = $result;
-	$data->saveResult = array('requestUUID' => $result->getUuid());
-	$data->title = '<i class="info icon"></i>'.translateFN('Richiesta salvata');
-	$data->status = 'OK';
-	$data->message = translateFN('La richiesta è stata salvata correttamente');
-	if (property_exists($result, 'redirecturl')) {
-		$data->saveResult['redirecturl'] = $result->redirecturl;
+	$okToSave = false;
+	if (array_key_exists('requestUUID', $postParams)) {
+		$okToSave = Uuid::isValid(trim($postParams['requestUUID']));
+		if (!$okToSave) {
+			throw new GdprException(translateFN("L'ID pratica non è valido"));
+		}
+	} else {
+		$okToSave = true;
 	}
-	if (property_exists($result, 'redirectlabel')) {
-		$data->saveResult['redirectlabel'] = $result->redirectlabel;
+	if ($okToSave) {
+		$result = $GLOBALS['dh']->saveRequest($postParams);
+		$data->saveResult = $result;
+		$data->saveResult = array('requestUUID' => $result->getUuid());
+		$data->title = '<i class="info icon"></i>'.translateFN('Richiesta salvata');
+		$data->status = 'OK';
+		$data->message = translateFN('La richiesta è stata salvata correttamente');
+		if (property_exists($result, 'redirecturl')) {
+			$data->saveResult['redirecturl'] = $result->redirecturl;
+		}
+		if (property_exists($result, 'redirectlabel')) {
+			$data->saveResult['redirectlabel'] = $result->redirectlabel;
+		}
 	}
 } catch (\Exception $e) {
 	header(' ', true, 400);
