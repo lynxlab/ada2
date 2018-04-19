@@ -68,8 +68,7 @@ try {
 	$layout_dataAr['JS_filename'] = array(
 		JQUERY_DATATABLE,
 		SEMANTICUI_DATATABLE,
-		JQUERY_DATATABLE_DATE,
-		JQUERY_NO_CONFLICT
+		JQUERY_DATATABLE_DATE
 	);
 
 	$layout_dataAr['CSS_filename']= array(
@@ -77,6 +76,11 @@ try {
 		JQUERY_DATATABLE_CSS,
 		SEMANTICUI_DATATABLE_CSS
 	);
+
+	if ($showAll) {
+		$layout_dataAr['JS_filename'][]  = MODULES_GDPR_PATH .'/js/jeditable-2.0.1/jquery.jeditable.min.js';
+	}
+
 	$optionsAr['onload_func'] = 'initDoc(\''.$tableID.'\','.htmlentities(json_encode($dataForJS, JSON_FORCE_OBJECT), ENT_COMPAT, ADA_CHARSET).');';
 
 } catch (\Exception $e) {
