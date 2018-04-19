@@ -48,7 +48,14 @@ function initDoc(tableID, options) {
 		columns.push(
 			{ 
 				"data": "content",
-				"className" : "nl2br"
+				"className" : "nl2br",
+			    "createdCell": function (td, cellData, rowData, row, col) {
+			    	if (!('closedDate' in rowData) || null === rowData.closedDate) {
+			          $j(td).addClass('editable-textarea');
+			        } else {
+			        	$j(td).attr('title', $j('#notEditableMSG').text());
+			        }
+			    }
 			},
 			{ 
 				"data": "actions",
@@ -73,10 +80,24 @@ function initDoc(tableID, options) {
 			"language": {
 				"url": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
 			},
-			"ajax" : {
-				'type': 'GET',
-				'url' : "ajax/getRequests.php",
-				'data': options
+			"drawCallback" : function() {
+				initEditableFields(showall, debug);
+			},
+			"ajax" : function(data, callback, settings) {
+				$j.ajax(				{
+					'type': 'GET',
+					'url' : "ajax/getRequests.php",
+					'data': options
+				})
+				.done(function(response) {
+					callback(response);
+				})
+				.fail(function(response) {
+					if (debug && 'debug' in response.responseJSON) console.debug('dataTable ajax fail ', response.responseJSON);
+						$j.when(showHideDiv("("+response.status+") " + response.statusText,
+								('error' in response.responseJSON) ? response.responseJSON.error : 'unkown error',false))
+						.then(function() { callback(response.responseJSON); });
+					});
 			},
 			"columns": columns
 		});
@@ -84,6 +105,70 @@ function initDoc(tableID, options) {
 	$j('table#list_requests').on('click', 'button[data-requestuuid]', function() {
 		return handleRequest(tableObj, $j(this), $j.extend({}, $j(this).data(), {debug: debug ? 1 :0}));
 	});
+}
+
+function initEditableFields(showall, debug) {
+	if (showall) {
+		var url = "ajax/saveRequest.php";
+		$j('td.editable-textarea').editable(url, 
+			{
+				type        : 'textarea',
+				name        : 'requestContent',
+				rows        : 5,
+				formid      : 'editContent',
+				submit      : 'OK',
+				tooltip     : $j('#clickToEditMSG').text(),
+				placeholder : $j('#clickToEditMSG').html(),
+				showfn  : function(element) {
+					var rowID = $j(element).parents('tr').first().attr('id');
+					if ('undefined' !== typeof rowID) {
+						$j(element).append('<input type="hidden" name="requestUUID" value="'+rowID+'"/>');
+					}
+					$j(element).children().first().removeAttr('style').after('<div class="clearfix"></div>');
+					$j(element).fadeIn();
+				},
+				callback : function(result, settings, submitdata) {
+					$j(this).html(submitdata[settings.name]);
+					try {
+						var responseJSON = JSON.parse(result);
+	            		var title = responseJSON.title || "";
+	            		var message = responseJSON.message || "";
+	            		if (title.length >0 || message.length>0) {
+	            			$j.when(showHideDiv(title, message ,true))
+	            			.then(function() {});
+	            		}
+					} catch(e) {
+						if (debug) console.debug(e);
+					}
+				},
+				onerror: function(settings, self, xhr) {
+		        	self.reset();
+		            try {
+		            	if ('responseText' in xhr) {
+		            		var responseJSON = JSON.parse(xhr.responseText);
+		            		if (debug) console.debug(url+' ajax fail ', xhr);
+		            		var title = responseJSON.title || xhr.status;
+		            		var message = responseJSON.message || xhr.statusText;
+		            		$j.when(showHideDiv("("+xhr.status+") " + title, message ,false))
+		            		  .then(function() {});
+		            	}
+		            } catch (e) {
+		            	if (debug) console.debug(e);
+		            }
+		        },
+				submitdata : function() {
+					var formArray = $j('form#editContent').serializeArray();
+					var dataObj = { debugForm: debug ? 1 :0 };
+					for (var i = 0; i < formArray.length; i++){
+						dataObj[formArray[i]['name']] = formArray[i]['value'];
+					}
+					return dataObj;
+				},
+				onblur : debug ? 'ignore' : 'cancel',
+				cssclass : 'editable ui form',
+				submitcssclass : 'ui green small button'
+			});
+	}
 }
 
 function handleRequest(tableObj, buttonObj, objData) {
