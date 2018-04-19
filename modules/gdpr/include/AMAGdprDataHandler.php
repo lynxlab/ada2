@@ -35,49 +35,69 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 */
 	public function saveRequest($data) {
 
-		if (array_key_exists('requestType', $data) && intval($data['requestType'])>0) {
-			$type = $this->findBy('GdprRequestType', array('id'=>intval($data['requestType'])));
-		}
-
-		if (count($type) === 1) {
-			if (!array_key_exists('requestContent', $data)) $data['requestContent'] = '';
-			$data['requestContent'] = strip_tags(trim($data['requestContent']));
-
-			if (!array_key_exists('selfOpened', $data)) $data['selfOpened'] = 0;
-			else $data['selfOpened'] = intval($data['selfOpened']>0);
-
-			$request = new GdprRequest();
-			$request->setGeneratedTs($this->date_to_ts('now'))->setType(reset($type))
-					->setSelfOpened($data['selfOpened'])->setConfirmedTs($request->getGeneratedTs()+1);
-
-			if ($request->getType()->hasMandatoryContent()) {
-				if (strlen($data['requestContent'])>0) {
-					$request->setContent($data['requestContent']);
+			if (array_key_exists('requestUUID', $data)) {
+				// load the request with the passed uuid
+				$request = $this->findBy('GdprRequest', array('uuid' => trim($data['requestUUID'])));
+				$request = reset($request);
+				if (!($request instanceof GdprRequest)) {
+					throw new GdprException(translateFN("Impossibile trovare la richiesta da modificare"));
 				} else {
-					throw new GdprException(translateFN('Il testo non può essere vuoto per il tipo di richiesta'));
+					$isUpdate = true;
+					unset($data['requestUUID']);
+					if (array_key_exists('requestContent', $data)) {
+						$data['requestContent'] = strip_tags(trim($data['requestContent']));
+					}
+				}
+			} else {
+				if (array_key_exists('requestType', $data) && intval($data['requestType'])>0) {
+					$type = $this->findBy('GdprRequestType', array('id'=>intval($data['requestType'])));
+				}
+				if (count($type) === 1) {
+					// make a new request
+					$request = new GdprRequest();
+					$isUpdate = false;
+
+					if (!array_key_exists('requestContent', $data)) $data['requestContent'] = '';
+					$data['requestContent'] = strip_tags(trim($data['requestContent']));
+
+					if (!array_key_exists('selfOpened', $data)) $data['selfOpened'] = 0;
+					else $data['selfOpened'] = intval($data['selfOpened']>0);
+
+					if (array_key_exists('generatedBy', $data) && intval($data['generatedBy'])>0) {
+						$request->setGeneratedBy(intval($data['generatedBy']));
+					} else {
+						throw new GdprException(translateFN("Impossibile determinare l'utente per cui generare la richiesta"));
+					}
+
+					$request->setGeneratedTs($this->date_to_ts('now'))->setType(reset($type))
+							->setSelfOpened($data['selfOpened'])->setConfirmedTs($request->getGeneratedTs()+1);
+
+				} else {
+					throw new GdprException(translateFN('Tipo di richiesta non valido'));
 				}
 			}
+			$request->setContent($data['requestContent']);
 
-			if (array_key_exists('generatedBy', $data) && intval($data['generatedBy'])>0) {
-				$request->setGeneratedBy(intval($data['generatedBy']));
-			} else {
-				throw new GdprException(translateFN("Impossibile determinare l'utente per cui generare la richiesta"));
+			if (strlen($request->getContent())<=0) {
+				if ($request->getType()->hasMandatoryContent()) {
+					throw new GdprException(translateFN('Il testo non può essere vuoto per il tipo di richiesta'));
+				} else $request->setContent(null);
 			}
-
-		} else {
-			throw new GdprException(translateFN('Tipo di richiesta non valido'));
-		}
 
 		$fields = $request->toArray();
 		$fields['type'] = $fields['type']->getId();
-		// $fields['type'] = $fields['type']['id'];
-
-		$result = $this->executeCriticalPrepared($this->sqlInsert(GdprRequest::table, $fields), array_values($fields));
-		if (\AMA_DB::isError($result)) {
-			throw new GdprException($result->getMessage(), $result->getCode());
+		if (!$isUpdate) {
+			$result = $this->executeCriticalPrepared($this->sqlInsert($request::table, $fields), array_values($fields));
+		} else {
+			unset($fields['uuid']);
+			$result = $this->queryPrepared($this->sqlUpdate($request::table, array_keys($fields), 'uuid'), array_values($fields + array($request->getUuid())));
 		}
 
-		return $request->afterSave();
+		if (\AMA_DB::isError($result)) {
+			throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode()  : null);
+		}
+
+		return $request->afterSave($isUpdate);
 	}
 
 	/**
