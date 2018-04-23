@@ -255,11 +255,12 @@ class ARE
 
         	$orientation   = isset($options['orientation'])       ? $options['orientation'] : '';
         	$outputfile    = isset($options['outputfile'])        ? $options['outputfile'] : '';
+        	$forcedownload = isset($options['forcedownload'])        ? $options['forcedownload'] : '';
 
         	// must be called $html_renderer for below code, but it's not :)
         	$html_renderer = new PDF($layout_template, $layout_CSS, $user_name, $course_title,
         			$node_title, $meta_keywords, $author, $meta_refresh_time,
-        			$meta_refresh_url,$onload_func, $layoutObj, $outputfile, $orientation);
+        			$meta_refresh_url,$onload_func, $layoutObj, $outputfile, $orientation, $forcedownload);
         } else {
         	$html_renderer = new HTML($layout_template, $layout_CSS, $user_name, $course_title,
         			$node_title, $meta_keywords, $author, $meta_refresh_time,
@@ -875,7 +876,7 @@ class  Generic_Html extends Output
         if (file_exists($stylesheet)){
           // this is for standard browsers
           $stylesheet = str_replace($root_dir,$http_root_dir,$stylesheet);
-          $html_css_code .= "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\">\n";
+          $html_css_code .= "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen,print\">\n";
         }
 
 
@@ -902,7 +903,7 @@ class  Generic_Html extends Output
 
 	        if (file_exists($ie_stylesheet)){
 	            $ie_stylesheet = str_replace($root_dir,$http_root_dir,$ie_stylesheet);
-	          	$html_css_code .= $cond_com_begin."<link rel=\"stylesheet\" href=\"$ie_stylesheet\" type=\"text/css\" media=\"screen\">\n".$cond_com_end;
+	          	$html_css_code .= $cond_com_begin."<link rel=\"stylesheet\" href=\"$ie_stylesheet\" type=\"text/css\" media=\"screen,print\">\n".$cond_com_end;
 	        }
         }
         /* end mod	*/
@@ -1052,28 +1053,34 @@ class  Generic_Html extends Output
       	$data = $this->htmlheader;
       	$data.= $this->htmlbody;
       	$data.= $this->htmlfooter;
-      	require_once ROOT_DIR . '/include/dompdf/dompdf_config.inc.php';
+      	// make dompf tmp font dir if needed
+      	if (!is_dir(ADA_UPLOAD_PATH.'tmp-dompdf')) {
+				$oldmask = umask(0);
+				mkdir (ADA_UPLOAD_PATH.'tmp-dompdf', 0775, true);
+				umask($oldmask);
+      	}
+      	// include dompdf autoloader
+		require_once 'dompdf/autoload.inc.php';
       	$dompdf_options = array(
       			// Rendering
       			"default_media_type"       => 'print',
-      			"default_paper_size"       => 'a4',
-
+      			"default_paper_size"       => 'A4',
+      			"font_dir"				   => ADA_UPLOAD_PATH.'tmp-dompdf',
       			// Features
-      			"enable_unicode"           => DOMPDF_UNICODE_ENABLED,
-      			"enable_php"               => DOMPDF_ENABLE_PHP,
+      			"enable_unicode"           => true,
+      			"enable_php"               => false,
       			"enable_remote"            => true,
       			"enable_css_float"         => true,
       			"enable_javascript"        => true,
-      			"enable_html5_parser"      => DOMPDF_ENABLE_HTML5PARSER,
-      			"enable_font_subsetting"   => DOMPDF_ENABLE_FONTSUBSETTING
+      			"enable_html5_parser"      => false,
+      			"enable_font_subsetting"   => false
       	);
-      	$dompdf = new DOMPDF();
-      	$dompdf->set_options($dompdf_options);
-      	$dompdf->set_paper('a4',$this->orientation);
-      	$dompdf->load_html($data);
+      	$dompdf = new \Dompdf\Dompdf($dompdf_options);
+      	$dompdf->setPaper('A4',$this->orientation);
+      	$dompdf->loadHtml($data);
       	$dompdf->render();
 
-      	$dompdf->stream($this->outputfile.'.pdf', array('Attachment'=>0));
+      	$dompdf->stream($this->outputfile.'.pdf', array('Attachment'=>$this->forcedownload));
       	die();
         break;
     }
@@ -1331,12 +1338,14 @@ EOT;
 class PDF extends HTML {
 	var $outputfile;
 	var $orientation;
+	var $forcedownload;
 
 	public function __construct($template,$CSS_filename,$user_name,$course_title,$node_title="",$meta_keywords="",$author="",$meta_refresh_time="",
-			    $meta_refresh_url="",$onload_func="",$layoutObj=NULL,$outputfile="ada",$orientation="landscape")
+			    $meta_refresh_url="",$onload_func="",$layoutObj=NULL,$outputfile="ada",$orientation="landscape", $forcedownload = false)
 	{
 		$this->outputfile = $outputfile;
 		$this->orientation = $orientation;
+		$this->forcedownload = $forcedownload;
 
 		parent::__construct($template,$CSS_filename,$user_name,$course_title,$node_title,$meta_keywords,$author,$meta_refresh_time,$meta_refresh_url,$onload_func,$layoutObj);
 	}

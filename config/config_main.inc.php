@@ -66,6 +66,7 @@ define('ADA_STATUS_REMOVED',       3);
 define('ADA_STATUS_VISITOR',       4);
 define('ADA_STATUS_COMPLETED',     5);
 define('ADA_STATUS_TERMINATED',    6);
+define('ADA_STATUS_ANONYMIZED',    255);
 
 /**
  * ADA user service subscription status

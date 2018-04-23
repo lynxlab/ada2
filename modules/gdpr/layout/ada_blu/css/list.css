@@ -1,0 +1,24 @@
+@import url("common.css");
+
+td.uuid { font-family: monospace; font-weight: bold; }
+td.access { color: #00b600; }
+td.edit { color: #ff9600; }
+td.delete { color: #ff0808; }
+td.onhold { color:#1f5dc8; }
+
+#confirmModal .confirmText,
+#confirmModal .confirmQuestion { font-size: 1.2em; }
+
+.editable.form .ui.button {
+	display: block;
+	margin: 1em 0 auto auto;
+}
+
+.editable.form textarea {
+	width: 100%;
+	height: auto;
+}
+
+.editablePlaceholder {
+	color: rgba(0,0,0,0.30);
+}

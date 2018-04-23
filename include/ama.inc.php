@@ -1453,10 +1453,11 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 //      }
 //    }
 
+        $where = ' WHERE id_utente=?';
         if(empty($user_ha['password'])) {
             $update_user_sql = 'UPDATE utente SET nome=?, cognome=?, e_mail=?, telefono=?, layout=?, '
                     . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
-                    . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=? WHERE id_utente=?';
+                    . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=?';
 
             $valuesAr = array(
                     $user_ha['nome'],
@@ -1479,14 +1480,13 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
                     $user_ha['matricola'],
                     $user_ha['avatar'],
             		$user_ha['birthcity'],
-            		$user_ha['birthprovince'],
-                    $id
+            		$user_ha['birthprovince']
             );
         }
         else {
             $update_user_sql = 'UPDATE utente SET nome=?, cognome=?, e_mail=?, password=?, telefono=?, layout=?, '
                     . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
-                    . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=? WHERE id_utente=?';
+                    . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=?';
 
             $valuesAr = array(
                     $user_ha['nome'],
@@ -1510,11 +1510,19 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
                     $user_ha['matricola'],
                     $user_ha['avatar'],
             		$user_ha['birthcity'],
-            		$user_ha['birthprovince'],
-                    $id
+            		$user_ha['birthprovince']
             );
         }
+        /**
+         * UPDATE USERNAME ONLY IF MODULES_GDPR
+         */
+        if (defined('MODULES_GDPR') && MODULES_GDPR===true && array_key_exists('username', $user_ha) && strlen($user_ha['username'])>0 && $user_ha['username']!==$old_values_ha['username']) {
+        	$update_user_sql .= ',username=?';
+        	$valuesAr[] = $user_ha['username'];
+        }
 
+        $update_user_sql .= $where;
+        $valuesAr[] = $id;
 
         $result = $this->queryPrepared($update_user_sql, $valuesAr);
         if(AMA_DB::isError($result)) {
@@ -3314,10 +3322,11 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             return new AMA_Error(AMA_ERR_NOT_FOUND);
         }
 
+        $where = ' WHERE id_utente=?';
         if(empty($user_ha['password'])) {
             $update_user_sql = 'UPDATE utente SET nome=?, cognome=?, e_mail=?, telefono=?, layout=?, '
                     . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
-                    . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=? WHERE id_utente=?';
+                    . 'telefono=?, stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=?';
 
             $valuesAr = array(
                     $user_ha['nome'],
@@ -3340,14 +3349,13 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
                     $user_ha['matricola'],
                     $user_ha['avatar'],
             		$user_ha['birthcity'],
-            		$user_ha['birthprovince'],
-                    $id
+            		$user_ha['birthprovince']
             );
         }
         else {
             $update_user_sql = 'UPDATE utente SET nome=?, cognome=?, e_mail=?, password=?, telefono=?, layout=?, '
                     . 'indirizzo=?, citta=?, provincia=?, nazione=?, codice_fiscale=?, birthdate=?, sesso=?, '
-                    . 'telefono=?,stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=? WHERE id_utente=?';
+                    . 'telefono=?,stato=?, lingua=?, timezone=?, cap=?, matricola=?, avatar=?, birthcity=?, birthprovince=?';
 
             $valuesAr = array(
                     $user_ha['nome'],
@@ -3371,10 +3379,19 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
                     $user_ha['matricola'],
                     $user_ha['avatar'],
             		$user_ha['birthcity'],
-            		$user_ha['birthprovince'],
-                    $id
+            		$user_ha['birthprovince']
             );
         }
+        /**
+         * UPDATE USERNAME ONLY IF MODULES_GDPR
+         */
+        if (defined('MODULES_GDPR') && MODULES_GDPR===true && array_key_exists('username', $user_ha) && strlen($user_ha['username'])>0) {
+        	$update_user_sql .= ',username=?';
+        	$valuesAr[] = $user_ha['username'];
+        }
+
+        $update_user_sql .= $where;
+        $valuesAr[] = $id;
 
         $result = $this->queryPrepared($update_user_sql, $valuesAr);
         if(AMA_DB::isError($result)) {

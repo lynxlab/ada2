@@ -1,0 +1,18 @@
+{
+    "name" : "lynxlab/ada-module-gdpr",
+    "description" : "This is the ada module to manage gdpr related requests.",
+    "license" : "GPL",
+    "authors" : [{
+        "name" : "Giorgio Consorti",
+        "email" : "g.consorti@lynxlab.com"
+    }],
+    "require": {
+        "ramsey/uuid": "^3.7",
+        "gregwar/captcha": "^1.1"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\GDPR\\" : ["include/", "include/form"]
+	    }
+    }
+}

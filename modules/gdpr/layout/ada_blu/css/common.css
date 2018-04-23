@@ -1,0 +1,84 @@
+@CHARSET "UTF-8";
+@import url("showHideDiv.css");
+
+.first { margin-top:0; padding-top:0; }
+
+#content {
+	width: 100%;
+	float:left;
+}
+
+div.fform.form {
+	padding: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+fieldset.form {
+	margin-bottom: 10px;
+	border: none;
+}
+
+legend.form {
+	padding: 0 2px;
+	font-weight: bold;
+}
+
+fieldset.form li.form:not(:first-child) {
+	margin-bottom:0; 
+	border-bottom: none;
+}
+
+fieldset.form li.form:not(:last-child) {
+	border-bottom: none	
+}
+
+textarea.form {
+	display: block;
+	width: 100%;
+	height: 100px;
+}
+
+select.form {
+	display: block;
+	float: right;
+}
+
+.error.form {
+	color: #ff0000;
+}
+.nl2br { white-space: pre; white-space: pre-line; }
+table.dataTable>thead>tr>th:not(.sorting_disabled):hover { cursor:pointer; }
+div.dt-semanticUI { margin-bottom: 1rem; }
+div.fform { width: 60%; }
+div.fform form label { width: 50%; }
+div.fform form li { border-bottom: none; padding: 15px 0 15px 0; }
+div.fform form input[type=text],
+div.fform form input[type=password],
+div.fform form select { width: 45%; border: 1px dotted gray; padding: 5px; }
+div.fform form fieldset fieldset { border: 1px dotted grey; margin-bottom: 10px; }
+div.fform form fieldset fieldset label { margin-left:0; width: 45%; display: inline-block; }
+.requestUUID { font-family: monospace; }
+#contentcontent .first .ui.success.message  { font-size: 1.2em; }
+#contentcontent table.dataTable thead th, #contentcontent table.dataTable thead td { border: none; }
+#contentcontent table.dataTable thead .sorting_asc,
+#contentcontent table.dataTable thead .sorting_desc,
+#contentcontent table.dataTable thead .sorting_both { background-image: none; }
+#contentcontent .dataTables_wrapper .dataTables_paginate .paginate_button { margin-left:0; border: none; }
+
+.yellow-highlight, tr.yellow-highlight > * {
+    -webkit-animation-name: yellow-back-pulse;
+    animation-name: yellow-back-pulse;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+/*     -webkit-animation-delay: 0.5s;
+    animation-delay: 0.5s; */
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+    -webkit-animation-iteration-count: 5;
+    animation-iteration-count: 5;
+}
+
+@keyframes yellow-back-pulse {
+	50% { background-color: rgba(254, 254, 124, 0.40); }
+}

@@ -59,7 +59,9 @@ function createDataTable() {
         "bSort": true,
         "bAutoWidth": true,
         "aaSorting": [[ 1, "asc" ]],
-        'aoColumnDefs': [{"aTargets": [ 0 ],"sClass":"expandCol"},{ "bSortable": false, "aTargets": [ 4 ],"sClass":"actionCol" } ],
+        'aoColumnDefs': [{"bSortable": false, "bSearchable": false, "aTargets": [ 0 ],"sClass":"expandCol"},
+        				 {"bSortable": false, "bSearchable": false, "aTargets": [ 4 ],"sClass":"actionCol" },
+        				 {"aTargets": [ 5 ],"sClass":"confirmCol" }],
         "oLanguage": 
         {
             "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"

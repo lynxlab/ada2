@@ -610,6 +610,40 @@ abstract class ADALoggableUser extends ADAGenericUser {
     	}
     }
 
+    /**
+     * Anonymize user data by replacing the data passed in the keys of $dataArr
+     * with random strings.
+     * Default anonymized values are: 'nome', 'cognome', 'codice_fiscale',
+     * 'email', 'username', 'password', 'matricola'
+     *
+     * NOTE: this method will just DIE if MODULES_GDPR is not installed
+     *
+     * @param array $dataArr
+     * @return ADALoggableUser
+     */
+    public function anonymize($dataArr = array('nome', 'cognome', 'codice_fiscale', 'email', 'username', 'password', 'matricola')) {
+    	if (defined('MODULES_GDPR') && MODULES_GDPR===true) {
+			try {
+	    		$userArr = $this->toArray();
+	    		foreach ($dataArr as $key) {
+	    			$value = bin2hex(random_bytes(random_int(8, 16)));
+	    			if (strcmp($key, 'username') === 0) $this->username = $value;
+	    			else $userArr[$key] = $value;
+	    		}
+				$this->fillWithArrayData($userArr);
+				$this->setStatus(ADA_STATUS_ANONYMIZED);
+	    		return $this;
+			} catch (TypeError $e) {
+			    die("An unexpected error has occurred");
+			} catch (Error $e) {
+			    die("An unexpected error has occurred");
+			} catch (Exception $e) {
+			    // If you get this message, the CSPRNG failed hard.
+			    die("Could not generate a random string. Is our OS secure?");
+			}
+    	} else die("anonymize method cannot be called when MODULES_GDPR is not installed");
+    }
+
 // MARK: USARE MultiPort::getUserMessages
     public function get_messagesFN($id_user) {
         return '';
