@@ -631,6 +631,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
 	    			else $userArr[$key] = $value;
 	    		}
 				$this->fillWithArrayData($userArr);
+				$this->setStatus(ADA_STATUS_ANONYMIZED);
 	    		return $this;
 			} catch (TypeError $e) {
 			    die("An unexpected error has occurred");

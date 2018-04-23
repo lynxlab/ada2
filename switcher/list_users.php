@@ -93,7 +93,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         if ($user[4]==AMA_TYPE_SUPERTUTOR) {
         	$imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/supertutoricon.png');
         	$imgDetails->setAttribute('title', translateFN('Super Tutor'));
-        } else if($user[5] == ADA_STATUS_REGISTERED) {
+        } else if($user[5] == ADA_STATUS_REGISTERED || $user[5] == ADA_STATUS_ANONYMIZED) {
 	        $imgDetails = CDOMElement::create('img','src:'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/details_open.png');
 	        $imgDetails->setAttribute('title', translateFN('visualizza/nasconde i dettagli dell\'utente'));
 	        $imgDetails->setAttribute('onclick',"toggleDetails($userId,this);");
@@ -133,10 +133,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
 	        $delete_link->setAttribute('class', 'tooltip');
 	        $delete_link->setAttribute('title', translateFN('Cancella utente'));
 	        $actionsArr[] = $delete_link;
-        } else {
-        	/*
-        	 * GDPR anonymize link goes here
-        	 */
+        } else if ($user[5] != ADA_STATUS_ANONYMIZED) {
         	$undelete_link = BaseHtmlLib::link("delete_user.php?restore=1&id_user=$userId",$undelete_img->getHtml());
 	        $undelete_link->setAttribute('class', 'tooltip');
 	        $undelete_link->setAttribute('title', translateFN('Ripristina utente'));
