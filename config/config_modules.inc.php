@@ -160,8 +160,8 @@ if (!defined('MODULES_GDPR')) {
 	// defines for module gdpr
 	if (file_exists(MODULES_DIR.'/gdpr/config/config.inc.php')) {
 		define ('MODULES_GDPR_PATH', MODULES_DIR.'/gdpr');
-		require_once(MODULES_GDPR_PATH.'/config/config.inc.php');
-		define('MODULES_GDPR', true);
+		$modEnabled = require_once(MODULES_GDPR_PATH.'/config/config.inc.php');
+		define('MODULES_GDPR', $modEnabled);
 		define('MODULES_GDPR_HTTP', HTTP_ROOT_DIR. str_replace(ROOT_DIR, '', MODULES_DIR) . '/gdpr');
 	} else {
 		define('MODULES_GDPR', false);
