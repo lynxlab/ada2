@@ -42,6 +42,10 @@ SET @myrequests = LAST_INSERT_ID();
 INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, `href_properties`, `href_prefix`, `href_path`, `href_paramlist`, `extraClass`, `groupRight`, `specialItem`, `order`, `enabledON`) VALUES
 (NULL, 'Tutte le richieste', NULL, 'text file outline', NULL, NULL, @modulepath, 'list.php?showall=1', NULL, NULL, 0, 0, 15, '{"func": ["\\\\Lynxlab\\\\ADA\\\\Module\\\\GDPR\\\\GdprActions","canDo"],"params":{ "value1": {"func": ["\\\\Lynxlab\\\\ADA\\\\Module\\\\GDPR\\\\GdprActions","getConstantFromString"],"params": "ACCESS_ALL_REQUESTS"}}}');
 SET @allrequests = LAST_INSERT_ID();
+/* all policies item */
+INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, `href_properties`, `href_prefix`, `href_path`, `href_paramlist`, `extraClass`, `groupRight`, `specialItem`, `order`, `enabledON`) VALUES
+(NULL, 'Gestione politiche', NULL, 'legal', NULL, NULL, @modulepath, 'listPolicies.php', NULL, NULL, 0, 0, 15, '{"func": ["\\\\Lynxlab\\\\ADA\\\\Module\\\\GDPR\\\\GdprActions","canDo"],"params":{ "value1": {"func": ["\\\\Lynxlab\\\\ADA\\\\Module\\\\GDPR\\\\GdprActions","getConstantFromString"],"params": "LIST_POLICIES"}}}');
+SET @allpolicies = LAST_INSERT_ID();
 /* request lookup item */
 INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, `href_properties`, `href_prefix`, `href_path`, `href_paramlist`, `extraClass`, `groupRight`, `specialItem`, `order`, `enabledON`) VALUES
 (NULL, 'Cerca pratica', NULL, 'basic search', NULL, NULL, @modulepath, 'lookuprequest.php', NULL, NULL, 0, 0, 20, '%ALWAYS%');
@@ -56,6 +60,7 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 		(@authorTree, @moduletree, @newrequest, ''),
 		(@authorTree, @moduletree, @myrequests, ''),
 		(@authorTree, @moduletree, @allrequests, ''),
+		(@authorTree, @moduletree, @allpolicies, ''),
 	(@studentTree, 0, @moduletree, ''),
 		(@studentTree, @moduletree, @newrequest, ''),
 		(@studentTree, @moduletree, @myrequests, ''),
@@ -66,12 +71,14 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 		(@tutorTree, @moduletree, @newrequest, ''),
 		(@tutorTree, @moduletree, @myrequests, ''),
 		(@tutorTree, @moduletree, @allrequests, ''),
+		(@tutorTree, @moduletree, @allpolicies, ''),
 	(@visitorTree, 0, @moduletree, ''),
 		(@visitorTree, @moduletree, @requestlookup, ''),
 	(@switcherTree, 0, @moduletree, ''),
 		(@switcherTree, @moduletree, @newrequest, ''),
 		(@switcherTree, @moduletree, @myrequests, ''),
-		(@switcherTree, @moduletree, @allrequests, '');
+		(@switcherTree, @moduletree, @allrequests, ''),
+		(@switcherTree, @moduletree, @allpolicies, '');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

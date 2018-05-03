@@ -27,6 +27,11 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	const MODELNAMESPACE = 'Lynxlab\\ADA\\Module\\GDPR\\';
 
 	/**
+	 * database to be used (if !MULTIPROVIDER)
+	 */
+	private static $policiesDB = null;
+
+	/**
 	 * save a new gdpr request object
 	 *
 	 * @param array $data
@@ -100,6 +105,53 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 		return $request->afterSave($isUpdate);
 	}
 
+	/**
+	 * save a new privacy policy object, either insert or update
+	 *
+	 * @param array $data
+	 * @throws GdprException
+	 * @return \Lynxlab\ADA\Module\GDPR\GdprPolicy|mixed
+	 */
+	public function savePolicy($data) {
+
+		$isUpdate = false;
+		$policy = new GdprPolicy();
+		if (array_key_exists('privacy_content_id', $data)) {
+			// load the policy with the passed uuid
+			$policy = $this->findBy('GdprPolicy', array('privacy_content_id' => trim($data['privacy_content_id'])), null, self::getPoliciesDB());
+			$policy = reset($policy);
+			if (!($policy instanceof GdprPolicy)) {
+				throw new GdprException(translateFN("Impossibile trovare la policy da modificare"));
+			} else {
+				$isUpdate = true;
+			}
+		}
+
+		$policy->setTitle(trim($data['title']))->setContent(trim($data['content']))
+			   ->setMandatory((int)(array_key_exists('mandatory',$data) && intval($data['mandatory'])===1))
+			   ->setLastEditTS($this->date_to_ts('now'));
+
+		if (strlen($policy->getTitle())<=0) $policy->setTitle(null);
+		if (strlen($policy->getContent())<=0) $policy->setContent(null);
+
+		if (!$isUpdate) $policy->setTester_pointer('ciccio');
+
+		$fields = $policy->toArray();
+		if (!$isUpdate) {
+			$fields['privacy_content_id'] = null;
+			$result = self::getPoliciesDB()->executeCriticalPrepared($this->sqlInsert($policy::table, $fields), array_values($fields));
+		} else {
+			unset($fields['privacy_content_id']);
+			$result = self::getPoliciesDB()->queryPrepared($this->sqlUpdate($policy::table, array_keys($fields), 'privacy_content_id'), array_values($fields + array($policy->getPrivacy_content_id())));
+		}
+
+		if (\AMA_DB::isError($result)) {
+			throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode()  : null);
+		}
+
+		$policy->redirecturl = 'listPolicies.php';
+		return $policy;
+	}
 	/**
 	 * closes the request with the passed uuid, and set closed by as the optional userID
 	 *
@@ -202,10 +254,11 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 * @param string $className
 	 * @param array $whereArr
 	 * @param array $orderByArr
+	 * @param \Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
 	 * @throws GdprException
 	 * @return array
 	 */
-	public function findBy($className, array $whereArr = null, array $orderByArr = null) {
+	public function findBy($className, array $whereArr = null, array $orderByArr = null, \Abstract_AMA_DataHandler $dbToUse = null) {
 		if (stripos($className, self::MODELNAMESPACE) !== 0) $className = self::MODELNAMESPACE.$className;
 		$reflection = new \ReflectionClass($className);
 		$properties =  array_map(
@@ -259,16 +312,18 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			}
 		}
 
-		$result = $this->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr)>0) ? array_values($whereArr): array(), AMA_FETCH_ASSOC);
+		if (is_null($dbToUse)) $dbToUse = $this;
+
+		$result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr)>0) ? array_values($whereArr): array(), AMA_FETCH_ASSOC);
 		if (\AMA_DB::isError($result)) {
 			throw new GdprException($result->getMessage(), $result->getCode());
 		} else {
-			$retArr = array_map(function($el) use ($className) { return new $className($el); }, $result);
+			$retArr = array_map(function($el) use ($className, $dbToUse) { return new $className($el); }, $result);
 			// load properties from $joined array
 			foreach ($retArr as $retObj) {
 				foreach ($joined as $joinKey) {
 					$sql = sprintf ("SELECT `%s` FROM `%s` WHERE `%s`=?", $joinKey, $retObj::table, $retObj::key);
-					$res = $this->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX.ucfirst($retObj::key)}(), AMA_FETCH_ASSOC);
+					$res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX.ucfirst($retObj::key)}(), AMA_FETCH_ASSOC);
 					if (!\AMA_DB::isError($res)) {
 						foreach ($res as $row) {
 							$retObj->{$retObj::ADDERPREFIX.ucfirst($joinKey)}($row[$joinKey]);
@@ -286,10 +341,11 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 *
 	 * @param string $className
 	 * @param array $orderBy
+	 * @param \Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
 	 * @return array
 	 */
-	public function findAll($className, array $orderBy = null) {
-		return $this->findBy($className, null, $orderBy);
+	public function findAll($className, array $orderBy = null, \Abstract_AMA_DataHandler $dbToUse = null) {
+		return $this->findBy($className, null, $orderBy, $dbToUse);
 	}
 
 	/**
@@ -321,5 +377,40 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 				implode(',',array_map(function($el){ return "`$el`"; }, array_keys($fields))),
 				implode(',',array_map(function($el){ return "?"; }, array_keys($fields)))
 		);
+	}
+
+	/**
+	 * Gets the AMA_DataHandler object to be used for policies objects
+	 *
+	 * @return \Abstract_AMA_DataHandler
+	 */
+	public static function getPoliciesDB() {
+		return self::$policiesDB;
+	}
+	/**
+	 * calls and sets the parent instance method, and if !MULTIPROVIDER
+	 * checks if module_gdpr_privacy_content table is in the provider db.
+	 *
+	 * If found, use the provider DB else use the common
+	 *
+	 * @param string $dsn
+	 */
+	static function instance ($dsn = null) {
+		if (!MULTIPROVIDER && is_null($dsn)) $dsn = \MultiPort::getDSN($GLOBALS['user_provider']);
+		$theInstance = parent::instance($dsn);
+
+		if (is_null(self::$policiesDB)) {
+			self::$policiesDB = \AMA_Common_DataHandler::instance();
+			if (!MULTIPROVIDER && !is_null($dsn)) {
+				// must check if passed $dsn has the module login tables
+				// execute this dummy query, if result is not an error table is there
+				$sql = 'SELECT NULL FROM `'.self::$PREFIX.GdprPolicy::table.'`';
+				// must use AMA_DataHandler because we are not able to
+				// query AMALoginDataHandelr in this method!
+				$ok = \AMA_DataHandler::instance($dsn)->getOnePrepared($sql);
+				if (!\AMA_DB::isError($ok)) self::$policiesDB = $theInstance;
+			}
+		}
+		return $theInstance;
 	}
 }
