@@ -3,5 +3,5 @@
 $settings = array (
 		'app_id' => "YOUR_OAUTH_ACCESS_TOKEN",
 		'app_secret' => "YOUR_OAUTH_ACCESS_TOKEN_SECRET",
-		'default_graph_version' => "v2.5"
+		'default_graph_version' => "v3.0"
 );
