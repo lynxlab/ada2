@@ -19,12 +19,12 @@
 class AMA_Error extends RuntimeException
 {
   /**
-   * 
+   *
    * @var array
    */
   private $errorMessages;
   public $code;
-  
+
   /**
    * AMA_Error constructor.
    *
@@ -34,7 +34,7 @@ class AMA_Error extends RuntimeException
    * @access public
    *
    */
-  function AMA_Error($code = AMA_ERROR, $debuginfo = null) {
+  function __construct($code = AMA_ERROR, $debuginfo = null) {
     $this->errorMessages = array(
     AMA_ERROR                 => 'sconosciuto',                        // 1 unknown error
     AMA_ERR_ADD               => 'aggiunta del record non riuscita',           // 2 error while adding
@@ -52,12 +52,12 @@ class AMA_Error extends RuntimeException
     AMA_ERR_TRANSACTION_FAIL  => 'transazione fallita',                       //14  "the transaction failed"
     AMA_ERR_GET               => 'lettura dal database  non riuscita'                            //15  "error in get-type function"
     );
-    
+
     $this->code = $code;
-    	
+
     if (is_int($code)) {
     	parent::__construct(self::errorMessage($code), $code );
-    } 
+    }
     else {
     	parent::__construct($code, AMA_ERROR);
     }

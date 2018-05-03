@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `amministratore_corsi` (
   `id_corso` int(10) unsigned NOT NULL DEFAULT '0',
   `id_utente_amministratore` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_corso`,`id_utente_amministratore`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `amministratore_corsi` (
 CREATE TABLE IF NOT EXISTS `amministratore_sistema` (
   `id_utente_amministratore_sist` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_utente_amministratore_sist`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `amministratore_sistema`
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `autore` (
   `profilo` text COLLATE utf8_unicode_ci,
   `tariffa` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_utente_autore`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `banner` (
   `date_from` int(11) DEFAULT NULL,
   `date_to` int(11) DEFAULT NULL,
   KEY `id_banner` (`id_banner`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `bookmark` (
   `ordering` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_bookmark`),
   KEY `bookmark_date` (`data`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `chatroom` (
   `msg_benvenuto` text COLLATE utf8_unicode_ci NOT NULL,
   `max_utenti` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_chatroom`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `clienti` (
   `address` varchar(80) COLLATE utf8_unicode_ci DEFAULT NULL,
   `notes` text COLLATE utf8_unicode_ci,
   UNIQUE KEY `clienti_id` (`id_client`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `destinatari_messaggi` (
   `read_timestamp` int(11) NOT NULL DEFAULT '0',
   `deleted` char(1) COLLATE utf8_unicode_ci DEFAULT 'N',
   PRIMARY KEY (`id_utente`,`id_messaggio`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS `extended_node` (
   `examples` text CHARACTER SET latin1 NOT NULL,
   `language` tinyint(3) NOT NULL,
   PRIMARY KEY (`id_node`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `history_esercizi` (
   `ALLEGATO` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   PRIMARY KEY (`ID_HISTORY_EX`),
   KEY `ID_HISTORY_EX` (`ID_HISTORY_EX`,`ID_UTENTE_STUDENTE`,`ID_ISTANZA_CORSO`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `history_nodi` (
   `access_from` smallint(5) unsigned DEFAULT '0',
   PRIMARY KEY (`id_history`),
   KEY `id_history` (`id_history`,`id_utente_studente`,`id_istanza_corso`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `iscrizioni` (
   `livello` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`id_utente_studente`,`id_istanza_corso`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `istanza_corso` (
   PRIMARY KEY (`id_istanza_corso`),
   KEY `id_istanza_corso` (`id_istanza_corso`,`id_corso`),
   KEY `id_corso` (`id_corso`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -273,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `link` (
   `azione` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`id_link`),
   UNIQUE KEY `unique-link` (`id_nodo`,`id_nodo_to`) COMMENT 'prevents link duplication'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -299,7 +299,7 @@ CREATE TABLE IF NOT EXISTS `log_classi` (
   `indice_att` int(10) unsigned NOT NULL DEFAULT '0',
   `level` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_log`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `messaggi` (
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_messaggio`),
   KEY `id_mittente` (`id_mittente`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -346,7 +346,7 @@ CREATE TABLE IF NOT EXISTS `modello_corso` (
   `tipo_servizio` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`id_corso`),
   UNIQUE KEY `modello_corso_nome` (`nome`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -358,7 +358,7 @@ CREATE TABLE IF NOT EXISTS `module_complete_conditionset` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `descrizione` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -370,7 +370,7 @@ CREATE TABLE IF NOT EXISTS `module_complete_conditionset_course` (
   `id_conditionset` int(10) unsigned NOT NULL COMMENT 'id of the completeset rule',
   `id_course` int(10) unsigned NOT NULL COMMENT 'id of the course linked to the completeset rule',
   PRIMARY KEY (`id_conditionset`,`id_course`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -387,7 +387,7 @@ CREATE TABLE IF NOT EXISTS `module_complete_operations` (
   `priority` int(11) NOT NULL COMMENT 'this is called priority but it''s used to tell in which column of the UI is the conditionSet',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -401,7 +401,7 @@ CREATE TABLE IF NOT EXISTS `module_formmail_helptype` (
   `recipient` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `user_type` tinyint(2) unsigned NOT NULL,
   PRIMARY KEY (`module_formmail_helptype_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
 --
 -- Dump dei dati per la tabella `module_formmail_helptype`
@@ -427,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `module_formmail_history` (
   `sentOK` tinyint(1) unsigned NOT NULL,
   `sentTimestamp` int(10) NOT NULL,
   PRIMARY KEY (`module_formmail_history`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -441,7 +441,7 @@ CREATE TABLE IF NOT EXISTS `module_login_history_login` (
   `module_login_providers_id` int(5) unsigned NOT NULL,
   `successfulOptionsID` int(5) unsigned NOT NULL,
   PRIMARY KEY (`id_utente`,`date`,`module_login_providers_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -454,7 +454,7 @@ CREATE TABLE IF NOT EXISTS `module_login_options` (
   `key` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`key`,`module_login_providers_options_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `module_login_options`
@@ -497,7 +497,7 @@ CREATE TABLE IF NOT EXISTS `module_login_providers` (
   `buttonLabel` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `displayOrder` int(4) unsigned NOT NULL,
   PRIMARY KEY (`module_login_providers_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 --
 -- Dump dei dati per la tabella `module_login_providers`
@@ -521,7 +521,7 @@ CREATE TABLE IF NOT EXISTS `module_login_providers_options` (
   `order` int(5) unsigned NOT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`module_login_providers_options_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 --
 -- Dump dei dati per la tabella `module_login_providers_options`
@@ -547,7 +547,7 @@ CREATE TABLE IF NOT EXISTS `module_newsletter_history` (
   `recipientscount` int(6) unsigned NOT NULL,
   `status` tinyint(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -564,7 +564,7 @@ CREATE TABLE IF NOT EXISTS `module_newsletter_newsletters` (
   `plaintext` text COLLATE utf8_unicode_ci,
   `draft` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -577,7 +577,7 @@ CREATE TABLE IF NOT EXISTS `module_test_course_survey` (
   `id_test` int(11) NOT NULL,
   `id_nodo` varchar(64) NOT NULL,
   PRIMARY KEY (`id_corso`,`id_test`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -600,7 +600,7 @@ CREATE TABLE IF NOT EXISTS `module_test_history_answer` (
   `allegato` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `data` int(10) NOT NULL,
   PRIMARY KEY (`id_answer`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -624,7 +624,7 @@ CREATE TABLE IF NOT EXISTS `module_test_history_test` (
   `tempo_scaduto` tinyint(1) NOT NULL DEFAULT '0',
   `domande` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_history_test`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -660,7 +660,7 @@ CREATE TABLE IF NOT EXISTS `module_test_nodes` (
   `durata` int(10) DEFAULT NULL,
   `titolo_dragdrop` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_nodo`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -693,7 +693,7 @@ CREATE TABLE IF NOT EXISTS `nodo` (
   PRIMARY KEY (`id_nodo`),
   KEY `parent` (`id_nodo_parent`,`ordine`),
   KEY `id_istanza` (`id_istanza`,`id_utente`,`id_nodo_parent`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -713,7 +713,7 @@ CREATE TABLE IF NOT EXISTS `openmeetings_room` (
   PRIMARY KEY (`id`),
   KEY `id_room` (`id_room`),
   KEY `id_istanza_corso` (`id_istanza_corso`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -729,7 +729,7 @@ CREATE TABLE IF NOT EXISTS `posizione` (
   `y1` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_posizione`),
   UNIQUE KEY `posizione_coords` (`x0`,`y0`,`x1`,`y1`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -749,7 +749,7 @@ CREATE TABLE IF NOT EXISTS `risorsa_esterna` (
   `pubblicato` tinyint(1) NOT NULL,
   `lingua` tinyint(3) NOT NULL,
   PRIMARY KEY (`id_risorsa_ext`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -762,7 +762,7 @@ CREATE TABLE IF NOT EXISTS `risorse_nodi` (
   `id_risorsa_ext` int(10) unsigned NOT NULL DEFAULT '0',
   `peso` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_nodo`,`id_risorsa_ext`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -813,7 +813,7 @@ CREATE TABLE IF NOT EXISTS `sessione_eguidance` (
   `m_comments` text COLLATE utf8_unicode_ci,
   `other_comments` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -824,7 +824,7 @@ CREATE TABLE IF NOT EXISTS `sessione_eguidance` (
 CREATE TABLE IF NOT EXISTS `studente` (
   `id_utente_studente` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_utente_studente`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -837,7 +837,7 @@ CREATE TABLE IF NOT EXISTS `tutor` (
   `profilo` text COLLATE utf8_unicode_ci,
   `tariffa` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_utente_tutor`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -849,7 +849,7 @@ CREATE TABLE IF NOT EXISTS `tutor_studenti` (
   `id_utente_tutor` int(10) unsigned NOT NULL DEFAULT '0',
   `id_istanza_corso` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_utente_tutor`,`id_istanza_corso`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -884,7 +884,7 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `birthprovince` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
 --
 -- Dump dei dati per la tabella `utente`
@@ -906,7 +906,7 @@ CREATE TABLE IF NOT EXISTS `utente_chatroom` (
   `tempo_entrata` int(11) NOT NULL DEFAULT '0',
   `tempo_ultimo_evento` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_utente`,`id_chatroom`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -921,7 +921,7 @@ CREATE TABLE IF NOT EXISTS `utente_chatroom_log` (
   `id_operatore` int(10) unsigned NOT NULL DEFAULT '0',
   `id_chatroom` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`tempo`,`id_utente`,`azione`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -936,7 +936,7 @@ CREATE TABLE IF NOT EXISTS `utente_log` (
   `testo` tinytext COLLATE utf8_unicode_ci NOT NULL,
   `id_istanza_corso` int(10) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `utente_log_id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -959,7 +959,7 @@ CREATE TABLE IF NOT EXISTS `utente_messaggio_log` (
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`tempo`,`id_mittente`,`testo`),
   UNIQUE KEY `utente_messaggio_log_id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -34,7 +34,7 @@ class Bookmark{
         var $error_msg;
         var $full;
 
-        function Bookmark($id_bk=""){
+        public function __construct($id_bk=""){
                 // finds out information about a bookmark
                 $dh=$GLOBALS['dh'];
                 if (!empty($id_bk)){
@@ -64,7 +64,7 @@ class Bookmark{
 
        }
 
-	
+
 
        public static function get_bookmarks($id_user,$id_tutor="",$id_node=''){
                 // ritorna la lista di bookmark dell'utente ed eventualmente (se passato) per il nodo
@@ -195,7 +195,7 @@ class Bookmark{
        }
 
        function remove_bookmark($id_user,$id_bk){
-    
+
                $dh = $GLOBALS['dh'];
                    $error = $GLOBALS['error'];
                    $http_root_dir = $GLOBALS['http_root_dir'];
@@ -426,7 +426,7 @@ class Bookmark{
                           'type'=>'text',
                           'name'=>'booomark_title',
                           'value'=>translateFN('Titolo del bookmark'),
-			
+
                           ),
                      array(
                           'label'=>'',
@@ -492,7 +492,7 @@ class Bookmark{
 
 
 
-	
+
 
 
 
@@ -510,7 +510,7 @@ class Tag extends Bookmark {
         var $error_msg;
         var $full;
 
-        function Tag ($id_bk=""){
+        public function __construct($id_bk=""){
                 // finds out information about a tag
                 $dh=$GLOBALS['dh'];
                 if (!empty($id_bk)){
@@ -615,8 +615,8 @@ class Tag extends Bookmark {
                  $debug = $GLOBALS['debug'];
 		 $existing_tagAr = array('bello','interessante','confuso','dubbio');
 
-	
-		/*	
+
+		/*
 		    array(
                           'label'=>'Tag',
                           'type'=>'text',
@@ -628,7 +628,7 @@ class Tag extends Bookmark {
                      array(
                           'label'=>'',
                           //'type'=>'text',
-			'type' => 'hidden',                          
+			'type' => 'hidden',
 			'name'=>'id_node',
                           'value'=>$sess_id_node
                           ),
@@ -652,7 +652,7 @@ class Tag extends Bookmark {
                           )
 
                  );
-		// versione con select	
+		// versione con select
 		$select_field =  array(
                           'label'=>'Tag',
                           'type'=>'select', //text',
@@ -739,7 +739,7 @@ function get_class_tagsFN($sess_id_node,$sess_id_course_instance,$ordering='s'){
 						//echo "$id_student : $user_activity_index <br>";
 				}
 				$user_activity_index = $class_student_activityAr[$sess_id_user];
-				//print_r($class_student_activityAr);				
+				//print_r($class_student_activityAr);
 				//	asort ($class_student_activityAr,SORT_NUMERIC); // ordinamento su indice attività
 				//print ($user_activity_index."<br>");
 				$ord_tag_ind = array();
@@ -770,7 +770,7 @@ function get_class_tagsFN($sess_id_node,$sess_id_course_instance,$ordering='s'){
 		//...
 		}
               	return  $ordered_tagsHa;
-                
+
 		}
 
  function format_as_tag($dataHa){
@@ -867,7 +867,7 @@ function get_class_tagsFN($sess_id_node,$sess_id_course_instance,$ordering='s'){
             $res = $t->getTable();
           }
           return $res;
-          
+
         }
 
 

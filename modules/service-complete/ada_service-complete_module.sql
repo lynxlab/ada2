@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `module_complete_conditionset` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `descrizione` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `module_complete_conditionset_course` (
   `id_conditionset` int(10) unsigned NOT NULL COMMENT 'id of the completeset rule',
   `id_course` int(10) unsigned NOT NULL COMMENT 'id of the course linked to the completeset rule',
   PRIMARY KEY (`id_conditionset`,`id_course`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -46,4 +46,4 @@ CREATE TABLE IF NOT EXISTS `module_complete_operations` (
   `priority` int(11) NOT NULL COMMENT 'this is called priority but it''s used to tell in which column of the UI is the conditionSet',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

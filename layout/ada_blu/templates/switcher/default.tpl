@@ -18,7 +18,7 @@
         <div id="container">
             <!-- PERCORSO -->
             <div id="journey" class="ui tertiary inverted teal segment">
-                <i18n>dove sei: </i18n>
+                <span class="jHeader"><i18n>dove sei: </i18n></span>
                 <span>
                     <!--template_field class="template_field" name="course_title">course_title</template_field-->
                     <template_field class="template_field" name="label">label</template_field>

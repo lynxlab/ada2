@@ -25,19 +25,19 @@ class ARE
 
   	/**
   	 * @author giorgio 03/apr/2014
-  	 * 
+  	 *
   	 * If query string wants a pdf, let's obey by setting the $renderer
   	 */
   	if (isset($_GET['pdfExport']) && intval($_GET['pdfExport'])===1) {
   		$renderer = ARE_PDF_RENDER;
   	}
-  	
+
   	if (!isset($id_profile)) $id_profile = null;
-  	
+
     switch($renderer) {
         case ARE_PRINT_RENDER:
-          
-        	
+
+
           $layoutObj = read_layout_from_DB($id_profile,
           isset($layout_dataAr['family']) ? $layout_dataAr['family'] : '',
           isset($layout_dataAr['node_type']) ? $layout_dataAr['node_type'] : '',
@@ -45,7 +45,7 @@ class ARE
           isset($layout_dataAr['node_course_id']) ? $layout_dataAr['node_course_id'] : '',
           isset($layout_dataAr['module_dir']) ? $layout_dataAr['module_dir'] : ''
         );
-          
+
         // TODO: controlli su layoutObj
         $layout_template = $layoutObj->template;
         $layout_CSS      = $layoutObj->CSS_filename;
@@ -55,7 +55,7 @@ class ARE
         	//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
         	$layoutObj->CSS_filename = implode(';',$tmp);
         	$layout_CSS = implode(';',$tmp);
-        }        
+        }
         /*
          * optional arguments for HTML constructor
         */
@@ -72,8 +72,8 @@ class ARE
         $html_renderer = new HTML($layout_template, $layout_CSS, $user_name, $course_title,
                                   $node_title, $meta_keywords, $author, null,
                                   null,$onload_func, $layoutObj);
-                                  
-	
+
+
         $html_renderer->fillin_templateFN($content_dataAr);
 
         $imgpath = (dirname($layout_template));
@@ -81,7 +81,7 @@ class ARE
         $html_renderer->apply_styleFN();
 
         $html_renderer->outputFN('page');
-        
+
         break;
 
       case ARE_XML_RENDER:
@@ -89,14 +89,14 @@ class ARE
         $title = $options['course_title'];
         $portal =  $options['portal'];
         $xml_renderer = new Generic_XML($portal,$today,$title);
-        $xml_renderer->idNode = $options['id'];        
-        $xml_renderer->URL = $options['URL'];        
+        $xml_renderer->idNode = $options['id'];
+        $xml_renderer->URL = $options['URL'];
         $xml_renderer->fillinFN($content_dataAr);
         $xml_renderer->outputFN('page');
         break;
 
         case ARE_FILE_RENDER:
-	  
+
          $layoutObj = read_layout_from_DB($id_profile,
           isset($layout_dataAr['family']) ? $layout_dataAr['family'] : null,
           isset($layout_dataAr['node_type']) ? $layout_dataAr['node_type'] : null,
@@ -124,14 +124,14 @@ class ARE
 
         if (!file_exists($static_dir)){
                 mkdir($static_dir);
-        }	
+        }
         $static_filename = md5($_SERVER['REQUEST_URI'].$_SERVER['QUERY_STRING']);
-        $cached_file = $static_dir.$static_filename; 
+        $cached_file = $static_dir.$static_filename;
 
         $html_renderer = new HTML($layout_template, $layout_CSS, $user_name, $course_title,
                                   $node_title, $meta_keywords, $author, $meta_refresh_time,
                                   $meta_refresh_url,$onload_func, $layoutObj);
-                                  
+
 		$html_renderer->full_static_filename = $cached_file;
         $html_renderer->static_filename = $static_filename;
         $html_renderer->fillin_templateFN($content_dataAr);
@@ -141,9 +141,9 @@ class ARE
         $html_renderer->apply_styleFN();
 
         $html_renderer->outputFN('file');
-	
+
         break;
-        
+
 
       case ARE_HTML_RENDER:
       case ARE_PDF_RENDER:
@@ -162,32 +162,32 @@ class ARE
 
         /**
          * @author giorgio 19/ago/2014
-         * 
+         *
          * fix javascript inclusion as follows:
          * - if the PhP has not included JQUERY, include it as first element
          * - if the PhP has not included SEMANTICUI_JS, include it just after JQUERY
          * - if the PhP has not included JQUERY_NO_CONFLICT include it as last element
-         * 
+         *
          * This way, any PhP can include what it needs and in the right order of inclusion
          */
-        
+
         /**
          * @author giorgio 10/nov/2014
-         * 
+         *
          * If the browser is InternetExplorer 8 or less, use smartmenus instead of semantic-ui
-         * 
+         *
          * NOTE: $_SESSION['IE-version'] is set by module_init_functions.inc.php
          */
-        $JSToUse = (isset($_SESSION['IE-version']) && 
+        $JSToUse = (isset($_SESSION['IE-version']) &&
         		    $_SESSION['IE-version']!==false && $_SESSION['IE-version']<=8) ? SMARTMENUS_JS : SEMANTICUI_JS;
-        $CSSToUse = (isset($_SESSION['IE-version']) && 
+        $CSSToUse = (isset($_SESSION['IE-version']) &&
         		    $_SESSION['IE-version']!==false && $_SESSION['IE-version']<=8) ? SMARTMENUS_CSS : SEMANTICUI_CSS;
-        
+
 		if (!empty($layout_dataAr['JS_filename']) && is_array($layout_dataAr['JS_filename'])) {
-			
+
 			// if jquery is not included in the script itself, add it at first position
 			if (!in_array(JQUERY, $layout_dataAr['JS_filename'])) $layout_dataAr['JS_filename'] = array_merge(array(JQUERY),$layout_dataAr['JS_filename']);
-			
+
 			// if $JSToUse is not included in the script itself, add it just after JQUERY
 			if (!in_array($JSToUse, $layout_dataAr['JS_filename'])) {
 				// find the key for JQUERY
@@ -199,10 +199,10 @@ class ARE
 						array_slice($layout_dataAr['JS_filename'], $key+1)
 				);
 			}
-			
+
 			// if jquery noconflict is not included in the script itself, add it at last position
 			if (!in_array(JQUERY_NO_CONFLICT, $layout_dataAr['JS_filename'])) array_push($layout_dataAr['JS_filename'], JQUERY_NO_CONFLICT);
-			
+
 			$tmp = explode(';',$layoutObj->JS_filename);
 			$tmp = array_merge($tmp,$layout_dataAr['JS_filename']);
 			//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
@@ -213,8 +213,8 @@ class ARE
 		}
 
 		$tmp = explode(';',$layoutObj->CSS_filename);
-				
-		if (!empty($layout_dataAr['CSS_filename']) && is_array($layout_dataAr['CSS_filename'])) {			
+
+		if (!empty($layout_dataAr['CSS_filename']) && is_array($layout_dataAr['CSS_filename'])) {
 			$tmp = array_merge($tmp,$layout_dataAr['CSS_filename']);
 		}
 		/**
@@ -222,7 +222,7 @@ class ARE
 		 * add $CSSToUse last
 		 */
 		$tmp[] = $CSSToUse;
-			
+
 		//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
 		$layoutObj->CSS_filename = implode(';',$tmp);
 		$layout_CSS = implode(';',$tmp);
@@ -245,27 +245,28 @@ class ARE
          * make menu here
          */
         require_once ROOT_DIR.'/include/menu_class.inc.php';
-        // menu property created 'on-the-fly' 
+        // menu property created 'on-the-fly'
         $layoutObj->menu = new Menu($layoutObj->module_dir,
         		basename(($_SERVER['SCRIPT_FILENAME'])),
         		$_SESSION['sess_userObj']->getType(),
         		$menuoptions);
-        
+
         if ($renderer == ARE_PDF_RENDER) {
-        	
+
         	$orientation   = isset($options['orientation'])       ? $options['orientation'] : '';
         	$outputfile    = isset($options['outputfile'])        ? $options['outputfile'] : '';
-        	
+        	$forcedownload = isset($options['forcedownload'])        ? $options['forcedownload'] : '';
+
         	// must be called $html_renderer for below code, but it's not :)
         	$html_renderer = new PDF($layout_template, $layout_CSS, $user_name, $course_title,
         			$node_title, $meta_keywords, $author, $meta_refresh_time,
-        			$meta_refresh_url,$onload_func, $layoutObj, $outputfile, $orientation);        	
+        			$meta_refresh_url,$onload_func, $layoutObj, $outputfile, $orientation, $forcedownload);
         } else {
         	$html_renderer = new HTML($layout_template, $layout_CSS, $user_name, $course_title,
         			$node_title, $meta_keywords, $author, $meta_refresh_time,
         			$meta_refresh_url,$onload_func, $layoutObj);
         }
-        
+
         /**
          * @author giorgio 25/set/2013
          * merge the content_dataAr with the one generated by the widgets if it's needed
@@ -275,14 +276,14 @@ class ARE
         	if (!isset($layout_dataAr['widgets'])) $layout_dataAr['widgets'] = '';
         	$widgets_dataAr = $html_renderer->fillin_widgetsFN($layoutObj->WIDGET_filename,$layout_dataAr['widgets']);
         	if (!ADA_Error::isError($widgets_dataAr))
-        		$content_dataAr = array_merge ($content_dataAr, $widgets_dataAr);		
-        }                
+        		$content_dataAr = array_merge ($content_dataAr, $widgets_dataAr);
+        }
 
         /**
          * adamenu must be the first key of $content_dataAr
          * for the template_field substitution to work inside the menu
          */
-        $content_dataAr = array ('adamenu'=>$layoutObj->menu->getHtml()) + $content_dataAr;        
+        $content_dataAr = array ('adamenu'=>$layoutObj->menu->getHtml()) + $content_dataAr;
         $content_dataAr['isVertical'] = ($layoutObj->menu->isVertical()) ? ' vertical' : '';
 
         $html_renderer->fillin_templateFN($content_dataAr);
@@ -369,7 +370,7 @@ class  Output
 class  Generic_Html extends Output
 {
   //vars:
- 
+
   var $template;
   var $CSS_filename;
   var $family;
@@ -399,7 +400,7 @@ class  Generic_Html extends Output
         <meta name=\"class\" content=\"generic HTML\">
         <meta name=\"description\" content=\"$description\">
         <meta name=\"keywords\" content=\"$keywords, $meta_keywords\">
-        <meta name=\"cachefile\" content=\"$static_filename\">     
+        <meta name=\"cachefile\" content=\"$static_filename\">
         <!-- Stile -->\n";
     $this->htmlheader.= "<title>\n$title\n</title>\n";
     $this->htmlheader.= "</head>\n";
@@ -442,7 +443,7 @@ class  Generic_Html extends Output
       $tpl.=$row;
     }
 
-    
+
 
     $bodytpl = strstr ($tpl,'<body');
     $n = strpos($bodytpl, "</body>");
@@ -457,7 +458,7 @@ class  Generic_Html extends Output
      * added HTTP_ROOT_DIR as template_field 'constant'
      */
 	$dataHa['HTTP_ROOT_DIR'] = HTTP_ROOT_DIR;
-	
+
     foreach ($dataHa as $field=>$data){
 
       $ereg = str_replace('%field_name%',$field,$this->replace_field_code);
@@ -490,7 +491,7 @@ class  Generic_Html extends Output
     $preg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",preg_quote($this->replace_field_code,'/'));
     $tpl = preg_replace('/'.$preg.'/i',"<!-- template_field_removed -->",$tpl);
 //  $tpl = eregi_replace($ereg,"<!-- template_field_removed -->",$tpl);
-    
+
     /*
      * traduzione dei template
      * vito, 15 ottobre 2008: parse del template per tradurre il testo contenuto nella lingua dell'utente
@@ -524,13 +525,13 @@ class  Generic_Html extends Output
     $tpl_fileextension =  $GLOBALS['tpl_fileextension'];
     $tpl = $this->htmlbody;
     $module_dir = $this->module_dir;
-    $ereg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",$this->replace_microtemplate_field_code);
+    $preg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",preg_quote($this->replace_microtemplate_field_code,'/'));
     $tpl_ar = explode("\n",$tpl);
     $k=0;
     foreach($tpl_ar as $tpl_row){
       //echo $k.$tpl_row;
       $k++;
-      if (@ereg($ereg,$tpl_row,$regs)){
+      if (preg_match("/$preg/",$tpl_row,$regs)){
         $microtpl_name = $regs[1];
 
 		// valerio: 26/11/2012 inizio modifica microtemplate per moduli esterni
@@ -543,20 +544,20 @@ class  Generic_Html extends Output
 			// layout/claire/templates/browsing/header.tpl ?
 			$microtpl_filename = $root_dir."/layout/".$this->family."/templates/$module_dir/".$microtpl_name.$tpl_fileextension;
 		}
-		
+
 		// giorgio: 12/ago/2013 try to load provider microtemplate if it's singleprovider environment
 		if (!MULTIPROVIDER && isset($GLOBALS['user_provider']))
 		{
 			$provider_microtpl_filename = $root_dir."/clients/".$GLOBALS['user_provider']."/layout/".$this->family."/templates/$module_dir/".$microtpl_name.$tpl_fileextension;
 
 			if (file_exists($provider_microtpl_filename)) {
-				$microtpl_filename = $provider_microtpl_filename;				
+				$microtpl_filename = $provider_microtpl_filename;
 			} else {
 				$microtpl_filename = $root_dir."/clients/".$GLOBALS['user_provider']."/layout/".$this->family."/templates/".$microtpl_name.$tpl_fileextension;
 			}
 		}
 		// giorgio: 12/ago/2013 end
-		
+
 		// fine modifica moduli esterni
         if (file_exists($microtpl_filename)) {
             $microtpl_code = file_get_contents($microtpl_filename);
@@ -590,13 +591,13 @@ class  Generic_Html extends Output
     $tpl_fileextension =  $GLOBALS['tpl_fileextension'];
     $tpl = $this->htmlbody;
     $module_dir = $this->module_dir;
-    $ereg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",$this->replace_microtemplate_field_code);
+    $preg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",preg_quote($this->replace_microtemplate_field_code,'/'));
     $tpl_ar = explode("\n",$tpl);
     $k=0;
     foreach($tpl_ar as $tpl_row){
       //echo $k.$tpl_row;
       $k++;
-      if (@ereg($ereg,$tpl_row,$regs)){
+      if (preg_match("/$preg/",$tpl_row,$regs)){
         $microtpl_name = $regs[1];
 
 		// valerio: 26/11/2012 inizio modifica microtemplate per moduli esterni
@@ -685,11 +686,12 @@ class  Generic_Html extends Output
       $tplOk = array();
       foreach ($dataHa as $field=>$data){
         $ereg = str_replace('%field_name%',$field,$replace_field_code);
+        $preg = str_replace('%field_name%',$field,preg_quote($replace_field_code,'/'));
         //$ereg = "<!-- #BeginEditable \"$field\" -->([a-zA-Z0-9_\t;&\n ])*<!-- #EndEditable -->";
         if (ADA_STATIC_TEMPLATE_FIELD) {
           $tplOk[$field] = strpos($ereg,$tpl); //faster !!!
         } else {
-          $tplOk[$field] = ereg($ereg,$tpl);
+          $tplOk[$field] = preg_match("/$preg/",$tpl);
         }
 
       }
@@ -835,14 +837,14 @@ class  Generic_Html extends Output
     }/* else {
     	$template_family = "default";
 	}*/
-    
+
     /**
      * @author giorgio 04/apr/2014
-     * 
+     *
      * removed the above else to have $template_family
      * not pointing to 'default' that does not exists
      * anymore, and it will point to ADA_TEMPLATE_FAMILY
-     */ 
+     */
 
     if (empty($stylesheetpath)){
       if (!isset($this->module_dir)){
@@ -870,20 +872,20 @@ class  Generic_Html extends Output
 			if (!stristr($stylesheet,'css/'))
 			$stylesheet =  $stylesheetpath.$stylesheet; // if there is no path, we add it
 		}
-		
+
         if (file_exists($stylesheet)){
           // this is for standard browsers
           $stylesheet = str_replace($root_dir,$http_root_dir,$stylesheet);
-          $html_css_code .= "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\">\n";
+          $html_css_code .= "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen,print\">\n";
         }
 
-        
+
         /* steve 31/03/09
          *
          * add alternate CSS for non standard browsers, namely IE 6 to 9 and...*/
 
         for($ie_version=6; $ie_version<=9; $ie_version++) {
-        
+
 	        $cond_com_begin = "\n<!--[if IE ".$ie_version."]>\n";
 	        $cond_com_end = "<![endif]-->\n";
 
@@ -901,14 +903,14 @@ class  Generic_Html extends Output
 
 	        if (file_exists($ie_stylesheet)){
 	            $ie_stylesheet = str_replace($root_dir,$http_root_dir,$ie_stylesheet);
-	          	$html_css_code .= $cond_com_begin."<link rel=\"stylesheet\" href=\"$ie_stylesheet\" type=\"text/css\" media=\"screen\">\n".$cond_com_end;
+	          	$html_css_code .= $cond_com_begin."<link rel=\"stylesheet\" href=\"$ie_stylesheet\" type=\"text/css\" media=\"screen,print\">\n".$cond_com_end;
 	        }
         }
         /* end mod	*/
 
       }
     }
-	
+
     /**
      * @author giorgio 03/apr/2014
      * Look for a print.css that will be used for print media
@@ -918,12 +920,12 @@ class  Generic_Html extends Output
     $lookFor = 'print.css';
     /**
      * Look for the print.css file in :
-     * 
+     *
      * 	$stylesheetpath . '../' that is css root
      *  $stylesheetpath . ''  that is module's own dir
-     *  
+     *
      * This way module's own print.css will be the
-     * last loaded one and can overwrite properly 
+     * last loaded one and can overwrite properly
      */
     foreach (array ('../','') as $subdir) {
     	$fileName = $stylesheetpath . $subdir . $lookFor;
@@ -932,9 +934,9 @@ class  Generic_Html extends Output
     		$html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName\" type=\"text/css\" media=\"print\">\n";
     	}
     }
-    
+
      /*
-     * sara 24/nov/2014 
+     * sara 24/nov/2014
      * Look for the print.css file in external modules (newsletter, test ecc..)
      */
       if($this->external_module){
@@ -947,11 +949,11 @@ class  Generic_Html extends Output
             }
         }
     }
-    
+
     /**
      * end @author giorgio 03/apr/2014
      */
-    
+
     $this->htmlheader = str_replace('<!-- Stile -->',$html_css_code,$this->htmlheader);
   }
 
@@ -961,23 +963,23 @@ class  Generic_Html extends Output
     $http_root_dir =   $GLOBALS['http_root_dir'];
     $root_dir =   $GLOBALS['root_dir'];
 
-    
+
     $module_dir = $this->module_dir;
-    
+
     if (empty($module_dir)) {
         $module_dir = "main";
     }
-    
+
     if ($module_dir == "main") {
-    
+
         $rel_path = "";
     } else {
 
         $rel_path = "../";
     }
-    
 
-    
+
+
     //$rel_path = $root_dir."/";
     if (!isset($family) or $family == ""){
       if (isset($this->family) and ($this->family<>"")) {
@@ -1043,36 +1045,42 @@ class  Generic_Html extends Output
         $data = $this->htmlheader;
         $data.= $this->htmlbody;
         $data.= $this->htmlfooter;
-        $fp = fopen ($this->full_static_filename, "w"); 
+        $fp = fopen ($this->full_static_filename, "w");
         $result = fwrite($fp,$data);
         fclose($fp);
         break;
-      case 'pdf':   	
+      case 'pdf':
       	$data = $this->htmlheader;
       	$data.= $this->htmlbody;
       	$data.= $this->htmlfooter;
-      	require_once ROOT_DIR . '/include/dompdf/dompdf_config.inc.php';
-      	$dompdf_options = array(      			      			      	
+      	// make dompf tmp font dir if needed
+      	if (!is_dir(ADA_UPLOAD_PATH.'tmp-dompdf')) {
+				$oldmask = umask(0);
+				mkdir (ADA_UPLOAD_PATH.'tmp-dompdf', 0775, true);
+				umask($oldmask);
+      	}
+      	// include dompdf autoloader
+		require_once 'dompdf/autoload.inc.php';
+      	$dompdf_options = array(
       			// Rendering
       			"default_media_type"       => 'print',
-      			"default_paper_size"       => 'a4',
-      	
+      			"default_paper_size"       => 'A4',
+      			"font_dir"				   => ADA_UPLOAD_PATH.'tmp-dompdf',
       			// Features
-      			"enable_unicode"           => DOMPDF_UNICODE_ENABLED,
-      			"enable_php"               => true,
+      			"enable_unicode"           => true,
+      			"enable_php"               => false,
       			"enable_remote"            => true,
       			"enable_css_float"         => true,
       			"enable_javascript"        => true,
-      			"enable_html5_parser"      => DOMPDF_ENABLE_HTML5PARSER,
-      			"enable_font_subsetting"   => DOMPDF_ENABLE_FONTSUBSETTING
+      			"enable_html5_parser"      => false,
+      			"enable_font_subsetting"   => false
       	);
-      	$dompdf = new DOMPDF();
-      	$dompdf->set_options($dompdf_options);
-      	$dompdf->set_paper('a4',$this->orientation);
-      	$dompdf->load_html($data);      	
+      	$dompdf = new \Dompdf\Dompdf($dompdf_options);
+      	$dompdf->setPaper('A4',$this->orientation);
+      	$dompdf->loadHtml($data);
       	$dompdf->render();
-      	
-      	$dompdf->stream($this->outputfile.'.pdf', array('Attachment'=>0));
+
+      	$dompdf->stream($this->outputfile.'.pdf', array('Attachment'=>$this->forcedownload));
       	die();
         break;
     }
@@ -1136,7 +1144,7 @@ class Html extends Generic_HTML
       $this->JS_filename = $layoutObj->JS_filename;
       $this->module_dir = $layoutObj->module_dir;
 	  $this->external_module = $layoutObj->external_module;
-		
+
 
       $charset = ADA_CHARSET;
       $http_root_dir = HTTP_ROOT_DIR;
@@ -1144,7 +1152,7 @@ class Html extends Generic_HTML
       $description = ADA_METADESCRIPTION;
       $keywords;
       $meta_keywords;
-      
+
       $this->htmlheader = <<< EOT
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -1221,13 +1229,14 @@ EOT;
 
     $this->htmlheader .="
 <meta name=\"powered_by\" content=\"ADA v.".ADA_VERSION."\">
+<meta name=\"powered_by\" content=\"PHP v.".phpversion()."\">
         <meta name=\"address\" content=\"$http_root_dir\">
         <meta name=\"author\" content=\"$author\">
         <meta name=\"template\" content=\"$template_name\">
         <meta name=\"family\" content=\"$family_name\">
         <meta name=\"ADA-module\" content=\"$module_dir\">
         <meta name=\"widgets\" content=\"$widget_filename\">";
-        if (isset($layoutObj->menu)) { 
+        if (isset($layoutObj->menu)) {
         	$this->htmlheader .= "
         <meta name=\"menu\" content=\"".$layoutObj->menu->getId()."\"";
         	if (!is_null($layoutObj->menu->getLinkedFromId())) {
@@ -1235,7 +1244,7 @@ EOT;
         	}
         	$this->htmlheader .= ">";
         }
-        
+
         $this->htmlheader .= "
         <meta name=\"class\" content=\"HTML\">
         <meta name=\"outputClasses\" content=\"NEW\">
@@ -1264,20 +1273,20 @@ EOT;
     }
     $this->htmlfooter= "</body>\n</html>";
   }  // end function HTML
-  
+
   /**
    * @author giorgio 25/set/2013
-   * 
+   *
    * renders the widgets of the page as described in the passed xml config file
-   * 
+   *
    * @param string $widgetsConfFilename xml configuration filename for the widgets
    * @param arrayn $optionsArray array of option to be passed to the widget loader
-   * 
+   *
    * @return array|AMA_Error
    */
   public function fillin_widgetsFN ($widgetsConfFilename = '', $optionsArray = array())
   {
-  	
+
   	require_once ROOT_DIR.'/widgets/include/widget_includes.inc.php';
   	if (is_file($widgetsConfFilename)) {
   		try {
@@ -1288,10 +1297,10 @@ EOT;
   			 * see config_errors.inc.php line 167 and following.
   			 * depending on the erorr phase / severity something will happen...
   			 */
-  			return new ADA_Error(NULL,'Widget configuration XML is not valid',__METHOD__,ADA_ERROR_ID_XML_PARSING);  			 
-  		}  		
+  			return new ADA_Error(NULL,'Widget configuration XML is not valid',__METHOD__,ADA_ERROR_ID_XML_PARSING);
+  		}
   	}
-  	
+
   	/**
   	 * @author giorgio 25/feb/2014
   	 * ArrayToXML::toArray does not return an array of array if there's
@@ -1300,7 +1309,7 @@ EOT;
   	if (!is_array(reset($widgetAr['widget']))) $widgets = array ($widgetAr['widget']);
   	else $widgets = $widgetAr['widget'];
   	$retArray = array();
-  	
+
   	foreach ( $widgets as $widget ) {
   		// if widget is not active skip the current iteration
   		if ((isset($widget['active']) && intval($widget['active'])===0) ||
@@ -1312,30 +1321,32 @@ EOT;
   		if (isset($optionsArray[$wobj->templateField]) && !empty($optionsArray[$wobj->templateField]))
   		{
   			foreach ($optionsArray[$wobj->templateField] as $name=>$value) $wobj->setParam($name, $value);
-  		}	
+  		}
   		$retArray[$wobj->templateField] = $wobj->getWidget ();
   	}
   	return $retArray;
-  }  
+  }
 
 } //end class HTML
 
 /**
  * Classe generica di output PDF
- * 
+ *
  * @author giorgio
  *
  */
 class PDF extends HTML {
 	var $outputfile;
 	var $orientation;
-	
+	var $forcedownload;
+
 	public function __construct($template,$CSS_filename,$user_name,$course_title,$node_title="",$meta_keywords="",$author="",$meta_refresh_time="",
-			    $meta_refresh_url="",$onload_func="",$layoutObj=NULL,$outputfile="ada",$orientation="landscape")
+			    $meta_refresh_url="",$onload_func="",$layoutObj=NULL,$outputfile="ada",$orientation="landscape", $forcedownload = false)
 	{
 		$this->outputfile = $outputfile;
 		$this->orientation = $orientation;
-		
+		$this->forcedownload = $forcedownload;
+
 		parent::__construct($template,$CSS_filename,$user_name,$course_title,$node_title,$meta_keywords,$author,$meta_refresh_time,$meta_refresh_url,$onload_func,$layoutObj);
 	}
 } //end class PDF
@@ -1365,13 +1376,13 @@ class Generic_XML extends Output
     $this->xmlheader.= "<PORTAL>\n$portal\n</PORTAL>\n";
     $this->xmlheader.= "<DOCDATE>\n$date\n</DOCDATE>\n";
     $this->xmlheader.= "<DOCTITLE>\n$course_title\n</DOCTITLE>\n";
-    
+
     $this->xmlfooter= "</MAP>\n";
   }
 
 
   public function fillinFN($dataHa){
-   /*  traduzione parziale delle chiavi essenziali */ 
+   /*  traduzione parziale delle chiavi essenziali */
     $this->xmlbody="<NODE>\n";
     $this->xmlbody.="<NODEID>".$this->idNode."</NODEID>\n";
     $this->xmlbody.="<VERSION>".$dataHa['version']."</VERSION>\n";
@@ -1380,14 +1391,14 @@ class Generic_XML extends Output
     $this->xmlbody.="<KEYWORDS>".strip_tags($dataHa['keywords'])."</KEYWORDS>\n";
 
 
-   
-   /* traduzione completa di tutte le chiavi; 
+
+   /* traduzione completa di tutte le chiavi;
    $this->xmlbody="<NODE>\n";
    foreach ($dataHa as $field=>$data){
 	   if ($field<>'text'){
 			$this->xmlbody.="<".$field.">".$data."</".$field.">";
 		}
-	}   
+	}
 	*/
     $this->xmlbody.="<TEXT>\n";
     $this->xmlbody.="<PARAGRAPH><![CDATA[".$dataHa['text'];
@@ -1396,7 +1407,7 @@ class Generic_XML extends Output
     //    $this->xmlbody.="</PARAGRAPH>\n";
 
     $this->xmlbody.="</TEXT>\n";
-    /* MEDIA e LINKS 
+    /* MEDIA e LINKS
      //if ($dataHa['media']!=translateFN("Nessuno")) {
      $this->xmlbody.="<MEDIA>".$dataHa['media']."</MEDIA>\n";
      //}

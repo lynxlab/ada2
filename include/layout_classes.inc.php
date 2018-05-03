@@ -30,7 +30,7 @@ class Layout {
 	var $WIDGET_dir;
 
     //constructor
-    function Layout($user_type,$node_type,$family="",$node_author_id="",$node_course_id="",$module_dir="") {
+    function __construct($user_type,$node_type,$family="",$node_author_id="",$node_course_id="",$module_dir="") {
 
 	$http_root_dir = HTTP_ROOT_DIR;
 	$root_dir      = ROOT_DIR;
@@ -57,10 +57,10 @@ class Layout {
 	}
 	$this->family = $family;
 	$this->module_dir = $module_dir;
-	
+
 	/**
 	 * @author giorgio 20/ott/2014
-	 * 
+	 *
 	 * $basedir_ada var was already here but it looks like
 	 * it's never used. I set it to null and keep it here
 	 * for compatibilty reason, it's probably safe to remove it
@@ -82,7 +82,7 @@ class Layout {
 	$this->JS_filename = $JSObj->JS_filename;
 	$this->JS_dir = $JSObj->JS_dir;
 	//$this->debug();
-	
+
 	// Widgets
 	$pageWidgetObj = new PageWidget($this->template);
 	$this->WIDGET_dir = $pageWidgetObj->pageWidgetsDir;
@@ -151,7 +151,7 @@ class Template {
     var $error;
     var $full;
 
-    function Template ($user_type,$node_type,$family="",$node_author_id="",$node_course_id="",$basedir_ada,$function_group,$is_external_module = false) {
+    function __construct($user_type,$node_type,$family="",$node_author_id="",$node_course_id="",$basedir_ada,$function_group,$is_external_module = false) {
 
         $root_dir = $GLOBALS['root_dir'];
         $http_root_dir = $GLOBALS['http_root_dir'];
@@ -196,19 +196,19 @@ class Template {
         }
 
 	if ($is_external_module) {
-		
+
 		if (!MULTIPROVIDER) {
 			$tpl_dir = $root_dir."/clients/".$user_provider."/layout/$family/templates/$module_dir/";
 			$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
-			
+
 			if (!isset($tpl_filename) || !file_exists($tpl_filename)) {
 				$tpl_filename = $tpl_dir."default".$tpl_fileextension;
 				if (!isset($tpl_filename) || !file_exists($tpl_filename)) {
 					unset($tpl_filename);
 				}
 			}
-		} 
-		
+		}
+
 		if(!isset($tpl_filename)) {
 			$tpl_dir = $root_dir."/$module_dir/layout/$family/templates/";
 			$tpl_filename = $tpl_dir.$node_type.$tpl_fileextension;
@@ -281,7 +281,7 @@ class CSS {
     var $error_msg;
     var $full;
 
-    function CSS ($user_type,$node_type,$family="",$node_author_id="",$node_course_id="",$basedir_ada,$function_group,$is_external_module = false) {
+    function __construct($user_type,$node_type,$family="",$node_author_id="",$node_course_id="",$basedir_ada,$function_group,$is_external_module = false) {
 
         $root_dir = $GLOBALS['root_dir'];
         $http_root_dir = $GLOBALS['http_root_dir'];
@@ -352,29 +352,29 @@ class CSS {
          */
         if (!MULTIPROVIDER)
         {
-        	$CSS_provider_dir = $rel_pref."clients/".$user_provider."/layout/$family/css/"; 
-        	
+        	$CSS_provider_dir = $rel_pref."clients/".$user_provider."/layout/$family/css/";
+
         	if (is_file($CSS_provider_dir.$module_dir."/default.css"))
         		$CSS_files[] = $CSS_provider_dir."default.css";
-        	
+
         	if (is_file($CSS_provider_dir."main/default.css"))
         		$CSS_files[] = $CSS_provider_dir."main/default.css";
-        	
+
         	if (is_file($CSS_provider_dir.$module_dir."/".$node_type.".css"))
         		$CSS_files[] = $CSS_provider_dir.$module_dir."/".$node_type.".css";
         }
-        
+
         /**
          * @author giorgio 10/nov/2014
-         * 
+         *
          * add adamenu.css
          */
-        $adamenuCSS = (isset($_SESSION['IE-version']) && 
+        $adamenuCSS = (isset($_SESSION['IE-version']) &&
         		    $_SESSION['IE-version']!==false && $_SESSION['IE-version']<=8) ? "adamenu-ie8.css" : "adamenu.css";
-        
+
         $adamenuCSSDir = $rel_pref."layout/$family/css/";
         if (is_file($adamenuCSSDir.$adamenuCSS)) $CSS_files[] = $adamenuCSSDir.$adamenuCSS;
-        
+
         if (!MULTIPROVIDER) {
         	/**
         	 * if not multiprovider, include client's adamenu.css also
@@ -382,7 +382,7 @@ class CSS {
         	$adamenuCSSDir = $CSS_provider_dir . '../';
         	if (is_file($adamenuCSSDir.$adamenuCSS)) $CSS_files[] = $adamenuCSSDir.$adamenuCSS;
         }
-        
+
         $this->CSS_filename = implode(';',$CSS_files);
         $this->CSS_dir = $CSS_dir;
         $this->family = $family;
@@ -398,7 +398,7 @@ class JS {
     var $JS_dir;
     var $error_msg;
     var $full;
-    function JS ($user_type,$node_type,$family="",$node_author_id="",$node_course_id="",$basedir_ada,$function_group,$is_external_module = false) {
+    function __construct($user_type,$node_type,$family="",$node_author_id="",$node_course_id="",$basedir_ada,$function_group,$is_external_module = false) {
         $root_dir = $GLOBALS['root_dir'];
         $http_root_dir = $GLOBALS['http_root_dir'];
         if (($function_group == "main") || (strtoupper($function_group) == strToUpper($basedir_ada))) {
@@ -450,73 +450,73 @@ class PageWidget
 	 * @var string
 	 */
 	var $pageWidgets;
-	
+
 	/**
 	 * holds widgets configuration file full dirname or null on error
 	 * @var string
-	 */	
+	 */
 	var $pageWidgetsDir;
-	
+
 	/**
 	 * hold error string if any
 	 * @var string
 	 */
 	var $error;
-	
+
 	/**
 	 * default widget configuration file extension
 	 * @var string
 	 */
 	private static $widgetConfFileExtension = '.xml';
-	
+
 	/**
 	 * where to start looking for dirname.
 	 * e.g. assuming template is in ROOT_DIR .'layout/ada_blu/templates/main/default.tpl'
 	 * it'll extract the dir starting AND NOT INCLUDING the value of the variable.
 	 * e.g. 'main/'
-	 * 
+	 *
 	 * @var string
-	 */	
+	 */
 	private static $extractPathStartingFrom = 'templates/';
-	
+
     /**
      * PageWidget constructor, the XML filename is the same as the template, but with xml
      * extension. If one with same name is found inside the currently active provider, that
      * one is preferred over the standard one.
-     * 
+     *
      * @param string $filename template file name used to build widget xml file name
      */
     public function __construct($filename)
-    {    	
+    {
     	$this->pageWidgets = null;
     	$this->pageWidgetsDir = null;
     	$this->error = '';
-    	
+
     	$extractStringFrom = strpos($filename, self::$extractPathStartingFrom) + strlen (self::$extractPathStartingFrom);
-    	$extractLength  = strrpos($filename, '/') - $extractStringFrom + 1 ; 
-    	
+    	$extractLength  = strrpos($filename, '/') - $extractStringFrom + 1 ;
+
     	$dirname = substr ($filename, $extractStringFrom, $extractLength);
     	$filename = preg_replace('/\..*$/', self::$widgetConfFileExtension, basename($filename));
 
     	$widgets_filename = '';
-    	
+
     	if (!MULTIPROVIDER)
     	{
     		$widgets_dir = ROOT_DIR."/clients/".$GLOBALS['user_provider']."/widgets/$dirname";
     		$widgets_filename = $widgets_dir.$filename;
     	}
-    	
+
     	if (!file_exists($widgets_filename))
     	{
     		$widgets_dir = ROOT_DIR . "/widgets/$dirname";
     		$widgets_filename = $widgets_dir.$filename;
     		if (!file_exists($widgets_filename)) {
     			$widgets_dir = $widgets_filename = null;
-    			$this->error = "$widgets_filename not found";    		
+    			$this->error = "$widgets_filename not found";
     		}
-    	}    	
+    	}
     	$this->pageWidgets = $widgets_filename;
-    	$this->pageWidgetsDir = $widgets_dir;    	
+    	$this->pageWidgetsDir = $widgets_dir;
     }
 }
 ?>

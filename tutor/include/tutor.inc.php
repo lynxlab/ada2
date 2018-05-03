@@ -145,14 +145,12 @@ function get_student_dataFN($id_student, $id_instance) {
     if  (AMA_DataHandler::isError($student_info_ha)) {
         $msg = $student_info_ha->getMessage();
         return $msg;
-        break;
     }
 
     $instance_course_ha = $dh->course_instance_get($id_instance); // Get the instance courses data
     if  (AMA_DataHandler::isError($instance_course_ha)) {
         $msg = $instance_course_ha->getMessage();
         return $msg;
-        break;
     }
 
 
@@ -163,7 +161,6 @@ function get_student_dataFN($id_student, $id_instance) {
     if  (AMA_DataHandler::isError($info_course)) {
         $msg = $info_course->getMessage();
         return $msg;
-        break;
     }
     $course_title = $info_course['titolo'];
 

@@ -36,6 +36,7 @@ function createDataTable(filter)
         {
             "aTargets": [lastCol],
             "bSortable":false,
+            "bSearcahble":false,
             "sClass": "action_Column"
         }
         ],

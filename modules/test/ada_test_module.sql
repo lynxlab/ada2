@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `module_test_course_survey` (
   `id_test` int(11) NOT NULL,
   `id_nodo` varchar(64) NOT NULL,
   PRIMARY KEY (`id_corso`,`id_test`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `module_test_history_answer` (
   `allegato` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `data` int(10) NOT NULL,
   PRIMARY KEY (`id_answer`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `module_test_history_test` (
   `tempo_scaduto` tinyint(1) NOT NULL DEFAULT '0',
   `domande` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_history_test`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -107,4 +107,4 @@ CREATE TABLE IF NOT EXISTS `module_test_nodes` (
   `durata` int(10) DEFAULT NULL,
   `titolo_dragdrop` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id_nodo`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

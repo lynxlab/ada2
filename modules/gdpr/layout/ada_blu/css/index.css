@@ -1,0 +1,3 @@
+@import url("common.css");
+
+fieldset.form li.form:not(:first-child) { display: none; }

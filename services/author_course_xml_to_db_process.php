@@ -70,7 +70,7 @@ $DIR_autore = "$author_id/";
 
 
 if($course_ha['media_path']=="") {
-    $mediapath = realpath(ROOT_DIR . MEDIA_PATH_DEFAULT) 
+    $mediapath = realpath(ROOT_DIR . MEDIA_PATH_DEFAULT)
                . DIRECTORY_SEPARATOR . $DIR_autore;
 } else {
     $course_media_path = str_replace("\\","/",$course_ha['media_path']);
@@ -117,7 +117,7 @@ if($xp->set_init($set_ha)) {
         $dati .= translateFN('Nodi processati: '). @$ris_ar['1'] .'<br>' ;
         $dati .= translateFN('Media copiati: '). @$ris_ar['2'] .'<br>' ;
         $dati .= translateFN('Media non copiati: '). count(@$ris_ar['3']) .'<br>' ;
-        while(list($key,$val)=each($ris_ar['errori'])) {
+        foreach ($ris_ar['errori'] as $key => $val) {
             $dati .= $val .'<br>' ;
         }
     }

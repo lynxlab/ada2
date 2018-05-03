@@ -33,8 +33,8 @@ class RBStack extends Stack
   // the markers are in a stack itself (a bit clumsy, but useful!)
   var $marker_ar;
 
-  function RBStack() {
-    Stack::Stack();
+  function __construct() {
+    parent::__construct();
     $this->marker_ar = new Stack();
   }
 
@@ -64,7 +64,7 @@ class RBStack extends Stack
       return $this->marker_ar->pop();
     }
     else {
-      return 0;      
+      return 0;
     }
   }
 }
