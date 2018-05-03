@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `module_login_history_login` (
   `date` int(11) NOT NULL,
   `module_login_providers_id` int(5) unsigned NOT NULL,
   `successfulOptionsID` int(5) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `module_login_options` (
   `module_login_providers_options_id` int(5) unsigned NOT NULL,
   `key` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Struttura della tabella `module_login_providers_options`
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `module_login_providers_options` (
   `module_login_providers_id` int(5) unsigned NOT NULL,
   `order` int(5) unsigned NOT NULL,
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '1'
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `module_login_providers` (
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   `buttonLabel` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `displayOrder` int(4) unsigned NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `module_login_providers`

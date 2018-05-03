@@ -3,11 +3,11 @@
  * Html_element, Table, Ilist, Form and Tform classes
  *
  *
- * @package		
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link		
+ * @link
  * @version		0.1
  */
 
@@ -62,9 +62,9 @@ $t->printTable();
       var $col2;
       var $bcol2;
       var $id;
-     
 
-      function table(){
+
+      function __construct(){
                $this->initTable();
       }
 
@@ -130,7 +130,7 @@ $t->printTable();
 		$this->cellpadding = (int)$cellpadding;
 		$this->width = $width;
                 $this->id = $id;
-		
+
 		if (!empty($col1))
 					$this->col1 = $col1;
 		if (!empty($col2))
@@ -139,7 +139,7 @@ $t->printTable();
 					$this->bcol1 = $bcol1;
 		if (!empty($bcol2))
 					$this->bcol2 = $bcol2;
-		
+
 		$this->labelcol = $labelcol;
 		$this->labelrow= $labelrow;
 		if (!empty($rules)) {
@@ -147,7 +147,7 @@ $t->printTable();
 		} else {
 			$this->rules ='groups';
 		}
-			
+
       }
 
        function setTable($data,$caption="Tabella",$summary="Tabella"){
@@ -158,7 +158,7 @@ $t->printTable();
              $firstKey = key($data);
              $riga = $data[$firstKey];
              $totcol= count($riga);
-             // vito, 18 feb 2009 
+             // vito, 18 feb 2009
              //$str = "<table class=\"".$this->style."_table\" rules=\"".$this->rules."\" summary=\"$summary\" width=\"".$this->width."\" cellspacing =\"".$this->cellspacing."\" cellpadding =\"".$this->cellpadding."\" border=\"".$this->border."\" align=\"".$this->align."\">\r\n";
              $idTable = ' ';
              if ($this->id != NULL) $idTable = ' id='.$this->id;
@@ -262,7 +262,7 @@ $t->printTable();
              return $this->get_element();
       }
 
-      
+
 
 // end class Table
 }
@@ -299,7 +299,7 @@ $var = $lObj->getList();
       var $style; // a css class
 
 
-      function Ilist(){
+      function __construct(){
                $this->initList();
       }
 
@@ -359,7 +359,7 @@ $var = $lObj->getList();
              return $this->get_element();
       }
 
-      
+
 
 // end class IList
 }
@@ -402,12 +402,12 @@ $f-> setForm($data);
 $f->printForm();
 */
 
-    
+
     var $action;
     var $method;
     var $enctype ;
 
-    function form(){
+    function __construct(){
     // per default prende il nome del file chiamante
 //      $action =  array_pop(split('[/\\]',$PHP_SELF));  // = index
 
@@ -533,7 +533,7 @@ $f->printForm();
       function getForm(){
              return $this->get_element();
       }
-    
+
 
 // end class Form
 }
@@ -677,7 +677,7 @@ class Tform extends Form {
 						  }
 
             }
-			
+
         }
         $str .= "</table>\r\n" ;
         $str .= "</form>\r\n" ;

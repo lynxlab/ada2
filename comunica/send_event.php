@@ -75,14 +75,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   if (isset($spedisci)) {
     $mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
-    
+
     // Initialize errors array
     $errors = array();
 
     // Trim all submitted data
     $form = $_POST;
-    while (list($key, $value) = each($form)){
-      $$key = $value;
+    foreach ($form as $key => $value){
+      $$key = trim($value);
     }
 
 
@@ -112,12 +112,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $msgs_ha = $mh->get_messages($sess_id_user, ADA_MSG_AGENDA, array("id_mittente", "data_ora", "titolo", "priorita", "read_timestamp"),$sort_field);
         if(AMA_DataHandler::isError($msgs_ha)) {
-          $errObj = new ADA_Error($res, translateFN('Errore in ottenimento appuntamenti'), 
+          $errObj = new ADA_Error($res, translateFN('Errore in ottenimento appuntamenti'),
                          NULL, NULL, NULL,
                          $error_page.'?err_msg='.urlencode(translateFN('Errore in ottenimento appuntamenti'))
                          );
         }
-        
+
         foreach ($msgs_ha as $msg_id => $msg_ar){
           $date_time = $msg_ar[1];
           if ($date_time==$data_ora) {
@@ -159,11 +159,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $message_ha['tipo']     = ADA_MSG_AGENDA;
       //$message_ha['mittente'] = $user_name;
       $message_ha['mittente'] = $user_uname;
-      
+
       // delegate sending to the message handler
       $res = $mh->send_message($message_ha);
       if (AMA_DataHandler::isError($res)){
-        $errObj = new ADA_Error($res, translateFN('Errore in inserimento appuntamento'), 
+        $errObj = new ADA_Error($res, translateFN('Errore in inserimento appuntamento'),
                                  NULL, NULL, NULL,
                                  $error_page.'?err_msg='.urlencode(translateFN('Errore in inserimento appuntamento'))
                                  );
@@ -183,7 +183,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
           ADA_EVENT_PROPOSAL_ERROR_RECIPIENT        => translateFN('Bisogna specificare almeno un destinatario'),
           ADA_EVENT_PROPOSAL_ERROR_SUBJECT          => translateFN('The given event subject is not valid.')
         );
-        
+
       $err_msg = "<strong>";
       foreach ($errors as $err){
         $err_msg .=$error_messages[$err]."<br>";
@@ -207,7 +207,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     		$destinatari .= $div->getHtml();
     	}
     }
-    
+
 
 }
 
@@ -257,7 +257,7 @@ if(isset($_SESSION['sess_id_course_instance'])){
         $last_access=$userObj->get_last_accessFN(null,"UT",null);
         $last_access=AMA_DataHandler::ts_to_date($last_access);
   }
-  
+
  if($last_access=='' || is_null($last_access)){
     $last_access='-';
 }
@@ -265,7 +265,7 @@ if(isset($_SESSION['sess_id_course_instance'])){
 $content_dataAr = array(
   'user_name'      => $user_name,
   'user_type'      => $user_type,
-  'user_level'   => $user_level,  
+  'user_level'   => $user_level,
   'titolo'         => $titolo,
   'testo'          => isset($testo) ? trim($testo) : '',
   'destinatari'    => isset($destinatari) ? trim($destinatari) : '',

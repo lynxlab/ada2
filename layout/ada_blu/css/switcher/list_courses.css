@@ -55,6 +55,8 @@ and open the template in the editor.
 #table_list_courses .dontwrap { white-space: nowrap; }
 #table_list_courses caption { width: 50%; margin: -25px auto 0 auto; position: relative; font-weight: bold;}
 #table_list_courses tfoot th { border-top: 1px solid #999;font-size: 78%; }
+#table_list_courses .action_Column { width: 25%; margin:0; padding:0; text-align: center; }
+#table_list_courses tbody >.action_Column .inline_menu { margin:0; padding:0; }
 /*
  * end #table_log_report jQuery dataTable
  */

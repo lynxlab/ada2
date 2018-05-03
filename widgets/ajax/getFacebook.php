@@ -63,7 +63,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
  * Your code starts here
  */
 define ('FACEBOOK_CONFIG_FILE', 'include/FacebookAccess.inc.php');
-require_once ADA_WIDGET_AJAX_ROOTDIR .'/include/facebook-sdk-v5/autoload.php';
+require_once ADA_WIDGET_AJAX_ROOTDIR .'/include/facebook-php-graph-sdk-5.x/autoload.php';
 include_once ADA_WIDGET_AJAX_ROOTDIR . DIRECTORY_SEPARATOR . FACEBOOK_CONFIG_FILE ;
 
 if (!isset($settings) || (isset($settings) && (!isset($settings['app_id']) || !isset($settings['app_secret'])))) {

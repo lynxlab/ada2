@@ -9,3 +9,10 @@ CREATE TABLE module_oauth2_oauth_refresh_tokens (refresh_token VARCHAR(40) NOT N
 CREATE TABLE module_oauth2_oauth_users (username VARCHAR(255) NOT NULL, password VARCHAR(2000), first_name VARCHAR(255), last_name VARCHAR(255), CONSTRAINT username_pk PRIMARY KEY (username));
 CREATE TABLE module_oauth2_oauth_scopes (scope TEXT, is_default BOOLEAN);
 CREATE TABLE module_oauth2_oauth_jwt (client_id VARCHAR(80) NOT NULL, subject VARCHAR(80), public_key VARCHAR(2000), CONSTRAINT client_id_pk PRIMARY KEY (client_id));
+ALTER TABLE `module_oauth2_oauth_clients` ENGINE=InnoDB;
+ALTER TABLE `module_oauth2_oauth_access_tokens` ENGINE=InnoDB;
+ALTER TABLE `module_oauth2_oauth_authorization_codes` ENGINE=InnoDB;
+ALTER TABLE `module_oauth2_oauth_refresh_tokens` ENGINE=InnoDB;
+ALTER TABLE `module_oauth2_oauth_users` ENGINE=InnoDB;
+ALTER TABLE `module_oauth2_oauth_scopes` ENGINE=InnoDB;
+ALTER TABLE `module_oauth2_oauth_jwt` ENGINE=InnoDB;

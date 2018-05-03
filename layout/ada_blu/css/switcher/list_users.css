@@ -12,11 +12,10 @@ and open the template in the editor.
 
 .expandCol{width: 2%;}
 
-.actionCol{width: 27%;}
-
 #table_users.default_table ul.inline_menu li a:link{
     background-color: transparent;
     border: none;
+    cursor: pointer;
 }
  div.first  table#table_users.default_table.dataTable  ul.inline_menu li{
     border: none;
@@ -40,10 +39,11 @@ and open the template in the editor.
 /**
  * DataTables styles
  */
-.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; font-weight: bold;  font-size: 0.7em; }
+.dataTables_wrapper caption { width: 20%; margin: -25px auto 0 auto; position: relative; font-weight: bold; }
 .dataTables_wrapper tbody td > table td { border: none; }
 .dataTables_wrapper tbody td { height: 2.5em; vertical-align: middle; }
 .dataTables_wrapper thead th { padding-right: 5px; }
+.dataTables_wrapper thead th:not(.sorting_disabled):hover { cursor: pointer; }
 .dataTables_wrapper .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 .dataTables_wrapper .DataTables_sort_icon { float: right; margin-top: -20px;margin-left: 75px; }
 .dataTables_wrapper .dataTables_paginate > a { margin:0; padding: 3px; }
@@ -51,8 +51,9 @@ and open the template in the editor.
 .dataTables_wrapper .dataTables_filter,
 .dataTables_wrapper .dataTables_paginate { padding: 5px; }
 .dataTables_wrapper .dataTables_info { padding: 8px 0 0 5px; }
-
-
+.dataTables_wrapper .actionCol .inline_menu { margin:0; padding:0; }
+#contentcontent .dataTables_wrapper .actionCol { width: 12%; margin:0; padding:0; text-align: center; }
+#contentcontent .dataTables_wrapper .confirmCol { width: 5%; text-align: center; }
 /**
  * DataTables styles for action column
  */ 
@@ -60,3 +61,8 @@ and open the template in the editor.
 .dataTables_wrapper li.liactions { float: left; border: none !important; }
 .dataTables_wrapper button.editButton,
 .dataTables_wrapper button.deleteButton { height: 1.5em; }
+
+td.details table.User_table { width: 100%; }
+td.details table.User_table.dataTable td { padding:0 ;  }
+td.details table.User_table td a { padding: .7em 1em;  }
+td.details table.User_table td a:not(:hover) { background-color: transparent; }

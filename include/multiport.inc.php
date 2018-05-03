@@ -485,6 +485,27 @@ class MultiPort
         	if ($result->code == AMA_ERR_NOT_FOUND) $testers_to_add[] = $tester;
           //return ADA_SET_USER_ERROR_TESTER;
         }
+
+   		if (defined('MODULES_GDPR') && true === MODULES_GDPR && $userObj->getType() == AMA_TYPE_SWITCHER && array_key_exists('user_gdpr', $_POST)) {
+	      	try {
+	      		require_once MODULES_GDPR_PATH.'/include/GdprAPI.php';
+		    	$gdprAPI = new \Lynxlab\ADA\Module\GDPR\GdprAPI($tester);
+	      		$gdprUser = $gdprAPI->getGdprUserByID($userObj);
+	      		if (false !== $gdprUser) {
+	      			foreach ($gdprUser->getType() as $gdprType) $gdprUser->removeType($gdprType);
+	      		} else {
+	      			$gdprUser = \Lynxlab\ADA\Module\GDPR\GdprAPI::createGdprUserFromADALoggable($userObj);
+	      		}
+	      		if (!is_array($_POST['user_gdpr'])) $_POST['user_gdpr'] = array($_POST['user_gdpr']);
+	      		foreach ($_POST['user_gdpr'] as $gdprType) {
+	      			$gdprUser->addType($gdprType);
+	      		}
+	      		$gdprAPI->saveGdprUser($gdprUser);
+	      	} catch (\Exception $e) {
+	      		// handle excpetion here if needed
+	      	}
+      	}
+
       }
     }
 

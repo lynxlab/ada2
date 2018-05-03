@@ -79,7 +79,7 @@ if($sess_id_course){
         $course_title = $courseObj->titolo; //title
         $id_toc = $courseObj->id_nodo_toc;  //id_toc_node
         $course_family = $courseObj->template_family;
-    }    
+    }
 } else {
      $errObj = new ADA_error(translateFN("Corso non trovato"),translateFN("Impossibile proseguire."));
 }
@@ -107,16 +107,16 @@ if ((is_object($userObj)) && (!AMA_dataHandler::isError($userObj))) {
 // LAYOUT
 
 if ((isset($family))  and (!empty($family))){ // from GET parameters
-	$template_family = $family; 
+	$template_family = $family;
 } elseif ((isset($node_family))  and (!empty($node_family))){ // from node definition
-	$template_family = $node_family; 
+	$template_family = $node_family;
 } elseif ((isset($course_family))  and (!empty($course_family))){ // from course definition
-	$template_family = $course_family; 
+	$template_family = $course_family;
 } elseif ((isset($user_family)) and (!empty($user_family))) { // from user's profile
-    $template_family = $user_family; 
+    $template_family = $user_family;
 } else {
     $template_family = ADA_TEMPLATE_FAMILY; // default template famliy
-}		
+}
 
 $layoutObj = read_layout_from_DB($id_profile,$template_family);
 $layout_CSS = $layoutObj->CSS_filename;
@@ -157,7 +157,7 @@ if($period!="all"){
 // $online_users_listing_mode = 2  : username and email of users
 
 $online_users_listing_mode = 2;
-$online_users = User::get_online_usersFN($id_course_instance,$online_users_listing_mode);
+$online_users = ADAUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
 
 
 $last_visited_node_id = $userObj->get_last_accessFN($sess_id_course_instance,N);
@@ -224,7 +224,7 @@ if(isset($_SESSION['sess_id_course_instance'])){
  if($last_access=='' || is_null($last_access)){
     $last_access='-';
   }
-  
+
 
 /* 3.
 HTML page building

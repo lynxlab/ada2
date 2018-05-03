@@ -1827,7 +1827,7 @@ if ($duplicate_dir_structure) {
         $values["add"][]=$student['birthdate'];
         $options["add"][]="";
         $maxsize["add"][]=12;
-        
+
         // comune di nascita
         $fields["add"][]="student[birthcity]";
         $names["add"][]=translateFN("Comune o stato estero di nascita");
@@ -1836,7 +1836,7 @@ if ($duplicate_dir_structure) {
         $values["add"][]=$student['birthcity'];
         $options["add"][]="";
         $maxsize["add"][]=254;
-        
+
         // provincia di nascita
         $fields["add"][]="student[birthprovince]";
         $names["add"][]=translateFN("Provincia di nascita");
@@ -2562,7 +2562,7 @@ if ($duplicate_dir_structure) {
         $maxsize["add"][]=50;
 
         // azioni
-        while(list($key,$val)=each($links_ha)){
+        foreach ($links_ha as $key=>$val){
             $links .= " ". $links_ha["$key"] ." " ;
         }
         $fields["add"][]="azioni";

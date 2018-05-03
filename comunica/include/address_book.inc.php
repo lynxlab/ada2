@@ -5,7 +5,7 @@ class ADAAddressBook
     $user_type = $userObj->getType();
     $common_dh = $GLOBALS['common_dh'];
     $dh = $GLOBALS['dh'];
-    
+
     // this tells get_users_by_type method to get nome, cognome....
     $retrieve_extended_data = true;
 
@@ -37,7 +37,7 @@ class ADAAddressBook
         $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
         $tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
         $tester_name = $tester_info_Ar[1];
-        
+
         $users[$tester_name] = $tester_dh->get_users_by_type($user_types_Ar[AMA_TYPE_SWITCHER],$retrieve_extended_data);
         if(AMA_Common_DataHandler::isError($users)) {
         	$users[$tester_name]=array();
@@ -69,15 +69,15 @@ class ADAAddressBook
         $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
         $tester_info_Ar = $common_dh->get_tester_info_from_pointer($tester);
         $tester_name = $tester_info_Ar[1];
-        
+
         if (in_array(AMA_TYPE_STUDENT, $user_types_Ar[$user_type])) {
 	        /*
 	         * STUDENTS
 	         */
-	
+
 //        $users[$tester_name] = $tester_dh->get_list_of_tutored_users($userObj->id_user);
 			if (!$userObj->isSuper()) {
-		        $students_Ar = $tester_dh->get_list_of_tutored_unique_users($userObj->id_user);				
+		        $students_Ar = $tester_dh->get_list_of_tutored_unique_users($userObj->id_user);
 			} else {
 				$students_Ar = $tester_dh->get_users_by_type(array(AMA_TYPE_STUDENT), $retrieve_extended_data);
 			}
@@ -91,7 +91,7 @@ class ADAAddressBook
 	        /*
 	         * TUTORS
 	         */
-	
+
 	        $tutors_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_TUTOR), $retrieve_extended_data);
 	        if(AMA_DataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
 	          $tutors_Ar = array();
@@ -102,13 +102,13 @@ class ADAAddressBook
 	        /*
 	         * SWITCHERS
 	         */
-	
+
 	        $switchers_Ar =  $tester_dh->get_users_by_type(array(AMA_TYPE_SWITCHER), $retrieve_extended_data);
 	        if(AMA_DataHandler::isError($switchers_Ar) || !is_array($switchers_Ar)) {
 	          $switchers_Ar = array();
-	        }        
+	        }
         } else $switchers_Ar = array();
-        
+
         $users[$tester_name] = array_merge($tutors_Ar, $students_Ar, $switchers_Ar);
 
 
@@ -179,7 +179,7 @@ class ADAAddressBook
           if(AMA_DataHandler::isError($tutors_Ar) || !is_array($tutors_Ar)) {
             $tutors_Ar = array();
           }
-          
+
           $tutors_Ar = array_unique($tutors_Ar, SORT_REGULAR);
 
           /*
@@ -245,7 +245,7 @@ class ADAAddressBook
           if($user['tipo'] == AMA_TYPE_SWITCHER) {
             $option = CDOMElement::create('option','value:'.$user['username']);
             if (isset($user['cognome']) || isset($user['nome'])) $displayname = $user['cognome'].' '.$user['nome'];
-            else $displayname = $user['username']; 
+            else $displayname = $user['username'];
             $option->addChild(new CText($displayname));
             $optgroup->addChild($option);
           }
@@ -274,7 +274,7 @@ class ADAAddressBook
           if($user['tipo'] == AMA_TYPE_TUTOR) {
             $option = CDOMElement::create('option','value:'.$user['username']);
             if (isset($user['cognome']) || isset($user['nome'])) $displayname = $user['cognome'].' '.$user['nome'];
-            else $displayname = $user['username']; 
+            else $displayname = $user['username'];
             $option->addChild(new CText($displayname));
             $optgroup->addChild($option);
           }
@@ -302,15 +302,15 @@ class ADAAddressBook
         foreach($user_data_Ar as $user) {
          /**
            * @author giorgio 28/apr/2015
-           * 
+           *
            * tutors are students for an ADA_SERVICE_TUTORCOMMUNITY type of course,
            * so add them to the address book if they're returned in the $result_Ar
            */
           if($user['tipo'] == AMA_TYPE_STUDENT ||
-          	($user['tipo'] == AMA_TYPE_TUTOR && $userObj->getType()==AMA_TYPE_TUTOR && !$userObj->isSuper() && $user['id_utente']!=$userObj->getId())) {          		
+          	($user['tipo'] == AMA_TYPE_TUTOR && $userObj->getType()==AMA_TYPE_TUTOR && !$userObj->isSuper() && isset($user['id_utente']) && $user['id_utente']!=$userObj->getId())) {
             $option = CDOMElement::create('option','value:'.$user['username']);
             if (isset($user['cognome']) || isset($user['nome'])) $displayname = $user['cognome'].' '.$user['nome'];
-            else $displayname = $user['username']; 
+            else $displayname = $user['username'];
             $option->addChild(new CText($displayname));
             $optgroup->addChild($option);
           }
@@ -360,7 +360,7 @@ class MessagesAddressBook extends ADAAddressBook
     );
     /**
      * @author giorgio 13/apr/2015
-     * 
+     *
      * if userObj is a superTutor, add AMA_TYPE_TUTOR to the addressbook
      */
     if ($userObj->getType()==AMA_TYPE_TUTOR && $userObj->isSuper()) {

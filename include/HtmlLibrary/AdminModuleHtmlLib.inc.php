@@ -93,6 +93,32 @@ class AdminModuleHtmlLib
       $form->addChild($user_profile);
     }
 
+    if (defined('MODULES_GDPR') && true === MODULES_GDPR && $user_dataAr['user_type'] == AMA_TYPE_SWITCHER) {
+    	require_once MODULES_GDPR_PATH.'/include/GdprAPI.php';
+    	$gdprAPI = new \Lynxlab\ADA\Module\GDPR\GdprAPI($user_dataAr['user_tester']);
+    	// get all gdpr user types
+    	$gdprUserTypes = $gdprAPI->getGdprUserTypes();
+    	$gdprUserTypesArr = array_reduce($gdprUserTypes, function($carry, $item) {
+    		if (is_null($carry)) $carry = array();
+    		$carry[$item->getId()] = translateFN($item->getDescription());
+    		return $carry;
+    	});
+
+    	if (count($gdprUserTypesArr)>0) {
+	    	// get gdpr user object
+	    	$gdprUser = $gdprAPI->getGdprUserByID($user_dataAr['user_id']);
+	    	// properly set selected user gdpr type
+	    	$gdprUserType = (false !== $gdprUser) ? $gdprUser->getType() : $gdprAPI->getGdprNoneUserTypes();
+	    	// $gdprUserType is an array, user can be associated to more than one gdprtype
+	    	// BUT as of 04/04/2018 only association with one type is permitted, so use reset below
+	    	// to support multiple gdpr user types, a multi select is needed and saving implementations
+	    	// goes into admin/edit_user.php file
+	    	$user_gdpr = FormElementCreator::addSelect('user_gdpr', 'Ruolo GDPR ', $gdprUserTypesArr, array( 'user_gdpr' => intval(reset($gdprUserType)->getId())));
+	    	$form->addChild($user_gdpr);
+    	}
+    }
+
+
     /*
     $layoutsAr = array(
       'none'         => translateFN('seleziona un layout'),
@@ -286,6 +312,25 @@ class AdminModuleHtmlLib
         $user_type,
         $edit_user_link
       );
+
+      if (defined('MODULES_GDPR') && true === MODULES_GDPR && isset($_GET['user_type']) && DataValidator::is_uinteger($_GET['user_type']) == AMA_TYPE_SWITCHER) {
+      	require_once MODULES_GDPR_PATH.'/include/GdprAPI.php';
+      	if (!isset($gdprApi)) {
+      		$tester_info = $GLOBALS['common_dh']->get_tester_info_from_id($id_tester);
+      		$gdprAPI = new \Lynxlab\ADA\Module\GDPR\GdprAPI($tester_info[10]);
+      		$gdprNoneTypes = $gdprAPI->getGdprNoneUserTypes();
+      	}
+      	$gdprUser = $gdprAPI->getGdprUserByID($user_dataAr['id_utente']);
+      	$gdprUserTypes = (false !== $gdprUser) ? $gdprUser->getType() : $gdprNoneTypes;
+      	$gdpr_type = implode(', ', array_map(function($el) { return translateFN($el->getDescription()); }, $gdprUserTypes));
+      	$row = array_pop($tbody_dataAr);
+		// add gdpr types string before actions column
+      	array_splice($row, count($row)-1, 0, array ($gdpr_type));
+      	if (count($thead_dataAr) < count($row)) {
+      		array_splice($thead_dataAr, count($thead_dataAr)-1, 0, array(translateFN('Ruolo GDPR')));
+      	}
+      	$tbody_dataAr[] = $row;
+      }
     }
 
     $table = BaseHtmlLib::tableElement('class:sortable',$thead_dataAr,$tbody_dataAr);

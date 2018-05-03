@@ -25,7 +25,7 @@ class History
   var $node_visits_ratio;      // visite per nodo
   var $total_time;             // tempo di visita totale
 
-  function History($id_course_instance, $id_student)
+  function __construct($id_course_instance, $id_student)
   {
 
     $this->id_course_instance = (int) $id_course_instance;
