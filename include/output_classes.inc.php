@@ -553,7 +553,8 @@ class  Generic_Html extends Output
 			if (file_exists($provider_microtpl_filename)) {
 				$microtpl_filename = $provider_microtpl_filename;
 			} else {
-				$microtpl_filename = $root_dir."/clients/".$GLOBALS['user_provider']."/layout/".$this->family."/templates/".$microtpl_name.$tpl_fileextension;
+				$clientmicrotpl_filename = $root_dir."/clients/".$GLOBALS['user_provider']."/layout/".$this->family."/templates/".$microtpl_name.$tpl_fileextension;
+				if (file_exists($clientmicrotpl_filename)) $microtpl_filename = $clientmicrotpl_filename;
 			}
 		}
 		// giorgio: 12/ago/2013 end
@@ -568,7 +569,7 @@ class  Generic_Html extends Output
             if (file_exists($microtpl_filename))
 				$microtpl_code = file_get_contents($microtpl_filename);
             else {
-              $microtpl_code = "<!-- not found at address: $microtpl_filename"; // raises an error?
+              $microtpl_code = "<!-- not found at address: $microtpl_filename -->"; // raises an error?
             }
         }
         $preg = str_replace('%field_name%',"([a-zA-Z0-9_]+)",preg_quote($this->replace_microtemplate_field_code,'/'));
