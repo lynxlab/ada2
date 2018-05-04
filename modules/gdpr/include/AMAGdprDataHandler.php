@@ -404,7 +404,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			if (!MULTIPROVIDER && !is_null($dsn)) {
 				// must check if passed $dsn has the module login tables
 				// execute this dummy query, if result is not an error table is there
-				$sql = 'SELECT NULL FROM `'.self::PREFIX.GdprPolicy::table.'`';
+				$sql = 'SELECT NULL FROM `'.GdprPolicy::table.'`';
 				// must use AMA_DataHandler because we are not able to
 				// query AMALoginDataHandelr in this method!
 				$ok = \AMA_DataHandler::instance($dsn)->getOnePrepared($sql);
