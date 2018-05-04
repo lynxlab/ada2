@@ -525,7 +525,7 @@ class ADAGuest extends ADAGenericUser {
         $this->cap             = NULL;
         $this->SerialNumber    = NULL;
         $this->avatar          = NULL;
-        $this->testers = (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) ? array($GLOBALS['user_tester']) : array(ADA_PUBLIC_TESTER);
+        $this->testers = (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) ? array($GLOBALS['user_provider']) : array(ADA_PUBLIC_TESTER);
 
         $this->setHomePage(HTTP_ROOT_DIR);
         $this->setEditProfilePage('');
