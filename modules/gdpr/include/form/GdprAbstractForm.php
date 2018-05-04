@@ -15,6 +15,8 @@ namespace Lynxlab\ADA\Module\GDPR;
  * @author giorgio
  *
  */
+require_once(ROOT_DIR.'/include/Forms/lib/classes/FForm.inc.php');
+
 abstract class GdprAbstractForm extends \FForm {
 
 	private $withSubmit;
