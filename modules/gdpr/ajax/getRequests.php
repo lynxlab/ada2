@@ -7,7 +7,7 @@
  * @version		0.1
  */
 
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
 use Lynxlab\ADA\Module\GDPR\GdprRequest;
@@ -36,7 +36,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
-$GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $showAll = null;
 $uuid = null;
@@ -78,7 +77,7 @@ try {
 		$where += array ('uuid' => $uuid);
 	}
 
-	$requests = $GLOBALS['dh']->findBy('GdprRequest', $where, $orderby);
+	$requests = (new GdprAPI())->findBy('GdprRequest', $where, $orderby);
 	if (count($requests)>0) {
 		$data['data'] = array_map(
 			/** @var GdprRequest $el */

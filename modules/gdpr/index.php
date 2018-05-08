@@ -7,7 +7,7 @@
  * @version		0.1
  */
 
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprRequestForm;
 
@@ -37,14 +37,13 @@ require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 
 $self = whoami();
-$GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 try {
 	$formData = array(
 		'generatedBy' => $_SESSION['sess_userObj']->getId(),
 		'selfOpened' => 1
 	);
-	$form = new GdprRequestForm('gdprrequest', null, $GLOBALS['dh']->findAll('GdprRequestType', array('type'=>'ASC')));
+	$form = new GdprRequestForm('gdprrequest', null, (new GdprAPI())->findAll('GdprRequestType', array('type'=>'ASC')));
 	$form->fillWithArrayData($formData);
 	$data = $form->withSubmit()->toSemanticUI()->getHtml();
 	$optionsAr['onload_func'] = 'initDoc(\''.$form->getName().'\');';

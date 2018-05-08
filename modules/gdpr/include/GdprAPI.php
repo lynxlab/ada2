@@ -27,12 +27,12 @@ class GdprAPI {
 	 * constructor
 	 */
 	public function __construct($tester = null) {
-		if (is_null($tester)) $tester = $_SESSION['sess_selected_tester'];
-		if (isset($GLOBALS['dh']) && !($GLOBALS['dh'] instanceof AMAGdprDataHandler)) $GLOBALS['dh']->disconnect();
-		if (!($GLOBALS['dh'] instanceof AMAGdprDataHandler)) {
-			$GLOBALS['dh'] = AMAGdprDataHandler::instance(\MultiPort::getDSN($tester));
+		if (isset($GLOBALS['dh']) && $GLOBALS['dh'] instanceof AMAGdprDataHandler) {
+			$this->_dh = $GLOBALS['dh'];
+		} else {
+			if (is_null($tester)) $tester = $_SESSION['sess_selected_tester'];
+			$this->_dh = AMAGdprDataHandler::instance(\MultiPort::getDSN($tester));
 		}
-		$this->_dh = $GLOBALS['dh'];
 	}
 
 	/**
@@ -98,6 +98,26 @@ class GdprAPI {
 	 */
 	public function saveGdprUser(GdprUser $gdprUser) {
 		return $this->_dh->saveGdprUser($gdprUser->toArray());
+	}
+
+	public function saveRequest($data) {
+		return $this->_dh->saveRequest($data);
+	}
+
+	public function closeRequest($request, $closedBy=null) {
+		return $this->_dh->closeRequest($request, $closedBy);
+	}
+
+	public function savePolicy($data) {
+		return $this->_dh->savePolicy($data);
+	}
+
+	public function findBy($className, array $whereArr = null, array $orderByArr = null, \Abstract_AMA_DataHandler $dbToUse = null) {
+		return $this->_dh->findBy($className, $whereArr, $orderByArr, $dbToUse);
+	}
+
+	public function findAll($className, array $orderBy = null, \Abstract_AMA_DataHandler $dbToUse = null) {
+		return $this->_dh->findAll($className, $orderBy, $dbToUse);
 	}
 
 	/**

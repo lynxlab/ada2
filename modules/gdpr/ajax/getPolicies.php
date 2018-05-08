@@ -8,6 +8,7 @@
  */
 
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
@@ -34,7 +35,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
-$GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $data = array();
 
@@ -44,7 +44,7 @@ try {
 	}
 
 	$orderby = array('lastEditTS' => 'DESC');
-	$policies = $GLOBALS['dh']->findBy('GdprPolicy', array(), $orderby, $GLOBALS['dh']::getPoliciesDB());
+	$policies = (new GdprAPI())->findBy('GdprPolicy', array(), $orderby, AMAGdprDataHandler::getPoliciesDB());
 
 	if (count($policies)>0) {
 		$data['data'] = array_map(
