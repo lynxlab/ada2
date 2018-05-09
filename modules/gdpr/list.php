@@ -7,10 +7,9 @@
  * @version		0.1
  */
 
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
-use Lynxlab\ADA\Module\GDPR\GdprRequest;
 use Lynxlab\ADA\Module\GDPR\GdprException;
+use Lynxlab\ADA\Module\GDPR\GdprRequest;
 use Ramsey\Uuid\Uuid;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
@@ -39,8 +38,6 @@ require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 
 $self = whoami();
-/** @var AMAGdprDataHandler $GLOBALS['dh'] */
-$GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $showAll = array_key_exists('showall', $_REQUEST) && intval($_REQUEST['showall'])===1;
 $showUUID = array_key_exists('uuid', $_REQUEST);

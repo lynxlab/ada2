@@ -82,7 +82,7 @@ class GdprUser extends GdprBase {
 	 */
 	public function addType($type) {
 		if (!($type instanceof GdprUserType)) {
-			$type = $GLOBALS['dh']->findBy('GdprUserType', array('id' => $type));
+			$type = (new GdprAPI())->findBy('GdprUserType', array('id' => $type));
 			$type = reset($type);
 		}
 		if ($type->getId() != GdprUserType::NONE) {
@@ -99,7 +99,7 @@ class GdprUser extends GdprBase {
 	 */
 	public function removeType($type) {
 		if (!($type instanceof GdprUserType)) {
-			$type = $GLOBALS['dh']->findBy('GdprUserType', array('id' => $type));
+			$type = (new GdprAPI())->findBy('GdprUserType', array('id' => $type));
 			$type = reset($type);
 		}
 		foreach ($this->getType() as $key=>$aType) {
@@ -116,7 +116,7 @@ class GdprUser extends GdprBase {
 	 */
 	private function hasType($type) {
 		if (!($type instanceof GdprUserType)) {
-			$type = $GLOBALS['dh']->findBy('GdprUserType', array('id' => $type));
+			$type = (new GdprAPI())->findBy('GdprUserType', array('id' => $type));
 		}
 		if (!is_array($type)) {
 			$type = array($type);

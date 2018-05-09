@@ -7,6 +7,7 @@
  */
 document.write("<script type='text/javascript' src='../../js/include/basic.js'></script>");
 document.write("<script type='text/javascript' src='../../js/include/menu_functions.js'></script>");
+document.write("<script type='text/javascript' src='js/common.js'></script>");
 
 /**
  * shows and after 500ms removes the div to give feedback to the user about
@@ -49,10 +50,4 @@ function showHideDiv ( title, message, isOK ) {
 	var thePromise = theDiv.fadeOut(250);
 	$j.when(thePromise).done(function() { theDiv.remove(); });
 	return thePromise;
-}
-
-function semanticConfirm(selector, callbacks) {
-	$j(selector)
-	  .modal('setting', $j.extend({}, {closable: false}, callbacks || {}))
-	  .modal('show');
 }

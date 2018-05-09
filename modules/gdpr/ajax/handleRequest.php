@@ -7,7 +7,7 @@
  * @version		0.1
  */
 
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
 use Lynxlab\ADA\Module\GDPR\GdprRequest;
@@ -35,7 +35,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
-$GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $data = new stdClass();
 $data->title = '<i class="basic error icon"></i>'.translateFN('Errore evasione richiesta');
@@ -52,7 +51,7 @@ try {
 		throw new GdprException(translateFN("L'ID pratica non è valido"));
 	}
 	// so far so good, load the request
-	$tmp = $GLOBALS['dh']->findBy('GdprRequest',array('uuid'=>trim($postParams['requestuuid'])));
+	$tmp = (new GdprAPI())->findBy('GdprRequest',array('uuid'=>trim($postParams['requestuuid'])));
 	$request = reset($tmp);
 	if (!($request instanceof GdprRequest)) {
 		throw new GdprException(translateFN("ID pratica non trovato"));

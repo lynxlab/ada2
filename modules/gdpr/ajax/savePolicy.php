@@ -7,10 +7,8 @@
  * @version		0.1
  */
 
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
-use Lynxlab\ADA\Module\GDPR\GdprException;
-use Ramsey\Uuid\Uuid;
 
 /**
  * Base config file
@@ -34,7 +32,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
-$GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $data = new stdClass();
 $data->title = '<i class="basic error icon"></i>'.translateFN('Errore salvataggio');
@@ -46,7 +43,7 @@ try {
 	if (array_key_exists('content', $_POST) && strlen(trim($_POST['content']))>0) {
 		$postParams['content'] = trim($_POST['content']);
 	}
-	$result = $GLOBALS['dh']->savePolicy($postParams);
+	$result = (new GdprAPI())->savePolicy($postParams);
 	$data->title = '<i class="info icon"></i>'.translateFN('Policy salvata');
 	$data->status = 'OK';
 	$data->message = translateFN('La policy è stata salvata correttamente');

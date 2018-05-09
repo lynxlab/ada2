@@ -218,9 +218,9 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 		if (!\AMA_DB::isError($testers_infoAr)) {
 			while (!$found && $tester = current($testers_infoAr)) {
 				if (!$found) {
-					$GLOBALS['dh'] = AMAGdprDataHandler::instance(\MultiPort::getDSN($tester['puntatore']));
+					$gdprAPI = new GdprAPI($tester['puntatore']);
 					try {
-						$found = $found || (count($GLOBALS['dh']->findBy('GdprRequest',array('uuid'=>$uuid)))>0);
+						$found = $found || (count($gdprAPI->findBy('GdprRequest',array('uuid'=>$uuid)))>0);
 					} catch (\Exception $e) {}
 				}
 				next($testers_infoAr);
@@ -316,9 +316,9 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 
 		$result = $dbToUse->getAllPrepared($sql, (!is_null($whereArr) && count($whereArr)>0) ? array_values($whereArr): array(), AMA_FETCH_ASSOC);
 		if (\AMA_DB::isError($result)) {
-			throw new GdprException($result->getMessage(), $result->getCode());
+			throw new GdprException($result->getMessage(), (int)$result->getCode());
 		} else {
-			$retArr = array_map(function($el) use ($className, $dbToUse) { return new $className($el); }, $result);
+			$retArr = array_map(function($el) use ($className, $dbToUse) { return new $className($el, $dbToUse); }, $result);
 			// load properties from $joined array
 			foreach ($retArr as $retObj) {
 				foreach ($joined as $joinKey) {

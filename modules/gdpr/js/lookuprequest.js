@@ -8,7 +8,7 @@
 
 function initDoc(formName, imgID) {
 
-	var debugForm = false;	
+	var debugForm = false;
 
 	$j('form[name="'+formName+'"]')
 		.on('input[type="text"]' ,'keypress', function(e) {
@@ -19,7 +19,7 @@ function initDoc(formName, imgID) {
 		})
 		.on('submit', function(e) {
 			e.preventDefault();
-			
+
 			if ($j('#checktxt', $j(this)).val().trim().length <=0) {
 				$j('#checktxt', $j(this)).parents().first().children('label').first().addClass('form error');
 				$j('#error_form_'+formName, $j(this)).toggleClass('hide_erorr').toggleClass('show_error');
@@ -73,7 +73,7 @@ function initDoc(formName, imgID) {
 		    		var errorText = response.statusText;
 		    		if ('responseText' in response && response.responseText.length>0) errorText += '<br/>'+response.responseText;
 		    		showHidePromise = showHideDiv('Error ' + response.status, errorText, false);
-		    	}	
+		    	}
 		    })
 		    .always(function(response) {
 		    	if (debugForm) console.log('always callback');
@@ -84,25 +84,7 @@ function initDoc(formName, imgID) {
 		    	});
 		    });
 		});
-	
+
 	loadCaptcha(imgID);
 }
 
-function loadCaptcha (imgID) {
-	$j.ajax({
-		type : "GET",
-		url : 'ajax/getCaptcha.php',
-		beforeSend: function() {
-			$j('#'+imgID).fadeOut('fast');
-			$j('#'+imgID+'_error, #'+imgID+'reload').hide();
-		}
-	})
-	.success(function(imageData) {
-		$j('#'+imgID).attr('src', imageData);
-		$j('#'+imgID+', #'+imgID+'reload').fadeIn('slow');
-	})
-	.fail(function(response) {
-		$j('#'+imgID).attr('src','');
-		$j('#'+imgID+'_error').show();
-	});
-}

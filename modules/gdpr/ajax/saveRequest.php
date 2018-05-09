@@ -7,7 +7,7 @@
  * @version		0.1
  */
 
-use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
 use Ramsey\Uuid\Uuid;
@@ -34,7 +34,6 @@ list($allowedUsersAr, $neededObjAr) = array_values(GdprActions::getAllowedAndNee
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
-$GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 $data = new stdClass();
 $data->title = '<i class="basic error icon"></i>'.translateFN('Errore salvataggio');
@@ -53,7 +52,7 @@ try {
 		$okToSave = true;
 	}
 	if ($okToSave) {
-		$result = $GLOBALS['dh']->saveRequest($postParams);
+		$result = (new GdprAPI())->saveRequest($postParams);
 		$data->saveResult = $result;
 		$data->saveResult = array('requestUUID' => $result->getUuid());
 		$data->title = '<i class="info icon"></i>'.translateFN('Richiesta salvata');

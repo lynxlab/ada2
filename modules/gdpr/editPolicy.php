@@ -8,10 +8,11 @@
  */
 
 use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
 use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
-use Lynxlab\ADA\Module\GDPR\GdprPolicyForm;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+use Lynxlab\ADA\Module\GDPR\GdprPolicyForm;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
@@ -39,7 +40,6 @@ require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 
 $self = whoami();
-$GLOBALS['dh'] = AMAGdprDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 try {
 	if (!GdprActions::canDo(GdprActions::EDIT_POLICY)) {
@@ -47,7 +47,7 @@ try {
 	}
 
 	if (isset($_REQUEST['id']) && intval($_REQUEST['id'])>0) {
-		$policy = $GLOBALS['dh']->findBy('GdprPolicy', array('privacy_content_id' => intval($_REQUEST['id'])),null, $GLOBALS['dh']::getPoliciesDB());
+		$policy = (new GdprAPI())->findBy('GdprPolicy', array('privacy_content_id' => intval($_REQUEST['id'])),null, AMAGdprDataHandler::getPoliciesDB());
 		if (count($policy)>0) {
 			$policy = reset($policy);
 		} else {

@@ -43,8 +43,9 @@ class GdprRequest extends GdprBase {
 	 *
 	 * @param array $data
 	 */
-	public function __construct($data = array()) {
-		if (is_null($this->fromArray($data)->getUuid())) {
+	public function __construct($data = array(), $dbToUse = null) {
+		if (is_null($dbToUse)) $dbToUse = new GdprAPI();
+		if (is_null($this->fromArray($data, $dbToUse)->getUuid())) {
 			$this->setUuid(Uuid::uuid4()->toString());
 		}
 	}
@@ -56,9 +57,9 @@ class GdprRequest extends GdprBase {
 	 * {@inheritDoc}
 	 * @see \Lynxlab\ADA\Module\GDPR\GdprBase::fromArray()
 	 */
-	public function fromArray($data = array()) {
+	public function fromArray($data = array(), $dbToUse = null) {
 		if (array_key_exists('type', $data) && intval($data['type'])>0) {
-			$result = $GLOBALS['dh']->findBy('GdprRequestType', array('id' => intval($data['type'])));
+			$result = $dbToUse->findBy('GdprRequestType', array('id' => intval($data['type'])));
 			if (count($result)>0) {
 				$this->setType(reset($result));
 			}
@@ -96,7 +97,7 @@ class GdprRequest extends GdprBase {
 	 * @return \Lynxlab\ADA\Module\GDPR\GdprRequest
 	 */
 	public function close($closedBy = null) {
-		$GLOBALS['dh']->closeRequest($this, $closedBy);
+		(new GdprAPI())->closeRequest($this, $closedBy);
 		return $this;
 	}
 
