@@ -32,7 +32,7 @@ function initDoc(formName) {
 
 			var aForm = $j(this);
 			if (debugForm) console.log(aForm.serialize());
-		    var url = "ajax/saveRequest.php";
+		    var url = MODULES_GDPR_HTTP + "ajax/saveRequest.php";
 		    var showHidePromise;
 		    return $j.ajax({
 		    	type: "POST",
