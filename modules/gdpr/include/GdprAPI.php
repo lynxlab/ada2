@@ -30,7 +30,13 @@ class GdprAPI {
 		if (isset($GLOBALS['dh']) && $GLOBALS['dh'] instanceof AMAGdprDataHandler) {
 			$this->_dh = $GLOBALS['dh'];
 		} else {
-			if (is_null($tester)) $tester = $_SESSION['sess_selected_tester'];
+			if (is_null($tester)) {
+				if (array_key_exists('sess_selected_tester', $_SESSION)) {
+					$tester = $_SESSION['sess_selected_tester'];
+				} else if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider'])>0) {
+					$tester = $GLOBALS['user_provider'];
+				}
+			}
 			$this->_dh = AMAGdprDataHandler::instance(\MultiPort::getDSN($tester));
 		}
 	}
@@ -70,6 +76,7 @@ class GdprAPI {
 	 */
 	public function getGdprUserByID($userID) {
 		if ($userID instanceof \ADALoggableUser) $userID = $userID->getId();
+		else $userID = -1;
 		$res = $this->_dh->findBy('GdprUser', array('id_utente' => $userID));
 		return reset($res);
 	}
