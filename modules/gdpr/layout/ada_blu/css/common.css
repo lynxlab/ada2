@@ -65,6 +65,7 @@ div.fform form fieldset fieldset label { margin-left:0; width: 45%; display: inl
 #contentcontent table.dataTable thead .sorting_desc,
 #contentcontent table.dataTable thead .sorting_both { background-image: none; }
 #contentcontent .dataTables_wrapper .dataTables_paginate .paginate_button { margin-left:0; border: none; }
+#checkimg_error { display: none; }
 
 .yellow-highlight, tr.yellow-highlight > * {
     -webkit-animation-name: yellow-back-pulse;
