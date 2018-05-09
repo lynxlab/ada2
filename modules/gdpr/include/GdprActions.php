@@ -178,6 +178,7 @@ class GdprActions {
 					);
 				break;
 
+				case 'ajax/saveRequest.php':
 				case 'ajax/getCaptcha.php':
 					$retArr['neededObjects'] += array(
 						AMA_TYPE_VISITOR => array('layout')
