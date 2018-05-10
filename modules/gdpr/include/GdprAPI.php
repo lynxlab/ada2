@@ -39,6 +39,7 @@ class GdprAPI {
 			}
 			$this->_dh = AMAGdprDataHandler::instance(\MultiPort::getDSN($tester));
 		}
+		$this->_dh->setObjectClassesFromRequest();
 	}
 
 	/**
@@ -107,24 +108,78 @@ class GdprAPI {
 		return $this->_dh->saveGdprUser($gdprUser->toArray());
 	}
 
+	/**
+	 * Saves a Gdpr Request
+	 *
+	 * @param array $data
+	 * @return \Lynxlab\ADA\Module\GDPR\GdprRequest
+	 */
 	public function saveRequest($data) {
 		return $this->_dh->saveRequest($data);
 	}
 
+	/**
+	 * Closes a request
+	 *
+	 * @param string $request the uuid of the request
+	 * @param number $closedBy id of the user closing the request. null to get it from session user
+	 */
 	public function closeRequest($request, $closedBy=null) {
-		return $this->_dh->closeRequest($request, $closedBy);
+		$this->_dh->closeRequest($request, $closedBy);
 	}
 
+	/**
+	 * Saves a GdprPolicy
+	 * @param array $data
+	 * @return \Lynxlab\ADA\Module\GDPR\GdprPolicy|mixed
+	 */
 	public function savePolicy($data) {
 		return $this->_dh->savePolicy($data);
 	}
 
+	/**
+	 * Calls the datahandler findBy method
+	 *
+	 * @param string $className
+	 * @param array $whereArr
+	 * @param array $orderByArr
+	 * @param \Abstract_AMA_DataHandler $dbToUse
+	 * @return array
+	 */
 	public function findBy($className, array $whereArr = null, array $orderByArr = null, \Abstract_AMA_DataHandler $dbToUse = null) {
 		return $this->_dh->findBy($className, $whereArr, $orderByArr, $dbToUse);
 	}
 
+	/**
+	 * Calls the datahandler findAll method
+	 *
+	 * @param string $className
+	 * @param array $orderBy
+	 * @param \Abstract_AMA_DataHandler $dbToUse
+	 * @return array
+	 */
 	public function findAll($className, array $orderBy = null, \Abstract_AMA_DataHandler $dbToUse = null) {
 		return $this->_dh->findAll($className, $orderBy, $dbToUse);
+	}
+
+	/**
+	 * Calls the datahandler getObjectClasses method
+	 *
+	 * @return array|string[]
+	 */
+	public function getObjectClasses() {
+		return $this->_dh->getObjectClasses();
+	}
+
+	/**
+	 * Calls the datahandler setObjectClasses method
+	 *
+	 * @param array $objectClasses
+	 * @return \Lynxlab\ADA\Module\GDPR\GdprAPI
+	 */
+	public function setObjectClasses(array $objectClasses) {
+		$this->_dh->setObjectClasses($objectClasses);
+		return $this;
 	}
 
 	/**
