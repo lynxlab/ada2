@@ -32,6 +32,31 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	private static $policiesDB = null;
 
 	/**
+	 * key of the objectClasses array used to tell which class name to use for a GdprRequest
+	 *
+	 * @var string
+	 */
+	const REQUESTCLASSKEY = 'GdprRequest';
+
+	/**
+	 * key of the objectClasses array used to tell which class name to use for a GdprRequestType
+	 *
+	 * @var string
+	 */
+	const REQUESTTYPECLASSKEY = 'GdprRequestType';
+
+	/**
+	 * Objects class names to be used, to use other classes than the default (declared in the constants)
+	 * please use the setObjectClasses and/or setObjectClassesFromRequest methods
+	 *
+	 * @var array
+	 */
+	private static $objectClasses = array(
+		self::REQUESTCLASSKEY => self::MODELNAMESPACE.self::REQUESTCLASSKEY,
+		self::REQUESTTYPECLASSKEY => self::MODELNAMESPACE.self::REQUESTTYPECLASSKEY
+	);
+
+	/**
 	 * save a new gdpr request object
 	 *
 	 * @param array $data
@@ -42,7 +67,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 
 			if (array_key_exists('requestUUID', $data)) {
 				// load the request with the passed uuid
-				$request = $this->findBy('GdprRequest', array('uuid' => trim($data['requestUUID'])));
+				$request = $this->findBy(self::getObjectClasses()[self::REQUESTCLASSKEY], array('uuid' => trim($data['requestUUID'])));
 				$request = reset($request);
 				if (!($request instanceof GdprRequest)) {
 					throw new GdprException(translateFN("Impossibile trovare la richiesta da modificare"));
@@ -50,38 +75,59 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 					$isUpdate = true;
 					unset($data['requestUUID']);
 					if (array_key_exists('requestContent', $data)) {
-						$data['requestContent'] = strip_tags(trim($data['requestContent']));
+						$request->setContent(strip_tags(trim($data['requestContent'])));
+						unset($data['requestContent']);
 					}
 				}
 			} else {
 				if (array_key_exists('requestType', $data) && intval($data['requestType'])>0) {
-					$type = $this->findBy('GdprRequestType', array('id'=>intval($data['requestType'])));
+					$type = $this->findBy(self::getObjectClasses()[self::REQUESTTYPECLASSKEY], array('id'=>intval($data['requestType'])));
 				}
 				if (count($type) === 1) {
 					// make a new request
-					$request = new GdprRequest();
+					$className = self::getObjectClasses()[self::REQUESTCLASSKEY];
+					$request = new $className();
+					$request->setGeneratedTs($this->date_to_ts('now'))->setType(reset($type));
 					$isUpdate = false;
 
 					if (!array_key_exists('requestContent', $data)) $data['requestContent'] = '';
-					$data['requestContent'] = strip_tags(trim($data['requestContent']));
+					$request->setContent(strip_tags(trim($data['requestContent'])));
+					unset($data['requestContent']);
 
 					if (!array_key_exists('selfOpened', $data)) $data['selfOpened'] = 0;
-					else $data['selfOpened'] = intval($data['selfOpened']>0);
+					else $data['selfOpened'] = intval($data['selfOpened'])>0;
+					$request->setSelfOpened($data['selfOpened']);
+					unset($data['selfOpened']);
 
 					if (array_key_exists('generatedBy', $data) && intval($data['generatedBy'])>0) {
 						$request->setGeneratedBy(intval($data['generatedBy']));
+						unset($data['generatedBy']);
 					} else {
 						throw new GdprException(translateFN("Impossibile determinare l'utente per cui generare la richiesta"));
 					}
 
-					$request->setGeneratedTs($this->date_to_ts('now'))->setType(reset($type))
-							->setSelfOpened($data['selfOpened'])->setConfirmedTs($request->getGeneratedTs()+1);
+					if (!array_key_exists('dontConfirm', $data) || (array_key_exists('dontConfirm', $data) && intval($data['dontConfirm'])!==1)) {
+						$request->setConfirmedTs($request->getGeneratedTs()+1);
+					}
+					if (array_key_exists('dontConfirm', $data)) unset($data['dontConfirm']);
 
 				} else {
 					throw new GdprException(translateFN('Tipo di richiesta non valido'));
 				}
 			}
-			$request->setContent($data['requestContent']);
+
+			/**
+			 * let the object handle the remaining keys of $data with its setters
+			 * this is needed to save properites when $className inherits from GdprRequest
+			 * and adds its own properties
+			 */
+			foreach ($data as $key => $val) {
+				$setter = GdprBase::SETTERPREFIX.ucfirst($key);
+				if (method_exists($request, $setter)) {
+					$request->{$setter}(trim($val));
+					unset($data[$key]);
+				}
+			}
 
 			if (strlen($request->getContent())<=0) {
 				if ($request->getType()->hasMandatoryContent()) {
@@ -162,7 +208,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	public function closeRequest($request, $closedBy=null) {
 		if (is_null($closedBy)) $closedBy = $_SESSION['sess_userObj']->getId();
 		if (!($request instanceof GdprRequest)) {
-			$tmp = $tmp = $this->findBy('GdprRequest',array('uuid'=>$request));
+			$tmp = $tmp = $this->findBy(self::getObjectClasses()[self::REQUESTCLASSKEY],array('uuid'=>$request));
 			$request = reset($tmp);
 		}
 		if ($request instanceof GdprRequest) {
@@ -220,7 +266,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 				if (!$found) {
 					$gdprAPI = new GdprAPI($tester['puntatore']);
 					try {
-						$found = $found || (count($gdprAPI->findBy('GdprRequest',array('uuid'=>$uuid)))>0);
+						$found = $found || (count($gdprAPI->findBy($gdprAPI->getObjectClasses()[self::REQUESTCLASSKEY],array('uuid'=>$uuid)))>0);
 					} catch (\Exception $e) {}
 				}
 				next($testers_infoAr);
@@ -251,7 +297,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 * loads an array of objects of the passed className with matching where values
 	 * and ordered using the passed values by performing a select query on the DB
 	 *
-	 * @param string $className
+	 * @param string $className to use a class from your namespace, this string must start with "\"
 	 * @param array $whereArr
 	 * @param array $orderByArr
 	 * @param \Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
@@ -259,7 +305,8 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 * @return array
 	 */
 	public function findBy($className, array $whereArr = null, array $orderByArr = null, \Abstract_AMA_DataHandler $dbToUse = null) {
-		if (stripos($className, self::MODELNAMESPACE) !== 0) $className = self::MODELNAMESPACE.$className;
+		if (stripos($className, '\\') !== 0 &&
+			stripos($className, self::MODELNAMESPACE) !== 0) $className = self::MODELNAMESPACE.$className;
 		$reflection = new \ReflectionClass($className);
 		$properties =  array_map(
 			function($el){ return $el->getName(); },
@@ -387,6 +434,40 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	public static function getPoliciesDB() {
 		return self::$policiesDB;
 	}
+
+	/**
+	 * Sets the object classes form the $_REQUEST array
+	 */
+	public static function setObjectClassesFromRequest() {
+		self::setObjectClasses($_REQUEST);
+	}
+
+	/**
+	 * Sets the object classes from the passed array
+	 *
+	 * This will not add any key to self::objectClasses but will only
+	 * overwrite already defined keys
+	 *
+	 * @param array $objectClasses
+	 */
+	public static function setObjectClasses (array &$objectClasses = array()) {
+		foreach (array_keys(self::getObjectClasses()) as $key) {
+			if (array_key_exists($key, $objectClasses) && strlen(trim($objectClasses[$key]))>0) {
+				self::$objectClasses[$key] = trim($objectClasses[$key]);
+				unset($objectClasses[$key]);
+			}
+		}
+	}
+
+	/**
+	 * Gets the objectClasses array
+	 *
+	 * @return array|string[]
+	 */
+	public static function getObjectClasses() {
+		return self::$objectClasses;
+	}
+
 	/**
 	 * calls and sets the parent instance method, and if !MULTIPROVIDER
 	 * checks if module_gdpr_privacy_content table is in the provider db.
