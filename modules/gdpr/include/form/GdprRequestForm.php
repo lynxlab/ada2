@@ -49,6 +49,10 @@ class GdprRequestForm extends GdprAbstractForm {
 		$this->addTextArea('requestContent', translateFN('Testo richiesta'));
 		$this->addHidden('generatedBy');
 		$this->addHidden('selfOpened');
+		$this->addHidden('dontConfirm');
+		foreach (array_keys(AMAGdprDataHandler::getObjectClasses()) as $key) {
+			$this->addHidden($key);
+		}
 
 	}
 }

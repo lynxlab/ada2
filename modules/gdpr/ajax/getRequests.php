@@ -13,6 +13,7 @@ use Lynxlab\ADA\Module\GDPR\GdprException;
 use Lynxlab\ADA\Module\GDPR\GdprRequest;
 use Lynxlab\ADA\Module\GDPR\GdprRequestType;
 use Ramsey\Uuid\Uuid;
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 
 /**
  * Base config file
@@ -77,8 +78,12 @@ try {
 		$where += array ('uuid' => $uuid);
 	}
 
-	$requests = (new GdprAPI())->findBy('GdprRequest', $where, $orderby);
+	$gdprAPI = new GdprAPI();
+	$requests = $gdprAPI->findBy($gdprAPI->getObjectClasses()[AMAGdprDataHandler::REQUESTCLASSKEY], $where, $orderby);
 	if (count($requests)>0) {
+
+		if ($showAll) $requests = array_filter($requests, function(GdprRequest $el){ return !is_null($el->getConfirmedTs()); });
+
 		$data['data'] = array_map(
 			/** @var GdprRequest $el */
 			function(GdprRequest $el) use ($showAll) {
@@ -114,7 +119,7 @@ try {
 				}
 
 				return $retArr;
-			}, $requests);
+			}, array_values($requests));
 	} else $data['data'] = array();
 } catch (\Exception $e) {
 // 	header(' ', true, 400);
