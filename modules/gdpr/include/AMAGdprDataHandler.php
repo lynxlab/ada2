@@ -135,20 +135,23 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 				} else $request->setContent(null);
 			}
 
-		$fields = $request->beforeSave($isUpdate)->toArray();
-		$fields['type'] = $fields['type']->getId();
-		if (!$isUpdate) {
-			$result = $this->executeCriticalPrepared($this->sqlInsert($request::table, $fields), array_values($fields));
-		} else {
-			unset($fields['uuid']);
-			$result = $this->queryPrepared($this->sqlUpdate($request::table, array_keys($fields), 'uuid'), array_values($fields + array($request->getUuid())));
+		if ($request->beforeSave($isUpdate)) {
+			$fields = $request->toArray();
+			$fields['type'] = $fields['type']->getId();
+			if (!$isUpdate) {
+				$result = $this->executeCriticalPrepared($this->sqlInsert($request::table, $fields), array_values($fields));
+			} else {
+				unset($fields['uuid']);
+				$result = $this->queryPrepared($this->sqlUpdate($request::table, array_keys($fields), 'uuid'), array_values($fields + array($request->getUuid())));
+			}
+
+			if (\AMA_DB::isError($result)) {
+				throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode()  : null);
+			}
+			$request->afterSave($isUpdate);
 		}
 
-		if (\AMA_DB::isError($result)) {
-			throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode()  : null);
-		}
-
-		return $request->afterSave($isUpdate);
+		return $request;
 	}
 
 	/**
