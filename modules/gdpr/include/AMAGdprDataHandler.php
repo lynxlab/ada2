@@ -135,7 +135,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 				} else $request->setContent(null);
 			}
 
-		$fields = $request->toArray();
+		$fields = $request->beforeSave($isUpdate)->toArray();
 		$fields['type'] = $fields['type']->getId();
 		if (!$isUpdate) {
 			$result = $this->executeCriticalPrepared($this->sqlInsert($request::table, $fields), array_values($fields));
