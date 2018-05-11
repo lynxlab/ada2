@@ -154,6 +154,17 @@ class GdprRequest extends GdprBase {
 	}
 
 	/**
+	 * Method that performs additional actions on the request before it's been saved
+	 * usually called by the datahandler save methods just before saving
+	 *
+	 * @param bool $isUpdate
+	 * @return \Lynxlab\ADA\Module\GDPR\GdprRequest
+	 */
+	public function beforeSave($isUpdate) {
+		return $this;
+	}
+
+	/**
 	 * Method that performs additional actions on the request after it's been saved
 	 * usually called by the datahandler save methods just before returning
 	 *
