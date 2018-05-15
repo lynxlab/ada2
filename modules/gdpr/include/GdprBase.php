@@ -38,6 +38,16 @@ abstract class GdprBase {
 	}
 
 	/**
+	 * adds class own properties to the passed form
+	 *
+	 * @param \FForm $form
+	 * @return \\FForm
+	 */
+	public static function addFormControls (\FForm $form) {
+		return $form;
+	}
+
+	/**
 	 * Populates object properties with the passed values in the data array
 	 * NOTE: array keys must match object properties names
 	 *

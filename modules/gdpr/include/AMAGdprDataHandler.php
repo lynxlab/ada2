@@ -86,7 +86,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 				if (count($type) === 1) {
 					// make a new request
 					$className = self::getObjectClasses()[self::REQUESTCLASSKEY];
-					$request = new $className();
+					$request = new $className(array(), $this);
 					$request->setGeneratedTs($this->date_to_ts('now'))->setType(reset($type));
 					$isUpdate = false;
 
@@ -149,6 +149,8 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 				throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode()  : null);
 			}
 			$request->afterSave($isUpdate);
+		} else {
+			throw new GdprException(translateFN('Salvataggio richiesta interroto dal codice'));
 		}
 
 		return $request;

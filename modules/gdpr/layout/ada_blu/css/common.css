@@ -44,6 +44,7 @@ select.form {
 	float: right;
 }
 
+#contentcontent .ui.form li.form label.error.form,
 .error.form {
 	color: #ff0000;
 }
