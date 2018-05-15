@@ -80,6 +80,6 @@
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->
-        <div class="row" id='newPolicyBTN'><div class="right aligned column"><a href="editPolicy.php" class="ui small button"><i18n>nuova politica</i18n></a></div></div>
+        <div class="row" id='newPolicyBTN' style='display:none;'><div class="right aligned column"><a href="editPolicy.php" class="ui small button"><i18n>nuova politica</i18n></a></div></div>
     </body>
 </html>

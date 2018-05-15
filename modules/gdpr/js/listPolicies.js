@@ -46,6 +46,8 @@ function initDoc(tableID, options) {
 			  "width": "10%"
 			}
 		);
+	} else {
+		$j('#newPolicyBTN').remove();
 	}
 
 	var tableObj = $j('#'+tableID)
@@ -78,9 +80,7 @@ function initDoc(tableID, options) {
 			"columns": columns,
 			"initComplete": function(settings, json) {
 				if (canEdit) {
-					$j('#newPolicyBTN').detach().insertBefore('.row.dt-table');
-				} else {
-					$j('#newPolicyBTN').remove();
+					$j('#newPolicyBTN').detach().insertBefore('.row.dt-table').show();
 				}
 			}
 		});
