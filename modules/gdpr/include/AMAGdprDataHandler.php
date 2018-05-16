@@ -82,6 +82,8 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			} else {
 				if (array_key_exists('requestType', $data) && intval($data['requestType'])>0) {
 					$type = $this->findBy(self::getObjectClasses()[self::REQUESTTYPECLASSKEY], array('id'=>intval($data['requestType'])));
+				} else {
+					$type = array();
 				}
 				if (count($type) === 1) {
 					// make a new request
