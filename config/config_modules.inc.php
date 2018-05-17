@@ -159,10 +159,11 @@ if (!defined('MODULES_FORMMAIL')) {
 if (!defined('MODULES_GDPR')) {
 	// defines for module gdpr
 	if (file_exists(MODULES_DIR.'/gdpr/config/config.inc.php')) {
-		define ('MODULES_GDPR_PATH', MODULES_DIR.'/gdpr');
+		define('MODULES_GDPR_NAME', 'gdpr');
+		define ('MODULES_GDPR_PATH', MODULES_DIR. DIRECTORY_SEPARATOR. MODULES_GDPR_NAME);
 		$modEnabled = require_once(MODULES_GDPR_PATH.'/config/config.inc.php');
 		define('MODULES_GDPR', $modEnabled);
-		define('MODULES_GDPR_HTTP', HTTP_ROOT_DIR. str_replace(ROOT_DIR, '', MODULES_DIR) . '/gdpr');
+		define('MODULES_GDPR_HTTP', HTTP_ROOT_DIR. str_replace(ROOT_DIR, '', MODULES_DIR) . DIRECTORY_SEPARATOR. MODULES_GDPR_NAME);
 	} else {
 		define('MODULES_GDPR', false);
 	}
