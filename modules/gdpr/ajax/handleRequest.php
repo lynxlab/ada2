@@ -12,6 +12,7 @@ use Lynxlab\ADA\Module\GDPR\GdprActions;
 use Lynxlab\ADA\Module\GDPR\GdprException;
 use Lynxlab\ADA\Module\GDPR\GdprRequest;
 use Ramsey\Uuid\Uuid;
+use Lynxlab\ADA\Module\GDPR\AMAGdprDataHandler;
 
 /**
  * Base config file
@@ -51,7 +52,8 @@ try {
 		throw new GdprException(translateFN("L'ID pratica non è valido"));
 	}
 	// so far so good, load the request
-	$tmp = (new GdprAPI())->findBy('GdprRequest',array('uuid'=>trim($postParams['requestuuid'])));
+	$gdprAPI = new GdprAPI();
+	$tmp = $gdprAPI->findBy($gdprAPI->getObjectClasses()[AMAGdprDataHandler::REQUESTCLASSKEY],array('uuid'=>trim($postParams['requestuuid'])));
 	$request = reset($tmp);
 	if (!($request instanceof GdprRequest)) {
 		throw new GdprException(translateFN("ID pratica non trovato"));
