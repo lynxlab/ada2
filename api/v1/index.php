@@ -130,28 +130,46 @@ foreach ($endpoints as $endpoint=>$config) {
 	/**
 	 * Cycle the endpoint config to map proper methods to controllerclass
 	 */
+	$exploded = explode(DIRECTORY_SEPARATOR, $endpoint.DIRECTORY_SEPARATOR);
+	array_pop($exploded);
+	if (count($exploded)==1) {
+		$group = null;
+		$endpoint = reset($exploded);
+	} else if (count($exploded)==2)  {
+		$group = reset($exploded);
+		$endpoint = next($exploded);
+	} else {
+		// skip the endpoint if more than 2 elements in the path
+		break;
+	}
+
 	foreach ($config['methods'] as $method) {
 		$method = strtolower($method);
+		$methodFunction = function ($format=null) use ($app, $oAuth2Obj, $endpoint, $config) {
+			try {
+				$method = strtolower ($app->request->getMethod ());
+				$controllerClass = __NAMESPACE__.'\\'.$config['controllerclass'];
+				$controller = new $controllerClass ($app,$oAuth2Obj->getAuthUserID());
+				if (method_exists ($controller, $method)) {
+					$data = $controller->$method ($app->request->params());
+					$app->render($endpoint ,array('output'=>$data,'app'=>$app));
+				} else {
+					$app->notFound ();
+				}
+			} catch (APIException $e) {
+				$controller->handleException ($e);
+			}
+		};
 		/**
 		 * Use SLIM object to map method to controller
 		 */
-		$app->$method ('/'.$endpoint.'(.:format)',
-				function ($format=null)
-				use ($app, $oAuth2Obj, $endpoint, $config) {
-					try {
-						$method = strtolower ($app->request->getMethod ());
-						$controllerClass = __NAMESPACE__.'\\'.$config['controllerclass'];
-						$controller = new $controllerClass ($app,$oAuth2Obj->getAuthUserID());
-						if (method_exists ($controller, $method)) {
-							$data = $controller->$method ($app->request->params());
-							$app->render($endpoint ,array('output'=>$data,'app'=>$app));
-						} else {
-							$app->notFound ();
-						}
-					} catch (APIException $e) {
-						$controller->handleException ($e);
-					}
-				});
+		if (!is_null($group)) {
+	 		$app->group(DIRECTORY_SEPARATOR.$group, function() use ($app, $oAuth2Obj, $endpoint, $config, $method, $methodFunction) {
+				$app->$method ('/'.$endpoint.'(.:format)', $methodFunction);
+	 		});
+		} else {
+			$app->$method (DIRECTORY_SEPARATOR.$endpoint.'(.:format)', $methodFunction);
+		}
 	}
 }
 
