@@ -78,6 +78,11 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 						$request->setContent(strip_tags(trim($data['requestContent'])));
 						unset($data['requestContent']);
 					}
+
+					if (array_key_exists('confirmedTs', $data) && is_int($data['confirmedTs'])) {
+						$request->setConfirmedTs(intval($data['confirmedTs']));
+						unset($data['confirmedTs']);
+					}
 				}
 			} else {
 				if (array_key_exists('requestType', $data) && intval($data['requestType'])>0) {
@@ -205,17 +210,18 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 		$policy->redirecturl = 'listPolicies.php';
 		return $policy;
 	}
+
 	/**
 	 * closes the request with the passed uuid, and set closed by as the optional userID
 	 *
-	 * @param string|GdprRequest $request
+	 * @param string|GdprRequest $request passs a GdprRequest object to skip findBy uuid
 	 * @param integer $closedBy
 	 * @throws GdprException
 	 */
 	public function closeRequest($request, $closedBy=null) {
 		if (is_null($closedBy)) $closedBy = $_SESSION['sess_userObj']->getId();
 		if (!($request instanceof GdprRequest)) {
-			$tmp = $tmp = $this->findBy(self::getObjectClasses()[self::REQUESTCLASSKEY],array('uuid'=>$request));
+			$tmp = $this->findBy(self::getObjectClasses()[self::REQUESTCLASSKEY],array('uuid'=>$request));
 			$request = reset($tmp);
 		}
 		if ($request instanceof GdprRequest) {
@@ -224,6 +230,22 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			if (\AMA_DB::isError($result)) {
 				throw new GdprException($result->getMessage(), $result->getCode());
 			}
+		} else throw new GdprException(translateFN('Pratica non trovata'));
+	}
+
+	/**
+	 * confirms the request with the passed uuid, and set confirmedTs to now
+	 *
+	 * @param string|GdprRequest $request passs a GdprRequest object to skip findBy uuid
+	 * @throws GdprException
+	 */
+	public function confirmRequest($request) {
+		if (!($request instanceof GdprRequest)) {
+			$tmp = $this->findBy(self::getObjectClasses()[self::REQUESTCLASSKEY],array('uuid'=>$request,'confirmedTs'=>null));
+			$request = reset($tmp);
+		}
+		if ($request instanceof GdprRequest) {
+			$this->saveRequest(array('requestUUID' => $request->getUuid(), 'confirmedTs' => $this->date_to_ts('now')));
 		} else throw new GdprException(translateFN('Pratica non trovata'));
 	}
 
