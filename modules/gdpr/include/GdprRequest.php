@@ -102,6 +102,16 @@ class GdprRequest extends GdprBase {
 	}
 
 	/**
+	 * Confirm a request
+	 *
+	 * @return \Lynxlab\ADA\Module\GDPR\GdprRequest
+	 */
+	public function confirm() {
+		(new GdprAPI())->confirmRequest($this);
+		return $this;
+	}
+
+	/**
 	 * Performs the action on the request
 	 *
 	 * @throws GdprException
