@@ -121,11 +121,20 @@ class GdprAPI {
 	/**
 	 * Closes a request
 	 *
-	 * @param string $request the uuid of the request
+	 * @param string|GdprRequest $request the uuid of the request or a GdprRequest instance
 	 * @param number $closedBy id of the user closing the request. null to get it from session user
 	 */
 	public function closeRequest($request, $closedBy=null) {
 		$this->_dh->closeRequest($request, $closedBy);
+	}
+
+	/**
+	 * Confirms a request
+	 *
+	 * @param string|GdprRequest $request the uuid of the request or a GdprRequest instance
+	 */
+	public function confirmRequest($request) {
+		$this->_dh->confirmRequest($request);
 	}
 
 	/**
