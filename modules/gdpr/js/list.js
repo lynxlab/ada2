@@ -81,7 +81,7 @@ function initDoc(tableID, options) {
 				"url": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
 			},
 			"drawCallback" : function() {
-				initEditableFields(showall, debug);
+				initEditableFields(showall, debug, options);
 			},
 			"ajax" : function(data, callback, settings) {
 				$j.ajax(				{
@@ -103,11 +103,11 @@ function initDoc(tableID, options) {
 		});
 
 	$j('table#list_requests').on('click', 'button[data-requestuuid]', function() {
-		return handleRequest(tableObj, $j(this), $j.extend({}, $j(this).data(), {debug: debug ? 1 :0}));
+		return handleRequest(tableObj, $j(this), $j.extend({}, options, $j(this).data(), {debug: debug ? 1 :0}));
 	});
 }
 
-function initEditableFields(showall, debug) {
+function initEditableFields(showall, debug, options) {
 	if (showall) {
 		var url = "ajax/saveRequest.php";
 		$j('td.editable-textarea').editable(url, 
@@ -162,7 +162,7 @@ function initEditableFields(showall, debug) {
 					for (var i = 0; i < formArray.length; i++){
 						dataObj[formArray[i]['name']] = formArray[i]['value'];
 					}
-					return dataObj;
+ 					return ($j.extend({}, options, dataObj));
 				},
 				onblur : debug ? 'ignore' : 'cancel',
 				cssclass : 'editable ui form',
