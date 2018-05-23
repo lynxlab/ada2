@@ -77,6 +77,7 @@ class GdprAPI {
 	 */
 	public function getGdprUserByID($userID) {
 		if ($userID instanceof \ADALoggableUser) $userID = $userID->getId();
+		else if (is_numeric($userID)) $userID = intval($userID);
 		else $userID = -1;
 		$res = $this->_dh->findBy('GdprUser', array('id_utente' => $userID));
 		return reset($res);
