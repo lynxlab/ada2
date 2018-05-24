@@ -89,6 +89,12 @@ define('ADA_DEFAULT_AVATAR','default_avatar.png');
 */
 if (!defined('PORTAL_NAME')) define('PORTAL_NAME','ADA 2.2');
 
+/**
+ * set to true to always display the maintenance page
+ * and set the template to be used if you wish
+ */
+if (!defined('MAINTENANCE_MODE')) define('MAINTENANCE_MODE', false);
+if (!defined('MAINTENANCE_TPL') && MAINTENANCE_MODE === true) define ('MAINTENANCE_TPL', 'maintenancemode');
 
 /**
  * DataBase abstraction layer,

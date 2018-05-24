@@ -79,7 +79,7 @@ function read_course($id_course=NULL) {
   }
 
   $sess_id_course = isset($_SESSION['sess_id_course']) ? $_SESSION['sess_id_course'] : null;
-  
+
   if (DataValidator::is_uinteger($id_course) !== FALSE) {
     $read_id_course = $id_course;
   }
@@ -290,6 +290,13 @@ function read_user_from_DB($id_user) {
 
 
 function read_layout_from_DB($id_profile,$family="",$node_type="",$node_author_id="",$node_course_id="",$module_dir="") {
+
+  /**
+   * obey MAINTENANCE_MODE if true
+   */
+  if (defined('MAINTENANCE_MODE') && MAINTENANCE_MODE === true) {
+  	$GLOBALS['self'] = MAINTENANCE_TPL;
+  }
 
   $self = isset($GLOBALS['self']) ? $GLOBALS['self'] : null;
   if(empty($node_type)) {
