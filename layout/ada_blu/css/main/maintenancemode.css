@@ -1,0 +1,44 @@
+@CHARSET "UTF-8";
+
+html, body {
+	height: 100%;
+}
+
+body {
+	display: table;
+	width: calc(100% - 1rem);
+	padding: 0.5rem;
+}
+
+.page-row {
+	display: table-row;
+	height: 1px;
+}
+
+.page-row-expanded {
+	height: 100%;
+}
+
+.cell {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.cellcontent {
+	width: 65%;
+	text-align: left;
+	margin: 0 auto;
+}
+
+footer.page-row {
+	height: 70px;
+	display: block;
+	position: relative;
+}
+
+footer.page-row .footerright {
+	position: absolute;
+	bottom:0;
+	right:0;
+}

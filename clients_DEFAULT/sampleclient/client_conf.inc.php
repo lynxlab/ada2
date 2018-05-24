@@ -33,6 +33,13 @@ if (!MULTIPROVIDER)
 	define('PORTAL_NAME','ADA 2.2 SAMPLE PROVIDER');
 
 	/**
+	 * set to true to always display the maintenance page
+	 * and set the template to be used if you wish
+	 */
+	if (!defined('MAINTENANCE_MODE')) define('MAINTENANCE_MODE', false);
+	if (!defined('MAINTENANCE_TPL') && MAINTENANCE_MODE === true) define ('MAINTENANCE_TPL', 'maintenancemode');
+
+	/**
 	 * Currency symbol
 	 */
 	define ('ADA_CURRENCY_SYMBOL' , '&euro;');
