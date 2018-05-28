@@ -14,6 +14,8 @@ namespace Lynxlab\ADA\Module\GDPR;
  *
  * @author giorgio
  */
+if (!defined('GdprPolicyClassTable')) define('GdprPolicyClassTable', AMAGdprDataHandler::PREFIX . 'privacy_content');
+
 class GdprPolicy extends GdprBase {
 
 	/**
@@ -21,7 +23,7 @@ class GdprPolicy extends GdprBase {
 	 *
 	 * @var string
 	 */
-	const table =  AMAGdprDataHandler::PREFIX . 'privacy_content';
+	const table =  GdprPolicyClassTable;
 
 	const editButtonLabel = 'modifica';
 

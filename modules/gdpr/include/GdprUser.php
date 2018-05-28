@@ -14,6 +14,8 @@ namespace Lynxlab\ADA\Module\GDPR;
  *
  * @author giorgio
  */
+if (!defined('GdprUserClassTable')) define('GdprUserClassTable', AMAGdprDataHandler::PREFIX . 'users');
+
 class GdprUser extends GdprBase {
 
 	/**
@@ -21,7 +23,7 @@ class GdprUser extends GdprBase {
 	 *
 	 * @var string
 	 */
-	const table =  AMAGdprDataHandler::PREFIX . 'users';
+	const table =  GdprUserClassTable;
 	const key = 'id_utente';
 
 	protected $id_utente;
