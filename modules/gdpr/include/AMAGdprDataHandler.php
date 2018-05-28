@@ -399,7 +399,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 					$res = $dbToUse->getAllPrepared($sql, $retObj->{$retObj::GETTERPREFIX.ucfirst($retObj::key)}(), AMA_FETCH_ASSOC);
 					if (!\AMA_DB::isError($res)) {
 						foreach ($res as $row) {
-							$retObj->{$retObj::ADDERPREFIX.ucfirst($joinKey)}($row[$joinKey]);
+							$retObj->{$retObj::ADDERPREFIX.ucfirst($joinKey)}($row[$joinKey], $dbToUse);
 						}
 					}
 				}
