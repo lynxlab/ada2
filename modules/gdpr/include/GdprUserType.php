@@ -14,6 +14,8 @@ namespace Lynxlab\ADA\Module\GDPR;
  *
  * @author giorgio
  */
+if (!defined('GdprUserTypeClassTable')) define('GdprUserTypeClassTable', AMAGdprDataHandler::PREFIX . 'userTypes');
+
 class GdprUserType extends GdprBase {
 
 	/**
@@ -21,7 +23,7 @@ class GdprUserType extends GdprBase {
 	 *
 	 * @var string
 	 */
-	const table =  AMAGdprDataHandler::PREFIX . 'userTypes';
+	const table =  GdprUserTypeClassTable;
 
 	/**
 	 * request types constants

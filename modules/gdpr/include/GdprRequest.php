@@ -16,6 +16,8 @@ use Ramsey\Uuid\Uuid;
  *
  * @author giorgio
  */
+if (!defined('GdprRequestClassTable')) define('GdprRequestClassTable', AMAGdprDataHandler::PREFIX . 'requests');
+
 class GdprRequest extends GdprBase {
 
 	/**
@@ -23,7 +25,7 @@ class GdprRequest extends GdprBase {
 	 *
 	 * @var string
 	 */
-	const table =  AMAGdprDataHandler::PREFIX . 'requests';
+	const table =  GdprRequestClassTable;
 
 	const actionButtonLabel = 'evadi';
 	const closeButtonLabel = 'chiudi';
