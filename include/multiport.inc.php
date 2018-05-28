@@ -498,7 +498,7 @@ class MultiPort
 	      		}
 	      		if (!is_array($_POST['user_gdpr'])) $_POST['user_gdpr'] = array($_POST['user_gdpr']);
 	      		foreach ($_POST['user_gdpr'] as $gdprType) {
-	      			$gdprUser->addType($gdprType);
+	      			$gdprUser->addType($gdprType, $gdprAPI);
 	      		}
 	      		$gdprAPI->saveGdprUser($gdprUser);
 	      	} catch (\Exception $e) {
