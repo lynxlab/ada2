@@ -27,6 +27,14 @@ class GdprPolicy extends GdprBase {
 
 	const editButtonLabel = 'modifica';
 
+	/**
+	 * page to which the user must be redirected when
+	 * an accept mandatory policies action is required
+	 *
+	 * @var string
+	 */
+	const acceptPoliciesPage = 'acceptPolicies.php';
+
 	protected $privacy_content_id;
 	protected $title;
 	protected $content;
