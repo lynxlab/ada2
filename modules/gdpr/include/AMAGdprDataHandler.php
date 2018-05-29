@@ -182,14 +182,17 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			}
 		}
 
+		if (!$isUpdate) {
+			$policy->setTester_pointer($_SESSION['sess_selected_tester']);
+		}
+
 		$policy->setTitle(trim($data['title']))->setContent(trim($data['content']))
 			   ->setMandatory((int)(array_key_exists('mandatory',$data) && intval($data['mandatory'])===1))
+			   ->setIsPublished((int)(array_key_exists('isPublished',$data) && intval($data['isPublished'])===1))
 			   ->setLastEditTS($this->date_to_ts('now'));
 
 		if (strlen($policy->getTitle())<=0) $policy->setTitle(null);
 		if (strlen($policy->getContent())<=0) $policy->setContent(null);
-
-		if (!$isUpdate) $policy->setTester_pointer('ciccio');
 
 		$fields = $policy->toArray();
 		if (!$isUpdate) {

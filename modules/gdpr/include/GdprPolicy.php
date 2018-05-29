@@ -32,6 +32,7 @@ class GdprPolicy extends GdprBase {
 	protected $content;
 	protected $tester_pointer;
 	protected $mandatory;
+	protected $isPublished;
 	protected $lastEditTS;
 
 	/**
@@ -57,6 +58,7 @@ class GdprPolicy extends GdprBase {
 			'ID',
 			'Titolo',
 			'Obbligatoria',
+			'Pubblicata',
 			'Ultima modifica'
 		);
 
@@ -110,6 +112,13 @@ class GdprPolicy extends GdprBase {
 	}
 
 	/**
+	 * @return mixed
+	 */
+	public function getIsPublished() {
+		return $this->isPublished;
+	}
+
+	/**
 	 * @param mixed $privacy_content_id
 	 */
 	public function setPrivacy_content_id($privacy_content_id) {
@@ -156,4 +165,13 @@ class GdprPolicy extends GdprBase {
 		$this->lastEditTS = $lastEditTS;
 		return $this;
 	}
+
+	/**
+	 * @param mixed $isPublished
+	 */
+	public function setIsPublished($isPublished) {
+		$this->isPublished = $isPublished;
+		return $this;
+	}
+
 }

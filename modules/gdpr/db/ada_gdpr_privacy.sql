@@ -26,6 +26,7 @@ CREATE TABLE `module_gdpr_privacy_content` (
   `content` text COLLATE utf8_unicode_ci,
   `tester_pointer` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `mandatory` tinyint(3) UNSIGNED DEFAULT '0',
+  `isPublished` tinyint(3) UNSIGNED DEFAULT '0' NOT NULL,
   `lastEditTS` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

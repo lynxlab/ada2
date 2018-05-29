@@ -55,6 +55,7 @@ try {
 				$retArr['title'] = $el->getTitle();
 				$retArr['lastEditTS'] = is_null($el->getLastEditTS()) ? null : ts2dFN($el->getLastEditTS()).' '.ts2tmFN($el->getLastEditTS());
 				$retArr['mandatory'] = $el->getMandatory() ? true: false;
+				$retArr['isPublished'] = $el->getIsPublished() ? true : false;
 				$actions = array();
 
 				if (GdprActions::canDo(GdprActions::EDIT_POLICY, $el)) {

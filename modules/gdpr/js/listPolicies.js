@@ -27,6 +27,14 @@ function initDoc(tableID, options) {
 			  return retStr + '<span style="display:none;">'+(true === data ? '1' : '0')+'</span>';
 			}
 		},
+		{ "data": "isPublished",
+			"className": "dt-body-center",
+			"width" : "5%",
+		    "render": function ( data, type, row, meta ) {
+			  var retStr = (true === data) ? '<i class="green large checked checkbox icon"></i>' : '<i class="red large empty checkbox icon"></i>' ;
+			  return retStr + '<span style="display:none;">'+(true === data ? '1' : '0')+'</span>';
+			}
+		},
 		{ "data": "lastEditTS",
 		  "className": "dt-body-center",
 		  "type": "date-euro",
@@ -57,7 +65,7 @@ function initDoc(tableID, options) {
 			"autoWidth"  : false,
 			"rowId": 'id',
 			"searchDelay" : 500, //in millis
-			"order": [[ 3, 'desc' ]],
+			"order": [[ 4, 'desc' ]],
 			"language": {
 				"url": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
 			},

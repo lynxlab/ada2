@@ -5,3 +5,7 @@
 	margin-top: -0.3rem;
 	color: #000;
 }
+
+#contentcontent .first .checkbox.container .ui.checkbox:not(:last-child) {
+	margin-right: 1em;
+}

@@ -26,6 +26,7 @@ class GdprPolicyForm extends GdprAbstractForm {
 
 		$this->addTextInput('title', translateFN('Titolo policy'))->setValidator(\FormValidator::NOT_EMPTY_STRING_VALIDATOR)->setRequired()->withData($policy->getTitle());
 
+		$cbContainer = \CDOMElement::create('div','class:checkbox container');
 		$toggleDIV = \CDOMElement::create('div','class:ui toggle checkbox');
 		$checkBox = \CDOMElement::create('checkbox','id:mandatory,type:checkbox,name:mandatory,value:1');
 		if ($policy->getMandatory()) {
@@ -33,10 +34,22 @@ class GdprPolicyForm extends GdprAbstractForm {
 		}
 		$toggleDIV->addChild($checkBox);
 		$label = \CDOMElement::create('label','for:mandatory');
-		$label->addChild(new \CText('Accettazione obbligatoria'));
+		$label->addChild(new \CText(translateFN('Accettazione obbligatoria')));
 		$toggleDIV->addChild($label);
+		$cbContainer->addChild($toggleDIV);
 
-		$this->addCDOM($toggleDIV);
+		$toggleDIV = \CDOMElement::create('div','class:ui toggle checkbox');
+		$checkBox = \CDOMElement::create('checkbox','id:isPublished,type:checkbox,name:isPublished,value:1');
+		if ($policy->getIsPublished()) {
+			$checkBox->setAttribute('checked', 'checked');
+		}
+		$toggleDIV->addChild($checkBox);
+		$label = \CDOMElement::create('label','for:isPublished');
+		$label->addChild(new \CText(translateFN('Pubblicato')));
+		$toggleDIV->addChild($label);
+		$cbContainer->addChild($toggleDIV);
+
+		$this->addCDOM($cbContainer);
 
 		$this->addTextArea('content', translateFN('Testo policy'))->setValidator(\FormValidator::MULTILINE_TEXT_VALIDATOR)->setRequired()->withData($policy->getContent());
 		$this->addHidden('privacy_content_id')->withData($policy->getPrivacy_content_id());
