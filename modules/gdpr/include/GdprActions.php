@@ -173,6 +173,7 @@ class GdprActions {
 
 				case 'ajax/lookupRequest.php':
 				case 'lookuprequest.php':
+				case GdprPolicy::acceptPoliciesPage:
 					$retArr['neededObjects'] = array(
 						AMA_TYPE_VISITOR => array('layout')
 					);
