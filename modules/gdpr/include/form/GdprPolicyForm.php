@@ -52,7 +52,7 @@ class GdprPolicyForm extends GdprAbstractForm {
 		$this->addCDOM($cbContainer);
 
 		$this->addTextArea('content', translateFN('Testo policy'))->setValidator(\FormValidator::MULTILINE_TEXT_VALIDATOR)->setRequired()->withData($policy->getContent());
-		$this->addHidden('privacy_content_id')->withData($policy->getPrivacy_content_id());
+		$this->addHidden('policy_content_id')->withData($policy->getPolicy_content_id());
 
 	}
 }

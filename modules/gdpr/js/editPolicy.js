@@ -23,8 +23,8 @@ function initDoc(formName) {
 		    		title: $j('#title', aForm).val().trim()
 		    };
 
-		    if (!isNaN(parseInt($j('#privacy_content_id', aForm).val()))) {
-		    	data.privacy_content_id = parseInt($j('#privacy_content_id', aForm).val());
+		    if (!isNaN(parseInt($j('#policy_content_id', aForm).val()))) {
+		    	data.policy_content_id = parseInt($j('#policy_content_id', aForm).val());
 		    }
 
 			$j('textarea, input[type="checkbox"]', 'form[name="'+formName+'"]').each(function(index, el) {

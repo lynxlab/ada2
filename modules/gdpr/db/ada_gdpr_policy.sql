@@ -17,11 +17,11 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `module_gdpr_privacy_content`
+-- Struttura della tabella `module_gdpr_policy_content`
 --
 
-CREATE TABLE `module_gdpr_privacy_content` (
-  `privacy_content_id` int(10) UNSIGNED NOT NULL,
+CREATE TABLE `module_gdpr_policy_content` (
+  `policy_content_id` int(10) UNSIGNED NOT NULL,
   `title` text COLLATE utf8_unicode_ci,
   `content` text COLLATE utf8_unicode_ci,
   `tester_pointer` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
@@ -35,17 +35,17 @@ CREATE TABLE `module_gdpr_privacy_content` (
 --
 
 --
--- Indici per le tabelle `module_gdpr_privacy_content`
+-- Indici per le tabelle `module_gdpr_policy_content`
 --
-ALTER TABLE `module_gdpr_privacy_content`
-  ADD PRIMARY KEY (`privacy_content_id`);
+ALTER TABLE `module_gdpr_policy_content`
+  ADD PRIMARY KEY (`policy_content_id`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate
 --
 
 --
--- AUTO_INCREMENT per la tabella `module_gdpr_privacy_content`
+-- AUTO_INCREMENT per la tabella `module_gdpr_policy_content`
 --
-ALTER TABLE `module_gdpr_privacy_content`
-  MODIFY `privacy_content_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `module_gdpr_policy_content`
+  MODIFY `policy_content_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;

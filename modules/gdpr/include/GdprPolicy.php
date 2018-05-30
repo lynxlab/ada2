@@ -14,7 +14,7 @@ namespace Lynxlab\ADA\Module\GDPR;
  *
  * @author giorgio
  */
-if (!defined('GdprPolicyClassTable')) define('GdprPolicyClassTable', AMAGdprDataHandler::PREFIX . 'privacy_content');
+if (!defined('GdprPolicyClassTable')) define('GdprPolicyClassTable', AMAGdprDataHandler::PREFIX . 'policy_content');
 
 class GdprPolicy extends GdprBase {
 
@@ -35,7 +35,7 @@ class GdprPolicy extends GdprBase {
 	 */
 	const acceptPoliciesPage = 'acceptPolicies.php';
 
-	protected $privacy_content_id;
+	protected $policy_content_id;
 	protected $title;
 	protected $content;
 	protected $tester_pointer;
@@ -52,7 +52,7 @@ class GdprPolicy extends GdprBase {
 	public function getActionButton() {
 		$button = \CDOMElement::create('a','class:ui tiny button');
 		$button->addChild(new \CText(translateFN(self::editButtonLabel)));
-		$button->setAttribute('href', 'editPolicy.php?id='.$this->getPrivacy_content_id());
+		$button->setAttribute('href', 'editPolicy.php?id='.$this->getPolicy_content_id());
 		return $button;
 	}
 
@@ -80,8 +80,8 @@ class GdprPolicy extends GdprBase {
 	/**
 	 * @return mixed
 	 */
-	public function getPrivacy_content_id() {
-		return $this->privacy_content_id;
+	public function getPolicy_content_id() {
+		return $this->policy_content_id;
 	}
 
 	/**
@@ -127,10 +127,10 @@ class GdprPolicy extends GdprBase {
 	}
 
 	/**
-	 * @param mixed $privacy_content_id
+	 * @param mixed $policy_content_id
 	 */
-	public function setPrivacy_content_id($privacy_content_id) {
-		$this->privacy_content_id = $privacy_content_id;
+	public function setPolicy_content_id($policy_content_id) {
+		$this->policy_content_id = $policy_content_id;
 		return $this;
 	}
 

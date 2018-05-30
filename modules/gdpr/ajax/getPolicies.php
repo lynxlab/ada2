@@ -51,7 +51,7 @@ try {
 			/** @var GdprPolicy $el */
 			function(GdprPolicy $el) {
 				$retArr = array();
-				$retArr['id'] = $el->getPrivacy_content_id();
+				$retArr['id'] = $el->getPolicy_content_id();
 				$retArr['title'] = $el->getTitle();
 				$retArr['lastEditTS'] = is_null($el->getLastEditTS()) ? null : ts2dFN($el->getLastEditTS()).' '.ts2tmFN($el->getLastEditTS());
 				$retArr['mandatory'] = $el->getMandatory() ? true: false;

@@ -47,7 +47,7 @@ try {
 	}
 
 	if (isset($_REQUEST['id']) && intval($_REQUEST['id'])>0) {
-		$policy = (new GdprAPI())->findBy('GdprPolicy', array('privacy_content_id' => intval($_REQUEST['id'])),null, AMAGdprDataHandler::getPoliciesDB());
+		$policy = (new GdprAPI())->findBy('GdprPolicy', array('policy_content_id' => intval($_REQUEST['id'])),null, AMAGdprDataHandler::getPoliciesDB());
 		if (count($policy)>0) {
 			$policy = reset($policy);
 		} else {

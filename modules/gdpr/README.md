@@ -9,7 +9,7 @@ This module implements GDPR related requests management
 
 1. Run ``composer install`` at module's root. This will install the needed dependencies.
 
-1. Run the provided ``db/ada_gdpr_privacy.sql`` script:
+1. Run the provided ``db/ada_gdpr_policy.sql`` script:
 
     * on the **common DB** if in a **multiprovider environment**
     _NOTE_: In a *multiprovider* environment, you can only have a single set of privacy content.    
