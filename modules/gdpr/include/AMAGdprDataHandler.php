@@ -190,7 +190,12 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 		}
 
 		if (!$isUpdate) {
-			$policy->setTester_pointer($_SESSION['sess_selected_tester']);
+			$policy->setTester_pointer($_SESSION['sess_selected_tester'])->setVersion(1);
+		} else {
+			if ((int)(array_key_exists('newVersion',$data) && intval($data['newVersion'])===1)) {
+				unset($data['newVersion']);
+				$policy->setVersion($policy->getVersion()+1);
+			}
 		}
 
 		$policy->setTitle(trim($data['title']))->setContent(trim($data['content']))

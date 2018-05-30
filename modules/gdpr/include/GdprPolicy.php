@@ -41,6 +41,7 @@ class GdprPolicy extends GdprBase {
 	protected $tester_pointer;
 	protected $mandatory;
 	protected $isPublished;
+	protected $version;
 	protected $lastEditTS;
 
 	/**
@@ -115,15 +116,22 @@ class GdprPolicy extends GdprBase {
 	/**
 	 * @return mixed
 	 */
-	public function getLastEditTS() {
-		return $this->lastEditTS;
+	public function getIsPublished() {
+		return $this->isPublished;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getIsPublished() {
-		return $this->isPublished;
+	public function getVersion() {
+		return $this->version;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getLastEditTS() {
+		return $this->lastEditTS;
 	}
 
 	/**
@@ -167,18 +175,26 @@ class GdprPolicy extends GdprBase {
 	}
 
 	/**
-	 * @param mixed $lastEditTS
-	 */
-	public function setLastEditTS($lastEditTS) {
-		$this->lastEditTS = $lastEditTS;
-		return $this;
-	}
-
-	/**
 	 * @param mixed $isPublished
 	 */
 	public function setIsPublished($isPublished) {
 		$this->isPublished = $isPublished;
+		return $this;
+	}
+
+	/**
+	 * @param mixed $version
+	 */
+	public function setVersion($version) {
+		$this->version = intval($version);
+		return $this;
+	}
+
+	/**
+	 * @param mixed $lastEditTS
+	 */
+	public function setLastEditTS($lastEditTS) {
+		$this->lastEditTS = $lastEditTS;
 		return $this;
 	}
 

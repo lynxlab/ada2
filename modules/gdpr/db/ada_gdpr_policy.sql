@@ -27,7 +27,8 @@ CREATE TABLE `module_gdpr_policy_content` (
   `tester_pointer` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `mandatory` tinyint(3) UNSIGNED DEFAULT '0',
   `isPublished` tinyint(3) UNSIGNED DEFAULT '0' NOT NULL,
-  `lastEditTS` int(11) NOT NULL
+  `lastEditTS` int(11) NOT NULL,
+  `version` int(11) UNSIGNED DEFAULT'1' NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
