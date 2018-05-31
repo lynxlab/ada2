@@ -35,6 +35,13 @@ class GdprPolicy extends GdprBase {
 	 */
 	const acceptPoliciesPage = 'acceptPolicies.php';
 
+	/**
+	 * string to be used as the key to save and access session variables
+	 *
+	 * @var string
+	 */
+	const sessionKey = 'gdpr-policy-sess';
+
 	protected $policy_content_id;
 	protected $title;
 	protected $content;
