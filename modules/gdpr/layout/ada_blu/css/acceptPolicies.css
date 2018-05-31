@@ -1,0 +1,45 @@
+@import url("common.css");
+
+form[name="loginRepeater"] { display: none; }
+
+div.fform.form {
+	margin: 0 auto;
+	padding:0;
+	width:100%;
+}
+
+#contentcontent .first .form .ui.accordion .title {
+	position: relative;
+}
+#contentcontent .first .form .ui.accordion .title .policy.title {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+#contentcontent .first .form .ui.accordion .title .policy.status {
+	position: absolute;
+	right:0.65rem;
+	top:0.65rem;
+}
+
+#contentcontent .first .form .ui.accordion .active.content .inline.fields {
+	font-size: 1.3rem;
+	padding: 1.3em 1em;
+	background-color: rgba(90, 90, 90, 0.1);
+    border-radius: .3em;
+    border: 1px solid rgba(200, 200, 200, 0.7);
+    margin-top: 1.3em;	
+}
+
+#contentcontent .first .form .ui.accordion .active.content .inline.fields .field {
+	margin-bottom: 0;
+}
+
+#contentcontent .first .form .ui.accordion .active.content .inline.fields .field label {
+	cursor: pointer;
+}
+
+#savePolicies {
+	margin: 0 auto;
+	display: block;
+}
