@@ -32,6 +32,17 @@ CREATE TABLE `module_gdpr_policy_content` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
+-- Struttura della tabella `module_gdpr_policy_utente`
+--
+
+CREATE TABLE `module_gdpr_policy_utente` (
+  `id_utente` int(10) UNSIGNED NOT NULL,
+  `id_policy` int(10) UNSIGNED NOT NULL,
+  `acceptedVersion` int(11) UNSIGNED NOT NULL,
+  `acceptedTS` int(11) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
 -- Indici per le tabelle scaricate
 --
 
@@ -50,3 +61,9 @@ ALTER TABLE `module_gdpr_policy_content`
 --
 ALTER TABLE `module_gdpr_policy_content`
   MODIFY `policy_content_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  
+--
+-- Indici per le tabelle `module_gdpr_policy_utente`
+--
+ALTER TABLE `module_gdpr_policy_utente`
+  ADD PRIMARY KEY (`id_utente`,`id_policy`,`acceptedVersion`);
