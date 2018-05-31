@@ -224,6 +224,97 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	}
 
 	/**
+	 * Gets the array of the policies accepted by the user
+	 *
+	 * @param integer $userID
+	 * @return array
+	 */
+	public function getUserAcceptedPolicies($userID) {
+		$sql = 'SELECT `id_policy`, `acceptedVersion`, `acceptedTS` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`=?';
+		$result = self::getPoliciesDB()->getAllPrepared($sql, $userID, AMA_FETCH_ASSOC);
+		$retArr = array();
+		if (!\AMA_DB::isError($result) && is_array($result) && count($result)>0) {
+			foreach ($result as $row) {
+				$retArr[$row['id_policy']] = $row;
+			}
+		}
+		return $retArr;
+	}
+
+	/**
+	 * Gets the array of the published policies objects,
+	 * either mandatory or not
+	 *
+	 * @return array
+	 */
+	public function getPublishedPolicies() {
+		return $this->findBy(self::getObjectClasses()[self::POLICYCLASSKEY], array('isPublished' => 1), null, self::getPoliciesDB());
+	}
+
+	/**
+	 * Saves the policies accepted by the user
+	 *
+	 * @param array $data
+	 * @param array $mandatoryPolicies
+	 * @param array $userAcceptedPolicies
+	 * @throws GdprException
+	 * @return \stdClass
+	 */
+	public function saveUserPolicies($data = array(), $mandatoryPolicies = array(), $userAcceptedPolicies = array()) {
+		$queries = array();
+		$retObj = new \stdClass();
+		foreach ($data['acceptPolicy'] as $policyID => $accepted) {
+			$policyID = intval($policyID);
+			$accepted = intval($accepted);
+			$tableName = self::PREFIX.'policy_utente';
+			$where = " WHERE `id_utente`={$data['userId']} AND `id_policy`=%d";
+			if ($accepted === 0) {
+				// user DID NOT accept the $policyID, delete the row
+				$queries[] = sprintf("DELETE FROM `%s`".$where, $tableName, $policyID);
+			} else if ($accepted === 1) {
+				// user accept the $policyID, must do some computations:
+				/**
+				 * 0. get the policy object
+				 * @var GdprPolicy $policyObj
+				 */
+				$tmp = array_filter($mandatoryPolicies,
+					function(GdprPolicy $el) use ($policyID) { return intval($el->getPolicy_content_id()) === $policyID; }
+				);
+				$policyObj = reset($tmp);
+
+				if (array_key_exists($policyID, $userAcceptedPolicies)) {
+					// 1. if the user already accepted the $policyID, must update only if $policyObj version is newer than accepted one
+					if ($policyObj->getVersion() > $userAcceptedPolicies[$policyID]['acceptedVersion']) {
+						$queries[] = sprintf("UPDATE `%s` SET `acceptedVersion`=%d, `acceptedTS`=%d".$where, $tableName, $policyObj->getVersion(), $this->date_to_ts('now'), $policyID);
+					}
+				} else {
+					// 2. if the user did not already accepted the $policyID, must insert a new row
+					$fields = array(
+						'id_utente' => $data['userId'],
+						'id_policy' => $policyID,
+						'acceptedVersion' => $policyObj->getVersion(),
+						'acceptedTS' => $this->date_to_ts('now')
+					);
+					$query = $this->sqlInsert($tableName, $fields);
+					// replace question marks with values from fields array
+  					$query = preg_replace_callback('/\?/', function($match) use(&$fields)
+  						{ return array_shift($fields); }, $query);
+  					$queries[] = rtrim($query,';');
+				}
+			}
+		}
+
+		$result = count($queries)>0 ? self::getPoliciesDB()->queryPrepared(implode(';', $queries)) : true;
+
+		if (\AMA_DB::isError($result)) {
+			throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode()  : null);
+		} else {
+			$retObj->submit = true;
+		}
+		return $retObj;
+	}
+
+	/**
 	 * Gets the array of the mandatory policies objects
 	 *
 	 * @return array
