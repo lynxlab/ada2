@@ -19,6 +19,8 @@
 /**
  * Base config file
  */
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
 require_once realpath(dirname(__FILE__)).'/config_path.inc.php';
 
 /**
@@ -117,6 +119,11 @@ $login_error_message = '';
 /**
  * Perform login
  */
+if (isset($gdprAccepted) && intval($gdprAccepted)===1 &&  array_key_exists(GdprPolicy::sessionKey, $_SESSION) && array_key_exists('post', $_SESSION[GdprPolicy::sessionKey])) {
+	extract($_SESSION[GdprPolicy::sessionKey]['post']);
+}
+unset($_SESSION[GdprPolicy::sessionKey]);
+
 if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0)) {
 
   if (isset($p_login)) {
@@ -126,7 +133,7 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
   	$username = DataValidator::validate_not_empty_string($p_username);
   	$password = DataValidator::validate_not_empty_string($p_password);
   }
-  
+
   if (!isset($p_remindme)) $p_remindme = false;
 
   	if (isset($p_login)) {
@@ -139,7 +146,7 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
 		    // es. campi vuoti o contenenti caratteri non consentiti.
 			$login_error_message = translateFN("Username  e/o password non valide");
   		}
-  	} else if (defined('MODULES_LOGIN') && MODULES_LOGIN && 
+  	} else if (defined('MODULES_LOGIN') && MODULES_LOGIN &&
   			   isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0) {
   		include_once  MODULES_LOGIN_PATH . '/include/'.$selectedLoginProvider.'.class.inc.php';
   		if (class_exists($selectedLoginProvider)) {
@@ -156,7 +163,7 @@ if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginPro
   			}
   		}
   	}
-    
+
     if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)) {
 		if(!ADALoggableUser::setSessionAndRedirect($userObj, $p_remindme, $p_selected_language, $loginObj)) {
             //  Utente non loggato perché stato <> ADA_STATUS_REGISTERED
@@ -196,11 +203,11 @@ $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_
   		$addHtml = false;
 
   		foreach ($allTesters as $aTester)
-  		{  			
+  		{
   			// skip testers having punatore like 'clientXXX'
   			if (!preg_match('/^(?:client)[0-9]{1,2}$/',$aTester['puntatore']) &&
   				is_dir (ROOT_DIR . '/clients/' .$aTester['puntatore'])) {
-  				
+
   				if (!$addHtml) $providerListUL = CDOMElement::create('ol');
   				$addHtml = true;
   				$testerLink = CDOMElement::create('a','href:'.preg_replace("/(http[s]?:\/\/)(\w+)[.]{1}(\w+)/", "$1".$aTester['puntatore'].".$3", HTTP_ROOT_DIR));
@@ -232,7 +239,7 @@ if(isset($_GET['message'])) {
 
 /**
  *  @author giorgio 25/feb/2014
- *  
+ *
  *  News from public course indicated in PUBLIC_COURSE_ID_FOR_NEWS
  *  are loaded in the bottomnews template_field with a widget, pls
  *  see widgets/main/index.xml file
@@ -253,13 +260,13 @@ if (isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj']-> getType() !=
     $user_type = $userObj->getTypeAsString();
     $user_name = $userObj->nome;
     $user_full_name = $userObj->getFullName();
-	 
+
     $imgAvatar = $userObj->getAvatar();
     $avatar = CDOMElement::create('img','src:'.$imgAvatar);
     $avatar->setAttribute('class', 'img_user_avatar');
 
     $content_dataAr['user_modprofilelink'] = $userObj->getHomePage(); //getEditProfilePage();
-    $content_dataAr['user_avatar'] = $avatar->getHtml();	  
+    $content_dataAr['user_avatar'] = $avatar->getHtml();
     $content_dataAr['status'] = translateFN('logged in');
     $content_dataAr['user_name'] = $user_name;
     $content_dataAr['user_full_name'] = $user_full_name;
@@ -271,22 +278,22 @@ if (isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj']-> getType() !=
     $onload_function = 'initDoc();';
     $content_dataAr['form'] = $login->getHtml().$forget_link;
     unset($content_dataAr['user_modprofilelink']);
-    unset($content_dataAr['user_avatar']);	  
+    unset($content_dataAr['user_avatar']);
     unset($content_dataAr['user_name']);
     unset($content_dataAr['user_type']);
 }
 /**
  * @author giorgio 26/set/2013
- * 
+ *
  * if you have some widget in the page and need to
  * pass some parameter to it, you can do it this way:
- * 
+ *
  * $layout_dataAr['widgets']['<template_field_name>'] = array ("<param_name>"=>"<param_value>");
  */
 
 /**
  * Sends data to the rendering engine
- * 
+ *
  * @author giorgio 25/set/2013
  * REMEMBER!!!! If there's a widgets/main/index.xml file
  * and the index.tpl has some template_field for the widget
@@ -300,21 +307,21 @@ if (isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj']-> getType() !=
 				ROOT_DIR . "/js/main/index.js"
 		);
 /**
- * @author giorgio 
+ * @author giorgio
  * include the jQuery and uniform css for proper styling
- */		
+ */
 		$layout_dataAr['CSS_filename'] = array (
 				JQUERY_UI_CSS
 		);
 if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
-	
-	$layout_dataAr['CSS_filename'] = array_merge($layout_dataAr['CSS_filename'], 
+
+	$layout_dataAr['CSS_filename'] = array_merge($layout_dataAr['CSS_filename'],
 		array (
 			MODULES_LOGIN_PATH . '/layout/support/login-form.css'
 	));
 }
-			
+
 		$optionsAr['onload_func'] = $onload_function;
-		
+
 ARE::render($layout_dataAr, $content_dataAr, NULL, (isset($optionsAr) ? $optionsAr : NULL) );
 ?>
