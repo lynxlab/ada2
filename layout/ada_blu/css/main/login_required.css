@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+@import url("../browsing/registration.css");
+
+#contentcontent .first {
+	width: 95%;
+	margin: 0 auto;
+}
+
+.ui.header.nomargin {
+	margin: 0;
+}

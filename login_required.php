@@ -14,6 +14,7 @@
 /**
  * Base config file
  */
+use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 
 require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
@@ -129,7 +130,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     if (isset($login_error_message)) $data = new CText($login_error_message);
 
-} else {
+}
 	/**
 	 * Negotiate login page language
 	 */
@@ -147,7 +148,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $registration_data = new UserRegistrationForm($cod, $registration_action);
 //    $form = new UserRegistrationForm();
 //    $data = $form->render();
-}
+
 $help = translateFN('Per poter proseguire, è necessario che tu sia un utente registrato.');
 $title = translateFN('Richiesta di autenticazione');
 
@@ -170,6 +171,21 @@ if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
 }
 
 $optionsAr['onload_func'] = 'initDateField();';
+
+if (defined('MODULES_GDPR') && MODULES_GDPR === true && isset($registration_data)) {
+    $gdprApi = new \Lynxlab\ADA\Module\GDPR\GdprAPI();
+    GdprAcceptPoliciesForm::addPolicies($registration_data, array(
+    	'policies' => $gdprApi->getPublishedPolicies(),
+    	'extraclass' => 'ui form',
+    	'isRegistration' => true
+    ));
+    $registrationDataHtml = $registration_data->getHtml();
+
+    $layout_dataAr['CSS_filename'][] = MODULES_GDPR_PATH . '/layout/'.ADA_TEMPLATE_FAMILY.'/css/acceptPolicies.css';
+    $layout_dataAr['JS_filename'][] = ROOT_DIR . '/js/browsing/registration.js';
+    $optionsAr['onload_func'] .= 'initDoc();';
+}
+
 
 $content_dataAr = array(
     'course_title' => $title,
