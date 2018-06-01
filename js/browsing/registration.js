@@ -2,6 +2,28 @@
 funzioni di creazione di opzioni con la definizione del default selected
 new Option([text[, value[, defaultSelected[, selected]]]])
 */
+function initDoc() {
+	$j('form[name="registration"]').submit(function(e) {
+		/**
+		 * sum of checked inputs having name that starts with
+		 * 'acceptPolicy' must mach the policyCount for all mandatory
+		 * policies to be accepted
+		 */
+		var policyCount = parseInt($j('*[data-mandatory-policy="1"]').length);
+		try {
+			var acceptCount = $j('input[name^="acceptPolicy"]:checked').map(function () {
+				return parseInt(this.value);
+			}).get().reduce(function(acc, val){ return acc+val; });
+		} catch(ex) {
+			var acceptCount = 0;
+		}
+
+		if (policyCount !== acceptCount) {
+			e.preventDefault();
+			alert($j('#acceptPoliciesMSG').text());
+		}
+	});
+}
 
 function CreateProvince() {
  var Bulgaria = 1;

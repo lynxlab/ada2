@@ -1,4 +1,6 @@
 <?php
+use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
+
 /**
  * registration.php file
  *
@@ -59,17 +61,17 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if($form->isValid()) {
         $user_dataAr = $form->toArray();
         $user_dataAr['username'] = $_POST['email'];
-        
+
         $userObj = new ADAUser($user_dataAr);
         $userObj->setLayout('');
         $userObj->setType(AMA_TYPE_STUDENT);
         $userObj->setStatus(ADA_STATUS_PRESUBSCRIBED);
         // Random password.
         $userObj->setPassword(sha1(time()));
-        
+
         /**
 		 * giorgio 19/ago/2013
-		 * 
+		 *
 		 * if it's not multiprovider, must register the user
 		 * in the selected tester only.
 		 * if it is multiprovider, must register the user
@@ -80,7 +82,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
         	$regProvider = array (ADA_PUBLIC_TESTER);
         }
-        
+
         $id_user = Multiport::addUser($userObj,$regProvider);
         if($id_user < 0) {
             $message = translateFN('Impossibile procedere. Un utente con questi dati esiste?')
@@ -88,6 +90,24 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             header('Location:'.HTTP_ROOT_DIR.'/browsing/registration.php?message='.$message);
             exit();
         }
+
+        /**
+         * before doing anything, save the accepted privacy policies here
+         */
+        try {
+	        if (defined('MODULES_GDPR') && MODULES_GDPR === true) {
+	        	$postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+	        	if (array_key_exists('acceptPolicy', $postParams) && is_array($postParams['acceptPolicy']) && count($postParams['acceptPolicy'])>0) {
+		        	$postParams['userId'] = $userObj->getId();
+					(new Lynxlab\ADA\Module\GDPR\GdprAPI())->saveUserPolicies($postParams);
+	        	}
+	        }
+        } catch (Exception $e) {
+        	$message = translateFN('Errore nel salvataggio delle politiche sulla privacy');
+            header('Location:'.HTTP_ROOT_DIR.'/browsing/registration.php?message='.$message);
+            exit();
+        }
+
         /**
          * Create a registration token for this user and send it to the user
          * with the confirmation request.
@@ -112,11 +132,11 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $title = PORTAL_NAME.': ' . translateFN('ti chiediamo di confermare la registrazione.');
-        
+
         $confirm_link_html = CDOMElement::create('a', 'href:'.HTTP_ROOT_DIR."/browsing/confirm.php?uid=$id_user&tok=$token");
         $confirm_link_html->addChild(new CText(translateFN('conferma registrazione')));
         $confirm_link_html_rendered = $confirm_link_html->getHtml();
-        
+
         $PLAINText = sprintf(translateFN('Gentile %s, ti chiediamo di confermare la registrazione ai %s.'),
         		$userObj->getFullName(), PORTAL_NAME)
         		. PHP_EOL . PHP_EOL
@@ -129,7 +149,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         		. ' ' . HTTP_ROOT_DIR."/browsing/confirm.php?uid=$id_user&tok=$token"
         		. PHP_EOL . PHP_EOL
         		. translateFN('La segreteria di') . ' '. PORTAL_NAME;
-        
+
         $HTMLText = sprintf(translateFN('Gentile %s, ti chiediamo di confermare la registrazione ai %s.'),
         		$userObj->getFullName(), PORTAL_NAME)
         		. '<BR />' . '<BR />'
@@ -142,7 +162,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         		. $confirm_link_html_rendered
         		. '<BR />' . '<BR />'
         		. translateFN('La segreteria di') . ' '. PORTAL_NAME;
-        
+
         $message_ha = array(
             'titolo' => $title,
             'testo' => $PLAINText,
@@ -167,8 +187,8 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $phpmailer->CharSet = ADA_CHARSET;
         $phpmailer->IsSendmail();
         $phpmailer->SetFrom($adm_email);
-        $phpmailer->AddReplyTo($adm_email);			
-        $phpmailer->IsHTML(true);			
+        $phpmailer->AddReplyTo($adm_email);
+        $phpmailer->IsHTML(true);
         $phpmailer->Subject = $title;
         $phpmailer->AddAddress($userObj->getEmail(),  $userObj->getFullName());
         $phpmailer->AddBCC($adm_email);
@@ -215,12 +235,12 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	{
 		// if provider is not set the redirect
 		if (!isset($GLOBALS['user_provider']) || empty($GLOBALS['user_provider']))
-		{  
+		{
 			header ('Location: '.HTTP_ROOT_DIR);
 			die();
 		}
 	}
-		
+
     /*
      * Display the registration form.
      */
@@ -230,16 +250,30 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     	unset($message);
     }
     $form = new UserRegistrationForm();
+
+    if (defined('MODULES_GDPR') && MODULES_GDPR === true) {
+	    $gdprApi = new \Lynxlab\ADA\Module\GDPR\GdprAPI();
+	    GdprAcceptPoliciesForm::addPolicies($form, array(
+	    	'policies' => $gdprApi->getPublishedPolicies(),
+	    	'extraclass' => 'ui form',
+	    	'isRegistration' => true
+	    ));
+
+	    $layout_dataAr['CSS_filename'] = array(
+	    	MODULES_GDPR_PATH . '/layout/'.ADA_TEMPLATE_FAMILY.'/css/acceptPolicies.css'
+	    );
+    }
+
     $data = $form->render();
 }
 
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_MASKEDINPUT,
-		JQUERY_NO_CONFLICT		
+		JQUERY_NO_CONFLICT
 );
 
-$optionsAr['onload_func'] = 'initDateField();';
+$optionsAr['onload_func'] = 'initDateField(); initDoc();';
 
 $title = translateFN('Informazioni');
 

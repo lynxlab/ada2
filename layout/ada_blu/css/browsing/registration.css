@@ -1,0 +1,6 @@
+@CHARSET "UTF-8";
+
+div.form.fform select.form {
+	display: inline-block;
+	float: none;
+}
