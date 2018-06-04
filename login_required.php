@@ -182,8 +182,9 @@ if (defined('MODULES_GDPR') && MODULES_GDPR === true && isset($registration_data
     $registrationDataHtml = $registration_data->getHtml();
 
     $layout_dataAr['CSS_filename'][] = MODULES_GDPR_PATH . '/layout/'.ADA_TEMPLATE_FAMILY.'/css/acceptPolicies.css';
+    $layout_dataAr['JS_filename'][] =  MODULES_GDPR_PATH . '/js/acceptPolicies.js';
     $layout_dataAr['JS_filename'][] = ROOT_DIR . '/js/browsing/registration.js';
-    $optionsAr['onload_func'] .= 'initDoc();';
+    $optionsAr['onload_func'] .= 'initRegistration();';
 }
 
 
