@@ -418,7 +418,7 @@ abstract class ADAGenericUser {
                 'nazione'                => $this->nazione,
                 'codice_fiscale'         => $this->codice_fiscale,
                 'birthdate'              => $this->birthdate,
-        		'birthcity'				 => $this->birthcity,
+        		'birthcity'				 => ($this->birthcity != NULL) ? $this->birthcity : '',
         		'birthprovince'			 => $this->birthprovince,
                 'sesso'                  => $this->sesso,
                 'telefono'               => ($this->telefono != 'NULL') ? $this->telefono : '',
