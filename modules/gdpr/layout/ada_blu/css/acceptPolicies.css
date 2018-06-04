@@ -43,3 +43,10 @@ div.fform.form {
 	margin: 0 auto;
 	display: block;
 }
+
+#acceptPoliciesMSG .content {
+	color: #D24B4C;
+    font-size: 1.4em;
+    text-align: center;
+
+} 
