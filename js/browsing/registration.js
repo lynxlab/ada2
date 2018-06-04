@@ -2,6 +2,64 @@
 funzioni di creazione di opzioni con la definizione del default selected
 new Option([text[, value[, defaultSelected[, selected]]]])
 */
+var adultAge = 18;
+
+function isAdult(dateString) {
+    // First check for the pattern
+    if(!/^\d{2}\/\d{2}\/\d{4}$/.test(dateString))
+        return -1;
+
+    // Parse the date parts to integers
+    var parts = dateString.split("/");
+    var day = parseInt(parts[0], 10);
+    var month = parseInt(parts[1], 10);
+    var year = parseInt(parts[2], 10);
+    var today = new Date();
+
+    // Check the ranges of month and year
+    if(year < 1900 || year > today.getFullYear() || month == 0 || month > 12)
+        return -1;
+
+    var monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+
+    // Adjust for leap years
+    if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+        monthLength[1] = 29;
+
+    // Check the range of the day
+    var dateOK = day > 0 && day <= monthLength[month - 1];
+    
+    if (dateOK) {
+    	var birthDate = new Date(parts[2]+"/"+parts[1]+"/"+parts[0]);
+	    var age = today.getFullYear() - birthDate.getFullYear();
+	    var m = today.getMonth() - birthDate.getMonth();
+	    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+	        age--;
+	    }
+	    if (age<adultAge) return -2; // -2 means is not adult
+    } else {
+    	return -1; // -1 is invalid date
+    }
+    return 0;
+}
+
+function initRegistration() {
+	$j('form[name="registration"]').submit(function(e) {
+		var isAdultCheck = isAdult($j('#birthdate').val());
+		if (isAdultCheck<0) {
+			e.preventDefault();
+			if (isAdultCheck == -1) $j('.alertMSG','#registrationError').html($j('#invalidDate').html());
+			else if (isAdultCheck == -2) $j('.alertMSG','#registrationError').html($j('#notAdult').html());
+			$j('#registrationError').modal('show');
+			return;
+		}		
+		if (!checkAllPoliciesAccepted()) {
+			e.preventDefault();
+			$j('#acceptPoliciesMSG').modal('show');
+			return;
+		}
+	});
+}
 
 function CreateProvince() {
  var Bulgaria = 1;

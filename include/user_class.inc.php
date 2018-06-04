@@ -1,4 +1,7 @@
 <?php
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
 /**
  * User classes
  *
@@ -415,7 +418,7 @@ abstract class ADAGenericUser {
                 'nazione'                => $this->nazione,
                 'codice_fiscale'         => $this->codice_fiscale,
                 'birthdate'              => $this->birthdate,
-        		'birthcity'				 => $this->birthcity,
+        		'birthcity'				 => ($this->birthcity != NULL) ? $this->birthcity : '',
         		'birthprovince'			 => $this->birthprovince,
                 'sesso'                  => $this->sesso,
                 'telefono'               => ($this->telefono != 'NULL') ? $this->telefono : '',
@@ -1166,6 +1169,21 @@ abstract class ADALoggableUser extends ADAGenericUser {
     				$redirectURL = preg_replace("/(http[s]?:\/\/)(\w+)[.]{1}(\w+)/", "$1".$user_default_tester.".$3", $userObj->getHomePage());
     				header('Location:'.$redirectURL);
     				exit();
+    			}
+    		}
+
+    		if (defined('MODULES_GDPR') && MODULES_GDPR === true) {
+    			// check if user has accepted the mandatory privacy policies
+    			$gdprApi = new GdprAPI();
+    			if (!$gdprApi->checkMandatoryPoliciesForUser($userObj)) {
+    				$_SESSION[GdprPolicy::sessionKey]['post'] = $_POST;
+    				if (!is_null($redirectURL)) {
+    					$_SESSION['subscription_page'] = $redirectURL;
+    				}
+    				$_SESSION[GdprPolicy::sessionKey]['redirectURL'] = !is_null($redirectURL) ? $redirectURL : $userObj->getHomePage();
+    				$_SESSION[GdprPolicy::sessionKey]['userId'] = $userObj->getId();
+    				$_SESSION[GdprPolicy::sessionKey]['loginRepeaterSubmit'] = $_SERVER['SCRIPT_NAME'];
+    				redirect(MODULES_GDPR_HTTP . '/'. GdprPolicy::acceptPoliciesPage);
     			}
     		}
 

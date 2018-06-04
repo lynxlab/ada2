@@ -354,6 +354,17 @@ abstract class FForm
     protected final function addReset($id) {
     }
 
+    /**
+     * Adds a CDOM element to the form
+     *
+     * @param \CBaseAttributesElement $element
+     * @return FForm
+     */
+    public function addCDOM(\CBaseAttributesElement $element) {
+		$this->_controls[] = $element;
+		return $this;
+	}
+
     /*
      * Rendering
      */

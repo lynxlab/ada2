@@ -5,3 +5,18 @@
 	margin-top: -0.3rem;
 	color: #000;
 }
+
+#contentcontent .first .checkbox.container .ui.checkbox:not(:last-child) {
+	margin-right: 1em;
+}
+
+#contentcontent .first .version.container {
+	margin-top: -15px;
+}
+
+#contentcontent .first .version.content {
+	font-style: italic;
+	font-weight: bold;
+	font-size: 0.9em;
+	opacity: 0.7;
+}

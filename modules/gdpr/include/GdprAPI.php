@@ -148,6 +148,82 @@ class GdprAPI {
 	}
 
 	/**
+	 * Gets the array of the published policies objects,
+	 * either mandatory or not
+	 *
+	 * @return array
+	 */
+	public function getPublishedPolicies() {
+		return $this->_dh->getPublishedPolicies();
+	}
+
+	/**
+	 * Gets the array of the mandatory policies objects
+	 *
+	 * @return array
+	 */
+	public function getMandatoryPolicies() {
+		return $this->_dh->getMandatoryPolicies();
+	}
+
+	/**
+	 * Gets the array of the policies accepted by the user
+	 *
+	 * @param integer $userID
+	 * @return array
+	 */
+	public function getUserAcceptedPolicies($userID) {
+		return $this->_dh->getUserAcceptedPolicies($userID);
+	}
+
+	/**
+	 * Saves the policies accepted by the user
+	 *
+	 * @param integer $data
+	 * @return \stdClass
+	 */
+	public function saveUserPolicies($data) {
+		return $this->_dh->saveUserPolicies($data, $this->getMandatoryPolicies(), $this->getUserAcceptedPolicies($data['userId']));
+	}
+
+	/**
+	 * Checks if the passed user has accepted all the mandatory policies
+	 *
+	 * @param \ADALoggableUser $userObj
+	 * @return boolean
+	 */
+	public function checkMandatoryPoliciesForUser(\ADALoggableUser $userObj) {
+		if ($userObj->getType() == AMA_TYPE_ADMIN) {
+			/**
+			 * the ADMIN is not required to accept all mandatory policies
+			 */
+			return true;
+		} else {
+			/**
+			 * other types of users must be checked
+			 */
+			$policies = $this->getMandatoryPolicies();
+			if (count($policies)>0) {
+				$okToLogin = true;
+				$userPolicies = $this->getUserAcceptedPolicies($userObj->getId());
+				/** @var GdprPolicy $policy */
+				foreach ($policies as $policy) {
+					// user MUST accept all mandatory policies!!
+					$okToLogin = $okToLogin &&
+						(array_key_exists($policy->getPolicy_content_id(), $userPolicies) &&
+						intval($userPolicies[$policy->getPolicy_content_id()]['acceptedVersion']) >= $policy->getVersion());
+				}
+				return $okToLogin;
+			} else {
+				/**
+				 * if no mandatory policies, the user is OK
+				 */
+				return true;
+			}
+		}
+	}
+
+	/**
 	 * Calls the datahandler findBy method
 	 *
 	 * @param string $className

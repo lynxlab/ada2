@@ -178,6 +178,8 @@ class GdprActions {
 					);
 				break;
 
+				case GdprPolicy::acceptPoliciesPage:
+				case 'ajax/saveUserPolicies.php':
 				case 'ajax/saveRequest.php':
 				case 'ajax/getCaptcha.php':
 					$retArr['neededObjects'] += array(

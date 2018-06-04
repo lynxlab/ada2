@@ -81,21 +81,17 @@
                         <div id="help">
                             <template_field class="template_field" name="help">help</template_field>
                         </div>
-                        <div id="left">
-                            <div id="login_div">
-                                <i18n>Se sei già registrato, fai login.</i18n>
-                                <div id="login_form">
-                                    <template_field class="template_field" name="data">data</template_field>
-                                </div>
-                            </div>
+                        <h3 class="ui top attached header">
+                        	<i18n>Se sei già registrato, fai login.</i18n>
+                        </h3>
+                        <div class="ui segment attached">
+                        	<template_field class="template_field" name="data">data</template_field>
                         </div>
-                        <div id="right">
-                            <div id="registration_div">
-                                <i18n>Se ancora non sei registrato, registrati ora.</i18n>
-                                <div id="registration_form">
-                                    <template_field class="template_field" name="registration_data">registration_data</template_field>
-                                </div>
-                            </div>
+                        <h3 class="ui attached header nomargin">
+                        	<i18n>Se ancora non sei registrato, registrati ora.</i18n>
+                        </h3>
+                        <div class="ui segment bottom attached">
+                        	<template_field class="template_field" name="registration_data">registration_data</template_field>
                         </div>
                     </div>
                 </div>
@@ -114,6 +110,5 @@
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->
-
     </body>
 </html>

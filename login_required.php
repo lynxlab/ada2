@@ -14,6 +14,9 @@
 /**
  * Base config file
  */
+use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
+use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+
 require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
 
 /**
@@ -56,13 +59,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $navigationHistoryObj = $_SESSION['sess_navigation_history'];
     $lastModule = $navigationHistoryObj->lastModule();
     print_r($form);
-     * 
+     *
      */
     /**
      * Perform login
      */
+	if (isset($gdprAccepted) && intval($gdprAccepted)===1 &&  array_key_exists(GdprPolicy::sessionKey, $_SESSION) && array_key_exists('post', $_SESSION[GdprPolicy::sessionKey])) {
+		extract($_SESSION[GdprPolicy::sessionKey]['post']);
+	}
+	unset($_SESSION[GdprPolicy::sessionKey]);
     if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0)) {
-    
+
     	if (isset($p_login)) {
     		$username = DataValidator::validate_username($p_username);
     		$password = DataValidator::validate_password($p_password, $p_password);
@@ -70,9 +77,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     		$username = DataValidator::validate_not_empty_string($p_username);
     		$password = DataValidator::validate_not_empty_string($p_password);
     	}
-    
+
     	if (!isset($p_remindme)) $p_remindme = false;
-    
+
     	if (isset($p_login)) {
     		if($username !== FALSE && $password !== FALSE) {
     			//User has correctly inserted un & pw
@@ -100,7 +107,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     					}
     				}
     			}
-    
+
     			if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)) {
     				if (isset($_SESSION['subscription_page'])) {
     					$redirectURL = $_SESSION['subscription_page'];
@@ -108,7 +115,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     				} else {
     					$redirectURL = $navigationHistoryObj->lastModule();
                     }
-                    
+
     				if(!ADALoggableUser::setSessionAndRedirect($userObj, $p_remindme, $p_selected_language, $loginObj,$redirectURL)) {
     					//  Utente non loggato perché stato <> ADA_STATUS_REGISTERED
     					$login_error_message = translateFN("Utente non abilitato");
@@ -122,8 +129,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     			}
     }
     if (isset($login_error_message)) $data = new CText($login_error_message);
-    
-} else {
+
+}
 	/**
 	 * Negotiate login page language
 	 */
@@ -131,17 +138,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	$supported_languages = Translator::getSupportedLanguages();
 	$login_page_language_code = Translator::negotiateLoginPageLanguage($lang_get);
 	$_SESSION['sess_user_language'] = $login_page_language_code;
-	
+
     $form_action = HTTP_ROOT_DIR ;
     $form_action .= '/'.whoami().'.php';
     $data = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_page_language_code, $login_error_message);
-    
+
     $registration_action = HTTP_ROOT_DIR . '/browsing/registration.php';
     $cod = FALSE;
     $registration_data = new UserRegistrationForm($cod, $registration_action);
 //    $form = new UserRegistrationForm();
 //    $data = $form->render();
-} 
+
 $help = translateFN('Per poter proseguire, è necessario che tu sia un utente registrato.');
 $title = translateFN('Richiesta di autenticazione');
 
@@ -164,6 +171,22 @@ if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
 }
 
 $optionsAr['onload_func'] = 'initDateField();';
+
+if (defined('MODULES_GDPR') && MODULES_GDPR === true && isset($registration_data)) {
+    $gdprApi = new \Lynxlab\ADA\Module\GDPR\GdprAPI();
+    GdprAcceptPoliciesForm::addPolicies($registration_data, array(
+    	'policies' => $gdprApi->getPublishedPolicies(),
+    	'extraclass' => 'ui form',
+    	'isRegistration' => true
+    ));
+    $registrationDataHtml = $registration_data->getHtml();
+
+    $layout_dataAr['CSS_filename'][] = MODULES_GDPR_PATH . '/layout/'.ADA_TEMPLATE_FAMILY.'/css/acceptPolicies.css';
+    $layout_dataAr['JS_filename'][] =  MODULES_GDPR_PATH . '/js/acceptPolicies.js';
+    $layout_dataAr['JS_filename'][] = ROOT_DIR . '/js/browsing/registration.js';
+    $optionsAr['onload_func'] .= 'initRegistration();';
+}
+
 
 $content_dataAr = array(
     'course_title' => $title,
