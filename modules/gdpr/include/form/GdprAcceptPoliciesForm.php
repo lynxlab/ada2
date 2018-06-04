@@ -116,6 +116,23 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 					$accordion->addChild($content);
 				}
 				$formObj->addCDOM($accordion);
+
+				$alert = \CDOMElement::create('div','class:ui small modal,id:acceptPoliciesMSG');
+				$aHeader = \CDOMElement::create('div','class:header');
+				$aHeader->addChild(new \CText(translateFN('Attenzione')));
+				$aContent = \CDOMElement::create('div','class:content');
+				$aContent->addChild(new \CText('<i class="large warning icon"></i>'.translateFN('Per '.($isRegistration ? 'registrarsi': 'continuare' ).', è necessario prestare il consenso a tutte le politiche di gestione dei dati personali')));
+
+				$aActions = \CDOMElement::create('div','class:actions');
+				$button = \CDOMElement::create('div','class:ui red button');
+				$button->addChild(new \CText(translateFN('OK')));
+				$aActions->addChild($button);
+
+				$alert->addChild($aHeader);
+				$alert->addChild($aContent);
+				$alert->addChild($aActions);
+
+				$formObj->addCDOM($alert);
 			}
 		}
 		return $formObj;
