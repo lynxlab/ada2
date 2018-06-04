@@ -52,14 +52,22 @@ try {
 			$submitTo = HTTP_ROOT_DIR . $_SESSION[GdprPolicy::sessionKey]['loginRepeaterSubmit'];
 			unset($_SESSION[GdprPolicy::sessionKey]['loginRepeaterSubmit']);
 		}
+
+		if (array_key_exists('userId', $_SESSION[GdprPolicy::sessionKey])) {
+			$userId = $_SESSION[GdprPolicy::sessionKey]['userId'];
+			unset($_SESSION[GdprPolicy::sessionKey]['userId']);
+		}
+	} else {
+		$userId = $_SESSION['sess_userObj']->getId();
 	}
+
 	$gdprApi = new GdprAPI();
 
 	$loginForm = new GdprLoginRepeaterForm('loginRepeater', $submitTo, $dataAr);
 	$policiesForm = new GdprAcceptPoliciesForm('acceptPolicies', null, array(
 		'policies' => $gdprApi->getPublishedPolicies(),
-		'userAccepted' => $gdprApi->getUserAcceptedPolicies($_SESSION[GdprPolicy::sessionKey]['userId']),
-		'userId' => $_SESSION[GdprPolicy::sessionKey]['userId']
+		'userAccepted' => $gdprApi->getUserAcceptedPolicies($userId),
+		'userId' => $userId
 	));
 	$optionsAr['onload_func'] = 'initDoc(\'loginRepeater\',\'acceptPolicies\');';
 
@@ -81,6 +89,10 @@ try {
 }
 
 $content_dataAr = array(
+	'user_name' => $userObj->getFirstName(),
+	'user_homepage' => $userObj->getHomePage(),
+	'user_type' => $user_type,
+	'status' => $status,
 	'data' => $data
 );
 
