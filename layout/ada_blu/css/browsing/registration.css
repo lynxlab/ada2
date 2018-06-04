@@ -4,3 +4,10 @@ div.form.fform select.form {
 	display: inline-block;
 	float: none;
 }
+
+#registrationError .content {
+	color: #D24B4C;
+    font-size: 1.4em;
+    text-align: center;
+
+}
