@@ -119,10 +119,12 @@ $login_error_message = '';
 /**
  * Perform login
  */
-if (isset($gdprAccepted) && intval($gdprAccepted)===1 &&  array_key_exists(GdprPolicy::sessionKey, $_SESSION) && array_key_exists('post', $_SESSION[GdprPolicy::sessionKey])) {
-	extract($_SESSION[GdprPolicy::sessionKey]['post']);
+if (class_exists('GdprPolicy', true)) {
+	if (isset($gdprAccepted) && intval($gdprAccepted)===1 &&  array_key_exists(GdprPolicy::sessionKey, $_SESSION) && array_key_exists('post', $_SESSION[GdprPolicy::sessionKey])) {
+		extract($_SESSION[GdprPolicy::sessionKey]['post']);
+	}
+	unset($_SESSION[GdprPolicy::sessionKey]);
 }
-unset($_SESSION[GdprPolicy::sessionKey]);
 
 if(isset($p_login) || (isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0)) {
 
