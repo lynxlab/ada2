@@ -10,22 +10,35 @@ function initDoc(formName) {
 
 	var debugForm = false;
 
+	var doShowOnSelected = function(aForm, selectEl) {
+		$j('[data-showonselected]', selectEl).each(function() {
+			if ($j(this).is(':selected')) {
+				// show showonselected selected option id
+				var showID = $j(this).data('showonselected') || null;
+				$j(selectEl).data('hideonselected', showID);
+				if (null !== showID) {
+					var target = $j($j('#'+showID, aForm).parents('li.form').first());
+					if (!target.is(':visible')) target.slideDown('fast');
+				}
+			}
+		});
+	};
+
 	$j('form[name="'+formName+'"]')
 		.on('change', 'select#requestType', function() {
 			var aForm = $j($j(this).parents('form').first());
-
-			// hide all shownonselected ids
-			$j('[data-showonselected]', this).each(function() {
-				var target = $j($j('#'+$j(this).data('showonselected'), aForm).parents('li.form').first());
-				if (target.is(':visible')) target.slideUp('fast');
-			});
-
-			// show showonselected selected option id
-			var showID = $j('option:selected', this).data('showonselected') || null;
-			if (null !== showID) {
-				var target = $j($j('#'+showID, aForm).parents('li.form').first());
-				if (!target.is(':visible')) target.slideDown('fast');
+			var doAction = true, that = this;
+			if ('undefined' !== typeof $j(this).data('hideonselected')) {
+				var target = $j($j('#'+$j(this).data('hideonselected'), aForm).parents('li.form').first());
+				if (target.is(':visible')) {
+					doSlide = false;
+					target.slideUp('fast', function() {
+						$j(that).data('hideonselected', null);
+						doShowOnSelected(aForm, that);
+					});
+				}
 			}
+			if (doAction) doShowOnSelected(aForm, that);
 		})
 		.on('submit', function(e) {
 			e.preventDefault();
