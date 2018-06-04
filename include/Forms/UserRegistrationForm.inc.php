@@ -24,7 +24,7 @@ class UserRegistrationForm extends FForm
 {
     public function  __construct($cod=FALSE, $action=NULL) {
         parent::__construct();
-        
+
         if ($action != NULL) {
             $this->setAction($action);
         }
@@ -41,37 +41,60 @@ class UserRegistrationForm extends FForm
         $this->addTextInput('birthdate', translateFN('Data di nascita'))
         	 ->setRequired()
              ->setValidator(FormValidator::DATE_VALIDATOR);
-        
-        $this->addTextInput('birthcity', translateFN('Comune o stato estero di nascita'))
-        ->setRequired()
-        ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
-        
-        $this->addTextInput('birthprovince', translateFN('Provincia di nascita'));
+
+//         $this->addTextInput('birthcity', translateFN('Comune o stato estero di nascita'))
+//         ->setRequired()
+//         ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
+
+//         $this->addTextInput('birthprovince', translateFN('Provincia di nascita'));
 
         $this->addTextInput('email', translateFN('Email'))
              ->setRequired()
              ->setValidator(FormValidator::EMAIL_VALIDATOR);
 
-        $this->addSelect(
-            'sesso',
-             translateFN('Genere'),
-             array(
-                 '0' => translateFN('Scegli un genere'),
-                 'M' => translateFN('Maschio'),
-                 'F' => translateFN('Femmina')
-             ),
-             '0');
+//         $this->addSelect(
+//             'sesso',
+//              translateFN('Genere'),
+//              array(
+//                  '0' => translateFN('Scegli un genere'),
+//                  'M' => translateFN('Maschio'),
+//                  'F' => translateFN('Femmina')
+//              ),
+//              '0');
 
-        $this->addTextInput('matricola', translateFN('numero di matricola'));
+//         $this->addTextInput('matricola', translateFN('numero di matricola'));
 /*
- * 
+ *
         if ($cod) {
             $this->addTextInput('codice', translateFN('Codice'))
                  ->setRequired()
                  ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
         }
 
- * 
+ *
  */
+		$alert = \CDOMElement::create('div','class:ui small modal,id:registrationError');
+		$aHeader = \CDOMElement::create('div','class:header');
+		$aHeader->addChild(new \CText(translateFN('Attenzione')));
+		$aContent = \CDOMElement::create('div','class:content');
+		$aContent->addChild(new \CText('<i class="large warning icon"></i><span class="alertMSG"></span>'));
+
+		$aActions = \CDOMElement::create('div','class:actions');
+		$button = \CDOMElement::create('div','class:ui red button');
+		$button->addChild(new \CText(translateFN('OK')));
+		$aActions->addChild($button);
+
+		$alert->addChild($aHeader);
+		$alert->addChild($aContent);
+		$alert->addChild($aActions);
+		$this->addCDOM($alert);
+
+		foreach (array('invalidDate' => 'Data non valida', 'notAdult' => 'Devi essere maggiorenne per registrarti') as $msgID => $message) {
+			$aMSG = CDOMElement::create('span','id:'.$msgID);
+			$aMSG->setAttribute('style', 'display:none');
+			$aMSG->addChild(new CText(translateFN($message)));
+			$this->addCDOM($aMSG);
+		}
+
     }
 }
