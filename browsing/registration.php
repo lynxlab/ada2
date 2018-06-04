@@ -273,7 +273,11 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_NO_CONFLICT
 );
 
-$optionsAr['onload_func'] = 'initDateField(); initDoc();';
+if (isset($gdprApi)) {
+    $layout_dataAr['JS_filename'][] =  MODULES_GDPR_PATH . '/js/acceptPolicies.js';
+}
+
+$optionsAr['onload_func'] = 'initDateField(); initRegistration();';
 
 $title = translateFN('Informazioni');
 
