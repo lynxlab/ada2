@@ -110,6 +110,5 @@
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->
-		<span id="acceptPoliciesMSG" style="display:none;"><i18n>Per registrarsi, è necessario prestare il consenso a tutte le politiche di gestione dei dati personali</i18n></span>
     </body>
 </html>
