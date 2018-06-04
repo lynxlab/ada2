@@ -119,7 +119,7 @@ $login_error_message = '';
 /**
  * Perform login
  */
-if (class_exists('GdprPolicy', true)) {
+if (class_exists('Lynxlab\\ADA\\Module\\GDPR\\GdprPolicy', true)) {
 	if (isset($gdprAccepted) && intval($gdprAccepted)===1 &&  array_key_exists(GdprPolicy::sessionKey, $_SESSION) && array_key_exists('post', $_SESSION[GdprPolicy::sessionKey])) {
 		extract($_SESSION[GdprPolicy::sessionKey]['post']);
 	}
