@@ -183,7 +183,7 @@ class GdprAPI {
 	 * @return \stdClass
 	 */
 	public function saveUserPolicies($data) {
-		return $this->_dh->saveUserPolicies($data, $this->getMandatoryPolicies(), $this->getUserAcceptedPolicies($data['userId']));
+		return $this->_dh->saveUserPolicies($data, $this->getPublishedPolicies(), $this->getUserAcceptedPolicies($data['userId']));
 	}
 
 	/**

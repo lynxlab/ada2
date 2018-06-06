@@ -255,12 +255,12 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 * Saves the policies accepted by the user
 	 *
 	 * @param array $data
-	 * @param array $mandatoryPolicies
+	 * @param array $publishedPolicies
 	 * @param array $userAcceptedPolicies
 	 * @throws GdprException
 	 * @return \stdClass
 	 */
-	public function saveUserPolicies($data = array(), $mandatoryPolicies = array(), $userAcceptedPolicies = array()) {
+	public function saveUserPolicies($data = array(), $publishedPolicies = array(), $userAcceptedPolicies = array()) {
 		$queries = array();
 		$retObj = new \stdClass();
 		foreach ($data['acceptPolicy'] as $policyID => $accepted) {
@@ -277,7 +277,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 				 * 0. get the policy object
 				 * @var GdprPolicy $policyObj
 				 */
-				$tmp = array_filter($mandatoryPolicies,
+				$tmp = array_filter($publishedPolicies,
 					function(GdprPolicy $el) use ($policyID) { return intval($el->getPolicy_content_id()) === $policyID; }
 				);
 				$policyObj = reset($tmp);
