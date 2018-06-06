@@ -241,7 +241,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 * @return array
 	 */
 	public function getUserPolicies($userID, $whereArr = array()) {
-		$sql = 'SELECT `id_policy`, `acceptedVersion`, `acceptedTS`, `isAccepted` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`=?';
+		$sql = 'SELECT `id_policy`, `acceptedVersion`, `lastmodTS`, `isAccepted` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`=?';
 		foreach ($whereArr as $field => $value) {
 			$sql .= ' AND `'.$field.'`='.$value;
 		}
@@ -297,7 +297,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 				// or if the isAccepted status is changed
 				if ($accepted != $userPolicies[$policyID]['isAccepted'] ||
 					$policyObj->getVersion() > $userPolicies[$policyID]['acceptedVersion']) {
-					$queries[] = sprintf("UPDATE `%s` SET `acceptedVersion`=%d, `acceptedTS`=%d, `isAccepted`=%d".$where, $tableName, $policyObj->getVersion(), $this->date_to_ts('now'), $accepted, $policyID);
+					$queries[] = sprintf("UPDATE `%s` SET `acceptedVersion`=%d, `lastmodTS`=%d, `isAccepted`=%d".$where, $tableName, $policyObj->getVersion(), $this->date_to_ts('now'), $accepted, $policyID);
 				}
 			} else {
 				// 2. if the user did not already accepted the $policyID, must insert a new row
@@ -305,7 +305,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 					'id_utente' => $data['userId'],
 					'id_policy' => $policyID,
 					'acceptedVersion' => $policyObj->getVersion(),
-					'acceptedTS' => $this->date_to_ts('now'),
+					'lastmodTS' => $this->date_to_ts('now'),
 					'isAccepted' => $accepted
 				);
 				$query = $this->sqlInsert($tableName, $fields);

@@ -60,8 +60,8 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 					if (array_key_exists($policy->getPolicy_content_id(), $dataAr['userAccepted'])) {
 						$labelTitle = sprintf(translateFN('Accettata in versione %d il %s, %s'),
 							$dataAr['userAccepted'][$policy->getPolicy_content_id()]['acceptedVersion'],
-							ts2dFN($dataAr['userAccepted'][$policy->getPolicy_content_id()]['acceptedTS']),
-							ts2tmFN($dataAr['userAccepted'][$policy->getPolicy_content_id()]['acceptedTS'])
+							ts2dFN($dataAr['userAccepted'][$policy->getPolicy_content_id()]['lastmodTS']),
+							ts2tmFN($dataAr['userAccepted'][$policy->getPolicy_content_id()]['lastmodTS'])
 						);
 						$isAccepted = true;
 					} else {
