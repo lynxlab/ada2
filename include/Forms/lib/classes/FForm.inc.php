@@ -100,7 +100,7 @@ abstract class FForm
         $isValid = TRUE;
         $validator = new FormValidator();
         foreach($this->_controls as $control) {
-            if($control->isRequired()) {
+            if($control instanceof FormControl && $control->isRequired()) {
                 if(!$validator->validate($control)) {
                     $control->setIsMissing();
                     $isValid = FALSE;
@@ -113,7 +113,7 @@ abstract class FForm
     public function toArray() {
         $formAsArray = array();
         foreach($this->_controls as $control) {
-            if (!$control instanceof FCFieldset) {
+            if (!$control instanceof FCFieldset && $control instanceof FormControl) {
                 $formAsArray[$control->getId()] = $control->getData();
 
             } elseif ($control instanceof FCFieldset) {
