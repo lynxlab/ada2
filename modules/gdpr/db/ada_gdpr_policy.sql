@@ -39,7 +39,8 @@ CREATE TABLE `module_gdpr_policy_utente` (
   `id_utente` int(10) UNSIGNED NOT NULL,
   `id_policy` int(10) UNSIGNED NOT NULL,
   `acceptedVersion` int(11) UNSIGNED NOT NULL,
-  `acceptedTS` int(11) UNSIGNED NOT NULL
+  `acceptedTS` int(11) UNSIGNED NOT NULL,
+  `isAccepted` tinyint(3) UNSIGNED DEFAULT '0' NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
