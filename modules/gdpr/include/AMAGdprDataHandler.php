@@ -309,7 +309,11 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 		if (\AMA_DB::isError($result)) {
 			throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode()  : null);
 		} else {
-			$retObj->submit = true;
+			if ($_SESSION['sess_userObj']->getType() == AMA_TYPE_VISITOR) {
+				$retObj->submit = true;
+			} else {
+				$retObj->redirecturl = $_SESSION['sess_userObj']->getHomePage();
+			}
 		}
 		return $retObj;
 	}
