@@ -230,7 +230,21 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 * @return array
 	 */
 	public function getUserAcceptedPolicies($userID) {
-		$sql = 'SELECT `id_policy`, `acceptedVersion`, `acceptedTS` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`=?';
+		return $this->getUserPolicies($userID, array('isAccepted'=>1));
+	}
+
+	/**
+	 * Gets the array of the policies accepted and rejected by the user
+	 *
+	 * @param integer $userID
+	 * @param whereArr array to be added to the where clause
+	 * @return array
+	 */
+	public function getUserPolicies($userID, $whereArr = array()) {
+		$sql = 'SELECT `id_policy`, `acceptedVersion`, `acceptedTS`, `isAccepted` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`=?';
+		foreach ($whereArr as $field => $value) {
+			$sql .= ' AND `'.$field.'`='.$value;
+		}
 		$result = self::getPoliciesDB()->getAllPrepared($sql, $userID, AMA_FETCH_ASSOC);
 		$retArr = array();
 		if (!\AMA_DB::isError($result) && is_array($result) && count($result)>0) {
