@@ -112,7 +112,7 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 
 					// accept and deny radio buttons
 					$fieldsContainer = \CDOMElement::create('div','class:inline fields');
-					if ($policy->getMandatory()) {
+					if ($isRegistration && $policy->getMandatory()) {
 						$fieldsContainer->setAttribute('data-mandatory-policy', '1');
 					}
 					$radios = array(
