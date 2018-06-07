@@ -323,7 +323,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			if ($_SESSION['sess_userObj']->getType() == AMA_TYPE_VISITOR) {
 				$retObj->submit = true;
 			} else {
-				$retObj->redirecturl = $_SESSION['sess_userObj']->getHomePage();
+				$retObj->redirecturl = HTTP_ROOT_DIR . '/logout.php';
 			}
 		}
 		return $retObj;
