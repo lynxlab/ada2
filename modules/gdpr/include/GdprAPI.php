@@ -177,13 +177,23 @@ class GdprAPI {
 	}
 
 	/**
+	 * Gets the array of the policies accepted and rejected by the user
+	 *
+	 * @param integer $userID
+	 * @return array
+	 */
+	public function getUserPolicies($userID) {
+		return $this->_dh->getUserPolicies($userID);
+	}
+
+	/**
 	 * Saves the policies accepted by the user
 	 *
 	 * @param integer $data
 	 * @return \stdClass
 	 */
 	public function saveUserPolicies($data) {
-		return $this->_dh->saveUserPolicies($data, $this->getMandatoryPolicies(), $this->getUserAcceptedPolicies($data['userId']));
+		return $this->_dh->saveUserPolicies($data, $this->getPublishedPolicies(), $this->getUserPolicies($data['userId']));
 	}
 
 	/**

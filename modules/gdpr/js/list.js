@@ -67,7 +67,7 @@ function initDoc(tableID, options) {
 		);
 	}
 
-	var requestTypeClassNames = [ '', 'access', 'edit', 'onhold', 'delete' ];
+	var requestTypeClassNames = [ '', 'access', 'edit', 'onhold', 'delete', 'opposition' ];
 
 	var tableObj = $j('#'+tableID)
 		.DataTable({

@@ -230,7 +230,21 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 * @return array
 	 */
 	public function getUserAcceptedPolicies($userID) {
-		$sql = 'SELECT `id_policy`, `acceptedVersion`, `acceptedTS` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`=?';
+		return $this->getUserPolicies($userID, array('isAccepted'=>1));
+	}
+
+	/**
+	 * Gets the array of the policies accepted and rejected by the user
+	 *
+	 * @param integer $userID
+	 * @param whereArr array to be added to the where clause
+	 * @return array
+	 */
+	public function getUserPolicies($userID, $whereArr = array()) {
+		$sql = 'SELECT `id_policy`, `acceptedVersion`, `lastmodTS`, `isAccepted` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`=?';
+		foreach ($whereArr as $field => $value) {
+			$sql .= ' AND `'.$field.'`='.$value;
+		}
 		$result = self::getPoliciesDB()->getAllPrepared($sql, $userID, AMA_FETCH_ASSOC);
 		$retArr = array();
 		if (!\AMA_DB::isError($result) && is_array($result) && count($result)>0) {
@@ -255,12 +269,12 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	 * Saves the policies accepted by the user
 	 *
 	 * @param array $data
-	 * @param array $mandatoryPolicies
-	 * @param array $userAcceptedPolicies
+	 * @param array $publishedPolicies
+	 * @param array $userPolicies
 	 * @throws GdprException
 	 * @return \stdClass
 	 */
-	public function saveUserPolicies($data = array(), $mandatoryPolicies = array(), $userAcceptedPolicies = array()) {
+	public function saveUserPolicies($data = array(), $publishedPolicies = array(), $userPolicies = array()) {
 		$queries = array();
 		$retObj = new \stdClass();
 		foreach ($data['acceptPolicy'] as $policyID => $accepted) {
@@ -268,39 +282,36 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 			$accepted = intval($accepted);
 			$tableName = self::PREFIX.'policy_utente';
 			$where = " WHERE `id_utente`={$data['userId']} AND `id_policy`=%d";
-			if ($accepted === 0) {
-				// user DID NOT accept the $policyID, delete the row
-				$queries[] = sprintf("DELETE FROM `%s`".$where, $tableName, $policyID);
-			} else if ($accepted === 1) {
-				// user accept the $policyID, must do some computations:
-				/**
-				 * 0. get the policy object
-				 * @var GdprPolicy $policyObj
-				 */
-				$tmp = array_filter($mandatoryPolicies,
-					function(GdprPolicy $el) use ($policyID) { return intval($el->getPolicy_content_id()) === $policyID; }
-				);
-				$policyObj = reset($tmp);
+			/**
+			 * must do some computations:
+			 * 0. get the policy object
+			 * @var GdprPolicy $policyObj
+			 */
+			$tmp = array_filter($publishedPolicies,
+				function(GdprPolicy $el) use ($policyID) { return intval($el->getPolicy_content_id()) === $policyID; }
+			);
+			$policyObj = reset($tmp);
 
-				if (array_key_exists($policyID, $userAcceptedPolicies)) {
-					// 1. if the user already accepted the $policyID, must update only if $policyObj version is newer than accepted one
-					if ($policyObj->getVersion() > $userAcceptedPolicies[$policyID]['acceptedVersion']) {
-						$queries[] = sprintf("UPDATE `%s` SET `acceptedVersion`=%d, `acceptedTS`=%d".$where, $tableName, $policyObj->getVersion(), $this->date_to_ts('now'), $policyID);
-					}
-				} else {
-					// 2. if the user did not already accepted the $policyID, must insert a new row
-					$fields = array(
-						'id_utente' => $data['userId'],
-						'id_policy' => $policyID,
-						'acceptedVersion' => $policyObj->getVersion(),
-						'acceptedTS' => $this->date_to_ts('now')
-					);
-					$query = $this->sqlInsert($tableName, $fields);
-					// replace question marks with values from fields array
-  					$query = preg_replace_callback('/\?/', function($match) use(&$fields)
-  						{ return array_shift($fields); }, $query);
-  					$queries[] = rtrim($query,';');
+			if (array_key_exists($policyID, $userPolicies)) {
+				// 1. if the user already saved the $policyID, must update only if $policyObj version is newer than accepted one
+				// or if the isAccepted status is changed
+				if ($accepted != $userPolicies[$policyID]['isAccepted'] ||
+					$policyObj->getVersion() > $userPolicies[$policyID]['acceptedVersion']) {
+					$queries[] = sprintf("UPDATE `%s` SET `acceptedVersion`=%d, `lastmodTS`=%d, `isAccepted`=%d".$where, $tableName, $policyObj->getVersion(), $this->date_to_ts('now'), $accepted, $policyID);
 				}
+			} else {
+				// 2. if the user did not already accepted the $policyID, must insert a new row
+				$fields = array(
+					'id_utente' => $data['userId'],
+					'id_policy' => $policyID,
+					'acceptedVersion' => $policyObj->getVersion(),
+					'lastmodTS' => $this->date_to_ts('now'),
+					'isAccepted' => $accepted
+				);
+				$query = $this->sqlInsert($tableName, $fields);
+				// replace question marks with values from fields array
+  				$query = preg_replace_callback('/\?/', function($match) use(&$fields) { return array_shift($fields); }, $query);
+  				$queries[] = rtrim($query,';');
 			}
 		}
 
@@ -309,7 +320,11 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 		if (\AMA_DB::isError($result)) {
 			throw new GdprException($result->getMessage(), is_numeric($result->getCode()) ? $result->getCode()  : null);
 		} else {
-			$retObj->submit = true;
+			if ($_SESSION['sess_userObj']->getType() == AMA_TYPE_VISITOR) {
+				$retObj->submit = true;
+			} else {
+				$retObj->redirecturl = HTTP_ROOT_DIR . '/logout.php';
+			}
 		}
 		return $retObj;
 	}

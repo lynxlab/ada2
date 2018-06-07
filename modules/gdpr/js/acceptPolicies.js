@@ -89,7 +89,7 @@ function checkAllPoliciesAccepted() {
 	 */
 	var policyCount = parseInt($j('*[data-mandatory-policy="1"]').length);
 	try {
-		var acceptCount = $j('input[name^="acceptPolicy"]:checked').map(function () {
+		var acceptCount = $j('input[name^="acceptPolicy"]:checked', '*[data-mandatory-policy="1"]').map(function () {
 			return parseInt(this.value);
 		}).get().reduce(function(acc, val){ return acc+val; });
 	} catch(ex) {

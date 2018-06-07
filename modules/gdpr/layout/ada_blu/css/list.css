@@ -5,6 +5,7 @@ td.access { color: #00b600; }
 td.edit { color: #ff9600; }
 td.delete { color: #ff0808; }
 td.onhold { color:#1f5dc8; }
+td.opposition { color:#a01212; }
 
 #confirmModal .confirmText,
 #confirmModal .confirmQuestion { font-size: 1.2em; }

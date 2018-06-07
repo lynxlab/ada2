@@ -43,6 +43,7 @@ $self = whoami();
 try {
 	$dataAr = array();
 	$submitTo = HTTP_ROOT_DIR .'/index.php';
+	$data = '';
 	if (array_key_exists(GdprPolicy::sessionKey, $_SESSION)) {
 		if (array_key_exists('redirectURL', $_SESSION[GdprPolicy::sessionKey])) {
 			$dataAr['redirectURL'] = $_SESSION[GdprPolicy::sessionKey]['redirectURL'];
@@ -59,6 +60,14 @@ try {
 		}
 	} else {
 		$userId = $_SESSION['sess_userObj']->getId();
+		$message = CDOMElement::create('div','class:ui icon warning message');
+		$message->addChild(CDOMElement::create('i','class:attention icon'));
+		$mcont = CDOMElement::create('div','class:content');
+		$mheader = CDOMElement::create('div','class:header');
+		$mheader->addChild(new CText(translateFN('ATTENZIONE! Al terrmine del salvataggio verrà effettuata la disconnessione dalla piattaforma')));
+		$mcont->addChild($mheader);
+		$message->addChild($mcont);
+		$data = $message->getHtml();
 	}
 
 	$gdprApi = new GdprAPI();
@@ -71,7 +80,7 @@ try {
 	));
 	$optionsAr['onload_func'] = 'initDoc(\'loginRepeater\',\'acceptPolicies\');';
 
-	$data = $loginForm->getHtml().$policiesForm->toSemanticUI()->getHtml();
+	$data .= $loginForm->getHtml().$policiesForm->toSemanticUI()->getHtml();
 
 } catch (\Exception $e) {
 	$message = CDOMElement::create('div','class:ui icon error message');

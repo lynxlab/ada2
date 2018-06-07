@@ -124,7 +124,8 @@ INSERT INTO `module_gdpr_requestTypes` (`id`, `type`, `description`, `extra`) VA
 (1, 4, 'Cancellazione', '{\"confirmhandle\":true}'),
 (2, 1, 'Accesso', NULL),
 (3, 2, 'Modifica', NULL),
-(4, 3, 'Limita', '{\"confirmhandle\":true}');
+(4, 3, 'Limita', '{\"confirmhandle\":true}'),
+(5, 5, 'Opposizione', NULL);
 
 --
 -- Dump dei dati per la tabella `module_gdpr_userTypes`
