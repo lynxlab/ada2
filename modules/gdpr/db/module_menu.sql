@@ -50,6 +50,10 @@ SET @allpolicies = LAST_INSERT_ID();
 INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, `href_properties`, `href_prefix`, `href_path`, `href_paramlist`, `extraClass`, `groupRight`, `specialItem`, `order`, `enabledON`) VALUES
 (NULL, 'Cerca pratica', NULL, 'basic search', NULL, NULL, @modulepath, 'lookuprequest.php', NULL, NULL, 0, 0, 20, '%ALWAYS%');
 SET @requestlookup = LAST_INSERT_ID();
+/* accept policies item */
+INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, `href_properties`, `href_prefix`, `href_path`, `href_paramlist`, `extraClass`, `groupRight`, `specialItem`, `order`, `enabledON`) VALUES
+(NULL, 'Accettazione politiche', NULL, 'checkmark sign', NULL, NULL, @modulepath, 'acceptPolicies.php', NULL, NULL, 0, 0, 25, CONCAT("%", @moduledefine, "%"));
+SET @acceptpolicies = LAST_INSERT_ID();
 
 /* DELETE ALL FROM MENU TREE */
 DELETE FROM `menu_tree` WHERE `item_id` IN (@moduletree) OR `parent_id` IN (@moduleTree);
@@ -61,24 +65,29 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 		(@authorTree, @moduletree, @myrequests, ''),
 		(@authorTree, @moduletree, @allrequests, ''),
 		(@authorTree, @moduletree, @allpolicies, ''),
+		(@authorTree, @moduletree, @acceptpolicies, ''),
 	(@studentTree, 0, @moduletree, ''),
 		(@studentTree, @moduletree, @newrequest, ''),
 		(@studentTree, @moduletree, @myrequests, ''),
+		(@studentTree, @moduletree, @acceptpolicies, ''),
 	(@studentSelfInstructionTree, 0, @moduletree, ''),
 		(@studentSelfInstructionTree, @moduletree, @newrequest, ''),
-		(@studentSelfInstructionTree, @moduletree, @myrequests, ''),		
+		(@studentSelfInstructionTree, @moduletree, @myrequests, ''),
+		(@studentSelfInstructionTree, @moduletree, @acceptpolicies, ''),
 	(@tutorTree, 0, @moduletree, ''),
 		(@tutorTree, @moduletree, @newrequest, ''),
 		(@tutorTree, @moduletree, @myrequests, ''),
 		(@tutorTree, @moduletree, @allrequests, ''),
 		(@tutorTree, @moduletree, @allpolicies, ''),
+		(@tutorTree, @moduletree, @acceptpolicies, ''),
 	(@visitorTree, 0, @moduletree, ''),
 		(@visitorTree, @moduletree, @requestlookup, ''),
 	(@switcherTree, 0, @moduletree, ''),
 		(@switcherTree, @moduletree, @newrequest, ''),
 		(@switcherTree, @moduletree, @myrequests, ''),
 		(@switcherTree, @moduletree, @allrequests, ''),
-		(@switcherTree, @moduletree, @allpolicies, '');
+		(@switcherTree, @moduletree, @allpolicies, ''),
+		(@switcherTree, @moduletree, @acceptpolicies, '');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
