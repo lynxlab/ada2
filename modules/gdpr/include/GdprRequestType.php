@@ -34,6 +34,7 @@ class GdprRequestType extends GdprBase {
 	const EDIT = 2;
 	const ONHOLD = 3;
 	const DELETE = 4;
+	const OPPOSITION = 5;
 
 	protected $id;
 	protected $type;
@@ -101,7 +102,8 @@ class GdprRequestType extends GdprBase {
 			self::ACCESS => GdprActions::REQUEST_TYPE_ACCESS,
 			self::EDIT => GdprActions::REQUEST_TYPE_EDIT,
 			self::ONHOLD => GdprActions::REQUEST_TYPE_ONHOLD,
-			self::DELETE => GdprActions::REQUEST_TYPE_DELETE
+			self::DELETE => GdprActions::REQUEST_TYPE_DELETE,
+			self::OPPOSITION => GdprActions::REQUEST_TYPE_OPPOSITION
 		);
 	}
 

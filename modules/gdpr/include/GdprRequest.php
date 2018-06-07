@@ -158,6 +158,11 @@ class GdprRequest extends GdprBase {
 					}
 				}
 			} else throw new GdprException(translateFN("Impossibile trovare l'utente che ha fatto la richiesta"));
+		} else if ($this->getType()->getType() == GdprRequestType::OPPOSITION) {
+			$this->redirectlabel = translateFN('Modifica le impostaioni di privacy');
+			$this->redirecturl = MODULES_GDPR_HTTP . '/'. GdprPolicy::acceptPoliciesPage;
+			$this->reloaddata = true;
+			$this->close();
 		}
 		else {
 			throw new GdprException('AZIONE NON IMPLEMENTATA');
@@ -186,9 +191,9 @@ class GdprRequest extends GdprBase {
 	public function afterSave($isUpdate) {
 		if (!$isUpdate) {
 			if (GdprActions::canDo($this->getType()->getLinkedAction(), $this)) {
-				if ($this->getType()->getType() == GdprRequestType::EDIT) {
-					return $this->handle()->close();
-				} else if ($this->getType()->getType() == GdprRequestType::ACCESS) {
+				if (in_array($this->getType()->getType(), array(
+					GdprRequestType::EDIT, GdprRequestType::ACCESS, GdprRequestType::OPPOSITION
+				))) {
 					return $this->handle()->close();
 				}
 			}

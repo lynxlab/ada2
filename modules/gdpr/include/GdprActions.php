@@ -35,6 +35,7 @@ class GdprActions {
 	const REQUEST_TYPE_EDIT = 4;
 	const REQUEST_TYPE_ONHOLD = 5;
 	const REQUEST_TYPE_DELETE = 6;
+	const REQUEST_TYPE_OPPOSITION = 9;
 
 	private static $CANDOARR = null;
 
@@ -87,6 +88,10 @@ class GdprActions {
 				return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], array($object, $userType));
 			},
 			self::REQUEST_TYPE_DELETE => function($object = null, $userType = null) {
+				// use the same logic as REQUEST_TYPE_ACCESS action
+				return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], array($object, $userType));
+			},
+			self::REQUEST_TYPE_OPPOSITION => function($object = null, $userType = null) {
 				// use the same logic as REQUEST_TYPE_ACCESS action
 				return call_user_func_array(self::getCanDoArr()[self::REQUEST_TYPE_ACCESS], array($object, $userType));
 			}
