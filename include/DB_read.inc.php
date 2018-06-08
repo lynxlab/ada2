@@ -294,7 +294,7 @@ function read_layout_from_DB($id_profile,$family="",$node_type="",$node_author_i
   /**
    * obey MAINTENANCE_MODE if true
    */
-  if (defined('MAINTENANCE_MODE') && MAINTENANCE_MODE === true) {
+  if (defined('MAINTENANCE_MODE') && MAINTENANCE_MODE === true && $_SESSION['sess_userObj']->getType() != AMA_TYPE_SWITCHER) {
   	$GLOBALS['self'] = MAINTENANCE_TPL;
   }
 
