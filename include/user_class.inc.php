@@ -1182,7 +1182,7 @@ abstract class ADALoggableUser extends ADAGenericUser {
     				}
     				$_SESSION[GdprPolicy::sessionKey]['redirectURL'] = !is_null($redirectURL) ? $redirectURL : $userObj->getHomePage();
     				$_SESSION[GdprPolicy::sessionKey]['userId'] = $userObj->getId();
-    				$_SESSION[GdprPolicy::sessionKey]['loginRepeaterSubmit'] = $_SERVER['SCRIPT_NAME'];
+    				$_SESSION[GdprPolicy::sessionKey]['loginRepeaterSubmit'] = basename($_SERVER['SCRIPT_NAME']);
     				redirect(MODULES_GDPR_HTTP . '/'. GdprPolicy::acceptPoliciesPage);
     			}
     		}
