@@ -50,7 +50,7 @@ try {
 			unset($_SESSION[GdprPolicy::sessionKey]['redirectURL']);
 		}
 		if (array_key_exists('loginRepeaterSubmit', $_SESSION[GdprPolicy::sessionKey])) {
-			$submitTo = HTTP_ROOT_DIR . $_SESSION[GdprPolicy::sessionKey]['loginRepeaterSubmit'];
+			$submitTo = HTTP_ROOT_DIR . '/'. $_SESSION[GdprPolicy::sessionKey]['loginRepeaterSubmit'];
 			unset($_SESSION[GdprPolicy::sessionKey]['loginRepeaterSubmit']);
 		}
 
