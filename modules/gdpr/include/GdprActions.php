@@ -37,14 +37,14 @@ class GdprActions {
 	const REQUEST_TYPE_DELETE = 6;
 	const REQUEST_TYPE_OPPOSITION = 9;
 
-	private static $CANDOARR = null;
+	protected static $CANDOARR = null;
 
 	/**
 	 * gets the canDo array
 	 *
 	 * @return NULL[]
 	 */
-	private static function getCanDoArr() {
+	protected static function getCanDoArr() {
 		return array(
 			self::ACCESS_ALL_REQUESTS => function () {
 				$gdprUser = (new GdprAPI())->getGdprUserByID($_SESSION['sess_userObj']);
