@@ -87,12 +87,14 @@ class UserRegistrationForm extends FForm
 		$alert->addChild($aHeader);
 		$alert->addChild($aContent);
 		$alert->addChild($aActions);
+		$alert->setAttribute('data-render-hiddenparent', true);
 		$this->addCDOM($alert);
 
 		foreach (array('invalidDate' => 'Data non valida', 'notAdult' => 'Devi essere maggiorenne per registrarti') as $msgID => $message) {
 			$aMSG = CDOMElement::create('span','id:'.$msgID);
 			$aMSG->setAttribute('style', 'display:none');
 			$aMSG->addChild(new CText(translateFN($message)));
+			$aMSG->setAttribute('data-render-hiddenparent', true);
 			$this->addCDOM($aMSG);
 		}
 

@@ -398,10 +398,14 @@ abstract class FForm
         foreach ($this->_controls as $control) {
 			$hidden = '';
 			if ($control instanceof CBaseAttributesElement) {
+				if ($control->getAttribute('data-render-hiddenparent')) {
+					$hidden .= ' hidden';
+					unset($control->{'data-render-hiddenparent'});
+				}
 				$html .= '<li class="'.FormControl::DEFAULT_CLASS.$hidden.'">'.$control->getHtml().'</li>';
 			}
             else if($control instanceof FormControl) {
-            	if ($control->isHidden()) $hidden =' hidden';
+            	if ($control->isHidden()) $hidden .=' hidden';
 	            $html .= '<li class="'.FormControl::DEFAULT_CLASS.$hidden.'">'.$control->render().'</li>';
             }
         }
