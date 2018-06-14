@@ -482,7 +482,7 @@ class MultiPort
           break;
         }
         if (AMA_DataHandler::isError($result)) {
-        	if ($result->code == AMA_ERR_NOT_FOUND) $testers_to_add[] = $tester;
+        	if (!($result instanceof PDOException) && $result->code == AMA_ERR_NOT_FOUND) $testers_to_add[] = $tester;
           //return ADA_SET_USER_ERROR_TESTER;
         }
 
