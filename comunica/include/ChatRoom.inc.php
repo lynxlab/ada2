@@ -51,7 +51,7 @@ class ChatRoom {
     //*******************************************************************************/
     //main constructor function of the class ChatRoom
     //*******************************************************************************/
-    function ChatRoom($id_chatroom, $tester_dsn=null) {
+    function __construct($id_chatroom, $tester_dsn=null) {
 
         //$this->tester_dsn = MultiPort::getDSN($tester);
         $this->tester_dsn = $tester_dsn;

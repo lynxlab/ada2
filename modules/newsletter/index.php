@@ -154,7 +154,7 @@ if (!AMA_DB::isError($newslettersList))
 	$histData= preg_replace('/class="/', 'class="'.ADA_SEMANTICUI_TABLECLASS.' ', $histData, 1); // replace first occurence of class
 	$newsletterIndexDIV->addChild(new CText($histData));
 	// if there are more than 10 rows, repeat the add new button below the table
-	if ($i>10)
+	if (isset($i) && $i>10)
 	{
 		$bottomButton = clone $newButton;
 		$bottomButton->setAttribute('class', 'newButton bottom');
