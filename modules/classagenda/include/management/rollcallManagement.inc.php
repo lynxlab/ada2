@@ -32,7 +32,7 @@ class rollcallManagement extends abstractClassAgendaManagement
 		if ($this->_userObj instanceof ADALoggableUser) {
 			$this->eventData = $this->_findClosestCourseInstance();
 
-			if (!is_null($this->eventData)) {
+			if (!is_null($this->eventData) && array_key_exists('id_istanza_corso', $this->eventData)) {
 				$this->id_course_instance = $this->eventData['id_istanza_corso'];
 			}
 		}
@@ -384,8 +384,8 @@ class rollcallManagement extends abstractClassAgendaManagement
 
 		if (AMA_DB::isError($result)) return null;
 		else {
-			$result['start'] = ts2dFN($result['start']). ' '.ts2tmFN($result['start']);
-			$result['end'] = ts2dFN($result['end']). ' '.ts2tmFN($result['end']);
+			$result['start'] = isset($result['start']) ? ts2dFN($result['start']). ' '.ts2tmFN($result['start']) : '';
+			$result['end'] = isset($result['end']) ? ts2dFN($result['end']). ' '.ts2tmFN($result['end']) : '';
 			return $result;
 		}
 	}
