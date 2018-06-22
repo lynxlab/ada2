@@ -33,7 +33,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	 * checks and inits to be done if this has been called in async mode
 	 * (i.e. with a get request)
 	 */
-	if(isset($_SERVER['HTTP_REFERER']) || is_null($_SERVER['HTTP_REFERER'])){
+	if(isset($_SERVER['HTTP_REFERER'])) {
 		if(preg_match("#^".HTTP_ROOT_DIR."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1){
 			die ('Only local execution allowed.');
 		}
