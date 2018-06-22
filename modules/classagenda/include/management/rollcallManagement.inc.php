@@ -86,8 +86,8 @@ class rollcallManagement extends abstractClassAgendaManagement
 									translateFN('Dettagli'),
 									translateFN('Azioni'));
 							$caption = translateFN('Registro Entrate-Uscite del');
-							list ($startDate,$starTime) = explode(' ', $this->eventData['start']);
-							list ($endDate,$endTime) = explode(' ', $this->eventData['end']);
+							list ($startDate,$starTime) = explode(' ', $this->eventData['start'].' ');
+							list ($endDate,$endTime) = explode(' ', $this->eventData['end'].' ');
 							$caption .= ' '.$startDate.' '.translateFN('ore').' '.$starTime;
 							$caption .= ' '.translateFN('al').' '.$endDate.' '.translateFN('ore').' '.$endTime;
 							$tableID = 'rollcallTable';
@@ -211,21 +211,23 @@ class rollcallManagement extends abstractClassAgendaManagement
 				/**
 				 * load and display details data column
 				 */
-				$detailsAr = $dh->getRollCallDetails($student[0],$this->eventData['module_classagenda_calendars_id']);
+				if (array_key_exists('module_classagenda_calendars_id', $this->eventData)) {
+					$detailsAr = $dh->getRollCallDetails($student[0],$this->eventData['module_classagenda_calendars_id']);
 
-				if (!AMA_DB::isError($detailsAr) && is_array($detailsAr) && count($detailsAr)>0) {
-					foreach ($detailsAr as $j=>$enterexittime) {
-						if (strlen($enterexittime['entertime'])>0) {
-							if ($j>0) $detailsStr .= '<br/>';
-							$detailsStr .= translateFN('Entrata alle: ');
-							$detailsStr .= ts2tmFN($enterexittime['entertime']);
-							$isEnterButtonVisibile = false;
-						}
-						if (strlen($enterexittime['exittime'])>0) {
-							$detailsStr .= '<br/>';
-							$detailsStr .= translateFN('Uscita alle: ');
-							$detailsStr .= ts2tmFN($enterexittime['exittime']);
-							$isEnterButtonVisibile = true;
+					if (!AMA_DB::isError($detailsAr) && is_array($detailsAr) && count($detailsAr)>0) {
+						foreach ($detailsAr as $j=>$enterexittime) {
+							if (strlen($enterexittime['entertime'])>0) {
+								if ($j>0) $detailsStr .= '<br/>';
+								$detailsStr .= translateFN('Entrata alle: ');
+								$detailsStr .= ts2tmFN($enterexittime['entertime']);
+								$isEnterButtonVisibile = false;
+							}
+							if (strlen($enterexittime['exittime'])>0) {
+								$detailsStr .= '<br/>';
+								$detailsStr .= translateFN('Uscita alle: ');
+								$detailsStr .= ts2tmFN($enterexittime['exittime']);
+								$isEnterButtonVisibile = true;
+							}
 						}
 					}
 				}
@@ -251,7 +253,7 @@ class rollcallManagement extends abstractClassAgendaManagement
 	 */
 	private function _buildEnterExitButtons($id_student, $isEnterButtonVisibile=true) {
 
-		list ($startDate,$starTime) = explode(' ', $this->eventData['start']);
+		list ($startDate,$startTime) = explode(' ', $this->eventData['start'].' ');
 		// compare dates without times to determine if event has started
 		$started = dt2tsFN(date('d/m/Y')) >= dt2tsFN($startDate);
 
@@ -304,7 +306,7 @@ class rollcallManagement extends abstractClassAgendaManagement
 						$arrKey = $dh->date_to_ts(ts2dFN($aRow['entertime']));
 						if(!in_array($arrKey, $allTimestamps)) $allTimestamps[] = $arrKey;
 
-						if (strlen($studentsList[$i][$arrKey])>0) $studentsList[$i][$arrKey].='<br/>';
+						if (isset($studentsList[$i][$arrKey]) && strlen($studentsList[$i][$arrKey])>0) $studentsList[$i][$arrKey].='<br/>';
 						else $studentsList[$i][$arrKey] = '';
 
 						$studentsList[$i][$arrKey] .= translateFN('Entrata alle: ');
