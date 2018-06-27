@@ -59,9 +59,6 @@ try {
 	if ($showAll) $dataForJS['showall'] = intval($showAll);
 	if ($showUUID) $dataForJS['uuid'] = trim($_REQUEST['uuid']);
 
-	$table = BaseHtmlLib::tableElement('id:'.$tableID.',class:hover row-border display '.ADA_SEMANTICUI_TABLECLASS, GdprRequest::getTableHeader($showAll), array());
-	$data = $table->getHtml();
-
 	$layout_dataAr['JS_filename'] = array(
 		JQUERY_DATATABLE,
 		SEMANTICUI_DATATABLE,
@@ -74,11 +71,15 @@ try {
 		SEMANTICUI_DATATABLE_CSS
 	);
 
+	$requestClass = 'Lynxlab\ADA\Module\GDPR\GdprRequest';
 	if ($showAll) {
 		$layout_dataAr['JS_filename'][]  = MODULES_GDPR_PATH .'/js/jeditable-2.0.1/jquery.jeditable.min.js';
 	}
 
-	$optionsAr['onload_func'] = 'initDoc(\''.$tableID.'\','.htmlentities(json_encode($dataForJS, JSON_FORCE_OBJECT), ENT_COMPAT, ADA_CHARSET).');';
+	$table = BaseHtmlLib::tableElement('id:'.$tableID.',class:hover row-border display '.ADA_SEMANTICUI_TABLECLASS, $requestClass::getTableHeader($showAll), array());
+	$data = $table->getHtml();
+
+	$optionsAr['onload_func'] = 'initDoc(\''.$tableID.'\','.htmlentities(json_encode($dataForJS), ENT_COMPAT, ADA_CHARSET).');';
 
 } catch (\Exception $e) {
 	$message = CDOMElement::create('div','class:ui icon error message');

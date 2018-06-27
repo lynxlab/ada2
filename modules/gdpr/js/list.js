@@ -56,13 +56,22 @@ function initDoc(tableID, options) {
 			        	$j(td).attr('title', $j('#notEditableMSG').text());
 			        }
 			    }
-			},
+			}
+		);
+		if ('moreColumns' in options && options.moreColumns.length>0) {
+			for (var i in options.moreColumns) {
+				if ('data' in options.moreColumns[i]) {
+					columns.push(options.moreColumns[i]);
+				}
+			}
+		}
+		columns.push(
 			{ 
 				"data": "actions",
 				"orderable" : false,
 				"searchable": false,
 				"className": "dt-body-right",
-				"width": "10%"
+				"width": "9%"
 			}
 		);
 	}

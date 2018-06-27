@@ -110,6 +110,15 @@ try {
 				if ($showAll || count($actions)>0) {
 					if ($showAll) {
 						$retArr['content'] = $el->getContent();
+						if (method_exists($el, 'getMoreCols')) {
+							foreach ($el::getMoreCols() as $dataArr) {
+								$field = $dataArr['field']['data'];
+								if (array_key_exists('value', $dataArr)) {
+									if (is_callable($dataArr['value'])) $retArr[$field] = $dataArr['value']($el);
+									else $retArr[$field] = $dataArr['value'];
+								} else $retArr[$field] = null;
+							}
+						}
 					}
 					$retArr['actions'] = array_reduce($actions, function($carry, $item) {
 						if (strlen($carry) <= 0) $carry = '';
