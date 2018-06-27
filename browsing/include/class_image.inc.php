@@ -1,29 +1,29 @@
 <?php
 /**
- * 
- * @author	
+ *
+ * @author
  * @version
  * @package
- * @license	
+ * @license
  * @copyright (c) 2001-2009 Lynx s.r.l.
  */
 
 /**
- * 
+ *
  */
 // classe  di astrazione per GD
 class ImageDevice
 {
-  
+
   private $imagetypes;
-  
-  function ImageDevice() {
+
+  function __construct() {
     // Get the image types supported by this PHP build.
     $this->imagetypes = imagetypes();
   }
-  
+
   /**
-   * 
+   *
    * @param string $filename - path to the file
    * @return resource on success, null on failure.
    */
@@ -38,17 +38,17 @@ class ImageDevice
        */
       return NULL;
     }
-    
+
     /*
      * Obtain info about this image.
      */
     $imagesize = getimagesize($filename);
-    
+
     /*
      * Prefer PNG over JPG
      * Prefer JPG over GIF
      */
-    /* 
+    /*
      * $imagesize[2] is one of the IMAGETYPE_XXX constants indicating the type
      * of the image
      */
@@ -64,7 +64,7 @@ class ImageDevice
     return null;
   }
   /**
-   * 
+   *
    * @param resource $image
    * @return bool
    */
@@ -79,10 +79,10 @@ class ImageDevice
       return imagegif($image);
     }
     return false;
-  } 
-  
+  }
+
   /**
-   * 
+   *
    * @param  string $filename - path to the file
    * @return array on success, null on failure.
    */
@@ -97,10 +97,10 @@ class ImageDevice
        */
       return NULL;
     }
-    
+
     return getimagesize($filename);
   }
-  
+
   function error() {
     return '';
   }

@@ -559,7 +559,7 @@ class ChatRoom {
     //*******************************************************************************/
     //gets all the information about a specific chatroom
     //*******************************************************************************/
-    function get_info_chatroomFN($id_chatroom) {
+    public static function get_info_chatroomFN($id_chatroom) {
         if (!self::isInStaticContext()) {
             $this->id_chatroom = $id_chatroom;
         }

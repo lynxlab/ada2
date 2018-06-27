@@ -34,7 +34,7 @@ $neededObjAr = array(
     AMA_TYPE_STUDENT => array('node', 'layout', 'tutor', 'course', 'course_instance'),
     AMA_TYPE_TUTOR => array('node', 'layout', 'course', 'course_instance'),
     AMA_TYPE_AUTHOR => array('node', 'layout', 'course'),
-	AMA_TYPE_SWITCHER => array('node', 'layout', 'course')		
+	AMA_TYPE_SWITCHER => array('node', 'layout', 'course')
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
@@ -62,7 +62,7 @@ if ($nodeObj->type == ADA_LEAF_TYPE || $nodeObj->type == ADA_LEAF_WORD_TYPE) {
 }
 
 //$node_path = $nodeObj->findPathFN();  // default: link to view.php
-$node_path = $nodeObj->findPathFN('map'); 
+$node_path = $nodeObj->findPathFN('map');
 
 
 
@@ -88,12 +88,12 @@ if (!AMA_DB::isError($nodeList) && is_array($nodeList) && count($nodeList)>0) {
 	                 $nodeArray = $childNodeObj -> object2arrayFN();
 	                 $nodeArray['position'] = $_POST[$nodePostId]; // it is a string as requested by NodeEditing::saveNode()
 	                 $nodeArray['icon'] = $key['icon_child']; // it does not function: NodeEditing::saveNode(), lines 210-214
-	
+
 	//                 $res = NodeEditing::saveNode($nodeArray);
 	                 $res = NodeEditing::saveNodePosition($nodeArray);
 	                 if($res == true){
 	                    // read from here new Position
-	                        $p = split(",", $_POST[$nodePostId]);
+	                        $p = explode(",", $_POST[$nodePostId]);
 	                        $width = ($p[2]-$p[0]);
 	                        if($width < 0 ) $width *= -1;
 	                        $nodeChildPos = array( $p[0], $p[1], 100, 100 );
@@ -106,16 +106,16 @@ if (!AMA_DB::isError($nodeList) && is_array($nodeList) && count($nodeList)>0) {
 	                }
 	        }else{
 	                    // code here
-	
+
 	        }
-	
+
 	            //settings style, id etc etc etc for javascript
 	        $thisNodeStyle = 'left:'.$nodeChildPos[0].'px;top:'.$nodeChildPos[1].'px;width:'.$nodeChildPos[2].'px;height:auto;';
 	        $node_type = returnAdaNodeType($key['type_child']);
 	        if((($node_type == "lemma" || $node_type == 'gruppo_lemmi') && $tipo_mappa == "lemma")|| (($node_type == "gruppo" || $node_type == 'nodo' || $node_type == 'test') && $tipo_mappa != "lemma") ){
 	            $data .= '<div class="newNodeMap" style="position:absolute;'.$thisNodeStyle.'" id="'.$key['id_child'].'">';
 	            $data .= '<img src="'.returnAdaNodeIcon($key['icon_child'], $key['type_child']).'"/>';
-	
+
 	            // setting icon
 	             if( $key['type_child'] == ADA_GROUP_TYPE) {
 	             	if (isset($key['children_count']) && $key['children_count']>0) $linkFile = '';
@@ -152,11 +152,11 @@ if($userObj-> tipo == AMA_TYPE_AUTHOR && $mod_enabled){
 /*
  * TO HERE
  */
- 
- 
- 
+
+
+
 $help = BaseHtmlLib::link(HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$nodeObj->id, translateFN('Torna al contenuto del nodo'))->getHtml();
- 
+
 $label = translateFN('mappa');
 
 //$help = translateFN('mappa');
