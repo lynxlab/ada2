@@ -375,11 +375,13 @@ switch ($op) {
         /*
                * determino i media da disassociare e quelli da associare
         */
-        foreach ( $previous_media as $media => $type ) {
-            if ( isset($current_media[$media]) ) {
-                unset($previous_media[$media]);
-                unset($current_media[$media]);
-            }
+        if (is_array($previous_media)) {
+	        foreach ( $previous_media as $media => $type ) {
+	            if ( isset($current_media[$media]) ) {
+	                unset($previous_media[$media]);
+	                unset($current_media[$media]);
+	            }
+	        }
         }
         /*
                * se previous_media contiene degli elementi, sono elementi da disassociare dal nodo

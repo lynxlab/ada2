@@ -236,9 +236,11 @@ class ImageViewer {
 
     public static function link( $http_file_path, $file_name, $real_file_name, $path_to_file, $ImageViewingPreferences = IMG_VIEWING_MODE, $imageTitle = null) {
 
-		$size = getimagesize($path_to_file);
-		$x = $size[0];
-		$y = $size[1];
+    	if (is_file($path_to_file)) {
+			$size = getimagesize($path_to_file);
+			$x = $size[0];
+			$y = $size[1];
+    	} else $x = $y = 0;
 
         $file_name_http = $http_file_path.$real_file_name;
 
@@ -340,6 +342,7 @@ class VideoPlayer {
 	 *
 	 */
 	public static function heightCalc($width = DEFAULT_WIDTH, $mediaWidth = DEFAULT_WIDTH, $mediaHeight = DEFAULT_HEIGHT) {
+		if (intval($mediaWidth) === 0) return $mediaHeight;
 		$height_dest = floor($mediaHeight*($width/$mediaWidth));
 		return $height_dest;
 

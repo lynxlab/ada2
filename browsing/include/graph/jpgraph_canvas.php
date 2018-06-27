@@ -18,17 +18,17 @@
 // might be used together with the basic Image drawing
 // primitives. Useful to auickoly produce some arbitrary
 // graphic which benefits from all the functionality in the
-// graph liek caching for example. 
+// graph liek caching for example.
 //===================================================
 class CanvasGraph extends Graph {
 //---------------
 // CONSTRUCTOR
 	function CanvasGraph($aWidth=300,$aHeight=200,$aCachedName="",$a=0) {
-		$this->Graph($aWidth,$aHeight,$aCachedName,$a);
+		parent::__construct($aWidth,$aHeight,$aCachedName,$a);
 	}
 
 //---------------
-// PUBLIC METHODS	
+// PUBLIC METHODS
 
 	// Method description
 	function Stroke() {
@@ -38,9 +38,9 @@ class CanvasGraph extends Graph {
 				$t->y *= $this->img->height;
 				$t->Stroke($this->img);
 			}
-				
-		// Finally stream the generated picture					
-		$this->cache->PutAndStream($this->img,$this->cache_name);	
+
+		// Finally stream the generated picture
+		$this->cache->PutAndStream($this->img,$this->cache_name);
 	}
 
 } // Class

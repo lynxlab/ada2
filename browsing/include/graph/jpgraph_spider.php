@@ -20,18 +20,18 @@
 // property for the axis title.
 //===================================================
 class FontProp {
-	var $font_family=FONT1, $font_style=FS_NORMAL,$font_size=14,$font_color=array(0,0,0);	
+	var $font_family=FONT1, $font_style=FS_NORMAL,$font_size=14,$font_color=array(0,0,0);
 	function SetFont($family,$style=FS_NORMAL,$size=14) {
 		$this->font_family = $family;
 		$this->font_style = $style;
 		$this->font_size = $size;
 	}
-	
+
 	function SetColor($c) {
 		$this->font_color = $c;
 	}
 }
-	
+
 
 //===================================================
 // CLASS SpiderAxis
@@ -50,25 +50,25 @@ class SpiderAxis extends Axis {
 		$this->color = array(0,0,0);
 	}
 //---------------
-// PUBLIC METHODS	
+// PUBLIC METHODS
 	function SetTickLabels($l) {
 		$this->ticks_label = $l;
 	}
-	
+
 	function Stroke($pos,$a,&$grid,$title,$lf) {
 		$this->img->SetColor($this->color);
 		$x=round($this->scale->world_abs_size*cos($a)+$this->scale->scale_abs[0]);
 		$y=round($pos-$this->scale->world_abs_size*sin($a));
-		
+
 		// Draw axis
 		$this->img->SetColor($this->color);
 		$this->img->SetLineWeight($this->weight);
 		if( !$this->hide )
 			$this->img->Line($this->scale->scale_abs[0],$pos,$x,$y);
-		
+
 		// Prepare to draw ticks
-		$maj_step_abs = abs($this->scale->scale_factor*$this->scale->ticks->major_step);	
-		$min_step_abs = abs($this->scale->scale_factor*$this->scale->ticks->minor_step);	
+		$maj_step_abs = abs($this->scale->scale_factor*$this->scale->ticks->major_step);
+		$min_step_abs = abs($this->scale->scale_factor*$this->scale->ticks->minor_step);
 		$nbrmaj = floor(($this->scale->world_abs_size)/$maj_step_abs);
 		$nbrmin = floor(($this->scale->world_abs_size)/$min_step_abs);
 		$skip = round($nbrmin/$nbrmaj); // Don't draw minor ontop of major
@@ -88,9 +88,9 @@ class SpiderAxis extends Axis {
 			$grid[]=$yt;
 			if( $lf ) {
 				$majpos[($i-1)*2]=$xt+2*$dx;
-				$majpos[($i-1)*2+1]=$yt-$this->img->GetFontheight()/2;				
+				$majpos[($i-1)*2+1]=$yt-$this->img->GetFontheight()/2;
 			}
-			if( !$this->scale->ticks->supress_tickmarks && !$this->hide)			
+			if( !$this->scale->ticks->supress_tickmarks && !$this->hide)
 				$this->img->Line($xt+$dx,$yt+$dy,$xt-$dx,$yt-$dy);
 		}
 
@@ -98,7 +98,7 @@ class SpiderAxis extends Axis {
 		$ticklen2=3;
 		$dx=round(sin($a)*$ticklen2);
 		$dy=round(cos($a)*$ticklen2);
-		if( !$this->scale->ticks->supress_tickmarks && !$this->scale->ticks->supress_minor_tickmarks)	{						
+		if( !$this->scale->ticks->supress_tickmarks && !$this->scale->ticks->supress_minor_tickmarks)	{
 			for($i=1; $i<=$nbrmin; ++$i) {
 				if( ($i % $skip) == 0 ) continue;
 				$xt=round($i*$min_step_abs*cos($a))+$this->scale->scale_abs[0];
@@ -107,10 +107,10 @@ class SpiderAxis extends Axis {
 					$this->img->Line($xt+$dx,$yt+$dy,$xt-$dx,$yt-$dy);
 			}
 		}
-		
+
 		// Draw labels
 		if( $lf && !$this->hide ) {
-			$this->img->SetFont($this->font_family,$this->font_style,$this->font_size);	
+			$this->img->SetFont($this->font_family,$this->font_style,$this->font_size);
 			$this->img->SetTextAlign("left","top");
 			$this->img->SetColor($this->color);
 			for($i=0; $i<count($majpos)/2; ++$i) {
@@ -120,7 +120,7 @@ class SpiderAxis extends Axis {
 					$this->img->StrokeText($majpos[$i*2],$majpos[$i*2+1],$majlabel[$i]);
 			}
 		}
-		
+
 		// Draw title of this axis
 		$this->img->SetFont($this->title->font_family,$this->title->font_style,$this->title->font_size);
 		$this->img->SetColor($this->title->font_color);
@@ -128,7 +128,7 @@ class SpiderAxis extends Axis {
 		$xt=round(($this->scale->world_abs_size+$marg)*cos($a)+$this->scale->scale_abs[0]);
 		$yt=round($pos-($this->scale->world_abs_size+$marg)*sin($a));
 
-		// Position the axis title. 
+		// Position the axis title.
 		// dx, dy is the offset from the top left corner of the bounding box that sorrounds the text
 		// that intersects with the extension of the corresponding axis. The code looks a little
 		// bit messy but this is really the only way of having a reasonable position of the
@@ -137,20 +137,20 @@ class SpiderAxis extends Axis {
 		$w=$this->img->GetTextWidth($title);
 		while( $a > 2*M_PI ) $a -= 2*M_PI;
 		if( $a>=7*M_PI/4 || $a <= M_PI/4 ) $dx=0;
-		if( $a>=M_PI/4 && $a <= 3*M_PI/4 ) $dx=($a-M_PI/4)*2/M_PI; 
+		if( $a>=M_PI/4 && $a <= 3*M_PI/4 ) $dx=($a-M_PI/4)*2/M_PI;
 		if( $a>=3*M_PI/4 && $a <= 5*M_PI/4 ) $dx=1;
 		if( $a>=5*M_PI/4 && $a <= 7*M_PI/4 ) $dx=(1-($a-M_PI*5/4)*2/M_PI);
-		
+
 		if( $a>=7*M_PI/4 ) $dy=(($a-M_PI)-3*M_PI/4)*2/M_PI;
 		if( $a<=M_PI/4 ) $dy=(1-$a*2/M_PI);
 		if( $a>=M_PI/4 && $a <= 3*M_PI/4 ) $dy=1;
 		if( $a>=3*M_PI/4 && $a <= 5*M_PI/4 ) $dy=(1-($a-3*M_PI/4)*2/M_PI);
 		if( $a>=5*M_PI/4 && $a <= 7*M_PI/4 ) $dy=0;
-		
+
 		if( !$this->hide )
 			$this->img->StrokeText($xt-$dx*$w,$yt-$dy*$h,$title);
 	}
-	
+
 } // Class
 
 
@@ -165,7 +165,7 @@ class SpiderGrid extends Grid {
 	}
 
 //----------------
-// PRIVATE METHODS	
+// PRIVATE METHODS
 	function Stroke(&$img,&$grid) {
 		if( !$this->show ) return;
 		$nbrticks = count($grid[0])/2;
@@ -211,42 +211,42 @@ class SpiderPlot {
 	}
 
 //---------------
-// PUBLIC METHODS	
+// PUBLIC METHODS
 	function Min() {
 		return Min($this->data);
 	}
-	
+
 	function Max() {
 		return Max($this->data);
 	}
-	
+
 	function SetLegend($legend) {
 		$this->legend=$legend;
 	}
-	
+
 	function SetFill($f=true) {
 		$this->fill = $f;
 	}
-	
+
 	function SetLineWeight($w) {
 		$this->weight=$w;
 	}
-		
+
 	function SetColor($color,$fill_color=array(160,170,180)) {
 		$this->color = $color;
 		$this->fill_color = $fill_color;
 	}
-	
+
 	function Stroke(&$img, $pos, &$scale, $startangle) {
 		$nbrpnts = count($this->data);
-		$astep=2*M_PI/$nbrpnts;		
+		$astep=2*M_PI/$nbrpnts;
 		$a=$startangle;
-		
+
 		// Rotate each point to the correct axis-angle
 		for($i=0; $i<$nbrpnts; ++$i) {
 			$c=$this->data[$i];
 			$x=round(($c-$scale->scale[0])*$scale->scale_factor*cos($a)+$scale->scale_abs[0]);
-			$y=round($pos-($c-$scale->scale[0])*$scale->scale_factor*sin($a));		
+			$y=round($pos-($c-$scale->scale[0])*$scale->scale_factor*sin($a));
 			$pnts[$i*2]=$x;
 			$pnts[$i*2+1]=$y;
 			$a += $astep;
@@ -259,21 +259,21 @@ class SpiderPlot {
 		$img->SetColor($this->color);
 		$img->Polygon($pnts);
 	}
-	
+
 //---------------
 // PRIVATE METHODS
 	function GetCount() {
 		return count($this->data);
 	}
-	
+
 	function Legend(&$graph) {
 		if( $this->legend=="" ) return;
 		if( $this->fill )
 			$graph->legend->Add($this->legend,$this->fill_color);
 		else
-			$graph->legend->Add($this->legend,$this->color);	
+			$graph->legend->Add($this->legend,$this->color);
 	}
-	
+
 } // Class
 
 //===================================================
@@ -283,13 +283,13 @@ class SpiderPlot {
 class SpiderGraph extends Graph {
 	var $posx;
 	var $posy;
-	var $len;		
+	var $len;
 	var $plots=null, $axis_title=null;
 	var $grid,$axis;
 //---------------
 // CONSTRUCTOR
 	function SpiderGraph($width=300,$height=200,$cachedName="") {
-		$this->Graph($width,$height,$cachedName,0);
+		parent::__construct($width,$height,$cachedName,0);
 		$this->yscale = new LinearScale(1,1);
 		$this->yscale->ticks->SupressMinorTickMarks();
 		$this->axis = new SpiderAxis($this->img,$this->yscale);
@@ -312,20 +312,20 @@ class SpiderGraph extends Graph {
 	}
 
 	function SetTickDensity($densy=TICKD_NORMAL) {
-		$this->ytick_factor=25;		
+		$this->ytick_factor=25;
 		switch( $densy ) {
 			case TICKD_DENSE:
-				$this->ytick_factor=12;			
+				$this->ytick_factor=12;
 				break;
 			case TICKD_NORMAL:
-				$this->ytick_factor=25;			
+				$this->ytick_factor=25;
 				break;
 			case TICKD_SPARSE:
-				$this->ytick_factor=40;			
+				$this->ytick_factor=40;
 				break;
 			case TICKD_VERYSPARSE:
-				$this->ytick_factor=70;			
-				break;		
+				$this->ytick_factor=70;
+				break;
 			default:
 				die("Unsupported Tick density: $densy");
 		}
@@ -340,7 +340,7 @@ class SpiderGraph extends Graph {
 	function SetColor($c) {
 		$this->SetMarginColor($c);
 	}
-			
+
 	function SetTitles($title) {
 		$this->axis_title = $title;
 	}
@@ -348,7 +348,7 @@ class SpiderGraph extends Graph {
 	function Add(&$splot) {
 		$this->plots[]=$splot;
 	}
-	
+
 	function GetPlotsYMinMax() {
 		$min=$this->plots[0]->Min();
 		$max=$this->plots[0]->Max();
@@ -357,7 +357,7 @@ class SpiderGraph extends Graph {
 			$min=min($min,$p->Min());
 		}
 		return array($min,$max);
-	}	
+	}
 
 	// Method description
 	function Stroke() {
@@ -369,10 +369,10 @@ class SpiderGraph extends Graph {
 		$this->yscale->SetConstants($this->posx,$this->len);
 		$nbrpnts=$this->plots[0]->GetCount();
 		if( $this->axis_title==null ) {
-			for($i=0; $i<$nbrpnts; ++$i ) 
+			for($i=0; $i<$nbrpnts; ++$i )
 				$this->axis_title[$i] = $i+1;
 		}
-		elseif(count($this->axis_title)<$nbrpnts) 
+		elseif(count($this->axis_title)<$nbrpnts)
 			die("JpGraph: Number of titles does not match number of points in plot.");
 		foreach( $this->plots as $p )
 			if( $nbrpnts != $p->GetCount() )
@@ -384,21 +384,21 @@ class SpiderGraph extends Graph {
 		// Prepare legends
 		foreach( $this->plots as $p)
 			$p->Legend($this);
-		$this->legend->Stroke($this->img);			
-		
+		$this->legend->Stroke($this->img);
+
 		// Plot points
 		$a=M_PI/2;
 		foreach( $this->plots as $p )
 			$p->Stroke($this->img, $this->posy, $this->yscale, $a);
-		
+
 		// Draw axis and grid
 		for( $i=0,$a=M_PI/2; $i<$nbrpnts; ++$i, $a+=$astep ) {
 			$this->axis->Stroke($this->posy,$a,$grid[$i],$this->axis_title[$i],$i==0);
-		}	
+		}
 		$this->grid->Stroke($this->img,$grid);
 		$this->title->Center($this->img->left_margin,$this->img->width-$this->img->right_margin,5);
 		$this->title->Stroke($this->img);
-		
+
 		// Stroke texts
 		if( $this->texts != null )
 			foreach( $this->texts as $t) {
@@ -406,9 +406,9 @@ class SpiderGraph extends Graph {
 				$t->y *= $this->img->height;
 				$t->Stroke($this->img);
 			}
-			
+
 		// Finally output the image
-		$this->cache->PutAndStream($this->img,$this->cache_name);	
+		$this->cache->PutAndStream($this->img,$this->cache_name);
 	}
 } // Class
 
