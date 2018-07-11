@@ -2587,7 +2587,7 @@ class RotImage extends Image {
 	var $dx=0,$dy=0;
 
 	function __construct($aWidth,$aHeight,$a,$aFormat=DEFAULT_GFORMAT) {
-		$this->Image($aWidth,$aHeight,$aFormat);
+		parent::__construct($aWidth, $aHeight,$aFormat);
 		$this->dx=$this->left_margin+$this->plotwidth/2;
 		$this->dy=$this->top_margin+$this->plotheight/2;
 		$this->SetAngle($a);

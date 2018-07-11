@@ -1,13 +1,13 @@
 <?php
 /**
- * 
- * @package		
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 
@@ -34,7 +34,7 @@ class BaseHtmlLib {
     }
     return $select;
   }
-  
+
   public static function selectElement2($element_attributes='', $data = array(), $selected=NULL) {
     $select = CDOMElement::create('select', $element_attributes);
     foreach($data as $value => $text) {
@@ -47,14 +47,14 @@ class BaseHtmlLib {
     }
     return $select;
   }
-  
+
   static public function radioButtons($element_attributes='', $data = array(), $radio_name) {
     $radios = CDOMElement::create('div');
     foreach($data as $radio_value => $radio_text) {
       $radio = CDOMElement::create('radio');
       $radio->setAttribute('name', $radio_name);
       $radio->setAttribute('value', $radio_value);
-      
+
       $radios->addChild($radio);
       $radios->addChild(new CText($radio_text));
       $radios->addChild(new CText('<br>'));
@@ -75,11 +75,11 @@ class BaseHtmlLib {
     }
     return $checks;
   }
-  
+
   public static function plainListElement($element_attributes='', $data = array(), $WithLabel=TRUE) {
-    
+
     $ul = CDOMElement::create('ul', $element_attributes);
-	if (!empty($data)) {
+	if (!empty($data) && is_array($data)) {
 		foreach($data as $label => $value) {
 		  $li = CDOMElement::create('li');
 		  if($value instanceof CBase) {
@@ -96,9 +96,9 @@ class BaseHtmlLib {
 	}
     return $ul;
   }
-  
+
   public static function labeledListElement($element_attributes='', $data = array()) {
-    
+
     $ul = CDOMElement::create('ul', $element_attributes);
     foreach($data as $label => $text) {
       $li = CDOMElement::create('li');
@@ -112,16 +112,16 @@ class BaseHtmlLib {
         $right_span = CDOMElement::create('span', 'class:list_text');
         $right_span->addChild(new CText($text));
         $li->addChild($left_span);
-        $li->addChild($right_span);        
+        $li->addChild($right_span);
       }
       $ul->addChild($li);
     }
     return $ul;
   }
-  
-  
+
+
   public static function tableElement($element_attributes='', $thead_data=array(), $tbody_data = array(), $tfoot_data = array(), $caption = '') {
-    
+
     $table = CDOMElement::create('table', $element_attributes);
     /*
      * CSS class names
@@ -134,7 +134,7 @@ class BaseHtmlLib {
       $css_th_class       = 'default_th';
       $css_td_class       = 'default_td';
       $css_odd_row_class  = 'default_tr_odd';
-      $css_even_row_class = 'default_tr_even'; 
+      $css_even_row_class = 'default_tr_even';
 
       $table->setAttribute('class', $css_table_class);
     }
@@ -146,7 +146,7 @@ class BaseHtmlLib {
       $css_odd_td_class   = $css_table_class.'_td_odd';
       $css_even_td_class  = $css_table_class.'_td_even';
       $css_odd_row_class  = $css_table_class.'_tr_odd';
-      $css_even_row_class = $css_table_class.'_tr_even'; 
+      $css_even_row_class = $css_table_class.'_tr_even';
     }
 
     /*
@@ -178,7 +178,7 @@ class BaseHtmlLib {
       $thead->addChild($tr);
       $table->addChild($thead);
     }
-    
+
     /*
      * TBody
      */
@@ -188,7 +188,7 @@ class BaseHtmlLib {
     //for($i = 0; $i < $max_rows; $i++) {
     foreach($tbody_data as $table_row) {
       //$table_row = $tbody_data[$i];
-      
+
       $row = CDOMElement::create('tr');
       if($parity%2 == 0) {
         $row->setAttribute('class',"$css_even_row_class");
@@ -243,16 +243,16 @@ class BaseHtmlLib {
 
     return $table;
   }
-  
+
   public static function getPaginationBar($current_page, $page_titles, $base_href) {
     $div = CDOMElement::create('div','class:pagination_bar');
 
     $number_of_pages = count($page_titles);
     $i = 1;
     for ($i = 1; $i <= $number_of_pages; $i++) {
-      
+
       if($i == $current_page) {
-        $div->addChild(new CText($page_titles[$i]));        
+        $div->addChild(new CText($page_titles[$i]));
       }
       else {
         $href = $base_href .'&page='.$i;
@@ -260,9 +260,9 @@ class BaseHtmlLib {
         $link->addChild(new CText($page_titles[$i]));
         $div->addChild($link);
       }
-      $div->addChild(new CText(' | '));  
+      $div->addChild(new CText(' | '));
     }
-    
+
     return $div;
   }
 }

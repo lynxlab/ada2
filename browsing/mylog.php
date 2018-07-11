@@ -237,12 +237,13 @@ if(isset($sess_id_course_instance) && !empty($sess_id_course_instance)) {
 else {
   $last_visited_node_id = '';
 }
+$last_node_visited = "";
 if  (!empty($last_visited_node_id)){
            $last_node = $dh->get_node_info($last_visited_node_id);
-           $last_visited_node_name = $last_node['name'];
-           $last_node_visited = "<a href=view.php?id_node=$last_visited_node_id>".translateFN("torna")."</a><br>";
-} else {
-           $last_node_visited = "";
+           if (!AMA_DB::isError($last_node)) {
+	           $last_visited_node_name = $last_node['name'];
+	           $last_node_visited = "<a href=view.php?id_node=$last_visited_node_id>".translateFN("torna")."</a><br>";
+           }
 }
 
 

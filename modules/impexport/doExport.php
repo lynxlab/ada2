@@ -275,7 +275,7 @@ if (!is_null($outZipFile))
 	header("Content-Disposition: attachment; filename=\"".basename($outZipFile)."\"");
 	header("Content-Transfer-Encoding: binary");
 	header("Content-Length: ".filesize($outZipFile));
-	ob_end_flush();
+	if(ob_get_length()) ob_end_flush();
 	@readfile($outZipFile);
 	/**
 	 * PLS NOTE: Looks like the file will be unlinked

@@ -220,7 +220,7 @@ class ExerciseDAO {
         return TRUE;
     }
 
-    function delete($exercise_id) {
+    public static function delete($exercise_id) {
         $dh = $GLOBALS['dh'];
 
         $exercise = self::getExercise($exercise_id);
