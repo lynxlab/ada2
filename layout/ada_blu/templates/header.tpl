@@ -12,4 +12,5 @@
        <img src="img/3rd_logo.png"></a>
     </div>
 	-->
+	<div id="bis_logo"></div>
 </div>

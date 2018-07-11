@@ -459,6 +459,17 @@ width: 700px;
 
 }
 
+#bis_logo {
+    /* background: url(../img/header-3rdlogo.png) no-repeat scroll right center; */
+    /* float: right; */
+    height: 50px;
+    /* margin-right: 10px; */
+    width: 5rem;
+    background-size: 5rem;
+    position: absolute;
+    right: 1rem;
+}
+
 #endo_section {
     position: relative;
     top: 0;
