@@ -194,7 +194,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 					$img->setAttribute('data-thumb', $imgPath);
 					$img->setAttribute('src', $imgPath);
 
-					if (!AMA_DB::isError($childNodeID) && $withLinkedNodes &&
+					if (isset($childNodeID) && !AMA_DB::isError($childNodeID) && $withLinkedNodes &&
 						($key!=0  || ($key==0 && !$hasFrontPage))) {
 						$a = CDOMElement::create('a','href:view.php?id_node='.$childNodeID);
 						$a->addChild($img);

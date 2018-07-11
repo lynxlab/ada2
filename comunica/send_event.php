@@ -82,7 +82,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Trim all submitted data
     $form = $_POST;
     foreach ($form as $key => $value){
-      $$key = trim($value);
+      if (!is_array($value)) $$key = trim($value);
     }
 
 

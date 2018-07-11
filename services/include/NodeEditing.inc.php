@@ -63,7 +63,7 @@ class NodeEditing {
         $dh = $GLOBALS['dh'];
 
         // vito, 27 mar 2009
-        $sess_id_course = $_SESSION['sess_id_course'];
+        $sess_id_course = array_key_exists('sess_id_course', $_SESSION) ? $_SESSION['sess_id_course'] : null;
 
         if ( !empty($media_to_remove) ) {
             //            $internal_links     = array();
@@ -158,7 +158,7 @@ class NodeEditing {
      * @param array $node_data
      * @return mixed
      */
-    function saveNodePosition($node_data=array()) {
+    public static function saveNodePosition($node_data=array()) {
         $dh = $GLOBALS['dh'];
 
         if (isset($node_data['position'])) {
