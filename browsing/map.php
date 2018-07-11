@@ -78,7 +78,7 @@ $tipo_mappa = returnMapType();
 if (!AMA_DB::isError($nodeList) && is_array($nodeList) && count($nodeList)>0) {
 // AND HIS CHILDS
 	foreach($nodeList as $key){
-	    if( $nodeObj->level <= $userObj->livello){
+	    if($userObj->getType()==AMA_TYPE_AUTHOR || $nodeObj->level <= $userObj->livello){
 	//        print_r($key);
 	        $nodePostId = 'input_'.$key['id_child']; // node id for javascript
 	        $childNodeObj = read_node_from_DB($key['id_child']);
