@@ -262,12 +262,16 @@ class rollcallManagement extends abstractClassAgendaManagement
 		if ($started) {
 			$enterButton = CDOMElement::create('button','class:enterbutton');
 			if (!$isEnterButtonVisibile) $enterButton->setAttribute('style', 'display:none');
-			$enterButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',true);');
+			if (array_key_exists('module_classagenda_calendars_id', $this->eventData)) {
+				$enterButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',true);');
+			}
 			$enterButton->addChild(new CText(translateFN('Entra')));
 
 			$exitButton = CDOMElement::create('button','class:exitbutton');
 			if ($isEnterButtonVisibile) $exitButton->setAttribute('style', 'display:none');
-			$exitButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',false);');
+			if (array_key_exists('module_classagenda_calendars_id', $this->eventData)) {
+				$exitButton->setAttribute('onclick', 'javascript:toggleStudentEnterExit($j(this), '.$id_student.','.$this->eventData['module_classagenda_calendars_id'].',false);');
+			}
 			$exitButton->addChild(new CText(translateFN('Esce')));
 
 			$buttonsDIV->addChild($enterButton);
