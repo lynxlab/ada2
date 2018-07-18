@@ -1067,6 +1067,8 @@ class  Generic_Html extends Output
       			"default_media_type"       => 'print',
       			"default_paper_size"       => 'A4',
       			"font_dir"				   => ADA_UPLOAD_PATH.'tmp-dompdf',
+      			"font_cache"			   => ADA_UPLOAD_PATH.'tmp-dompdf',
+      			"temp_dir"				   => ADA_UPLOAD_PATH.'tmp-dompdf',
       			// Features
       			"enable_unicode"           => true,
       			"enable_php"               => false,
