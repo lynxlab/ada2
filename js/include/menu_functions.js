@@ -226,7 +226,9 @@ document.observe('dom:loaded', function() {
 
 });
 
-function navigationPanelToggle() {
+function navigationPanelToggle(options) {
+	if ('undefined' === typeof options) options = {};
+	options = $j.extend({ action: 'toggle', removeCookie: true }, options);
 	if (IE_version==false || IE_version>8) {
 		// right panel pushes content if window width > 1280
 		var overlay = !$j('#menuright').sidebar('is open') && $j(window).width()<=1280;
@@ -236,15 +238,17 @@ function navigationPanelToggle() {
 					document.cookie = "closeRightPanel = ; expires = -1; path=/";
 				},
 				onHide: function() {
-					days = 365; //number of days to keep the cookie
-					myDate = new Date();
-					myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
-					document.cookie = "closeRightPanel = 1; " +
-					"expires = " + myDate.toGMTString() + "; " +
-					"path=/"; //creates the cookie: name|value|expiry
+					if (options.removeCookie) {
+						days = 365; //number of days to keep the cookie
+						myDate = new Date();
+						myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
+						document.cookie = "closeRightPanel = 1; " +
+						"expires = " + myDate.toGMTString() + "; " +
+						"path=/"; //creates the cookie: name|value|expiry
+					}
 				}
 			})
-			.sidebar('toggle');
+			.sidebar(options.action);
 	} else {
 		$j('#menuright').toggle('fade');
 		if (!index_loaded) showIndex();
