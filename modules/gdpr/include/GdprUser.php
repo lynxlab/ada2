@@ -100,9 +100,9 @@ class GdprUser extends GdprBase {
 	 * @param integer|GdprUserType $type
 	 * @return \Lynxlab\ADA\Module\GDPR\GdprUser
 	 */
-	public function removeType($type) {
+	public function removeType($type, $dbToUse = null) {
 		foreach ($this->getType() as $key=>$aType) {
-			if ($this->hasType($aType)) unset($this->type[$key]);
+			if ($this->hasType($aType, $dbToUse)) unset($this->type[$key]);
 		}
 		return $this;
 	}
@@ -113,9 +113,10 @@ class GdprUser extends GdprBase {
 	 * @param integer|GdprUserType $type
 	 * @return boolean
 	 */
-	private function hasType($type) {
+	private function hasType($type, $dbToUse = null) {
 		if (!($type instanceof GdprUserType)) {
-			$type = (new GdprAPI())->findBy('GdprUserType', array('id' => $type));
+			if (is_null($dbToUse)) $dbToUse = new GdprAPI();
+			$type = $dbToUse->findBy('GdprUserType', array('id' => $type));
 		}
 		if (!is_array($type)) {
 			$type = array($type);
@@ -132,10 +133,10 @@ class GdprUser extends GdprBase {
 	 * @param array $types
 	 * @return boolean
 	 */
-	public function hasTypes($types) {
+	public function hasTypes($types, $dbToUse = null) {
 		if (!is_array($types)) $types = array($types);
 	 	foreach ($types as $type) {
-			if ($this->hasType($type)) return true;
+			if ($this->hasType($type, $dbToUse)) return true;
 		}
 		return false;
 	}
