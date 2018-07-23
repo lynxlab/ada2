@@ -95,7 +95,7 @@ class GdprAPI {
 		if (!is_array($gdprUserTypes)) $gdprUserTypes = array($gdprUserTypes);
 		$result = array_filter(
 			$this->_dh->findBy('GdprUser', array('id_utente' => intval($user))),
-			function(GdprUser $el) use($gdprUserTypes) { return in_array($el->getType()->getId(), $gdprUserTypes); }
+			function(GdprUser $el) use($gdprUserTypes) { return $el->hasTypes($gdprUserTypes, $this); }
 		);
 		return (count($result)>0);
 	}

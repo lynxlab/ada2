@@ -487,7 +487,18 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 						unset($whereArr[$el]);
 						return "`$el` IS NULL";
 					} else {
-						if (is_numeric($whereArr[$el])) {
+						if (is_array($whereArr[$el])) {
+							$retStr = '';
+							if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
+								$whereArr[$el] = array($whereArr[$el]);
+							}
+							foreach ($whereArr[$el] as $opArr) {
+								if (strlen($retStr)>0) $retStr = $retStr. ' AND ';
+								$retStr .= "`$el` ".$opArr['op'].' '.$opArr['value'];
+							}
+							unset($whereArr[$el]);
+							return '('.$retStr.')';
+						} else if (is_numeric($whereArr[$el])) {
 							$op = '=';
 						} else {
 							$op = ' LIKE ';
