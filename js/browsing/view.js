@@ -98,5 +98,34 @@ function initDoc() {
 			navigationPanelToggle();
 		}
 
+		var checkRepeater = [];
+		for (i=0; i<window.frames.length; i++) {
+			if ('Reveal' in window.frames[i].window) {
+				setupRevealListeners(i, checkRepeater, function(i){
+					// empty callback, argument i is the iframe index that has just ended
+				});
+			}
+		}
 	}); // end $j function
 } // end initDoc
+
+function setupRevealListeners(frameIdx, checkRepeater, endCallback) {
+	var revealObj = window.frames[i].window.Reveal;
+	revealObj.addEventListener('ready', function( event ) {
+		// remove unwanted footer
+		$j(window.frames[frameIdx].window.document).contents().find('.embed-footer').remove(); 
+	});
+	revealObj.addEventListener('slidechanged', function( event ) {
+		// if in the last slide, check every second if the navigate-right button
+		// is disabled. when it is, the slide has actually reached the end
+		if (revealObj.isLastSlide()) {
+			checkRepeater[frameIdx] = window.setInterval(function(){
+				// check if next button is still there
+				if ($j(window.frames[frameIdx].window.document).contents().find('button.navigate-right[disabled="disabled"]').length>0) {
+					window.clearInterval(checkRepeater[frameIdx]);
+					if ('function' === typeof endCallback) endCallback(frameIdx);
+				}
+			},1000);
+		}
+	});
+}
