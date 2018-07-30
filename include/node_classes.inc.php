@@ -1151,6 +1151,10 @@ function search_text_in_glosary($text) {
 			*/
 		}
 
+		$pattern = "/(<iframe .*src=([\'\"]?))([^>\s\'\"]+)([\'\"]?)/is";
+		$nwURL = HTTP_ROOT_DIR.'/adaProxy.php?q=';
+		$text = stripslashes(preg_replace($pattern,"\\1".$nwURL."\\3\\4",$text));
+
 		return $text;
 	}
 
