@@ -351,6 +351,11 @@ switch ($op) {
         ));
 
         $body_onload = "initDoc();";
+        /**
+         * This should prevent Google Chrome browser xss auditor error
+         * see: https://stackoverflow.com/questions/43249998/chrome-err-blocked-by-xss-auditor-details
+         */
+        header('X-XSS-Protection:0');
 
         break;
 
