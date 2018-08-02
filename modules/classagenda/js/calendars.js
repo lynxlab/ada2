@@ -740,7 +740,7 @@ function updateVenuesListOnInstanceChange() {
 				dataType:	'html'
 			}).done (function(htmlcode){
 				if (htmlcode && htmlcode.length>0) {
-					$j('#venuesList').html($j(htmlcode).html());
+					$j('#venuesList').html($j(htmlcode).html()).trigger('change');
 				}
 			});
 		});
