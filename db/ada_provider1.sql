@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `autore` (
 --
 
 INSERT INTO `autore` (`id_utente_autore`, `profilo`, `tariffa`) VALUES
-(2, NULL, 0);
+(6, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -614,7 +614,7 @@ CREATE TABLE IF NOT EXISTS `studente` (
 --
 
 INSERT INTO `studente` (`id_utente_studente`) VALUES
-(5);
+(9);
 
 -- --------------------------------------------------------
 
@@ -634,7 +634,7 @@ CREATE TABLE IF NOT EXISTS `tutor` (
 --
 
 INSERT INTO `tutor` (`id_utente_tutor`, `profilo`, `tariffa`) VALUES
-(3, 'NULL', 0);
+(7, 'NULL', 0);
 
 -- --------------------------------------------------------
 
@@ -689,10 +689,10 @@ CREATE TABLE IF NOT EXISTS `utente` (
 
 INSERT INTO `utente` (`id_utente`, `nome`, `cognome`, `tipo`, `e_mail`, `username`, `password`, `layout`, `indirizzo`, `citta`, `provincia`, `nazione`, `codice_fiscale`, `birthdate`, `sesso`, `telefono`, `stato`, `lingua`, `timezone`, `cap`, `matricola`, `avatar`, `birthcity`, `birthprovince`) VALUES
 (1, 'admin', 'ada', '2', 'admin@lynxlab.com', 'adminAda', '28dcaeb4eb65eba987aeeb37d228d4526eb37791', NULL, '', '', '', '', '', 0, '', '0123456789', 0, 0, 0, '', '', '', '', NULL),
-(2, 'nomeAutoreAda1', 'cognomeAutoreAda1', '1', 'autore@lynxlab.com', 'autoreAda1', '078139c99e73077fb7db87e49df8fe43cf7ca1b3', 'silver_gray', 'via o piazza', 'roma', 'RM', 'ZW', 'NULL', 33, 'M', '12341234', 0, NULL, NULL, '', '', '', '', NULL),
-(3, 'nomeTutorAda1', 'cognomeTutorAda1', '4', 'tutor@lynxlab.com', 'tutorAda1', 'e74e0b5df5cf02436a1c33509c42f76eb36bcabf', 'ada_blu', 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 1, 0, '', '', '', '', NULL),
-(4, 'nomeSwitcherAda1', 'cognomeSwitcherAda1', '6', 'coordinator@lynxlab.com', 'switcherAda1', '64baf2b0844f66cd95c50e716f089052f1682572', NULL, 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 2, NULL, '', '', '', '', NULL),
-(5, 'nomeStudenteAda1', 'cognomeStudenteAda1', '3', 'studente@lynxlab.com', 'studenteAda1', '7d4ee672efb7827f7be8f2dffb471353f4b88d3a', '', NULL, NULL, 'RM', 'ZW', 'NULL', 28, 'M', NULL, 0, 1, 0, '', '', '', '', NULL);
+(6, 'nomeAutoreAda1', 'cognomeAutoreAda1', '1', 'autore@lynxlab.com', 'autoreAda1', '078139c99e73077fb7db87e49df8fe43cf7ca1b3', 'silver_gray', 'via o piazza', 'roma', 'RM', 'ZW', 'NULL', 33, 'M', '12341234', 0, NULL, NULL, '', '', '', '', NULL),
+(7, 'nomeTutorAda1', 'cognomeTutorAda1', '4', 'tutor@lynxlab.com', 'tutorAda1', 'e74e0b5df5cf02436a1c33509c42f76eb36bcabf', 'ada_blu', 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 1, 0, '', '', '', '', NULL),
+(8, 'nomeSwitcherAda1', 'cognomeSwitcherAda1', '6', 'coordinator@lynxlab.com', 'switcherAda1', '64baf2b0844f66cd95c50e716f089052f1682572', NULL, 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 2, NULL, '', '', '', '', NULL),
+(9, 'nomeStudenteAda1', 'cognomeStudenteAda1', '3', 'studente@lynxlab.com', 'studenteAda1', '7d4ee672efb7827f7be8f2dffb471353f4b88d3a', '', NULL, NULL, 'RM', 'ZW', 'NULL', 28, 'M', NULL, 0, 1, 0, '', '', '', '', NULL);
 
 -- --------------------------------------------------------
 
