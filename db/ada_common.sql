@@ -9947,7 +9947,7 @@ INSERT INTO `utente_tester` (`id_utente`, `id_tester`) VALUES
 (2, 1),
 (3, 1),
 (4, 1),
-(5, 2),
+(5, 1),
 (6, 2),
 (7, 2),
 (8, 2),
