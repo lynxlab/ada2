@@ -64,6 +64,7 @@ function initDoc() {
 		}
 
 		if ($j('.ui.menu','.semantic.tabs').length>0) {
+			$j('a.item:not(:first-child), .ui.tab:not(:first-child)','.semantic.tabs').removeClass('active');
 			$j('.ui.menu > a.item','.semantic.tabs').click( function(e) {
 				e.preventDefault();
 				$j(this).parents('.semantic.tabs').find('a.item').removeClass('active');
