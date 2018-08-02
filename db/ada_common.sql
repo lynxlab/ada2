@@ -9919,7 +9919,11 @@ INSERT INTO `utente` (`id_utente`, `nome`, `cognome`, `tipo`, `e_mail`, `usernam
 (2, 'Switcher', 'Ada 0', '6', 'switcherAda0@lynxlab.com', 'switcherAda0', '079e75c342c92ec665cd32c45488f6ff5bdf8faa', '', 'via salaria, 292', '', '', 'IT', 'codfis', 647733600, 'M', '', 0, 0, 0, '00100', '', '', 'Roma', 'RM'),
 (3, 'Autore', 'Ada 0', '1', 'autoreAda0@lynxlab.com', 'autoreAda0', '49dad85d588462d9307f4234ba1b75ca934fdea5', '', 'via salaria, 292', 'Roma', '', 'IT', '', 354063600, 'M', '', 0, NULL, NULL, '00172', '', '', 'Roma', 'RM'),
 (4, 'Tutor', 'Ada 0', '4', 'tutorAda0@lynxlab.com', 'tutorAda0', '948f343e3f0fc8dae45bf4eac09d6740f82fccc3', '', 'via salaria, 292', '', '', 'IT', '', 1810800, 'M', '', 0, NULL, NULL, '00100', '', '', 'Roma', 'RM'),
-(5, 'studente', 'Ada0', '3', 'studente@ada0.com', 'studenteAda0', '039647c2f69d0402f72ea21346b2e033b6b317dd', '', 'via salaria, 292', '', '', 'IT', '', 38444400, 'M', '', 0, 0, NULL, '00100', '', '', 'Roma', 'RM');
+(5, 'studente', 'Ada0', '3', 'studente@ada0.com', 'studenteAda0', '039647c2f69d0402f72ea21346b2e033b6b317dd', '', 'via salaria, 292', '', '', 'IT', '', 38444400, 'M', '', 0, 0, NULL, '00100', '', '', 'Roma', 'RM'),
+(6, 'nomeAutoreAda1', 'cognomeAutoreAda1', '1', 'autore@lynxlab.com', 'autoreAda1', '078139c99e73077fb7db87e49df8fe43cf7ca1b3', 'silver_gray', 'via o piazza', 'roma', 'RM', 'ZW', 'NULL', 33, 'M', '12341234', 0, NULL, NULL, '', '', '', '', NULL),
+(7, 'nomeTutorAda1', 'cognomeTutorAda1', '4', 'tutor@lynxlab.com', 'tutorAda1', 'e74e0b5df5cf02436a1c33509c42f76eb36bcabf', 'ada_blu', 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 1, 0, '', '', '', '', NULL),
+(8, 'nomeSwitcherAda1', 'cognomeSwitcherAda1', '6', 'coordinator@lynxlab.com', 'switcherAda1', '64baf2b0844f66cd95c50e716f089052f1682572', NULL, 'via ostiense 60/d', 'roma', 'roma', 'ZW', 'NULL', 0, 'M', NULL, 0, 2, NULL, '', '', '', '', NULL),
+(9, 'nomeStudenteAda1', 'cognomeStudenteAda1', '3', 'studente@lynxlab.com', 'studenteAda1', '7d4ee672efb7827f7be8f2dffb471353f4b88d3a', '', NULL, NULL, 'RM', 'ZW', 'NULL', 28, 'M', NULL, 0, 1, 0, '', '', '', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -9943,7 +9947,11 @@ INSERT INTO `utente_tester` (`id_utente`, `id_tester`) VALUES
 (2, 1),
 (3, 1),
 (4, 1),
-(5, 1);
+(5, 2),
+(6, 2),
+(7, 2),
+(8, 2),
+(9, 2);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
