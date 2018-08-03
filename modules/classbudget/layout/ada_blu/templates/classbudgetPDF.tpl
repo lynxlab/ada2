@@ -5,12 +5,12 @@
 
 if ( isset($pdf) ) {
 
-  $font = Font_Metrics::get_font("verdana");
+  $font = $fontMetrics->getFont("dejavu");
   // If verdana isn't available, we'll use sans-serif.
-  if (!isset($font)) { Font_Metrics::get_font("sans-serif"); }
+  if (!isset($font) || is_null($font)) { $font = $fontMetrics->getFont("sans-serif"); }
   $size = 8;
   $color = array(0,0,0);
-  $text_height = Font_Metrics::get_font_height($font, $size);
+  $text_height = $fontMetrics->getFontHeight($font, $size);
 
   $foot = $pdf->open_object();
   
@@ -29,7 +29,7 @@ if ( isset($pdf) ) {
   $text = translateFN("Pagina")." {PAGE_NUM} ".translateFN("di")." {PAGE_COUNT}";  
 
   // Center the text
-  $width = Font_Metrics::get_text_width($text, $font, $size);
+  $width = $fontMetrics->getTextWidth($text, $font, $size);
   $pdf->page_text($w - $width + 80, $y, $text, $font, $size, $color);
 
   $pdf->close_object();
@@ -43,9 +43,6 @@ if ( isset($pdf) ) {
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div>
         <!-- / testata -->
-        <!-- menu -->
-            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-        <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
             <div id="user_wrap">
