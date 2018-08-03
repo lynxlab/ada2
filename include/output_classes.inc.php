@@ -1071,7 +1071,7 @@ class  Generic_Html extends Output
       			"temp_dir"				   => ADA_UPLOAD_PATH.'tmp-dompdf',
       			// Features
       			"enable_unicode"           => true,
-      			"enable_php"               => false,
+      			"enable_php"               => true,
       			"enable_remote"            => true,
       			"enable_css_float"         => true,
       			"enable_javascript"        => true,
