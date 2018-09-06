@@ -1,12 +1,20 @@
 function initDoc(multiprovider) {
-	var columnsConf = [{ "bVisible": false },{ "sWidth": (multiprovider ? "50%" : "94%")}];
+	// details-control, courseId and course title
+	var columnsConf = [{ "sClass": "details-control", "bSearchable": false, "bSortable": false },
+		{ "bVisible": false },{ "sWidth": (multiprovider ? "50%" : "94%")}];
 
+	// provider name
 	if (multiprovider) {
 		columnsConf.push({ "sWidth": "44%" });
 	}
+	// course description
 	columnsConf.push({"bVisible": false });
+	// course credits
 	columnsConf.push({"bVisible": false });
+	// more info link
 	columnsConf.push({ "bSearchable": false, "bSortable": false, "sClass":"actions", "sWidth": "6%"});
+	// instances string, json encoded
+	columnsConf.push({"bVisible": false });
 
 	var infotable = $j("#infotable").DataTable({
 		"bSort": true,
@@ -14,7 +22,7 @@ function initDoc(multiprovider) {
         "bInfo" : false,
         "bPaginate" : true,
         "aoColumns": columnsConf,
-        "aaSorting": [[ 0, "desc" ]],
+        "aaSorting": [[ 1, "desc" ]],
 	    "bLengthChange": false,
         "oLanguage": {
            "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
@@ -24,7 +32,7 @@ function initDoc(multiprovider) {
 	    	var targetTable = $j("#"+$j(this).attr('id')+"_paginate");
 	    	// remove pagination if only one page
 	    	if (targetTable.children('span').children("a").length<=1) {
-	    		targetTable.remove();
+	    		targetTable.hide();
 	    	} else {
 	    		// pagination in semantic ui style
 	    		if (!targetTable.hasClass('ui pagination menu')) {
@@ -38,7 +46,8 @@ function initDoc(multiprovider) {
 	    			if($j(v).hasClass("paginate_button_disabled")){
 	    				$j(v).addClass("disabled");
 	    			}
-	    		})
+	    		});
+	    		targetTable.show();
 	    	}
 	    },
 	    "fnInitComplete": function(settings, json) {
@@ -60,12 +69,57 @@ function initDoc(multiprovider) {
 	        infotable_filter.addClass("ui form");
 	        infotable_filter.after("<div class='clearfix'></div>");
 	        $j(this).fadeIn();
-	        // hook row click to more_info_link click
-	        $j('tbody>tr','#infotable').click(function(el) {
-	        	if  ($j('a.more_info_link',$j(this)).attr('href').trim().length>0) {
-	        		document.location.href = $j('a.more_info_link',$j(this)).attr('href').trim();
-	        	}
-	        });
 	    }
+	});
+	
+	$j('#infotable').on('click', 'tbody>tr>td:not(.details-control)', function() {
+		// hook all cells click to more_info_link click
+		var tr = $j(this).closest('tr');
+		if  ($j('a.more_info_link', tr).attr('href').trim().length>0) {
+			document.location.href = $j('a.more_info_link', tr).attr('href').trim();
+		}
+	})
+	.on('click', 'tbody>tr>td.details-control', function () {
+		// hook details-control cell click to open child row
+		var tr = $j(this).closest('tr');
+		var row = infotable.row(tr);
+		if (row.child.isShown()) {
+			$j('i.icon', $j(this)).removeClass('minus red').addClass('add green');
+			tr.removeClass('details');
+			row.child.hide();
+		} else {
+			// json encoded instances data must be at very last column
+			var idx = 'undefined' !== typeof row.data() ? row.data().length-1 : null;
+			if (null !== idx && row.data()[idx].length>0) {
+				try {
+					var instances = JSON.parse(row.data()[idx]);
+					var childHtml = [];
+					for (var i=0; i<instances.length; i++) {
+						if (i==0) {
+							childHtml.push('<h3>'+$j('#listinstance-title').html()+'</h3>');
+							childHtml.push('<ul>');
+						}
+						childHtml.push('<li>');
+						childHtml.push('<span class="title">'+instances[i].title+'</span>');
+						childHtml.push('<span class="separator">,</span>');
+						childHtml.push('<span class="from-txt">'+$j('#listinstance-from-txt').html().toLowerCase()+'</span>');
+						childHtml.push('<span class="from-date"> '+instances[i].data_inizio_previsto+'</span>');
+						childHtml.push('<span class="to-txt">'+$j('#listinstance-to-txt').html().toLowerCase()+'</span>');
+						childHtml.push('<span class="to-date"> '+instances[i].data_fine+'</span>');
+						if (instances[i].isended) {
+							childHtml.push('<span class="ui small red label ended">'+$j('#listinstance-ended-txt').html().toLowerCase()+'</span>');
+						}
+						childHtml.push('</li>');
+						if (i==instances.length-1) childHtml.push('</ul>');
+					}
+					$j('i.icon', $j(this)).removeClass('add green').addClass('minus red');
+					tr.addClass('details');
+					row.child(childHtml.join(''), 'instanceDetails').show();
+				} catch (e) {
+					console.error('JSON parse error: ', e);
+					return false;
+				}
+			}
+		}
 	});
 }

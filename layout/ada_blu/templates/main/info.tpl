@@ -84,6 +84,9 @@
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->
-
+		<span style="display:none;" id="listinstance-title"><i18n>Classi del corso</i18n></span>
+		<span style="display:none;" id="listinstance-from-txt"> <i18n>dal</i18n></span>
+		<span style="display:none;" id="listinstance-to-txt"> <i18n>al</i18n></span>
+		<span style="display:none;" id="listinstance-ended-txt"><i18n>terminato</i18n></span>
     </body>
 </html>
