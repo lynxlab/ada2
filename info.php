@@ -582,9 +582,9 @@ if ($op !== false && $op == 'course_info') {
 			header ('Location: '.HTTP_ROOT_DIR.'/info.php');
 			die();
 		}
-		$thead_data = array('ID', translateFN('corso'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
+		$thead_data = array('&nbsp;', 'ID', translateFN('corso'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
 	} else {
-		$thead_data = array('ID', translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
+		$thead_data = array('&nbsp;', 'ID', translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
 		$publishedServices = $common_dh->get_published_courses();
 	}
 
@@ -632,26 +632,32 @@ if ($op !== false && $op == 'course_info') {
                         $more_info_link->setAttribute('title', strip_tags(translateFN('More info')));
                         $more_info_link->setAttribute('class', 'more_info_link');
 
-                        if (!MULTIPROVIDER) {
-                        	$tbody_data[] = array(
-                        			$courseId,
-                        			$service['nome'],
-                        			$service['descrizione'],
-                        			$credits,
-                        			// $service['durata_servizio'],
-                        			$more_info_link
-                        	);
-                        } else {
-                        	$tbody_data[] = array(
-                        			$courseId,
-                        			$service['nome'],
-                        			$providerName,
-                        			$service['descrizione'],
-                        			$credits,
-                        			// $service['durata_servizio'],
-                        			$more_info_link
-                        	);
+                        $row = array($Flag_course_has_instance ? '<i class="sign icon add green"></i>' : null, $courseId, $service['nome']);
+                        if (MULTIPROVIDER) array_push($row, $providerName);
+                        array_push($row,
+                        	$service['descrizione'],
+                        	$credits,
+                        	// $service['durata_servizio'],
+                        	$more_info_link
+                        );
+                        $row['instances'] = null;
+                        if ($Flag_course_has_instance) {
+                        	// sort by data_inizio_previsto DESC
+                        	uasort($instancesAr, function($a, $b){
+                        		if ($a['data_inizio_previsto'] == $b['data_inizio_previsto']) return 0;
+                        		return ($a['data_inizio_previsto'] > $b['data_inizio_previsto']) ? -1 : 1;
+                        	});
+                        	foreach ($instancesAr as $instKey => $instanceEl) {
+                        		foreach ($instanceEl as $iKey => $iVal) {
+	                        		if (is_numeric($iKey)) unset($instancesAr[$instKey][$iKey]);
+	                        		else if (stripos($iKey, 'data') !== false) $instancesAr[$instKey][$iKey] = ts2dFN($iVal);
+	                        	}
+	                        	$instancesAr[$instKey]['isended'] = ($instanceEl[3] > 0 && $instanceEl[3] < time()) ? true : false;
+                        	}
+
+	                        $row['instances'] = json_encode($instancesAr);
                         }
+                        $tbody_data[] = $row;
                     }
                } else {
                		$credits = 1;       // should be ADA_DEFAULT_COURSE_CREDITS
