@@ -37,6 +37,10 @@ $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 if (isset($_REQUEST['q']) && strlen(trim($_REQUEST['q']))>0) {
+	$dec = openssl_decrypt($_REQUEST['q'], 'BF-ECB', ADAPROXY_ENC_KEY);
+	if (false !== $dec) {
+		$_REQUEST['q'] = $dec;
+	}
 	// fix links starting with a double slash
 	$_REQUEST['q'] = trim (trim($_REQUEST['q']), '/');
 	$protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
