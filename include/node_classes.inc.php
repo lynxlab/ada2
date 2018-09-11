@@ -1151,9 +1151,40 @@ function search_text_in_glosary($text) {
 			*/
 		}
 
-		$pattern = "/(<iframe .*src=([\'\"]?))([^>\s\'\"]+)([\'\"]?)/is";
-		$nwURL = HTTP_ROOT_DIR.'/adaProxy.php?q=';
-		$text = stripslashes(preg_replace($pattern,"\\1".$nwURL."\\3\\4",$text));
+		// CHECK iframe src
+		$iframe_src_regex ="<"; // 1 start of the tag
+		$iframe_src_regex .="\\s*"; // 2 zero or more whitespace
+		$iframe_src_regex .="iframe"; // 3 the 'iframe' of the tag itself
+		$iframe_src_regex .="\\s+"; // 4 one or more whitespace
+		$iframe_src_regex .="[^>]*"; // 5 zero or more of any character that is _not_ the end of the tag
+		$iframe_src_regex .="src"; // 6 the src bit of the tag
+		$iframe_src_regex .="\\s*"; // 7 zero or more whitespace
+		$iframe_src_regex .="="; // 8 the = of the tag
+		$iframe_src_regex .="\\s*"; // 9 zero or more whitespace
+		$iframe_src_regex .="[\\\"']?"; // 10 none or one of " or '
+		$iframe_src_regex .="("; // 11 opening parenthesis, start of the bit we want to capture
+		$iframe_src_regex .="[^\\\"' >]+"; // 12 one or more of any character _except_ our closing characters
+		$iframe_src_regex .=")"; // 13 closing parenthesis, end of the bit we want to capture
+		$iframe_src_regex .="[\\\"' >]"; // 14 closing chartacters of the bit we want to capture
+
+		// Pattern Modifier - i: makes regex case insensative
+		// Pattern Modifier - s: makes a dot metacharater in the pattern match all characters, including newlines
+		// Pattern Modifier - U: makes the regex ungready
+		preg_match_all("/".$iframe_src_regex."/isU", $text, $matches);
+
+		if (isset($matches[1]) && count($matches[1])>0) {
+			$unique = array_unique($matches[1]);
+			$nwURL = HTTP_ROOT_DIR.'/adaProxy.php?q=';
+			$urlhashes = array();
+			foreach ($unique as $i=>$url) {
+				$enc = openssl_encrypt($url, 'BF-ECB', ADAPROXY_ENC_KEY);
+				if (false === $enc) {
+					$enc = $url;
+				}
+				$urlhashes[$i] = $nwURL. urlencode($enc);
+			}
+			$text = str_replace($unique, $urlhashes, $text);
+		}
 
 		return $text;
 	}
