@@ -96,6 +96,9 @@ if (!defined('PORTAL_NAME')) define('PORTAL_NAME','ADA 2.2');
 if (!defined('MAINTENANCE_MODE')) define('MAINTENANCE_MODE', false);
 if (!defined('MAINTENANCE_TPL') && MAINTENANCE_MODE === true) define ('MAINTENANCE_TPL', 'maintenancemode');
 
+// key used to cipher urls sent to adaProxy.php
+if (!defined('ADAPROXY_ENC_KEY')) define ('ADAPROXY_ENC_KEY', 'adaProxyKey');
+
 /**
  * DataBase abstraction layer,
  * kept for possible future implementations.
