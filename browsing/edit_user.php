@@ -97,7 +97,19 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
         $editUserObj->fillWithArrayData($_POST);
 
         // set user extra datas if any
-        if ($editUserObj->hasExtra()) $editUserObj->setExtras($_POST);
+		if ($editUserObj->hasExtra()) $editUserObj->setExtras($_POST);
+		
+		if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+			if (array_key_exists('secretquestion', $_POST) && 
+				array_key_exists('secretanswer', $_POST) && 
+				strlen($_POST['secretquestion'])>0 && strlen($_POST['secretanswer'])>0) {
+					/**
+					 * Save secret question and answer and set the registration as successful
+					 */
+					$sqdh = \AMASecretQuestionDataHandler::instance();
+					$sqdh->saveUserQandA($editUserObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
+				}
+		}
 
         MultiPort::setUser($editUserObj, array(), true, ADAUser::getExtraTableName() );
         /**
@@ -136,7 +148,12 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     $form = new UserProfileForm($languages,$allowEditProfile, $allowEditConfirm, $self.'.php');
     unset($user_dataAr['password']);
     $user_dataAr['email'] = $user_dataAr['e_mail'];
-    unset($user_dataAr['e_mail']);
+	unset($user_dataAr['e_mail']);
+	if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+		$user_dataAr['uname'] = $userObj->username;
+		$sqdh = AMASecretQuestionDataHandler::instance();
+		$user_dataAr['secretquestion'] = htmlentities($sqdh->getUserQuestion($userObj->getId()));
+	}
     $form->fillWithArrayData($user_dataAr);
 
     if (!$editUserObj->hasExtra()) {

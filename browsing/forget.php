@@ -114,7 +114,7 @@ switch ($op){
         {
           // user is a ADAuser with status set to 0 OR
           // user is admin, author or switcher whose status is by default = 0
-            
+
           $_SESSION['sess_user_language'] = $p_selected_language;
           $_SESSION['sess_id_user'] = $userObj->getId();
           $_SESSION['sess_id_user_type'] = $userObj->getType();
@@ -127,7 +127,7 @@ switch ($op){
             $_SESSION['sess_selected_tester'] = $user_default_tester;
           }
         }
-         * 
+         *
          */
       } else {
         // Utente non esistente o non loggable
@@ -143,63 +143,71 @@ switch ($op){
       header('Location:'.$redirect_to);
       exit();
     }
-    $admtypeAr = array(AMA_TYPE_ADMIN);
-    $admList = $common_dh-> get_users_by_type($admtypeAr);
-    // $admList = $tester_dh-> get_users_by_type($admtypeAr); ???
 
-    if (!AMA_DataHandler::isError($admList)){
-      $adm_uname = $admList[0]['username'];
+    if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+      /**
+       * MODULES_SECRETQUESTION will handle questioning and answer check
+       */
+      redirect(MODULES_SECRETQUESTION_HTTP . '/askQuestion.php?userId='.$user_id);
     } else {
-      $adm_uname = ""; // ??? FIXME: serve un superadmin nel file di config?
-    }
-    /*
-     * Create a token to authorize this user to change his/her password
-     */
-    $tokenObj = TokenManager::createTokenForPasswordChange($userObj);
-    if($tokenObj == false) {
-      $message = translateFN('An error occurred while performing your request. Please try again later.');
-      header('Location:'.HTTP_ROOT_DIR."/browsing/forget.php?message=$message");
+      $admtypeAr = array(AMA_TYPE_ADMIN);
+      $admList = $common_dh-> get_users_by_type($admtypeAr);
+      // $admList = $tester_dh-> get_users_by_type($admtypeAr); ???
+
+      if (!AMA_DataHandler::isError($admList)){
+        $adm_uname = $admList[0]['username'];
+      } else {
+        $adm_uname = ""; // ??? FIXME: serve un superadmin nel file di config?
+      }
+      /*
+       * Create a token to authorize this user to change his/her password
+       */
+      $tokenObj = TokenManager::createTokenForPasswordChange($userObj);
+      if($tokenObj == false) {
+        $message = translateFN('An error occurred while performing your request. Please try again later.');
+        header('Location:'.HTTP_ROOT_DIR."/browsing/forget.php?message=$message");
+        exit();
+      }
+      $token    = $tokenObj->getTokenString();
+
+      $titolo = translateFN("Password changing request");
+      $testo = translateFN("An ADA user with username: ");
+      $testo.= $username;
+      $testo.=translateFN(" requested to change his/her password in ADA");
+      $link = HTTP_ROOT_DIR."/browsing/forget.php?uid=$user_id&tok=$token";
+
+      $testo.= PHP_EOL . PHP_EOL. translateFN(" To confirm this request, please follow this link:");
+      $testo.= " ".$link;
+
+      // $mh = MessageHandler::instance(MultiPort::getDSN($tester)); /* FIXME */
+      // should we user common DB?
+      $common_db_dsn = ADA_COMMON_DB_TYPE.'://'.ADA_COMMON_DB_USER.':'
+      .ADA_COMMON_DB_PASS.'@'.ADA_COMMON_DB_HOST.'/'
+      .ADA_COMMON_DB_NAME;
+      $mh = MessageHandler::instance($common_db_dsn);
+
+      // prepare message to send
+      $message_ha = array();
+      $message_ha['titolo'] = $titolo;
+      $message_ha['testo'] = $testo;
+      $message_ha['destinatari'] = array($username);
+      $message_ha['data_ora'] = "now";
+      $message_ha['tipo'] = ADA_MSG_MAIL;
+      $message_ha['mittente'] = $adm_uname;
+
+      // delegate sending to the message handler
+      $res = $mh->send_message($message_ha);
+
+      if (AMA_DataHandler::isError($res)){
+        //	  $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
+        //	  NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
+      }
+      //	} else {
+      $message = translateFN("A message has been sent to  you with informations on how to change your password.");
+      $redirect_to = HTTP_ROOT_DIR . "/browsing/forget.php?message=$message";
+      header('Location:'.$redirect_to);
       exit();
     }
-    $token    = $tokenObj->getTokenString();
-
-    $titolo = translateFN("Password changing request");
-    $testo = translateFN("An ADA user with username: ");
-    $testo.= $username;
-    $testo.=translateFN(" requested to change his/her password in ADA");
-    $link = HTTP_ROOT_DIR."/browsing/forget.php?uid=$user_id&tok=$token";
-
-    $testo.= PHP_EOL . PHP_EOL. translateFN(" To confirm this request, please follow this link:");
-    $testo.= " ".$link;
-
-    // $mh = MessageHandler::instance(MultiPort::getDSN($tester)); /* FIXME */
-    // should we user common DB?
-    $common_db_dsn = ADA_COMMON_DB_TYPE.'://'.ADA_COMMON_DB_USER.':'
-    .ADA_COMMON_DB_PASS.'@'.ADA_COMMON_DB_HOST.'/'
-    .ADA_COMMON_DB_NAME;
-    $mh = MessageHandler::instance($common_db_dsn);
-
-    // prepare message to send
-    $message_ha = array();
-    $message_ha['titolo'] = $titolo;
-    $message_ha['testo'] = $testo;
-    $message_ha['destinatari'] = array($username);
-    $message_ha['data_ora'] = "now";
-    $message_ha['tipo'] = ADA_MSG_MAIL;
-    $message_ha['mittente'] = $adm_uname;
-
-    // delegate sending to the message handler
-    $res = $mh->send_message($message_ha);
-
-    if (AMA_DataHandler::isError($res)){
-      //	  $errObj = new ADA_Error($res,translateFN('Impossibile spedire il messaggio'),
-      //	  NULL,NULL,NULL,$error_page.'?err_msg='.urlencode(translateFN('Impossibile spedire il messaggio')));
-    }
-    //	} else {
-    $message = translateFN("A message has been sent to  you with informations on how to change your password.");
-    $redirect_to = HTTP_ROOT_DIR . "/browsing/forget.php?message=$message";
-    header('Location:'.$redirect_to);
-    exit();
     //	}
     break;
   case "change_password":
@@ -370,7 +378,11 @@ switch ($op){
 
     $welcome ="<br />". translateFN('Welcome, user')."<br />";
     $welcome.= translateFN('If you forgot your password, please insert your username. We will send you a message with instructions
-     to change your password')."<br />";
+     to change your password');
+    if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+      $welcome .= ' '.translateFN('or ask your secret question');
+    }
+    $welcome .= ".<br />";
 
     $home = $userObj->getHomepage();
     $menu = '';

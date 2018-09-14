@@ -28,7 +28,7 @@ function isAdult(dateString) {
 
     // Check the range of the day
     var dateOK = day > 0 && day <= monthLength[month - 1];
-    
+
     if (dateOK) {
     	var birthDate = new Date(parts[2]+"/"+parts[1]+"/"+parts[0]);
 	    var age = today.getFullYear() - birthDate.getFullYear();
@@ -52,13 +52,23 @@ function initRegistration() {
 			else if (isAdultCheck == -2) $j('.alertMSG','#registrationError').html($j('#notAdult').html());
 			$j('#registrationError').modal('show');
 			return;
-		}		
+		}
 		if (!checkAllPoliciesAccepted()) {
 			e.preventDefault();
 			$j('#acceptPoliciesMSG').modal('show');
 			return;
 		}
 	});
+
+	if ($j('input[name="uname"]', 'form[name="registration"]').length>0) {
+		$j('form[name="registration"]')
+			.on('change', 'input[name="nome"], input[name="cognome"]', function() {
+				var stripname = $j('input[name="nome"]').val().replace(/[^A-Za-z0-9]/g, '');
+				var stripsurname = $j('input[name="cognome"]').val().replace(/[^A-Za-z0-9]/g, '');
+				var conj = (stripname.length>0 && stripsurname.length>0) ? '.' : '';
+				$j('input[name="uname"]', 'form[name="registration"]').val((stripname+conj+stripsurname).toLowerCase().substring(0,255));
+			});
+	}
 }
 
 function CreateProvince() {
@@ -66,106 +76,106 @@ function CreateProvince() {
  var Romania = 5;
  var Espana = 2;
  var Italia = 4;
- var Iceland = 3; 
+ var Iceland = 3;
 
   var Primary = document.services_request.country.selectedIndex;
 
   if ((Primary == null) || (Primary == 0)) return;
 
-  if (Primary == Bulgaria) { 
+  if (Primary == Bulgaria) {
   var Bu_provinces = new Array(
 	  "Burgas",
 	  "Dobrich",
 	  "Gabrovo",
 	  "Haskovo",
 	  "Kardzhali",
-	  "Kyustendil", 
+	  "Kyustendil",
 	  "Lovech",
 	  "Montana",
-	  "Pazardzhik", 
+	  "Pazardzhik",
 	  "Pernik",
 	  "Pleven",
 	  "Plovdiv",
-	  "Razgrad", 
+	  "Razgrad",
 	  "Ruse",
-	  "Shumen", 
-	  "Silistra", 
+	  "Shumen",
+	  "Silistra",
 	  "Sliven",
-	  "Smolyan", 
+	  "Smolyan",
 	  "Sofia",
-	  "Stara_Zagora", 
-	  "Targovishte", 
+	  "Stara_Zagora",
+	  "Targovishte",
 	  "Varna",
-	  "Veliko_Tarnovo", 
+	  "Veliko_Tarnovo",
 	  "Vidin",
-	  "Vratsa", 
+	  "Vratsa",
 	  "Yambol"
-		  ); 
+		  );
 
 
   var Province = new Array;
   for (i = 0; i<25; i++){
 	  Province[i] = new Option(Bu_provinces[i],Bu_provinces[i]);
-  }	  
+  }
   }
 
   if (Primary == Espana) {
 	  var Es_provinces = new Array(
  "Álava",
-"Albacete", 
+"Albacete",
 "Alicante",
 "Almería",
 "Asturias",
-"Ávila", 
-"Badajoz", 
+"Ávila",
+"Badajoz",
 "Baleares",
-"Barcelona", 
+"Barcelona",
 "Vizcaya",
-"Burgos", 
-"Cáceres", 
-"Cádiz", 
-"Cantabria", 
+"Burgos",
+"Cáceres",
+"Cádiz",
+"Cantabria",
 "Castellón",
-"Ciudad_Real", 
+"Ciudad_Real",
 "Córdoba",
-"Cuenca", 
+"Cuenca",
 "Gerona",
-"Granada", 
-"Guadalajara", 
+"Granada",
+"Guadalajara",
 "Guipúzcoa",
-"Huelva", 
-"Huesca", 
-"Jaén", 
+"Huelva",
+"Huesca",
+"Jaén",
 "La_Coruña",
-"La_Rioja", 
-"León", 
+"La_Rioja",
+"León",
 "Lérida",
-"Lugo", 
-"Madrid", 
-"Málaga", 
-"Murcia", 
+"Lugo",
+"Madrid",
+"Málaga",
+"Murcia",
 "Navarra",
 "Orense",
-"Palencia", 
-"Las_Palmas", 
-"Pontevedra", 
-"Salamanca", 
-"SantaCruz", 
-"Segovia", 
+"Palencia",
+"Las_Palmas",
+"Pontevedra",
+"Salamanca",
+"SantaCruz",
+"Segovia",
 "Sevilla",
-"Soria", 
-"Tarragona", 
-"Teruel", 
-"Toledo", 
+"Soria",
+"Tarragona",
+"Teruel",
+"Toledo",
 "Valencia",
-"Valladolid", 
-"Zamora", 
+"Valladolid",
+"Zamora",
 "Zaragoza"
 );
 
 
   var Province = new Array;
-  
+
   for (i = 0; i<49; i++){
 	  Province[i] = new Option(Es_provinces[i],Es_provinces[i]);
   }
@@ -173,7 +183,7 @@ function CreateProvince() {
 
   if (Primary == Iceland) {
 
-	  /* FIXME: sono queste? 
+	  /* FIXME: sono queste?
      * Árnessýsla
     * Austur-Barðastrandarsýsla
     * Austur-Húnavatnssýsla
@@ -200,14 +210,14 @@ function CreateProvince() {
 
  */
  var Is_provinces = new Array("Reykyavik");
- 
+
   var Province = new Array;
   for (i = 0; i<1; i++){
 	  Province[i] = new Option(Is_provinces[i],Is_provinces[i]);
   }
  }
-  
-  
+
+
   if (Primary == Italia) {
   var It_provinces = new Array(
 		  "AGRIGENTO",
@@ -316,7 +326,7 @@ function CreateProvince() {
 		  "VIBO_VALENTIA",
 		  "VICENZA",
 		  "VITERBO"
-		  );	  
+		  );
   var Province = new Array;
   for (i = 0; i<105; i++){
 	  Province[i] = new Option(It_provinces[i],It_provinces[i]);
@@ -374,7 +384,7 @@ if (Primary == Romania) {
   }
   }
 
-  for (i=document.services_request.Province.options.length; i>0; i--) { 
+  for (i=document.services_request.Province.options.length; i>0; i--) {
    document.services_request.Province.options[i] = null;
   }
 
@@ -436,11 +446,11 @@ function CreateProvider() {
 //  alert(isProvinceService(provincia_sel));
 
   if ((isProvinceService(provincia_sel)< 0 )) {
-    alert ("Sorry, no service provider in your Province"); 
+    alert ("Sorry, no service provider in your Province");
     return;
   }
   if (document.services_request.fiscal_code.value == "") {
-    alert ("Sorry, You have to fill the fiscal code"); 
+    alert ("Sorry, You have to fill the fiscal code");
     return;
   }
 
@@ -451,7 +461,7 @@ function CreateProvider() {
   var pilot = new Array;
 
 
-  for (i=0; i<erogatori[provincia_sel].length; i++) { 
+  for (i=0; i<erogatori[provincia_sel].length; i++) {
 //  alert (erogatori[provincia_sel][i]);
   pilot[i] = new Option(erogatori[provincia_sel][i]);
   }
@@ -498,7 +508,7 @@ function CreateProvider() {
 
   }
 
-  for (i=document.services_request.Pilot.options.length; i>0; i--) { 
+  for (i=document.services_request.Pilot.options.length; i>0; i--) {
 //  alert('ciao');
   document.services_request.Pilot.options[i] = null;
   }
@@ -526,10 +536,10 @@ var prov_provider = new Array;
   prov_provider[5] = "oristano";
   prov_provider[6] = "reykjavik";
 
-  var i; 
+  var i;
   for (i in prov_provider) {
     if (prov_provider[i] == province)
       return i;
     }
     return -1;
-} 
+}
