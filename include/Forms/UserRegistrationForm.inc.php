@@ -48,9 +48,13 @@ class UserRegistrationForm extends FForm
 
 //         $this->addTextInput('birthprovince', translateFN('Provincia di nascita'));
 
-        $this->addTextInput('email', translateFN('Email'))
-             ->setRequired()
-             ->setValidator(FormValidator::EMAIL_VALIDATOR);
+        $email = $this->addTextInput('email', translateFN('Email'));
+        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+            require_once MODULES_SECRETQUESTION_PATH .'/include/form/SecretQuestionForm.php';
+        	(new SecretQuestionForm(strcmp(get_class($this),__CLASS__) === 0))->addControlsToForm($this);
+        } else {
+             $email->setRequired()->setValidator(FormValidator::EMAIL_VALIDATOR);
+        }
 
 //         $this->addSelect(
 //             'sesso',
