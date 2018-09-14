@@ -594,22 +594,22 @@ abstract class ADALoggableUser extends ADAGenericUser {
     		if (trim($dataArr['password']) != '') {
     			$this->setPassword($dataArr['password']);
     		}
-    		$this->setSerialNumber($dataArr['matricola']);
+    		$this->setSerialNumber(isset($dataArr['matricola']) ? : null);
     		$this->setLayout($dataArr['layout']);
     		$this->setAddress($dataArr['indirizzo']);
     		$this->setCity($dataArr['citta']);
     		$this->setProvince($dataArr['provincia']);
     		$this->setCountry($dataArr['nazione']);
     		$this->setBirthDate($dataArr['birthdate']);
-    		$this->setGender($dataArr['sesso']);
+    		$this->setGender(isset($dataArr['sesso']) ? $dataArr['sesso'] : null);
     		$this->setPhoneNumber($dataArr['telefono']);
     		$this->setLanguage(isset($dataArr['lingua']) ? $dataArr['lingua'] : null);
     		//        $this->setAvatar($dataArr['avatar']);
     		if (isset($_SESSION['uploadHelper']['fileNameWithoutPath'])) $this->setAvatar($_SESSION['uploadHelper']['fileNameWithoutPath']);
     		$this->setCap($dataArr['cap']);
     		if (isset($dataArr['stato'])) $this->setStatus($dataArr['stato']);
-    		$this->setBirthCity($dataArr['birthcity']);
-    		$this->setBirthProvince($dataArr['birthprovince']);
+    		$this->setBirthCity(isset($dataArr['birthcity']) ? $dataArr['birthcity'] : null);
+    		$this->setBirthProvince(isset($dataArr['birthprovince']) ? $dataArr['birthprovince'] : null);
     	}
     }
 

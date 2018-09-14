@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+@import url("common.css");
+@import url("showHideDiv.css");
+
+div.fform {
+    width: auto;
+}
+
+div.fform fieldset label {
+    width: 30%;
+}
+
+div.fform fieldset li.form {
+    border: none;
+    margin-bottom: 1em;
+}
+
+div.fform form[name="askquestion"] input[type="text"] {
+    width: 65%;
+    padding: 0.5em;
+}
+
+div.fform form[name="askquestion"] input[name="secretquestion"] {
+    border: none;
+    background: #efeded;
+}
+

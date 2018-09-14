@@ -168,3 +168,16 @@ if (!defined('MODULES_GDPR')) {
 		define('MODULES_GDPR', false);
 	}
 }
+
+if (!defined('MODULES_SECRETQUESTION')) {
+	// defines for module secretquestion
+	if (file_exists(MODULES_DIR.'/secretquestion/config/config.inc.php')) {
+		define('MODULES_SECRETQUESTION_NAME', 'secretquestion');
+		define ('MODULES_SECRETQUESTION_PATH', MODULES_DIR. DIRECTORY_SEPARATOR. MODULES_SECRETQUESTION_NAME);
+		$modEnabled = require_once(MODULES_SECRETQUESTION_PATH.'/config/config.inc.php');
+		define('MODULES_SECRETQUESTION', $modEnabled);
+		define('MODULES_SECRETQUESTION_HTTP', HTTP_ROOT_DIR. str_replace(ROOT_DIR, '', MODULES_DIR) . DIRECTORY_SEPARATOR. MODULES_SECRETQUESTION_NAME);
+	} else {
+		define('MODULES_SECRETQUESTION', false);
+	}
+}
