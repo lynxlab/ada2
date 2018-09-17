@@ -67,15 +67,15 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $FlagFileWellFormat=true;
         if(is_readable($fileUploader->getPathToUploadedFile())) {
             $usersToSubscribe = file($fileUploader->getPathToUploadedFile());
-            
+
             /*remove blanck line form array*/
             foreach ($usersToSubscribe as $key => $value) {
                 if (!trim($value))
                     unset($usersToSubscribe[$key]);
             }
-            
-         
-            foreach($usersToSubscribe as $subscriber) 
+
+
+            foreach($usersToSubscribe as $subscriber)
             {
                 $userDataAr = explode(',', $subscriber);
                 $countAr=count($userDataAr);
@@ -87,21 +87,21 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 if($userDataAr[0]==null)
                 {
                   $FlagFileWellFormat=false;
-                  break; 
+                  break;
                 }
                 if($userDataAr[1]==null)
                 {
                   $FlagFileWellFormat=false;
-                  break; 
+                  break;
                 }
                 if($userDataAr[2]==null)
                 {
                   $FlagFileWellFormat=false;
-                  break; 
+                  break;
                 }
             }
             if($FlagFileWellFormat){
-            
+
             $subscribed = 0;
             $alreadySubscribed = 0;
             $notStudents = 0;
@@ -120,7 +120,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             foreach($usersToSubscribe as $subscriber) {
                 $canSubscribeUser = false;
                 $userDataAr = explode(',', $subscriber);
-                
+
                 $subscriberObj = MultiPort::findUserByUsername(trim($userDataAr[2]));
                 if($subscriberObj == NULL) {
                     $subscriberObj = new ADAUser(
@@ -138,14 +138,14 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     /**
                      * @author giorgio 06/mag/2014 11:25:21
-                     * 
+                     *
                      * If it's not a multiprovider environment,
                      * user must be subscribed to switcher's own
                      * provider only.
                      * User must be subscribed to the ADA_PUBLIC_TESTER
                      * only in a multiprovider environment.
                      */
-                    
+
                     $provider_to_subscribeAr = array ($sess_selected_tester);
                     if (MULTIPROVIDER) {
                     	array_unshift($provider_to_subscribeAr, ADA_PUBLIC_TESTER);
@@ -180,13 +180,13 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             'tipo' => ADA_MSG_MAIL,
                             'mittente' => $adm_uname
                         );
-                        
+
                         if (MULTIPROVIDER) {
                         	$mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
                         } else {
                         	$mh = MessageHandler::instance(MultiPort::getDSN($sess_selected_tester));
                         }
-                        
+
                         /**
                          * Send the message as an internal message
                          */
@@ -202,13 +202,21 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         }
 
                         $canSubscribeUser = true;
-                    }                     
+                    }
                 } elseif($subscriberObj instanceof ADAUser) {
-                    $result = $dh->student_can_subscribe_to_course_instance($subscriberObj->getId(), $courseInstanceId);
-                    if(!AMA_DataHandler::isError($result) && $result !== false) {
-                        $canSubscribeUser = true;
-                    } else {
-                        $alreadySubscribed++;
+                    $courseProviderAr = $common_dh->get_tester_info_from_id_course($courseId);
+                    $isUserInProvider = in_array($courseProviderAr['puntatore'], $subscriberObj->getTesters());
+                    if (!$isUserInProvider) {
+            			// subscribe user to course provider
+            			$isUserInProvider = Multiport::setUser($subscriberObj, array($courseProviderAr['puntatore']));
+                    }
+                    if ($isUserInProvider) {
+                        $result = $dh->student_can_subscribe_to_course_instance($subscriberObj->getId(), $courseInstanceId);
+                        if(!AMA_DataHandler::isError($result) && $result !== false) {
+                            $canSubscribeUser = true;
+                        } else {
+                            $alreadySubscribed++;
+                        }
                     }
                 } else {
                  $notStudents++;
@@ -225,7 +233,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 $subscriberObj->getFullName())
                           . PHP_EOL . PHP_EOL
                           . translateFN('Per accedere al corso dovrai fare login, scrivendo il tuo username e la tua password a questo indirizzo:')
-                          . PHP_EOL 
+                          . PHP_EOL
                           . ' ' . HTTP_ROOT_DIR."/index.php";
 
                     $message_ha = array(
@@ -233,10 +241,10 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         'testo' => $text,
                         'destinatari' => array($subscriberObj->getUserName()),
                         'data_ora' => 'now',
-                        'tipo' => ADA_MSG_MAIL,
+                        'tipo' => (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) ? ADA_MSG_SIMPLE : ADA_MSG_MAIL,
                         'mittente' => $adm_uname
                     );
-                    
+
                     if (MULTIPROVIDER) {
                         	$mh = MessageHandler::instance(MultiPort::getDSN(ADA_PUBLIC_TESTER));
                         } else {
@@ -271,7 +279,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 //            header("Location: course_instance.php?id_course=$courseId&id_course_instance=$courseInstanceId");
 //            exit();
-        } 
+        }
         else
         {
             $data = new CText('Il file non è ben formato sottometterlo di nuovo con: nome,cognome,mail');
