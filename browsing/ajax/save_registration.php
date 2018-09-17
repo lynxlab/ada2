@@ -70,12 +70,24 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 
 	if ($form->isValid()) {
 		$user_layout = $_POST['layout'];
-		
+
 		$editUserObj->fillWithArrayData($_POST);
-		
+
 		// save extra datas if it has been forced
 		if (isset($_POST['forceSaveExtra']) && $editUserObj->hasExtra()) $editUserObj->setExtras($_POST);
-		
+
+		if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+			if (array_key_exists('secretquestion', $_POST) &&
+				array_key_exists('secretanswer', $_POST) &&
+				strlen($_POST['secretquestion'])>0 && strlen($_POST['secretanswer'])>0) {
+					/**
+					 * Save secret question and answer and set the registration as successful
+					 */
+					$sqdh = \AMASecretQuestionDataHandler::instance();
+					$sqdh->saveUserQandA($editUserObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
+				}
+		}
+
 		MultiPort::setUser($editUserObj, array(), true, ADAUser::getExtraTableName());
 		/**
 		 * Set the session user to the saved one if it's not
@@ -84,22 +96,22 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 		if ($userObj->getType() != AMA_TYPE_SWITCHER) {
 			$_SESSION['sess_userObj'] = $editUserObj;
 		}
-		
+
 		// if registration form is saved ok and userObj is not a switcher,
-		//  force a page reload to reflect the changes immediately 
+		//  force a page reload to reflect the changes immediately
 		$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN('Scheda Anagrafica Salvata'), "reload"=>true);
 	} else {
 		$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("I dati non sono validi") );
 	}
-	
+
 } else if (is_null($editUserObj)) {
 	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Utente non trovato"));
 } else {
 	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore nella trasmissione dei dati"));
 }
 
-if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto")); 
-	
+if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto"));
+
 echo json_encode($retArray);
 
 ?>
