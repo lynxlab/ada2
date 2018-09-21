@@ -36,10 +36,10 @@ abstract class CBaseElement extends CBase
     {
     	/**
     	 * @author giorgio 16/ott/2013
-    	 * 
+    	 *
     	 * Check if passed $attribute_name is a valid html data attribute name by this definition:
     	 * The data attribute name must be at least one character long and must be prefixed with 'data-'.
-    	 * It should not contain any uppercase letters. 
+    	 * It should not contain any uppercase letters.
     	 */
         if (property_exists($this, $attribute_name) || (preg_match('/(data|aria)\-[a-z0-9]{1}[a-z0-9\-]*/', $attribute_name) === 1))
         {
@@ -52,7 +52,7 @@ abstract class CBaseElement extends CBase
     public function setAttributes($a_list_of_attribute_value_pairs)
     {
         // FIXME: verificare bene l'espressione regolare relativa al valore
-        $attribute_value_pair = '/\s*([a-z-]+)\s*:\s*([\s\(\)a-zA-Z0-9:;\.\[\]\/=\?\+%&_@#-]+)\s*/';
+        $attribute_value_pair = '/\s*([a-z-]+)\s*:\s*([\s\(\)a-zA-Z0-9:;\.\[\]\/=\?\+\~%&_@#-]+)\s*/';
         //$attribute_value_pair = '/\s*([a-z]+)\s*:\s*(.*)\s*/';
 
         $matches = array();
@@ -165,7 +165,7 @@ abstract class CCoreAttributesElement extends CBaseElement
             {
             	if (!property_exists($this, $text) || $this->$text === false) {
             		$this->$text = 'false';
-            	}            	
+            	}
 				else if ($this->$text === true) {
 					$this->$text = 'true';
 				}
@@ -319,7 +319,7 @@ abstract class CElement extends CBaseAttributesElement
             }
             else
             {
-            	 
+
 				if (!property_exists($this, $attr) || $this->$attr === false) {
 					if ($attr!== 'datas') $this->$attr = 'false';
 				}
@@ -529,7 +529,7 @@ class CUl extends CElement
  */
 class COl extends CElement
 {
-	protected $start;	
+	protected $start;
     public function __construct()
     {
         parent::__construct();
