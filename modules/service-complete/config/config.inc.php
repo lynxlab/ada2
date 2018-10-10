@@ -19,6 +19,7 @@ define ('NUM_RULES_SET',3);
 
 $GLOBALS['completeClasses'][]  = 'completeConditionTime';
 $GLOBALS['completeClasses'][]  = 'completeConditionLevel';
+$GLOBALS['completeClasses'][]  = 'completeConditionNodePercentage';
 if (defined('MODULES_TEST') && MODULES_TEST) {
 	// hide this completeCondition if no MODULES_TEST
 	$GLOBALS['completeClasses'][]  = 'completeConditionAnsweredSurvey';
