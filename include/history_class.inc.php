@@ -103,19 +103,35 @@ class History
   /**
    * history_nodes_visitedpercent_FN
    *
-   * @param int $id_course
-   * @return $nodes_percent
+   * @param int|array $node_types - ADA node typeor array of node types, as defined in ada_config.inc.php
+   * @return int - number of visited nodes
    */
-  function history_nodes_visitedpercent_FN()
+  function history_nodes_visitedpercent_FN($node_types=null)
   {
+    $nodes_percent = $visited = $total = 0;
     if ( !isset($this->course_data) )
     {
       $this->get_course_data();
     }
-    $nodes_percent = 0;
-    if ( $this->nodes_count > 0 )
+    if (!is_null($node_types)) {
+      if(!is_array($node_types)) $node_types = [$node_types];
+      // filter nodes of type LEAF and GROUP
+      $filteredAr = array_filter($this->course_data, function($el) use($node_types) {
+        return array_key_exists('tipo', $el) && in_array($el['tipo'], $node_types);
+      });
+      // each node with a 'numero_visite' greater than zero tells that the node has been visited
+      $visited = array_reduce($filteredAr, function($carry, $el) {
+        if (array_key_exists('numero_visite', $el) && intval($el['numero_visite'])>0) $carry += 1;
+        return $carry;
+      }, 0);
+      $total = count($filteredAr);
+    } else {
+      $visited = $this->visited_nodes_count;
+      $total = $this->nodes_count;
+    }
+    if ( $total > 0 )
     {
-      $nodes_percent = number_format( ($this->visited_nodes_count / $this->nodes_count * 100), 0, '.', '');
+      $nodes_percent = number_format( ($visited / $total * 100), 0, '.', '');
     }
     return $nodes_percent;
   }

@@ -603,7 +603,7 @@ else {
 	$GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
 	$userObj->set_course_instance_for_history($courseInstanceId);
 	$user_history = $userObj->getHistoryInCourseInstance($courseInstanceId);
-	$content_dataAr['percentcomplete'] = $user_history->history_nodes_visitedpercent_FN();
+	$content_dataAr['percentcomplete'] = $user_history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]);
 	$GLOBALS['dh']->disconnect();
 }
 
