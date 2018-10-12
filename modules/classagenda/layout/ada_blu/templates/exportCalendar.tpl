@@ -5,15 +5,15 @@
 
 if ( isset($pdf) ) {
 
-  $font = Font_Metrics::get_font("verdana");
+  $font = $fontMetrics->getFont("dejavu");
   // If verdana isn't available, we'll use sans-serif.
-  if (!isset($font)) { Font_Metrics::get_font("sans-serif"); }
+  if (!isset($font) || is_null($font)) { $font = $fontMetrics->getFont("sans-serif"); }
   $size = 8;
   $color = array(0,0,0);
-  $text_height = Font_Metrics::get_font_height($font, $size);
+  $text_height = $fontMetrics->getFontHeight($font, $size);
 
   $foot = $pdf->open_object();
-  
+
   $w = $pdf->get_width();
   $h = $pdf->get_height();
 
@@ -26,17 +26,17 @@ if ( isset($pdf) ) {
   $text = $GLOBALS['adafooter'];
   $pdf->text(16, $y, $text, $font, $size, $color);
 
-  $text = translateFN("Pagina")." {PAGE_NUM} ".translateFN("di")." {PAGE_COUNT}";  
+  $text = translateFN("Pagina")." {PAGE_NUM} ".translateFN("di")." {PAGE_COUNT}";
 
   // Center the text
-  $width = Font_Metrics::get_text_width($text, $font, $size);
+  $width = $fontMetrics->getTextWidth($text, $font, $size);
   $pdf->page_text($w - $width + 80, $y, $text, $font, $size, $color);
 
   $pdf->close_object();
   $pdf->add_object($foot, "all");
-  
+
 }
-</script>    
+</script>
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
