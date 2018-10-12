@@ -32,7 +32,8 @@ div#exercises_in_text,
 div#com_tools,
 div#footer img,
 div#footer,
-hr {
+hr,
+noscript {
 	display: none;
 }
 
