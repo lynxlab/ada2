@@ -42,6 +42,7 @@ $neededObjAr = array(
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
+BrowsingHelper::init($neededObjAr);
 
 $op = isset($_GET['op']) ? DataValidator::validate_string($_GET['op']) : false;
 $today_date = today_dateFN();

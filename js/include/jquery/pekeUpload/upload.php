@@ -40,9 +40,10 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
+BrowsingHelper::init($neededObjAr);
 require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
-$fileUploader = new FileUploader(ADA_UPLOAD_PATH.$userId.'/'); // $fieldUploadName);
+$fileUploader = new FileUploader(ADA_UPLOAD_PATH.$userObj->getId().'/'); // $fieldUploadName);
 if($fileUploader->upload(true) == false) {
 	$data = $fileUploader->getErrorMessage();
 } else {
