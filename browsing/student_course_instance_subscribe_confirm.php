@@ -37,6 +37,38 @@ $neededObjAr = array(
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
 require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+BrowsingHelper::init($neededObjAr);
+
 //require_once ROOT_DIR . '/include/CourseInstance.inc.php';
 
 $self = whoami(); // to select the right template
@@ -122,7 +154,7 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $paypal_email_address = PAYPAL_ACCOUNT;
     $product_price = $price;
     $price_currency = CURRENCY_CODE;
-    $paypal_ipn_url = PAYPAL_IPN_URL; 
+    $paypal_ipn_url = PAYPAL_IPN_URL;
 
     // read the post from PayPal system and add 'cmd'
     $req = 'cmd=_notify-synch';
@@ -198,13 +230,13 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
             ) {
                 $date = AMA_DataHandler::ts_to_date(time(), "%d/%m/%Y - %H:%M:%S");
                 $ipn_log .= "Paypal PDT DATA OK\n";
-                if ($debug == 1) { 
+                if ($debug == 1) {
                     fwrite($fpx, "Paypal PDT DATA OK - $date\n");
                 }
 
                 $first_name = $userObj->getFirstName();
                 $last_name = $userObj->getLastName();
-                
+
 //                $body = translateFN("Hai effettuato il pagamento di") . " ". $payment_amount ." EUR ". translateFN('tramite Paypal' . "\n\r").
 //                $body .= translateFN('Questo addebito verrà visualizzato sull\'estratto conto della carta di credito o prepagata come pagamento a PAYPAL *Lynx s.r.l.');
                 $message_ha["testo"] = translateFN('Gentile') . " " . $first_name .",\r\n" . translateFN("grazie per aver eseguito l'iscrizione al") . " " . $course_name . "\n\r\n\r";
