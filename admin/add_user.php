@@ -1,20 +1,20 @@
 <?php
 /**
  * Add user - this module provides add user functionality
- * 
- * 
- * @package		
+ *
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
@@ -38,6 +38,38 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  whoami();  // = admin!
 
 include_once 'include/admin_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+AdminHelper::init($neededObjAr);
+
 include_once 'include/AdminUtils.inc.php';
 /*
  * YOUR CODE HERE
@@ -52,28 +84,28 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
    *    the tester databases associated with this user.
    */
 
-    
+
   /*
    * Validazione dati
    */
   $errorsAr = array();
-  
+
   if($_POST['user_tester'] == 'none') {
     $errorsAr['user_tester'] = true;
   }
-  
+
   if(DataValidator::is_uinteger($_POST['user_type']) === FALSE) {
     $errorsAr['user_type'] = true;
   }
-  
+
   if(DataValidator::validate_firstname($_POST['user_firstname']) === FALSE) {
     $errorsAr['user_firstname'] = true;
   }
-  
+
   if(DataValidator::validate_lastname($_POST['user_lastname']) === FALSE) {
     $errorsAr['user_lastname'] = true;
   }
-  
+
   if(DataValidator::validate_email($_POST['user_email']) === FALSE) {
     $errorsAr['user_email'] = true;
   }
@@ -81,11 +113,11 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if(DataValidator::validate_username($_POST['user_username']) === FALSE) {
     $errorsAr['user_username'] = true;
   }
-  
+
   if(DataValidator::validate_password($_POST['user_password'], $_POST['user_passwordcheck']) === FALSE) {
     $errorsAr['user_password'] = true;
   }
-  
+
   if(DataValidator::validate_string($_POST['user_address'])=== FALSE) {
     $errorsAr['user_address'] = true;
   }
@@ -93,27 +125,27 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if(DataValidator::validate_string($_POST['user_city'])=== FALSE) {
     $errorsAr['user_city'] = true;
   }
-  
+
   if(DataValidator::validate_string($_POST['user_province'])=== FALSE) {
     $errorsAr['user_province'] = true;
   }
-  
+
   if(DataValidator::validate_string($_POST['user_country'])=== FALSE) {
     $errorsAr['user_country'] = true;
   }
-  
+
   if(DataValidator::validate_string($_POST['user_fiscal_code'])=== FALSE) {
     $errorsAr['user_fiscal_code'] = true;
   }
-  
+
   if(DataValidator::validate_birthdate($_POST['user_birthdate'])=== FALSE) {
     $errorsAr['user_birthdate'] = true;
   }
-  
+
   if(DataValidator::validate_not_empty_string($_POST['user_birthcity'])=== FALSE) {
   	$errorsAr['user_birthcity'] = true;
   }
-  
+
   if(DataValidator::validate_string($_POST['user_birthprovince'])=== FALSE) {
   	$errorsAr['user_birthprovince'] = true;
   }
@@ -121,12 +153,12 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if(DataValidator::validate_string($_POST['user_sex'])=== FALSE) {
     $errorsAr['user_sex'] = true;
   }
-  
+
   if(DataValidator::validate_phone($_POST['user_phone']) === FALSE) {
     $errorsAr['user_phone'] = true;
   }
 
-  
+
   if(count($errorsAr) > 0) {
     unset($_POST['submit']);
     $user_dataAr = $_POST;
@@ -144,18 +176,18 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
   }
   else {
-    
+
     if($_POST['user_layout'] == 'none') {
       $user_layout = '';
     }
     else {
       $user_layout = $_POST['user_layout'];
     }
-    
+
     $user_dataAr = array(
  	  'nome'      => $_POST['user_firstname'],
 	  'cognome'   => $_POST['user_lastname'],
-	  'tipo'      => $_POST['user_type'], 
+	  'tipo'      => $_POST['user_type'],
       'email'     => $_POST['user_email'],
 	  'username'  => $_POST['user_username'],
 	  'layout'    => $user_layout,
@@ -172,7 +204,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	  'birthcity'	   => $_POST['user_birthcity'],
       'birthprovince'  => $_POST['user_birthprovince']
     );
-    
+
     switch($_POST['user_type']) {
       case AMA_TYPE_STUDENT:
         $userObj = new ADAUser($user_dataAr);
@@ -183,13 +215,13 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
       case AMA_TYPE_SUPERTUTOR:
       case AMA_TYPE_TUTOR:
         $userObj = new ADAPractitioner($user_dataAr);
-        break;        
+        break;
       case AMA_TYPE_SWITCHER:
         $userObj = new ADASwitcher($user_dataAr);
         break;
       case AMA_TYPE_ADMIN:
         $userObj = new ADAAdmin($user_dataAr);
-        break;                        
+        break;
     }
     $userObj->setPassword($_POST['user_password']);
     $result = MultiPort::addUser($userObj, array($_POST['user_tester']));
@@ -205,15 +237,15 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     else {
       /*
-       * Qui bisogna ricreare il form per la registrazione passando in $errorsAr['registration_error'] 
+       * Qui bisogna ricreare il form per la registrazione passando in $errorsAr['registration_error']
        * $result e portando li' dentro lo switch su $result
        */
       $errorsAr['registration_error'] = $result;
-      
+
       unset($_POST['submit']);
       $user_dataAr = $_POST;
       $testers_dataAr = $common_dh->get_all_testers(array('id_tester','nome'));
-        
+
       if(AMA_Common_DataHandler::isError($testers_dataAr)) {
         $errObj = new ADA_Error($testersAr,translateFN("Errore nell'ottenimento delle informazioni sui tester"));
       }

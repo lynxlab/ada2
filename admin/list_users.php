@@ -1,20 +1,20 @@
 <?php
 /**
  * List users
- * 
- * 
- * @package		
+ *
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
@@ -39,12 +39,43 @@ $self =  whoami();  // = admin!
 
 include_once 'include/admin_functions.inc.php';
 
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+AdminHelper::init($neededObjAr);
+
 /*
  * YOUR CODE HERE
  */
 $id_tester = DataValidator::is_uinteger($_GET['id_tester']);
 if(!isset($_GET['page']) || DataValidator::is_uinteger($_GET['page']) === FALSE){
-  $page = 1;  
+  $page = 1;
 }
 else {
   $page = $_GET['page'];
@@ -66,15 +97,15 @@ if($id_tester !== FALSE) {
     }
     $users_count = $tester_dh->count_users_by_type($user_typesAr);
     if(AMA_DataHandler::isError($users_count)) {
-      $errObj = new ADA_Error($users_count);        
+      $errObj = new ADA_Error($users_count);
     }
-    else {   
+    else {
       $pages = ceil($users_count / $users_per_page);
       if($page > $pages) {
         $page = $pages;
       }
       $start = ($page-1)*$users_per_page;
-      
+
       $users_dataAr = $tester_dh->get_users_by_type_from_position_to_position($user_typesAr,$start, $users_per_page);
       if (AMA_DataHandler::isError($users_dataAr)) {
             $user_type = ADAGenericUser::convertUserTypeFN($userTypeToFilter);
