@@ -35,6 +35,38 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once '../include/tutor_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+TutorHelper::init($neededObjAr);
+
 require_once ROOT_DIR . '/comunica/include/ChatRoom.inc.php';
 // require_once ROOT_DIR . '/comunica/include/ChatDataHandler.inc.php';
 $retArray=array();
@@ -53,23 +85,23 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 		translateFN('File Inviati'),
 		translateFN('Chat')
 	);
-	
+
 	$DetailsAr=$dh->get_tutors_assigned_course_instance($id_tutor);
 	if(!AMA_DB::isError($DetailsAr) && is_array($DetailsAr) && count($DetailsAr)>0) {
 		$DetailsAr = $DetailsAr[$id_tutor];
 	}
-	
+
 	$detailsResults=array();
-	
+
 	if(!AMA_DB::isError($DetailsAr) && is_array($DetailsAr) && count($DetailsAr)>0) {
-		
+
 		$totalSubscribedStudents = 0;
 		$totalSelfInstrucionCourses = 0;
 		$totalAddedNotes = 0;
 		$totalReadNotes = 0;
 		$totalChatlines = 0;
 		$totalUploadedFiles = 0;
-		
+
 		foreach($DetailsAr as $course){
 			// count number of subscribed users to instance
 			$subscribedStudents=0;
@@ -83,7 +115,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 				}
 			}
 			$totalSubscribedStudents += $subscribedStudents;
-						
+
 			// self instruction
 			if (isset($course['self_instruction']) && intval($course['self_instruction'])>0) {
 				$totalSelfInstrucionCourses++;
@@ -91,12 +123,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 			} else {
 				$isSelfInstruction = translateFN('No');
 			}
-			
+
 			$added_nodes_count = 0;
 			$read_notes_count = 0;
 			$chatlines_count = 0;
 			if (isset($course['id_corso']) && isset($course['id_istanza_corso'])) {
-				
+
 				$out_fields_ar = array();
 				// count written (aka added) forum notes
 				$clause =  "tipo = '".ADA_NOTE_TYPE."' AND id_utente = ".$id_tutor.
@@ -104,20 +136,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 						   " AND id_istanza=".$course['id_istanza_corso'];
 				$nodes = $dh->find_course_nodes_list($out_fields_ar, $clause,$course['id_corso']);
 				$added_nodes_count = count($nodes);
-				
+
 				/**
 				 * get tutor visit for course instance (to count read notes)
 				 * the method name refers to student, but works ok for a tutor as well
 				 */
-				$visits = $GLOBALS['dh']->get_student_visits_for_course_instance($id_tutor, $course['id_corso'], $course['id_istanza_corso']);				
+				$visits = $GLOBALS['dh']->get_student_visits_for_course_instance($id_tutor, $course['id_corso'], $course['id_istanza_corso']);
 				if (!AMA_DB::isError($visits) && is_array($visits) && count($visits)>0) {
 					foreach ($visits as $visit) {
- 						if ($visit['tipo']==ADA_NOTE_TYPE && 
- 							$visit['id_utente']!=$id_tutor && 
+ 						if ($visit['tipo']==ADA_NOTE_TYPE &&
+ 							$visit['id_utente']!=$id_tutor &&
  							intval($visit['numero_visite'])>0) $read_notes_count++;
 					}
 				}
-				
+
 				/**
 				 * count class chat messages written by the tutor
 				 */
@@ -131,7 +163,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 						}
 					}
 				}
-				
+
 				/**
 				 * count files uploaded, for each course
 				 */
@@ -161,14 +193,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 						}
 					}
 				}
-					
+
 			}
 			$totalAddedNotes += $added_nodes_count;
 			$totalReadNotes += $read_notes_count;
 			$totalChatlines += $chatlines_count;
 			$totalUploadedFiles += $uploadedFiles;
-			
-			$detailsResults[] = array( 
+
+			$detailsResults[] = array(
 				$course['titolo'],
 				$course['title'],
 				$subscribedStudents,
@@ -178,7 +210,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 				$uploadedFiles,
 				$chatlines_count);
 		}
-		
+
 		$tfoot_data = array (
 				count($DetailsAr).' '.translateFN('Corsi totali'),
 				'&nbsp;',
@@ -189,13 +221,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 				$totalUploadedFiles,
 				$totalChatlines
 		);
-		
+
 		$result_table = BaseHtmlLib::tableElement('class:tutor_table', $thead_data, $detailsResults,$tfoot_data,$caption);
 		$result=$result_table->getHtml();
 		$retArray['columnDefs'][] = array(
 				'sClass'=>'centerAlign',
 				'aTargets'=>[2,3,4,5,6,7]
-		);		
+		);
 		$retArray['status']='OK';
 		$retArray['html']=$result;
 	} else {
