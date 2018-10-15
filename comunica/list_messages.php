@@ -46,6 +46,37 @@ $self = whoami();
 
 include_once 'include/comunica_functions.inc.php';
 
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+ComunicaHelper::init($neededObjAr);
+
 /*
  * YOUR CODE HERE
  */
@@ -183,7 +214,7 @@ else {
   $dataAr   = MultiPort::getUserMessages($userObj);
 
   $messages = CommunicationModuleHtmlLib::getReceivedMessagesAsForm($dataAr, $testers_dataAr);
-  $label   = translateFN('Messaggi ricevuti'); 
+  $label   = translateFN('Messaggi ricevuti');
   $displayedMsgs = 'received';
 }
 
@@ -214,7 +245,7 @@ if(isset($_SESSION['sess_id_course_instance'])){
         $last_access=$userObj->get_last_accessFN(null,"UT",null);
         $last_access=AMA_DataHandler::ts_to_date($last_access);
   }
-  
+
  if($last_access=='' || is_null($last_access)){
     $last_access='-';
 }
@@ -234,7 +265,7 @@ $content_dataAr = array(
 
 /**
  * @author giorgio 18/apr/2014 12:55:21
- * 
+ *
  * added jquery, datatables and initDoc function call
  */
 $layout_dataAr['JS_filename'] = array(
@@ -250,7 +281,7 @@ $layout_dataAr['CSS_filename'] = array(
 		JQUERY_DATATABLE_CSS
 );
 
-if (isset($options_Ar) && is_array($options_Ar) && isset($options_Ar['onload_func'])) {	
+if (isset($options_Ar) && is_array($options_Ar) && isset($options_Ar['onload_func'])) {
 	$options_Ar['onload_func'] = 'initDoc(\''.$displayedMsgs.'\'); '.$options_Ar['onload_func'];
 } else {
 	$options_Ar['onload_func'] = 'initDoc(\''.$displayedMsgs.'\');';
