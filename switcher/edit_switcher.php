@@ -37,6 +37,38 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 include_once 'include/switcher_functions.inc.php';
 
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+SwitcherHelper::init($neededObjAr);
+
+
 /*
  * YOUR CODE HERE
  */
@@ -58,10 +90,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($form->isValid()) {
     	$userObj->fillWithArrayData($_POST);
         MultiPort::setUser($userObj, array(), true);
-        
+
         /* unset $_SESSION['service_level'] to reload it with the correct  user language translation */
         unset($_SESSION['service_level']);
-        
+
         $navigationHistoryObj = $_SESSION['sess_navigation_history'];
         $location = $navigationHistoryObj->lastModule();
         header('Location: ' . $location);
@@ -69,7 +101,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 } else {
     $form = new UserProfileForm($languages);
-    $user_dataAr = $userObj->toArray();    
+    $user_dataAr = $userObj->toArray();
     unset($user_dataAr['password']);
     $user_dataAr['email'] = $user_dataAr['e_mail'];
     unset($user_dataAr['e_mail']);
@@ -107,7 +139,7 @@ $avatar->setAttribute('class', 'img_user_avatar');
 if(isset($_GET['message']))
 {
 	$help= $_GET['message'];
-	 
+
 }
 
 $content_dataAr = array(
