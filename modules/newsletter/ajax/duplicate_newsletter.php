@@ -36,6 +36,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once MODULES_NEWSLETTER_PATH .'/config/config.inc.php';
@@ -52,9 +53,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	else
 	{
 		$result = $dh->duplicate_newsletter (intval($_POST['id']));
-		
+
 		if (!AMA_DB::isError($result))
-		{		
+		{
 			$retArray = array ("status"=>"OK", "msg"=>translateFN("Newsletter duplicata"));
 		}
 		else

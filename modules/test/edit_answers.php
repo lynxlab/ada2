@@ -37,6 +37,7 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = 'answers';
 
 require_once(ROOT_DIR.'/services/include/author_functions.inc.php');
+ServiceHelper::init($neededObjAr);
 $layout_dataAr['node_type'] = $self;
 
 $online_users_listing_mode = 2;

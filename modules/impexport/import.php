@@ -36,6 +36,7 @@ $neededObjAr = array(
 */
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
+BrowsingHelper::init($neededObjAr);
 require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
 // MODULE's OWN IMPORTS

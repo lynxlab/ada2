@@ -36,6 +36,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once MODULES_NEWSLETTER_PATH.'/config/config.inc.php';
@@ -56,35 +57,35 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET'  &&
 	{
 		$title = CDOMElement::create('span','class:sendNewsletterTitle');
 		$title->addChild (new CText( translateFN('Seleziona i criteri per l\'invio della Newsletter: ').'<strong>'.$newsletterAr['subject'].'</strong>'));
-		
+
 		/**
 		 * load course list from the DB
 		 */
 		$providerCourses = $dh->get_courses_list (array ('nome','titolo'));
-		
+
 		$courses = array();
 		foreach($providerCourses as $course) {
 			$courses[$course[0]] = '('.$course[0].') '.$course[1].' - '.$course[2];
 		}
-		
+
 		$form = new FormFilterNewsLetter('newsletterFilterForm',$courses);
 		$form->fillWithArrayData(array ('id'=>$idNewsletter));
-		
+
 		$summaryDIV = CDOMElement::create('div','id:newsletterSummary');
 			$summarySPAN = CDOMElement::create('span','id:summaryText');
 			$summarySPAN->addChild (new CText(translateFN(DEFAULT_FILTER_SENTENCE)));
-		$summaryDIV->addChild ($summarySPAN);	
-			
+		$summaryDIV->addChild ($summarySPAN);
+
 		$containerDIV->addChild ($title);
 		$containerDIV->addChild (new CText($form->render()));
 		$containerDIV->addChild ($summaryDIV);
 	}
-	else 
+	else
 	{
 		$containerDIV->addChild (new CText(translateFN('Newsletter non trovata, id= ').$idNewsletter));
 	} // if (!AMA_DB::isError($newsletterAr))
-	
-} 
+
+}
 else {
 	$containerDIV->addChild (new CText(translateFN('Nessuna newsletter da inviare')));
 }

@@ -36,6 +36,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once MODULES_NEWSLETTER_PATH .'/config/config.inc.php';
@@ -53,9 +54,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 		if (isset ($_POST['userType']) && $_POST['userType']>0)
 		{
 			$html = convertFilterArrayToString ($_POST, $dh);
-			
+
 			$count = $dh->get_users_filtered ($_POST, true);
-			
+
 			$htmlcount = translateFN ('In totale, la newsletter sar&agrave; inviata a ');
 			$htmlcount .= '<strong>'.$count.'</strong> ';
 			$htmlcount .= ($count==1) ? translateFN('utente') : translateFN('utenti');
