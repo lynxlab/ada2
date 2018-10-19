@@ -39,6 +39,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once MODULES_CLASSAGENDA_PATH .'/config/config.inc.php';
@@ -57,7 +58,7 @@ $content_dataAr = array(
 		'user_type' => $user_type,
 		'messages' => $user_messages->getHtml(),
 		'agenda' => $user_agenda->getHtml(),
-		'status' => $status,		
+		'status' => $status,
 		'help' => $data['help'],
 		'title' => $data['title'],
 		'data' => $data['htmlObj']->getHtml()

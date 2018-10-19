@@ -37,6 +37,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/switcher/include/switcher_functions.inc.php');
+SwitcherHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
@@ -51,10 +52,10 @@ $GLOBALS['dh'] = AMAClassbudgetDataHandler::instance(MultiPort::getDSN($_SESSION
  if (isset($_GET['export']) && in_array($_GET['export'], abstractClassbudgetManagement::$exportFormats)) {
  	$export = $_GET['export'];
  } else $export = false;
- 
+
  $help = translateFN('Gestione Budget e Costi per il corso').': '.$courseObj->getTitle().' - '.
  	 	 translateFN('Classe').': '.$courseInstanceObj->getTitle();
- 
+
 $data = '';
 $totalcost = 0;
 $somethingFound = false;
@@ -65,7 +66,7 @@ if ($export !== false) {
 		$GLOBALS['adafooter'] = translateFN(PDF_EXPORT_FOOTER);
 		$self .= 'PDF';
 	} else if ($export === 'csv') {
-		$action = MODULES_CLASSBUDGET_CSV_EXPORT; 
+		$action = MODULES_CLASSBUDGET_CSV_EXPORT;
 		$render = ARE_FILE_RENDER;
 	} else die (translateFN('Formato non supportato'));
 } else {
@@ -78,9 +79,9 @@ if ($export !== false) {
  */
 if (defined('MODULES_CLASSAGENDA') && MODULES_CLASSAGENDA) {
 	if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM) {
-		$classBudgetComponents[] = array ('classname'=>'classroomBudgetManagement'); 
+		$classBudgetComponents[] = array ('classname'=>'classroomBudgetManagement');
 	}
-	$classBudgetComponents[] = array ('classname'=>'tutorBudgetManagement');	
+	$classBudgetComponents[] = array ('classname'=>'tutorBudgetManagement');
 }
 
 foreach ($classBudgetComponents as $component) {
@@ -95,14 +96,14 @@ foreach ($classBudgetComponents as $component) {
 			$somethingFound = $somethingFound || (count($obj->dataCostsArr)>0);
 
 			if ($export===false || $render == ARE_PDF_RENDER) {
-				if (!is_null($html)) $data .= $html->getHtml();							
+				if (!is_null($html)) $data .= $html->getHtml();
 			} else if ($render == ARE_FILE_RENDER) {
 				// store data to export
 				if (!isset($exportData)) $exportData = array();
 				$exportData[] = $obj->buildCostArrayForCSV();
 			}
 		}
-	} 
+	}
 }
 
 if ($render!=ARE_PDF_RENDER) {
@@ -183,7 +184,7 @@ if ($render === ARE_FILE_RENDER && $export==='csv') {
 	array_unshift($exportData, $resumeArr);
 	$out = fopen('php://output', 'w');
 	foreach ($exportData as $section) foreach ($section as $row) fputcsv($out, $row);
-	fclose($out); 
+	fclose($out);
 } else {
 	$menuOptions['id_course'] = $courseObj->getId();
 	$menuOptions['id_course_instance'] = $courseInstanceObj->getId();

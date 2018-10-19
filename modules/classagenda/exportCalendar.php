@@ -39,6 +39,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/switcher/include/switcher_functions.inc.php');
+SwitcherHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once MODULES_CLASSAGENDA_PATH .'/config/config.inc.php';
@@ -62,7 +63,7 @@ if ($type=='pdf') {
 			'data' => (!is_null($data) && isset($data['htmlObj'])) ? $data['htmlObj']->getHtml() : translateFN('Nessun evento trovato')
 	);
 	$GLOBALS['adafooter'] = translateFN(PDF_EXPORT_FOOTER);
-	ARE::render($layout_dataAr, $content_dataAr, ARE_PDF_RENDER, array('outputfile'=>$courseInstanceObj->getTitle()) ); 
+	ARE::render($layout_dataAr, $content_dataAr, ARE_PDF_RENDER, array('outputfile'=>$courseInstanceObj->getTitle()) );
 } else if ($type=='csv') {
 	// output headers so that the file is downloaded rather than displayed
 	header('Content-Type: text/csv; charset='.strtolower(ADA_CHARSET));
