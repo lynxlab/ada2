@@ -36,6 +36,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once dirname(__FILE__).'/config/config.inc.php';
@@ -67,13 +68,13 @@ if (!$error)
 {
 
 	$form1 = new FormSelectExportCourse('exportStep1Form', $courses);
-	
+
 	$step1DIV = CDOMElement::create('div','class:exportFormStep1');
 	$step1DIV->addChild (new CText($form1->getHtml()));
-	
+
 	$step2DIV = CDOMElement::create('div','class:exportFormStep2');
 	$step2DIV->setAttribute('style', 'display:none');
-	
+
 	$spanHelpText = CDOMElement::create('span','class:exportStep2Help');
 	$spanHelpText->addChild (new CText(translateFN('Scegli il nodo del corso che vuoi esportare.')));
 	$spanHelpText->addChild (new CText(translateFN('Il nodo scelto sar&agrave; esportato con tutti i suoi figli.')));
@@ -87,14 +88,14 @@ if (!$error)
 	$spanSelCourse->setAttribute('style', 'display:none');
 	$spanSelNode = CDOMElement::create('span','id:selNode');
 	$spanSelNode->setAttribute('style', 'display:none');
-		
+
 	$buttonDIV = CDOMElement::create('div','class:step2buttons');
-	
+
 	$buttonPrev = CDOMElement::create('button','id:backButton');
 	$buttonPrev->setAttribute('type', 'button');
 	$buttonPrev->setAttribute('onclick', 'javascript:self.document.location.href=\''.$_SERVER['PHP_SELF'].'\'');
 	$buttonPrev->addChild (new CText('&lt;&lt;'.translateFN('Indietro')));
-	
+
 	$buttonNext = CDOMElement::create('button','id:exportButton');
 	$buttonNext->setAttribute('type', 'button');
 	$buttonNext->setAttribute('onclick', 'doExport();');
@@ -102,26 +103,26 @@ if (!$error)
 
 	$buttonDIV->addChild($buttonPrev);
 	$buttonDIV->addChild($buttonNext);
-			
-	$step2DIV->addChild ($spanHelpText);	
+
+	$step2DIV->addChild ($spanHelpText);
 	$step2DIV->addChild ($courseTreeDIV);
 	$step2DIV->addChild ($courseTreeLoading);
 	$step2DIV->addChild ($spanSelCourse);
 	$step2DIV->addChild ($spanSelNode);
 	$step2DIV->addChild ($buttonDIV);
-	
+
 	$step3DIV = CDOMElement::create('div','class:exportFormStep3');
 	$step3DIV->setAttribute('style', 'display:none');
-	
+
 	$exporting = CDOMElement::create('span','class:step3Title');
 	$exporting->addChild (new CText(translateFN('Esportazione in corso')));
-	
+
 	$txtSpan = CDOMElement::create('span','class:step3Text');
 	$txtSpan->addChild (new CText(translateFN('Il download si avvier&agrave; automaticamente ad esportazione ultimata')));
-	
+
 	$step3DIV->addChild($exporting);
 	$step3DIV->addChild($txtSpan);
-	
+
 	$data = $step1DIV->getHtml().$step2DIV->getHtml().$step3DIV->getHtml();
 }
 

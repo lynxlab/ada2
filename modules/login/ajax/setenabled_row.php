@@ -1,7 +1,7 @@
 <?php
 /**
  * LOGIN MODULE - config page for login provider
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
@@ -37,6 +37,7 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once MODULES_LOGIN_PATH .'/config/config.inc.php';
@@ -59,7 +60,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' &&
 			$result = $GLOBALS['dh']->setEnabledLoginProvider (intval($_POST['provider_id']),$status);
 			$vowel = 'o';
 		}
-		
+
 		if (!AMA_DB::isError($result))
 		{
 			if ($status) {

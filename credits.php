@@ -45,6 +45,7 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
  * Get needed objects
  */
 include_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
+BrowsingHelper::init($neededObjAr);
 
 $self = 'default';
 
@@ -61,7 +62,7 @@ $credits_data = "<p>"
               <li>Sara Capotosti</li>
               <li>Valerio Riva</li>
               <li>Guglielmo Celata</li>
-              <li>Stamatis Filippis</li>          
+              <li>Stamatis Filippis</li>
               </ul>".
               "Hanno contribuito al disegno dell'interfaccia:".
               "<ul>

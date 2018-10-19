@@ -3,19 +3,19 @@
  * File edit_news.php
  *
  * The admin can use this module to update the informations displyed in home page.
- * 
  *
- * @package		
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright           Copyright (c) 2012, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)) . '/../config_path.inc.php';
 
@@ -39,6 +39,37 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();  // = admin!
 
 include_once 'include/admin_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+AdminHelper::init($neededObjAr);
 
 /*
  * YOUR CODE HERE
@@ -65,7 +96,7 @@ switch ($op) {
     case 'edit':
         $newsmsg = array();
         $fileToOpen = ROOT_DIR . '/docs/news/news_'.$codeLang.'.txt';
-        $newsfile = $fileToOpen; 
+        $newsfile = $fileToOpen;
         if ($fid = @fopen($newsfile,'r')){
             while (!feof($fid))
                 $newsmsg['news'] .= fread($fid,4096);
@@ -76,7 +107,7 @@ switch ($op) {
          $data = AdminModuleHtmlLib::getEditNewsForm($newsmsg, $fileToOpen);
          $body_onload = "includeFCKeditor('news');";
          $options = array('onload_func' => $body_onload);
-         
+
         break;
 
     default:
@@ -86,13 +117,13 @@ switch ($op) {
             $file = $files_news[$index]['file'];
             $expr = '/^news_([a-z]{2})/';
             preg_match($expr, $file, $code_lang);
-            $languageName = translator::getLanguageNameForLanguageCode($code_lang[1]);  
+            $languageName = translator::getLanguageNameForLanguageCode($code_lang[1]);
             $href = HTTP_ROOT_DIR .'/admin/edit_news.php?op=edit&codeLang='.$code_lang[1];
             $text = translateFN('edit news in') .' '. $languageName;
             $files_to_edit[$index]['link'] = BaseHtmlLib::link($href, $text);
             $files_to_edit[$index]['data'] = translateFN('last change').': '.$files_news[$index]['data'];
         }
-         * 
+         *
          */
         for ($index = 0; $index < count($languages); $index++) {
             $languageName = $languages[$index]['nome_lingua'];
@@ -108,7 +139,7 @@ switch ($op) {
                     $lastChange = $value['data'];
                     break;
                 }
-                
+
             }
             $files_to_edit[$index]['data'] = translateFN('last change').': '.$lastChange;
             $data = BaseHtmlLib::tableElement('', $thead_data, $files_to_edit);

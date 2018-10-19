@@ -37,7 +37,7 @@ $neededObjAr = array(
  * Performs basic controls before entering this module
  */
 
-/*if isset $_GET['unload'] means that the system is closing test, so there is no need to save 
+/*if isset $_GET['unload'] means that the system is closing test, so there is no need to save
   the page in NavigationHistory  */
 if (isset($_GET['unload']))
 {
@@ -45,6 +45,7 @@ if (isset($_GET['unload']))
 }
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 require_once(MODULES_TEST_PATH.'/config/config.inc.php');
 require_once(MODULES_TEST_PATH.'/include/init.inc.php');
@@ -57,11 +58,11 @@ $test = NodeTest::readTest($_GET['id_test']);
 if (!AMATestDataHandler::isError($test)) {
 	/**
 	 * If user has completed or has a terminated status for the instance,
-	 * redirect to $test->id_nodo_riferimento or its parent depending on 
+	 * redirect to $test->id_nodo_riferimento or its parent depending on
 	 * ADA_REDIRECT_TO_TEST being true or false
 	 */
 	if ($userObj->getType()==AMA_TYPE_STUDENT && isset($sess_id_course_instance) && intval($sess_id_course_instance)>0 &&
-			in_array($userObj->get_student_status($userObj->getId(),$sess_id_course_instance), 
+			in_array($userObj->get_student_status($userObj->getId(),$sess_id_course_instance),
 					 array(ADA_STATUS_COMPLETED, ADA_STATUS_TERMINATED)) ) {
 				/**
 				 * @author giorgio 07/apr/2015
@@ -72,7 +73,7 @@ if (!AMATestDataHandler::isError($test)) {
 				if (!ADA_REDIRECT_TO_TEST) {
 					/**
 					 * if !ADA_REDIRECT_TO_TEST, redirecting to $test->id_nodo_riferimento
-					 * shall not cause a redirection loop 
+					 * shall not cause a redirection loop
 					 */
 					$id_node = $test->id_nodo_riferimento;
 				} else {
@@ -87,7 +88,7 @@ if (!AMATestDataHandler::isError($test)) {
 				redirect(HTTP_ROOT_DIR . '/browsing/view.php?id_node='.$id_node.'&id_course='.$sess_id_course.
 						'&id_course_instance='.$sess_id_course_instance);
 	}
-	
+
 	$test->run();
 	$text = $test->render(true);
 	$title = $test->titolo;

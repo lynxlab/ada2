@@ -46,6 +46,38 @@ $neededObjAr = array(
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
 include_once 'include/browsing_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+BrowsingHelper::init($neededObjAr);
+
 include_once 'include/cache_manager.inc.php';
 
 /* Static mode */
@@ -178,12 +210,12 @@ $content_dataAr['text'] = $data['text'];
 /* @FIXME
  * $data should NOT contain a translated string for null values but just NULL
  */
-        
+
     if ($data['link']!= translateFN("Nessuno")) {
             $content_dataAr['link'] = $data['link'];
 	} else {
             $content_dataAr['link'] = "";
-	}			
+	}
 $content_dataAr['media'] = $data['media'];
 $content_dataAr['user_media'] = $data['user_media'];
     if ($data['exercises']!= translateFN("Nessuno<p>"))  {
@@ -192,9 +224,9 @@ $content_dataAr['user_media'] = $data['user_media'];
             $content_dataAr['exercises'] = "";
 	}
 	if ($node_index!= translateFN("Nessuno<p>"))  {
-	    $content_dataAr['index'] = $node_index; 
+	    $content_dataAr['index'] = $node_index;
 	} else {
-	    $content_dataAr['index'] = ""; 
+	    $content_dataAr['index'] = "";
         }
 $content_dataAr['notes'] = $data['notes'];
 $content_dataAr['personal'] = $data['private_notes'];
@@ -216,14 +248,14 @@ $PRINT_optionsAr = array(
 		'id'=>$id_node,
 		/**
 		 * @author giorgio 10/dic/2014
-		 * 
+		 *
 		 * maybe someone meant the full current document url with the following?
-		 * 
+		 *
 		 * 'url'=>$_SERVER['URI'],
-		 * 
+		 *
 		 * find below correct code:
 		 */
-		'url'=> HTTP_ROOT_DIR . '/' . $_SERVER['REQUEST_URI'], 
+		'url'=> HTTP_ROOT_DIR . '/' . $_SERVER['REQUEST_URI'],
 		'course_title' => strip_tags($content_dataAr['course_title']),
 		'portal' => $eportal,
 		'onload_func' => 'window.print();'

@@ -1,20 +1,20 @@
 <?php
 /**
  * Esit tester - this module provides tester editing functionality
- * 
- * 
- * @package		
+ *
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
@@ -39,6 +39,37 @@ $self =  whoami();  // = admin!
 
 include_once 'include/admin_functions.inc.php';
 
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+AdminHelper::init($neededObjAr);
+
 /*
  * YOUR CODE HERE
  */
@@ -51,12 +82,12 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
    *    the tester databases associated with this user.
    */
 
-    
+
   /*
    * Validazione dati
    */
   $errorsAr = array();
-  
+
   if(DataValidator::validate_not_empty_string($_POST['tester_name']) === FALSE) {
     $errorsAr['tester_name'] = true;
   }
@@ -68,11 +99,11 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if(DataValidator::validate_not_empty_string($_POST['tester_address']) === FALSE) {
     $errorsAr['tester_address'] = true;
   }
-  
+
   if(DataValidator::validate_not_empty_string($_POST['tester_province']) === FALSE) {
     $errorsAr['tester_province'] = true;
   }
-  
+
   if(DataValidator::validate_not_empty_string($_POST['tester_city']) === FALSE) {
     $errorsAr['tester_city'] = true;
   }
@@ -80,19 +111,19 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if(DataValidator::validate_not_empty_string($_POST['tester_country']) === FALSE) {
     $errorsAr['tester_country'] = true;
   }
-  
+
   if(DataValidator::validate_phone($_POST['tester_phone']) === FALSE) {
     $errorsAr['tester_phone'] = true;
   }
-  
+
   if(DataValidator::validate_email($_POST['tester_email']) === FALSE) {
     $errorsAr['tester_email'] = true;
   }
-  
+
   if(DataValidator::validate_string($_POST['tester_desc']) === FALSE) {
     $errorsAr['tester_desc'] = true;
   }
-  
+
   if(DataValidator::validate_string($_POST['tester_resp']) === FALSE) {
     $errorsAr['tester_resp'] = true;
   }
@@ -100,7 +131,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if(DataValidator::validate_testername($_POST['tester_pointer'],MULTIPROVIDER) === FALSE) {
     $errorsAr['tester_pointer'] = true;
   }
-  
+
   if(count($errorsAr) > 0) {
     $tester_dataAr = $_POST;
     $form = AdminModuleHtmlLib::getEditTesterForm($testersAr,$tester_dataAr,$errorsAr);
@@ -108,7 +139,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   else {
     unset($_POST['submit']);
     $tester_dataAr = $_POST;
-    
+
     $result = $common_dh->set_tester($tester_dataAr['tester_id'], $tester_dataAr);
     if(AMA_Common_DataHandler::isError($result)) {
       $errObj = new ADA_Error($result);
@@ -116,7 +147,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     else {
       header('Location: ' . HTTP_ROOT_DIR.'/admin/tester_profile.php?id_tester='.$tester_dataAr['tester_id']);
-      exit();      
+      exit();
     }
   }
 }
@@ -146,14 +177,14 @@ else {
         'tester_pointer'  => $tester_infoAr[10],
         'tester_desc'     => $tester_infoAr[11]
       );
-      
+
       $form = AdminModuleHtmlLib::getEditTesterForm($testersAr, $tester_dataAr);
     }
   }
   else {
     $form = new CText();
   }
-  
+
 }
 $label = translateFN("Modifica tester");
 

@@ -46,6 +46,38 @@ require_once ROOT_DIR . '/include/module_init.inc.php';
 $self = whoami();
 
 require_once 'include/switcher_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+SwitcherHelper::init($neededObjAr);
+
 require_once 'include/Subscription.inc.php';
 
 require_once ROOT_DIR . '/include/Forms/UserFindForm.inc.php';
@@ -72,13 +104,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     $canSubscribeUser = $courseInstanceObj instanceof Course_instance &&
                     					$courseInstanceObj->isFull() &&
                     					$courseInstanceObj->getServiceLevel() != ADA_SERVICE_TUTORCOMMUNITY;
-                }                
+                }
             } else if ($subscriberObj instanceof ADAPractitioner) {
             	/**
             	 * @author giorgio 14/apr/2015
-            	 * 
+            	 *
             	 * If the switcher is trying to subscribe a tutor, do it only
-            	 * if the course instance belongs to a service of type 
+            	 * if the course instance belongs to a service of type
             	 * ADA_SERVICE_TUTORCOMMUNITY
             	 */
             	$canSubscribeUser = $courseInstanceObj instanceof Course_instance &&
@@ -87,7 +119,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             } else $canSubscribeUser = false;
             if ($canSubscribeUser) {
             	$courseProviderAr = $common_dh->get_tester_info_from_id_course($courseObj->getId());
-                if (!AMA_DB::isError($courseProviderAr) && is_array($courseProviderAr) && isset($courseProviderAr['puntatore'])) {            		
+                if (!AMA_DB::isError($courseProviderAr) && is_array($courseProviderAr) && isset($courseProviderAr['puntatore'])) {
             		if (!in_array($courseProviderAr['puntatore'], $subscriberObj->getTesters())) {
             			// subscribe user to course provider
             			$canSubscribeUser = Multiport::setUser($subscriberObj, array($courseProviderAr['puntatore']));

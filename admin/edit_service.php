@@ -1,20 +1,20 @@
 <?php
 /**
  * edit service - this module provides service editing functionality
- * 
- * 
- * @package		
+ *
+ *
+ * @package
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 
 /**
- * Base config file 
+ * Base config file
  */
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
@@ -39,6 +39,37 @@ $self =  whoami();  // = admin!
 
 include_once 'include/admin_functions.inc.php';
 
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+AdminHelper::init($neededObjAr);
+
 /*
  * YOUR CODE HERE
  */
@@ -51,12 +82,12 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
    *    the tester databases associated with this user.
    */
 
-    
+
   /*
    * Validazione dati
    */
   $errorsAr = array();
-  
+
   if(DataValidator::validate_not_empty_string($_POST['service_name']) === FALSE) {
     $errorsAr['service_name'] = true;
   }
@@ -68,11 +99,11 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if(DataValidator::is_uinteger($_POST['service_level']) === FALSE) {
     $errorsAr['service_level'] = true;
   }
-  
+
   if(DataValidator::is_uinteger($_POST['service_duration']) === FALSE) {
     $errorsAr['service_duration'] = true;
   }
-  
+
   if(DataValidator::is_uinteger($_POST['service_min_meetings']) === FALSE) {
     $errorsAr['service_min_meetings'] = true;
   }
@@ -80,11 +111,11 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if(DataValidator::is_uinteger($_POST['service_max_meetings']) === FALSE) {
     $errorsAr['service_max_meetings'] = true;
   }
-  
+
   if(DataValidator::is_uinteger($_POST['service_meeting_duration']) === FALSE) {
     $errorsAr['service_meeting_duration'] = true;
   }
-  
+
   if(count($errorsAr) > 0) {
     $service_dataAr = $_POST;
     $form = AdminModuleHtmlLib::getEditServiceForm($testersAr,$service_dataAr,$errorsAr);
@@ -94,7 +125,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $service_dataAr = $_POST;
     $result = $common_dh->set_service($_POST['service_id'], $service_dataAr);
     if(AMA_Common_DataHandler::isError($result)) {
-      $errObj = new ADA_Error($result);      
+      $errObj = new ADA_Error($result);
     }
     else {
       header('Location: ' . $userObj->getHomePage());

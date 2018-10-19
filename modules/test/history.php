@@ -36,6 +36,7 @@ $neededObjAr = array(
  */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 require_once(MODULES_TEST_PATH.'/config/config.inc.php');
 require_once(MODULES_TEST_PATH.'/include/init.inc.php');
@@ -123,21 +124,21 @@ $layout_dataAr['JS_filename'] = array(
 	ROOT_DIR.'/js/browsing/virtual_keyboard.js',
 );
 
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) 
-     {        
-     
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+     {
+
     $layout_dataAr['JS_filename'][]=
         ROOT_DIR.'/modules/test/js/tutor.js';   //for tutorSelfInstruction.tpl
      }
-     
+
 $layout_dataAr['CSS_filename'] = array(
 	JQUERY_UI_CSS
 );
 
-if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) 
-     {        
-     
-    $layout_dataAr['CSS_filename'][] = 
+if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction))
+     {
+
+    $layout_dataAr['CSS_filename'][] =
         ROOT_DIR.'/modules/test/layout/ada_blu/css/tutor.css';   //for tutorSelfInstruction.tpl
      }
 $menuOptions['self_instruction'] = $self_instruction;

@@ -36,6 +36,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once dirname(__FILE__).'/config/config.inc.php';
@@ -52,11 +53,11 @@ if ($courseID > 0)
 	$rootNode = $courseID.exportHelper::$courseSeparator."0";
 	// need an Import/Export DataHandler
 	$dh = AMAImpExportDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-	
+
 	$exportHelper = new exportHelper($courseID);
-	
+
 	$a = $exportHelper->getAllChildrenArray($rootNode, $dh);
-	
+
 	echo json_encode (array($a));
-} 
+}
 ?>

@@ -39,6 +39,38 @@ $self = 'default';
 
 include_once 'include/tutor_functions.inc.php';
 include_once 'include/tutor.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+TutorHelper::init($neededObjAr);
+
 /*
  * YOUR CODE HERE
  */
@@ -93,25 +125,25 @@ if ($period != 'all') {
 }
 if (!isset($op)) $op = null;
 switch ($op) {
-    case 'export': 
+    case 'export':
     	/**
     	 * @author giorgio 16/mag/2013
-    	 * 
+    	 *
     	 * handles pdf and xls export
     	 */
-    	
+
     	$allowed_export_types = array ('xls' , 'pdf');
     	if (!isset($type) || !in_array($type, $allowed_export_types)) $type = 'xls';
-    	
+
     	$filename = date ("Ymd")."-".$courseInstanceObj->id."-" . $studentObj->getLastName() . "-" . $studentObj->getId() ."_period_" .$period.".".$type;
 
     	if ($type === 'pdf')
     	{
     		$nodes_percent = $user_historyObj->history_nodes_visitedpercent_FN()."%" ;
     		$allowableTags = '<b><i>';
-    		
+
     		$PDFdata['title']  = sprintf(translateFN('Cronologia dello studente %s, aggiornata al %s'), $student_name, $ymdhms);
-    		 
+
     		$PDFdata['block1'] =  $user_historyObj->history_summary_FN();
     		// replace <br> with new line.
     		// note that \r\n MUST be double quoted, otherwise PhP won't recognize 'em as a <CR><LF> sequence!
@@ -119,29 +151,29 @@ switch ($op) {
     		$PDFdata['block1'] = strip_tags($PDFdata['block1'],$allowableTags);
     		$PDFdata['block1'] = translateFN("Classe").": <b>".$courseInstanceObj->getTitle()."</b> (".$courseInstanceObj->getId().")\r\n".
     				$PDFdata['block1'];
-    		 
+
     		$PDFdata['block2'] = translateFN("Percentuale nodi visitati/totale: ") ."<b>". $nodes_percent  ."</b>" ;
-    		
+
     		$PDFdata['block3'] =
     		translateFN("Tempo totale di visita dei nodi (in ore:minuti): ") .
     		"<b>". $user_historyObj->history_nodes_time_FN() ."</b>\r\n" .
     		translateFN("Tempo medio di visita dei nodi (in minuti:secondi): ") .
     		"<b>". $user_historyObj->history_nodes_average_FN()."</b>" ;
-    		
+
     		if ($period!='all')
     			$PDFdata['table'][0]['data'] = $user_historyObj->history_nodes_list_filtered_FN($period,false);
-    		else 
+    		else
     			$PDFdata['table'][0]['data'] = $user_historyObj->get_historyFN(false);
 
     		if (!AMA_DB::isError($PDFdata['table'][0]['data']) &&
     				is_array($PDFdata['table'][0]['data']) && count($PDFdata['table'][0]['data'])>0) {
-    					
+
 	    		// set table title
 	    		$PDFdata['table'][0]['title'] =  $PDFdata['table'][0]['data']['caption'];
 	    		unset ($PDFdata['table'][0]['data']['caption']);
-	    		
+
 	    		// add sequence number to each returned element
-	    		foreach ($PDFdata['table'][0]['data'] as $num=>$row) $PDFdata['table'][0]['data'][$num]['num'] = $num+1;    		    		
+	    		foreach ($PDFdata['table'][0]['data'] as $num=>$row) $PDFdata['table'][0]['data'][$num]['num'] = $num+1;
 	    		// prepare labels for header row and set columns order
 	    		// first column is sequence number
 	    		$PDFdata['table'][0]['cols'] = array ('num'=>'#');
@@ -149,7 +181,7 @@ switch ($op) {
 		    		// then all the others as returned in data, we just need the keys so let's take row 0 only
 		    		foreach ( $PDFdata['table'][0]['data'][0] as $key=>$val )
 		    			if ($key!=='num') $PDFdata['table'][0]['cols'][$key] = translateFN($key);
-		
+
 		    		// this time returned data contains html tags, let's strip'em down
 		    		foreach ( $PDFdata['table'][0]['data'] as $num=>$rowElement )
 		    		{
@@ -158,29 +190,29 @@ switch ($op) {
 		    		}
 	    		}
     		} else unset($PDFdata['table'][0]);
-    		
+
     		require_once ROOT_DIR.'/include/PdfClass.inc.php';
-    		
+
     		$pdf = new PdfClass('',$PDFdata['title']);
-    		
+
     		$pdf->addHeader($PDFdata['title'], ROOT_DIR.'/layout/'.$userObj->template_family.'/img/header-logo.png' )
     		->addFooter( translateFN("Report")." ". translateFN("generato")." ". translateFN("il")." ". date ("d/m/Y")." ".
     				translateFN("alle")." ".date ("H:i:s") );
-    		
+
     		/**
     		 * begin PDF body generation
     		*/
-    		 
+
     		$pdf->ezText($PDFdata['block1'],$pdf->docFontSize);
     		$pdf->ezText($PDFdata['block2'],$pdf->docFontSize,array('justification'=>'center'));
     		$pdf->ezSetDy(-20);
-    		
+
     		$pdf->ezImage(HTTP_ROOT_DIR."/browsing/include/graph_pies.inc.php?nodes_percent=".urlencode($nodes_percent)
     				,5,200,'width');
-    		 
+
     		$pdf->ezText($PDFdata['block3'],$pdf->docFontSize,array('justification'=>'center'));
     		$pdf->ezSetDy(-20);
-    		
+
     		if (is_array($PDFdata['table'])) {
 	    		// tables output
 	    		foreach ( $PDFdata['table'] as $count=>$PDFTable )
@@ -189,7 +221,7 @@ switch ($op) {
 	    					$PDFTable['title'],
 	    					array ('width'=>$pdf->ez['pageWidth'] - $pdf->ez['leftMargin'] - $pdf->ez['rightMargin'] ));
 	    			if ($count < count($PDFdata['table'])-1  ) $pdf->ezSetDy(-20);
-	    		}    		
+	    		}
     		}
     		$pdf->saveAs($filename);
     	}
@@ -210,16 +242,16 @@ switch ($op) {
 	        echo $history;
 	        // header ("Connection: close");
     	}
-    	
+
         exit();
     default:
         break;
 }
 	$student_name = $studentObj->getFullName();
-	
+
 	$prehistory  = translateFN("Corsista").": ".$student_name."<br/>";
 	$prehistory .= translateFN("Corso").": ".$course_title . ', ' . translateFN('iniziato il') . ' ' . $start_date."<br/>";
-	
+
 	$prehistory .= sprintf(translateFN('Cronologia dello studente %s, aggiornata al %s'), $student_name, $ymdhms);
 	// @author giorgio 16/mag/2013
 	// id e nome della classe
@@ -230,14 +262,14 @@ switch ($op) {
 	$studentObj->set_course_instance_for_history($courseInstanceObj->id);
 	$user_historyObj = $studentObj->history;
 	$visited_nodes_table = $user_historyObj->history_nodes_visited_FN();
-	
-	
+
+
 	// Totali: nodi e  nodi visitati (necessita dati che vengono calcolati dalla
 	// funzione in history_nodes_visited_FN()
 	$prehistory .= "<p>";
 	$prehistory .= $user_historyObj->history_summary_FN() ;
 	$prehistory .= "</p>";
-	
+
 	// Percentuale nodi visitati (necessita dati che vengono calcolati dalla
 	// funzione in history_nodes_visited_FN() )
 	$prehistory .= "<p align=\"center\">";
@@ -245,12 +277,12 @@ switch ($op) {
 	$nodes_percent = $user_historyObj->history_nodes_visitedpercent_FN()."%" ;
 	$prehistory .= "<b>". $nodes_percent ."</b>" ;
 	$prehistory .= "</p>";
-	
+
 	$prehistory .= "<p align=\"center\">";
 	$prehistory .= "<img src=\"../browsing/include/graph_pies.inc.php?nodes_percent=".urlencode($nodes_percent)."\" border=0 align=center>";
 	$prehistory .= "</p>";
-	
-	
+
+
 	// Tempo di visita nodi
 	$prehistory .= "<p align=\"center\">";
 	$prehistory .= translateFN("Tempo totale di visita dei nodi (in ore:minuti): ") ;
@@ -258,8 +290,8 @@ switch ($op) {
 	// Media di visita nodi
 	$prehistory .= translateFN("Tempo medio di visita dei nodi (in minuti:secondi): ") ;
 	$prehistory .= "<b>". $user_historyObj->history_nodes_average_FN()."</b>" ;
-	$prehistory .= "</p>";	
-	
+	$prehistory .= "</p>";
+
 	$history = $prehistory.$history;
 
 $banner = include ROOT_DIR . '/include/banner.inc.php';

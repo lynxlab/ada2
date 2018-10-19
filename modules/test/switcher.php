@@ -36,6 +36,7 @@ $neededObjAr = array(
  */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/switcher/include/switcher_functions.inc.php');
+SwitcherHelper::init($neededObjAr);
 
 require_once(MODULES_TEST_PATH.'/config/config.inc.php');
 require_once(MODULES_TEST_PATH.'/include/init.inc.php');
@@ -73,7 +74,7 @@ $content_dataAr = array(
 	'title' => $title,
     'help' => isset($help) ? $help : '',
     'text' => $text,
-    'go_back' => $go_back_link->getHtml(),    
+    'go_back' => $go_back_link->getHtml(),
     'module' => isset($module) ? $module : '',
     'ajax_chat_link' => '<a href="'.HTTP_ROOT_DIR . '/comunica/list_chatrooms.php">'. translateFN('Lista chatrooms'),
     'messages' => $user_messages->getHtml(),

@@ -42,6 +42,7 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
+BrowsingHelper::init($neededObjAr);
 require_once ROOT_DIR . '/include/FileUploader.inc.php';
 require_once MODULES_SLIDEIMPORT_PATH . '/config/config.inc.php';
 require_once MODULES_SLIDEIMPORT_PATH . '/include/functions.inc.php';

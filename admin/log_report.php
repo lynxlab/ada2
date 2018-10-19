@@ -38,6 +38,38 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 $self =  whoami();  // = admin!
 
 include_once 'include/admin_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+AdminHelper::init($neededObjAr);
+
 include_once ROOT_DIR.'/config/config_log_report.inc.php';
 
 $label = translateFN("Log report");
@@ -46,7 +78,7 @@ $data = CDOMElement::create('div');
 $thead_data=array();
 $testersData_Ar=array();
 $log_dataAr = array();
-    
+
 if($userObj->getType()==AMA_TYPE_ADMIN){
     $Services_TypeAr=$GLOBALS['dh']->get_service_type($userObj->getId());
     if(!empty($Services_TypeAr) && !AMA_DB::isError($Services_TypeAr)){
@@ -56,7 +88,7 @@ if($userObj->getType()==AMA_TYPE_ADMIN){
 
             }
         }
-    } 
+    }
     else{
         if(defined('DEFAULT_SERVICE_TYPE') && defined('DEFAULT_SERVICE_TYPE_NAME')){
             $Services_Type[DEFAULT_SERVICE_TYPE]=translateFN(DEFAULT_SERVICE_TYPE_NAME);}
@@ -95,7 +127,7 @@ if (defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogR
  *  This cycle builds two arrays: $thead_data and $testersData_Ar like mirror of $GLOBALS['LogReport_Array'].
  *  Be required the total match of arrays to show correctly table. es: $thead_data={A,B,C} $testersData_Ar={a1,b1,c1}
  */
-if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) && is_array($log_dataAr) && count($log_dataAr)){ 
+if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogReport_Array']) && count($GLOBALS['LogReport_Array']) && is_array($log_dataAr) && count($log_dataAr)){
     $checkAr=reset($log_dataAr);
     foreach($GLOBALS['LogReport_Array'] as $key=>$tableInfo){
         if($tableInfo['show']==true && array_key_exists($key, $checkAr)){
@@ -159,7 +191,7 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                             $thead_data[$key]=$span_label->getHtml();
                             break;
                         case 'student_CompletedStatus_sessionEnd_Rate':
-                            $title=  translateFN('Percentuale di completamento delle edizioni terminate');    
+                            $title=  translateFN('Percentuale di completamento delle edizioni terminate');
                             $span_label = CDOMElement::create('span');
                             $span_label->setAttribute('title', $title);
                             $span_label->setAttribute('class', 'tooltip');
@@ -352,7 +384,7 @@ if($userObj->getType()==AMA_TYPE_ADMIN){
                 case 'tot_student_CompletedStatus':
                     $Tot_student_CompletedStatus += $singleProviderAr[$key];
                     break;
-                
+
                 }
         }
     }
@@ -397,7 +429,7 @@ elseif($userObj->tipo==AMA_TYPE_SWITCHER){
     $home_link->addChild(new CText(translateFN("Home del provider admin")));
     $totalAr=null;
 }
-$table = BaseHtmlLib::tableElement('id:table_log_report',$thead_data, $testersData_Ar,$totalAr,$caption);  
+$table = BaseHtmlLib::tableElement('id:table_log_report',$thead_data, $testersData_Ar,$totalAr,$caption);
 $module = $home_link->getHtml() . ' > ' . $label;
 
 $help  = null;
@@ -413,7 +445,7 @@ $content_dataAr = array(
   'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
-  'data'         => $table->getHtml(), 
+  'data'         => $table->getHtml(),
   'module'       => $module,
   'messages'     => $user_messages->getHtml()
 );
@@ -427,7 +459,7 @@ $layout_dataAr['JS_filename'] = array(
         );
 
 $layout_dataAr['CSS_filename']= array(
-                JQUERY_UI_CSS,        
+                JQUERY_UI_CSS,
                 JQUERY_DATATABLE_CSS
         );
 $render = null;
