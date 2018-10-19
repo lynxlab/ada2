@@ -43,6 +43,38 @@ require_once ROOT_DIR .'/include/Course.inc.php';
 require_once ROOT_DIR .'/include/CourseInstance.inc.php';
 
 require_once 'include/browsing_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+BrowsingHelper::init($neededObjAr);
+
 require_once '../switcher/include/switcher_functions.inc.php';
 
 $self = whoami();
@@ -124,7 +156,7 @@ $responsabile = $testerAr['responsabile'];
 $signature = translateFN('Il Rappresentante Legale del Provider: ').$responsabile;
 
 $content_dataAr   = array(
- 'logo'=> $logo, 
+ 'logo'=> $logo,
  'title'=> $title,
  'logoProvider'=>$logoProvider,
  'userFullName'=>$userFullName,

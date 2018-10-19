@@ -35,9 +35,41 @@ $neededObjAr = array(
 );
 
 require_once ROOT_DIR.'/include/module_init.inc.php';
-$self =  whoami();  
+$self =  whoami();
 
 include_once 'include/author_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+ServiceHelper::init($neededObjAr);
+
 include_once ROOT_DIR.'/include/upload_funcs.inc.php';
 //var_dump($_SESSION);
 
@@ -80,11 +112,11 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
     // contiene il codice di errore da restituire al chiamante
     $error_code = 0;
     $ada_filetype = -1;
-    
+
     /*
      * Obtain the uploaded file's mimetype
      */
-    if(version_compare(PHP_VERSION, '5.3.0') >= 0) {        
+    if(version_compare(PHP_VERSION, '5.3.0') >= 0) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         if($finfo === false) {
            $file_type = false;
@@ -94,7 +126,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
     } else {
         $file_type = $_FILES['file_up']['type'];
     }
-    
+
     /*
      * codice esistente:
      */
@@ -139,7 +171,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
     	$empty_filename = empty($filename);
     	$accepted_mimetype = ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
     	$accepted_filesize = ($file_size < ADA_FILE_UPLOAD_MAX_FILESIZE);
-    	
+
         if ( !$empty_filename && !$file_upload_error && $file_type !== false
              && $accepted_mimetype && $accepted_filesize )
         {
@@ -322,7 +354,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
 	  $empty_filename = empty($filename);
 	  $accepted_mimetype = isset($ADA_MIME_TYPE[$file_type]) && ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
 	  $accepted_filesize = ($file_size < ADA_FILE_UPLOAD_MAX_FILESIZE);
-	  
+
       if ( !$empty_filename && !$file_upload_error &&
             $accepted_mimetype && $accepted_filesize ){
         /*
@@ -392,15 +424,15 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
 					JQUERY_UI,
 					JQUERY_NO_CONFLICT
 		  );
-			
+
 		  $layout_dataAr['CSS_filename'] = array(
 					JQUERY_UI_CSS
 		  );
-			
+
 		  $askOptions['title'] = translateFN('File caricato con successo');
 	      $askOptions['message']  = translateFN('Cosa vuoi fare ora?');
 		  $askOptions['buttons'][] = array ('label' => translateFN ('Torna al Corso'),
-											'action'=>HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$id_node, 
+											'action'=>HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$id_node,
 											'icon'=>'ui-icon-arrowrefresh-1-w');
 		  $askOptions['buttons'][] = array ('label' => translateFN ('Carica un altro file'),
 											'action'=>$_SERVER['PHP_SELF'] ,
@@ -408,9 +440,9 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
 		  $askOptions['buttons'][] = array ('label' => translateFN('Vai all\'elenco dei file'),
 											'action'=>HTTP_ROOT_DIR.'/browsing/download.php',
 											'icon'=>'ui-icon-folder-open');
-			
-		  $optionsAr['onload_func']  = "askActionToUser('".rawurlencode(json_encode($askOptions))."');";          
-          
+
+		  $optionsAr['onload_func']  = "askActionToUser('".rawurlencode(json_encode($askOptions))."');";
+
           // header("Location: $last_visited_node");
           // exit();
         }

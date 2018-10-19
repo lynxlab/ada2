@@ -44,6 +44,38 @@ $neededObjAr = array(
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 require_once 'include/comunica_functions.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+ComunicaHelper::init($neededObjAr);
+
 require_once 'include/ChatRoom.inc.php';
 require_once 'include/ChatDataHandler.inc.php';
 
@@ -81,7 +113,7 @@ if (is_object($chatroomObj) && !AMA_DataHandler::isError($chatroomObj)) {
 }
 
 
-if (empty($media_path)) 
+if (empty($media_path))
 	$media_path = MEDIA_PATH_DEFAULT;
 
 $banner = include ("$root_dir/include/banner.inc.php");
@@ -149,7 +181,7 @@ switch ($op){
        break;
     case 'db':
             $chat_report ="";
-  
+
             if (!isset($id_chatroom)) // ???
                     if (isset($id_instance))
                             $id_chatroom = $id_instance;
@@ -192,9 +224,9 @@ switch ($op){
                     $tabled_chat_dataHa = $table_Mess->getHtml();
                     $menuOptions['id_chatroom'] = $id_chatroom;
                     if (isset($days)) $menuOptions['days'] = $days;
-                    
+
             } else {
-                    $tabled_chat_dataHa = translateFN("Nessuna chat disponibile.");      
+                    $tabled_chat_dataHa = translateFN("Nessuna chat disponibile.");
             }
   //      }
         break;

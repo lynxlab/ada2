@@ -36,6 +36,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once MODULES_NEWSLETTER_PATH .'/config/config.inc.php';
@@ -55,7 +56,7 @@ if (isset($_GET['selected'])  && intval($_GET['selected'])>0 )
 		for ($i=0; $i < count ($instancesArr); $i++)
 		{
 			array_push($retval, array( "label"=>$instancesArr[$i][1], "value"=>intval($instancesArr[$i][0])  ));
-		}				
+		}
 	}
 }
 echo json_encode($retval);

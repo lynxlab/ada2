@@ -36,6 +36,37 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 
 include_once 'include/author_functions.inc.php';
 
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+ServiceHelper::init($neededObjAr);
+
 $self =  whoami();
 /*
  * YOUR CODE HERE
@@ -66,14 +97,14 @@ switch($op) {
        * posso modificare l'esercizio solo se:
        * 1. nessuna istanza di corso attiva
        * 2. istanza del corso attiva, ma nessuno studente ha già svolto l'esercizio.
-       * 
+       *
        * quindi deve:
        * 1. ottieni istanze corso attive (esiste già il metodo AMA?)
        * 2. se istanza corso attiva, verifica se esiste studente che ha svolto esercizio
        * in questa istanza corso.
        * se tutto ok, mostra il form per la modifica dell'esercizio,
        * altrimenti mostra un messaggio che spiega perche' non e' possibile modificare l'esercizio.
-       * 
+       *
        * conviene implementare un nuovo metodo per ExerciseViewer che si occupa di mostrare il
        * form per la modifica dell'esercizio.
     */
@@ -91,7 +122,7 @@ switch($op) {
         /*
        * The exercise object is stored in a session variable, in order
        * to update it as soon as the author updates exercise data during editing.
-       * 
+       *
        * If the exercise is not in the session variable, it means that it's the first
        * load of the editing form, so there's the need to check if the author can
        * modify this exercise. If this is possible, store the exercise in session and
@@ -100,7 +131,7 @@ switch($op) {
         $navigation_history = $_SESSION['sess_navigation_history'];
 
         $need_to_unset_session = strcmp($navigation_history->previousItem(), __FILE__);
-        
+
         if ( !isset($_SESSION['sess_edit_exercise']['exercise'])  || $need_to_unset_session !== 0) {
             if ( $need_to_unset_session !== 0 ) {
                 unset($_SESSION['sess_edit_exercise']);
@@ -197,7 +228,7 @@ switch($op) {
 //        else {
             header('Location: ' . HTTP_ROOT_DIR . '/browsing/exercise.php?op=view');
             exit();
-//        }  
+//        }
         }
         else { //edit form base action
             $viewer = ExerciseViewerFactory::create($exercise->getExerciseFamily());
@@ -215,14 +246,14 @@ switch($op) {
        * posso cancellare l'esercizio solo se:
        * 1. nessuna istanza di corso attiva
        * 2. istanza del corso attiva, ma nessuno studente ha già svolto l'esercizio.
-       * 
+       *
        * quindi deve:
        * 1. ottieni istanze corso attive (esiste già il metodo AMA?)
        * 2. se istanza corso attiva, verifica se esiste studente che ha svolto esercizio
        * in questa istanza corso.
        * se tutto ok, cancella l'esercizio,
        * altrimenti mostra un messaggio che spiega perche' non e' possibile cancellare l'esercizio.
-       * 
+       *
     */
         if (!ExerciseDAO::canEditExercise($id_node)) {
             $dataHa['exercise'] = translateFN("L'esercizio non può essere eliminato.");

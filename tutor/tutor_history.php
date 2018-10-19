@@ -39,6 +39,37 @@ $self =  whoami();  // = tutor!
 
 include_once 'include/tutor_functions.inc.php';
 include_once 'include/tutor.inc.php';
+
+/**
+ * This will at least import in the current symbol table the following vars.
+ * For a complete list, please var_dump the array returned by the init method.
+ *
+ * @var boolean $reg_enabled
+ * @var boolean $log_enabled
+ * @var boolean $mod_enabled
+ * @var boolean $com_enabled
+ * @var string $user_level
+ * @var string $user_score
+ * @var string $user_name
+ * @var string $user_type
+ * @var string $user_status
+ * @var string $media_path
+ * @var string $template_family
+ * @var string $status
+ * @var array $user_messages
+ * @var array $user_agenda
+ * @var array $user_events
+ * @var array $layout_dataAr
+ * @var History $user_history
+ * @var Course $courseObj
+ * @var Course_Instance $courseInstanceObj
+ * @var ADAPractitioner $tutorObj
+ * @var Node $nodeObj
+ *
+ * WARNING: $media_path is used as a global somewhere else,
+ * e.g.: node_classes.inc.php:990
+ */
+TutorHelper::init($neededObjAr);
 /*
  * YOUR CODE HERE
  */
@@ -261,41 +292,41 @@ if (!isset($op)) $op = null;
 
 switch ($op) {
     case 'export':
-    	
+
     	/**
 		 *
 		 * @author giorgio 15/mag/2013
-		 * 
+		 *
 		 * added code for PDF generation and export
-		 * 
+		 *
     	 */
 
     	$allowableTags = '<b><i>';
-    	
-    	$filename = date ("Ymd")."-".$courseInstanceObj->id."-" . $studentObj->getLastName() . "-" . $studentObj->getId() .".pdf" ; 
-    	
+
+    	$filename = date ("Ymd")."-".$courseInstanceObj->id."-" . $studentObj->getLastName() . "-" . $studentObj->getId() .".pdf" ;
+
     	$PDFdata['title']  = sprintf(translateFN('Cronologia dello studente %s, aggiornata al %s'), $student_name, $ymdhms);
-    	
+
     	$PDFdata['block1'] =  $user_historyObj->history_summary_FN();
     	// replace <br> with new line.
     	// note that \r\n MUST be double quoted, otherwise PhP won't recognize 'em as a <CR><LF> sequence!
     	$PDFdata['block1'] = preg_replace('/<br\\s*?\/??>/i', "\r\n", $PDFdata['block1']);
-    	$PDFdata['block1'] = strip_tags($PDFdata['block1'],$allowableTags);    	
+    	$PDFdata['block1'] = strip_tags($PDFdata['block1'],$allowableTags);
     	$PDFdata['block1'] = translateFN("Classe").": <b>".$courseInstanceObj->getTitle()."</b> (".$courseInstanceObj->getId().")\r\n".
     						 $PDFdata['block1'];
-    	
+
     	$PDFdata['block2'] = translateFN("Percentuale nodi visitati/totale: ") ."<b>". $nodes_percent  ."</b>" ;
-    	    	
+
     	$PDFdata['block3'] =
     				translateFN("Tempo totale di visita dei nodi (in ore:minuti): ") .
     				"<b>". $user_historyObj->history_nodes_time_FN() ."</b>\r\n" .
     				translateFN("Tempo medio di visita dei nodi (in minuti:secondi): ") .
     				"<b>". $user_historyObj->history_nodes_average_FN()."</b>" ;
-    	
+
     	// each element of the table array as a data and cols element holding
     	// holding datas and column orders and label respectively.
     	// Then, it has a title element containg the title of the table itself.
-    	
+
     	// begin table 0
     	$PDFdata['table'][0]['data'] = $user_historyObj->history_last_nodes_FN(10,false);
     	if (!AMA_DB::isError($PDFdata['table'][0]['data']) &&
@@ -306,11 +337,11 @@ switch ($op) {
 	    	// first column is sequence number
 	    	$PDFdata['table'][0]['cols'] = array ('num'=>'#');
 	    	// then all the others as returned in data, we just need the keys so let's take row 0 only
-	    	foreach ( $PDFdata['table'][0]['data'][0] as $key=>$val ) 
+	    	foreach ( $PDFdata['table'][0]['data'][0] as $key=>$val )
 				if ($key!=='num') $PDFdata['table'][0]['cols'][$key] = translateFN($key);
-			$PDFdata['table'][0]['title'] =  translateFN("Ultime ".count($PDFdata['table'][0]['data'])." visite");    		
+			$PDFdata['table'][0]['title'] =  translateFN("Ultime ".count($PDFdata['table'][0]['data'])." visite");
     	} else unset($PDFdata['table'][0]);
-    	
+
     	// begin table 1
     	$PDFdata['table'][1]['data'] =  $user_historyObj->history_nodes_visited_FN(false);
     	if (!AMA_DB::isError($PDFdata['table'][1]['data']) &&
@@ -323,31 +354,31 @@ switch ($op) {
 	    	// then all the others as returned in data, we just need the keys so let's take row 0 only
 	    	foreach ( $PDFdata['table'][1]['data'][0] as $key=>$val )
 	    		if ($key!=='num') $PDFdata['table'][1]['cols'][$key] = translateFN($key);
-	    	$PDFdata['table'][1]['title'] =  translateFN("Nodi ordinati per numero di visite");		
-    	} else unset($PDFdata['table'][1]);  	
-    	
+	    	$PDFdata['table'][1]['title'] =  translateFN("Nodi ordinati per numero di visite");
+    	} else unset($PDFdata['table'][1]);
+
     	require_once ROOT_DIR.'/include/PdfClass.inc.php';
 
 		$pdf = new PdfClass('',$PDFdata['title']);
-		
+
 		$pdf->addHeader($PDFdata['title'], ROOT_DIR.'/layout/'.$userObj->template_family.'/img/header-logo.png' )
 		     ->addFooter( translateFN("Report")." ". translateFN("generato")." ". translateFN("il")." ". date ("d/m/Y")." ".
     					  translateFN("alle")." ".date ("H:i:s") );
-    	    	
+
     	/**
     	 * begin PDF body generation
     	 */
-    	
-    	$pdf->ezText($PDFdata['block1'],$pdf->docFontSize);    	
+
+    	$pdf->ezText($PDFdata['block1'],$pdf->docFontSize);
     	$pdf->ezText($PDFdata['block2'],$pdf->docFontSize,array('justification'=>'center'));
     	$pdf->ezSetDy(-20);
-    	
+
     	$pdf->ezImage(HTTP_ROOT_DIR."/browsing/include/graph_pies.inc.php?nodes_percent=".urlencode($nodes_percent)
     			,5,200,'width');
-    	
+
     	$pdf->ezText($PDFdata['block3'],$pdf->docFontSize,array('justification'=>'center'));
     	$pdf->ezSetDy(-20);
-    	
+
 		// tables output
 		if (is_array($PDFdata['table'])) {
 	    	foreach ( $PDFdata['table'] as $count=>$PDFTable )
@@ -355,12 +386,12 @@ switch ($op) {
 	    		$pdf->ezTable($PDFTable['data'], $PDFTable['cols'],
 	    				$PDFTable['title'],
 	    				array ('width'=>$pdf->ez['pageWidth'] - $pdf->ez['leftMargin'] - $pdf->ez['rightMargin'] ));
-	    		if ($count < count($PDFdata['table'])-1  ) $pdf->ezSetDy(-20);  
+	    		if ($count < count($PDFdata['table'])-1  ) $pdf->ezSetDy(-20);
 	    	}
-		}    	
+		}
 
     	$pdf->saveAs($filename);
-    	
+
         /*
          * outputs the data of selected student as an excel file
          */
@@ -380,7 +411,7 @@ switch ($op) {
 //         header("Content-Disposition: attachment; filename=student_".$id_student.".rtf");
 //         echo $history;
         // header ("Connection: close");
-        
+
         exit();
 } //end switch op
 

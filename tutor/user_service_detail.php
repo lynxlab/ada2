@@ -44,6 +44,7 @@ else {
   $href_suffix='';
 }
 include_once 'include/tutor_functions.inc.php';
+TutorHelper::init($neededObjAr);
 include_once 'include/eguidance_tutor_form_functions.inc.php';
 
 /*

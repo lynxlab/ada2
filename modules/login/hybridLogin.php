@@ -88,7 +88,8 @@ if(isset($_GET['id']))
 
     catch( Exception $e )
     {
-    	 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
+		 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
+		 BrowsingHelper::init($neededObjAr);
          switch( $e->getCode() )
          {
                 case 0 : $message = "Errore sconosciuto."; break;

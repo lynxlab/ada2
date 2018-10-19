@@ -37,6 +37,7 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = 'form';
 
 require_once(ROOT_DIR.'/services/include/author_functions.inc.php');
+ServiceHelper::init($neededObjAr);
 $layout_dataAr['node_type'] = $self;
 
 $online_users_listing_mode = 2;
@@ -52,7 +53,7 @@ $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_
 
 /*
  * Generazione dei form per l'inserimento dell'esercizio.
- * 
+ *
 */
 require_once(MODULES_TEST_PATH.'/include/management/topicManagementTest.inc.php');
 $management = new TopicManagementTest($_GET['action'],$_GET['id_topic'],$_GET['id_test']);

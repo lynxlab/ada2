@@ -36,6 +36,7 @@ $neededObjAr = array(AMA_TYPE_VISITOR => array('layout'));
  */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 $self = whoami();
 

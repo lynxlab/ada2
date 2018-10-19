@@ -3,7 +3,7 @@
  * APPS MODULE.
  *
  * @package        apps module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2014, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           oauth2
@@ -15,9 +15,9 @@
  * requesting them. Typically, this is done by a switcher. The generated (or retreived from the
  * common DB) pairs are then used to get an access token by the ada-php-sdk (or by the developer
  * not using the sdk by itself).
- * 
+ *
  * curl examples for getting the access token and using it to obtain a resource are:
- * 
+ *
  * # using HTTP Basic Authentication
  * $ curl -u TestClient:TestSecret https://api.mysite.com/token -d 'grant_type=client_credentials'
  * # using POST Body
@@ -50,6 +50,7 @@ $neededObjAr = array(
 */
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
+BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
 require_once MODULES_APPS_PATH .'/config/config.inc.php';
@@ -68,7 +69,7 @@ $container = CDOMElement::create('div','id:gettokenpage');
 
 	$output = CDOMElement::create('div','id:outputtoken');
 	$output->setAttribute('style', 'display:none');
-	
+
 $container->addChild ($getButton);
 $container->addChild($output);
 
