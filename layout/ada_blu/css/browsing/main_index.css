@@ -1,0 +1,7 @@
+.ui.button > a {
+    color: inherit;
+}
+
+#ordering {
+    margin-bottom: 0.5em;
+}
