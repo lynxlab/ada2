@@ -642,12 +642,13 @@ class CourseViewer
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
     }
 
-    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
-      $icon = CDOMElement::create('img', 'src:img/_student.png');
-      $icon->setAttribute('name',translateFN('altri'));
-      $icon->setAttribute('alt',translateFN('altri'));
-      $list_item->addChild($icon);
-    }
+    // Giorgio: comment out 02/11/2018
+    // if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
+    //   $icon = CDOMElement::create('img', 'src:img/_student.png');
+    //   $icon->setAttribute('name',translateFN('altri'));
+    //   $icon->setAttribute('alt',translateFN('altri'));
+    //   $list_item->addChild($icon);
+    // }
     return $list_item;
   }
 
@@ -691,12 +692,13 @@ class CourseViewer
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
     }
 
-    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
-      $icon = CDOMElement::create('img', 'src:img/_student.png');
-      $icon->setAttribute('name',translateFN('altri'));
-      $icon->setAttribute('alt',translateFN('altri'));
-      $list_item->addChild($icon);
-    }
+    // Giorgio: comment out 02/11/2018
+    // if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
+    //   $icon = CDOMElement::create('img', 'src:img/_student.png');
+    //   $icon->setAttribute('name',translateFN('altri'));
+    //   $icon->setAttribute('alt',translateFN('altri'));
+    //   $list_item->addChild($icon);
+    // }
     return $list_item;
   }
 
@@ -748,12 +750,15 @@ class CourseViewer
       $list_item->addChild(new CText($params['node']['nome']));
     }
 
-    if (isset($show_visits) && $show_visits == TRUE) {
-      $visits = 0;
+    $visits = 0;
+    if (isset($params['node']['numero_visite']) && $params['node']['numero_visite'] > 0) {
+      $visits = $params['node']['numero_visite'];
+    }
 
-      if (isset($params['node']['numero_visite']) && $params['node']['numero_visite'] > 0) {
-        $visits = $params['node']['numero_visite'];
-      }
+    $node_element->setAttribute('class',trim(
+      $node_element->getAttribute('class').($visits>0 ? '' : 'un').'visitednode'));
+
+    if (isset($show_visits) && $show_visits == TRUE) {
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
     }
 
@@ -768,12 +773,13 @@ class CourseViewer
       $list_item->addChild($link);
     }
 
-    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
-      $icon = CDOMElement::create('img', 'src:img/_student.png');
-      $icon->setAttribute('name',translateFN('altri'));
-      $icon->setAttribute('alt',translateFN('altri'));
-      $list_item->addChild($icon);
-    }
+    // Giorgio: comment out on 02/11/2018
+    // if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
+    //   $icon = CDOMElement::create('img', 'src:img/_student.png');
+    //   $icon->setAttribute('name',translateFN('altri'));
+    //   $icon->setAttribute('alt',translateFN('altri'));
+    //   $list_item->addChild($icon);
+    // }
     return $list_item;
   }
 
