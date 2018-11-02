@@ -420,7 +420,7 @@ class History
     foreach($visit_time as $key=>$val){
       // controlla se vi e' stato cambio del valore del session_id
       if($val['session_id'] != $n_session){
-        $nodes_time  = $nodes_time + ($n_time_prec - $n_start) + ADA_SESSION_TIME;
+        $nodes_time  = $nodes_time + ($n_time_prec - $n_start); // + ADA_SESSION_TIME;
         $n_session   = $val['session_id'];
         $n_start     = $val['data_visita'];
         $n_time_prec = $val['data_visita'] ; //ora di entrata nel primo nodo visitato nella sessione
