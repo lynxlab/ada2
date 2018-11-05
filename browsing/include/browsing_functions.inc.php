@@ -16,7 +16,7 @@ require_once ROOT_DIR . '/include/ViewBaseHelper.php';
  */
 class BrowsingHelper extends ViewBaseHelper
 {
-  private static $tutor_uname = null;
+  protected static $tutor_uname = null;
 
   /**
    * Builds array keys for the browsing directory scripts

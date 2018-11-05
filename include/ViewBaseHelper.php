@@ -275,12 +275,10 @@ abstract class ViewBaseHelper
         if ($user_status != ADA_STATUS_VISITOR) {
           $tutor_id = $dh->course_instance_tutor_get($sess_id_course_instance);
           if (!empty($tutor_id) && !AMA_DataHandler::isError($tutor_id)) {
-            /**
-             * @var ADAPractitioner $tutorObj
-             */
-            $tutorObj = $dh->get_tutor($tutor_id);
-            if (!AMA_dataHandler::isError($tutorObj)) {
-              if (isset($tutor['username'])) self::$tutor_uname = $tutor['username'];
+            $tutorAr = $dh->get_tutor($tutor_id);
+            if (!AMA_dataHandler::isError($tutorAr)) {
+              if (isset($tutorAr['username'])) BrowsingHelper::$tutor_uname = $tutorAr['username'];
+              $retArr['tutor_id'] = $tutor_id;
             }
           }
         }
