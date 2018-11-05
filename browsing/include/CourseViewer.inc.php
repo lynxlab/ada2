@@ -755,8 +755,10 @@ class CourseViewer
       $visits = $params['node']['numero_visite'];
     }
 
-    $node_element->setAttribute('class',trim(
-      $node_element->getAttribute('class').($visits>0 ? '' : 'un').'visitednode'));
+    if (!is_null($node_element)) {
+      $node_element->setAttribute('class',trim(
+        $node_element->getAttribute('class').($visits>0 ? '' : 'un').'visitednode'));
+    }
 
     if (isset($show_visits) && $show_visits == TRUE) {
       $list_item->addChild(new CText(translateFN("Visite") . " $visits"));
