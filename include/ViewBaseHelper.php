@@ -54,7 +54,7 @@ abstract class ViewBaseHelper
       self::$helperData['template_family'] = self::setSessionTemplate(
         self::$helperData['userObj']->template_family,
         isset(self::$helperData['nodeObj']) ? self::$helperData['nodeObj']->template_family : null,
-        isset(self::$helperData['$courseInstanceObj']) ? self::$helperData['courseInstanceObj']->template_family : null,
+        isset(self::$helperData['courseInstanceObj']) ? self::$helperData['courseInstanceObj']->template_family : null,
         isset(self::$helperData['courseObj']) ? self::$helperData['courseObj']->template_family : null);
     }
     return self::getHelperData();
@@ -245,7 +245,7 @@ abstract class ViewBaseHelper
 
     if (in_array('course_instance', $thisUserNeededObjAr)) {
       if (!ADA_Error::isError($courseObj) && !$courseObj->getIsPublic()) {
-        if (in_array($userObj->getType(),[AMA_TYPE_STUDENT, AMA_TYPE_AUTHOR, AMA_TYPE_TUTOR, AMA_TYPE_SWITCHER])) {
+        if (in_array($userObj->getType(),[AMA_TYPE_STUDENT, AMA_TYPE_TUTOR, AMA_TYPE_SWITCHER])) {
           /**
            * 	@var Course_Instance $courseInstanceObj
            */
