@@ -84,7 +84,7 @@ $content_dataAr = array(
         'messages'=>$user_messages->getHtml(),
         'agenda'=>$user_agenda->getHtml(),
         'title'=>isset($node_title) ? $node_title : '',
-        'course_title'=>$course_title,
+        'course_title'=>isset($course_title) ? $course_title : '',
         'back'=>isset($back) ? $back : ''
 );
 
