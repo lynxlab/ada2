@@ -24,7 +24,7 @@ class ServiceHelper extends ViewBaseHelper
    */
   public static function init(array $neededObjAr = array())
   {
-    if (count(self::$helperData === 0)) {
+    if (count(self::$helperData) === 0) {
       self::$helperData = parent::init($neededObjAr);
       self::$helperData = array_merge(
         self::$helperData,
