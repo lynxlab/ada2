@@ -11,6 +11,8 @@
 /**
  * Specific room object
  */
+require_once ROOT_DIR . '/include/HtmlLibrary/CommunicationModuleHtmlLib.inc.php';
+require_once ROOT_DIR.'/comunica/include/MessageHandler.inc.php';
 require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 require_once ROOT_DIR . '/include/ViewBaseHelper.php';
 
@@ -108,7 +110,7 @@ class ComunicaHelper extends ViewBaseHelper
    * @param boolean $log_enabled
    * @return void
    */
-  private static function getUserBrowsingData(ADAGenericUser $userObj, $log_enabled = false)
+  protected static function getUserBrowsingData(ADAGenericUser $userObj, $log_enabled = false)
   {
     if ($userObj->getType() == AMA_TYPE_ADMIN) {
       $homepage = "$http_root_dir/admin/admin.php"; // admin.php
