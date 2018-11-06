@@ -3932,7 +3932,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *
      * @return true on success, an AMA_Error object on failure.
      */
-    public function add_node_history($student_id, $course_id, $node_id, $remote_address, $installation_path, $access_from) {
+    public function add_node_history($student_id, $course_id, $node_id, $remote_address, $installation_path, $access_from, $isAjax = false) {
         // get session id
         $session_id = session_id();
         //tries to connect to db
@@ -3948,15 +3948,16 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $exit_date = $visit_date;
 
         // update field exit_date in table history_nodi
-        $sql  = "select id_history,session_id from history_nodi where session_id='$session_id'";
-        $res_ar =  $db->getAll($sql);
+        $sql  = "select id_history,id_nodo from history_nodi where session_id='$session_id' ORDER BY id_history DESC";
+        $res_ar =  $db->getRow($sql, null, AMA_FETCH_ASSOC);
         if (AMA_DB::isError($res_ar)) {
             return new AMA_Error(AMA_ERR_GET);
         }
 
-        foreach($res_ar as $node_id_ar) {
-            $last_id_history = $node_id_ar[0];
-        }
+        if (isset($res_ar['id_history'])) $last_id_history = $res_ar['id_history'];
+        if (isset($res_ar['id_nodo'])) $last_id_nodo = $res_ar['id_nodo'];
+        if (!$isAjax && isset($last_id_nodo) && $last_id_nodo == $node_id) return true;
+
         if  (isset($last_id_history)) {
             $sql = "update history_nodi set data_uscita='$visit_date'  where
         id_history='$last_id_history';";
@@ -3967,7 +3968,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         }
 
         // if visiting a node...
-        if (isset($node_id)) {
+        if (isset($node_id) && !$isAjax) {
             // prepare the node_id string
             $node_id = $this->sql_prepared($node_id);
 
