@@ -597,6 +597,13 @@ switch ($op){
 		array_push ($layout_dataAR['CSS_filename'],ROOT_DIR.'/js/include/jquery/nivo-slider/themes/default/default.css');
 		array_push ($layout_dataAR['CSS_filename'], JQUERY_JPLAYER_CSS);
 
+		if ($userObj->getType() == AMA_TYPE_STUDENT) {
+			$layout_dataAR['widgets']['courseStatus'] = ['isActive'=>0,
+														'courseId' => $courseObj->getId(),
+														 'courseInstanceId' => $courseInstanceObj->getId(),
+														 'userId' => $userObj->getId()];
+		}
+
 		$optionsAr['onload_func'] = 'initDoc();';
 
         if(isset($msg))
