@@ -12,11 +12,11 @@
         </div>
         <!-- / testata -->
         <!-- menu -->
-            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
         <!-- / menu -->
         <!-- help -->
-            <template_field class="template_field" name="help">help</template_field>  
-        <!-- / help -->     
+            <template_field class="template_field" name="help">help</template_field>
+        <!-- / help -->
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->
@@ -31,6 +31,7 @@
                 </span>
             </div>
             <!-- / percorso -->
+            <template_field class="template_field" name="courseStatus">courseStatus</template_field>
             <!--dati utente-->
             <div id="status_bar">
             <div id="user_data" class="user_data_default">
@@ -109,15 +110,15 @@
                     <div class="firstnode">
 	                <!-- PULSANTI AVANTI E INDIETRO -->
 						<template_field class="template_field" name="navigation_bar">navigation_bar</template_field>
-					<!-- end - PULSANTI AVANTI E INDIETRO -->                    
+					<!-- end - PULSANTI AVANTI E INDIETRO -->
 	                    <h1 class="ui red header">
 	                    	<template_field class="template_field" name="title">title</template_field>
 	                    </h1>
 	                    <div class="ui divider"></div>
-	                                   
-                        <template_field class="template_field" name="text">text</template_field>						
+
+                        <template_field class="template_field" name="text">text</template_field>
                     </div>
-                    
+
                  	<div class="ui fluid accordion">
 		  				<div class="keywords active title">
 		    				<i class="dropdown icon"></i>
@@ -126,7 +127,7 @@
 		  				<div class="keywords ui blue labels active content">
 		    				<template_field class="template_field" name="keywords">keywords</template_field>
 		  				</div>
-		  				
+
 		  			</div>
                 </div>
             </div>
@@ -142,7 +143,7 @@
                   </div>
                   <!-- accordion -->
                   <div class="ui attached segment accordion">
-                  
+
 			       <div class="title" onClick="showIndex();">
 			         <i class="icon dropdown"></i>
 			         <i18n>indice</i18n><i class="sitemap icon" style="float:right;"></i>
@@ -163,7 +164,7 @@
                    <div class="content field">
                      <template_field class="template_field" name="index">index</template_field>
                    </div>
-                   
+
                    <div class="title">
                      <i class="icon dropdown"></i>
                      <i18n>collegamenti</i18n><i class="url icon"></i>
@@ -171,7 +172,7 @@
                    <div class="content field">
                        <template_field class="template_field" name="link">link</template_field>
                    </div>
-                   
+
                    <div class="title">
                      <i class="icon dropdown"></i>
                      <i18n>esercizi</i18n><i class="text file outline icon"></i>
@@ -179,7 +180,7 @@
                    <div class="content field">
                      <template_field class="template_field" name="exercises">exercises</template_field>
                    </div>
-                   
+
                    <div class="title">
                      <i class="icon dropdown"></i>
                      <i18n>risorse</i18n><i class="browser icon"></i>
@@ -188,7 +189,7 @@
                      <template_field class="template_field" name="media">media</template_field>
                    </div>
                   </div>
-                  <!-- /accordion -->  
+                  <!-- /accordion -->
                 </div>
               </div>
             <!-- / menudestra  -->
@@ -216,7 +217,7 @@
             </div>
         </div>
         <!-- / pannello video -->
-        
+
        	<!-- com_tools -->
         <div class="clearfix"></div>
         <div id="com_tools" style="visibility:hidden;">
@@ -225,7 +226,7 @@
             </div>
         </div>
         <!-- /com_tools -->
-        
+
         <!-- piede -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>

@@ -12,11 +12,11 @@
         </div>
         <!-- / testata -->
         <!-- menu -->
-            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
         <!-- / menu -->
         <!-- help -->
-            <template_field class="template_field" name="help">help</template_field>  
-        <!-- / help -->     
+            <template_field class="template_field" name="help">help</template_field>
+        <!-- / help -->
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->
@@ -31,6 +31,7 @@
                 </span>
             </div>
             <!-- / percorso -->
+            <template_field class="template_field" name="courseStatus">courseStatus</template_field>
             <!--dati utente-->
             <div id="status_bar">
             <div id="user_data" class="user_data_default">
@@ -114,10 +115,10 @@
 	                    	<template_field class="template_field" name="title">title</template_field>
 	                    </h1>
 	                    <div class="ui divider"></div>
-	                    
+
                         <template_field class="template_field" name="text">text</template_field>
                     </div>
-                    
+
 				    <div class="ui fluid accordion">
 		  				<div class="class notes title">
 		    				<i class="dropdown icon"></i>
@@ -140,9 +141,9 @@
 		  				<div class="keywords ui blue labels content">
 		    				<template_field class="template_field" name="keywords">keywords</template_field>
 		  				</div>
-		  				
+
 		  			</div>
-                </div>                
+                </div>
             </div>
             <!--  / contenuto -->
 
@@ -156,7 +157,7 @@
                   </div>
                   <!-- accordion -->
                   <div class="ui attached segment accordion">
-                  
+
 			       <div class="title" onClick="showIndex();">
 			         <i class="icon dropdown"></i>
 			         <i18n>indice</i18n><i class="sitemap icon" style="float:right;"></i>
@@ -170,28 +171,28 @@
 			             </div>
                      </div>
 			       </div>
- 
+
                    <div class="active title">
                      <i class="icon dropdown"></i>
-                     <i18n>azioni</i18n> <i class="edit sign icon"></i> 
+                     <i18n>azioni</i18n> <i class="edit sign icon"></i>
                    </div>
                    <div class="active actions content field">
                      <template_field class="template_field" name="edit_node">edit_node</template_field>
                      <template_field class="template_field" name="delete_node">delete_node</template_field>
-                     <!-- 
+                     <!--
                        <template_field class="template_field_disabled" name="add_exercise">add_exercise</template_field>
-                      -->  
+                      -->
                      <template_field class="template_field" name="add_note">add_note</template_field>
                      <template_field class="template_field" name="add_private_note">add_private_note</template_field>
                      <template_field class="template_field" name="edit_note">edit_note</template_field>
                      <template_field class="template_field" name="delete_note">delete_note</template_field>
                      <template_field class="template_field" name="publish_note">publish_note</template_field>
                      <!--
-                       <template_field class="template_field_disabled" name="go_XML">go_XML</template_field> 
+                       <template_field class="template_field_disabled" name="go_XML">go_XML</template_field>
                      -->
                       <template_field class="template_field" name="go_map">go_map</template_field>
                    </div>
-                      
+
                    <div class="title">
                      <i class="icon dropdown"></i>
                      <i18n>approfondimenti</i18n><i class="pin icon"></i>
@@ -199,7 +200,7 @@
                    <div class="deepenings content field">
                      <template_field class="template_field" name="index">index</template_field>
                    </div>
-                   
+
                    <div class="title">
                      <i class="icon dropdown"></i>
                      <i18n>collegamenti</i18n><i class="url icon"></i>
@@ -207,7 +208,7 @@
                    <div class="links content field">
                        <template_field class="template_field" name="link">link</template_field>
                    </div>
-                   
+
                    <div class="title">
                      <i class="icon dropdown"></i>
                      <i18n>esercizi</i18n><i class="text file outline icon"></i>
@@ -215,7 +216,7 @@
                    <div class="exercises content field">
                      <template_field class="template_field" name="exercises">exercises</template_field>
                    </div>
-                   
+
                    <div class="title">
                      <i class="icon dropdown"></i>
                      <i18n>risorse</i18n><i class="browser icon"></i>
@@ -224,7 +225,7 @@
                      <template_field class="template_field" name="media">media</template_field>
                    </div>
                   </div>
-                  <!-- /accordion -->  
+                  <!-- /accordion -->
                 </div>
              </div>
             <!-- / menudestra  -->
@@ -232,7 +233,7 @@
         <!-- / contenitore -->
 		<div id="push"></div>
 		</div>
-		
+
         <!-- pannello video -->
         <div id="rightpanel" class="sottomenu_off rightpanel_view">
             <div id="toprightpanel">
@@ -249,7 +250,7 @@
                                  <i18n>Caricamento</i18n>...
                               </div>
                     </li>
-                    <li id="flvplayer">                        
+                    <li id="flvplayer">
                     </li>
                 </ul>
             </div>
@@ -257,7 +258,7 @@
             </div>
         </div>
         <!-- / pannello video -->
-        
+
         <!-- com_tools -->
         <div class="clearfix"></div>
         <div id="com_tools">
@@ -266,7 +267,7 @@
             </div>
         </div>
         <!-- /com_tools -->
-        
+
         <!-- piede -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
