@@ -7,10 +7,10 @@ html, body { font-family: "Helvetica Neue", "Helvetica", Arial, Lucida Sans,Verd
 			 background: #fff; height: 99.5%; }
 
 #container { border-bottom: none; }
-#pagecontainer { min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -15px; 
+#pagecontainer { min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -15px;
 }
 #pagecontainer > .ui.grid.ada.menucontainer { margin:0; }
-#footer, #push { height: 15px; clear: both; }			 
+#footer, #push { height: 15px; clear: both; }
 
 A IMG {border:none;}
 
@@ -249,7 +249,7 @@ a:visited {text-decoration: none; }
 }
 
 #com_tools .ui.menu.ada > div.item:not(.disabled) {
-	cursor: pointer;	
+	cursor: pointer;
 }
 
 #com_tools .ui.popup {
@@ -484,8 +484,8 @@ width: 700px;
     right: 40px;
     top: 12px;
 }
-	
-	
+
+
 .vtop {
     vertical-align: top;
 }
@@ -527,8 +527,8 @@ width: 700px;
     left: -6px;
     position: absolute;
     top: 7px;
-    width: 0;   
-} 
+    width: 0;
+}
 /**
  * Remove underline from RSS widget header
  */
@@ -551,7 +551,7 @@ html, body {
     padding-top:0;
 }
 
-#cookies { 
+#cookies {
   width: 100%;
   margin: 0;
   padding: 0.5em 0 0.5em 0;
@@ -562,15 +562,15 @@ html, body {
   display: none;
   z-index: 999;
 }
- 
+
 #cookies p {
   text-shadow: 0 -1px 0 rgba(0,0,0,0.35);
-  text-align: center; 
+  text-align: center;
   color: rgb(255,255,250);
   margin: 4px;
   line-height: 30px;
 }
- 
+
 #cookies #cookie-accept {
   padding-right: 10px;
   padding-left: 10px;
@@ -584,3 +584,21 @@ html, body {
 }
 
 .dataTables_wrapper { width: 97%; margin: 0 auto; }
+
+/**
+ * widget classes
+ */
+ .ADAwidget.loading
+ {
+	background: #f5f5f5;
+	padding: 1em;
+	border-radius: 5px;
+}
+
+.ADAwidget.error
+{
+    background: #F1D7D7;
+    color: #A95252;
+    padding: 1em;
+    border-radius: 5px;
+}
