@@ -31,6 +31,7 @@ class TopicFormTest extends FormTest {
 		$js = 'var random_field = "'.$random.'";
 			var field = "'.$random_number.'";
 			var regexp = /^[0-9]+$/;
+			var module_http = "'.MODULES_TEST_HTTP.'";
 			document.write(\'<script type="text/javascript" src="'.MODULES_TEST_HTTP.'/js/topicForm.js"><\/script>\');';
 		$this->setCustomJavascript($js);
 
@@ -95,7 +96,7 @@ class TopicFormTest extends FormTest {
              ->withData(Node::prepareInternalLinkMediaForEditor($this->data['testo']));
 
 		//durata
-		if (!is_null($this->id_nodo_parent)) {
+		if (false && !is_null($this->id_nodo_parent)) {
 			$this->addHidden('durata')->withData(0);
 		}
 		else {
@@ -140,7 +141,7 @@ class TopicFormTest extends FormTest {
 		}
         $num = $this->addTextInput($random_number, $label.':')
 					->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR)
-					->withData($this->data[$random_number]);
+					->withData(isset($this->data[$random_number]) ? $this->data[$random_number] : 0);
 		if (isset($this->data[$random]) && $this->data[$random] == ADA_PICK_QUESTIONS_RANDOM) {
 			$num->setRequired();
 		}
