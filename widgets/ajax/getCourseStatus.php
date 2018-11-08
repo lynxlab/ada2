@@ -118,8 +118,11 @@ try {
 	 * @var ADAUser $userObj
 	 * @var History $historyObj
 	 */
-	$historyObj = $userObj->getHistoryInCourseInstance($courseInstanceId);
-	$nodesTxt = translateFN(sprintf("Hai visitato <strong>%d</strong> nodi su un totale di <strong>%d</strong>", $historyObj->visited_nodes_count, $historyObj->nodes_count));
+	$userObj->set_course_instance_for_history($courseInstanceId);
+    $historyObj = $userObj->getHistoryInCourseInstance($courseInstanceId);
+	$historyObj->get_course_data();
+	$nodeSuff = $historyObj->visited_nodes_count>0 ? 'i' : 'o';
+	$nodesTxt = translateFN(sprintf("Hai visitato <strong>%d</strong> nod$nodeSuff su un totale di <strong>%d</strong>", $historyObj->visited_nodes_count, $historyObj->nodes_count));
 	list ($spentH, $spentM) = explode(':', $historyObj->history_nodes_time_FN());
 	$timeArr = [];
 	if ($spentH>0 || $spentM>0) {
@@ -127,7 +130,7 @@ try {
 		foreach (prettyPrintHourMin($spentH, $spentM) as $line) {
 			$timeArr[] = $line;
 		}
-	}
+	} else $timeArr[] = ['label' => ' '.translateFN('e hai iniziato adesso a studiare')];
 
 	/**
 	 * get complete condition to have target time to complete the course, if any
@@ -155,7 +158,7 @@ try {
 			$goalH = floor($goalTime / 60);
 			$goalM = $goalTime - floor($goalTime / 60) * 60;
 			if ($goalH>0 || $goalM>0) {
-				$timeArr[] = ['label' => ' '.translateFN('sul tempo di completamento del corso fissato in').' '];
+				$timeArr[] = ['label' => translateFN(', il tempo minimo di completamento del corso è fissato in').' '];
 				foreach (prettyPrintHourMin($goalH, $goalM) as $line) {
 					$timeArr[] = $line;
 				}
