@@ -7,9 +7,9 @@
 
 /**
  * let equal height row give border to its cells
- */ 
-#contentcontent .ui.grid>.equal.height.row { 
-	border-collapse: separate; border-spacing: 1rem 0; 
+ */
+#contentcontent .ui.grid>.equal.height.row {
+	border-collapse: separate; border-spacing: 1rem 0;
 }
 #contentcontent .ui.grid>.equal.height.row>.column {
 	padding:0;
@@ -26,13 +26,13 @@
 /* column main */
 #contentcontent .ui.grid .column {
 	/* padding:0; */
-	font-size: 1.1rem;	
+	font-size: 1.1rem;
 }
 
 /* blocks header and footer */
 #contentcontent .ui.grid .column .top.segment,
 #contentcontent .ui.grid .column .bottom.segment {
-	background: #eaeaea;	
+	background: #eaeaea;
 }
 
 #contentcontent .ui.grid .column .top.segment {
@@ -84,12 +84,13 @@
 #providermap {
 	display: block;
 	margin-left: 3rem;
+	width: fit-content;
 }
 
 #providermap>img {
 	padding: 0.2rem;
 	-webkit-box-shadow: 0 0 0 1px #DDD;
-    box-shadow: 0 0 0 1px #DDD;	
+    box-shadow: 0 0 0 1px #DDD;
 }
 
 #providermap>img:hover {
@@ -100,7 +101,7 @@
 /* instances info list */
 #contentcontent .ui.grid .column .classinfo .horizontal.list {
 	width: 100%;
-	margin:0; 
+	margin:0;
 }
 
 #contentcontent .ui.grid .column .classinfo .horizontal.list .item {
