@@ -1177,12 +1177,16 @@ function search_text_in_glosary($text) {
 			$nwURL = HTTP_ROOT_DIR.'/adaProxy.php?q=';
 			$urlhashes = array();
 			foreach ($unique as $i=>$url) {
-				$enc = openssl_encrypt($url, 'BF-ECB', ADAPROXY_ENC_KEY);
-				if (false === $enc) {
-					$enc = $url;
-				}
-				$urlhashes[$i] = $nwURL. urlencode($enc);
-			}
+				if (stripos($url, 'youtube.com') === false) {
+          			$enc = openssl_encrypt($url, 'BF-ECB', ADAPROXY_ENC_KEY);
+          			if (false === $enc) {
+            			$enc = $url;
+          			}
+          			$urlhashes[$i] = $nwURL. urlencode($enc);
+        } else {
+          $urlhashes[$i] = $url;
+        }
+      }
 			$text = str_replace($unique, $urlhashes, $text);
 		}
 
