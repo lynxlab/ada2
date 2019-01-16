@@ -9,7 +9,11 @@
  * @version		0.2
  */
 require_once 'CourseViewer.inc.php';
-require_once ROOT_DIR . '/include/ViewBaseHelper.php';
+require_once ROOT_DIR.'/include/ViewBaseHelper.php';
+require_once ROOT_DIR.'/include/media_viewing_classes.inc.php';
+require_once ROOT_DIR.'/comunica/include/MessageHandler.inc.php';
+require_once ROOT_DIR.'/comunica/include/UserDataHandler.inc.php';
+require_once ROOT_DIR.'/comunica/include/ADAEventProposal.inc.php';
 
 /**
  * Browsing helper class
