@@ -173,9 +173,9 @@ $content_dataAr = array(
     'user_type' => $user_type,
     'menu' => isset($menu) ? $menu : '',
     'help' => isset($help) ? $help : '',
-    'data' => $data->getHtml(),
-    'messages' => $user_messages->getHtml(),
-    'agenda ' => $user_agenda->getHtml()
+    'data' => isset($data) ? $data->getHtml() : '',
+    'messages' => isset($user_messages) ? $user_messages->getHtml() : '',
+    'agenda ' => isset($user_agenda) ? $user_agenda->getHtml() : ''
 );
 
 ARE::render($layout_dataAr, $content_dataAr);
