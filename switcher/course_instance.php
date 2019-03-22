@@ -102,6 +102,7 @@ else {
 
     $courseId = $courseObj->getId();
     $instanceId = $courseInstanceObj->getId();
+    $isTutorCommunity = $courseInstanceObj->isTutorCommunity();
     $presubscriptions = Subscription::findPresubscriptionsToClassRoom($instanceId);
 
     $subscriptions = Subscription::findSubscriptionsToClassRoom($instanceId);
@@ -161,10 +162,10 @@ else {
             translateFN('Livello')
 
             );
-        if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN)){
+        if(!$isTutorCommunity && defined('MODULES_CODEMAN') && (MODULES_CODEMAN)){
             array_push($thead_data,translateFN('Codice iscrizione'));
         }
-        if(defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE)){
+        if(!$isTutorCommunity && defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE)){
             array_push($thead_data,translateFN('Certificato'));
         }
         foreach($arrayUsers as $user)
@@ -309,13 +310,13 @@ else {
 
             $userArray = array(translateFN('Hidden_status')=>$span_selected->getHtml(),translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$span_instance->getHtml(),translateFN('Data iscrizione')=>$data_iscrizione,translateFN('Livello')=>$livello);
 
-            if(defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
+            if(!$isTutorCommunity && defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
             {
                 $code = $user->getSubscriptionCode();
                 $userArray[translateFN('Codice iscrizione')] = $code;
             }
 
-            if(defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE))
+            if(!$isTutorCommunity && defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE))
             {
                $UserCertificateObj = Multiport::findUser($user->getSubscriberId(),$instanceId);
                $certificate = $UserCertificateObj->Check_Requirements_Certificate($user->getSubscriberId());
