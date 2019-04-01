@@ -254,7 +254,11 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
      * Check if this user is allowed to access the current module
      */
     if(!in_array($sess_userObj->getType(), $allowedUsersAr)) {
-      header('Location: '.$sess_userObj->getHomePage());
+      $requestedLink = '';
+      if (!isset($_REQUEST['r']) && $sess_userObj instanceof ADAGuest) {
+        $requestedLink = '?r='.urlencode(HTTP_ROOT_DIR.$_SERVER['REQUEST_URI']);
+      }
+      header('Location: '.$sess_userObj->getHomePage().$requestedLink);
       exit();
     }
   }
