@@ -1210,7 +1210,17 @@ abstract class ADALoggableUser extends ADAGenericUser {
     			$_SESSION['sess_loginProviderArr']['id'] = $loginProviderObj->getID();
     			$loginProviderObj->addLoginToHistory($userObj->getId());
     		}
-    		if (is_null($redirectURL)) $redirectURL = $userObj->getHomePage();
+    		if (is_null($redirectURL)) {
+                $redirectURL = $userObj->getHomePage();
+                if (isset($_REQUEST['r']) && strlen(trim($_REQUEST['r']))>0) {
+                    $r = trim($_REQUEST['r']);
+                    // redirect only if passed URL host matches HTTP_ROOT_DIR host
+                    if (parse_url($r, PHP_URL_HOST) === parse_url(HTTP_ROOT_DIR, PHP_URL_HOST)) {
+                        $redirectURL = $r;
+                        unset($_REQUEST['r']);
+                    }
+                }
+            }
     		header('Location:'.$redirectURL);
     		exit();
     	}

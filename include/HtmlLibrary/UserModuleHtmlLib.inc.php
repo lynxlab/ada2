@@ -106,7 +106,7 @@ class UserModuleHtmlLib {
     	$submit     = CDOMElement::create('submit',"id:p_login, name:p_login");
     	$submit->setAttribute('value' ,$value);
     }
-    
+
     $div_submit->addChild($submit);
 
     $form->addChild($div_username);
@@ -120,6 +120,10 @@ class UserModuleHtmlLib {
       $form->addChild($div_error_message);
     }
     $form->addChild($div_submit);
+
+    if (isset($_REQUEST['r']) && strlen(trim($_REQUEST['r']))>0) {
+      $form->addChild(CDOMElement::create('hidden','name:r,value:'.trim($_REQUEST['r'])));
+    }
 
     $div->addChild($form);
     return $div;
