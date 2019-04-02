@@ -125,6 +125,9 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
   $sess_userObj = $_SESSION['sess_userObj'];
   if($sess_userObj instanceof ADAGenericUser) {
     $redirectTo = $sess_userObj->getHomePage();
+    if (!isset($_REQUEST['r']) && $sess_userObj instanceof ADAGuest) {
+      $redirectTo .= '?r='.urlencode(HTTP_ROOT_DIR.$_SERVER['REQUEST_URI']);
+    }
   }
   else {
     $redirectTo = 'index.php';
