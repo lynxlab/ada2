@@ -252,7 +252,7 @@ class ADA_Error
   private function requestAsString() {
     $string = '';
     foreach ($_REQUEST as $key => $value) {
-      $string .= $key .': ' .$value .' ';
+      $string .= $key .': ' . ((is_array($value) || is_object($value)) ? json_encode($value, JSON_PRETTY_PRINT) : $value).' ';
     }
 
     return $string;
