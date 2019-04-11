@@ -3,7 +3,7 @@
  * SERVICE-COMPLETE MODULE.
  *
  * @package        service-complete module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2014, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           service-complete
@@ -24,23 +24,23 @@ class CompleteConditionLevel extends CompleteCondition
 	 * constants to define the type of the condition
 	 * and the description of the condition itself and
 	 * of its parameter, both to be used when building the UI.
-	 * 
+	 *
 	 */
-	
+
 	/**
 	 * description of the condition
 	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
 	 * cannot put here a call to translateFN because it's a static var
-	 * 
+	 *
 	 * @var string
 	 */
 	public static $description = 'Condizione soddisfatta se il livello dello studente è maggiore di quello impostato';
-	
+
 	/**
 	 * description of the condition's own parameter
 	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
-	 * cannot put here a call to translateFN because it's a static var 
-	 * 
+	 * cannot put here a call to translateFN because it's a static var
+	 *
 	 * @var string
 	 */
 	public static $paramDescription = 'Livello oltre il quale la condizione si intende soddisfatta. Scrivere <b>0</b> per dire il massimo livello possibile nel corso.';
@@ -53,11 +53,12 @@ class CompleteConditionLevel extends CompleteCondition
 	 * @param int $id_user
 	 * @return boolean true if condition is satisfied
 	 * @access public
-	 */	
+	 */
     private function isSatisfied($id_course_instance=null, $id_student=null) {
-    	
-    	$user = MultiPort::findUser($id_student,$id_course_instance);
-    	    	
+
+		$user = MultiPort::findUser($id_student,$id_course_instance);
+		$retval = false;
+
     	if ($user instanceof ADAUser && isset($GLOBALS['dh'])) {
     		$level = $user->get_student_level($id_student, $id_course_instance);
     		if (!AMA_DB::isError($level) && is_numeric($level)) {
@@ -66,17 +67,28 @@ class CompleteConditionLevel extends CompleteCondition
     				if (!AMA_DB::isError($course_id) && is_numeric($course_id)) {
     					$max_level = $GLOBALS['dh']->get_course_max_level($course_id);
     					if (!AMA_DB::isError($max_level) && is_numeric($max_level)) {
-    						return (intval($level)>intval($max_level));
+    						$retval = intval($level)>intval($max_level);
     					}
     				}
     			}
-    			else if (is_numeric($this->_param)) return (intval($level)>intval($this->_param));
+    			else if (is_numeric($this->_param)) $retval =  intval($level)>intval($this->_param);
     		}
-    	}
-    	    	
-    	return false;
+		}
+
+        if ($this->getLogToFile()) {
+            $logLines = [
+                __FILE__.': '.__LINE__,
+                'running '.__METHOD__,
+				print_r(['instance_id' => $id_course_instance, 'student_id' => $id_student], true),
+				sprintf("level is %d, max_level is %d, param is %d", $level, isset($max_level) ? $max_level : 'not set',  $this->_param),
+				__METHOD__.' returning ' . ($retval ? 'true' : 'false')
+            ];
+            logToFile($logLines);
+        }
+
+    	return $retval;
     }
-    
+
     /**
      * statically build and checks if condition is satisfied
      * MUST HAVE ALWAYS 3 PARAMS, if the first is not needed use null
@@ -91,10 +103,10 @@ class CompleteConditionLevel extends CompleteCondition
     	$obj = self::build($param);
     	return $obj->isSatisfied($id_course_instance, $id_user);
     }
-    
+
     /**
      * staticallly build a new condition
-     * 
+     *
      * @param string $param
      * @return CompleteConditionTime
      */

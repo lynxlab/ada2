@@ -82,12 +82,24 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
     						 */
     						$retval = $retval && !AMA_DB::isError($historyArr) && is_array($historyArr) && count($historyArr)>=$this->_param;
     						// if condition is not satisfied for one course, stop checking
-    						if ($retval === false) return false;
+    						if ($retval === false) break;
     					}
     				}
     			}
     		}
-    		$GLOBALS['dh']->disconnect();
+			$GLOBALS['dh']->disconnect();
+
+			if ($this->getLogToFile()) {
+				$logLines = [
+					__FILE__.': '.__LINE__,
+					'running '.__METHOD__,
+					print_r(['instance_id' => $id_course_instance, 'student_id' => $id_student], true),
+					sprintf("survey answered %d times, param is %d", count($historyArr), $this->_param),
+					__METHOD__.' returning ' . ($retval ? 'true' : 'false')
+				];
+				logToFile($logLines);
+			}
+
     		return $retval;
     	} else {
 	    	// if no module test return true
