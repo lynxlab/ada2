@@ -117,7 +117,7 @@ class History
       if(!is_array($node_types)) $node_types = [$node_types];
       // filter nodes of type LEAF and GROUP
       $filteredAr = array_filter($this->course_data, function($el) use($node_types) {
-        return array_key_exists('tipo', $el) && in_array($el['tipo'], $node_types);
+        return is_array($el) && array_key_exists('tipo', $el) && in_array($el['tipo'], $node_types);
       });
       // each node with a 'numero_visite' greater than zero tells that the node has been visited
       $visited = array_reduce($filteredAr, function($carry, $el) {
