@@ -3,7 +3,7 @@
  * SERVICE-COMPLETE MODULE.
  *
  * @package        service-complete module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2013, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           service-complete
@@ -25,7 +25,14 @@ abstract class CompleteCondition
 	 * @var int
 	 */
 	protected $_param;
-	
+
+	/**
+	 * true to write debug info in ADA log subdir
+	 *
+	 * @var boolean
+	 */
+	protected $logToFile = false;
+
 	/**
 	 * CompleteCondition constructor.
 	 */
@@ -34,12 +41,12 @@ abstract class CompleteCondition
 		 * assume everything is NOT ok
 		 */
 		$isOk = false;
-	
+
 		/**
 		 * support variable number of arguments for future use
 		 */
 		$args = func_get_args();
-	
+
 		switch (func_num_args())
 		{
 			case 0:
@@ -84,8 +91,9 @@ abstract class CompleteCondition
 			*/
 			throw new Exception('Fatal Error: could not instantiate '.__CLASS__,AMA_ERR_WRONG_ARGUMENTS);
 		}
+		$this->setLogToFile(defined('MODULES_SERVICECOMPLETE_LOG') && MODULES_SERVICECOMPLETE_LOG === true);
 	}
-	
+
 
 	/**
 	 * time setter
@@ -100,7 +108,29 @@ abstract class CompleteCondition
 		}
 		return false;
 	}
-	
+
+	/**
+     * logToFile setter
+     *
+     * @param boolean $logToFile
+     * @return CompleteConditionSet
+     */
+    public function setLogToFile($logToFile = false)
+    {
+        $this->logToFile = $logToFile;
+        return $this;
+    }
+
+    /**
+     * logToFile getter
+     *
+     * @return bool
+     */
+    public function getLogToFile()
+    {
+        return $this->logToFile;
+    }
+
     private function isSatisfied($id_course_instance, $id_student) {}
 }
 ?>

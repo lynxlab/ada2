@@ -58,7 +58,20 @@ class CompleteConditionNodePercentage extends CompleteCondition
 		require_once ROOT_DIR. '/include/history_class.inc.php';
 		/** @var History $history */
 		$history = new History($id_course_instance, $id_student);
-		return (floatval($history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE])) >= floatval($this->_param));
+		$retval = floatval($history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE])) >= floatval($this->_param);
+
+		if ($this->getLogToFile()) {
+				$logLines = [
+						__FILE__.': '.__LINE__,
+						'running '.__METHOD__,
+						print_r(['instance_id' => $id_course_instance, 'student_id' => $id_student], true),
+						sprintf("History object says node percent visit is %s, param is %s", floatval($history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE])), $this->_param),
+						__METHOD__.' returning ' . ($retval ? 'true' : 'false')
+				];
+				logToFile($logLines);
+		}
+
+		return $retval;
     }
 
     /**

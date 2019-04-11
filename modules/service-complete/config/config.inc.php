@@ -16,6 +16,11 @@
  * the UI table when editing the rule
  */
 define ('NUM_RULES_SET',3);
+/**
+ * true to output debug info in the ADA log dir
+ */
+define('MODULES_SERVICECOMPLETE_LOG', false);
+define('MODULES_SERVICECOMPLETE_LOGDIR' , ROOT_DIR.'/log/service-complete/');
 
 $GLOBALS['completeClasses'][]  = 'completeConditionTime';
 $GLOBALS['completeClasses'][]  = 'completeConditionLevel';

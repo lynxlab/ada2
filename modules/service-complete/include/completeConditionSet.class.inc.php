@@ -68,7 +68,14 @@ class CompleteConditionSet
 	 *
 	 * @var string
 	 */
-	public static $opBetweenOperands = ' && ';
+    public static $opBetweenOperands = ' && ';
+
+    /**
+     * true to write debug info in ADA log subdir
+     *
+     * @var boolean
+     */
+    protected $logToFile = false;
 
     /**
      * CompleteConditionSet constructor.
@@ -78,7 +85,8 @@ class CompleteConditionSet
     	$this->_operation = null;
 
     	if (!is_null($id)) $this->_id = $id;
-    	if (!is_null($description)) $this->description = $description;
+        if (!is_null($description)) $this->description = $description;
+        $this->setLogToFile(defined('MODULES_SERVICECOMPLETE_LOG') && MODULES_SERVICECOMPLETE_LOG === true);
     }
 
     /**
@@ -92,7 +100,8 @@ class CompleteConditionSet
      */
     public function setOperation (Operation $op)
     {
-    	$this->_operation = $op;
+        $this->_operation = $op;
+        $this->_operation->setLogToFile($this->getLogToFile());
     }
 
     /**
@@ -159,7 +168,22 @@ class CompleteConditionSet
      */
     public function evaluateSet($params)
     {
-    	return !is_null($this->_operation) ? $this->_operation->evaluate($params) : null;
+        if ($this->getLogToFile()) {
+            $logLines = [
+                __FILE__.': '.__LINE__,
+                'running '.__METHOD__,
+                print_r(array_combine(['instance_id(0)', 'student_id(1)'], $params), true),
+                print_r($this->toArray(), true)
+            ];
+            logToFile($logLines);
+        }
+
+        $retval =  !is_null($this->_operation) ? $this->_operation->evaluate($params) : null;
+
+        if ($this->getLogToFile()) {
+            logToFile(__METHOD__.' returning ' . ($retval ? 'true' : 'false'));
+        }
+        return $retval;
     }
 
     /**
@@ -182,6 +206,28 @@ class CompleteConditionSet
     public function getOperation ()
     {
     	return $this->_operation;
+    }
+
+    /**
+     * logToFile setter
+     *
+     * @param boolean $logToFile
+     * @return CompleteConditionSet
+     */
+    public function setLogToFile($logToFile = false)
+    {
+        $this->logToFile = $logToFile;
+        return $this;
+    }
+
+    /**
+     * logToFile getter
+     *
+     * @return bool
+     */
+    public function getLogToFile()
+    {
+        return $this->logToFile;
     }
 }
 ?>
