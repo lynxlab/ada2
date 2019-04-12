@@ -79,10 +79,6 @@ include_once 'include/cache_manager.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-if (isset($courseObj) && isset($courseInstanceObj)) {
-	BrowsingHelper::checkServiceComplete($userObj, $courseObj, $courseInstanceObj);
-}
-
 /* Static mode */
 
 // $cacheObj = New CacheManager($id_profile);
@@ -295,6 +291,9 @@ else {
 		$dh->add_node_history($sess_id_user, 0, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
 	} else {
 		$dh->add_node_history($sess_id_user, $sess_id_course_instance, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
+		if (isset($courseObj) && isset($courseInstanceObj)) {
+			BrowsingHelper::checkServiceComplete($userObj, $courseObj, $courseInstanceObj);
+		}
 	}
 }
 
