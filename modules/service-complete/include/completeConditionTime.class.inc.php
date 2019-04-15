@@ -59,17 +59,21 @@ class CompleteConditionTime extends CompleteCondition
     	require_once ROOT_DIR. '/include/history_class.inc.php';
 
     	$history = new History($id_course_instance, $id_student);
+		$id_course = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);
+		if (is_numeric($id_course)) $history->setCourse($id_course);
     	$history->get_visit_time();
-    	if ($history->total_time>0) $timeSpentInCourse = intval($history->total_time/60);
+    	if ($history->total_time>0) $timeSpentInCourse = intval($history->total_time);
 		else $timeSpentInCourse = 0;
-		$retval = $timeSpentInCourse>=$this->_param;
+		// $this->_param is in minutes, $timeSpentInCourse is in seconds
+		$param = $this->_param * 60;
+		$retval = $timeSpentInCourse>=$param;
 
         if ($this->getLogToFile()) {
             $logLines = [
                 __FILE__.': '.__LINE__,
                 'running '.__METHOD__,
 				print_r(['instance_id' => $id_course_instance, 'student_id' => $id_student], true),
-				sprintf("timeSpentInCourse is %d, param is %d", $timeSpentInCourse, $this->_param),
+				sprintf("timeSpentInCourse is %d, param is %d (%d sec.)", $timeSpentInCourse, $this->_param, $param),
 				__METHOD__.' returning ' . ($retval ? 'true' : 'false')
             ];
             logToFile($logLines);
