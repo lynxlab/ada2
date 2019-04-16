@@ -110,7 +110,18 @@ if (!$isEditingAStudent) {
 	        $userId = DataValidator::is_uinteger($_POST['id_utente']);
 	        if($userId > 0) {
 	            $editedUserObj = MultiPort::findUser($userId);
-	            $editedUserObj->fillWithArrayData($_POST);
+				$editedUserObj->fillWithArrayData($_POST);
+				if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+					if (array_key_exists('secretquestion', $_POST) &&
+						array_key_exists('secretanswer', $_POST) &&
+						strlen($_POST['secretquestion'])>0 && strlen($_POST['secretanswer'])>0) {
+							/**
+							 * Save secret question and answer and set the registration as successful
+							 */
+							$sqdh = \AMASecretQuestionDataHandler::instance();
+							$sqdh->saveUserQandA($editedUserObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
+						}
+				}
 	            $result = MultiPort::setUser($editedUserObj, array(), true);
 	        }
 
@@ -145,7 +156,8 @@ if (!$isEditingAStudent) {
 	    else {
 	        $editedUserObj = MultiPort::findUser($userId);
 	        $formData = $editedUserObj->toArray();
-	        $formData['email'] = $formData['e_mail'];
+			$formData['email'] = $formData['e_mail'];
+			$formData['uname'] = $formData['username'];
 	        unset($formData['e_mail']);
 	        /**
 	         * @author giorgio 29/mag/2013

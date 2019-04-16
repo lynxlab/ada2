@@ -87,6 +87,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     if ($form->isValid()) {
         $userObj->fillWithArrayData($_POST);
+        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+			if (array_key_exists('secretquestion', $_POST) &&
+				array_key_exists('secretanswer', $_POST) &&
+				strlen($_POST['secretquestion'])>0 && strlen($_POST['secretanswer'])>0) {
+					/**
+					 * Save secret question and answer and set the registration as successful
+					 */
+					$sqdh = \AMASecretQuestionDataHandler::instance();
+					$sqdh->saveUserQandA($userObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
+				}
+		}
         MultiPort::setUser($userObj, array(), true);
 
         /* unset $_SESSION['service_level'] to reload it with the correct user language translation */
@@ -103,6 +114,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_dataAr = $userObj->toArray();
     unset($user_dataAr['password']);
     $user_dataAr['email'] = $user_dataAr['e_mail'];
+    $user_dataAr['uname'] = $user_dataAr['username'];
     unset($user_dataAr['e_mail']);
     $form->fillWithArrayData($user_dataAr);
     $help = translateFN('Modifica dati utente');
