@@ -182,9 +182,9 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
     $user_dataAr['email'] = $user_dataAr['e_mail'];
 	unset($user_dataAr['e_mail']);
 	if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
-		$user_dataAr['uname'] = $userObj->username;
+		$user_dataAr['uname'] = $editUserObj->username;
 		$sqdh = AMASecretQuestionDataHandler::instance();
-		$user_dataAr['secretquestion'] = htmlentities($sqdh->getUserQuestion($userObj->getId()));
+		$user_dataAr['secretquestion'] = htmlentities($sqdh->getUserQuestion($editUserObj->getId()));
 	}
     $form->fillWithArrayData($user_dataAr);
 
