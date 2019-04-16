@@ -14,9 +14,12 @@ require_once 'UserRegistrationForm.inc.php';
 class UserSubscriptionForm extends UserRegistrationForm {
     public function  __construct() {
         parent::__construct();
-        $this->addTextInput('username', translateFN('Nome utente'))
-             ->setRequired()
-             ->setValidator(FormValidator::EMAIL_VALIDATOR);
+
+        if (!(defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true)) {
+            $this->addTextInput('username', translateFN('Nome utente'))
+                 ->setRequired()
+                 ->setValidator(FormValidator::EMAIL_VALIDATOR);
+        }
 
         $this->addPasswordInput('password', translateFN('Password'))
              ->setRequired()

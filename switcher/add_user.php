@@ -90,6 +90,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $user_dataAr = $_POST;
         $user_dataAr['layout'] = $user_layout;
         $user_dataAr['stato'] = 0;
+        if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+            $user_dataAr['username'] = $user_dataAr['uname'];
+        }
 
         switch ($_POST['tipo']) {
             case AMA_TYPE_STUDENT:
@@ -112,6 +115,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $userObj->setPassword($_POST['password']);
         $result = MultiPort::addUser($userObj, array($sess_selected_tester));
         if($result > 0) {
+          if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+                if (array_key_exists('secretquestion', $_POST) &&
+                    array_key_exists('secretanswer', $_POST) &&
+                    strlen($_POST['secretquestion'])>0 && strlen($_POST['secretanswer'])>0) {
+                        /**
+                         * Save secret question and answer and set the registration as successful
+                         */
+                        $sqdh = \AMASecretQuestionDataHandler::instance();
+                        $sqdh->saveUserQandA($userObj->getId(), $_POST['secretquestion'], $_POST['secretanswer']);
+                    }
+          }
           if($userObj instanceof ADAAuthor) {
               AdminUtils::performCreateAuthorAdditionalSteps($userObj->getId());
           }
@@ -136,10 +150,11 @@ $help = translateFN('Da qui il provider admin può creare un nuovo utente');
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_MASKEDINPUT,
-		JQUERY_NO_CONFLICT
+        JQUERY_NO_CONFLICT,
+        ROOT_DIR . '/js/browsing/registration.js'
 );
 
-$optionsAr['onload_func'] = 'initDateField();';
+$optionsAr['onload_func'] = 'initDateField();  initRegistration();';
 
 $content_dataAr = array(
     'user_name' => $user_name,
