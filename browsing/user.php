@@ -228,7 +228,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 
 					// @author giorgio 24/apr/2013
 					// adds whats new link if needed
-					if (!$isEnded && $subscription_status != ADA_STATUS_TERMINATED && MultiPort::checkWhatsNew($userObj, $courseInstanceId, $courseId)) {
+					if (!$isEnded && ($subscription_status != ADA_STATUS_TERMINATED || $subscription_status != ADA_STATUS_COMPLETED) && MultiPort::checkWhatsNew($userObj, $courseInstanceId, $courseId)) {
 						$link = CDOMElement::create('a','href:user.php?id_node='.$nodeId.
 																	 '&id_course='.$courseId.
 																	 '&id_course_instance='.$courseInstanceId);
