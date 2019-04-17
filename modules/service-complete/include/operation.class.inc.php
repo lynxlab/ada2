@@ -233,9 +233,14 @@ class Operation
      * @return unknown|NULL
      * @access public
      */
-    public function evaluate($params = array())
+    public function evaluate($params = array(), &$summary = null)
     {
     	$stringToEval = $this->toString();
+		if (!is_null($summary) && is_array($summary)) {
+			$params['summary'] = "\$summary";
+			// change operator from && to xor which is not short-circuit so to evaluate all the expressions
+			$stringToEval = str_replace('&&', 'xor', $stringToEval);
+		}
 
     	if (!empty($params)) $stringToEval = self::appendParamsToStr($stringToEval,$params);
 

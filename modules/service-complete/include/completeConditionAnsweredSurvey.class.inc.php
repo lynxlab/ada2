@@ -37,6 +37,15 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
 	public static $description = 'Condizione soddisfatta se lo studente ha risposto a tutti i sondaggi del corso almeno il numero di volte specificato nel parametro';
 
 	/**
+	 * String used to build the condition set summary for this rule
+	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
+	 * cannot put here a call to translateFN because it's a static var
+	 *
+	 * @var string
+	 */
+	public static $summaryStr = 'Risposte al sondaggio <em>%s</em>: <strong>%d</strong> su <strong>%d</strong>';
+
+	/**
 	 * description of the condition's own parameter
 	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
 	 * cannot put here a call to translateFN because it's a static var
@@ -51,10 +60,16 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
 	 *
 	 * @param int $id_course_instance
 	 * @param int $id_user
+	 * @param array  $summary the array to ouput summary infos
 	 * @return boolean true if condition is satisfied
 	 * @access public
 	 */
-    private function isSatisfied($id_course_instance=null, $id_student=null) {
+    private function isSatisfied($id_course_instance=null, $id_student=null, &$summary=null) {
+		if (!is_null($summary) && is_array($summary)) {
+			$summary[__CLASS__] = [
+				'param' => $this->_param
+			];
+		}
     	if (defined('MODULES_TEST') && MODULES_TEST) {
     		require_once(MODULES_TEST_PATH.'/include/AMATestDataHandler.inc.php');
     		if (isset($GLOBALS['dh'])) $GLOBALS['dh']->disconnect();
@@ -65,7 +80,7 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
     			if (!AMA_DB::isError($test_list) && is_array($test_list)) {
     				if (count($test_list) === 0) {
     					// define no-survey behaviour here
-    					return false;
+    					$retval = false;
     				} else {
     					$retval = true;
     					foreach($test_list as $test_listEL) {
@@ -81,8 +96,16 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
     						 * only if the student has answered at least $this->_param times to EVERY survey
     						 */
     						$retval = $retval && !AMA_DB::isError($historyArr) && is_array($historyArr) && count($historyArr)>=$this->_param;
-    						// if condition is not satisfied for one course, stop checking
-    						if ($retval === false) break;
+							if (!is_null($summary) && is_array($summary)) {
+								$summary[__CLASS__]['check'][$test_listEL['id_nodo']] = [
+									'title' => $test_listEL['titolo'],
+									'count' => (is_array($historyArr) ? count($historyArr) : 0),
+									'isSatisfied' => is_array($historyArr) && count($historyArr)>=$this->_param
+								];
+							} else {
+								// if condition is not satisfied and we're not building a summary for one course, stop checking
+								if ($retval === false) break;
+							}
     					}
     				}
     			}
@@ -100,6 +123,10 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
 				logToFile($logLines);
 			}
 
+			if (!is_null($summary) && is_array($summary)) {
+				$summary[__CLASS__]['isSatisfied'] = $retval;
+			}
+
     		return $retval;
     	} else {
 	    	// if no module test return true
@@ -115,13 +142,30 @@ class CompleteConditionAnsweredSurvey extends CompleteCondition
      * @param string $param
      * @param string $id_course_instance
      * @param string $id_user
+	 * @param array  $summary the array to ouput summary infos
      * @return Ambigous <boolean, number>
      */
-    public static function buildAndCheck ($param=null, $id_course_instance=null, $id_user=null)
+    public static function buildAndCheck ($param=null, $id_course_instance=null, $id_user=null, &$summary=null)
     {
     	$obj = self::build($param);
-    	return $obj->isSatisfied($id_course_instance, $id_user);
+    	return $obj->isSatisfied($id_course_instance, $id_user, $summary);
     }
+
+	/**
+	 * return a CDOM element to build the html summary of the condition
+	 *
+	 * @param array $param
+	 * @return CDOMElement
+	 */
+	public static function getCDOMSummary($param) {
+		$cont = parent::getCDOMSummary($param);
+		foreach($param['check'] as $row) {
+			$el = parent::getCDOMSummary($row);
+			$el->addChild(new CText(sprintf(translateFN(self::$summaryStr), $row['title'], $row['count'], $param['param'])));
+			$cont->addChild($el);
+		}
+		return $cont;
+	}
 
     /**
      * staticallly build a new condition
