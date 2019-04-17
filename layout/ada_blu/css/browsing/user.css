@@ -26,7 +26,7 @@
 @media only screen and (max-width: 767px) {
 	#contentcontent .ui.stackable.grid>.row>.column {
 		padding-top :0 !important;
-	}	
+	}
 }
 
 #contentcontent > .ui.grid .column {
@@ -57,7 +57,15 @@
 #contentcontent div.ui.list .item .icon {
 	min-width: 1.5rem;
 	margin-right: 0.5rem;
-	
+
+}
+
+#contentcontent .column.column.thirdcol div.ui.list .condition.item.satisfied {
+	color: #29a329;
+}
+
+#contentcontent .column.column.thirdcol div.ui.list .condition.item.unsatisfied {
+	color: #e94141;
 }
 
 #contentcontent h3.ui.header .icon {
@@ -73,7 +81,7 @@
 
 #contentcontent .ui.info.message .message a:hover {
 	color: #84B3BF;
-} 
+}
 
 
 /*
@@ -98,4 +106,3 @@
 /*
  * end table.doDataTable jQuery dataTable
  */
- 

@@ -65,7 +65,7 @@
 					<div class="ui divider"></div>
 
 					<div class="ui three column stackable grid">
-										
+
 						<div class="equal height row">
 							<div class="firstcol column">
 								<h3 class="ui header">
@@ -75,9 +75,9 @@
             						<div class="ui item">
 										<template_field class="template_field" name="course_description">course_description</template_field>
 									</div>
-								</div>									
+								</div>
 							</div>
-							
+
 							<div class="secondcol column">
 								<h3 class="ui header">
 									<i class="book large icon"></i><i18n>il corso</i18n>
@@ -94,43 +94,38 @@
 								  </div>
 								  <div class="item">
 								    <i class="users icon"></i><template_field class="template_field" name="goforum">goforum</template_field>
-								  </div>  
-								</div>							
+								  </div>
+								  <div class="item">
+								    <i class="time basic icon"></i><template_field class="template_field" name="gohistory">gohistory</template_field>
+								  </div>
+								</div>
 							</div>
-							
+
 							<div class="thirdcol column">
 								<h3 class="ui header">
 									<i class="ok circle large icon"></i><i18n>Stato</i18n>
-								</h3>				
+								</h3>
 								<div class="ui large list">
-								  <div class="item">
-								    <i class="ok circle icon"></i>
-								    <span class="percent label">
-								    	<i18n>Contenuti visitati</i18n>:
-									</span>								    	
-								    <strong>
-								    	<template_field class="template_field" name="percentcomplete">percentcomplete</template_field>%
-								    </strong>
-								  </div>
+									<template_field class="template_field" name="completeSummary">completeSummary</template_field>
 								  <div class="item">
 								    <i class="ok circle icon"></i>
 								    <span class="lastvisit label">
 								    	<i18n>ultimo accesso</i18n>:
-									</span>								    	
+									</span>
 								    <strong>
 								    	<template_field class="template_field" name="last_visit">last_visit</template_field>
 								    </strong>
 								  </div>
-								  <div class="item">								  
+								  <div class="item">
 								    <i class="ok circle icon"></i>
 								    <span class="enddate label">
 								    	<i18n>Il corso termina il</i18n>:
-								    </span>	
+								    </span>
 								    <strong>
 								    	<template_field class="template_field" name="enddate">enddate</template_field>
-								    </strong>								    
+								    </strong>
 								  </div>
-								  <div class="item">								  
+								  <div class="item">
 								    <i class="ok circle icon"></i>
 								    <span class="subscription label">
 								    	<i18n>Stato Iscrizione</i18n>:
@@ -139,16 +134,13 @@
 								    	<template_field class="template_field" name="subscription_status">subscription_status</template_field>
 								    </strong>
 								  </div>
-								  <div class="item">
-								    <i class="time basic icon"></i><template_field class="template_field" name="gohistory">gohistory</template_field>
-								  </div>  
-								</div>	
+								</div>
 							</div>
-							
-						</div>					
+
+						</div>
 					</div>
 					<!-- /three column grid -->
-					
+
 				</div>
 				<!--  / contenuto -->
 
@@ -157,7 +149,7 @@
 		</div>
 	</div>
 	<!-- / contenitore -->
-	
+
 	<!-- PIEDE -->
 	<div id="footer">
 		<template_field class="microtemplate_field" name="footer">footer</template_field>

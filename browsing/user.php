@@ -228,7 +228,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 
 					// @author giorgio 24/apr/2013
 					// adds whats new link if needed
-					if (!$isEnded && $subscription_status != ADA_STATUS_TERMINATED && MultiPort::checkWhatsNew($userObj, $courseInstanceId, $courseId)) {
+					if (!$isEnded && ($subscription_status != ADA_STATUS_TERMINATED || $subscription_status != ADA_STATUS_COMPLETED) && MultiPort::checkWhatsNew($userObj, $courseInstanceId, $courseId)) {
 						$link = CDOMElement::create('a','href:user.php?id_node='.$nodeId.
 																	 '&id_course='.$courseId.
 																	 '&id_course_instance='.$courseInstanceId);
@@ -632,9 +632,37 @@ else {
 
 	// must set the DH to the course provider one
 	$GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
-	$userObj->set_course_instance_for_history($courseInstanceId);
-	$user_history = $userObj->getHistoryInCourseInstance($courseInstanceId);
-	$content_dataAr['percentcomplete'] = $user_history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]);
+
+	if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
+		// need the service-complete module data handler
+		require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
+		$mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
+		// load the conditionset for this course
+		$conditionSet = $mydh->get_linked_conditionset_for_course($courseId);
+		$mydh->disconnect();
+
+		if ($conditionSet instanceof CompleteConditionSet) {
+			$_SESSION['sess_selected_tester'] = $provider['puntatore'];
+			// evaluate the conditionset for this instance ID and course ID
+			$summary = $conditionSet->buildSummary(array($courseInstanceId, $userObj->getId()));
+			unset($_SESSION['sess_selected_tester']);
+			if (is_array($summary) && count($summary)>0) {
+				$content_dataAr['completeSummary'] = '';
+				foreach($summary as $condition=>$condData) {
+					$content_dataAr['completeSummary'] .= $condition::getCDOMSummary($condData)->getHtml();
+				}
+			}
+		}
+	}
+
+	if (!isset($content_dataAr['completeSummary'])) {
+		$userObj->set_course_instance_for_history($courseInstanceId);
+		$user_history = $userObj->getHistoryInCourseInstance($courseInstanceId);
+		$span = CDOMElement::create('span','class:percent label item');
+		$span->addChild(CDOMElement::create('i','class:ok circle icon'));
+		$span->addChild(new CText(translateFN('Contenuti visitati').': <strong>'.$user_history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]).'%</strong>'));
+		$content_dataAr['completeSummary'] = $span->getHtml();
+	}
 	$GLOBALS['dh']->disconnect();
 }
 

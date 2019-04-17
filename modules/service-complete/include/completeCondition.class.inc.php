@@ -131,6 +131,31 @@ abstract class CompleteCondition
         return $this->logToFile;
     }
 
+	/**
+	 * return a CDOM element to build the html summary of the condition
+	 *
+	 * @param array $param
+	 * @return CDOMElement
+	 */
+	public static function getCDOMSummary($param) {
+		$el = CDOMElement::create('span', 'class:condition');
+		if (array_key_exists('check', $param) && is_array($param['check'])) {
+			$el->setAttribute('class', $el->getAttribute('class').' container');
+			$addIcon = false;
+		} else {
+			$el->setAttribute('class', $el->getAttribute('class').' item');
+			$addIcon = true;
+		}
+		if ($param['isSatisfied']) {
+			$el->setAttribute('class', $el->getAttribute('class').' satisfied');
+			if ($addIcon) $el->addChild(CDOMElement::create('i','class:ui circle ok icon'));
+		} else {
+			$el->setAttribute('class', $el->getAttribute('class').' unsatisfied');
+			if ($addIcon) $el->addChild(CDOMElement::create('i','class:ui circle ban icon'));
+		}
+		return $el;
+	}
+
     private function isSatisfied($id_course_instance, $id_student) {}
 }
 ?>

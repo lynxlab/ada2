@@ -187,6 +187,21 @@ class CompleteConditionSet
     }
 
     /**
+     * builds the completeConditionSet summary array by calling operation's evaluate
+     *
+     * @param array $params
+     * @return array 'conditionClass' => [ 'isSatisfied', 'param' , 'check' ]
+     * @access public
+     */
+    public function buildSummary($params)
+    {
+        $summary = [];
+        // $summary will be modified by the evaluate calls
+        if (!is_null($this->_operation)) $this->_operation->evaluate($params, $summary);
+        return $summary;
+    }
+
+    /**
      * id getter
      *
      * @return int|null

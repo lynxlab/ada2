@@ -37,6 +37,15 @@ class CompleteConditionLevel extends CompleteCondition
 	public static $description = 'Condizione soddisfatta se il livello dello studente è maggiore di quello impostato';
 
 	/**
+	 * String used to build the condition set summary for this rule
+	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
+	 * cannot put here a call to translateFN because it's a static var
+	 *
+	 * @var string
+	 */
+	public static $summaryStr = 'Livello raggiunto nel corso: <strong>%d</strong> su <strong>%d</strong>';
+
+	/**
 	 * description of the condition's own parameter
 	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
 	 * cannot put here a call to translateFN because it's a static var
@@ -51,10 +60,11 @@ class CompleteConditionLevel extends CompleteCondition
 	 *
 	 * @param int $id_course_instance
 	 * @param int $id_user
+	 * @param array  $summary the array to ouput summary infos
 	 * @return boolean true if condition is satisfied
 	 * @access public
 	 */
-    private function isSatisfied($id_course_instance=null, $id_student=null) {
+    private function isSatisfied($id_course_instance=null, $id_student=null, &$summary=null) {
 
 		$user = MultiPort::findUser($id_student,$id_course_instance);
 		$retval = false;
@@ -65,7 +75,7 @@ class CompleteConditionLevel extends CompleteCondition
     			if (intval($this->_param)===0) {
     				$course_id = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);
     				if (!AMA_DB::isError($course_id) && is_numeric($course_id)) {
-    					$max_level = $GLOBALS['dh']->get_course_max_level($course_id);
+    					$max_level = intval($GLOBALS['dh']->get_course_max_level($course_id));
     					if (!AMA_DB::isError($max_level) && is_numeric($max_level)) {
     						$retval = intval($level)>intval($max_level);
     					}
@@ -86,6 +96,14 @@ class CompleteConditionLevel extends CompleteCondition
             logToFile($logLines);
         }
 
+		if (!is_null($summary) && is_array($summary)) {
+			$summary[__CLASS__] = [
+				'isSatisfied' => $retval,
+				'param' => intval(isset($max_level) ? $max_level : $this->_param),
+				'check' => intval($level)
+			];
+		}
+
     	return $retval;
     }
 
@@ -96,13 +114,26 @@ class CompleteConditionLevel extends CompleteCondition
      * @param string $param
      * @param string $id_course_instance
      * @param string $id_user
+	 * @param array  $summary the array to ouput summary infos
      * @return Ambigous <boolean, number>
      */
-    public static function buildAndCheck ($param=null, $id_course_instance=null, $id_user=null)
+    public static function buildAndCheck ($param=null, $id_course_instance=null, $id_user=null, &$summary=null)
     {
     	$obj = self::build($param);
-    	return $obj->isSatisfied($id_course_instance, $id_user);
+    	return $obj->isSatisfied($id_course_instance, $id_user, $summary);
     }
+
+	/**
+	 * return a CDOM element to build the html summary of the condition
+	 *
+	 * @param array $param
+	 * @return CDOMElement
+	 */
+	public static function getCDOMSummary($param) {
+		$el = parent::getCDOMSummary($param);
+		$el->addChild(new CText(sprintf(translateFN(self::$summaryStr), $param['check'], $param['param'])));
+		return $el;
+	}
 
     /**
      * staticallly build a new condition

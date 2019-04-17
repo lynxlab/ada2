@@ -37,6 +37,15 @@ class CompleteConditionTime extends CompleteCondition
 	public static $description = 'Condizione soddisfatta se il tempo trascorso nel corso è uguale o maggiore a quello indicato nel parametro';
 
 	/**
+	 * String used to build the condition set summary for this rule
+	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
+	 * cannot put here a call to translateFN because it's a static var
+	 *
+	 * @var string
+	 */
+	public static $summaryStr = 'Tempo trascorso nel corso: <strong>%s</strong> su <strong>%s</strong> ore:minuti';
+
+	/**
 	 * description of the condition's own parameter
 	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
 	 * cannot put here a call to translateFN because it's a static var
@@ -51,10 +60,11 @@ class CompleteConditionTime extends CompleteCondition
 	 *
 	 * @param int $id_course_instance
 	 * @param int $id_user
+	 * @param array  $summary the array to ouput summary infos
 	 * @return boolean true if condition is satisfied
 	 * @access public
 	 */
-    private function isSatisfied($id_course_instance=null, $id_student=null) {
+    private function isSatisfied($id_course_instance=null, $id_student=null, &$summary=null) {
 
     	require_once ROOT_DIR. '/include/history_class.inc.php';
 
@@ -79,6 +89,14 @@ class CompleteConditionTime extends CompleteCondition
             logToFile($logLines);
         }
 
+		if (!is_null($summary) && is_array($summary)) {
+			$summary[__CLASS__] = [
+				'isSatisfied' => $retval,
+				'param' => $param,
+				'check' => $timeSpentInCourse
+			];
+		}
+
     	return $retval;
     }
 
@@ -89,13 +107,28 @@ class CompleteConditionTime extends CompleteCondition
      * @param string $param
      * @param string $id_course_instance
      * @param string $id_user
+	 * @param array  $summary the array to ouput summary infos
      * @return Ambigous <boolean, number>
      */
-    public static function buildAndCheck ($param=null, $id_course_instance=null, $id_user=null)
+    public static function buildAndCheck ($param=null, $id_course_instance=null, $id_user=null, &$summary = null)
     {
     	$obj = self::build($param);
-    	return $obj->isSatisfied($id_course_instance, $id_user);
+    	return $obj->isSatisfied($id_course_instance, $id_user, $summary);
     }
+
+	/**
+	 * return a CDOM element to build the html summary of the condition
+	 *
+	 * @param array $param
+	 * @return CDOMElement
+	 */
+	public static function getCDOMSummary($param) {
+		$el = parent::getCDOMSummary($param);
+		$formatCheck = sprintf("%02d:%02d", floor($param['check']/3600), ($param['check']/60)%60 );
+		$formatParam = sprintf("%02d:%02d", floor($param['param']/3600), ($param['param']/60)%60 );
+		$el->addChild(new CText(sprintf(translateFN(self::$summaryStr), $formatCheck, $formatParam)));
+		return $el;
+	}
 
     /**
      * staticallly build a new condition

@@ -37,6 +37,15 @@ class CompleteConditionNodePercentage extends CompleteCondition
 	public static $description = 'Condizione soddisfatta se la percentuale dei nodi visitati è uguale o maggiore a quella indicata nel parametro';
 
 	/**
+	 * String used to build the condition set summary for this rule
+	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
+	 * cannot put here a call to translateFN because it's a static var
+	 *
+	 * @var string
+	 */
+	public static $summaryStr = 'Percentuale di nodi visitati: <strong>%s</strong> su <strong>%s</strong>';
+
+	/**
 	 * description of the condition's own parameter
 	 * NOTE: THIS GOES THROUGH translateFN WHEN IT GETS USED, SO NO INTERNAZIONALIZATION PROBLEM HERE
 	 * cannot put here a call to translateFN because it's a static var
@@ -51,13 +60,16 @@ class CompleteConditionNodePercentage extends CompleteCondition
 	 *
 	 * @param int $id_course_instance
 	 * @param int $id_user
+	 * @param array  $summary the array to ouput summary infos
 	 * @return boolean true if condition is satisfied
 	 * @access public
 	 */
-    private function isSatisfied($id_course_instance=null, $id_student=null) {
+    private function isSatisfied($id_course_instance=null, $id_student=null, &$summary=null) {
 		require_once ROOT_DIR. '/include/history_class.inc.php';
 		/** @var History $history */
 		$history = new History($id_course_instance, $id_student);
+		$id_course = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);
+		if (is_numeric($id_course)) $history->setCourse($id_course);
 		$retval = floatval($history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE])) >= floatval($this->_param);
 
 		if ($this->getLogToFile()) {
@@ -71,6 +83,14 @@ class CompleteConditionNodePercentage extends CompleteCondition
 				logToFile($logLines);
 		}
 
+		if (!is_null($summary) && is_array($summary)) {
+			$summary[__CLASS__] = [
+				'isSatisfied' => $retval,
+				'param' => floatval($this->_param),
+				'check' => floatval($history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]))
+			];
+		}
+
 		return $retval;
     }
 
@@ -81,11 +101,26 @@ class CompleteConditionNodePercentage extends CompleteCondition
      * @param string $param
      * @param string $id_course_instance
      * @param string $id_user
+		 * @param array  $summary the array to ouput summary infos
      * @return Ambigous <boolean, number>
      */
-    public static function buildAndCheck ($param=null, $id_course_instance=null, $id_user=null)
+    public static function buildAndCheck ($param=null, $id_course_instance=null, $id_user=null, &$summary=null)
     {
-    	return (new self($param))->isSatisfied($id_course_instance, $id_user);
+    	return (new self($param))->isSatisfied($id_course_instance, $id_user, $summary);
     }
+
+	/**
+	 * return a CDOM element to build the html summary of the condition
+	 *
+	 * @param array $param
+	 * @return CDOMElement
+	 */
+	public static function getCDOMSummary($param) {
+		$el = parent::getCDOMSummary($param);
+		$formatCheck = sprintf("%.02f%%", $param['check']);
+		$formatParam = sprintf("%.02f%%", $param['param']);
+		$el->addChild(new CText(sprintf(translateFN(self::$summaryStr), $formatCheck, $formatParam)));
+		return $el;
+	}
 }
 ?>
