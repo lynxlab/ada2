@@ -117,8 +117,8 @@ class CompleteConditionNodePercentage extends CompleteCondition
 	 */
 	public static function getCDOMSummary($param) {
 		$el = parent::getCDOMSummary($param);
-		$formatCheck = sprintf("%.02f%%", $param['check']);
-		$formatParam = sprintf("%.02f%%", $param['param']);
+		$formatCheck = sprintf("%.0f%%", $param['check']);
+		$formatParam = sprintf("%.0f%%", $param['param']);
 		$el->addChild(new CText(sprintf(translateFN(self::$summaryStr), $formatCheck, $formatParam)));
 		return $el;
 	}
