@@ -300,9 +300,8 @@ abstract class ViewBaseHelper
     if (in_array('chatroom', $thisUserNeededObjAr)) {
       global $id_chatroom;
 
-      require_once 'ChatRoom.inc.php';
-      require_once 'ChatDataHandler.inc.php';
-
+      require_once ROOT_DIR . '/comunica/include/ChatRoom.inc.php';
+      require_once ROOT_DIR . '/comunica/include/ChatDataHandler.inc.php';
       /*
        * Check if the user has an appointment
        */

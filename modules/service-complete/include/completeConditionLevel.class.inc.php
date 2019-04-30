@@ -131,7 +131,7 @@ class CompleteConditionLevel extends CompleteCondition
 	 */
 	public static function getCDOMSummary($param) {
 		$el = parent::getCDOMSummary($param);
-		$el->addChild(new CText(sprintf(translateFN(self::$summaryStr), $param['check'], $param['param'])));
+		$el->addChild(new CText(sprintf(translateFN(self::$summaryStr), $param['check'], $param['param']+1)));
 		return $el;
 	}
 
