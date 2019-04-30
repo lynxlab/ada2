@@ -45,6 +45,7 @@ try {
 	$dataAr = array();
 	$submitTo = HTTP_ROOT_DIR .'/index.php';
 	$data = '';
+	$userId = null;
 	if (array_key_exists(GdprPolicy::sessionKey, $_SESSION)) {
 		if (array_key_exists('redirectURL', $_SESSION[GdprPolicy::sessionKey])) {
 			$dataAr['redirectURL'] = $_SESSION[GdprPolicy::sessionKey]['redirectURL'];
