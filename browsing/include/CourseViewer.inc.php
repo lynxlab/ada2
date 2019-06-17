@@ -437,7 +437,9 @@ class CourseViewer
   		$dh = $dhToUse;
   	} else {
 	    $dh = $GLOBALS['dh'];
-  	}
+    }
+    if (!array_key_exists('user_id', $callback_params)) $callback_params['user_id'] = null;
+    if (!array_key_exists('id_course_instance', $callback_params)) $callback_params['id_course_instance'] = null;
     $node_info = $dh->get_node_info($id_toc);
     $node_visits = array_reduce(
       $dh->find_nodes_history_list(array('data_visita', 'data_uscita'), $callback_params['user_id'], $callback_params['id_course_instance'], $id_toc),
