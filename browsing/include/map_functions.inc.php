@@ -33,13 +33,13 @@ function returnAdaNodeIcon($icon,$type)
         $file_thumb = 'thumb_'.$iconAR[count($iconAR)-1];
         $iconAR[count($iconAR)-1] = $file_thumb;
         $icon_thumb = implode("/",$iconAR);
-	if (file_exists($icon_thumb)) return ereg_replace(ROOT_DIR,HTTP_ROOT_DIR,$icon_thumb);
+	if (file_exists($icon_thumb)) return preg_replace('#'.ROOT_DIR.'#',HTTP_ROOT_DIR,$icon_thumb);
 
         $id_img = new ImageDevice();
         $new_icon = $id_img->resize_image($icon);
         if(!is_null($new_icon)) imagejpeg($new_icon,$icon_thumb);
 	if (file_exists($icon_thumb)) {
-            return ereg_replace(ROOT_DIR,HTTP_ROOT_DIR,$icon_thumb);
+            return preg_replace('#'.ROOT_DIR.'#',HTTP_ROOT_DIR,$icon_thumb);
         }else {
             return "img/".returnAdaNodeType($type).".png";
         }
