@@ -764,7 +764,7 @@ class CourseViewer
       $visits = $params['node']['numero_visite'];
     }
 
-    if (!is_null($node_element)) {
+    if (isset($node_element) && !is_null($node_element)) {
       $node_element->setAttribute('class',trim(
         $node_element->getAttribute('class').($visits>0 ? '' : 'un').'visitednode'));
     }

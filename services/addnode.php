@@ -454,7 +454,7 @@ $content_dataAr = array(
   'user_type'    => $user_type,
   'messages'     => $user_messages->getHtml(),
   'agenda'       => $user_agenda->getHtml(),
-  'course_title' => '<a href="../browsing/main_index.php">'.$course_title.'</a>',
+  'course_title' => '<a href="../browsing/main_index.php">'.$courseObj->getTitle().'</a>',
   'path'         => isset($nodePath) ? $nodePath : '',
   'back'         => isset($back) ? $back : '',
   'icon'         => $icon,
