@@ -415,7 +415,7 @@ switch($id_profile) {
 $linksAr  = array();
 $keyAr = explode(',',$node_keywords); // or space?
 foreach ($keyAr as $keyword){
-	if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $keyword == ForkedPathsNode::MAGIC_KEYWORD) {
+	if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $keyword == \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::MAGIC_KEYWORD) {
 		// just skip the ForkedPathsNode::MAGIC_KEYWORD
 		continue;
 	}
