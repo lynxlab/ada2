@@ -189,6 +189,11 @@ class Node
             }
         }
       }
+
+      if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
+        $this->isForkedPaths = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::checkNode($this);
+      } else $this->isForkedPaths = false;
+
     }
   }
 
