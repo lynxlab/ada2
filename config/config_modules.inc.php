@@ -181,3 +181,17 @@ if (!defined('MODULES_SECRETQUESTION')) {
 		define('MODULES_SECRETQUESTION', false);
 	}
 }
+
+if (!defined('MODULES_FORKEDPATHS')) {
+	if (isset($modEnabled)) unset($modEnabled);
+	// defines for module forked-paths
+	if (file_exists(MODULES_DIR.'/forked-paths/config/config.inc.php')) {
+		define('MODULES_FORKEDPATHS_NAME', 'forked-paths');
+		define ('MODULES_FORKEDPATHS_PATH', MODULES_DIR. DIRECTORY_SEPARATOR. MODULES_FORKEDPATHS_NAME);
+		$modEnabled = require_once(MODULES_FORKEDPATHS_PATH.'/config/config.inc.php');
+		define('MODULES_FORKEDPATHS', $modEnabled);
+		define('MODULES_FORKEDPATHS_HTTP', HTTP_ROOT_DIR. str_replace(ROOT_DIR, '', MODULES_DIR) . DIRECTORY_SEPARATOR. MODULES_FORKEDPATHS_NAME);
+	} else {
+		define('MODULES_FORKEDPATHS', false);
+	}
+}
