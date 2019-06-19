@@ -415,6 +415,10 @@ switch($id_profile) {
 $linksAr  = array();
 $keyAr = explode(',',$node_keywords); // or space?
 foreach ($keyAr as $keyword){
+	if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $keyword == ForkedPathsNode::MAGIC_KEYWORD) {
+		// just skip the ForkedPathsNode::MAGIC_KEYWORD
+		continue;
+	}
 	$linksAr [] = "<a href=\"search.php?s_node_title=$keyword&submit=cerca&l_search=all\">$keyword</a>";
 }
 
@@ -573,9 +577,10 @@ switch ($op){
 				JQUERY_NO_CONFLICT,
 				ROOT_DIR. '/external/mediaplayer/flowplayer-5.4.3/flowplayer.js'
 		);
-              if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction)) {
+              if($userObj->tipo==AMA_TYPE_STUDENT && ($self_instruction || $nodeObj->isForkedPaths)) {
                 //$self='viewSelfInstruction';
-                $layout_dataAR['JS_filename'][] = ROOT_DIR.'/js/browsing/view.js';
+				$layout_dataAR['JS_filename'][] = ROOT_DIR.'/js/browsing/view.js';
+				$layout_dataAR['JS_filename'][] = MODULES_FORKEDPATHS_PATH.'/js/browsing/viewForkedPaths.js';
               }
 		/**
 		 * if the jquery-ui theme directory is there in the template family,
@@ -597,10 +602,26 @@ switch ($op){
 		array_push ($layout_dataAR['CSS_filename'], JQUERY_JPLAYER_CSS);
 
 		if ($userObj->getType() == AMA_TYPE_STUDENT) {
-			$layout_dataAR['widgets']['courseStatus'] = ['isActive'=>0,
-														'courseId' => $courseObj->getId(),
-														 'courseInstanceId' => $courseInstanceObj->getId(),
-														 'userId' => $userObj->getId()];
+			$layout_dataAR['widgets']['courseStatus'] = [
+				'isActive' => 0,
+				'courseId' => $courseObj->getId(),
+				'courseInstanceId' => $courseInstanceObj->getId(),
+				'userId' => $userObj->getId()
+			];
+
+			if ($self_instruction || $nodeObj->isForkedPaths) {
+				//$self='viewSelfInstruction';
+				$layout_dataAR['JS_filename'][] = ROOT_DIR . '/js/browsing/view.js';
+
+				if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $nodeObj->isForkedPaths) {
+					$newself = $self . 'ForkedPaths';
+					// self must be a relative path
+					$self = '/../../../../modules/'.MODULES_FORKEDPATHS_NAME.'/layout/' . $userObj->template_family . '/templates/browsing/' . $newself;
+					array_push($layout_dataAR['CSS_filename'], ROOT_DIR . '/layout/' . $userObj->template_family . '/css/browsing/view.css');
+					array_push($layout_dataAR['CSS_filename'], MODULES_FORKEDPATHS_PATH . '/layout/' . $userObj->template_family . '/css/browsing/' . $newself . '.css');
+					$content_dataAr['forkedPathsButtons'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::buildForkedPathsButtons($nodeObj)->getHtml();
+				}
+			}
 		}
 
 		$optionsAr['onload_func'] = 'initDoc();';
