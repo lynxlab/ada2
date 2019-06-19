@@ -1,11 +1,11 @@
 <?php
 /**
  * EDITNODE FUNCTIONS
- * 
- * @package		
+ *
+ * @package
  * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link					
+ * @link
  * @version		0.1
  */
 
@@ -16,11 +16,11 @@ function delete_nodeFN($id_node,$id_course,$action) {
   $dh = $GLOBALS['dh'];
   $sess_id_course_instance = $_SESSION['sess_id_course_instance'];
   $sess_id_node            = $_SESSION['sess_id_node'];
- 
- 
+
+
   /*
    * get object node
-   */ 
+   */
   $nodeObj = read_node_from_DB($id_node);
   if (is_object($nodeObj) && (!AMA_DataHandler::isError($nodeObj))) {
     //$sess_id_node = $nodeObj->id;
@@ -42,7 +42,7 @@ function delete_nodeFN($id_node,$id_course,$action) {
     $creation_date = $nodeObj->creation_date;
 
     $node_childrenAr = $dh->get_node_children($id_node,$sess_id_course_instance);
-    
+
     $has_children = is_array($node_childrenAr);//(!is_object($node_childrenAr));
     $is_root_node = (strpos($nodeObj->id, '_0') !== false);
     if ( !$is_root_node && ((!$has_children) || ($type==ADA_LEAF_TYPE))) {
@@ -107,7 +107,7 @@ function delete_nodeFN($id_node,$id_course,$action) {
     $data['menu'] = $menu;
     $data['form'] = $form;
     return $data;
-  } 
+  }
   else {
     $errObj = new ADA_Error($nodeObj, translateFN('Nodo non trovato, impossibile proseguire.'));
     // FIXME: eliminare il return?
@@ -181,7 +181,7 @@ function copy_nodeFN($id_node,$id_course,$action){
     $data['menu'] = $menu;
     $data['form'] = $form;
     return $data;
-  } 
+  }
   else {
     $errObj = new ADA_Error($nodeObj, translateFN('Nodo non trovato, impossibile proseguire.'));
     // FIXME: eliminare il return?
@@ -388,7 +388,7 @@ function edit_nodeFN($id_node,$id_course,$action){
     $id_node_author=$nodeObj->author;
     $creation_date = $nodeObj->creation_date;
     $id_instance = $nodeObj->id_instance;
-     
+
     //get parent obj node [useful in several tasks]
     $nodeObjParent = read_node_from_DB($sess_id_node);
     if (is_object($nodeObj) && (!AMA_DataHandler::isError($nodeObj))) {
@@ -474,7 +474,7 @@ function edit_nodeFN($id_node,$id_course,$action){
               case ADA_GROUP_TYPE:
                 $tipo = translateFN('Gruppo');
                 break;
-                
+
               case ADA_LEAF_TYPE:
                 $tipo = translateFN('Nodo');
                 break;
@@ -484,7 +484,7 @@ function edit_nodeFN($id_node,$id_course,$action){
           }//fine foreach sui nodi
           $nodesCourse_label = ":".implode(":", $nodesCourse_label);
           $nodesCourse_value = implode(":", $nodesCourse_value);
-           
+
           $fields["add"][]="parent_id";
           $names["add"][]=translateFN('Nodo superiore').$nodesCourse_label;
           $edittypes["add"][]="select";
@@ -567,7 +567,7 @@ function edit_nodeFN($id_node,$id_course,$action){
         $values["add"][]=$type;
         $options["add"][]="";
         $maxsize["add"][]=40;
-         
+
         // Posizione del nodo
         $desc_pos = translateFN('Posizione');
         $fields["add"][]="position";
@@ -643,8 +643,8 @@ function edit_nodeFN($id_node,$id_course,$action){
     $values["add"][]=$text;
     $options["add"][]="";
     $maxsize["add"][]="";
-    	
-    	
+
+
 
     // nodo
     $fields["add"][]="id_node";
@@ -665,7 +665,7 @@ function edit_nodeFN($id_node,$id_course,$action){
     $data['menu'] = $menu;
     $data['form'] = $form;
     return $data;
-  } 
+  }
   else {
     $errObj = new ADA_Error($nodeObj, translateFN('Nodo non trovato, impossibile proseguire.'));
     // FIXME: eliminare il return?
@@ -678,6 +678,9 @@ function edit_nodeFN($id_node,$id_course,$action){
 function getNodeData( $id_node ) {
   $nodeObj = read_node_from_DB($id_node);
   if ( AMA_DataHandler::isError($nodeObj)) return $nodeObj;
+  if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
+    $nodeObj = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeMagicWord($nodeObj);
+  }
 
   $node_data = array(
              'id' => $id_node,
@@ -698,7 +701,8 @@ function getNodeData( $id_node ) {
              'icon' => $nodeObj->icon,
              'id_node_author' => $nodeObj->author['id'], //vito, 28 nov 2008 gets only the author id
              'creation_date' => $nodeObj->creation_date,
-             'id_instance' => $nodeObj->instance
+             'id_instance' => $nodeObj->instance,
+             'is_forkedpaths' => $nodeObj->isForkedPaths
   );
   if ($nodeObj->type == ADA_LEAF_WORD_TYPE OR $nodeObj->type == ADA_GROUP_WORD_TYPE) {
       $node_data['hyphenation'] = $nodeObj->hyphenation;
@@ -709,7 +713,7 @@ function getNodeData( $id_node ) {
       $node_data['ex_language'] = $nodeObj->language;
   }
   return $node_data;
-   
+
 }
 
 function getNodeDataFromPost( $post_data = array() ) {
@@ -720,7 +724,7 @@ function getNodeDataFromPost( $post_data = array() ) {
    'text' => $post_data['ADACode'],
    'type' => $post_data['type'],
    'level' => $post_data['level'],
-   'parent_id' => $post_data['parent_id'], 
+   'parent_id' => $post_data['parent_id'],
    'position' => $post_data['position'],
    'order' => $post_data['order'],
    'version' => $post_data['version'],
@@ -728,7 +732,7 @@ function getNodeDataFromPost( $post_data = array() ) {
    'bg_color' => $post_data['bg_color'],
    'correctness' => $post_data['correctness'],
    'copyright' => $post_data['copyright'],
-   'n_contacts' => isset($post_data['n_contacts']) ? $post_data['n_contacts'] : null, 
+   'n_contacts' => isset($post_data['n_contacts']) ? $post_data['n_contacts'] : null,
    'icon' => $post_data['icon'],
    'id_node_author' => $post_data['id_node_author'],
    'creation_date' => $post_data['creation_date'],
@@ -746,7 +750,9 @@ function getNodeDataFromPost( $post_data = array() ) {
    'DataFCK_exlanguage' => isset($post_data['DataFCK_exlanguage']) ? $post_data['DataFCK_exlanguage'] : null,
    'exlanguage' => isset($post_data['ADACodeExlanguage']) ? $post_data['ADACodeExlanguage'] : null,
   	// @author giorgio 26/apr/2013
-   'forcecreationupdate' => isset($post_data['forcecreationupdate']) ? $post_data['forcecreationupdate'] : null	
+   'forcecreationupdate' => isset($post_data['forcecreationupdate']) ? $post_data['forcecreationupdate'] : null,
+    // @author giorgio 14/jun/2019
+   'is_forkedpaths' => isset($post_data['is_forkedpaths']) ? $post_data['is_forkedpaths'] : null,
   );
 
   return $node_data;
