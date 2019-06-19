@@ -191,9 +191,13 @@ if ( $op == 'add_node' ) {
                 'bg_color'       => '#FFFFFF',
                 'color'			 => '',
                 'correctness'    => '',
-                'copyright'      => ''
+                'copyright'      => '',
+                'is_forkedpaths' => $nodeObj->isForkedPaths
                 );
-                $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type,$nodeObj,$new_node, $node_type);
+    if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $nodeObj->isForkedPaths) {
+      $node_to_edit['title'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
+    }
+    $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type,$nodeObj,$new_node, $node_type);
   }
   /*
    * Provengo da author.php
@@ -231,9 +235,13 @@ if ( $op == 'add_node' ) {
                 'bg_color'       => '#FFFFFF',
                 'color'			 => '',
                 'correctness'    => '',
-                'copyright'      => ''
+                'copyright'      => '',
+                'is_forkedpaths' => $nodeObj->isForkedPaths
                 );
-                $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type, $nodeObj,$new_node, $node_type);
+    if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $nodeObj->isForkedPaths) {
+      $node_to_edit['title'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeMagicWordFromTitle($node_to_edit['title']);
+    }
+    $head_form = NodeEditingViewer::getHeadForm($sess_id_user, $user_level, $user_type, $nodeObj,$new_node, $node_type);
   }
   /*
    *
