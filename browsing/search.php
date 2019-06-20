@@ -202,6 +202,9 @@ if (!is_null($submit)) {
           $res_id_node = $row[0];
           $res_name = $row[1];
           $res_course_title = $row[2];
+          if (DEFINED('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
+              $res_course_title = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeMagicWordFromTitle($res_course_title);
+          }
           $res_text = $row[3];
           $res_type =  $row[4];
 
