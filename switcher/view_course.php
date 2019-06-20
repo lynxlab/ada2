@@ -96,6 +96,15 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         'data di pubblicazione' => $courseObj->getPublicationDate(),
         'crediti' => $courseObj->getCredits()
     );
+
+    if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
+        require_once MODULES_SERVICECOMPLETE_PATH . '/config/config.inc.php';
+        require_once MODULES_SERVICECOMPLETE_PATH . '/include/AMACompleteDataHandler.inc.php';
+        $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $conditionset = $cdh->get_linked_conditionset_for_course($courseObj->getId());
+        $formData['condizione di completamento'] = ($conditionset instanceof CompleteConditionSet) ? $conditionset->description : translateFN('Nessuna');
+    }
+
     $data = BaseHtmlLib::labeledListElement('class:view_info', $formData);
 }
 
