@@ -106,6 +106,10 @@ class CourseViewer
       case AMA_TYPE_STUDENT:
         $callback    = 'studentCallback';
         $course_data = $dh->get_course_data($id_course, 3, $order_by_name, $id_course_instance, $userObj->id_user, $userObj->livello); //sarebbe meglio $userObj->getId()
+        if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
+          $course_data = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeForkedPathsChildrenFromIndex($course_data);
+        }
+
         $callback_params['id_course_instance'] = $id_course_instance;
         $callback_params['user_level'] = $userObj->livello;
         $callback_params['user_id'] = $userObj->id_user;
@@ -437,7 +441,9 @@ class CourseViewer
   		$dh = $dhToUse;
   	} else {
 	    $dh = $GLOBALS['dh'];
-  	}
+    }
+    if (!array_key_exists('user_id', $callback_params)) $callback_params['user_id'] = null;
+    if (!array_key_exists('id_course_instance', $callback_params)) $callback_params['id_course_instance'] = null;
     $node_info = $dh->get_node_info($id_toc);
     $node_visits = array_reduce(
       $dh->find_nodes_history_list(array('data_visita', 'data_uscita'), $callback_params['user_id'], $callback_params['id_course_instance'], $id_toc),
@@ -762,7 +768,7 @@ class CourseViewer
       $visits = $params['node']['numero_visite'];
     }
 
-    if (!is_null($node_element)) {
+    if (isset($node_element) && !is_null($node_element)) {
       $node_element->setAttribute('class',trim(
         $node_element->getAttribute('class').($visits>0 ? '' : 'un').'visitednode'));
     }

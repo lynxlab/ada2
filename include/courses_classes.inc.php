@@ -508,7 +508,7 @@ class Course_Old {
          */
         function executeSearch($name,$title,$text,$dh,$count,$id_user)
         {
-            $out_fields_ar=array('nome','titolo','testo','tipo','id_utente');
+            $out_fields_ar=array('nome','titolo','testo','tipo','id_utente','livello');
             $operator=array(0=>' AND ',1=>' OR ',2=>' AND ',3=>' OR ');
             $operator2=array(0=>' AND ',1=>' AND ',2=>' OR ',3=>' OR ');
             if($count==2)
@@ -526,7 +526,7 @@ class Course_Old {
                     $clause = "nome LIKE '%$name%'";
                }
               if (!empty($title)){ //keywors
-                  if ($clause) {
+                  if (isset($clause)) {
                       if($operator[$i]==' OR ' && $operator2[$i]==' AND ')
                       {
                           $clause = '('.$clause . $operator[$i]. "titolo LIKE '%$title%')";
@@ -549,7 +549,7 @@ class Course_Old {
                  }
               }
               if (!empty($text)){
-                  if ($clause) {
+                  if (isset($clause)) {
                       if($operator[$i]==' AND ' && $operator2[$i]==' OR ')
                       {
                           $clause = $clause . $operator2[$i]. "testo LIKE '%$title%')";

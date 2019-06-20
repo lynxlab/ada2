@@ -7126,6 +7126,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         //$id_node = $this->sql_prepared($node_ha['id']);
         $id_author = $node_ha['id_node_author'];
         $name = $this->sql_prepared($this->or_null(isset($node_ha['name']) ? $node_ha['name'] : null));
+        /**
+         * ForkedPaths title must be set before the title
+         */
+        if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && isset($node_ha['is_forkedpaths']) && $node_ha['is_forkedpaths']==1) {
+            $node_ha['title'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::addMagicKeywordToTitle($node_ha['title']);
+        }
         $title = $this->sql_prepared($this->or_null(isset($node_ha['title']) ? $node_ha['title'] : null));
 
         $text = $this->sql_prepared(isset($node_ha['text']) ? $node_ha['text'] : null);
@@ -7246,6 +7252,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $id_node = $this->sql_prepared($node_ha['id']);
         $name = $this->sql_prepared($this->or_null($node_ha['name']));
+        /**
+         * ForkedPaths title must be set before the title
+         */
+        if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && isset($node_ha['is_forkedpaths']) && $node_ha['is_forkedpaths']==1) {
+            $node_ha['title'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::addMagicKeywordToTitle($node_ha['title']);
+        }
         $title = $this->sql_prepared($this->or_null(isset($node_ha['title']) ? $node_ha['title'] : ''));
 
         $text = $this->sql_prepared($node_ha['text']);
@@ -8534,7 +8546,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
                 break;
 
             case 3:
-                $sql = " SELECT N.id_nodo, N.nome, N.tipo, N.id_nodo_parent, N.livello, N.icona, visite.numero_visite FROM nodo AS N LEFT JOIN nodo AS N2 ON (N.id_nodo_parent = N2.id_nodo)
+                $sql = " SELECT N.id_nodo, N.nome, N.tipo, N.id_nodo_parent, N.livello, N.icona, visite.numero_visite, N.titolo FROM nodo AS N LEFT JOIN nodo AS N2 ON (N.id_nodo_parent = N2.id_nodo)
           LEFT JOIN (SELECT id_nodo, count(id_nodo) AS numero_visite FROM history_nodi
           WHERE id_istanza_corso=$id_course_instance AND id_utente_studente=$id_student
           GROUP BY id_nodo) AS visite ON (N.id_nodo=visite.id_nodo)

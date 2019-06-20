@@ -119,7 +119,7 @@ if(isset($_REQUEST['s_node_text']))
 
 if (!is_null($submit)) {
 
-    $out_fields_ar = array('nome','titolo','testo','tipo','id_utente');
+    $out_fields_ar = array('nome','titolo','testo','tipo','id_utente','livello');
     $clause='';
     $or = ' OR ';
     $and = ' AND ';
@@ -180,6 +180,17 @@ if (!is_null($submit)) {
     }
 
 
+    if (!AMA_DataHandler::isError($resHa)) {
+        // se studente, filtra i nodi con livello > di quello dello studente
+        if (isset($userObj) && $userObj->getType() == AMA_TYPE_STUDENT) {
+            $studenLevel = (int) $userObj->get_student_level($userObj->getId(), $courseInstanceObj->getId());
+            $resHa = array_filter($resHa, function($row) use ($studenLevel) {
+                // livello is row[6]
+                return (int) $row[6] < $studenLevel;
+            });
+        }
+    }
+
     if (!AMA_DataHandler::isError($resHa) and is_array($resHa) and !empty($resHa)){
         $total_results = array();
         $group_count=0;
@@ -191,6 +202,9 @@ if (!is_null($submit)) {
           $res_id_node = $row[0];
           $res_name = $row[1];
           $res_course_title = $row[2];
+          if (DEFINED('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS) {
+              $res_course_title = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::removeMagicWordFromTitle($res_course_title);
+          }
           $res_text = $row[3];
           $res_type =  $row[4];
 

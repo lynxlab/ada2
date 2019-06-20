@@ -1,0 +1,14 @@
+{
+    "name" : "lynxlab/ada-module-forkedpaths",
+    "description" : "This is the ada module to manage 'forked-paths' nodes.",
+    "license" : "GPL",
+    "authors" : [{
+        "name" : "Giorgio Consorti",
+        "email" : "g.consorti@lynxlab.com"
+    }],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\ForkedPaths\\" : ["include/", "include/form"]
+	    }
+    }
+}

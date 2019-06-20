@@ -205,6 +205,8 @@ class NodeEditing {
         */
         if (isset($node_data['forcecreationupdate'])) $node_data['version']++;
 
+        $node_data['is_forkedpaths'] = isset($node_data['is_forkedpaths']) ? intval($node_data['is_forkedpaths']) : 0;
+
         //vito 6 feb 2009
         if (trim($node_data['name']) == "") {
             $node_data['name'] = translateFN('Senza Titolo');
@@ -1052,19 +1054,41 @@ class NodeEditingViewer {
             $node_data_div->addChild($parent_node_selector);
         }
 
-        // @author giorgio 26/apr/2013
-        // checkbox to force node modification to appear in whats new page
-        $node_forcecreationupdate  = CDOMElement::create('div','id:show_node_forcecreationupdate, class:editor_input');
-        $label          = CDOMElement::create('label', 'for:forcecreationupdate');
-        $label->addChild(new CText(translateFN('Appare nelle novit&agrave;')));
-        $input_forcecreationupdate = CDOMElement::create('checkbox','id:forcecreationupdate, name:forcecreationupdate');
-        $input_forcecreationupdate->setAttribute('value','1');
-        if (isset($node_data['forcecreationupdate'])) $input_forcecreationupdate->setAttribute('checked', 'checked');
-        $node_forcecreationupdate->addChild($input_forcecreationupdate);
-        $node_forcecreationupdate->addChild($label);
-        $node_data_div->addChild($node_forcecreationupdate);
-        // @author giorgio 26/apr/2013 end checkbox
+        /**
+         * NOTE: EDITOR_UPLOAD_FILE flag is used to check if user is an author or a tutor
+         */
+        if ($flags & EDITOR_UPLOAD_FILE) {
+            // @author giorgio 26/apr/2013
+            // checkbox to force node modification to appear in whats new page
+            $node_forcecreationupdate  = CDOMElement::create('div','id:show_node_forcecreationupdate, class:editor_input');
+            $label          = CDOMElement::create('label', 'for:forcecreationupdate');
+            $label->addChild(new CText(translateFN('Appare nelle novit&agrave;')));
+            $input_forcecreationupdate = CDOMElement::create('checkbox','id:forcecreationupdate, name:forcecreationupdate');
+            $input_forcecreationupdate->setAttribute('value','1');
+            if (isset($node_data['forcecreationupdate'])) $input_forcecreationupdate->setAttribute('checked', 'checked');
+            $node_forcecreationupdate->addChild($input_forcecreationupdate);
+            $node_forcecreationupdate->addChild($label);
+            $node_data_div->addChild($node_forcecreationupdate);
+            // @author giorgio 26/apr/2013 end checkbox
+        }
 
+        /**
+         * NOTE: EDITOR_SHOW_NODE_LEVEL flag is used to check if user is an author
+         */
+        if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && ($flags & EDITOR_SHOW_NODE_LEVEL)) {
+            // @author giorgio 14/jun/2019
+            // checkbox to set ForkedPaths node flag
+            $node_isforkedpaths  = CDOMElement::create('div','id:show_node_isforkedpaths, class:editor_input');
+            $label          = CDOMElement::create('label', 'for:isforkedpaths');
+            $label->addChild(new CText(translateFN('Percorso a bivi')));
+            $input_isforkedpaths = CDOMElement::create('checkbox','id:isforkedpaths, name:is_forkedpaths');
+            $input_isforkedpaths->setAttribute('value','1');
+            if (isset($node_data['is_forkedpaths']) && $node_data['is_forkedpaths']==1) $input_isforkedpaths->setAttribute('checked', 'checked');
+            $node_isforkedpaths->addChild($input_isforkedpaths);
+            $node_isforkedpaths->addChild($label);
+            $node_data_div->addChild($node_isforkedpaths);
+            // @author giorgio 14/jun/2019 end checkbox
+        }
 
         $node_data_div->addChild(CDOMElement::create('hidden',"id:id,name:id,value:{$node_data['id']}"));
         $node_data_div->addChild(CDOMElement::create('hidden',"id:jsparent_id,name:parent_id,value:{$node_data['parent_id']}"));
