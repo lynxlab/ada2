@@ -3,7 +3,7 @@
  * SERVICE-COMPLETE MODULE.
  *
  * @package        service-complete module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2013, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           service-complete
@@ -12,14 +12,14 @@
 
 require_once(ROOT_DIR.'/include/ama.inc.php');
 class AMACompleteDataHandler extends AMA_DataHandler {
-	
+
 	/**
 	 * module's own data tables prefix
 	 *
 	 * @var string
 	 */
 	public static $PREFIX = 'module_complete_';
-	
+
 	/**
 	 * Gets all the fields of the given table in an array, EXCLUDING the id field
 	 *
@@ -32,18 +32,18 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 	{
 		$db =& $this->getConnection();
 		if ( AMA_DB::isError( $db ) ) return $db;
-	
+
 		$fields = array();
-	
+
 		$sql = "SHOW COLUMNS FROM ".self::$PREFIX.$tablename." WHERE field NOT LIKE 'id'";
 		$res = $db->getAll($sql, array(), AMA_FETCH_ORDERED);
-	
+
 		if (!AMA_DB::isError($res)){
 			// row index 0 is 'Field' field
 			foreach ($res as $row) $fields[] = (($backTick) ? '`' : '') . $row[0] . (($backTick) ? '`' : '');
 		}
 		return $fields;
-	}	
+	}
 
 	/**
 	 * gets all the complete conditions set descriptions and ids
@@ -56,19 +56,19 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 	 *	            [descrizione] => 'description of condition set'
 	 *	        )
 	 *  )
-	 *  
+	 *
 	 * @param string $orderBy optional to order other than descrizione ASC
 	 * @throws Exception
 	 * @return array|AMA_Error
 	 * @access public
 	 */
-	
+
 	public function get_completeConditionSetList($orderBy='descrizione ASC')
 	{
 		$result = $this->getAllPrepared('SELECT * FROM `'.self::$PREFIX.'conditionset` ORDER BY '.$orderBy,null,AMA_FETCH_ASSOC);
 		if (AMA_DB::isError($result))
 		{
-			throw new Exception('Could not load condition set list');			
+			throw new Exception('Could not load condition set list');
 		}
 		return $result;
 	}
@@ -76,7 +76,7 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 	/**
 	 * saves a CompleteConditionSet object, with all
 	 * its associated operations
-	 * 
+	 *
 	 * @param CompleteConditionSet $cond
 	 * @throws Exception
 	 * @return Ambigous AMA_Error, boolean false|boolean true on success
@@ -87,7 +87,7 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 		// the db is needed to get the last insert id
 		$db =& $this->getConnection();
 		if (AMA_DB::isError($db)) return $db;
-		
+
 		if (is_null($cond->getID()))
 		{
 			$isUpdate = false;
@@ -100,8 +100,8 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 			$sql = 'UPDATE `'.self::$PREFIX.'conditionset` SET '.implode ('=?,',$this->_get_fields_list('conditionset')).'=? WHERE id=?';
 			$result = $this->queryPrepared($sql,array ($cond->description, $isUpdate));
 		}
-		
-		// saves the operation		
+
+		// saves the operation
 		if (!AMA_DB::isError($result))
 		{
 			if ($isUpdate===false)
@@ -110,17 +110,17 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 				$id_conditionset = $isUpdate;
 				$this->queryPrepared('DELETE FROM `'.self::$PREFIX.'operations` WHERE `id_conditionset`=?', $id_conditionset);
 			}
-			
+
 			$sql = 'INSERT INTO  `'.self::$PREFIX.'operations` ('.implode(',', $this->_get_fields_list('operations')).') VALUES (?,?,?,?,?)';
 
-			$toSave    = $cond->toArray();			
-			
+			$toSave    = $cond->toArray();
+
 			if (!empty($toSave))
 			{
 				$loopCounter = count ($toSave);
 				$mappedIDs = array();
 				$regexp = '/expr[(](\d+)[)]/';
-				
+
 				while (!empty($toSave) && ($loopCounter-- >= 0))
 				{
 					foreach ($toSave as $key=>$currentOperation)
@@ -133,24 +133,24 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 								$currentOperation['operand1'],
 								$currentOperation['operand2'],
 								$currentOperation['priority']);
-						
+
 						// must check operand1 and operand2 are pointer to expressions
 						if (preg_match($regexp, $currentOperation['operand1'],$matches)) {
 							$op1Pointer = $matches[1];
 						} else $op1Pointer = false;
-							
+
 						if (preg_match($regexp, $currentOperation['operand2'],$matches)) {
 							$op2Pointer = $matches[1];
 						} else $op2Pointer = false;
-						
+
 						if (!$op1Pointer && !$op2Pointer)
 						{
-							// neither operand are pointers, create the operation													
+							// neither operand are pointers, create the operation
 							$processed = 1;
 						}
 						else if ($op1Pointer && !$op2Pointer && isset($mappedIDs[$op1Pointer]))
 						{
-							// operand 1 is a pointer and its pointed operation has been set up, create the operation							
+							// operand 1 is a pointer and its pointed operation has been set up, create the operation
 							$operand1 = preg_replace($regexp, $mappedIDs[$op1Pointer], $currentOperation['operand1']);
 							$processed = 2;
 						}
@@ -167,22 +167,22 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 							$operand2 = preg_replace($regexp, $mappedIDs[$op2Pointer], $currentOperation['operand2']);
 							$processed = 4;
 						}
-						
+
 						// sets proper data to be saved
 						if ($processed==2 || $processed==4) $saveData[2] = 'expr('.$operand1.')';
 						if ($processed==3 || $processed==4) $saveData[3] = 'expr('.$operand2.')';
-						
+
 						$result = $this->queryPrepared($sql,$saveData);
-						
+
 						if (!AMA_DB::isError($result))
 							$mappedIDs[$currentOperation['id']] = $db->lastInsertID();
-						
+
 						if ($processed!==false)
 						{
 							unset ($toSave[$key]);
 							break;
 						}
-						
+
 						/**
 						 * each iteration of the above foreach loop
 						 * should process one row of the $toSave array.
@@ -198,9 +198,9 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 							throw new Exception('Could not save conditionSet operations', ADA_ERROR_ID_UNKNOWN_ERROR);
 							return false;
 						}
-					} // ends foreach ($toSave as $key=>$currentOperation) 									
+					} // ends foreach ($toSave as $key=>$currentOperation)
 				} // ends while (!empty($toSave) && ($loopCounter-- >= 0))
-			} // ends if (!empty($toSave))			
+			} // ends if (!empty($toSave))
 		} else {
 			throw new Exception('Could not save conditionSet', ADA_ERROR_ID_UNKNOWN_ERROR);
 			return $result;
@@ -208,11 +208,11 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 		// if the code reaches this point, everything is fine!
 		return $id_conditionset;
 	}
-	
+
 	/**
 	 * deletes a conditionset together with its associated operations
 	 * and all linking to the courses
-	 * 
+	 *
 	 * @param int $id_conditionSet the id of the conditionset to be deleted
 	 * @return array|AMA_Error
 	 * @access public
@@ -222,20 +222,20 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 		$sqlArr = array (
 				'DELETE FROM `'.self::$PREFIX.'operations` WHERE id_conditionset=?',
 				'DELETE FROM `'.self::$PREFIX.'conditionset_course` WHERE `id_conditionset`=?',
-				'DELETE FROM `'.self::$PREFIX.'conditionset` WHERE id=?'				
+				'DELETE FROM `'.self::$PREFIX.'conditionset` WHERE id=?'
 		);
-		
+
 		foreach ($sqlArr as $sql) {
 			$retval = $this->queryPrepared($sql, $id_conditionSet);
 		}
-		
+
 		return $retval;
 	}
-	
+
 	/**
 	 * loads a CompleteConditionSet from the DB,
 	 * returning the generated object
-	 * 
+	 *
 	 * @param int $id_conditionSet the id of the condition set to be loaded
 	 * @throws Exception
 	 * @return CompleteConditionSet
@@ -247,23 +247,25 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 				FROM  `'.self::$PREFIX.'conditionset` A,  `'.self::$PREFIX.'operations` B
 				WHERE A.id=? AND A.id = B.id_conditionset
 				ORDER BY priority ASC, A.id ASC ';
-		
+
 		$arrOperations = $this->getAllPrepared($sql,$id_conditionSet, AMA_FETCH_ASSOC);
-		
+
 		if (!AMA_DB::isError($arrOperations) && !empty($arrOperations))
 		{
+			require_once 'completeConditionSet.class.inc.php';
+			require_once 'operation.class.inc.php';
 			$conditionSet = new CompleteConditionSet($arrOperations[0]['id_conditionset'],$arrOperations[0]['descrizione']);
 			$conditionSet->setOperation(Operation::buildOperationTreeFromArray($arrOperations));
-			return $conditionSet;			
+			return $conditionSet;
 		} else {
     		throw new Exception('Could not load conditionSet', ADA_ERROR_ID_UNKNOWN_ERROR);
     		return null;
     	}
 	}
-	
+
 	/**
 	 * gets the conditionSet linked to the passed id_course
-	 * 
+	 *
 	 * @param int $id_course the course id
 	 * @return mixed CompleteConditionSet|AMA_Error
 	 * @access public
@@ -272,7 +274,7 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 	{
 		$sql = 'SELECT `id_conditionset` FROM `'.self::$PREFIX.'conditionset_course` WHERE `id_course`=?';
 		$result = $this->getOnePrepared($sql,$id_course);
-		
+
 		try {
 			if (!AMA_DB::isError($result))
 			{
@@ -281,31 +283,31 @@ class AMACompleteDataHandler extends AMA_DataHandler {
 		} catch (Exception $e) {}
 		return $result;
 	}
-	
+
 	/**
 	 * gets the array of the courses ids linked to the passed conditionSetId
-	 * 
+	 *
 	 * @param int $id_conditionSet the id of the conditionset to be loaded
 	 * @throws Exception
 	 * @return array|AMA_Error
 	 * @access public
 	 */
-	public function get_linked_courses_for_conditionset($id_conditionSet) 
+	public function get_linked_courses_for_conditionset($id_conditionSet)
 	{
 		$sql = 'SELECT `id_course` FROM `'.self::$PREFIX.'conditionset_course` WHERE `id_conditionset`=?';
-		
+
 		$result = $this->getAllPrepared($sql, $id_conditionSet);
-		
+
 		if (AMA_DB::isError($result))
 		{
 			throw new Exception('Could not load linked courses list');
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * saves the link between a conditionSet and a course
-	 * 
+	 *
 	 * @param int $id_conditionSet
 	 * @param array $linkCourse
 	 * @throws Exception
