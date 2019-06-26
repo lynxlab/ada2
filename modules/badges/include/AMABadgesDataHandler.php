@@ -43,7 +43,7 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 						'CourseBadge',
 						[
 							'id_corso' => $saveData['id_corso'],
-							'id_conditionset' => $saveData['id_conditionset'],
+							// 'id_conditionset' => $saveData['id_conditionset'],
 							'badge_uuid' => $saveData['badge_uuid']
 						]
 					);
@@ -170,6 +170,56 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 			return true;
 		} else return new BadgesException($result->getMessage());
 
+	}
+
+	/**
+	 * Save a Rewarded badge object
+	 *
+	 * @param array $saveData
+	 * @return BageExecption|RewardedBadge
+	 */
+	public function saveRewardedBadge($saveData) {
+		if (array_key_exists('uuid', $saveData)) {
+			$isUpdate = true;
+			// it's an update, never update the issue timestamp
+			if (isset($saveData['issuedOn'])) unset($saveData['issuedOn']);
+		} else {
+			// it's a new reward, set the timestamp to now and notified to false
+			$isUpdate = false;
+			$saveData['issuedOn'] = $this->date_to_ts('now');
+			$saveData['notified'] = 0;
+		}
+
+		$badgeUUid = Uuid::fromString($saveData['badge_uuid']);
+		unset($saveData['badge_uuid']);
+		$saveData['badge_uuid_bin'] = $badgeUUid->getBytes();
+
+		if (!$isUpdate) {
+			$uuid = Uuid::uuid4();
+			// uuid_bin is only used when inserting, the uuid field (human readable) is MySql virtual generated
+			$saveData['uuid_bin'] = $uuid->getBytes();
+			$result = $this->executeCriticalPrepared($this->sqlInsert(\Lynxlab\ADA\Module\Badges\RewardedBadge::table, $saveData), array_values($saveData));
+			unset($saveData['uuid_bin']);
+			$saveData['uuid'] = $uuid->toString();
+		} else {
+			$uuid = Uuid::fromString($saveData['uuid']);
+			unset($saveData['uuid']);
+			$result = $this->queryPrepared(
+				$this->sqlUpdate(
+					\Lynxlab\ADA\Module\Badges\Badge::table,
+					array_keys($saveData),
+					['uuid' => $uuid->toString()]
+				),
+				array_values($saveData + ['uuid' => $uuid->toString()])
+			);
+			$saveData['uuid'] = $uuid->toString();
+		}
+
+		if (!\AMA_DB::isError($result)) {
+			$saveData['badge_uuid'] = $badgeUUid->toString();
+			$reward = new RewardedBadge($saveData);
+			return $reward;
+		} else return new BadgesException($result->getMessage());
 	}
 
 	/**

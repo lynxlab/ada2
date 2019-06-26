@@ -16,7 +16,6 @@ SET time_zone = "+00:00";
 --
 -- Struttura della tabella `module_badges_badges`
 --
-
 CREATE TABLE `module_badges_badges` (
   `uuid_bin` binary(16) NOT NULL,
   `uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
@@ -25,23 +24,23 @@ CREATE TABLE `module_badges_badges` (
   `criteria` varchar(255) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
---
--- Struttura della tabella `module_badges_course_badges`
---
-
-CREATE TABLE `module_badges_course_badges` (
-  `badge_uuid_bin` binary(16) NOT NULL,
-  `badge_uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`badge_uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
-  `id_corso` int(10) UNSIGNED NOT NULL,
-  `id_conditionset` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 --
 -- Indici per le tabelle `module_badges_badges`
 --
 ALTER TABLE `module_badges_badges`
   ADD PRIMARY KEY (`uuid_bin`);
+
+
+-- --------------------------------------------------------
+--
+-- Struttura della tabella `module_badges_course_badges`
+--
+CREATE TABLE `module_badges_course_badges` (
+  `badge_uuid_bin` binary(16) NOT NULL,
+  `badge_uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`badge_uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
+  `id_corso` int(10) UNSIGNED DEFAULT NULL,
+  `id_conditionset` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Indici per le tabelle `module_badges_course_badges`
@@ -57,5 +56,42 @@ ALTER TABLE `module_badges_course_badges`
 ALTER TABLE `module_badges_course_badges`
   ADD CONSTRAINT `fk_badge_uuid` FOREIGN KEY (`badge_uuid_bin`) REFERENCES `module_badges_badges` (`uuid_bin`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_id_conditionset` FOREIGN KEY (`id_conditionset`) REFERENCES `module_complete_conditionset` (`id`) ON DELETE CASCADE;
+
+-- --------------------------------------------------------
+--
+-- Struttura della tabella `module_badges_rewarded_badges`
+--
+CREATE TABLE `module_badges_rewarded_badges` (
+  `uuid_bin` binary(16) NOT NULL,
+  `uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
+  `badge_uuid_bin` binary(16) NOT NULL,
+  `badge_uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`badge_uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
+  `issuedOn` int(10) UNSIGNED NOT NULL,
+  `approved` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+  `notified` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `id_utente` int(10) UNSIGNED NOT NULL,
+  `id_corso` int(10) UNSIGNED NOT NULL,
+  `id_istanza_corso` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Indici per le tabelle `module_badges_rewarded_badges`
+--
+ALTER TABLE `module_badges_rewarded_badges`
+  ADD PRIMARY KEY (`uuid_bin`),
+  ADD UNIQUE KEY `unique_badge_student_course` (`badge_uuid_bin`,`id_utente`,`id_corso`,`id_istanza_corso`),
+  ADD KEY `fk_rewarded_badge_uuid` (`badge_uuid_bin`),
+  ADD KEY `fk_rewarded_badge_id_corso` (`id_corso`),
+  ADD KEY `fk_rewarded_badge_id_istanza_corso` (`id_istanza_corso`),
+  ADD KEY `fk_rewarded_badge_id_utente` (`id_utente`);
+
+--
+-- Limiti per la tabella `module_badges_rewarded_badges`
+--
+ALTER TABLE `module_badges_rewarded_badges`
+  ADD CONSTRAINT `fk_rewarded_badge_id_corso` FOREIGN KEY (`id_corso`) REFERENCES `modello_corso` (`id_corso`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_rewarded_badge_id_istanza_corso` FOREIGN KEY (`id_istanza_corso`) REFERENCES `istanza_corso` (`id_istanza_corso`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_rewarded_badge_id_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_rewarded_badge_uuid` FOREIGN KEY (`badge_uuid_bin`) REFERENCES `module_badges_badges` (`uuid_bin`) ON DELETE CASCADE;
 
 COMMIT;
