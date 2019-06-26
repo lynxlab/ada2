@@ -176,6 +176,61 @@ class BrowsingHelper extends ViewBaseHelper
     }
   }
 
+
+  /**
+   * Uses the BADGES module to check if the passed user has to be rewarded
+   * with some badges in the passed course
+   *
+   * @param ADAGenericUser $userObj
+   * @param Course $courseObj
+   * @param Course_Instance $courseInstanceObj
+   *
+   * @return void
+   */
+  public static function checkRewardedBadges(ADAGenericUser $userObj, Course $courseObj = null, Course_Instance $courseInstanceObj = null)
+  {
+    if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_BADGES') && MODULES_BADGES) {
+      if (
+        isset($courseInstanceObj) && isset($courseObj) && isset($userObj) &&
+        is_object($courseInstanceObj) && is_object($courseObj) && is_object($userObj)) {
+        // need the badges module data handler
+        require_once MODULES_BADGES_PATH . '/config/config.inc.php';
+        $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        // need the service-complete module data handler
+        require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
+        $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        // load the badges linked to this course
+        $badgesList = $bdh->findBy('CourseBadge', ['id_corso' => $courseObj->getId()]);
+        if (!\AMA_DB::isError($badgesList) && is_array($badgesList) && count($badgesList) > 0) {
+          /**
+           * @var \Lynxlab\ADA\Module\Badges\CourseBadges $cb
+           */
+          foreach ($badgesList as $cb) {
+            $badge = $bdh->findBy('Badge', ['uuid' => $cb->getBadge_uuid()]);
+            if (is_array($badge) && count($badge) == 1) {
+              $badge = reset($badge);
+              $cs = $cdh->getCompleteConditionSet($cb->getId_conditionset());
+              if ($badge instanceof \Lynxlab\ADA\Module\Badges\Badge && $cs instanceof \CompleteConditionSet) {
+                if ($cs->evaluateSet(array($courseInstanceObj->getId(), $userObj->getId()))) {
+                  // student is rewarded with the badge
+                  $bdh->saveRewardedBadge([
+                    'badge_uuid' => $badge->getUuid(),
+                    'approved' => 1,
+                    'id_utente' => $userObj->getId(),
+                    'id_corso' => $courseObj->getId(),
+                    'id_istanza_corso' => $courseInstanceObj->getId()
+                  ]);
+                  // don't check for database errors, there's an index preventing badge reward duplication
+                  // therefore some kind of error could be generated on purpose
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   /**
    * Sends a welcome message to the passed user in the passed instance
    *

@@ -293,6 +293,7 @@ else {
 		$dh->add_node_history($sess_id_user, $sess_id_course_instance, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
 		if (isset($courseObj) && isset($courseInstanceObj)) {
 			BrowsingHelper::checkServiceComplete($userObj, $courseObj, $courseInstanceObj);
+			BrowsingHelper::checkRewardedBadges($userObj, $courseObj, $courseInstanceObj);
 		}
 	}
 }
