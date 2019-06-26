@@ -101,8 +101,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 						// NOTE: the timestamp parameter added to the png will prevent caching
 						(\CDOMElement::create('img','class:ui tiny image,src:'.$badge->getImageUrl().'?t='.time()))->getHtml(),
 						$badge->getName(),
-						$badge->getDescription(),
-						$badge->getCriteria(),
+						nl2br($badge->getDescription()),
+						nl2br($badge->getCriteria()),
 						$linksHtml
 					);
 				}
