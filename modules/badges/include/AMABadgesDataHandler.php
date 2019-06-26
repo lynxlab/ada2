@@ -28,6 +28,70 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 	 */
 	const MODELNAMESPACE = 'Lynxlab\\ADA\\Module\\Badges\\';
 
+	/**
+	 * Saves a Course-Badge association
+	 *
+	 * @param array $saveData
+	 * @return BadgesException|int
+	 */
+	public function saveCourseBadge($saveData) {
+		if (array_key_exists('id_corso', $saveData)) {
+			if (array_key_exists('id_conditionset', $saveData)) {
+				if (array_key_exists('badge_uuid', $saveData) && Uuid::isValid($saveData['badge_uuid'])) {
+
+					$exists = $this->findBy(
+						'CourseBadge',
+						[
+							'id_corso' => $saveData['id_corso'],
+							'id_conditionset' => $saveData['id_conditionset'],
+							'badge_uuid' => $saveData['badge_uuid']
+						]
+					);
+
+					if (is_array($exists) && count($exists)>=1) {
+						return new BadgesException(translateFN("L'associazione già esiste"));
+					}
+
+					$saveData['badge_uuid_bin'] = (Uuid::fromString($saveData['badge_uuid']))->getBytes();
+					$result =  $this->executeCriticalPrepared($this->sqlInsert(\Lynxlab\ADA\Module\Badges\CourseBadge::table, $saveData), array_values($saveData));
+
+					if (\AMA_DB::isError($result)) {
+						return new BadgesException($result->getMessage());
+					}
+					return $result;
+
+				} else return new BadgesException(translateFN('Passare un id badge valido'));
+			} else return new BadgesException(translateFN('Passare un id condizioni di completamento valido'));
+		} else return new BadgesException(translateFN('Passare un id corso valido'));
+	}
+
+	/**
+	 * Deletes a Course-Badge association
+	 *
+	 * @param array $saveData
+	 * @return BadgesException|bool
+	 */
+	public function deleteCourseBadge($saveData) {
+		$result = $this->queryPrepared(
+			$this->sqlDelete(
+				\Lynxlab\ADA\Module\Badges\CourseBadge::table,
+				$saveData
+			),
+			array_values($saveData)
+		);
+
+		if (!\AMA_DB::isError($result)) {
+			return true;
+		} else return new BadgesException($result->getMessage());
+
+	}
+
+	/**
+	 * Saves a badge
+	 *
+	 * @param array $saveData
+	 * @return BadgesException|Badge
+	 */
 	public function saveBadge($saveData) {
 		if (array_key_exists('badgeuuid', $saveData)) {
 			$isUpdate = true;
@@ -59,7 +123,14 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 		} else {
 			$uuid = Uuid::fromString($saveData['badgeuuid']);
 			unset($saveData['badgeuuid']);
-			$result = $this->queryPrepared($this->sqlUpdate(\Lynxlab\ADA\Module\Badges\Badge::table, array_keys($saveData), 'uuid_bin'), array_values($saveData + [$uuid->getBytes()]));
+			$result = $this->queryPrepared(
+				$this->sqlUpdate(
+					\Lynxlab\ADA\Module\Badges\Badge::table,
+					array_keys($saveData),
+					['uuid' => $uuid->toString()]
+				),
+				array_values($saveData + ['uuid' => $uuid->toString()])
+			);
 			$saveData['uuid'] = $uuid->toString();
 		}
 
@@ -72,6 +143,42 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 		} else return new BadgesException($result->getMessage());
 	}
 
+	/**
+	 * Deletes a Badge
+	 *
+	 * @param array $saveData
+	 * @return BadgesException|bool
+	 */
+	public function deleteBadge($saveData) {
+		/** @var Badge $badge */
+		$badge = $this->findBy('Badge', ['uuid' => $saveData['uuid']]);
+		if (is_array($badge) && count($badge)==1) {
+			$badge = reset($badge);
+			$deletefile = str_replace(HTTP_ROOT_DIR, ROOT_DIR, $badge->getImageUrl());
+		}
+
+		$result = $this->queryPrepared(
+			$this->sqlDelete(
+				\Lynxlab\ADA\Module\Badges\Badge::table,
+				$saveData
+			),
+			array_values($saveData)
+		);
+
+		if (!\AMA_DB::isError($result)) {
+			if (is_file($deletefile)) unlink($deletefile);
+			return true;
+		} else return new BadgesException($result->getMessage());
+
+	}
+
+	/**
+	 * Move an uploaded badge png from tmp to actual badges dir
+	 *
+	 * @param string $src
+	 * @param string $dest
+	 * @return void
+	 */
 	private function moveBadgeFile($src, $dest) {
 		$src = ADA_UPLOAD_PATH.DIRECTORY_SEPARATOR.MODULES_BADGES_NAME.DIRECTORY_SEPARATOR . $src;
 		$dest = MODULES_BADGES_MEDIAPATH . $dest;
@@ -108,57 +215,8 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 		// and remove them from the query, they will be loaded afterwards
 		$properties = array_diff($properties, $joined);
 
-		$sql = sprintf ("SELECT %s FROM `%s`", implode(',',array_map(function($el){ return "`$el`"; }, $properties)), $className::table);
-
-		if (!is_null($whereArr) && count($whereArr)>0) {
-			$invalidProperties = array_diff(array_keys($whereArr),$properties);
-			if (count($invalidProperties)>0) {
-				throw new BadgesException(translateFN('Proprietà WHERE non valide: ').implode(', ', $invalidProperties));
-			} else {
-				$sql .= ' WHERE ';
-				$sql .= implode(' AND ', array_map(function($el) use (&$whereArr){
-					if (is_null($whereArr[$el])) {
-						unset($whereArr[$el]);
-						return "`$el` IS NULL";
-					} else {
-						if (is_array($whereArr[$el])) {
-							$retStr = '';
-							if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
-								$whereArr[$el] = array($whereArr[$el]);
-							}
-							foreach ($whereArr[$el] as $opArr) {
-								if (strlen($retStr)>0) $retStr = $retStr. ' AND ';
-								$retStr .= "`$el` ".$opArr['op'].' '.$opArr['value'];
-							}
-							unset($whereArr[$el]);
-							return '('.$retStr.')';
-						} else if (is_numeric($whereArr[$el])) {
-							$op = '=';
-						} else {
-							$op = ' LIKE ';
-							$whereArr[$el] = '%'.$whereArr[$el].'%';
-						}
-						return "`$el`$op?";
-					}
-				}, array_keys($whereArr)));
-			}
-		}
-
-		if (!is_null($orderByArr) && count($orderByArr)>0) {
-			$invalidProperties = array_diff(array_keys($orderByArr),$properties);
-			if (count($invalidProperties)>0) {
-				throw new BadgesException(translateFN('Proprietà ORDER BY non valide: ').implode(', ', $invalidProperties));
-			} else {
-				$sql .= ' ORDER BY ';
-				$sql .= implode(', ', array_map(function($el) use ($orderByArr){
-					if (in_array($orderByArr[$el], array('ASC', 'DESC'))) {
-						return "`$el` ".$orderByArr[$el];
-					} else {
-						throw new BadgesException(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
-					}
-				}, array_keys($orderByArr)));
-			}
-		}
+		$sql = sprintf ("SELECT %s FROM `%s`", implode(',',array_map(function($el){ return "`$el`"; }, $properties)), $className::table)
+			  .$this->buildWhereClause($whereArr, $properties).$this->buildOrderBy($orderByArr, $properties);
 
 		if (is_null($dbToUse)) $dbToUse = $this;
 
@@ -201,15 +259,17 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 	 *
 	 * @param string $table
 	 * @param array $fields
-	 * @param string $whereField
+	 * @param array $whereArr
 	 * @return string
 	 */
-	private function sqlUpdate($table, array $fields, $whereField) {
-		return sprintf("UPDATE `%s` SET %s WHERE `%s`=?;",
-				$table,
-				implode(',', array_map(function($el) { return "`$el`=?"; }, $fields)),
-				$whereField
-		);
+	private function sqlUpdate($table, array $fields, $whereArr) {
+		return sprintf(
+			"UPDATE `%s` SET %s",
+			$table,
+			implode(',', array_map(function ($el) {
+				return "`$el`=?";
+			}, $fields))
+		) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
 	}
 
 	/**
@@ -228,31 +288,91 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 	}
 
 	/**
-	 * calls and sets the parent instance method, and if !MULTIPROVIDER
-	 * checks if module_gdpr_policy_content table is in the provider db.
+	 * Builds an sql delete query as a string
 	 *
-	 * If found, use the provider DB else use the common
-	 *
-	 * @param string $dsn
+	 * @param string $table
+	 * @param array $whereArr
+	 * @return string
 	 */
-	/*
-	static function instance ($dsn = null) {
-		if (!MULTIPROVIDER && is_null($dsn)) $dsn = \MultiPort::getDSN($GLOBALS['user_provider']);
-		$theInstance = parent::instance($dsn);
+	private function sqlDelete($table, $whereArr) {
+		return sprintf(
+			"DELETE FROM `%s`",
+			$table
+		) . $this->buildWhereClause($whereArr, array_keys($whereArr)) . ';';
+	}
 
-		if (is_null(self::$policiesDB)) {
-			self::$policiesDB = \AMA_Common_DataHandler::instance();
-			if (!MULTIPROVIDER && !is_null($dsn)) {
-				// must check if passed $dsn has the module login tables
-				// execute this dummy query, if result is not an error table is there
-				$sql = 'SELECT NULL FROM `'.GdprPolicy::table.'`';
-				// must use AMA_DataHandler because we are not able to
-				// query AMALoginDataHandelr in this method!
-				$ok = \AMA_DataHandler::instance($dsn)->getOnePrepared($sql);
-				if (!\AMA_DB::isError($ok)) self::$policiesDB = $theInstance;
+	/**
+	 * Builds an sql where clause
+	 *
+	 * @param array $whereArr
+	 * @param array $properties
+	 * @return string
+	 */
+	private function buildWhereClause(&$whereArr, $properties) {
+		$sql  ='';
+		if (!is_null($whereArr) && count($whereArr)>0) {
+			$invalidProperties = array_diff(array_keys($whereArr),$properties);
+			if (count($invalidProperties)>0) {
+				throw new BadgesException(translateFN('Proprietà WHERE non valide: ').implode(', ', $invalidProperties));
+			} else {
+				$sql .= ' WHERE ';
+				$sql .= implode(' AND ', array_map(function($el) use (&$whereArr){
+					if (is_null($whereArr[$el])) {
+						unset($whereArr[$el]);
+						return "`$el` IS NULL";
+					} else {
+						if (is_array($whereArr[$el])) {
+							$retStr = '';
+							if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
+								$whereArr[$el] = array($whereArr[$el]);
+							}
+							foreach ($whereArr[$el] as $opArr) {
+								if (strlen($retStr)>0) $retStr = $retStr. ' AND ';
+								$retStr .= "`$el` ".$opArr['op'].' '.$opArr['value'];
+							}
+							unset($whereArr[$el]);
+							return '('.$retStr.')';
+						} else if (is_numeric($whereArr[$el])) {
+							$op = '=';
+						} else if (Uuid::isValid($whereArr[$el])) {
+							$op = '=';
+						} else {
+							$op = ' LIKE ';
+							$whereArr[$el] = '%'.$whereArr[$el].'%';
+						}
+						return "`$el`$op?";
+					}
+				}, array_keys($whereArr)));
 			}
 		}
-		return $theInstance;
+		return $sql;
 	}
-	*/
+
+	/**
+	 * Builds an sql orderby clause
+	 *
+	 * @param array $orderByArr
+	 * @param array $properties
+	 * @return string
+	 */
+	private function buildOrderBy(&$orderByArr, $properties) {
+		$sql = '';
+		if (!is_null($orderByArr) && count($orderByArr)>0) {
+			$invalidProperties = array_diff(array_keys($orderByArr),$properties);
+			if (count($invalidProperties)>0) {
+				throw new BadgesException(translateFN('Proprietà ORDER BY non valide: ').implode(', ', $invalidProperties));
+			} else {
+				$sql .= ' ORDER BY ';
+				$sql .= implode(', ', array_map(function($el) use ($orderByArr){
+					if (in_array($orderByArr[$el], array('ASC', 'DESC'))) {
+						return "`$el` ".$orderByArr[$el];
+					} else {
+						throw new BadgesException(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
+					}
+				}, array_keys($orderByArr)));
+			}
+		}
+		return $sql;
+	}
+
 }

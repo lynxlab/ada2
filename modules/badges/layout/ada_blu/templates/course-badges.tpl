@@ -88,7 +88,6 @@
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->
-<template_field class="microtemplate_field" name="dropzonedict">dropzonedict</template_field>
-<span id="deleteBadgeMSG" style="display:none;"><i18n>Questo cancellerà il badge, le associazioni con i corsi ed i conseguimenti degli studenti</i18n></span>
+<span id="deleteCourseBadgeMSG" style="display:none;"><i18n>Questo cancellerà l'associazione tra corso e badge</i18n></span>
     </body>
 </html>

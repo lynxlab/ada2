@@ -8,6 +8,8 @@
  */
 
 use Lynxlab\ADA\Module\Badges\BadgesActions;
+use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
+use Lynxlab\ADA\Module\Badges\CourseBadgeForm;
 
 /**
  * Base config file
@@ -32,32 +34,37 @@ list($allowedUsersAr, $neededObjAr) = array_values(BadgesActions::getAllowedAndN
  */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
+require_once MODULES_SERVICECOMPLETE_PATH .'/include/init.inc.php';
 BrowsingHelper::init($neededObjAr);
 
-$self = 'badges';
+$self = 'course-badges';
 
 /**
- * generate HTML for 'New Badge' button and the empty table
+ * @var AMABadgesDataHandler
  */
-$badgesIndexDIV = CDOMElement::create('div', 'id:badgesindex');
+$GLOBALS['dh'] = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
-if (BadgesActions::canDo(BadgesActions::NEW_BADGE)) {
-    $newButton = CDOMElement::create('button');
-    $newButton->setAttribute('class', 'newButton top');
-    $newButton->setAttribute('title', translateFN('Clicca per creare un nuovo badge'));
-    $newButton->setAttribute('onclick', 'javascript:editBadge(null);');
-    $newButton->addChild(new CText(translateFN('Nuovo Badge')));
-    $badgesIndexDIV->addChild($newButton);
+/**
+ * generate HTML for 'New Association' form and the table
+ */
+$badgesIndexDIV = CDOMElement::create('div', 'id:coursebadgesindex');
+$cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+
+if (BadgesActions::canDo(BadgesActions::BADGE_COURSE_LINK)) {
+    $badges = $GLOBALS['dh']->findAll('Badge');
+    $rulesList = $cdh->get_completeConditionSetList();
+    $cbForm = new CourseBadgeForm('cbform', null, $badges, $rulesList, $courseObj->getId());
+    $badgesIndexDIV->addChild(new CText($cbForm->toSemanticUI()->getHtml()));
 }
 
 $badgesIndexDIV->addChild(CDOMElement::create('div', 'class:clearfix'));
 
-$labels = array( '&nbsp;',
-    translateFN('nome'), translateFN('descrizione'),
-    translateFN('criterio'), translateFN('azioni')
+$labels = array(
+    translateFN('badge'), translateFN('regola di acquisizione'), translateFN('azioni')
 );
 
-$badgesTable = BaseHtmlLib::tableElement('id:completeBadgesList', $labels, [], '', translateFN('Elenco dei badges'));
+$badgesTable = BaseHtmlLib::tableElement('id:completeCourseBadgesList', $labels, [], '',
+translateFN('Elenco dei badges associati al corso').' '.$courseObj->getTitle());
 $badgesTable->setAttribute('class', $badgesTable->getAttribute('class') . ' ' . ADA_SEMANTICUI_TABLECLASS);
 $badgesIndexDIV->addChild($badgesTable);
 
@@ -67,7 +74,7 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
-    'title' => ucfirst(translateFN('badges')),
+    'title' => ucfirst(translateFN('badges')) .' &gt; '. translateFN('Associa badges al corso').' '. $courseObj->getTitle(),
     'data' => $badgesIndexDIV->getHtml()
 );
 
@@ -87,6 +94,6 @@ $layout_dataAr['CSS_filename'] = array(
     MODULES_BADGES_PATH . '/layout/tooltips.css'
 );
 
-$optionsAr['onload_func'] = 'initDoc();';
+$optionsAr['onload_func'] = 'initDoc('.$courseObj->getId().');';
 
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);

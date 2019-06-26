@@ -6,8 +6,8 @@
  * @version		0.1
  */
 
-// var dropZones = [];
-var debugForm = true;
+var debugForm = false;
+var table = null;
 
 function initDoc() {
     Dropzone.autoDiscover = false;
@@ -114,7 +114,23 @@ function initDropZone() {
 }
 
 function initDataTables() {
-    $j('#completeBadgesList').DataTable({
+    table = $j('#completeBadgesList').DataTable({
+        "ajax": function (data, callback, settings) {
+            $j.ajax({
+                'type': 'GET',
+                'url': "ajax/getData.php",
+                'cache' : false,
+                'data': { object: 'Badge' }
+            })
+            .done(function (response) {
+                callback(response);
+            })
+            .fail(function (response) {
+                if (debugForm) console.debug('dataTable ajax fail ', response.responseJSON);
+                $j.when(showHideDiv("(" + response.status + ") " + response.statusText, ('error' in response.responseJSON) ? response.responseJSON.error : 'unkown error', false))
+                    .then(function () { callback(response.responseJSON); });
+            });
+        },
         "deferRender": true,
         "processing": true,
         "autoWidth": false,
@@ -130,6 +146,8 @@ function initDataTables() {
             "url": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
         },
     });
+
+    table.on('draw', function() { initButtons(); });
 }
 
 function editBadge(id_badge) {
@@ -294,18 +312,20 @@ function ajaxSubmitBadgeForm(data) {
     .done(function (JSONObj) {
         if (JSONObj.status.length > 0) {
             $j.when(showHideDiv('', JSONObj.msg, JSONObj.status == 'OK')).then(function () {
-                self.document.location.reload();
+                if (null !== table) table.ajax.reload(null, false);
+                else self.document.location.reload();
             });
         }
     });
 }
 
 function deleteBadge(jqueryObj, id_badge, message) {
+    if ('undefined' === typeof message) message = $j('#deleteBadgeMSG').text();
     // the trick below should emulate php's urldecode behaviour
     if (confirm(decodeURIComponent((message + '').replace(/\+/g, '%20')))) {
         $j.ajax({
             type: 'POST',
-            url: 'ajax/delete_badge.php',
+            url: 'ajax/deleteBadge.php',
             data: { uuid: id_badge },
             dataType: 'json'
         })

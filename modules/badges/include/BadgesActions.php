@@ -25,6 +25,9 @@ class BadgesActions {
 	const EDIT_BADGE = 2;
 	const TRASH_BADGE = 3;
 
+	const BADGE_COURSE_LINK = 4;
+	const BADGE_COURSE_TRASH = 5;
+
 	/**
 	 * array that defines who can do what
 	 *
@@ -48,6 +51,12 @@ class BadgesActions {
 			self::TRASH_BADGE => function($object = null, $userType = null) {
 				return in_array($userType, [ AMA_TYPE_ADMIN, AMA_TYPE_SWITCHER ] );
 			},
+			self::BADGE_COURSE_LINK => function($object = null, $userType = null) {
+				return in_array($userType, [ AMA_TYPE_SWITCHER ] );
+			},
+			self::BADGE_COURSE_TRASH => function($object = null, $userType = null) {
+				return in_array($userType, [ AMA_TYPE_SWITCHER ] );
+			}
 		);
 	}
 
@@ -121,10 +130,18 @@ class BadgesActions {
 				case 'index.php':
 				case 'ajax/getBadgeForm.php':
 				case 'ajax/saveBadge.php':
+				case 'ajax/deleteBadge.php':
 					$retArr['neededObjects'] = array(
 						AMA_TYPE_ADMIN => array('layout'),
 						AMA_TYPE_SWITCHER => array('layout')
 					);
+				break;
+				case 'course-badges.php':
+				case 'ajax/saveCourseBadge.php':
+				case 'ajax/deleteCourseBadge.php':
+				$retArr['neededObjects'] = array(
+					AMA_TYPE_SWITCHER => array('layout', 'course')
+				);
 				break;
 			}
 		}
