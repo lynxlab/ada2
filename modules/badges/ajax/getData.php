@@ -1,7 +1,6 @@
 <?php
 use Lynxlab\ADA\Module\Badges\BadgesActions;
 use Lynxlab\ADA\Module\Badges\AMABadgesDataHandler;
-use Lynxlab\ADA\Module\Badges\BadgesException;
 
 /**
  * @package 	badges module
@@ -40,7 +39,9 @@ BrowsingHelper::init($neededObjAr);
 /**
  * @var AMABadgesDataHandler $GLOBALS['dh']
  */
-$GLOBALS['dh'] = AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+if (array_key_exists('sess_selected_tester', $_SESSION)) {
+	$GLOBALS['dh'] = AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+}
 
 $data = ['error' => translateFN('errore sconosciuto')];
 
@@ -48,10 +49,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
 	$params = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 
-	if (class_exists($GLOBALS['dh']::MODELNAMESPACE.$params['object'])) {
+	if (class_exists(AMABadgesDataHandler::MODELNAMESPACE.$params['object'])) {
 		if ($params['object'] == 'Badge') {
 			$badgesData = array();
-			$badgesList = $GLOBALS['dh']->findAll('Badge');
+			$badgesList = $GLOBALS['dh']->findAll($params['object']);
 			if (!AMA_DB::isError($badgesList)) {
 				/**
 				 * @var \Lynxlab\ADA\Module\Badges\Badge $badge
@@ -113,7 +114,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 			$badgesData = array();
-			$badgesList = $GLOBALS['dh']->findBy('CourseBadge',['id_corso' => $params['courseId']]);
+			$badgesList = $GLOBALS['dh']->findBy($params['object'],['id_corso' => $params['courseId']]);
 
 			if (!AMA_DB::isError($badgesList)) {
 				/**
