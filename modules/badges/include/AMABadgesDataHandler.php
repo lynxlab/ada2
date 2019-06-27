@@ -198,7 +198,13 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 			$uuid = Uuid::uuid4();
 			// uuid_bin is only used when inserting, the uuid field (human readable) is MySql virtual generated
 			$saveData['uuid_bin'] = $uuid->getBytes();
-			$result = $this->executeCriticalPrepared($this->sqlInsert(\Lynxlab\ADA\Module\Badges\RewardedBadge::table, $saveData), array_values($saveData));
+			$result = $this->executeCriticalPrepared(
+				$this->sqlInsert(
+					\Lynxlab\ADA\Module\Badges\RewardedBadge::table,
+					$saveData
+				),
+				array_values($saveData)
+			);
 			unset($saveData['uuid_bin']);
 			$saveData['uuid'] = $uuid->toString();
 		} else {
@@ -206,7 +212,7 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 			unset($saveData['uuid']);
 			$result = $this->queryPrepared(
 				$this->sqlUpdate(
-					\Lynxlab\ADA\Module\Badges\Badge::table,
+					\Lynxlab\ADA\Module\Badges\RewardedBadge::table,
 					array_keys($saveData),
 					['uuid' => $uuid->toString()]
 				),
