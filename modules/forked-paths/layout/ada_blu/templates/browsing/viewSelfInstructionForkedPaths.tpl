@@ -32,6 +32,7 @@
             </div>
             <!-- / percorso -->
             <template_field class="template_field" name="courseStatus">courseStatus</template_field>
+            <template_field class="template_field" name="badges">badges</template_field>
             <!--dati utente-->
             <div id="status_bar">
             <div id="user_data" class="user_data_default">
