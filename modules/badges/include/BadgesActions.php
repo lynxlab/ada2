@@ -139,9 +139,9 @@ class BadgesActions {
 				case 'course-badges.php':
 				case 'ajax/saveCourseBadge.php':
 				case 'ajax/deleteCourseBadge.php':
-				$retArr['neededObjects'] = array(
-					AMA_TYPE_SWITCHER => array('layout', 'course')
-				);
+					$retArr['neededObjects'] = array(
+						AMA_TYPE_SWITCHER => array('layout', 'course')
+					);
 				break;
 			}
 		}
