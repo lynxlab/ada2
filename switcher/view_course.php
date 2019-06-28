@@ -105,6 +105,22 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
         $formData['condizione di completamento'] = ($conditionset instanceof CompleteConditionSet) ? $conditionset->description : translateFN('Nessuna');
     }
 
+    if (defined('MODULES_BADGES') && MODULES_BADGES) {
+        require_once MODULES_BADGES_PATH . '/config/config.inc.php';
+        $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $badges = $bdh->findBy('CourseBadge', [ 'id_corso' => $courseObj->getId() ]);
+        if (!\AMA_DB::isError($badges) && is_array($badges) && count($badges)>0) {
+            $formData['badges'] = implode(', ', array_map(function($el) use ($bdh) {
+                $b = $bdh->findBy('Badge', [ 'uuid' => $el->getBadge_uuid() ]);
+                if (is_array($b) && count($b)===1) {
+                    $b = reset($b);
+                    return $b->getName();
+                }
+                else return '';
+            }, $badges));
+        }
+    }
+
     $data = BaseHtmlLib::labeledListElement('class:view_info', $formData);
 }
 
