@@ -106,3 +106,22 @@
 /*
  * end table.doDataTable jQuery dataTable
  */
+
+ .ui.items[id^="badgesContainer"] .item {
+	 width: calc(25% - 1em);
+	 min-height: 22em;
+ }
+
+ .ui.items[id^="badgesContainer"] .item .description {
+	height: 7.5em;
+	max-height: 7.5em;
+    display: block;
+    overflow: auto;
+    text-overflow: ellipsis;
+    line-height: 1.5em;
+ }
+
+ .ui.items[id^="badgesContainer"].ui.items .item img.unrewarded {
+	-webkit-filter: blur(7px) grayscale(100%); /* Safari 6.0 - 9.0 */
+	filter: blur(3px) grayscale(100%);
+ }
