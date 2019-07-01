@@ -143,6 +143,12 @@ class BadgesActions {
 						AMA_TYPE_SWITCHER => array('layout', 'course')
 					);
 				break;
+				case 'ajax/getUserBadges.php':
+					$retArr['neededObjects'] = array(
+						AMA_TYPE_SWITCHER => array('layout'),
+						AMA_TYPE_STUDENT => array('layout')
+					);
+				break;
 			}
 		}
 		// if no allowedUsers specified, use the neededObjects keys
