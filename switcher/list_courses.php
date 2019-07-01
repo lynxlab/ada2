@@ -93,6 +93,9 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
     $add_instance_img= CDOMElement::create('img', 'src:img/add_instances.png,alt:view');
     $survey_img= CDOMElement::create('img', 'src:img/_exer.png,alt:view');
     $delete_img= CDOMElement::create('img', 'src:img/trash.png,alt:view');
+    if (defined('MODULES_BADGES') && MODULES_BADGES) {
+        $coursebadges_img = CDOMElement::create('img','src:'.MODULES_BADGES_HTTP.'/layout/'.$_SESSION['sess_template_family'].'/img/course-badges.png');
+    }
 
     foreach($coursesAr as $course) {
     	$isPublicCourse = isset($_SESSION['service_level_info'][$course['tipo_servizio']]['isPublic']) &&
@@ -144,6 +147,16 @@ if(is_array($coursesAr) && count($coursesAr) > 0) {
             $div_survey->setAttribute('class', 'tooltip');
             $div_survey->addChild(($survey_link));
             $actions[] = $div_survey;
+        }
+
+        if (!$isPublicCourse && defined('MODULES_BADGES') && MODULES_BADGES) {
+            $badges_link = BaseHtmlLib::link(MODULES_BADGES_HTTP.'/course-badges.php?id_course='.$courseId, $coursebadges_img->getHtml());
+            $title=translateFN('Badges');
+            $div_badges = CDOMElement::create('div');
+            $div_badges->setAttribute('title', ucfirst($title));
+            $div_badges->setAttribute('class', 'tooltip');
+            $div_badges->addChild(($badges_link));
+            $actions[] = $div_badges;
         }
 
         if(!$isPublicCourse) $add_instance_link = BaseHtmlLib::link("add_instance.php?id_course=$courseId", $add_instance_img->getHtml());

@@ -98,6 +98,7 @@
 								  <div class="item">
 								    <i class="time basic icon"></i><template_field class="template_field" name="gohistory">gohistory</template_field>
 								  </div>
+								  <template_field class="template_field" name="badgesLink">badgesLink</template_field>
 								</div>
 							</div>
 
@@ -164,5 +165,20 @@
 		<template_field class="microtemplate_field" name="footer">footer</template_field>
 	</div>
 	<!-- / piede -->
+<div class="ui modal" id="badgesModal">
+  <div class="header">
+    <i class="certificate icon"></i>
+	<span style="text-transform:capitalize;"><i18n>Badges</i18n></span>
+  </div>
+  <div class="content"></div>
+  <div class="actions">
+  	<div class="ui button"><i18n>OK</i18n></div>
+  </div>
+</div>
+<span id="rewardedMSG" style="display:none;"><i18n>Vinto il</i18n> </span>
+<span id="unrewardedMSG" style="display:none;"><i18n>Non vinto</i18n></span>
+<span id="badgesErrorMSG" style="display:none;"><i18n>Errore lettura dati dei badges</i18n></span>
+<span id="noBadgesMSG" style="display:none;"><i18n>Nessun badge per questo corso</i18n></span>
+<span id="rewardsCountMSG" style="display:none;">(<i18n>vinti {rewards} su {countBadges}</i18n>)</span>
 </body>
 </html>

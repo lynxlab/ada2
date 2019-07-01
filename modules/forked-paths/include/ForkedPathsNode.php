@@ -145,7 +145,7 @@ class ForkedPathsNode extends ForkedPathsBase {
 			$keysCourseData = [];
 			foreach ($courseData as $node) $keysCourseData[$node['id_nodo']] = $node;
 			return array_filter($courseData, function($nodeArr) use ($keysCourseData) {
-				if (self::checkNodeFromTitle($nodeArr['titolo'])) {
+				if (self::checkNodeFromTitle($nodeArr['titolo']) && isset($keysCourseData[$nodeArr['id_nodo_parent']]['titolo'])) {
 					return !self::checkNodeFromTitle($keysCourseData[$nodeArr['id_nodo_parent']]['titolo']);
 				}
 				return true;

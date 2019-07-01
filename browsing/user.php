@@ -655,6 +655,24 @@ else {
 		}
 	}
 
+	if (defined('MODULES_BADGES') && MODULES_BADGES) {
+		// need the badges module data handler
+		require_once MODULES_BADGES_PATH .'/config/config.inc.php';
+		$bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
+		// load all the badges for this course
+		$courseBadges = $bdh->findBy('CourseBadge', ['id_corso' => $courseId] );
+		if (!AMA_DB::isError($courseBadges) && is_array($courseBadges) && count($courseBadges)>0) {
+			$badgesLink = CDOMElement::create('div','class:item');
+			$badgesLink->addChild(CDOMElement::create('i','class:certificate icon'));
+			$badgesLink->setAttribute('data-dataurl',MODULES_BADGES_HTTP .'/ajax/getUserBadges.php?courseInstanceId='.$courseInstanceId);
+			$badgesLink->setAttribute('data-jsurl',  MODULES_BADGES_HTTP .'/js/badgesToHTML.js');
+			$popupLink = CDOMElement::create('a','id:bagesPopupLink,href:javascript:void(0);');
+			$popupLink->addChild(new CText(translateFN('Badges')));
+			$badgesLink->addChild($popupLink);
+			$content_dataAr['badgesLink'] = $badgesLink->getHtml();
+		}
+	}
+
 	if (!isset($content_dataAr['completeSummary'])) {
 		$userObj->set_course_instance_for_history($courseInstanceId);
 		$user_history = $userObj->getHistoryInCourseInstance($courseInstanceId);

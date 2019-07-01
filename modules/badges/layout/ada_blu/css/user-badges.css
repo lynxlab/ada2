@@ -1,0 +1,34 @@
+@CHARSET "UTF-8";
+@import url("showHideDiv.css");
+@import url("moduleDataTables.css");
+@import url("moduleADAForm.css");
+@import url("moduleNewButton.css");
+
+.ui.items[id^="badgesContainer"] .item {
+    width: calc(12.5% - 1em);
+    min-height: 22em;
+}
+
+.ui.items[id^="badgesContainer"] .item .description {
+   height: 7.5em;
+   max-height: 7.5em;
+   display: block;
+   overflow: auto;
+   text-overflow: ellipsis;
+   line-height: 1.5em;
+}
+
+.ui.items[id^="badgesContainer"].ui.items .item img.unrewarded {
+   -webkit-filter: blur(7px) grayscale(100%); /* Safari 6.0 - 9.0 */
+   filter: blur(3px) grayscale(100%);
+}
+
+#userBadgesContainer .courseContainer {
+   margin-bottom: 2rem;
+}
+
+#userBadgesContainer .ui.accordion .title .ui.right.label {
+   position: absolute;
+   right:1.5rem;
+}
+

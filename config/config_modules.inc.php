@@ -195,3 +195,17 @@ if (!defined('MODULES_FORKEDPATHS')) {
 		define('MODULES_FORKEDPATHS', false);
 	}
 }
+
+if (!defined('MODULES_BADGES')) {
+	if (isset($modEnabled)) unset($modEnabled);
+	// defines for module badges
+	if (file_exists(MODULES_DIR.'/badges/config/config.inc.php')) {
+		define('MODULES_BADGES_NAME', 'badges');
+		define ('MODULES_BADGES_PATH', MODULES_DIR. DIRECTORY_SEPARATOR. MODULES_BADGES_NAME);
+		$modEnabled = require_once(MODULES_BADGES_PATH.'/config/config.inc.php');
+		define('MODULES_BADGES', $modEnabled);
+		define('MODULES_BADGES_HTTP', HTTP_ROOT_DIR. str_replace(ROOT_DIR, '', MODULES_DIR) . DIRECTORY_SEPARATOR. MODULES_BADGES_NAME);
+	} else {
+		define('MODULES_BADGES', false);
+	}
+}

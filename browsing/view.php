@@ -293,6 +293,7 @@ else {
 		$dh->add_node_history($sess_id_user, $sess_id_course_instance, $sess_id_node, $remote_address, HTTP_ROOT_DIR, $accessed_from);
 		if (isset($courseObj) && isset($courseInstanceObj)) {
 			BrowsingHelper::checkServiceComplete($userObj, $courseObj, $courseInstanceObj);
+			BrowsingHelper::checkRewardedBadges($userObj, $courseObj, $courseInstanceObj);
 		}
 	}
 }
@@ -603,7 +604,20 @@ switch ($op){
 
 		if ($userObj->getType() == AMA_TYPE_STUDENT) {
 			$layout_dataAR['widgets']['courseStatus'] = [
-				'isActive' => 0,
+				/*
+				 * use commented condition to activate the widget in all non public courses
+				 * for students not having the status to completed or terminated
+				 */
+				'isActive' => 0, // !$courseObj->getIsPublic() && !in_array($user_status, array(ADA_STATUS_COMPLETED, ADA_STATUS_TERMINATED)),
+				'courseId' => $courseObj->getId(),
+				'courseInstanceId' => $courseInstanceObj->getId(),
+				'userId' => $userObj->getId()
+			];
+
+			// NOTE: the widget code will set the notified flag of the reward to true
+			// so that the notification box will show one time only
+			$layout_dataAR['widgets']['badges'] = [
+				'isActive' => defined('MODULES_BADGES') && MODULES_BADGES,
 				'courseId' => $courseObj->getId(),
 				'courseInstanceId' => $courseInstanceObj->getId(),
 				'userId' => $userObj->getId()

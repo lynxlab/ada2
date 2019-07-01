@@ -1,0 +1,17 @@
+{
+    "name" : "lynxlab/ada-module-badges",
+    "description" : "This is the ada module to manage course badges.",
+    "license" : "GPL",
+    "authors" : [{
+        "name" : "Giorgio Consorti",
+        "email" : "g.consorti@lynxlab.com"
+    }],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Badges\\" : ["include/", "include/form"]
+	    }
+    },
+    "require": {
+        "ramsey/uuid": "^3.8"
+    }
+}

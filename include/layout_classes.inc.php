@@ -492,7 +492,7 @@ class PageWidget
     	$this->pageWidgetsDir = null;
     	$this->error = '';
 
-    	$extractStringFrom = strpos($filename, self::$extractPathStartingFrom) + strlen (self::$extractPathStartingFrom);
+    	$extractStringFrom = strrpos($filename, self::$extractPathStartingFrom) + strlen (self::$extractPathStartingFrom);
     	$extractLength  = strrpos($filename, '/') - $extractStringFrom + 1 ;
 
     	$dirname = substr ($filename, $extractStringFrom, $extractLength);
