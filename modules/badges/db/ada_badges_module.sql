@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 --
 CREATE TABLE `module_badges_badges` (
   `uuid_bin` binary(16) NOT NULL,
-  `uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
+-- # `uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
   `name` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `criteria` varchar(255) COLLATE utf8_unicode_ci NOT NULL
@@ -37,7 +37,7 @@ ALTER TABLE `module_badges_badges`
 --
 CREATE TABLE `module_badges_course_badges` (
   `badge_uuid_bin` binary(16) NOT NULL,
-  `badge_uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`badge_uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
+--  `badge_uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`badge_uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
   `id_corso` int(10) UNSIGNED DEFAULT NULL,
   `id_conditionset` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -63,9 +63,9 @@ ALTER TABLE `module_badges_course_badges`
 --
 CREATE TABLE `module_badges_rewarded_badges` (
   `uuid_bin` binary(16) NOT NULL,
-  `uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
+--  `uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
   `badge_uuid_bin` binary(16) NOT NULL,
-  `badge_uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`badge_uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
+--  `badge_uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`badge_uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
   `issuedOn` int(10) UNSIGNED NOT NULL,
   `approved` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
   `notified` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
