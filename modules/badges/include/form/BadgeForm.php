@@ -66,6 +66,10 @@ class BadgeForm extends BadgesAbstractForm {
 		$dz->addChild($input);
 		$dz->addChild($span);
 
+		$dzlegend = \CDOMElement::create('span','class:small');
+		$dzlegend->addChild(new \CText(translateFN('File in formato png, misure minime 96px x 96px e peso massimo 256Kb')));
+		$row->addChild($dzlegend);
+
 		// 3rd row
 		$row = \CDOMElement::create('div','class:two fields');
 		$this->addCDOM($row);
