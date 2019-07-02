@@ -22,6 +22,16 @@ abstract class BadgesBase {
 	const GETTERPREFIX = 'get';
 	const SETTERPREFIX = 'set';
 	const ADDERPREFIX  = 'add';
+	/**
+	 * MySql binary field suffix, to be used for storing uuids
+	 * @var string
+	 */
+	const BINFIELDSUFFIX = '_bin';
+	/**
+	 * discriminator sgtring to tell an uuid field
+	 * @var string
+	 */
+	const UUID_DISCR = 'uuid';
 
 	/**
 	 * base constructor
@@ -58,7 +68,7 @@ abstract class BadgesBase {
 	 */
 	public function fromArray($data = array()) {
 		foreach ($data as $key=>$val) {
-			if (property_exists($this, $key) && method_exists($this, 'set'.ucfirst($key))) {
+			if ((property_exists($this, str_replace(self::BINFIELDSUFFIX, '', $key)) || property_exists($this, $key)) && method_exists($this, 'set'.ucfirst($key))) {
 				$this->{'set'.ucfirst($key)}($val);
 			}
 		}
@@ -85,5 +95,15 @@ abstract class BadgesBase {
 
 	protected function generateUUID() {
 		return Uuid::uuid4();
+	}
+
+	/**
+	 * Tells if a field is a uuid field, from its name
+	 *
+	 * @param string $fieldName
+	 * @return boolean
+	 */
+	public static function isUuidField($fieldName) {
+		return (bool) stristr($fieldName, self::UUID_DISCR);
 	}
 }
