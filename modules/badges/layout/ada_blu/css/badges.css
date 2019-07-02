@@ -4,3 +4,8 @@
 @import url("moduleADAForm.css");
 @import url("moduleNewButton.css");
 @import url("dropzone.css");
+
+#editbadge .small {
+    color: #555;
+    font-size: 0.9rem;
+}
