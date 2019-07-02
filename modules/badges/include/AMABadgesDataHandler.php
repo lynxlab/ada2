@@ -53,6 +53,7 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 					}
 
 					$saveData['badge_uuid_bin'] = (Uuid::fromString($saveData['badge_uuid']))->getBytes();
+					unset($saveData['badge_uuid']);
 					$result =  $this->executeCriticalPrepared($this->sqlInsert(\Lynxlab\ADA\Module\Badges\CourseBadge::table, $saveData), array_values($saveData));
 
 					if (\AMA_DB::isError($result)) {
@@ -115,23 +116,27 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 
 		if (!$isUpdate) {
 			$uuid = Uuid::uuid4();
-			// uuid_bin is only used when inserting, the uuid field (human readable) is MySql virtual generated
 			$saveData['uuid_bin'] = $uuid->getBytes();
-			$result = $this->executeCriticalPrepared($this->sqlInsert(\Lynxlab\ADA\Module\Badges\Badge::table, $saveData), array_values($saveData));
-			unset($saveData['uuid_bin']);
-			$saveData['uuid'] = $uuid->toString();
+			$result = $this->executeCriticalPrepared(
+				$this->sqlInsert(
+					\Lynxlab\ADA\Module\Badges\Badge::table,
+					$saveData
+				),
+				array_values($saveData)
+			);
 		} else {
 			$uuid = Uuid::fromString($saveData['badgeuuid']);
 			unset($saveData['badgeuuid']);
+			$whereArr = ['uuid' => $uuid->toString()];
 			$result = $this->queryPrepared(
 				$this->sqlUpdate(
 					\Lynxlab\ADA\Module\Badges\Badge::table,
 					array_keys($saveData),
-					['uuid' => $uuid->toString()]
+					$whereArr
 				),
-				array_values($saveData + ['uuid' => $uuid->toString()])
+				array_values($saveData + $whereArr)
 			);
-			$saveData['uuid'] = $uuid->toString();
+			$saveData['uuid_bin'] = $uuid->getBytes();
 		}
 
 		if (!\AMA_DB::isError($result)) {
@@ -210,19 +215,20 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 		} else {
 			$uuid = Uuid::fromString($saveData['uuid']);
 			unset($saveData['uuid']);
+			$whereArr = ['uuid' => $uuid->toString()];
 			$result = $this->queryPrepared(
 				$this->sqlUpdate(
 					\Lynxlab\ADA\Module\Badges\RewardedBadge::table,
 					array_keys($saveData),
-					['uuid' => $uuid->toString()]
+					$whereArr
 				),
-				array_values($saveData + ['uuid' => $uuid->toString()])
+				array_values($saveData + $whereArr)
 			);
-			$saveData['uuid'] = $uuid->toString();
+			$saveData['uuid_bin'] = $uuid->getBytes();
 		}
 
 		if (!\AMA_DB::isError($result)) {
-			$saveData['badge_uuid'] = $badgeUUid->toString();
+			$saveData['badge_uuid_bin'] = $badgeUUid->getBytes();
 			$reward = new RewardedBadge($saveData);
 			return $reward;
 		} else return new BadgesException($result->getMessage());
@@ -271,8 +277,10 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 		// and remove them from the query, they will be loaded afterwards
 		$properties = array_diff($properties, $joined);
 
-		$sql = sprintf ("SELECT %s FROM `%s`", implode(',',array_map(function($el){ return "`$el`"; }, $properties)), $className::table)
-			  .$this->buildWhereClause($whereArr, $properties).$this->buildOrderBy($orderByArr, $properties);
+		$sql = sprintf ("SELECT %s FROM `%s`", implode(',',array_map(function($el) use ($className) {
+				return ($className::isUuidField($el) ? "`$el".$className::BINFIELDSUFFIX."`": "`$el`");
+			}, $properties)), $className::table)
+			.$this->buildWhereClause($whereArr, $properties).$this->buildOrderBy($orderByArr, $properties);
 
 		if (is_null($dbToUse)) $dbToUse = $this;
 
@@ -318,7 +326,7 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 	 * @param array $whereArr
 	 * @return string
 	 */
-	private function sqlUpdate($table, array $fields, $whereArr) {
+	private function sqlUpdate($table, array $fields, &$whereArr) {
 		return sprintf(
 			"UPDATE `%s` SET %s",
 			$table,
@@ -350,7 +358,7 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 	 * @param array $whereArr
 	 * @return string
 	 */
-	private function sqlDelete($table, $whereArr) {
+	private function sqlDelete($table, &$whereArr) {
 		return sprintf(
 			"DELETE FROM `%s`",
 			$table
@@ -366,13 +374,14 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 	 */
 	private function buildWhereClause(&$whereArr, $properties) {
 		$sql  ='';
+		$newWhere = [];
 		if (!is_null($whereArr) && count($whereArr)>0) {
 			$invalidProperties = array_diff(array_keys($whereArr),$properties);
 			if (count($invalidProperties)>0) {
 				throw new BadgesException(translateFN('Proprietà WHERE non valide: ').implode(', ', $invalidProperties));
 			} else {
 				$sql .= ' WHERE ';
-				$sql .= implode(' AND ', array_map(function($el) use (&$whereArr){
+				$sql .= implode(' AND ', array_map(function($el) use (&$newWhere, $whereArr){
 					if (is_null($whereArr[$el])) {
 						unset($whereArr[$el]);
 						return "`$el` IS NULL";
@@ -391,16 +400,21 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 						} else if (is_numeric($whereArr[$el])) {
 							$op = '=';
 						} else if (Uuid::isValid($whereArr[$el])) {
+							$whereArr[$el.'_bin'] = (UUid::fromString($whereArr[$el]))->getBytes();
+							unset($whereArr[$el]);
+							$el .= '_bin';
 							$op = '=';
 						} else {
 							$op = ' LIKE ';
 							$whereArr[$el] = '%'.$whereArr[$el].'%';
 						}
+						$newWhere[$el] = $whereArr[$el];
 						return "`$el`$op?";
 					}
 				}, array_keys($whereArr)));
 			}
 		}
+		$whereArr = $newWhere;
 		return $sql;
 	}
 
