@@ -53,6 +53,18 @@ class RewardedBadge extends BadgesBase {
     }
 
     /**
+     * Set the value of uuid, binary version
+     *
+     * @param string $uuid
+     *
+     * @return self
+     */
+    public function setUuid_bin($uuid)
+    {
+        return $this->setUuid((\Ramsey\Uuid\Uuid::fromBytes($uuid))->toString());
+    }
+
+    /**
      * Get the value of badge_uuid
      */
     public function getBadge_uuid()
@@ -70,6 +82,18 @@ class RewardedBadge extends BadgesBase {
         $this->badge_uuid = $badge_uuid;
 
         return $this;
+    }
+
+    /**
+     * Set the value of badge_uuid, binary version
+     *
+     * @param string $uuid
+     *
+     * @return self
+     */
+    public function setBadge_uuid_bin($uuid)
+    {
+        return $this->setBadge_uuid((\Ramsey\Uuid\Uuid::fromBytes($uuid))->toString());
     }
 
     /**

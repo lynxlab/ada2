@@ -97,6 +97,18 @@ class Badge extends BadgesBase {
     }
 
     /**
+     * Set the value of uuid, binary version
+     *
+     * @param string $uuid
+     *
+     * @return self
+     */
+    public function setUuid_bin($uuid)
+    {
+        return $this->setUuid((\Ramsey\Uuid\Uuid::fromBytes($uuid))->toString());
+    }
+
+    /**
      * Get the value of uuid
      */
     public function getUuid()
