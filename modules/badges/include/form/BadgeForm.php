@@ -46,7 +46,7 @@ class BadgeForm extends BadgesAbstractForm {
 			$row->setAttribute('class','two fields');
 			$message = 'Trascina qui il file o clicca per sostituirlo';
 			$imgdiv = \CDOMElement::create('div','class:field, style:text-align:center');
-			$imgdiv->addChild(\CDOMElement::create('img','style:width:160px,src:'.$badge->getImageUrl()));
+			$imgdiv->addChild(\CDOMElement::create('img','style:width:160px,src:'.$badge->getImageUrl().'?t='.time()));
 			$row->addChild($imgdiv);
 		} else {
 			$message = 'Trascina qui il file o clicca per caricarlo';

@@ -16,7 +16,6 @@ function initDoc(dataUrl) {
         }
     })
     .done(function(userbadges) {
-        console.log(userbadges);
         if (Object.keys(userbadges).length > 0) {
             var messages = {
                 unrewarded: $j('#unrewardedMSG').html(),
