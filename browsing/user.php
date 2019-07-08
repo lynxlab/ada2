@@ -68,6 +68,8 @@ BrowsingHelper::init($neededObjAr);
 
 $courseInstances = array();
 $serviceProviders = $userObj->getTesters();
+$displayWhatsNew = false;
+
 /**
  * change the two below call to active to let the closed
  * instances completely disappear from the HTML table
@@ -136,8 +138,6 @@ if(!AMA_DataHandler::isError($courseInstances)) {
     $get_id_node            = (isset($_GET['id_node'])) ? $_GET['id_node'] : '';
     $get_id_course          = (isset($_GET['id_course'])) ? $_GET['id_course'] : '';
     $get_id_course_instance = (isset($_GET['id_course_instance'])) ? $_GET['id_course_instance'] : '';
-
-    $displayWhatsNew = false;
 
     if ( $get_id_node!=='' && $get_id_course!=='' && $get_id_course_instance!=='')
     {

@@ -88,7 +88,7 @@ class Menu
     	// get tree_id, isVertical and db where menu is stored
     	$res = $dh->get_menutree_id($module, $script, $user_type, $self_instruction);
 
-    	if (!AMA_DB::isError($res) && count($res)>0 && $res!==false) {
+    	if (!AMA_DB::isError($res) && is_array($res) && count($res)>0) {
     		// set found object properties
     		$this->_tree_id = $res['tree_id'];
     		$this->_isVertical = $res['isVertical'];
