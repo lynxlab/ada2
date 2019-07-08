@@ -376,17 +376,18 @@ switch ($op){
 
     if($tokenObj->isValid()) {
 
-
+      if (!isset($username)) $usernameStr = '';
+      else $usernameStr = ', '.$username;
       $help  = translateFN('Per favore inserisci la tua password:');
      // $status = translateFN("Modifica password utente");
-      $welcome ="<br />". translateFN('Benvenuto').", ".$username."<br />";
+      $welcome ="<br />". translateFN('Benvenuto').$usernameStr."<br />";
       $welcome.= translateFN('Ora devi cambiare la tua password. Puoi usare lettere, numeri e trattini. Lunghezza minima 8 lettere')."<br />";
       $home = 'user.php';
       $menu = '';
 
       $op   = new htmladmoutput();
 
-      $dati = $op->form_confirmpassword('forget.php',$home,$username,$userid,$id_course,$token);
+      $dati = $op->form_confirmpassword('forget.php',$home,$username,$userid,isset($id_course) ? $id_course : null,$token);
       $dati = $welcome.$dati;
       $title = translateFN('ADA - Modifica Dati Utente');
     }
