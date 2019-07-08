@@ -636,6 +636,13 @@ switch ($op){
 					$content_dataAr['forkedPathsButtons'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::buildForkedPathsButtons($nodeObj)->getHtml();
 				}
 			}
+		} else {
+			$layout_dataAR['widgets']['courseStatus'] = [
+				'isActive' => 0
+			];
+			$layout_dataAR['widgets']['badges'] = [
+				'isActive' => 0
+			];
 		}
 
 		$optionsAr['onload_func'] = 'initDoc();';
