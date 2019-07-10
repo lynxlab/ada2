@@ -82,7 +82,8 @@ if (count($serviceProviders) == 1) {
     foreach ($serviceProviders as $Provider) {
         $provider_dh = AMA_DataHandler::instance(MultiPort::getDSN($Provider));
 //         $courseInstances_provider = $provider_dh->get_course_instances_active_for_this_student($userObj->getId());
-        $courseInstances_provider = $provider_dh->get_course_instances_for_this_student($userObj->getId(), true);
+		$courseInstances_provider = $provider_dh->get_course_instances_for_this_student($userObj->getId(), true);
+		if (!is_array($courseInstances_provider)) $courseInstances_provider = array();
         $courseInstances = array_merge($courseInstances, $courseInstances_provider);
     }
 }
@@ -94,6 +95,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	 *  - nonzero value in isPublic, so that all instances of public courses will not be shown here
 	 *  - zero value in IsPublic and the service level in the $GLOBALS['userHiddenServiceTypes'] array, to hide autosubscription instances
 	 */
+	if (!is_array($courseInstances)) $courseInstances = array();
 	$courseInstances = array_filter($courseInstances, function($courseInstance) {
 		if (is_null($courseInstance['tipo_servizio'])) $courseInstance['tipo_servizio'] = DEFAULT_SERVICE_TYPE;
 		$actualServiceType = !is_null($courseInstance['istanza_tipo_servizio']) ? $courseInstance['istanza_tipo_servizio']: $courseInstance['tipo_servizio'];
