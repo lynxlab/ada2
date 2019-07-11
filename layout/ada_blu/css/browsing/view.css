@@ -54,8 +54,12 @@ div.firstnode .ui.header:nth-child(-n+2) {
 	padding: 0;
 }
 
-div#content_view .ui.accordion:last-child {
+div#notesandkeywords.ui.accordion:last-child {
 	display:none;
+}
+
+div#contentcontent .ui.accordion {
+	margin-bottom: 1em;
 }
 
 /**

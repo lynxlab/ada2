@@ -85,11 +85,11 @@ function initDoc() {
 		if ($j('a','div.keywords.content').length<=0) $j('div.keywords').remove();
 
 		// if accordion holding notes and keywords is empty, remove it
-		if ($j('.ui.accordion','#content_view').last().children().length <= 0) {
-			$j('.ui.accordion','#content_view').last().remove();
+		if ($j('#notesandkeywords.ui.accordion','#content_view').last().children().length <= 0) {
+			$j('#notesandkeywords.ui.accordion','#content_view').last().remove();
 		}
 		// show the accordion, if it's still there
-		$j('.ui.accordion','#content_view').last().fadeIn();
+		$j('#notesandkeywords.ui.accordion','#content_view').last().fadeIn();
 
 		// close navigation right panel if its cookie is there
 		var closeRightPanel = parseInt(readCookie("closeRightPanel"))==1;

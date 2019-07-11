@@ -120,7 +120,7 @@
                         <template_field class="template_field" name="text">text</template_field>
                     </div>
 
-				    <div class="ui fluid accordion">
+				    <div class="ui fluid accordion" id="notesandkeywords">
 		  				<div class="class notes title">
 		    				<i class="dropdown icon"></i>
 		    					<i18n>note di classe</i18n>
