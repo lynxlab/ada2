@@ -415,14 +415,16 @@ switch($id_profile) {
 // keywords linked to search separately
 $linksAr  = array();
 $keyAr = explode(',',$node_keywords); // or space?
+$keyAr = array_map('trim', $keyAr);
 foreach ($keyAr as $keyword){
 	if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $keyword == \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::MAGIC_KEYWORD) {
 		// just skip the ForkedPathsNode::MAGIC_KEYWORD
 		continue;
 	}
-	$linksAr [] = "<a href=\"search.php?s_node_title=$keyword&submit=cerca&l_search=all\">$keyword</a>";
+	if (strlen($keyword)>0) {
+		$linksAr [] = "<a href=\"search.php?s_node_title=$keyword&submit=cerca&l_search=all\">$keyword</a>";
+	}
 }
-
 $linked_node_keywords = implode(',',$linksAr);
 
 /**
