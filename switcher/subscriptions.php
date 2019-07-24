@@ -111,7 +111,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             {
                 $userDataAr = explode(',', $subscriber);
                 $countAr=count($userDataAr);
-                if($countAr!=3)
+                if($countAr<3)
                 {
                   $FlagFileWellFormat=false;
                   break;
@@ -130,6 +130,10 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 {
                   $FlagFileWellFormat=false;
                   break;
+                }
+                if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true && $userDataAr[3]==null) {
+                    $FlagFileWellFormat=false;
+                    break;
                 }
             }
             if($FlagFileWellFormat){
@@ -166,7 +170,13 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         	'birthcity' => ''
                         )
                     );
-                    $subscriberObj->setPassword(time());
+
+                    if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+                        $subscriberObj->setPassword((isset($userDataAr[3]) && strlen($userDataAr[3])>0) ? $userDataAr[3] : time());
+                        $subscriberObj->setEmail('');
+                    } else {
+                        $subscriberObj->setPassword(time());
+                    }
 
                     /**
                      * @author giorgio 06/mag/2014 11:25:21
@@ -314,7 +324,8 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         else
         {
-            $data = new CText('Il file non è ben formato sottometterlo di nuovo con: nome,cognome,mail');
+            $fields = (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) ? 'nome,cognome,mail' : 'nome,cognome,username,password';
+            $data = new CText('Il file non è ben formato sottometterlo di nuovo con: '.$fields);
         }
         }
         else {
