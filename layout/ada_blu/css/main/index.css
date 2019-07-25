@@ -46,26 +46,25 @@ html,body {
     /* box-shadow: 0px 5px 15px 0px rgba(120, 120, 120, .4);     */
 }
 
-.ada-column { 
+.ada-column {
     padding-bottom: 10px;
     width: 99%;
     float: left;
 }
 
-#container .portlet-header { 
-	margin: -0.7em;
-	margin-bottom:1.2em;
+#container .portlet-header {
+	margin: -0.9em -11px 1.2em -11px;
     border: none ;
-    border-radius: 0;
-    padding: 0.5em;
+    border-radius: 5px 5px 0 0;
+    padding: 0.7em;
     text-transform: capitalize;
  }
- 
+
 #container .ui-widget-content {
  	background: none;
  	background-color: #f5f5f5	;
  	color: rgba(0,0,0,.5);
- 	
+
 }
 
 #container a { color: #72A9D3; }
@@ -99,7 +98,7 @@ html,body {
 	margin-top:  4px;
 }
 #label_remindme label {
-	cursor: pointer;	
+	cursor: pointer;
 	display: inline-block;
 }
 
