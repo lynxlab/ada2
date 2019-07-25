@@ -51,6 +51,7 @@ $content_dataAr = array(
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
     'title' => ucfirst(translateFN('badges')) .' &gt; '. translateFN('Tutti i tuoi badges'),
+    'edit_profile'=>$userObj->getEditProfilePage(),
     'data' => ''
 );
 
