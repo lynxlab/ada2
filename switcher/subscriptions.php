@@ -155,7 +155,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             foreach($usersToSubscribe as $subscriber) {
                 $canSubscribeUser = false;
-                $userDataAr = explode(',', $subscriber);
+                $userDataAr = array_map('trim', explode(',', $subscriber));
 
                 $subscriberObj = MultiPort::findUserByUsername(trim($userDataAr[2]));
                 if($subscriberObj == NULL) {
@@ -174,6 +174,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
                         $subscriberObj->setPassword((isset($userDataAr[3]) && strlen($userDataAr[3])>0) ? $userDataAr[3] : time());
                         $subscriberObj->setEmail('');
+                        $subscriberObj->setStatus(ADA_STATUS_REGISTERED);
                     } else {
                         $subscriberObj->setPassword(time());
                     }
