@@ -1044,6 +1044,7 @@ abstract class CCheckableInput extends CInputElement
 abstract class CTextInput extends CInputElement
 {
     protected $maxlength;
+    protected $placeholder;
 }
 
 class CFileInput extends CInputElement
