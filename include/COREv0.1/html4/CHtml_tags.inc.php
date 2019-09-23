@@ -110,7 +110,7 @@ class CHtml_tags
             case 'CButtonInput':
             case 'CCheckbox':
             case 'CRadio':
-                return "<input %name% %type% %checked% %disabled% %readonly% %onselect% %size% %maxlength% %usemap% %ismap% %src% %alt% %onchange% %value% $core_attributes $i18n_attributes $event_attributes $accesskey $tabindex $focusable>\n";
+                return "<input %name% %type% %checked% %disabled% %readonly% %onselect% %size% %maxlength% %placeholder% %usemap% %ismap% %src% %alt% %onchange% %value% $core_attributes $i18n_attributes $event_attributes $accesskey $tabindex $focusable>\n";
             case 'CIFrame':
                 return "<iframe $core_attributes %longdesc% %name% %src% %frameborder% %marginwidth% %marginheight% %noresize% %scrolling% %align% %width% %height%>\n%children%\n</iframe>\n";
             default:
