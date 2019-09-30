@@ -464,6 +464,9 @@ abstract class ADAGenericUser {
             case AMA_TYPE_SWITCHER:
                 $user_type = translateFN('switcher');
                 break;
+            case AMA_TYPE_SUPERTUTOR:
+                $user_type = translateFN('SuperTutor');
+                break;
 
             case AMA_TYPE_STUDENT:
             default:
