@@ -15,13 +15,16 @@ namespace Lynxlab\ADA\Module\ForkedPaths;
  * @author giorgio
  *
  */
+
+if (!defined('ForkedPathsHistoryTable')) define('ForkedPathsHistoryTable', AMAForkedPathsDataHandler::PREFIX . 'history');
+
 class ForkedPathsHistory extends ForkedPathsBase {
 	/**
 	 * table name for this class
 	 *
 	 * @var string
 	 */
-    const table =  AMAForkedPathsDataHandler::PREFIX . 'history';
+    const table =  ForkedPathsHistoryTable;
 
     protected $userId;
     protected $courseInstanceId;

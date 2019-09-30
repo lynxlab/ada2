@@ -15,13 +15,16 @@ namespace Lynxlab\ADA\Module\Badges;
  * @author giorgio
  *
  */
+
+ if (!defined('BadgeClassTable')) define ('BadgeClassTable', AMABadgesDataHandler::PREFIX . 'badges');
+
 class Badge extends BadgesBase {
 	/**
 	 * table name for this class
 	 *
 	 * @var string
 	 */
-    const table =  AMABadgesDataHandler::PREFIX . 'badges';
+    const table =  BadgeClassTable;
 
     protected $name;
     protected $description;
@@ -105,7 +108,8 @@ class Badge extends BadgesBase {
      */
     public function setUuid_bin($uuid)
     {
-        return $this->setUuid((\Ramsey\Uuid\Uuid::fromBytes($uuid))->toString());
+        $tmpuuid = \Ramsey\Uuid\Uuid::fromBytes($uuid);
+        return $this->setUuid($tmpuuid->toString());
     }
 
     /**
