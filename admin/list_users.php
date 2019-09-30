@@ -93,7 +93,7 @@ if($id_tester !== FALSE) {
     if($userTypeToFilter !== FALSE) {
         $user_typesAr = array($userTypeToFilter);
     } else {
-        $user_typesAr = array(AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_TYPE_TUTOR,AMA_TYPE_SWITCHER,AMA_TYPE_ADMIN);
+        $user_typesAr = array(AMA_TYPE_STUDENT,AMA_TYPE_AUTHOR,AMA_TYPE_TUTOR,AMA_TYPE_SWITCHER,AMA_TYPE_ADMIN,AMA_TYPE_SUPERTUTOR);
     }
     $users_count = $tester_dh->count_users_by_type($user_typesAr);
     if(AMA_DataHandler::isError($users_count)) {
@@ -141,6 +141,7 @@ $menu_dataAr = array(
   array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_SWITCHER, 'text' => translateFN('Switcher list')),
   array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_AUTHOR, 'text' => translateFN('Authors list')),
   array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_TUTOR, 'text' => translateFN('Tutors list')),
+  array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_SUPERTUTOR, 'text' => translateFN('SuperTutors list')),
   array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_STUDENT, 'text' => translateFN('Students list')),
   array('href' => 'list_users.php?id_tester='. $id_tester, 'text' => translateFN('All Users list')),
   );
