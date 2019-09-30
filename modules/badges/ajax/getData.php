@@ -98,9 +98,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 						$linksHtml = $linksul->getHtml();
 					} else $linksHtml = '';
 
+					$tmpelement = \CDOMElement::create('img','class:ui tiny image,src:'.$badge->getImageUrl().'?t='.time());
 					$badgesData[] = array(
 						// NOTE: the timestamp parameter added to the png will prevent caching
-						(\CDOMElement::create('img','class:ui tiny image,src:'.$badge->getImageUrl().'?t='.time()))->getHtml(),
+						$tmpelement->getHtml(),
 						$badge->getName(),
 						nl2br($badge->getDescription()),
 						nl2br($badge->getCriteria()),

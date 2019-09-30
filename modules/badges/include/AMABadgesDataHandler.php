@@ -52,7 +52,8 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 						return new BadgesException(translateFN("L'associazione già esiste"));
 					}
 
-					$saveData['badge_uuid_bin'] = (Uuid::fromString($saveData['badge_uuid']))->getBytes();
+					$tmpuuid = Uuid::fromString($saveData['badge_uuid']);
+					$saveData['badge_uuid_bin'] = $tmpuuid->getBytes();
 					unset($saveData['badge_uuid']);
 					$result =  $this->executeCriticalPrepared($this->sqlInsert(\Lynxlab\ADA\Module\Badges\CourseBadge::table, $saveData), array_values($saveData));
 
@@ -400,7 +401,8 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 						} else if (is_numeric($whereArr[$el])) {
 							$op = '=';
 						} else if (Uuid::isValid($whereArr[$el])) {
-							$whereArr[$el.'_bin'] = (UUid::fromString($whereArr[$el]))->getBytes();
+							$tmpuuid = UUid::fromString($whereArr[$el]);
+							$whereArr[$el.'_bin'] = $tmpuuid->getBytes();
 							unset($whereArr[$el]);
 							$el .= '_bin';
 							$op = '=';

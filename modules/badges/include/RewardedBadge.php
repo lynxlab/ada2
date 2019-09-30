@@ -15,13 +15,16 @@ namespace  Lynxlab\ADA\Module\Badges;
  * @author giorgio
  *
  */
+
+ if (!defined('RewardedBadgeTable')) define('RewardedBadgeTable', AMABadgesDataHandler::PREFIX . 'rewarded_badges');
+
 class RewardedBadge extends BadgesBase {
 	/**
 	 * table name for this class
 	 *
 	 * @var string
 	 */
-    const table =  AMABadgesDataHandler::PREFIX . 'rewarded_badges';
+    const table =  RewardedBadgeTable;
 
     protected $uuid;
     protected $badge_uuid;
