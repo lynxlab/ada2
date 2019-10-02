@@ -2002,6 +2002,12 @@ class MultiPort
   	$testers_activity_dataAr = array();
   	$testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
 
+    if (!MULTIPROVIDER) {
+      $testers_infoAr = array_values(array_filter($testers_infoAr, function ($el) {
+        return strcmp($el['puntatore'], $GLOBALS['user_provider']) === 0;
+      }));
+    }
+
   	if(AMA_Common_DataHandler::isError($testers_infoAr)) {
   		return array();
   	}
@@ -2045,6 +2051,13 @@ class MultiPort
    		if(AMA_Common_DataHandler::isError($testers_infoAr)) {
    			return array();
    		}
+
+      if (!MULTIPROVIDER) {
+        $testers_infoAr = array_values(array_filter($testers_infoAr, function ($el) {
+          return strcmp($el['puntatore'], $GLOBALS['user_provider']) === 0;
+        }));
+      }
+
    		$userId = $userObj->getId();
    		$whatsnew = $userObj->getwhatsnew();
 
@@ -2091,6 +2104,11 @@ class MultiPort
 
   	$testers_activity_dataAr = array();
   	$testers_infoAr = $common_dh->get_all_testers(array('id_tester','nome'));
+    if (!MULTIPROVIDER) {
+      $testers_infoAr = array_values(array_filter($testers_infoAr, function ($el) {
+        return strcmp($el['puntatore'], $GLOBALS['user_provider']) === 0;
+      }));
+    }
 
   	if(AMA_Common_DataHandler::isError($testers_infoAr)) {
   		return array();
