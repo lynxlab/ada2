@@ -11,7 +11,7 @@
  	margin:0;
  	padding:0;
 }
- 
+
 #mainmenu {
     z-index: 0;
 }
@@ -39,8 +39,8 @@
 /* lista domande */
 ul.topic_group_test
 {
-	list-style-image:url('../img/punto-elenco.png');
-	/* list-style:none;  */
+	/* list-style-image:url('../img/punto-elenco.png'); */
+	list-style:none;
 }
 
 /* Domande_principali */
