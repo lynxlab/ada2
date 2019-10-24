@@ -16,6 +16,5 @@ span.pass-validator-text {
     display: block;
     font-style: italic;
     font-size: 0.9em;
-    margin-top: -15px;
-    line-height: 0;
+    margin-top: -2em;
 }
