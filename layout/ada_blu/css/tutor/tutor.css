@@ -30,7 +30,7 @@ table#listTutors.dataTable td.details { padding-left: 3%; padding-right: 1%; bac
 table#listTutors.dataTable td.details table { width: 100%; }
 /*
  * table.doDataTable actions
- */ 
+ */
 table.doDataTable .ulactions { list-style-type: none; display: block; padding:0; margin:0; }
 table.doDataTable .liactions { text-align:center; border: none !important; margin-bottom: 5px; }
 table.doDataTable .button_Increase, table.doDataTable .button_Decrease { height: 1.5em; }
@@ -40,8 +40,8 @@ table.doDataTable .button_Increase, table.doDataTable .button_Decrease { height:
 
 .saveResults {
     background: rgba(22, 101, 173, 0.9);
-    padding: 5px 5px 15px 5px;    
-    -webkit-border-radius: 5px;    
+    padding: 5px 5px 15px 5px;
+    -webkit-border-radius: 5px;
     border-radius: 5px;
     -webkit-box-shadow:  0px 0px 2px 2px rgba(0, 0, 0, .2);
     box-shadow:  0px 0px 2px 2px rgba(0, 0, 0, .2);
@@ -74,7 +74,9 @@ table.doDataTable .button_Increase, table.doDataTable .button_Decrease { height:
 
 .saveResults .message {
     padding: 15px 0px 0px 0px;
-    color:#fff; 
+    color:#fff;
     text-align : center;
-    width: 100%;    
+    width: 100%;
 }
+
+.updatelink .updateButtoncont { text-align: right; }

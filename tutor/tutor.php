@@ -226,8 +226,9 @@ switch ($op) {
            	if (isset($report_generation_TS)) {
            		$updateDIV = CDOMElement::create('div','class:updatelink');
            		$updateSPAN = CDOMElement::create('span');
-           		$updateSPAN->addChild(new CText(translateFN('Report aggiornato al').' '.ts2dFN($report_generation_TS)));
-           		$updateLink = CDOMElement::create('a','href:javascript:void(0);');
+                $updateSPAN->addChild(new CText(translateFN('Report aggiornato al').' '.ts2dFN($report_generation_TS)));
+                $updateBtnCont = CDOMElement::create('div','class:updateButtoncont');
+           		$updateLink = CDOMElement::create('a','class:ui tiny green button,href:javascript:void(0);');
            		$confirmMessage = translateFN('Questa operazione può richiedere qualche minuto');
            		$updateLink->setAttribute('onclick', 'javascript:'.
            				'if (confirm(decodeURI(\''.urlencode($confirmMessage).'\').replace(/\+/g, \' \'))) '.
@@ -237,8 +238,9 @@ switch ($op) {
            				'&id_course='.$id_course.'&mode=update'.
            				'\';');
            		$updateLink->addChild(new CText(' '.translateFN("Aggiorna il report")));
-           		$updateDIV->addChild($updateSPAN);
-           		$updateDIV->addChild($updateLink);
+                $updateDIV->addChild($updateSPAN);
+                $updateBtnCont->addChild($updateLink);
+           		$updateDIV->addChild($updateBtnCont);
         		$help .= $updateDIV->getHtml();
            	}
         }
