@@ -11,8 +11,8 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div> <!-- / testata -->
         <!-- menu -->
-            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-        <!-- / menu --> 
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
+        <!-- / menu -->
         <div id="help">
             <template_field class="template_field" name="help">help</template_field>
         </div>
@@ -26,7 +26,7 @@
                     </div-->
                     <div id="data" class="first">
                         <template_field class="template_field" name="data">data</template_field>
-                    </div>                    
+                    </div>
                 </div>
                 <div id="bottomcont">
                 </div>
@@ -41,10 +41,22 @@
                 <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
             </div>
         </div>
-        <!-- /com_tools -->			
+        <!-- /com_tools -->
         <!-- PIEDE -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div> <!-- / piede -->
+        <span id="unameCheckProgress" style="display:none;">
+            <div class="ui label"><i class="loading icon"></i><i18n>Controllo username in corso</i18n></div>
+        </span>
+        <span id="unameCheckOk" style="display:none;">
+            <div class="ui green label"><i class="checkmark icon"></i><i18n>username valido</i18n></div>
+        </span>
+        <span id="unameCheckExists" style="display:none;">
+            <div class="ui red label"><i class="ban circle icon"></i><i18n>username utilizzato o non valido, riprovare con username diverso</i18n></div>
+        </span>
+        <span id="unameCheckFail" style="display:none;">
+            <div class="ui red label"><i class="attention icon"></i><i18n>Errore nel controllo username</i18n></div>
+        </span>
     </body>
 </html>
