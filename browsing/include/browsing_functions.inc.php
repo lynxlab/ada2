@@ -275,4 +275,25 @@ class BrowsingHelper extends ViewBaseHelper
       // $user_messages = $userObj->get_messagesFN($sess_id_user);
     }
   }
+
+  /**
+   * used by the menu to check if the session user is the author
+   * of the session node, that must be a note
+   *
+   * @return boolean
+   */
+  public static function isSessionUserAuthorOfSessionNote() {
+    if (isset($_SESSION['sess_id_node']) && isset($_SESSION['sess_id_user']) && isset($_SESSION['sess_id_user_type'])) {
+      $node = new Node($_SESSION['sess_id_node']);
+      if ($node instanceof \Node) {
+        return (in_array($node->type, [ ADA_NOTE_TYPE, ADA_PRIVATE_NOTE_TYPE ])
+                && ($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR ||
+                    ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT
+                     && $node->author['id'] == $_SESSION['sess_id_user'])
+                   )
+               );
+      }
+    }
+    return false;
+  }
 }
