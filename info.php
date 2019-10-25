@@ -652,8 +652,11 @@ if ($op !== false && $op == 'course_info') {
                         		foreach ($instanceEl as $iKey => $iVal) {
 	                        		if (is_numeric($iKey)) unset($instancesAr[$instKey][$iKey]);
 	                        		else if (stripos($iKey, 'data') !== false) $instancesAr[$instKey][$iKey] = ts2dFN($iVal);
-	                        	}
-	                        	$instancesAr[$instKey]['isended'] = ($instanceEl[3] > 0 && $instanceEl[3] < time()) ? true : false;
+								}
+								$instancesAr[$instKey]['id_corso'] = $courseId;
+								$instancesAr[$instKey]['provider'] = $courseData['id_tester'];
+								$instancesAr[$instKey]['isstarted'] = ($instanceEl['data_inizio_previsto'] > 0 && $instanceEl['data_inizio_previsto'] <= time()) ? true : false;
+	                        	$instancesAr[$instKey]['isended'] = ($instanceEl['data_fine'] > 0 && $instanceEl['data_fine'] < time()) ? true : false;
                         	}
 
 	                        $row['instances'] = json_encode($instancesAr, JSON_UNESCAPED_SLASHES);

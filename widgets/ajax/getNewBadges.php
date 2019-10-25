@@ -34,6 +34,7 @@ require_once ROOT_DIR . '/widgets/include/widget_includes.inc.php';
  * Users (types) allowed to access this module.
  */
 $allowedUsersAr = array(AMA_TYPE_STUDENT);
+$trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 include_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init();

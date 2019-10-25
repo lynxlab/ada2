@@ -9,12 +9,14 @@
 
 #infotable tbody td.details-control i { opacity: 1; margin:0; line-height: normal; font-size: 1.3em; }
 #infotable tbody tr.instanceDetails td.instanceDetails { padding:0 0 0 3em; }
-#infotable tbody tr.instanceDetails td.instanceDetails ul li { color: inherit; border: none; margin-bottom: 0.5em; }
-#infotable tbody tr.instanceDetails td.instanceDetails ul li .ended.label { line-height: inherit; padding-top: 0; padding-bottom: 0; position: absolute; right: 8em; }
+#infotable tbody tr.instanceDetails td.instanceDetails ul { padding-left: 1em;}
+#infotable tbody tr.instanceDetails td.instanceDetails ul li { color: inherit; border: none; height: 2em; display: flex; align-items: center; padding: 0.5em; }
+#infotable tbody tr.instanceDetails td.instanceDetails ul li:hover {  background-color: #d3d3d380; }
+#infotable tbody tr.instanceDetails td.instanceDetails ul li .label { padding-top: 0; padding-bottom: 0; margin-left: auto; }
 
 /**
  * Table main
- */ 
+ */
 .dataTables_wrapper table.dataTable { font-size: 1.1em; }
 
 .dataTables_wrapper table.dataTable>tbody>tr:not(.instanceDetails):hover,
@@ -25,7 +27,7 @@
 
 /**
  * Table pagination
- */ 
+ */
 #contentcontent .dataTables_wrapper > .dataTables_paginate { margin: 1rem 0 1rem 0; }
 #contentcontent .dataTables_wrapper .paging_full_numbers a.first { margin-top: 0; }
 
@@ -71,7 +73,7 @@
 		box-shadow: none !important;
 		-webkit-box-shadow: none !important;
 	}
-	
+
 	#contentcontent .dataTables_wrapper table.dataTable.ui.table>tbody>tr {
     border-bottom: 1px solid #eaeaea;
     padding-bottom: 2rem;

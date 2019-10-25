@@ -37,6 +37,7 @@ require_once ROOT_DIR.'/widgets/include/widget_includes.inc.php';
  * Users (types) allowed to access this module.
 */
 $allowedUsersAr = array(AMA_TYPE_VISITOR, AMA_TYPE_STUDENT,AMA_TYPE_TUTOR, AMA_TYPE_AUTHOR, AMA_TYPE_ADMIN);
+$trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {

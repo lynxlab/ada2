@@ -11,7 +11,7 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div> <!-- / testata -->
 <!-- menu -->
-    <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+    <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
 <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- /label -->    
+                    <!-- /label -->
             </div>
 
             <!-- contenuto -->
@@ -88,5 +88,6 @@
 		<span style="display:none;" id="listinstance-from-txt"> <i18n>dal</i18n></span>
 		<span style="display:none;" id="listinstance-to-txt"> <i18n>al</i18n></span>
 		<span style="display:none;" id="listinstance-ended-txt"><i18n>terminato</i18n></span>
+        <span style="display:none;" id="listinstance-subscribe-txt"><i18n>iscriviti</i18n></span>
     </body>
 </html>

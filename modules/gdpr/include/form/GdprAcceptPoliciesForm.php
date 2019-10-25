@@ -83,6 +83,8 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 						$labelColor = 'red';
 					}
 
+					$statusContainer = \CDOMElement::create('div','class: policy status container');
+					$title->addChild($statusContainer);
 					if (isset($status)) {
 						$spanTitle = \CDOMElement::create('span','class:policy status ui '.$labelColor.' label');
 						if (isset($labelTitle) && strlen($labelTitle)>0) {
@@ -90,7 +92,7 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 						}
 						$spanTitle->addChild(new \CText(translateFN($status)));
 						unset($status);
-						$title->addChild($spanTitle);
+						$statusContainer->addChild($spanTitle);
 					}
 
 					if (!$policy->getMandatory() && !$isRegistration) {
@@ -102,7 +104,7 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 						}
 						$spanTitle->addChild(new \CText(translateFN($status)));
 						unset($status);
-						$title->addChild($spanTitle);
+						$statusContainer->addChild($spanTitle);
 					}
 					// policy content
 					$content = \CDOMElement::create('div','class:'.(($i==0) ? $firstElClass.' ':'').'content');

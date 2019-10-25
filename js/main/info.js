@@ -71,7 +71,7 @@ function initDoc(multiprovider) {
 	        $j(this).fadeIn();
 	    }
 	});
-	
+
 	$j('#infotable').on('click', 'tbody>tr>td:not(.details-control)', function() {
 		// hook all cells click to more_info_link click
 		var tr = $j(this).closest('tr');
@@ -106,7 +106,13 @@ function initDoc(multiprovider) {
 						childHtml.push('<span class="from-date"> '+instances[i].data_inizio_previsto+'</span>');
 						childHtml.push('<span class="to-txt">'+$j('#listinstance-to-txt').html().toLowerCase()+'</span>');
 						childHtml.push('<span class="to-date"> '+instances[i].data_fine+'</span>');
-						if (instances[i].isended) {
+						if (instances[i].isstarted && !instances[i].isended) {
+							childHtml.push('<span class="ui small green label started"><a href="info.php?op=subscribe'+
+								'&provider='+instances[i].provider+
+								'&course='+instances[i].id_corso+
+								'&instance='+instances[i].id_istanza_corso
+								+'">'+$j('#listinstance-subscribe-txt').html().toLowerCase()+'</a></span>');
+						} else if (instances[i].isended) {
 							childHtml.push('<span class="ui small red label ended">'+$j('#listinstance-ended-txt').html().toLowerCase()+'</span>');
 						}
 						childHtml.push('</li>');

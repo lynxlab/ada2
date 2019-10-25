@@ -61,14 +61,57 @@ function initRegistration() {
 	});
 
 	if ($j('input[name="uname"]', 'form[name="registration"]').length>0) {
+		var usercheckTimeout, lastCheckedUname = '';
 		$j('form[name="registration"]')
 			.on('change', 'input[name="nome"], input[name="cognome"]', function() {
 				var stripname = $j('input[name="nome"]').val().replace(/[^A-Za-z0-9]/g, '');
 				var stripsurname = $j('input[name="cognome"]').val().replace(/[^A-Za-z0-9]/g, '');
 				var conj = (stripname.length>0 && stripsurname.length>0) ? '.' : '';
-				$j('input[name="uname"]', 'form[name="registration"]').val((stripname+conj+stripsurname).toLowerCase().substring(0,255));
+				$j('input[name="uname"]', 'form[name="registration"]').val((stripname+conj+stripsurname).toLowerCase().substring(0,255)).trigger('change');
+			})
+			.on('keyup change', 'input[name="uname"][data-isusername="true"]', function() {
+				var that = $j(this);
+				var containerel = that.parents('li.form').first();
+				var messageDivId = "unamecheckstatus";
+				that.val(that.val().trim());
+				clearTimeout(usercheckTimeout);
+
+				if (that.val().length>0 && lastCheckedUname !== that.val()) {
+					$j('#'+messageDivId).remove();
+					$j('<div id="'+messageDivId+'"></div>').appendTo(containerel);
+					$j('#'+messageDivId).html($j('#unameCheckProgress').html());
+					usercheckTimeout = setTimeout(
+						function() {
+							$j.when(ajaxCheckUname(that.val()))
+								.done(function(result) {
+									var showLabel = 'Fail';
+									if ('unameok' in result) {
+										showLabel = result.unameok ? 'Ok' : 'Exists';
+									}
+									$j('#'+messageDivId).html($j('#unameCheck'+showLabel).html());
+								})
+								.fail(function(result){
+									$j('#'+messageDivId).html($j('#unameCheckFail').html());
+								})
+								.always(function() {
+									lastCheckedUname = that.val();
+								});
+						}
+						,500
+					);
+				}
+
 			});
 	}
+}
+
+function ajaxCheckUname(value, containerel, messageDivId) {
+	return $j.ajax({
+		'type': 'POST',
+		'url': MODULES_SECRETQUESTION_HTTP + '/ajax/checkUname.php',
+		'cache': false,
+		'data': { uname : value }
+	});
 }
 
 function CreateProvince() {
