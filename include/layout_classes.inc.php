@@ -379,7 +379,7 @@ class CSS {
         	/**
         	 * if not multiprovider, include client's adamenu.css also
         	 */
-        	$adamenuCSSDir = $CSS_provider_dir . '../';
+        	$adamenuCSSDir = $CSS_provider_dir; //  . '../';
         	if (is_file($adamenuCSSDir.$adamenuCSS)) $CSS_files[] = $adamenuCSSDir.$adamenuCSS;
         }
 
