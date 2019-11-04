@@ -6063,6 +6063,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $chat = $this->or_zero($student_data['chat']);
         $bookmarks = $this->or_zero($student_data['bookmarks']);
         $index_att= $student_data['index'];
+        $status = $this->or_zero($student_data['status']);
         $level= $student_data['level'];
         $last_access = $this->or_zero($student_data['last_access']);
 
@@ -6085,13 +6086,14 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             $sql = "update log_classi set visite=".$visits.", punti=".$score.",esercizi=".$exercises.
             	   ", msg_out=".$msg_out.",msg_in=".$msg_in.",notes_out=".$added_notes.
             	   ",notes_in=".$read_notes.",chat=".$chat.",bookmarks=".$bookmarks.
-            	   ",indice_att=".$index_att.",level=".$level.", last_access=".$last_access." where id_log=".$id_log;
+                   ",indice_att=".$index_att.",level=".$level.", last_access=".$last_access.",subscription_status=".$status.
+                   " where id_log=".$id_log;
         }
         else {
             // add a row into table log_classi
-            $sql =  "insert into log_classi (id_user,id_corso, id_istanza_corso, data, visite, punti,esercizi, msg_out,msg_in,notes_out,notes_in,chat,bookmarks,indice_att,level,last_access)";
+            $sql =  "insert into log_classi (id_user,id_corso, id_istanza_corso, data, visite, punti,esercizi, msg_out,msg_in,notes_out,notes_in,chat,bookmarks,indice_att,level,last_access,subscription_status)";
             $sql .= " values ($user_id,$course_id, $course_instance_id, $date, $visits, ";
-            $sql .= "$score,$exercises, $msg_out, $msg_in, $added_notes,$read_notes, $chat,$bookmarks, $index_att,$level,$last_access);";
+            $sql .= "$score,$exercises, $msg_out, $msg_in, $added_notes,$read_notes, $chat,$bookmarks, $index_att,$level,$last_access,$status);";
             //echo $sql;
         }
 
@@ -6176,6 +6178,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             $student_data[$id_log]['bookmarks'] = $res_item['bookmarks'];
             $student_data[$id_log]['indice_att'] = $res_item['indice_att'];
             $student_data[$id_log]['level'] = $res_item['level'];
+            $student_data[$id_log]['status'] = $res_item['subscription_status'];
             if (MODULES_TEST) {
             	$student_data[$id_log]['exercises_test'] = $res_item['exercises_test'];
             	$student_data[$id_log]['score_test'] = $res_item['score_test'];
