@@ -1306,6 +1306,7 @@ class Student_class {
 
 
     function get_class_report_from_dbFN($id_course,$id_course_instance) {
+        require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
         // last data from db tble
         $dh = $GLOBALS['dh'];
         $info_course = $dh->get_course($id_course); // Get title course
@@ -1396,6 +1397,7 @@ class Student_class {
                 $returnArray[$row]['chat'] = $currentReportRow['chat'];
                 $returnArray[$row]['bookmarks'] = $currentReportRow['bookmarks'];
                 $returnArray[$row]['index'] = $currentReportRow['indice_att'];
+                $returnArray[$row]['status'] = sprintf("<!-- %d -->%s", $currentReportRow['status'], Subscription::subscriptionStatusArray()[$currentReportRow['status']]);
                 $returnArray[$row]['level'] = '<span id="studentLevel_'.$currentReportRow['id_stud'].'">'.$currentReportRow['level'].'</span>';
                 $forceUpdate = false;
                 $linksHtml = $this->generateLevelButtons($currentReportRow['id_stud'], $forceUpdate);
@@ -1446,6 +1448,7 @@ class Student_class {
             $returnArray[$row]['chat'] = round($totalChat/$total,2);
             $returnArray[$row]['bookmarks'] = round($totalBookmarks/$total,2);
             $returnArray[$row]['index'] = round($totalIndex/$total,2);
+            $returnArray[$row]['status'] = '-';
             $returnArray[$row]['level'] = '<span id="averageLevel">'.round($totalLevel/$total,2).'</span>';
             $returnArray[$row]['level_plus'] = '-';
 
@@ -1788,6 +1791,11 @@ class Student_class {
                         $tot_index+=$index;
                         $dati['index'] = $index;
 
+                        // status
+                        require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
+                        $dati['status'] = $status_student;
+                        $dati_stude[$num_student]['status'] = sprintf("<!-- %d -->%s", $status_student, Subscription::subscriptionStatusArray()[$status_student]);
+
                         // level
                         $tot_level+=$student_level;
                         $dati_stude[$num_student]['level'] = '<span id="studentLevel_'.$id_student.'">'.$student_level.'</span>';
@@ -1841,6 +1849,7 @@ class Student_class {
             $dati_stude[$av_student]['bookmarks'] = round($av_bookmarks_count,2);
 
             $dati_stude[$av_student]['index'] = round($av_index,2);
+            $dati_stude[$av_student]['status'] = "-";
             $dati_stude[$av_student]['level'] = '<span id="averageLevel">'.round($av_level,2).'</span>';
             $dati_stude[$av_student]['level_plus'] = "-";
             // @author giorgio 16/mag/2013
@@ -1932,7 +1941,8 @@ class Student_class {
     	$tableHeader['chat'] = translateFN("Chat ");
     	$tableHeader['bookmarks'] = translateFN("Bkms ");
 
-    	$tableHeader['index'] = translateFN("Attivita'");
+        $tableHeader['index'] = translateFN("Attivita'");
+        $tableHeader['status'] = translateFN("Stato");
     	$tableHeader['level'] = translateFN("Livello");
     	$tableHeader['level_plus'] = translateFN("Modifica livello");
 
