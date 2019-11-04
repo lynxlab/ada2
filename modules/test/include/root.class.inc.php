@@ -632,11 +632,15 @@ abstract class RootTest extends NodeTest
 
 		if (!$feedback) {
 			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT) {
-				$submit = CDOMElement::create('submit','id:confirm');
+				$submit = CDOMElement::create('button','type:submit,id:confirm,class:ui large green labeled icon button');
 				$submit->setAttribute('value',translateFN('Conferma'));
+				$submit->addChild(CDOMElement::create('i','class:checkmark icon'));
+				$submit->addChild(new CText($submit->getAttribute('value')));
 
-				$reset = CDOMElement::create('reset','id:redo');
+				$reset = CDOMElement::create('button','type:reset,id:redo,class:ui large blue labeled icon button');
 				$reset->setAttribute('value',translateFN('Ripeti'));
+				$reset->addChild(CDOMElement::create('i','class:undo icon'));
+				$reset->addChild(new CText($reset->getAttribute('value')));
 
 				$div = CDOMElement::create('div');
 				$div->setAttribute('class', 'submit_test');
