@@ -29,6 +29,26 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 	const MODELNAMESPACE = 'Lynxlab\\ADA\\Module\\Badges\\';
 
 	/**
+	 * get basic course and course instance info needed to build the
+	 * array of the course's badges
+	 *
+	 * @param integer $id_course_instance
+	 * @return array|\AMA_Error
+	 */
+	public function get_instance_with_course($id_course_instance) {
+
+		$sql = 'SELECT C.id_corso, C.titolo, IC.id_istanza_corso, '.
+		       'IC.title, C.tipo_servizio, IC.tipo_servizio as `istanza_tipo_servizio` '.
+               'FROM modello_corso AS C, istanza_corso AS IC '.
+               'WHERE IC.id_istanza_corso = ? AND C.id_corso = IC.id_corso ';
+        $result = $this->getAllPrepared($sql, [ $id_course_instance ] ,AMA_FETCH_ASSOC);
+        if(\AMA_DB::isError($result)) {
+            return new \AMA_Error(AMA_ERR_GET);
+        }
+        return $result;
+	}
+
+	/**
 	 * Saves a Course-Badge association
 	 *
 	 * @param array $saveData
