@@ -147,6 +147,7 @@ class BadgesActions {
 				case 'ajax/getUserBadges.php':
 					$retArr['neededObjects'] = array(
 						AMA_TYPE_SWITCHER => array('layout'),
+						AMA_TYPE_TUTOR => array('layout'),
 						AMA_TYPE_STUDENT => array('layout')
 					);
 				break;
