@@ -25,5 +25,5 @@ define ('REPORT_COLUMN_LEVEL_LESS',       17);
 
 // add to the relative array only unwanted cols constants
 
-$GLOBALS['reportHTMLColArray'] = array ( );
-$GLOBALS['reportFILEColArray'] = array ( );
+$GLOBALS['reportHTMLColArray'] = array ( 'REPORT_COLUMN_EXERCISES', 'REPORT_COLUMN_BOOKMARKS' );
+$GLOBALS['reportFILEColArray'] = array ( 'REPORT_COLUMN_EXERCISES', 'REPORT_COLUMN_BOOKMARKS' );
