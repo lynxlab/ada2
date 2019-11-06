@@ -35,6 +35,17 @@ class RewardedBadge extends BadgesBase {
     protected $id_corso;
     protected $id_istanza_corso;
 
+    private static $instanceRewards = [];
+
+    /**
+	 * Tells which properties are to be loaded using a kind-of-join
+	 *
+	 * @return array
+	 */
+	public static function doNotLoad() {
+		return array('instanceRewards');
+    }
+
     /**
      * Get the value of uuid
      */
@@ -237,5 +248,44 @@ class RewardedBadge extends BadgesBase {
      */
     public function isNotified() {
         return (bool) $this->getNotified();
+    }
+
+    public static function buildStudentRewardHTML ($courseId, $instanceId, $studentId) {
+        $studentsRewards = self::getInstanceRewards()['studentsRewards'];
+        $awbadges = array_key_exists($studentId, $studentsRewards) ? $studentsRewards[$studentId] : 0;
+        $baseStr = $awbadges.' '.translateFN('su').' '.self::getInstanceRewards()['total'];
+        if ($awbadges>0) {
+            $retObj = \CDOMElement::create('a','class:dontwrap,href:'.MODULES_BADGES_HTTP.'/user-badges.php?id_instance='.$instanceId.'&id_course='.$courseId.'&id_student='.$studentId);
+        } else {
+            $retObj = \CDOMElement::create('span');
+        }
+        $retObj->addChild(new \CText($baseStr));
+        return $retObj;
+    }
+
+    public static function loadInstanceRewards($courseId, $instanceId) {
+        $bdh = AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $totalBadges = $bdh->getBadgesCountForCourse($courseId);
+        $studentBadges = $bdh->getRewardedBadgesCount(['id_corso' => $courseId, 'id_istanza_corso' => $instanceId]);
+        self::setInstanceRewards(['total' => $totalBadges, 'studentsRewards' => $studentBadges]);
+        return self::getInstanceRewards();
+    }
+
+    /**
+     * Get the value of instanceRewards
+     */
+    public static function getInstanceRewards()
+    {
+        return self::$instanceRewards;
+    }
+
+    /**
+     * Set the value of instanceRewards
+     *
+     * @return  self
+     */
+    private static function setInstanceRewards($instanceRewards)
+    {
+        self::$instanceRewards = $instanceRewards;
     }
 }

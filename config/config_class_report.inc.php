@@ -18,6 +18,7 @@ define ('REPORT_COLUMN_CHAT',             12);
 define ('REPORT_COLUMN_BOOKMARKS',        13);
 define ('REPORT_COLUMN_INDEX',            14);
 define ('REPORT_COLUMN_STATUS',           18);
+define ('REPORT_COLUMN_BADGES',           19);
 define ('REPORT_COLUMN_LEVEL',            15);
 // level plus and less are never put in the pdf, so their constants are just form HTML rendering
 define ('REPORT_COLUMN_LEVEL_PLUS',       16);

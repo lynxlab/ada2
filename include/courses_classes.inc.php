@@ -1369,6 +1369,10 @@ class Student_class {
             	unset ($report_dataHa['report_generation_date']);
             } else $report_generation_TS = null;
 
+            if (MODULES_BADGES) {
+                Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($id_course, $id_course_instance);
+            }
+
             foreach ($report_dataHa as $currentReportRow) {
             	// returnArray elements order (keys) MUST be
             	// the same as returned by get_class_report_from_db
@@ -1398,6 +1402,9 @@ class Student_class {
                 $returnArray[$row]['bookmarks'] = $currentReportRow['bookmarks'];
                 $returnArray[$row]['index'] = $currentReportRow['indice_att'];
                 $returnArray[$row]['status'] = sprintf("<!-- %d -->%s", $currentReportRow['status'], Subscription::subscriptionStatusArray()[$currentReportRow['status']]);
+                if (MODULES_BADGES) {
+                    $returnArray[$row]['badges'] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($id_course, $id_course_instance,$currentReportRow['id_stud'])->getHtml();
+                }
                 $returnArray[$row]['level'] = '<span id="studentLevel_'.$currentReportRow['id_stud'].'">'.$currentReportRow['level'].'</span>';
                 $forceUpdate = false;
                 $linksHtml = $this->generateLevelButtons($currentReportRow['id_stud'], $forceUpdate);
@@ -1449,6 +1456,10 @@ class Student_class {
             $returnArray[$row]['bookmarks'] = round($totalBookmarks/$total,2);
             $returnArray[$row]['index'] = round($totalIndex/$total,2);
             $returnArray[$row]['status'] = '-';
+            if (MODULES_BADGES) {
+                $rew = Lynxlab\ADA\Module\Badges\RewardedBadge::getInstanceRewards();
+                $returnArray[$row]['badges'] = round(array_sum($rew['studentsRewards']) / $total,2).' '.translateFN('su').' '.$rew['total'];
+            }
             $returnArray[$row]['level'] = '<span id="averageLevel">'.round($totalLevel/$total,2).'</span>';
             $returnArray[$row]['level_plus'] = '-';
 
@@ -1547,7 +1558,10 @@ class Student_class {
 
 				$test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 				$test_score = $test_db->getStudentsScores($id_course,$id_instance);
-			}
+            }
+            if (MODULES_BADGES) {
+                \Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($id_course, $id_instance);
+            }
             foreach ($student_list_ar as $one_student) {
                 $num_student++; //starts with 0
                 $id_student = $one_student['id_utente_studente'];
@@ -1796,6 +1810,10 @@ class Student_class {
                         $dati['status'] = $status_student;
                         $dati_stude[$num_student]['status'] = sprintf("<!-- %d -->%s", $status_student, Subscription::subscriptionStatusArray()[$status_student]);
 
+                        if (MODULES_BADGES) {
+                            $dati_stude[$num_student]['badges'] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
+                        }
+
                         // level
                         $tot_level+=$student_level;
                         $dati_stude[$num_student]['level'] = '<span id="studentLevel_'.$id_student.'">'.$student_level.'</span>';
@@ -1850,6 +1868,10 @@ class Student_class {
 
             $dati_stude[$av_student]['index'] = round($av_index,2);
             $dati_stude[$av_student]['status'] = "-";
+            if (MODULES_BADGES) {
+                $rew = Lynxlab\ADA\Module\Badges\RewardedBadge::getInstanceRewards();
+                $dati_stude[$av_student]['badges'] = round(array_sum($rew['studentsRewards']) / $tot_students,2).' '.translateFN('su').' '.$rew['total'];
+            }
             $dati_stude[$av_student]['level'] = '<span id="averageLevel">'.round($av_level,2).'</span>';
             $dati_stude[$av_student]['level_plus'] = "-";
             // @author giorgio 16/mag/2013
@@ -1943,6 +1965,9 @@ class Student_class {
 
         $tableHeader['index'] = translateFN("Attivita'");
         $tableHeader['status'] = translateFN("Stato");
+        if (MODULES_BADGES) {
+            $tableHeader['badges'] = translateFN("Badges");
+        }
     	$tableHeader['level'] = translateFN("Livello");
     	$tableHeader['level_plus'] = translateFN("Modifica livello");
 

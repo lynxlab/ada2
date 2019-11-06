@@ -71,6 +71,15 @@
                 <div id="contentcontent">
                     <div class="first ui segment" id="userBadgesContainer">
                     </div>
+
+                    <div class="ui icon error message" id="userBadgesError">
+                        <i class="ban circle icon"></i>
+                        <div class="content">
+                            <div class="header"><i18n>Errore badge</i18n></div>
+                            <p><i18n>Nessun badge è associato alla classe del corso</i18n></p>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div id="bottomcont">

@@ -50,6 +50,15 @@ abstract class BadgesBase {
 	}
 
 	/**
+	 * Tells which properties are not to be loaded at all
+	 *
+	 * @return array
+	 */
+	public static function doNotLoad() {
+		return array();
+	}
+
+	/**
 	 * adds class own properties to the passed form
 	 *
 	 * @param \FForm $form

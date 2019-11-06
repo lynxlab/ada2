@@ -162,6 +162,12 @@ else {
             translateFN('Livello')
 
             );
+
+        if (MODULES_BADGES) {
+            $badgesKey = translateFN("Badges");
+            array_push($thead_data, $badgesKey);
+            Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($courseId, $instanceId);
+        }
         if(!$isTutorCommunity && defined('MODULES_CODEMAN') && (MODULES_CODEMAN)){
             array_push($thead_data,translateFN('Codice iscrizione'));
         }
@@ -310,6 +316,9 @@ else {
 
             $userArray = array(translateFN('Hidden_status')=>$span_selected->getHtml(),translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$span_instance->getHtml(),translateFN('Data iscrizione')=>$data_iscrizione,translateFN('Livello')=>$livello);
 
+            if (MODULES_BADGES) {
+                $userArray[$badgesKey] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($courseId, $instanceId, $user->getSubscriberId())->getHtml();
+            }
             if(!$isTutorCommunity && defined('MODULES_CODEMAN') && (MODULES_CODEMAN))
             {
                 $code = $user->getSubscriptionCode();
