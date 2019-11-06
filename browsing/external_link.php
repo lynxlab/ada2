@@ -77,6 +77,19 @@ $external_link_id = isset($_GET['id']) ? DataValidator::is_uinteger($_GET['id'])
 
 $filename = isset($_GET['file']) ? DataValidator::validate_local_filename($_GET['file']) : false;
 
+function findInClientDir($filename) {
+  $foundFile = false;
+  $fullPath = ROOT_DIR . '/docs/' . $filename;
+  if (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) {
+    $clientPath = ROOT_DIR . '/clients/'.$GLOBALS['user_provider'].'/docs/' . $filename;
+    $foundFile = is_readable($clientPath);
+    if ($foundFile) return $clientPath;
+  }
+  if (!$foundFile) $foundFile = is_readable($fullPath);
+  if ($foundFile) return $fullPath;
+  return false;
+}
+
 //$url = DataValidator::validate_url($_GET['url']);
 $url = isset($_GET['url']) ?  $_GET['url'] : null;
 
@@ -104,14 +117,21 @@ elseif ($filename != false) {
      * e.g.: file=privacy.html will look for privacy_en.html, privacy_it.html...
      *       file=guest_it.html will look for
      */
-    $foundFile = is_readable(ROOT_DIR . '/docs/' . $filename);
+
+    // $foundFile = false;
+    // if (!MULTIPROVIDER && isset ($GLOBALS['user_provider'])) {
+    //   $foundFile = is_readable(ROOT_DIR . '/clients/'.$GLOBALS['user_provider'].'/docs/' . $filename);
+    // }
+
+    // if (!$foundFile) $foundFile = is_readable(ROOT_DIR . '/docs/' . $filename);
+    $foundFile = findInClientDir($filename);
     /**
      * NOTE: it's safe to assume that $filename has a dot, the
      * validate_local_filename would have returned false if it had not
      */
     $exploded_filename = explode('.', $filename);
 
-    if (!$foundFile) {
+    if ($foundFile===false) {
 	    $extension = '.'.end($exploded_filename);
 	    $underscoreDelimited = explode ('_',reset($exploded_filename));
 	    /**
@@ -133,7 +153,8 @@ elseif ($filename != false) {
                 }
                 if (isset($userActualLangCod)) {
                     $filename = implode('_', $underscoreDelimited).'_'.$userActualLangCod.$extension;
-                    $foundFile = is_file(ROOT_DIR . '/docs/' . $filename) && is_readable(ROOT_DIR . '/docs/' . $filename);
+                    // $foundFile = is_file(ROOT_DIR . '/docs/' . $filename) && is_readable(ROOT_DIR . '/docs/' . $filename);
+                    $foundFile = findInClientDir($filename);
                 }
             }
 
@@ -146,17 +167,21 @@ elseif ($filename != false) {
 	     * loop the array until a file has been found
 	     * or end of array has been reached
 	     */
-	    for ($currentLang = reset($tryLangs); ((current($tryLangs)!==false) && !$foundFile) ; $currentLang = next($tryLangs)) {
-	    	$filename = implode('_', $underscoreDelimited).'_'.$currentLang.$extension;
-	    	$foundFile = is_file(ROOT_DIR . '/docs/' . $filename) && is_readable(ROOT_DIR . '/docs/' . $filename);
+	    for ($currentLang = reset($tryLangs); ((current($tryLangs)!==false) && $foundFile===false) ; $currentLang = next($tryLangs)) {
+        $filename = implode('_', $underscoreDelimited).'_'.$currentLang.$extension;
+        $foundFile = findInClientDir($filename);
+	    	// $foundFile = is_file(ROOT_DIR . '/docs/' . $filename) && is_readable(ROOT_DIR . '/docs/' . $filename);
 	    }
     }
 
-    if($foundFile) {
-      $http_path_to_file = HTTP_ROOT_DIR . '/docs/' . $filename;
+    if($foundFile!==false) {
+      // $http_path_to_file = HTTP_ROOT_DIR . '/docs/' . $filename;
+      $http_path_to_file = str_replace(ROOT_DIR, HTTP_ROOT_DIR, $foundFile);
       $pdf_filename = $exploded_filename[0] . '.pdf';
-      if (is_readable(ROOT_DIR . '/docs/' . $pdf_filename)) {
-        $href = HTTP_ROOT_DIR . '/docs/' . $pdf_filename;
+      $foundPdf = findInClientDir($pdf_filename);
+      if ($foundPdf!==false) {
+        $href = str_replace(ROOT_DIR, HTTP_ROOT_DIR, $foundPdf);
+        // $href = HTTP_ROOT_DIR . '/docs/' . $pdf_filename;
       	$pdf_link = CDOMElement::create('a', "href: $href");
       	$pdf_link->addChild(new CText(translateFN('Download pdf version')));
       }
