@@ -56,10 +56,16 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
 
 	                    if (defined('MODULES_TEST') && MODULES_TEST) {
 	                    	$survey_title=translateFN('Report Sondaggi');
-	                    	$survey_img= CDOMElement::create('img', 'src:img/_exer.png,alt:view,class:tooltip,title:'.$survey_title);
+	                    	$survey_img= CDOMElement::create('img', 'src:img/_exer.png,alt:'.$survey_title.',class:tooltip,title:'.$survey_title);
 	                    	$survey_link = BaseHtmlLib::link(MODULES_TEST_HTTP.'/surveys_report.php?id_course_instance='.$id_instance.'&id_course='.$id_course, $survey_img->getHtml());
 	                    	$dati_corso[$num_courses][$azioni_key] .= $survey_link->getHtml();
-	                    }
+                        }
+                        if (defined('MODULES_BADGES') && MODULES_BADGES) {
+                            $badges_title=translateFN('Badges disponibili');
+	                    	$badges_img= CDOMElement::create('img','src:'.MODULES_BADGES_HTTP.'/layout/'.$_SESSION['sess_template_family'].'/img/course-badges.png,alt:'.$badges_title.',class:tooltip,title:'.$badges_title);
+	                    	$badges_link = BaseHtmlLib::link(MODULES_BADGES_HTTP.'/user-badges.php?id_instance='.$id_instance.'&id_course='.$id_course, $badges_img->getHtml());
+	                    	$dati_corso[$num_courses][$azioni_key] .= $badges_link->getHtml();
+                        }
                     }
                 }
             }

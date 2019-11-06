@@ -17,6 +17,7 @@ function initDoc(dataUrl) {
     })
     .done(function(userbadges) {
         if (Object.keys(userbadges).length > 0) {
+            $j('#userBadgesError').remove();
             var messages = {
                 unrewarded: $j('#unrewardedMSG').html(),
                 rewarded: $j('#rewardedMSG').html(),
@@ -45,13 +46,14 @@ function initDoc(dataUrl) {
                                         // instance name as accordion title
                                         $j('<div class="title"><i class="dropdown icon"></i>'+
                                             instance.name +
-                                            '<div class="ui right label">'+
-                                            $j('#rewardsCountMSG').text().replace("{rewards}",rewards).replace("{countBadges}",countBadges).toLowerCase() +
-                                            '</div>'+
+                                            (course.withRewardLabel ?
+                                                '<div class="ui right label">'+
+                                                $j('#rewardsCountMSG').text().replace("{rewards}",rewards).replace("{countBadges}",countBadges).toLowerCase() +
+                                                '</div>' : '')+
                                         '</div>').appendTo(instanceCont);
                                         // instance badges as accordion content
                                         var content = $j('<div class="content">'+
-                                            badgesToHTML(instance, messages)
+                                            badgesToHTML(instance, messages, course.withRewardLabel)
                                         +'</div>').appendTo(instanceCont);
                                     }
                                 }
@@ -63,6 +65,8 @@ function initDoc(dataUrl) {
             }
         }
     })
-    .always(function() {
+    .fail(function() {
+        $j('#userBadgesContainer').remove();
+        $j('#userBadgesError').transition('fade');
     });
 }

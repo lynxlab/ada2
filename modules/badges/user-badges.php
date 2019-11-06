@@ -33,16 +33,34 @@ list($allowedUsersAr, $neededObjAr) = array_values(BadgesActions::getAllowedAndN
  */
 require_once(ROOT_DIR . '/include/module_init.inc.php');
 require_once(ROOT_DIR . '/browsing/include/browsing_functions.inc.php');
-require_once MODULES_SERVICECOMPLETE_PATH .'/include/init.inc.php';
 BrowsingHelper::init($neededObjAr);
 
 $self = 'user-badges';
 
-/**
- * @var AMABadgesDataHandler
- */
-// $GLOBALS['dh'] = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-
+if (in_array($userObj->getType(), [ AMA_TYPE_SWITCHER , AMA_TYPE_TUTOR ])) {
+    if (isset($_GET['id_student'])) {
+        $title = translateFN('Badges dello studente');
+        $studentObj = \MultiPort::findUser(trim($_GET['id_student']));
+        if(!AMA_DataHandler::isError($studentObj)) {
+            $title .= ': <strong>'.$studentObj->getFullName().'</strong>';
+        }
+    }
+    if (isset($_GET['id_instance'])) {
+        /**
+         * @var AMABadgesDataHandler $bdh
+         */
+        $bdh = AMABadgesDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+        $instance = $bdh->get_instance_with_course($_GET['id_instance']);
+        if (!\AMA_DB::isError($instance) && is_array($instance) && count($instance)==1) {
+            $instance = reset($instance);
+            if (!isset($title)) $title = "Badges";
+            $title .= " per la classe <strong>%s</strong> del corso <strong>%s</strong>";
+            $title = sprintf(translateFN($title),$instance['title'], $instance['titolo']);
+        }
+    }
+} else {
+    $title = translateFN('Tutti i tuoi badges');
+}
 
 $content_dataAr = array(
     'user_name' => $user_name,
@@ -50,7 +68,7 @@ $content_dataAr = array(
     'messages' => $user_messages->getHtml(),
     'agenda' => $user_agenda->getHtml(),
     'status' => $status,
-    'title' => ucfirst(translateFN('badges')) .' &gt; '. translateFN('Tutti i tuoi badges'),
+    'title' => ucfirst(translateFN('badges')) .' &gt; '. $title,
     'edit_profile'=>$userObj->getEditProfilePage(),
     'data' => ''
 );
@@ -67,6 +85,13 @@ $layout_dataAr['CSS_filename'] = array(
     MODULES_BADGES_PATH . '/layout/tooltips.css'
 );
 
-$optionsAr['onload_func'] = 'initDoc(\''.htmlspecialchars(MODULES_BADGES_HTTP.'/ajax/getUserBadges.php', ENT_QUOTES, ADA_CHARSET).'\');';
+$params = [ 'id_student' => 'userId' , 'id_course' => 'courseId' , 'id_instance' => 'courseInstanceId' ];
+foreach($params as $key => $val) {
+    if (isset($_GET[$key]) && strlen(trim($_GET[$key]))) $params[$val] = trim($_GET[$key]);
+    unset($params[$key]);
+}
+$params = http_build_query($params);
+
+$optionsAr['onload_func'] = 'initDoc(\''.htmlspecialchars(MODULES_BADGES_HTTP.'/ajax/getUserBadges.php'.(strlen($params)>0 ? '?'.$params : ''), ENT_QUOTES, ADA_CHARSET).'\');';
 
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
