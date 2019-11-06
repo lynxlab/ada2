@@ -4,6 +4,7 @@
 @import url("moduleADAForm.css");
 @import url("moduleNewButton.css");
 
+#userBadgesError { display: none; }
 .ui.items[id^="badgesContainer"] .item {
     width: calc(12.5% - 1em);
     min-height: 22em;
