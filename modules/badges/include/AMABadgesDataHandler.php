@@ -49,6 +49,43 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 	}
 
 	/**
+	 * Gets the count of the badges associated to a course
+	 *
+	 * @param int $courseId
+	 * @return int
+	 */
+	public function getBadgesCountForCourse($courseId) {
+		$sql = 'SELECT COUNT(`badge_uuid_bin`) FROM `'.
+			   self::PREFIX.'course_badges` WHERE `id_corso`=?';
+		$result = $this->getOnePrepared($sql, [ $courseId ]);
+		return (\AMA_DB::isError($result) ? 0 : intval($result));
+	}
+
+	/**
+	 * Gets the count of rewarded badges in an array having:
+	 * the key set to the student id and the value set to the count of rewarded badges
+	 *
+	 * pass id_corso, id_istanza_corso, id_utente in whereArr to filter the count
+	 *
+	 * @param array $whereArr
+	 * @return array
+	 */
+	public function getRewardedBadgesCount(array $whereArr=[]) {
+		$sql = 'SELECT `id_utente`, COUNT(`badge_uuid_bin`) AS `awardedcount`'.
+			   ' FROM `'.self::PREFIX.'rewarded_badges` WHERE `approved`=1 AND `issuedOn` IS NOT NULL';
+		foreach ($whereArr as $key=>$val) {
+			$sql .= " AND `$key`=".$val;
+		}
+		$sql .= ' GROUP BY `id_utente`';
+		$result = $this->getAllPrepared($sql, [], AMA_FETCH_ASSOC);
+		$retArr = [];
+		if (!\AMA_DB::isError($result) && is_array($result) && count($result)>0) {
+			foreach($result as $ares) $retArr[$ares['id_utente']] = intval($ares['awardedcount']);
+		}
+		return $retArr;
+	}
+
+	/**
 	 * Saves a Course-Badge association
 	 *
 	 * @param array $saveData
@@ -297,6 +334,7 @@ class AMABadgesDataHandler extends \AMA_DataHandler {
 		$joined = $className::loadJoined();
 		// and remove them from the query, they will be loaded afterwards
 		$properties = array_diff($properties, $joined);
+		$properties = array_diff($properties, $className::doNotLoad());
 
 		$sql = sprintf ("SELECT %s FROM `%s`", implode(',',array_map(function($el) use ($className) {
 				return ($className::isUuidField($el) ? "`$el".$className::BINFIELDSUFFIX."`": "`$el`");
