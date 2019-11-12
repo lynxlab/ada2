@@ -663,7 +663,7 @@ switch ($op){
         $menuOptions['id_course_instance'] = $sess_id_course_instance;
         $menuOptions['id_node'] = $sess_id_node;
 		$menuOptions['id_parent'] = $sess_id_node;
-		$menuOptions['type'] = $node->type;
+		$menuOptions['type'] = $nodeObj->type;
 
         // define to enable author menu items
         define ('MODULES_TEST_MOD_ENABLED' , defined('MODULES_TEST') && MODULES_TEST && $mod_enabled);
