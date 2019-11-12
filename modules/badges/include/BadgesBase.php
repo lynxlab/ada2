@@ -93,11 +93,14 @@ abstract class BadgesBase {
 	public function toArray() {
 		$reflectionClass = new \ReflectionClass(get_class($this));
 		$array = array();
+		$skip = $this::doNotLoad();
 		foreach ($reflectionClass->getProperties() as $property) {
-			$property->setAccessible(true);
-			$toSet = $property->getValue($this);
-			$array[$property->getName()] = $toSet;
-			$property->setAccessible(false);
+			if (!in_array($property->getName(), $skip)) {
+				$property->setAccessible(true);
+				$toSet = $property->getValue($this);
+				$array[$property->getName()] = $toSet;
+				$property->setAccessible(false);
+			}
 		}
 		return $array;
 	}
