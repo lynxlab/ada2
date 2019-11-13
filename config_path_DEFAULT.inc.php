@@ -17,15 +17,28 @@
  /**
   *  Root dir relative path
   */
-  define('ROOT_DIR','/var/www/html/ada');
+  define('ROOT_DIR', __DIR__);
+
+  /**
+   * if a '.env' file is there, load it using $_ENV and getenv/putenv only
+   */
+  if ((false !== @include_once(ROOT_DIR.'/vendor/autoload.php')) && is_file('.env') && is_readable('.env')) {
+    $dotenv = Dotenv\Dotenv::create(ROOT_DIR, null,
+      new Dotenv\Environment\DotenvFactory([
+          new Dotenv\Environment\Adapter\EnvConstAdapter(),
+          new Dotenv\Environment\Adapter\PutenvAdapter(),
+      ]));
+    $dotenv->load();
+    unset($dotenv);
+  }
 
  /**
   * sets multiprovider flag, true is the default
   * multiprovider behaviour, false is single provider
   * each with its own home page and anonymous pages
   */
-  define ('MULTIPROVIDER',true);
-  
+  define ('MULTIPROVIDER', isset($_ENV['MULTIPROVIDER']) ? boolval($_ENV['MULTIPROVIDER']) : true);
+
  /**
   * Main include file
   */
