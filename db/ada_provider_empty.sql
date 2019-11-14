@@ -659,9 +659,4 @@ CREATE TABLE IF NOT EXISTS `utente_messaggio_log` (
 --
 ALTER TABLE `nodo` ADD FULLTEXT KEY `testo` (`testo`,`titolo`,`nome`);
 
---
--- Dump dei dati per la tabella `amministratore_sistema`
---
-
-INSERT INTO `amministratore_sistema` (`id_utente_amministratore_sist`) VALUES (1);
 COMMIT;
