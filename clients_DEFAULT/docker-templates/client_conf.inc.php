@@ -75,7 +75,7 @@ define('${PROVIDER}_DB_TYPE',  'mysql');
  *
  * @name ${PROVIDER}_DB_NAME
  */
-define('${PROVIDER}_DB_NAME',  '${PROVIDER}_provider');
+define('${PROVIDER}_DB_NAME',  '${ASISPROVIDER}_provider');
 
 /**
  *
