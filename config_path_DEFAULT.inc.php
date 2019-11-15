@@ -37,7 +37,7 @@
   * multiprovider behaviour, false is single provider
   * each with its own home page and anonymous pages
   */
-  define ('MULTIPROVIDER', isset($_ENV['MULTIPROVIDER']) ? boolval($_ENV['MULTIPROVIDER']) : true);
+  define ('MULTIPROVIDER', getenv('MULTIPROVIDER') ? (bool) getenv('MULTIPROVIDER') : true);
 
  /**
   * Main include file

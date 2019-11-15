@@ -30,10 +30,10 @@ if (!MULTIPROVIDER) {
 	 * DO NOT REMOVE the trailing // *js_import*
 	 */
 	define('HTTP_ROOT_DIR', '${HTTP_ROOT_DIR}'); // *js_import*
-	if (isset($_ENV['PORTAL_NAME'])) {
-		$pname = $_ENV['PORTAL_NAME'];
+	if (getenv('PORTAL_NAME')) {
+		$pname = getenv('PORTAL_NAME');
 	} else {
-		$pname = isset($_ENV['ADA_OR_WISP']) ? translateFN('Benvenuto su') . ' ' . $_ENV['ADA_OR_WISP'] : 'ADA 2.2';
+		$pname = getenv('ADA_OR_WISP') ? translateFN('Benvenuto su') . ' ' . getenv('ADA_OR_WISP') : 'ADA 2.2';
 	}
 	define('PORTAL_NAME', $pname . ' - ' . ucwords(strtolower('${PROVIDER}')));
 
@@ -81,19 +81,19 @@ define('${PROVIDER}_DB_NAME',  '${PROVIDER}_provider');
  *
  * @name ${PROVIDER}_DB_USER
  */
-define('${PROVIDER}_DB_USER',  $_ENV['MYSQL_USER']);
+define('${PROVIDER}_DB_USER',  getenv('MYSQL_USER')?:'root');
 
 /**
  *
  * @name ${PROVIDER}_DB_PASS
  */
-define('${PROVIDER}_DB_PASS',  $_ENV['MYSQL_PASSWORD']);
+define('${PROVIDER}_DB_PASS',  getenv('MYSQL_PASSWORD')?:'password');
 
 /**
  *
  * @name ${PROVIDER}_DB_HOST
  */
-define('${PROVIDER}_DB_HOST',  $_ENV['MYSQL_HOST']);
+define('${PROVIDER}_DB_HOST',  getenv('MYSQL_HOST')?:'localhost');
 
 /**
  *
