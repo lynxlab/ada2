@@ -67,7 +67,13 @@ define('ADA_DEFAULT_AVATAR','default_avatar.png');
 /**
  * portal name string - displayed in window titlebar
 */
-if (!defined('PORTAL_NAME')) define('PORTAL_NAME', isset($_ENV['PORTAL_NAME']) ? $_ENV['PORTAL_NAME'] : 'ADA 2.2');
+if (!defined('PORTAL_NAME')) {
+    if (isset($_ENV['PORTAL_NAME'])){
+        define('PORTAL_NAME', $_ENV['PORTAL_NAME']);
+    } else {
+        define('PORTAL_NAME', isset($_ENV['ADA_OR_WISP']) ? translateFN('Benvenuto su') .' '.$_ENV['ADA_OR_WISP'] : 'ADA 2.2');
+    }
+}
 
 /**
  * set to true to always display the maintenance page
