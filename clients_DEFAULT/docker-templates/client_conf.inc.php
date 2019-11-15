@@ -29,13 +29,13 @@ if (!MULTIPROVIDER) {
 	 * URL
 	 * DO NOT REMOVE the trailing // *js_import*
 	 */
-	define('HTTP_ROOT_DIR', '${HTTP_ROOT_DIR}'); // *js_import*
+	define('HTTP_ROOT_DIR', '${PROV_HTTP}'); // *js_import*
 	if (getenv('PORTAL_NAME')) {
 		$pname = getenv('PORTAL_NAME');
 	} else {
-		$pname = getenv('ADA_OR_WISP') ? translateFN('Benvenuto su') . ' ' . getenv('ADA_OR_WISP') : 'ADA 2.2';
+		$pname = getenv('ADA_OR_WISP') ? strtoupper(getenv('ADA_OR_WISP')) : 'ADA 2.2';
 	}
-	define('PORTAL_NAME', $pname . ' - ' . ucwords(strtolower('${PROVIDER}')));
+	define('PORTAL_NAME', $pname . ' - ' . ucwords(strtolower('${UPPERPROVIDER}')));
 
 	/**
 	 * set to true to always display the maintenance page
@@ -67,36 +67,36 @@ if (!MULTIPROVIDER) {
 
 /**
  *
- * @name ${PROVIDER}_DB_TYPE
+ * @name ${UPPERPROVIDER}_DB_TYPE
  */
-define('${PROVIDER}_DB_TYPE',  'mysql');
+define('${UPPERPROVIDER}_DB_TYPE',  'mysql');
 
 /**
  *
- * @name ${PROVIDER}_DB_NAME
+ * @name ${UPPERPROVIDER}_DB_NAME
  */
-define('${PROVIDER}_DB_NAME',  '${ASISPROVIDER}_provider');
+define('${UPPERPROVIDER}_DB_NAME',  '${ASISPROVIDER}_provider');
 
 /**
  *
- * @name ${PROVIDER}_DB_USER
+ * @name ${UPPERPROVIDER}_DB_USER
  */
-define('${PROVIDER}_DB_USER',  getenv('MYSQL_USER')?:'root');
+define('${UPPERPROVIDER}_DB_USER',  getenv('MYSQL_USER')?:'root');
 
 /**
  *
- * @name ${PROVIDER}_DB_PASS
+ * @name ${UPPERPROVIDER}_DB_PASS
  */
-define('${PROVIDER}_DB_PASS',  getenv('MYSQL_PASSWORD')?:'password');
+define('${UPPERPROVIDER}_DB_PASS',  getenv('MYSQL_PASSWORD')?:'password');
 
 /**
  *
- * @name ${PROVIDER}_DB_HOST
+ * @name ${UPPERPROVIDER}_DB_HOST
  */
-define('${PROVIDER}_DB_HOST',  getenv('MYSQL_HOST')?:'localhost');
+define('${UPPERPROVIDER}_DB_HOST',  getenv('MYSQL_HOST')?:'localhost');
 
 /**
  *
- * @name ${PROVIDER}_TIMEZONE
+ * @name ${UPPERPROVIDER}_TIMEZONE
  */
-define('${PROVIDER}_TIMEZONE',  'Europe/Rome');
+define('${UPPERPROVIDER}_TIMEZONE',  'Europe/Rome');
