@@ -71,7 +71,7 @@ if (!defined('PORTAL_NAME')) {
     if (getenv('PORTAL_NAME')){
         define('PORTAL_NAME', getenv('PORTAL_NAME'));
     } else {
-        define('PORTAL_NAME', getenv('ADA_OR_WISP') ? translateFN('Benvenuto su') .' '.getenv('ADA_OR_WISP') : 'ADA 2.2');
+        define('PORTAL_NAME', getenv('ADA_OR_WISP') ? strtoupper(getenv('ADA_OR_WISP')) : 'ADA 2.2');
     }
 }
 
