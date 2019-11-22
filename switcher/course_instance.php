@@ -89,7 +89,6 @@ require_once ROOT_DIR . '/include/Forms/CourseInstanceSubscriptionsForm.inc.php'
  * 2. ottieni gli studenti preiscritti a questa istanza
  */
 
-
 if(!($courseObj instanceof Course) || !$courseObj->isFull()) {
     $data = new CText(translateFN('Corso non trovato'));
     $data=$data->getHtml();
@@ -103,11 +102,10 @@ else {
     $courseId = $courseObj->getId();
     $instanceId = $courseInstanceObj->getId();
     $isTutorCommunity = $courseInstanceObj->isTutorCommunity();
-    $presubscriptions = Subscription::findPresubscriptionsToClassRoom($instanceId);
 
-    $subscriptions = Subscription::findSubscriptionsToClassRoom($instanceId);
+    $subscriptions = Subscription::findSubscriptionsToClassRoom($instanceId, true);
 
-    if(count($presubscriptions) == 0 && count($subscriptions) == 0) {
+    if(count($subscriptions) == 0) {
         $thead_data = array(
             translateFN('Notifica'),
         );
@@ -116,38 +114,18 @@ else {
         $result_table->setAttribute('class', $result_table->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
         $table = $result_table->getHtml();
     } else {
-        //first: make associative arrays by ID of presubscription
         $ids_student = array();
-        $tmp_presubscriptions = $presubscriptions;
-        $presubscriptions = array();
-                    foreach($tmp_presubscriptions as $k=>$v) {
-                            $ids_student[] = $v->getSubscriberId();
-                            $presubscriptions[$v->getSubscriberId()] = $v;
-                    }
-        //second: retrieve data for presubscription
-        if (!empty($ids_student)) {
-                    $student_subscribed_course_instance = $dh->get_students_subscribed_course_instance($ids_student,true);
+        foreach($subscriptions as $k=>$v) {
+            $ids_student[] = $v->getSubscriberId();
         }
-
-                    //third: make associative arrays by ID of subscription
-                    $ids_student = array();
-                    $tmp_subscriptions = $subscriptions;
-                    $subscriptions = array();
-                    foreach($tmp_subscriptions as $k=>$v) {
-                            $ids_student[] = $v->getSubscriberId();
-                            $subscriptions[$v->getSubscriberId()] = $v;
-                    }
-
-        //forth: retrieve data for subscription and add it to preexistent array
+        // retrieve data for subscription and add it to preexistent array
         if (!empty($ids_student)) {
             foreach($dh->get_students_subscribed_course_instance($ids_student) as $k=>$v) {
                 $student_subscribed_course_instance[$k]=$v;
             }
         }
 
-        $arrayUsers=array();
-        $arrayUsers= array_merge($arrayUsers,$presubscriptions);
-        $arrayUsers= array_merge($arrayUsers,$subscriptions);
+        $arrayUsers=$subscriptions;
 
         $dataAr=array();
         $tooltipDiv=CDOMElement::create('div');
@@ -174,6 +152,25 @@ else {
         if(!$isTutorCommunity && defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE)){
             array_push($thead_data,translateFN('Certificato'));
         }
+
+        // $arrayOptionText associates ADA_STATUS code to text to print
+        $arrayOptionText = [
+            ADA_STATUS_PRESUBSCRIBED,
+            ADA_STATUS_SUBSCRIBED,
+            ADA_STATUS_REMOVED,
+            ADA_STATUS_VISITOR,
+            ADA_STATUS_REMOVED,
+            ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED,
+            ADA_SERVICE_SUBSCRIPTION_STATUS_TERMINATED
+        ];
+       // $arrayOptions contains HTML Objects of option controller
+        $arrayOptions=[];
+        foreach ($arrayOptionText as $o) {
+            $arrayOptions[$o] = CDOMElement::create('option');
+            $arrayOptions[$o]->setAttribute('value', $o);
+            $arrayOptions[$o]->addChild(new CText(Subscription::subscriptionStatusArray()[$o]));
+        }
+
         foreach($arrayUsers as $user)
         {
 
@@ -193,103 +190,36 @@ else {
                     $title = $title.''.$UserInstance['titolo'].' - '.$UserInstance['title'].'<br />';
                 }
             }
-
             $span_label = CDOMElement::create('span');
-           // $span_label->setAttribute('title', $title);
-           // $span_label->setAttribute('class', 'UserName tooltip');
+            $span_label->setAttribute('title', $title);
+
             $span_label->setAttribute('class', 'UserName tooltip');
             $span_label->setAttribute('id', $user->getSubscriberId());
             $span_label->addChild(new CText($name));
 
             $Tooltip=CDOMElement::create('div');
             $Tooltip->setAttribute('title', $title);
-            //$Tooltip->setAttribute('class', 'UserName tooltip');
+            $Tooltip->setAttribute('class', 'UserName tooltip');
             $Tooltip->setAttribute('id', 'user_tooltip_'.$user->getSubscriberId());
             $tooltipDiv->addChild($Tooltip);
 
             $title = '';
 
             /* select user status */
-
             $select=CDOMElement::create('select', 'class:select_status');
+            // $select->setAttribute('id', $user->getSubscriberId().'_status');
 
-            $option_Presubscribed = CDOMElement::create('option');
-            $option_Presubscribed->setAttribute('value', ADA_STATUS_PRESUBSCRIBED);
-            $option_Presubscribed->addChild(new CText(translateFN("Preiscritto")));
-
-
-            $option_Subscribed = CDOMElement::create('option');
-            $option_Subscribed->setAttribute('value', ADA_STATUS_SUBSCRIBED);
-            $option_Subscribed->addChild(new CText(translateFN("Iscritto")));
-
-            $option_Removed = CDOMElement::create('option');
-            $option_Removed->setAttribute('value', ADA_STATUS_REMOVED);
-            $option_Removed->addChild(new CText(translateFN("Rimosso")));
-
-            $option_Visitor = CDOMElement::create('option');
-            $option_Visitor->setAttribute('value', ADA_STATUS_VISITOR);
-            $option_Visitor->addChild(new CText(translateFN("In visita")));
-
-            $option_Completed = CDOMElement::create('option');
-            $option_Completed->setAttribute('value', ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
-            $option_Completed->addChild(new CText(translateFN("Completato")));
-
-            $option_Terminated = CDOMElement::create('option');
-            $option_Terminated->setAttribute('value', ADA_STATUS_TERMINATED);
-            $option_Terminated->addChild(new CText(translateFN("Terminato")));
-
-            switch ($user->getSubscriptionStatus()){
-
-                case ADA_STATUS_PRESUBSCRIBED:
-                    $option_Presubscribed->setAttribute('selected','selected');
-                    $span_selected = CDOMElement::create('span');
-                    $span_selected->setAttribute('class', 'hidden_status');
-                    $span_selected->addChild(new CText(translateFN("Preiscritto")));
-                    break;
-                case ADA_STATUS_SUBSCRIBED:
-                    $option_Subscribed->setAttribute('selected','selected');
-                    $span_selected = CDOMElement::create('span');
-                    $span_selected->setAttribute('class', 'hidden_status');
-                    $span_selected->addChild(new CText(translateFN("Iscritto")));
-
-                    break;
-                case ADA_STATUS_REMOVED:
-                    $option_Removed->setAttribute('selected','selected');
-                    $span_selected = CDOMElement::create('span');
-                    $span_selected->setAttribute('class', 'hidden_status');
-                    $span_selected->addChild(new CText(translateFN("Rimosso")));
-
-                    break;
-                case ADA_STATUS_VISITOR:
-                    $option_Visitor->setAttribute('selected','selected');
-                    $span_selected = CDOMElement::create('span');
-                    $span_selected->setAttribute('class', 'hidden_status');
-                    $span_selected->addChild(new CText(translateFN("in visita")));
-
-                    break;
-                case ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED:
-                    $option_Completed->setAttribute('selected','selected');
-                    $span_selected = CDOMElement::create('span');
-                    $span_selected->setAttribute('class', 'hidden_status');
-                    $span_selected->addChild(new CText(translateFN("Completato")));
-
-                    break;
-                case ADA_STATUS_TERMINATED:
-                	$option_Terminated->setAttribute('selected','selected');
-                	$span_selected = CDOMElement::create('span');
-                	$span_selected->setAttribute('class', 'hidden_status');
-                	$span_selected->addChild(new CText(translateFN("Terminato")));
-
-                	break;
+            $opts=[];
+            foreach($arrayOptions as $status=>$optObj) {
+                $opts[$status] = clone $optObj;
             }
-
-            $select->addChild($option_Presubscribed);
-            $select->addChild($option_Subscribed);
-            $select->addChild($option_Removed);
-            $select->addChild($option_Visitor);
-            $select->addChild($option_Completed);
-            $select->addChild($option_Terminated);
-
+            $opts[$user->getSubscriptionStatus()]->setAttribute('selected','selected');
+            $span_selected = CDOMElement::create('span');
+            $span_selected->setAttribute('class', 'hidden_status');
+            $span_selected->addChild(new CText(Subscription::subscriptionStatusArray()[$user->getSubscriptionStatus()]));
+            foreach ($opts as $op) {
+                $select->addChild($op);
+            }
             $select->setAttribute('onchange', 'saveStatus(this)');
 
             $livello = $dh->_get_student_level($user->getSubscriberId(),$instanceId);
@@ -314,7 +244,15 @@ else {
 //             $span_data->setAttribute('class', 'date');
 //             $span_data->addChild(new CText($data_iscrizione));
 
-            $userArray = array(translateFN('Hidden_status')=>$span_selected->getHtml(),translateFN('Id')=>$user->getSubscriberId(),translateFN('Nome')=>$span_label->getHtml(),translateFN('Status')=>$select->getHtml(),translateFN('Id_istance')=>$span_instance->getHtml(),translateFN('Data iscrizione')=>$data_iscrizione,translateFN('Livello')=>$livello);
+            $userArray = [
+                translateFN('Hidden_status')=>$span_selected->getHtml(),
+                translateFN('Id')=>$user->getSubscriberId(),
+                translateFN('Nome')=>$span_label->getHtml(),
+                translateFN('Status')=>$select->getHtml(),
+                translateFN('Id_istance')=>$span_instance->getHtml(),
+                translateFN('Data iscrizione')=>$data_iscrizione,
+                translateFN('Livello')=>$livello
+            ];
 
             if (MODULES_BADGES) {
                 $userArray[$badgesKey] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($courseId, $instanceId, $user->getSubscriberId())->getHtml();
@@ -327,8 +265,7 @@ else {
 
             if(!$isTutorCommunity && defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE))
             {
-               $UserCertificateObj = Multiport::findUser($user->getSubscriberId(),$instanceId);
-               $certificate = $UserCertificateObj->Check_Requirements_Certificate($user->getSubscriberId());
+               $certificate = !$isTutorCommunity && ADAUser::Check_Requirements_Certificate($user->getSubscriberId(), $user->getSubscriptionStatus());
                if($certificate)
                {
 

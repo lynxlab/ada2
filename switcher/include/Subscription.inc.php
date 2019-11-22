@@ -63,9 +63,9 @@ class Subscription
      * @param integer $classRoomId
      * @return array an array of Subscriptions
      */
-    static public function findSubscriptionsToClassRoom($classRoomId) {
+    static public function findSubscriptionsToClassRoom($classRoomId, $all=false) {
         $dh = $GLOBALS['dh'];
-        $result = $dh->get_students_for_course_instance($classRoomId);
+        $result = $dh->get_students_for_course_instance($classRoomId, $all);
 
         if(AMA_DataHandler::isError($result)) {
             return array();

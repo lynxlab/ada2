@@ -1539,7 +1539,7 @@ abstract class ADAAbstractUser extends ADALoggableUser {
 	 *
 	 * @return boolean
 	 */
-	 public function Check_Requirements_Certificate() {
+	 public static function Check_Requirements_Certificate($userId, $instanceStatus) {
 	 	/* be implemented according to the use cases */
 	 	return true;
 	 }

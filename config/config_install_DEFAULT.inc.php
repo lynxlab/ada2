@@ -529,8 +529,11 @@ define('ADA_DEFAULT_LANGUAGE', "italiano");
 // Parameters for evaluation  of acts  (used by class Student_class)
 define("NOTE_PAR",          7);
 define("HIST_PAR",          1);
-define("MSG_PAR",           3);
-define("EXE_PAR",           5);
+define("MSG_PAR",           5);
+define("EXE_PAR",           3);
+define("BKM_PAR",           1);
+define("CHA_PAR",           7);
+define("SURV_PAR",          5);
 
 // max user level
 define('ADA_MAX_USER_LEVEL', 100);

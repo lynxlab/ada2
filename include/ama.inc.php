@@ -4238,11 +4238,12 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
      *
      */
 
-    public function get_students_for_course_instance($id_course_instance) {
+    public function get_students_for_course_instance($id_course_instance, $all=false) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
-	$status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
+        $status_Ar = array(ADA_STATUS_SUBSCRIBED,ADA_STATUS_REMOVED,ADA_STATUS_VISITOR,ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
+        if ($all!==false) $status_Ar[] = ADA_STATUS_PRESUBSCRIBED;
 
         $sql = 'SELECT U.*, I.status,I.data_iscrizione,I.laststatusupdate';
 
@@ -4294,6 +4295,280 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $result = $db->getAll($sql, NULL, AMA_FETCH_ASSOC);
         if(AMA_DB::isError($result)) {
+            return new AMA_Error(AMA_ERR_GET);
+        }
+
+        return $result;
+    }
+
+    /***
+     *  get_students_report
+     *  The function get the report of a class of students
+     *  Used to fetch Table with all info requested in $requestedColumn
+     *
+     * @param int $id_instance
+     * @param int $id_course
+     * @param array $requestedColumn
+     * @param array $indexWeights
+     *
+     * note: the ORDER of elements in this array change the ORDER of result columns
+     *
+     * All fields available:
+     * "history"  - count of visits
+     * "last_access"  - last access
+     * "exercises_test"
+     * "exercises_survey"
+     * "added_notes"
+     * "read_notes"
+     * "message_count_out"
+     * "message_count_in"
+     * "chat"
+     * "bookmarks"
+     * "index"  - calculate a function  ("history" + "message_count_out" +"message_count_in"+ "chat" + "bookmarks" + "read_notes" + "added_notes" )
+     * "level"
+     *
+     * example of $requestedColumn:
+     * $columns= array(
+                    REPORT_COLUMN_HISTORY => 'history',
+                    REPORT_COLUMN_LAST_ACCESS => 'last_access',
+                    REPORT_COLUMN_EXERCISES_TEST => 'exercises_test',
+                    REPORT_COLUMN_EXERCISES_SURVEY => 'exercises_survey',
+                    REPORT_COLUMN_ADDED_NOTES => 'added_notes',
+                    REPORT_COLUMN_READ_NOTES   => 'read_notes',
+                    REPORT_COLUMN_MESSAGE_COUNT_IN  => 'message_count_in',
+                    REPORT_COLUMN_MESSAGE_COUNT_OUT  => 'message_count_out',
+                    REPORT_COLUMN_CHAT  => 'chat',
+                    REPORT_COLUMN_BOOKMARKS  => 'bookmarks',
+                    REPORT_COLUMN_INDEX  => 'index',
+                    REPORT_COLUMN_LEVEL  => 'level',
+                    REPORT_COLUMN_LEVEL_PLUS  => 'level_plus',
+                    REPORT_COLUMN_LEVEL_LESS  => 'level_less'  );
+     *
+     * Federico 17/11/2019
+     */
+    public function get_students_report($id_instance, $id_course, $requestedColumn, $indexWeights=[]) {
+
+        $db = &$this->getConnection();
+        if (AMA_DB::isError($db)) return $db;
+
+        // the fields id and student return always
+        $select = "SELECT  utente.id_utente AS id, CONCAT(utente.nome ,' ',utente.cognome) AS student ";
+        $from = "
+            FROM  (
+                (Select * from iscrizioni WHERE id_istanza_corso = $id_instance and status <> " . ADA_STATUS_VISITOR . " ) as iscrizioni
+            LEFT OUTER JOIN
+                        utente
+            ON iscrizioni.id_utente_studente = utente.id_utente
+            ";
+
+            /*
+                 $allPossibleFields has this shape:
+                 [
+                    column1 => ["select" => "text to insert in select", "from" => "text to insert in from"]
+                    column2 => ["select" => "text to insert in select2", "from" => "text to insert in from2"]
+                    .......
+                 ]
+
+            */
+        $allPossibleFields = array(
+            "history" => array(
+                "select" => "IFNULL(getterVisite.visite_totali,0) AS history",
+                "from" => "
+                        LEFT OUTER JOIN
+                        (SELECT innerVisite.id_utente_studente, SUM(innerVisite.numero_visite) visite_totali
+                                FROM nodo AS N
+                                    LEFT JOIN
+                                        (SELECT id_nodo, count(id_nodo) AS numero_visite, id_utente_studente FROM history_nodi WHERE id_istanza_corso=$id_instance GROUP BY id_nodo,id_utente_studente) AS innerVisite
+                                    ON (N.id_nodo=innerVisite.id_nodo)
+                                WHERE N.id_nodo LIKE '{$id_course}_%' AND N.tipo IN (".ADA_LEAF_TYPE.", ".ADA_GROUP_TYPE.")
+                            GROUP BY innerVisite.id_utente_studente) as getterVisite
+                        ON utente.id_utente = getterVisite.id_utente_studente
+                        "
+            ),
+            "last_access" => array(
+                "select" =>   "IFNULL(FROM_UNIXTIME(ultimavisita.recente, '%d/%m/%Y'),'-') AS last_access",
+                "from" => " LEFT OUTER JOIN
+                            (SELECT id_utente_studente,MAX(data_uscita) AS recente from history_nodi as h LEFT OUTER JOIN nodo as n ON ( h.id_nodo = n.id_nodo) where  id_istanza_corso = $id_instance group by id_utente_studente) as ultimavisita
+                                ON utente.id_utente = ultimavisita.id_utente_studente
+                                "
+            ),
+
+            "added_notes" => array(
+                "select" => "IFNULL(notes_write.note,0) AS added_notes",
+                "from" => "
+                        LEFT OUTER JOIN
+                            (SELECT id_utente, COUNT(*) as note from nodo where tipo = ".ADA_NOTE_TYPE." AND id_istanza = $id_instance GROUP BY id_utente) as notes_write
+                        ON utente.id_utente = notes_write.id_utente
+                        "
+            ),
+            "read_notes" => array(
+                "select" => "IFNULL( notes_read.note,0) AS read_notes",
+                "from" => "
+                        LEFT OUTER JOIN
+                            (SELECT id_utente_studente, count(*) as note from history_nodi as h LEFT OUTER JOIN nodo as n ON ( h.id_nodo = n.id_nodo) where tipo IN (".ADA_NOTE_TYPE.") and  id_istanza = $id_instance group by id_utente_studente) as notes_read
+                        ON utente.id_utente = notes_read.id_utente_studente
+                        "
+            ),
+            "message_count_out" => array(
+                "select" => " IFNULL( lst_msgs_inv.msgsi,0) AS message_count_out",
+                "from" =>   "
+                        LEFT OUTER JOIN
+                            (SELECT id_mittente, SUM(CASE WHEN messaggi.tipo = '".ADA_MSG_SIMPLE."' THEN 1 ELSE 0 END) as msgsi from messaggi group by id_mittente ) as lst_msgs_inv
+                        ON utente.id_utente = lst_msgs_inv.id_mittente
+                        "
+            ),
+            "message_count_in" => array(
+                "select" => "IFNULL( lst_msgs_ric.msgsr,0) AS message_count_in",
+                "from" =>    "
+                        LEFT OUTER JOIN
+                            (SELECT id_utente, count(*) as msgsr from destinatari_messaggi, messaggi WHERE messaggi.id_messaggio = destinatari_messaggi.id_messaggio AND tipo = '".ADA_MSG_SIMPLE."' AND deleted='N' group by id_utente) as lst_msgs_ric
+                        ON utente.id_utente = lst_msgs_ric.id_utente
+                        "
+            ),
+            "chat" => array(
+                "select" => " IFNULL( lst_chat.chat,0) AS chat",
+                "from" =>     "
+                        LEFT OUTER JOIN
+                        (SELECT id_mittente, SUM(CASE WHEN messaggi.tipo = '".ADA_MSG_CHAT."' THEN 1 ELSE 0 END) as chat from chatroom, messaggi where id_istanza_corso = $id_instance and messaggi.id_group=chatroom.id_chatroom GROUP BY id_mittente) as lst_chat
+                        ON utente.id_utente = lst_chat.id_mittente
+                        "
+            ),
+            "bookmarks" => array(
+                "select" => " IFNULL(lst_bkmrs.bkmrs,0) AS bookmarks",
+                "from" =>      "
+                        LEFT OUTER JOIN
+                            (SELECT id_utente_studente, count(*) as bkmrs from bookmark  WHERE id_istanza_corso = $id_instance group by id_utente_studente) as lst_bkmrs
+                        ON utente.id_utente = lst_bkmrs.id_utente_studente
+                        "
+            ),
+            "index" => array(
+                "select" => function () use ($requestedColumn, $indexWeights) {
+                    $select = [];
+                    $fields = [
+                        REPORT_COLUMN_HISTORY => 'IFNULL(getterVisite.visite_totali,0)',
+                        REPORT_COLUMN_EXERCISES_TEST => 'IFNULL(punteggio.puntitest,0)',
+                        REPORT_COLUMN_EXERCISES_SURVEY => 'IFNULL(punteggio.puntisondaggi,0)',
+                        REPORT_COLUMN_ADDED_NOTES => 'IFNULL(notes_write.note,0)',
+                        REPORT_COLUMN_READ_NOTES => 'IFNULL(notes_read.note,0)',
+                        REPORT_COLUMN_MESSAGE_COUNT_IN => 'IFNULL(lst_msgs_ric.msgsr,0)',
+                        REPORT_COLUMN_MESSAGE_COUNT_OUT => 'IFNULL(lst_msgs_inv.msgsi,0)',
+                        REPORT_COLUMN_CHAT => 'IFNULL(lst_chat.chat,0)',
+                        REPORT_COLUMN_BOOKMARKS => 'IFNULL(lst_bkmrs.bkmrs,0)'
+                    ];
+                    foreach($fields as $colIndex => $field) {
+                        if (array_key_exists($colIndex, $requestedColumn)) {
+                            array_push($select,
+                              (isset($indexWeights[$colIndex]) && !is_null($indexWeights[$colIndex]) ? $indexWeights[$colIndex] .' * ' :'').
+                              '('.$field.')'
+                            );
+                        }
+                    }
+                    if (count($select)>0) {
+                        return "(".implode(' + ', $select).") as 'index' ";
+                    }
+                    return '';
+                },
+                "from" => ""
+            ),
+            "level" => array(
+                "select" => " livello AS 'level'",
+                "from" => ""
+            ),
+            "status" => array(
+                "select" => " status AS 'status'",
+                "from" => ""
+            ),
+
+            "test"=> array(
+                "select"=> " CONCAT(IFNULL(punteggio.puntitest,0),' su ',IFNULL(lst_max.maxtest,0)) as exercises_test,
+                             CONCAT(IFNULL(punteggio.puntisondaggi,0),' su ',IFNULL(lst_max.maxsondaggi,0)) as exercises_survey",
+                "from" =>"
+                    LEFT OUTER JOIN
+                        (SELECT
+                            ht.`id_utente`,
+                            SUM(CASE WHEN LEFT(CAST(t.`tipo` AS CHAR(20)), 1) = '".ADA_TYPE_TEST."'   THEN ht.`punteggio_realizzato` ELSE 0 END) as puntitest,
+                            SUM(CASE WHEN LEFT(CAST(t.`tipo` AS CHAR(20)), 1) = '".ADA_TYPE_SURVEY."' THEN ht.`punteggio_realizzato` ELSE 0 END) as puntisondaggi
+                        FROM
+                            `".AMATestDataHandler::$PREFIX."history_test` ht JOIN `".AMATestDataHandler::$PREFIX."nodes` t ON (t.`id_nodo` = ht.`id_nodo`)
+                        LEFT OUTER JOIN
+                            (SELECT id_nodo, max(punteggio_realizzato) as mass from ".AMATestDataHandler::$PREFIX."history_test where id_istanza_corso = $id_instance group by id_nodo) innerPunteggio
+                                ON (innerPunteggio.id_nodo = t.id_nodo) WHERE   ht.`id_istanza_corso` = $id_instance AND ( ht.`consegnato` = 1 OR ht.`tempo_scaduto` = 1 )
+                            GROUP BY ht.`id_utente`) as punteggio
+                        ON utente.id_utente = punteggio.id_utente
+                        LEFT OUTER JOIN
+                            (select id_utente,
+
+                                SUM(CASE
+                                    WHEN LEFT(CAST(innerMax.`test_tipo` AS CHAR(20)), 1) = '".ADA_TYPE_TEST."' and
+                                        (RIGHT(LEFT(CAST(innerMax.`tipo` AS CHAR(20)), 2),1)='".ADA_MULTIPLE_CHECK_TEST_TYPE."' or
+                                        RIGHT(LEFT(CAST(innerMax.`tipo` AS CHAR(20)), 2),1)='".ADA_LIKERT_TEST_TYPE."' or
+                                        RIGHT(LEFT(CAST(innerMax.`tipo` AS CHAR(20)), 2),1)='".ADA_CLOZE_TEST_TYPE."')
+                                    THEN innerMax.sum_punti
+                                    WHEN LEFT(CAST(innerMax.`test_tipo` AS CHAR(20)), 1) = '".ADA_TYPE_TEST."' and
+                                        (RIGHT(LEFT(CAST(innerMax.`tipo` AS CHAR(20)), 2),1)='".ADA_STANDARD_TEST_TYPE."')
+                                    THEN innerMax.max_punti
+                                    WHEN LEFT(CAST(uu.`tipo` AS CHAR(20)), 1) = '".ADA_TYPE_TEST."'
+                                    THEN  innerMax.max_punti_domanda
+                                    ELSE 0
+                                    END) as maxtest,
+                                SUM(CASE
+                                    WHEN LEFT(CAST(innerMax.`test_tipo` AS CHAR(20)), 1) = '".ADA_TYPE_SURVEY."' and
+                                        (RIGHT(LEFT(CAST(innerMax.`tipo` AS CHAR(20)), 2),1)='".ADA_MULTIPLE_CHECK_TEST_TYPE."' or
+                                        RIGHT(LEFT(CAST(innerMax.`tipo` AS CHAR(20)), 2),1)='".ADA_LIKERT_TEST_TYPE."' or
+                                        RIGHT(LEFT(CAST(innerMax.`tipo` AS CHAR(20)), 2),1)='".ADA_CLOZE_TEST_TYPE."')
+                                    THEN innerMax.sum_punti
+                                    WHEN LEFT(CAST(innerMax.`test_tipo` AS CHAR(20)), 1) = '".ADA_TYPE_SURVEY."' and
+                                        (RIGHT(LEFT(CAST(innerMax.`tipo` AS CHAR(20)), 2),1)='".ADA_STANDARD_TEST_TYPE."')
+                                    THEN innerMax.max_punti
+                                    WHEN LEFT(CAST(innerMax.`test_tipo` AS CHAR(20)), 1) = '".ADA_TYPE_SURVEY."'
+                                    THEN innerMax.max_punti_domanda
+                                    ELSE 0
+                                    END) as maxsondaggi
+                            FROM
+                                (SELECT t.`tipo`, ht.`id_utente`, ht.`domande`, ht.`punteggio_realizzato`
+                                 FROM `".AMATestDataHandler::$PREFIX."history_test` ht
+                                 JOIN `".AMATestDataHandler::$PREFIX."nodes` t ON (t.`id_nodo` = ht.`id_nodo`)
+                                 WHERE ht.`id_corso` = $id_course AND ht.`id_istanza_corso` = $id_instance AND ( ht.`consegnato` = 1 OR ht.`tempo_scaduto` = 1 )) as uu,
+                                 (SELECT  t.`tipo` as test_tipo, q.`id_nodo`,q.`tipo`, q.`correttezza` as max_punti_domanda, SUM(a.`correttezza`) as sum_punti,MAX(a.`correttezza`) as max_punti
+                                  FROM `".AMATestDataHandler::$PREFIX."nodes` q
+                                  JOIN `".AMATestDataHandler::$PREFIX."nodes` a ON (a.`id_nodo_parent` = q.`id_nodo`)
+                                  JOIN `".AMATestDataHandler::$PREFIX."nodes` t ON (t.`id_nodo` = q.`id_nodo_radice`)
+                                  -- WHERE a.id_corso = $id_course OR t.`id_nodo` IN (SELECT `id_test` FROM `".AMATestDataHandler::$PREFIX."course_survey` WHERE `id_corso`=$id_course)
+                                  GROUP BY t.`tipo`, q.`id_nodo`, q.`tipo`) as innerMax
+                            WHERE  (uu.`domande` like CONCAT ('%\"',innerMax.id_nodo,'\"%'))
+                            GROUP by uu.id_utente) as lst_max
+                            ON (utente.id_utente = lst_max.`id_utente` )"
+            )
+        );
+
+        $test_already_added = false;
+        // Build final query
+        foreach ($requestedColumn as $column) {
+            if ($column == 'exercises_test' || $column == 'exercises_survey') {
+                if ($test_already_added == false) {
+                    $select .= "," . $allPossibleFields['test']["select"];
+                    $from .=  $allPossibleFields['test']["from"];
+                    $test_already_added = true;
+                }
+            } else {
+                if (isset($allPossibleFields[$column])) {
+                    if (is_callable($allPossibleFields[$column]["select"])) {
+                        $select .= "," . call_user_func($allPossibleFields[$column]["select"]);
+                    } else {
+                        $select .= "," . $allPossibleFields[$column]["select"];
+                    }
+                    if (is_callable($allPossibleFields[$column]["from"])) {
+                        $from .= call_user_func($allPossibleFields[$column]["from"]);
+                    } else {
+                        $from .=  $allPossibleFields[$column]["from"];
+                    }
+                }
+            }
+        }
+
+        $result = $db->getAll($select . $from . ")", null, AMA_FETCH_ASSOC);
+
+        if (AMA_DB::isError($result)) {
             return new AMA_Error(AMA_ERR_GET);
         }
 
