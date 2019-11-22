@@ -1300,8 +1300,8 @@ class Student_class {
 
     }
 
-    function get_student_coursesFN($id_course,$order="") {
-        return $this->get_class_reportFN($id_course,$order);
+    function get_student_coursesFN($id_course,$order="",$speed_mode) {
+        return $this->get_class_reportFN($id_course,$order,$speed_mode);
     }
 
 
@@ -1484,7 +1484,7 @@ class Student_class {
 
     // @author giorgio 14/mag/2013
     // added type parameter that defaults to 'xls'
-    function get_class_reportFN($id_course,$order="",$index_att="",$type='HTML') {
+    function get_class_reportFN($id_course,$order="",$index_att="",$type='HTML',$speed_mode=true) {
         $dh = $GLOBALS['dh'];
         $http_root_dir = $GLOBALS['http_root_dir'];
         $debug  = isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
@@ -1492,8 +1492,9 @@ class Student_class {
         $hpar = isset($GLOBALS['hpar']) ? $GLOBALS['hpar'] : null;
         $mpar = isset($GLOBALS['mpar']) ? $GLOBALS['mpar'] : null;
         $epar = isset($GLOBALS['epar']) ? $GLOBALS['epar'] : null;
-        $bpar = isset($GLOBALS['mpar']) ? $GLOBALS['mpar'] : null;
-        $cpar = isset($GLOBALS['epar']) ? $GLOBALS['epar'] : null;
+        $bpar = isset($GLOBALS['bpar']) ? $GLOBALS['bpar'] : null;
+        $cpar = isset($GLOBALS['cpar']) ? $GLOBALS['cpar'] : null;
+        $spar = isset($GLOBALS['spar']) ? $GLOBALS['spar'] : null;
 
         // default parameters for activity index are in configuration file
         if (empty($npar))
@@ -1508,6 +1509,8 @@ class Student_class {
             $bpar = (defined('BKM_PAR')) ? BKM_PAR : null; //bookmarks
         if (!isset($cpar))
             $cpar = (defined('CHA_PAR')) ? CHA_PAR : null; // chat
+        if (!isset($spar))
+            $spar = (defined('SURV_PAR')) ? SURV_PAR : null; // surveys
 
         $student_list_ar = $this->student_list;
         $id_instance = $this->id;
@@ -1526,7 +1529,6 @@ class Student_class {
             }
 
             $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
-            $num_student = -1;
             $tot_history_count = 0;
             $tot_exercises_score = 0;
             $tot_exercises_number = 0;
@@ -1539,6 +1541,10 @@ class Student_class {
             $tot_chatlines_count_out = 0;
             $tot_index = 0;
             $tot_level = 0;
+            $tot_exercises_score_test = 0;
+            $tot_exercises_number_test = 0;
+            $tot_exercises_score_survey = 0;
+            $tot_exercises_number_survey = 0;
             /**
              * @author giorgio 27/ott/2014
              *
@@ -1549,351 +1555,585 @@ class Student_class {
              * but be warned that table log_classi may grow A LOT!
              */
             $report_generation_TS = dt2tsFN(today_dateFN());
+            if ($speed_mode===true) {
+                // in  $data_to_get we choose what fields to get back and the order of fields
+                $columns = [
+                    REPORT_COLUMN_HISTORY => 'history',
+                    REPORT_COLUMN_LAST_ACCESS => 'last_access',
+                    REPORT_COLUMN_EXERCISES_TEST => 'exercises_test',
+                    REPORT_COLUMN_EXERCISES_SURVEY => 'exercises_survey',
+                    REPORT_COLUMN_ADDED_NOTES => 'added_notes',
+                    REPORT_COLUMN_READ_NOTES   => 'read_notes',
+                    REPORT_COLUMN_MESSAGE_COUNT_IN  => 'message_count_in',
+                    REPORT_COLUMN_MESSAGE_COUNT_OUT  => 'message_count_out',
+                    REPORT_COLUMN_CHAT  => 'chat',
+                    REPORT_COLUMN_BOOKMARKS  => 'bookmarks',
+                    REPORT_COLUMN_INDEX  => 'index',
+                    REPORT_COLUMN_STATUS => 'status',
+                    REPORT_COLUMN_BADGES => 'badges',
+                    REPORT_COLUMN_LEVEL  => 'level',
+                    REPORT_COLUMN_LEVEL_PLUS  => 'level_plus',
+                    REPORT_COLUMN_LEVEL_LESS  => 'level_less'
+                ];
+                $weights = [
+                    REPORT_COLUMN_HISTORY => $hpar,
+                    REPORT_COLUMN_EXERCISES_TEST => $epar,
+                    REPORT_COLUMN_EXERCISES_SURVEY => $spar,
+                    REPORT_COLUMN_ADDED_NOTES => $npar,
+                    REPORT_COLUMN_READ_NOTES => $npar,
+                    REPORT_COLUMN_MESSAGE_COUNT_IN => $mpar,
+                    REPORT_COLUMN_MESSAGE_COUNT_OUT => $mpar,
+                    REPORT_COLUMN_CHAT => $cpar,
+                    REPORT_COLUMN_BOOKMARKS => $bpar
+                ];
+                $to_not_get = $GLOBALS['report' . $type . 'ColArray'];
 
-			if (MODULES_TEST) {
-				$tot_exercises_score_test = 0;
-				$tot_exercises_number_test = 0;
-				$tot_exercises_score_survey = 0;
-				$tot_exercises_number_survey = 0;
+                foreach ($to_not_get as $to_delete) {
+                    unset($columns[constant($to_delete)]);
+                    if (isset($weights[constant($to_delete)])) unset($weights[constant($to_delete)]);
+                }
 
-				$test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-				$test_score = $test_db->getStudentsScores($id_course,$id_instance);
-            }
-            if (MODULES_BADGES) {
-                \Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($id_course, $id_instance);
-            }
-            foreach ($student_list_ar as $one_student) {
-                $num_student++; //starts with 0
-                $id_student = $one_student['id_utente_studente'];
-                $student_level = $one_student['livello'];
-                $status_student = $one_student['status'];
-                $dati['id'] = $id_student;
-                $dati['level'] = $student_level;
-                $ymdhms = today_dateFN();
-                $utime = dt2tsFN($ymdhms);
-                $dati['date'] = $report_generation_TS;
+                if (array_key_exists(REPORT_COLUMN_BADGES, $columns)) {
+                    if (MODULES_BADGES)
+                        \Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($id_course, $id_instance);
+                    else unset($columns[REPORT_COLUMN_BADGES]);
+                }
 
-                $goodStatuses = array(ADA_STATUS_SUBSCRIBED, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
-                if (!empty($id_student) && in_array($status_student, $goodStatuses)) {
+                if (!MODULES_TEST) {
+                    if (isset($columns[REPORT_COLUMN_EXERCISES_TEST])) unset($columns[REPORT_COLUMN_EXERCISES_TEST]);
+                    if (isset($columns[REPORT_COLUMN_EXERCISES_SURVEY])) unset($columns[REPORT_COLUMN_EXERCISES_SURVEY]);
+                }
 
-                    $studentObj = MultiPort::findUser($id_student);//new Student($id_student,$id_instance);
+                if (array_key_exists(REPORT_COLUMN_STATUS, $columns)) {
+                    require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
+                }
 
-                    if  ($studentObj->full!=0){//==0) {
-                        $err_msg =$studentObj->error_msg;
-                    } else {
+                $dati_stude = $dh->get_students_report($id_instance, $id_course, $columns, $weights);
 
-                    	if ($studentObj instanceof ADAPractitioner) {
-                    		/**
-                    		 * @author giorgio 14/apr/2015
-                    		 *
-                    		 * If student is actually a tutor, build a new student
-                    		 * object for history and evaluation purposes
-                    		 */
-                    		$studentObj = $studentObj->toStudent();
-                    	}
-                        $student_name = $studentObj->getFullname();//$studentObj->nome." ".$studentObj->cognome;
+                foreach ($dati_stude as $key => $user) {
+                    // counters for statistics
+                    $id_student = $dati_stude[$key]["id"];
+                    $tot_history_count += $dati_stude[$key]["history"];
+                    $tot_added_notes += $dati_stude[$key]["added_notes"];
+                    $tot_read_notes += $dati_stude[$key]["read_notes"];
+                    $tot_message_count_in += $dati_stude[$key]['message_count_in'];
+                    $tot_message_count_out += $dati_stude[$key]['message_count_out'];
+                    $tot_chatlines_count_out += $dati_stude[$key]['chat'];
+                    $tot_bookmarks_count += isset($dati_stude[$key]['bookmarks']) ? $dati_stude[$key]['bookmarks'] :0;
+                    $tot_index += isset($dati_stude[$key]['index']) ? $dati_stude[$key]['index'] : 0;
+                    $tot_level += $dati_stude[$key]['level'];
 
-                        // vito
-                        $studentObj->set_course_instance_for_history($id_instance);
-                        //$studentObj->history->setCourseInstance($id_instance);
-                        $studentObj->history->setCourse($id_course);
-
-                        $studentObj->get_exercise_dataFN($id_instance, $id_student);
-                        $st_exercise_dataAr =$studentObj->user_ex_historyAr;
-                        $st_score = 0;
-                        $st_exer_number = 0 ;
-                        if (is_array($st_exercise_dataAr)) {
-                            foreach ($st_exercise_dataAr as $exercise) {
-                                $st_score+= $exercise[7];
-                                $st_exer_number++;
-                            }
-                        }
-                        $dati['exercises'] = $st_exer_number;
-                        $dati['score'] = $st_score;
-
-						if (MODULES_TEST) {
-							$st_score_test = isset($test_score[$id_student]['score_test'])?$test_score[$id_student]['score_test']:0;
-							$st_exer_number_test = isset($test_score[$id_student]['max_score_test'])?$test_score[$id_student]['max_score_test']:0;
-							$dati['exercises_test'] = $st_exer_number_test;
-							$dati['score_test'] = $st_score_test;
-
-							$st_score_survey = isset($test_score[$id_student]['score_survey'])?$test_score[$id_student]['score_survey']:0;
-							$st_exer_number_survey = isset($test_score[$id_student]['max_score_survey'])?$test_score[$id_student]['max_score_survey']:0;
-							$dati['exercises_survey'] = $st_exer_number_survey;
-							$dati['score_survey'] = $st_score_survey;
-						}
-
-                        $sub_courses = $dh->get_subscription($id_student, $id_instance);
-
-                        if ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED) {
-                            $out_fields_ar = array('nome','titolo','id_istanza','data_creazione');
-                            $clause = "tipo = '".ADA_NOTE_TYPE."' AND id_utente = '$id_student'";
-                            $nodes = $dh->find_course_nodes_list($out_fields_ar, $clause,$id_course);
-                            $added_nodes_count = count($nodes);
-                            $added_nodes_count_norm = str_pad($added_nodes_count,5, "0", STR_PAD_LEFT);
-
-                            $added_notes = "<!-- $added_nodes_count_norm --><a href=$http_root_dir/tutor/tutor.php?op=student_notes&id_instance=$id_instance&id_student=$id_student>".$added_nodes_count."</a>";
-                            //$added_notes = $added_nodes_count;
-                        } else {
-                            $added_notes = "<!-- 0 -->-";
-                        }
-                        $read_notes_count= $studentObj->total_visited_notesFN($id_student,$id_course);
-                        if ($read_notes_count>0) {
-                            $read_nodes_count_norm = str_pad($read_notes_count,5, "0", STR_PAD_LEFT);
-                            $read_notes = "<!-- $read_nodes_count_norm -->$read_notes_count";
-                        } else {
-                            $read_notes = "<!-- 0 -->-";
+                    //if in this installation module test is active
+                    if (MODULES_TEST) {
+                        if (array_key_exists(REPORT_COLUMN_EXERCISES_TEST, $columns)) {
+                            $st_score_test = explode(" ".translateFN("su")." ", $dati_stude[$key]["exercises_test"])[0];
+                            $st_exer_number_test = explode(" ".translateFN("su")." ", $dati_stude[$key]["exercises_test"])[1];
+                            $dati_stude[$key]["exercises_test"] = '<a href="' . MODULES_TEST_HTTP . '/tutor.php?op=test&id_course_instance=' . $id_instance . '&id_course=' . $id_course . '&id_student=' . $id_student . '" class="dontwrap">' . $st_score_test . ' ' . translateFN('su') . ' ' . $st_exer_number_test . '</a>';
+                            $tot_exercises_score_test += $st_score_test;
+                            $tot_exercises_number_test += $st_exer_number_test;
                         }
 
-                        $st_history_count = "0";
-                        $debug=0;
-                        $st_history_count = $studentObj->total_visited_nodesFN($id_student,ADA_LEAF_TYPE);
-                        // vito, 11 mar 2009. Ottiene solo il numero di visite a nodi di tipo foglia.
-                        // vogliamo anche il numero di visite a nodi di tipo gruppo.
-                        $st_history_count += $studentObj->total_visited_nodesFN($id_student,ADA_GROUP_TYPE);
-
-                        $dati['visits'] = $st_history_count;
-
-                        $st_name = "<!-- $student_name --><a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
-
-                        $st_name .= "&id_course=" . $id_course . "&id_instance=" . $id_instance .">";
-                        $st_name .= $student_name."</a>";
-
-                        $st_history_count_norm = str_pad($st_history_count,5, "0", STR_PAD_LEFT);
-                        $st_history = "<!-- $st_history_count_norm --><a href=" .  $http_root_dir . "/tutor/tutor_history.php?id_student=" . $id_student;
-                        $st_history.= "&id_course=" . $id_course ."&id_course_instance=" . $id_instance . ">";
-                        $st_history.=  $st_history_count."</a>";
-
-                        $st_history_last_access = $studentObj->get_last_accessFN($id_instance,"T");
-                        //$dati['date'] = $st_history_last_access;
-
-                        $st_score_norm = str_pad($st_score,5, "0", STR_PAD_LEFT);
-                        $st_exercises = "<!-- $st_score_norm --><a href=" .  $http_root_dir . "/tutor/tutor_exercise.php?id_student=" . $id_student;
-                        $st_exercises.= "&id_course_instance=" . $id_instance . " class='dontwrap'>";
-                        $st_exercises.=  $st_score." ".translateFN("su")." ".($st_exer_number*ADA_MAX_SCORE) ."</a>";
-
-						if (MODULES_TEST) {
-							$st_score_norm_test = str_pad($st_score_test,5, "0", STR_PAD_LEFT);
-							$st_exercises_test = '<!-- '.$st_score_norm_test.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=test&id_course_instance='.$id_instance.'&id_course='.$id_course.'&id_student='.$id_student.'" class="dontwrap">'.$st_score_test.' '.translateFN('su').' '.$st_exer_number_test.'</a>';
-
-							$st_score_norm_survey = str_pad($st_score_survey,5, "0", STR_PAD_LEFT);
-							$st_exercises_survey = '<!-- '.$st_score_norm_survey.' --><a href="'.MODULES_TEST_HTTP.'/tutor.php?op=survey&id_course_instance='.$id_instance.'&id_course='.$id_course.'&id_student='.$id_student.'" class="dontwrap">'.$st_score_survey.' '.translateFN('su').' '.$st_exer_number_survey.'</a>';
-						}
-
-                        // user data
-                        $dati_stude[$num_student]['id'] = $id_student;
-                        $dati_stude[$num_student]['student'] = $st_name;
-
-                        // history
-                        $dati_stude[$num_student]['history'] = $st_history;
-                        $tot_history_count+=$st_history_count;
-                        if ($st_history_last_access!= "-") {
-
-                            $dati_stude[$num_student]['last_access'] = "<a href=\"$http_root_dir/tutor/tutor_history_details.php?period=1&id_student=$id_student&id_course_instance=$id_instance&id_course=$id_course\">".$st_history_last_access."</a>";
-                            $dati['last_access'] = $studentObj->get_last_accessFN($id_instance,'UT');
-                        } else {
-                            $dati_stude[$num_student]['last_access'] = $st_history_last_access;
-                            $dati['last_access'] = null;
+                        if (array_key_exists(REPORT_COLUMN_EXERCISES_SURVEY, $columns)) {
+                            $st_score_survey = explode(" ".translateFN("su")." ", $dati_stude[$key]["exercises_survey"])[0];
+                            $st_exer_number_survey = explode(" ".translateFN("su")." ", $dati_stude[$key]["exercises_survey"])[1];
+                            $dati_stude[$key]["exercises_survey"] = '<a href="' . MODULES_TEST_HTTP . '/tutor.php?op=survey&id_course_instance=' . $id_instance . '&id_course=' . $id_course . '&id_student=' . $id_student . '" class="dontwrap">' . $st_score_survey . ' ' . translateFN('su') . ' ' . $st_exer_number_survey . '</a>';
+                            $tot_exercises_score_survey += $st_score_survey;
+                            $tot_exercises_number_survey += $st_exer_number_survey;
                         }
+                        //others counter for statistics
+                    }
 
-                        // exercises
-                        $tot_exercises_score+=$st_score;
-                        $tot_exercises_number+=$st_exer_number;
-						$dati_stude[$num_student]['exercises'] = $st_exercises;
-						$dati['exercises'] = $st_exer_number;
+                    if (array_key_exists(REPORT_COLUMN_BADGES, $columns) && MODULES_BADGES) {
+                        $dati_stude[$key]['badges'] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
+                    }
 
-						if (MODULES_TEST) {
-							$tot_exercises_score_test+=$st_score_test;
-							$tot_exercises_number_test+=$st_exer_number_test;
-							$dati_stude[$num_student]['exercises_test'] = $st_exercises_test;
-							$dati['exercises_test'] = $st_exer_number_test;
+                    // build HTML for name and surname
+                    $st_name = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
+                    $st_name .= "&id_course=" . $id_course . "&id_instance=" . $id_instance . ">";
+                    $st_name .= $dati_stude[$key]["student"] . "</a>";
+                    $dati_stude[$key]["student"] = $st_name;
 
-							$tot_exercises_score_survey+=$st_score_survey;
-							$tot_exercises_number_survey+=$st_exer_number_survey;
-							$dati_stude[$num_student]['exercises_survey'] = $st_exercises_survey;
-							$dati['exercises_survey'] = $st_exer_number_survey;
-						}
 
-                        // forum notes written
-                        $dati_stude[$num_student]['added_notes'] = $added_notes;
-                        $tot_added_notes+=$added_nodes_count;
-                        $dati['added_notes'] = $added_nodes_count;
-                        // forum notes read
-                        $dati_stude[$num_student]['read_notes'] = $read_notes;
-                        $tot_read_notes += $read_notes_count;
-                        $dati['read_notes'] = $read_notes_count;
-                        // messages
-                        //$mh = new MessageHandler("%d/%m/%Y - %H:%M:%S");
+                    if (array_key_exists(REPORT_COLUMN_ADDED_NOTES, $columns)) {
+                        // build HTML for added_notes
+                        $dati_stude[$key]["added_notes"] = "<a href=$http_root_dir/tutor/tutor.php?op=student_notes&id_instance=$id_instance&id_student=$id_student>" . $dati_stude[$key]["added_notes"] . "</a>";
+                    }
 
-                        $mh = MessageHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
-                        $sort_field = "data_ora desc";
+                    if (array_key_exists(REPORT_COLUMN_HISTORY, $columns)) {
+                        // build HTML for history
+                        $st_history = "<a href=" .  $http_root_dir . "/tutor/tutor_history.php?id_student=" . $id_student;
+                        $st_history .= "&id_course=" . $id_course . "&id_course_instance=" . $id_instance . ">" . $dati_stude[$key]["history"] . "</a>";
+                        $dati_stude[$key]["history"] = $st_history;
+                    }
 
-                        // messages received
-
-                        $msgs_ha = $mh->get_messages($id_student,
-                                ADA_MSG_SIMPLE,
-                                array("id_mittente", "data_ora"),
-                                $sort_field);
-                        if (AMA_DataHandler::isError($msgs_ha)) {
-                            $err_code = $msgs_ha->code;
-                            $dati_stude[$num_student]['message_count_in'] = "-";
-                        } else {
-                            $user_message_count =  count($msgs_ha);
-                            $dati_stude[$num_student]['message_count_in'] = $user_message_count;
-
-                            $tot_message_count+=$user_message_count;
+                    if (array_key_exists(REPORT_COLUMN_LAST_ACCESS, $columns)) {
+                        // if has at least 1 access then build last_access HTML
+                        if ($dati_stude[$key]["last_access"] != "-") {
+                            $dati_stude[$key]["last_access"] = "<a href=\"$http_root_dir/tutor/tutor_history_details.php?period=1&id_student=$id_student&id_course_instance=$id_instance&id_course=$id_course\">" . $dati_stude[$key]["last_access"] . "</a>";
                         }
-                        $tot_message_count_in+=$user_message_count;
-                        $dati['msg_in'] = $user_message_count;
+                    }
 
+                    if (array_key_exists(REPORT_COLUMN_LEVEL, $columns)) {
+                        //build level HTML
+                        $dati_stude[$key]['level'] = '<span id="studentLevel_' . $id_student . '">' . $dati_stude[$key]['level'] . '</span>';
+                    }
 
+                    if (array_key_exists(REPORT_COLUMN_STATUS, $columns)) {
+                        //build level HTML
+                        $dati_stude[$key]['status'] = Subscription::subscriptionStatusArray()[$dati_stude[$key]['status']];
+                    }
 
-                        // messages sent
-
-                        $msgs_ha = $mh->get_sent_messages($id_student,
-                                ADA_MSG_SIMPLE,
-                                array("id_mittente", "data_ora"),
-                                $sort_field);
-                        if (AMA_DataHandler::isError($msgs_ha)) {
-                            $err_code = $msgs_ha->code;
-                            $dati_stude[$num_student]['message_count_out'] = "-";
-                        } else {
-                            $user_message_count =  count($msgs_ha);
-                            $dati_stude[$num_student]['message_count_out'] = $user_message_count;
-                            $tot_message_count+=$user_message_count;
-                        }
-                        $tot_message_count_out+=$user_message_count;
-                        $dati['msg_out'] = $user_message_count;
-
-                        //chat..
-                        $msgs_ha = $mh->get_sent_messages($id_student,
-                                ADA_MSG_CHAT,
-                                array("id_mittente", "data_ora"),
-                                $sort_field);
-                        if (AMA_DataHandler::isError($msgs_ha)) {
-                            $err_code = $msgs_ha->code;
-                            $dati_stude[$num_student]['chat'] = "-";
-                        } else {
-                            $chatlines_count_out =  count($msgs_ha);
-                            $dati_stude[$num_student]['chat'] = $chatlines_count_out;
-                            $tot_chatlines_count_out+=$chatlines_count_out;
-                        }
-                        $tot_chatlines_count_out+=$chatlines_count_out;
-                        $dati['chat'] = $chatlines_count_out;
-
-                        //bookmarks..
-                        include_once 'bookmark_class.inc.php';
-                        $bookmarks_count = count(Bookmark::get_bookmarks($id_student));
-                        $dati_stude[$num_student]['bookmarks'] = $bookmarks_count;
-                        $tot_bookmarks_count+=$bookmarks_count;
-                        $dati['bookmarks']  =$bookmarks_count;
-
-                        // activity index
-                        if (empty($index_att)) // parametro passato alla funzione
-                            if (empty($GLOBALS['index_activity_expression'])) {
-                            	//
-                            	if (!isset($bcount)) $bcount=1;
-                                $index =  ($added_nodes_count * $npar) + ($st_history_count * $hpar)  + ($user_message_count * $mpar) + ($st_exer_number * $epar) + ($bookmarks_count * $bcount) + ($chatlines_count_out * $cpar);
-                            }
-                            else
-                                $index = eval($GLOBALS['index_activity_expression']);
-                        else
-                            $index = eval ($index_att);
-
-                        $dati_stude[$num_student]['index'] = $index;
-                        //echo $index;
-                        $tot_index+=$index;
-                        $dati['index'] = $index;
-
-                        // status
-                        require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
-                        $dati['status'] = $status_student;
-                        $dati_stude[$num_student]['status'] = sprintf("<!-- %d -->%s", $status_student, Subscription::subscriptionStatusArray()[$status_student]);
-
-                        if (MODULES_BADGES) {
-                            $dati_stude[$num_student]['badges'] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
-                        }
-
-                        // level
-                        $tot_level+=$student_level;
-                        $dati_stude[$num_student]['level'] = '<span id="studentLevel_'.$id_student.'">'.$student_level.'</span>';
+                    if (array_key_exists(REPORT_COLUMN_LEVEL_PLUS, $columns) or in_array(REPORT_COLUMN_LEVEL_LESS, $columns)) {
+                        //build level's buttons HTML
                         $forceUpdate = false;
-                        $linksHtml = $this->generateLevelButtons($id_student,$forceUpdate);
-
-                        $dati_stude[$num_student]['level_plus'] = (!is_null($linksHtml)) ? $linksHtml : '-';
-
-                        // inserting a row in table log_classi
-
-                        $this->log_class_data($id_course,$id_instance,$dati);
+                        $linksHtml = $this->generateLevelButtons($id_student, $forceUpdate);
+                        $dati_stude[$key]['level_plus'] = (!is_null($linksHtml)) ? $linksHtml : '-';
                     }
                 }
+
+                $tot_students = count($dati_stude);
+                // prevent division by zero
+                $tot_students = $tot_students==0 ? 1 : $tot_students;
+                // set av_student to the last dati_stude array key plus 1
+                $av_student = 1+intval(key(array_slice($dati_stude, -1, 1, true)));
+                $dati_stude[$av_student]['id'] = "-";
+                $dati_stude[$av_student]['student'] = translateFN("Media");
+
+                $tableHeader['id'] = translateFN("Id");
+                $tableHeader['student'] = translateFN("Studente");
+
+                if (array_key_exists(REPORT_COLUMN_HISTORY, $columns)) {
+                    $tableHeader['history'] = translateFN("Visite");
+                    $av_history = ($tot_history_count / $tot_students);
+                    $dati_stude[$av_student]['history'] = round($av_history, 2);
+                }
+
+                if (array_key_exists(REPORT_COLUMN_LAST_ACCESS, $columns)) {
+                    $tableHeader['last_access'] = translateFN("Recente");
+                    $dati_stude[$av_student]['last_access'] = "-";
+                }
+
+                if (MODULES_TEST) {
+                    if (array_key_exists(REPORT_COLUMN_EXERCISES_TEST, $columns)) {
+                        $tableHeader['exercises_test'] = translateFN("Punti Test");
+                        $av_exercises_test = round($tot_exercises_score_test / $tot_students, 2); // . ' ' . translateFN('su') . ' ' . floor($tot_exercises_number_test / $tot_students);
+                        $dati_stude[$av_student]['exercises_test'] = '<span class="dontwrap">' . $av_exercises_test . '</span>';
+                    }
+                    if (array_key_exists(REPORT_COLUMN_EXERCISES_SURVEY, $columns)) {
+                        $tableHeader['exercises_survey'] = translateFN("Punti Sondaggio");
+                        $av_exercises_survey = round($tot_exercises_score_survey / $tot_students, 2); // . ' ' . translateFN('su') . ' ' . floor($tot_exercises_number_survey / $tot_students);
+                        $dati_stude[$av_student]['exercises_survey'] = '<span class="dontwrap">' . $av_exercises_survey . '</span>';
+                    }
+                }
+
+                if (array_key_exists(REPORT_COLUMN_ADDED_NOTES, $columns)) {
+                    $tableHeader['added_notes'] = translateFN("Note Scri");
+                    $av_added_notes = ($tot_added_notes / $tot_students);
+                    $dati_stude[$av_student]['added_notes'] = round($av_added_notes, 2);
+                }
+                if (array_key_exists(REPORT_COLUMN_READ_NOTES, $columns)) {
+                    $tableHeader['read_notes'] = translateFN("Note Let");
+                    $av_read_notes = ($tot_read_notes / $tot_students);
+                    $dati_stude[$av_student]['read_notes'] = round($av_read_notes, 2);
+                }
+                if (array_key_exists(REPORT_COLUMN_MESSAGE_COUNT_IN, $columns)) {
+                    $tableHeader['message_count_in'] = translateFN("Msg Ric");
+                    $av_message_count_in = ($tot_message_count_in / $tot_students);
+                    $dati_stude[$av_student]['message_count_in'] = round($av_message_count_in, 2);
+                }
+                if (array_key_exists(REPORT_COLUMN_MESSAGE_COUNT_OUT, $columns)) {
+                    $tableHeader['message_count_out'] = translateFN("Msg Inv");
+                    $av_message_count_out = ($tot_message_count_out / $tot_students);
+                    $dati_stude[$av_student]['message_count_out'] = round($av_message_count_out, 2);
+                }
+                if (array_key_exists(REPORT_COLUMN_CHAT, $columns)) {
+                    $tableHeader['chat'] = translateFN("Chat ");
+                    $av_chat_count_out = ($tot_chatlines_count_out / $tot_students);
+                    $dati_stude[$av_student]['chat'] = round($av_chat_count_out, 2);
+                }
+                if (array_key_exists(REPORT_COLUMN_BOOKMARKS, $columns)) {
+                    $tableHeader['bookmarks'] = translateFN("Bkms ");
+                    $av_bookmarks_count = ($tot_bookmarks_count / $tot_students);
+                    $dati_stude[$av_student]['bookmarks'] = round($av_bookmarks_count, 2);
+                }
+                if (array_key_exists(REPORT_COLUMN_INDEX, $columns)) {
+                    $tableHeader['index'] = translateFN("Attivita'");
+                    $av_index = ($tot_index / $tot_students);
+                    $dati_stude[$av_student]['index'] = round($av_index, 2);
+                }
+                if (array_key_exists(REPORT_COLUMN_STATUS, $columns)) {
+                    $tableHeader['status'] = translateFN("Stato");
+                    $dati_stude[$av_student]['status'] = '-';
+                }
+                if (array_key_exists(REPORT_COLUMN_LEVEL, $columns)) {
+                    $tableHeader['level'] = translateFN("Livello");
+                    $av_level = ($tot_level / $tot_students);
+                    $dati_stude[$av_student]['level'] = '<span id="averageLevel">' . round($av_level, 2) . '</span>';
+                }
+                if (array_key_exists(REPORT_COLUMN_BADGES, $columns) && MODULES_BADGES) {
+                    $tableHeader['badges'] = translateFN("Badges");
+                    $rew = Lynxlab\ADA\Module\Badges\RewardedBadge::getInstanceRewards();
+                    $dati_stude[$av_student]['badges'] = round(array_sum($rew['studentsRewards']) / $tot_students, 2) . ' ' . translateFN('su') . ' ' . $rew['total'];
+                }
+                if (array_key_exists(REPORT_COLUMN_LEVEL_PLUS, $columns)) {
+                    $tableHeader['level_plus'] = translateFN("Modifica livello");
+                    $dati_stude[$av_student]['level_plus'] = "-";
+                }
+
+                if (!empty($order)) {
+                    $dati_stude = masort($dati_stude, $order, 1, SORT_NUMERIC);
+                }
+                // TABLE LABELS
+                $table_labels[0] = $tableHeader;
+
+            } else {
+                $num_student = -1;
+                if (MODULES_TEST) {
+                    $test_db = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                    $test_score = $test_db->getStudentsScores($id_course, $id_instance);
+                }
+                if (MODULES_BADGES) {
+                    \Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($id_course, $id_instance);
+                }
+                foreach ($student_list_ar as $one_student) {
+                    $num_student++; //starts with 0
+                    $id_student = $one_student['id_utente_studente'];
+                    $student_level = $one_student['livello'];
+                    $status_student = $one_student['status'];
+                    $dati['id'] = $id_student;
+                    $dati['level'] = $student_level;
+                    $ymdhms = today_dateFN();
+                    $utime = dt2tsFN($ymdhms);
+                    $dati['date'] = $report_generation_TS;
+
+                    $goodStatuses = array(ADA_STATUS_SUBSCRIBED, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED);
+                    if (!empty($id_student) && in_array($status_student, $goodStatuses)) {
+
+                        $studentObj = MultiPort::findUser($id_student); //new Student($id_student,$id_instance);
+
+                        if ($studentObj->full != 0) { //==0) {
+                            $err_msg = $studentObj->error_msg;
+                        } else {
+
+                            if ($studentObj instanceof ADAPractitioner) {
+                                /**
+                                 * @author giorgio 14/apr/2015
+                                 *
+                                 * If student is actually a tutor, build a new student
+                                 * object for history and evaluation purposes
+                                 */
+                                $studentObj = $studentObj->toStudent();
+                            }
+                            $student_name = $studentObj->getFullname(); //$studentObj->nome." ".$studentObj->cognome;
+
+                            // vito
+                            $studentObj->set_course_instance_for_history($id_instance);
+                            //$studentObj->history->setCourseInstance($id_instance);
+                            $studentObj->history->setCourse($id_course);
+
+                            $studentObj->get_exercise_dataFN($id_instance, $id_student);
+                            $st_exercise_dataAr = $studentObj->user_ex_historyAr;
+                            $st_score = 0;
+                            $st_exer_number = 0;
+                            if (is_array($st_exercise_dataAr)) {
+                                foreach ($st_exercise_dataAr as $exercise) {
+                                    $st_score += $exercise[7];
+                                    $st_exer_number++;
+                                }
+                            }
+                            $dati['exercises'] = $st_exer_number;
+                            $dati['score'] = $st_score;
+
+                            if (MODULES_TEST) {
+                                $st_score_test = isset($test_score[$id_student]['score_test']) ? $test_score[$id_student]['score_test'] : 0;
+                                $st_exer_number_test = isset($test_score[$id_student]['max_score_test']) ? $test_score[$id_student]['max_score_test'] : 0;
+                                $dati['exercises_test'] = $st_exer_number_test;
+                                $dati['score_test'] = $st_score_test;
+
+                                $st_score_survey = isset($test_score[$id_student]['score_survey']) ? $test_score[$id_student]['score_survey'] : 0;
+                                $st_exer_number_survey = isset($test_score[$id_student]['max_score_survey']) ? $test_score[$id_student]['max_score_survey'] : 0;
+                                $dati['exercises_survey'] = $st_exer_number_survey;
+                                $dati['score_survey'] = $st_score_survey;
+                            }
+
+                            $sub_courses = $dh->get_subscription($id_student, $id_instance);
+
+                            if ($sub_courses['tipo'] == ADA_STATUS_SUBSCRIBED) {
+                                $out_fields_ar = array('nome', 'titolo', 'id_istanza', 'data_creazione');
+                                $clause = "tipo = '" . ADA_NOTE_TYPE . "' AND id_utente = '$id_student'";
+                                $nodes = $dh->find_course_nodes_list($out_fields_ar, $clause, $id_course);
+                                $added_nodes_count = count($nodes);
+                                $added_nodes_count_norm = str_pad($added_nodes_count, 5, "0", STR_PAD_LEFT);
+
+                                $added_notes = "<!-- $added_nodes_count_norm --><a href=$http_root_dir/tutor/tutor.php?op=student_notes&id_instance=$id_instance&id_student=$id_student>" . $added_nodes_count . "</a>";
+                                //$added_notes = $added_nodes_count;
+                            } else {
+                                $added_notes = "<!-- 0 -->-";
+                            }
+                            $read_notes_count = $studentObj->total_visited_notesFN($id_student, $id_course);
+                            if ($read_notes_count > 0) {
+                                $read_nodes_count_norm = str_pad($read_notes_count, 5, "0", STR_PAD_LEFT);
+                                $read_notes = "<!-- $read_nodes_count_norm -->$read_notes_count";
+                            } else {
+                                $read_notes = "<!-- 0 -->-";
+                            }
+
+                            $st_history_count = "0";
+                            $debug = 0;
+                            $st_history_count = $studentObj->total_visited_nodesFN($id_student, ADA_LEAF_TYPE);
+                            // vito, 11 mar 2009. Ottiene solo il numero di visite a nodi di tipo foglia.
+                            // vogliamo anche il numero di visite a nodi di tipo gruppo.
+                            $st_history_count += $studentObj->total_visited_nodesFN($id_student, ADA_GROUP_TYPE);
+
+                            $dati['visits'] = $st_history_count;
+
+                            $st_name = "<!-- $student_name --><a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
+
+                            $st_name .= "&id_course=" . $id_course . "&id_instance=" . $id_instance . ">";
+                            $st_name .= $student_name . "</a>";
+
+                            $st_history_count_norm = str_pad($st_history_count, 5, "0", STR_PAD_LEFT);
+                            $st_history = "<!-- $st_history_count_norm --><a href=" .  $http_root_dir . "/tutor/tutor_history.php?id_student=" . $id_student;
+                            $st_history .= "&id_course=" . $id_course . "&id_course_instance=" . $id_instance . ">";
+                            $st_history .=  $st_history_count . "</a>";
+
+                            $st_history_last_access = $studentObj->get_last_accessFN($id_instance, "T");
+                            //$dati['date'] = $st_history_last_access;
+
+                            $st_score_norm = str_pad($st_score, 5, "0", STR_PAD_LEFT);
+                            $st_exercises = "<!-- $st_score_norm --><a href=" .  $http_root_dir . "/tutor/tutor_exercise.php?id_student=" . $id_student;
+                            $st_exercises .= "&id_course_instance=" . $id_instance . " class='dontwrap'>";
+                            $st_exercises .=  $st_score . " " . translateFN("su") . " " . ($st_exer_number * ADA_MAX_SCORE) . "</a>";
+
+                            if (MODULES_TEST) {
+                                $st_score_norm_test = str_pad($st_score_test, 5, "0", STR_PAD_LEFT);
+                                $st_exercises_test = '<!-- ' . $st_score_norm_test . ' --><a href="' . MODULES_TEST_HTTP . '/tutor.php?op=test&id_course_instance=' . $id_instance . '&id_course=' . $id_course . '&id_student=' . $id_student . '" class="dontwrap">' . $st_score_test . ' ' . translateFN('su') . ' ' . $st_exer_number_test . '</a>';
+
+                                $st_score_norm_survey = str_pad($st_score_survey, 5, "0", STR_PAD_LEFT);
+                                $st_exercises_survey = '<!-- ' . $st_score_norm_survey . ' --><a href="' . MODULES_TEST_HTTP . '/tutor.php?op=survey&id_course_instance=' . $id_instance . '&id_course=' . $id_course . '&id_student=' . $id_student . '" class="dontwrap">' . $st_score_survey . ' ' . translateFN('su') . ' ' . $st_exer_number_survey . '</a>';
+                            }
+
+                            // user data
+                            $dati_stude[$num_student]['id'] = $id_student;
+                            $dati_stude[$num_student]['student'] = $st_name;
+
+                            // history
+                            $dati_stude[$num_student]['history'] = $st_history;
+                            $tot_history_count += $st_history_count;
+                            if ($st_history_last_access != "-") {
+
+                                $dati_stude[$num_student]['last_access'] = "<a href=\"$http_root_dir/tutor/tutor_history_details.php?period=1&id_student=$id_student&id_course_instance=$id_instance&id_course=$id_course\">" . $st_history_last_access . "</a>";
+                                $dati['last_access'] = $studentObj->get_last_accessFN($id_instance, 'UT');
+                            } else {
+                                $dati_stude[$num_student]['last_access'] = $st_history_last_access;
+                                $dati['last_access'] = null;
+                            }
+
+                            // exercises
+                            $tot_exercises_score += $st_score;
+                            $tot_exercises_number += $st_exer_number;
+                            $dati_stude[$num_student]['exercises'] = $st_exercises;
+                            $dati['exercises'] = $st_exer_number;
+
+                            if (MODULES_TEST) {
+                                $tot_exercises_score_test += $st_score_test;
+                                $tot_exercises_number_test += $st_exer_number_test;
+                                $dati_stude[$num_student]['exercises_test'] = $st_exercises_test;
+                                $dati['exercises_test'] = $st_exer_number_test;
+
+                                $tot_exercises_score_survey += $st_score_survey;
+                                $tot_exercises_number_survey += $st_exer_number_survey;
+                                $dati_stude[$num_student]['exercises_survey'] = $st_exercises_survey;
+                                $dati['exercises_survey'] = $st_exer_number_survey;
+                            }
+
+                            // forum notes written
+                            $dati_stude[$num_student]['added_notes'] = $added_notes;
+                            $tot_added_notes += $added_nodes_count;
+                            $dati['added_notes'] = $added_nodes_count;
+                            // forum notes read
+                            $dati_stude[$num_student]['read_notes'] = $read_notes;
+                            $tot_read_notes += $read_notes_count;
+                            $dati['read_notes'] = $read_notes_count;
+                            // messages
+                            //$mh = new MessageHandler("%d/%m/%Y - %H:%M:%S");
+
+                            $mh = MessageHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                            $sort_field = "data_ora desc";
+
+                            // messages received
+
+                            $msgs_ha = $mh->get_messages(
+                                $id_student,
+                                ADA_MSG_SIMPLE,
+                                array("id_mittente", "data_ora"),
+                                $sort_field
+                            );
+                            if (AMA_DataHandler::isError($msgs_ha)) {
+                                $err_code = $msgs_ha->code;
+                                $dati_stude[$num_student]['message_count_in'] = "-";
+                            } else {
+                                $user_message_count =  count($msgs_ha);
+                                $dati_stude[$num_student]['message_count_in'] = $user_message_count;
+
+                                $tot_message_count += $user_message_count;
+                            }
+                            $tot_message_count_in += $user_message_count;
+                            $dati['msg_in'] = $user_message_count;
+
+
+
+                            // messages sent
+
+                            $msgs_ha = $mh->get_sent_messages(
+                                $id_student,
+                                ADA_MSG_SIMPLE,
+                                array("id_mittente", "data_ora"),
+                                $sort_field
+                            );
+                            if (AMA_DataHandler::isError($msgs_ha)) {
+                                $err_code = $msgs_ha->code;
+                                $dati_stude[$num_student]['message_count_out'] = "-";
+                            } else {
+                                $user_message_count =  count($msgs_ha);
+                                $dati_stude[$num_student]['message_count_out'] = $user_message_count;
+                                $tot_message_count += $user_message_count;
+                            }
+                            $tot_message_count_out += $user_message_count;
+                            $dati['msg_out'] = $user_message_count;
+
+                            //chat..
+                            $msgs_ha = $mh->get_sent_messages(
+                                $id_student,
+                                ADA_MSG_CHAT,
+                                array("id_mittente", "data_ora"),
+                                $sort_field
+                            );
+                            if (AMA_DataHandler::isError($msgs_ha)) {
+                                $err_code = $msgs_ha->code;
+                                $dati_stude[$num_student]['chat'] = "-";
+                            } else {
+                                $chatlines_count_out =  count($msgs_ha);
+                                $dati_stude[$num_student]['chat'] = $chatlines_count_out;
+                                $tot_chatlines_count_out += $chatlines_count_out;
+                            }
+                            $tot_chatlines_count_out += $chatlines_count_out;
+                            $dati['chat'] = $chatlines_count_out;
+
+                            //bookmarks..
+                            include_once 'bookmark_class.inc.php';
+                            $bookmarks_count = count(Bookmark::get_bookmarks($id_student));
+                            $dati_stude[$num_student]['bookmarks'] = $bookmarks_count;
+                            $tot_bookmarks_count += $bookmarks_count;
+                            $dati['bookmarks']  = $bookmarks_count;
+
+                            // activity index
+                            if (empty($index_att)) // parametro passato alla funzione
+                                if (empty($GLOBALS['index_activity_expression'])) {
+                                    //
+                                    if (!isset($bcount)) $bcount = 1;
+                                    $index = ($added_nodes_count * $npar) + ($st_history_count * $hpar)  + ($user_message_count * $mpar) + ($st_exer_number * $epar) + ($bookmarks_count * $bcount) + ($chatlines_count_out * $cpar);
+                                } else
+                                    $index = eval($GLOBALS['index_activity_expression']);
+                            else
+                                $index = eval($index_att);
+
+                            $dati_stude[$num_student]['index'] = $index;
+                            //echo $index;
+                            $tot_index += $index;
+                            $dati['index'] = $index;
+
+                            // status
+                            require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
+                            $dati['status'] = $status_student;
+                            $dati_stude[$num_student]['status'] = sprintf("<!-- %d -->%s", $status_student, Subscription::subscriptionStatusArray()[$status_student]);
+
+                            if (MODULES_BADGES) {
+                                $dati_stude[$num_student]['badges'] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
+                            }
+
+                            // level
+                            $tot_level += $student_level;
+                            $dati_stude[$num_student]['level'] = '<span id="studentLevel_' . $id_student . '">' . $student_level . '</span>';
+                            $forceUpdate = false;
+                            $linksHtml = $this->generateLevelButtons($id_student, $forceUpdate);
+
+                            $dati_stude[$num_student]['level_plus'] = (!is_null($linksHtml)) ? $linksHtml : '-';
+
+                            // inserting a row in table log_classi
+
+                            $this->log_class_data($id_course, $id_instance, $dati);
+                        }
+                    }
+                }
+
+                // average data
+                $tot_students = ($num_student==0) ? 1 : $num_student;
+                $av_history = ($tot_history_count / $tot_students);
+                $av_exercises = ($tot_exercises_score / $tot_students) . " " . translateFN("su") . " " . floor($tot_exercises_number * ADA_MAX_SCORE / $tot_students);
+
+                if (MODULES_TEST) {
+                    $av_exercises_test = round($tot_exercises_score_test / $tot_students, 2) . ' ' . translateFN('su') . ' ' . floor($tot_exercises_number_test / $tot_students);
+                    $av_exercises_survey = round($tot_exercises_score_survey / $tot_students, 2) . ' ' . translateFN('su') . ' ' . floor($tot_exercises_number_survey / $tot_students);
+                }
+                $av_added_notes = ($tot_added_notes / $tot_students);
+                $av_read_notes = ($tot_read_notes / $tot_students);
+                $av_message_count_in = ($tot_message_count_in / $tot_students);
+                $av_message_count_out = ($tot_message_count_out / $tot_students);
+                $av_chat_count_out = ($tot_chatlines_count_out / $tot_students);
+                $av_bookmarks_count = ($tot_bookmarks_count / $tot_students);
+                $av_index = ($tot_index / $tot_students);
+                $av_level = ($tot_level / $tot_students);
+
+                // set av_student to the last dati_stude array key plus 1
+                $av_student = 1+intval(key(array_slice($dati_stude, -1, 1, true)));
+                $dati_stude[$av_student]['id'] = "-";
+                $dati_stude[$av_student]['student'] = translateFN("Media");
+                $dati_stude[$av_student]['history'] = round($av_history, 2);
+                $dati_stude[$av_student]['last_access'] = "-";
+                $dati_stude[$av_student]['exercises'] = '<span class="dontwrap">' . $av_exercises . '</span>';
+
+                if (MODULES_TEST) {
+                    $dati_stude[$av_student]['exercises_test'] = '<span class="dontwrap">' . $av_exercises_test . '</span>';
+                    $dati_stude[$av_student]['exercises_survey'] = '<span class="dontwrap">' . $av_exercises_survey . '</span>';
+                }
+
+                $dati_stude[$av_student]['added_notes'] = round($av_added_notes, 2);
+                $dati_stude[$av_student]['read_notes'] = round($av_read_notes, 2);
+                $dati_stude[$av_student]['message_count_in'] = round($av_message_count_in, 2);
+                $dati_stude[$av_student]['message_count_out'] = round($av_message_count_out, 2);
+                $dati_stude[$av_student]['chat'] = round($av_chat_count_out, 2);
+                $dati_stude[$av_student]['bookmarks'] = round($av_bookmarks_count, 2);
+
+                $dati_stude[$av_student]['index'] = round($av_index, 2);
+                $dati_stude[$av_student]['status'] = "-";
+                if (MODULES_BADGES) {
+                    $rew = Lynxlab\ADA\Module\Badges\RewardedBadge::getInstanceRewards();
+                    $dati_stude[$av_student]['badges'] = round(array_sum($rew['studentsRewards']) / $tot_students, 2) . ' ' . translateFN('su') . ' ' . $rew['total'];
+                }
+                $dati_stude[$av_student]['level'] = '<span id="averageLevel">' . round($av_level, 2) . '</span>';
+                $dati_stude[$av_student]['level_plus'] = "-";
+                // @author giorgio 16/mag/2013
+                // was $dati_stude[$av_student]['level_minus'] = "-";
+                // $dati_stude[$av_student]['level_less'] = "-";
+
+                if (!empty($order)) {
+                    //var_dump($dati_stude);
+                    $dati_stude = masort($dati_stude, $order, 1, SORT_NUMERIC);
+                }
+
+                // TABLE LABELS
+                $table_labels[0] = $this->generate_class_report_header();
+
+                /**
+                 * @author giorgio 16/mag/2013
+                 *
+                 * unset the unwanted columns data and labels. unwanted cols are defined in config/config_class_report.inc.php
+                 */
+
+                $arrayToUse = 'report' . $type . 'ColArray';
+                $this->clean_class_reportFN($arrayToUse, $table_labels, $dati_stude);
             }
-
-            // average data
-            $tot_students = $num_student + 1;
-            $av_history = ($tot_history_count / $tot_students);
-            $av_exercises = ($tot_exercises_score / $tot_students) ." ".translateFN("su")." ".floor($tot_exercises_number*ADA_MAX_SCORE/$tot_students) ;
-
-			if (MODULES_TEST) {
-				$av_exercises_test = round($tot_exercises_score_test / $tot_students,2).' '.translateFN('su').' '.floor($tot_exercises_number_test/$tot_students) ;
-				$av_exercises_survey = round($tot_exercises_score_survey / $tot_students,2).' '.translateFN('su').' '.floor($tot_exercises_number_survey/$tot_students) ;
-			}
-            $av_added_notes = ($tot_added_notes / $tot_students);
-            $av_read_notes = ($tot_read_notes / $tot_students);
-            $av_message_count_in = ($tot_message_count_in / $tot_students);
-            $av_message_count_out = ($tot_message_count_out / $tot_students);
-            $av_chat_count_out = ($tot_chatlines_count_out / $tot_students);
-            $av_bookmarks_count = ($tot_bookmarks_count / $tot_students);
-            $av_index = ($tot_index / $tot_students);
-            $av_level = ($tot_level / $tot_students);
-
-            $av_student = $tot_students;
-            $dati_stude[$av_student]['id'] = "-";
-            $dati_stude[$av_student]['student'] = translateFN("Media");
-            $dati_stude[$av_student]['history'] = round($av_history,2);
-            $dati_stude[$av_student]['last_access'] = "-";
-            $dati_stude[$av_student]['exercises'] = '<span class="dontwrap">'.$av_exercises.'</span>';
-
-			if (MODULES_TEST) {
-				$dati_stude[$av_student]['exercises_test'] = '<span class="dontwrap">'.$av_exercises_test.'</span>';
-				$dati_stude[$av_student]['exercises_survey'] = '<span class="dontwrap">'.$av_exercises_survey.'</span>';
-			}
-
-            $dati_stude[$av_student]['added_notes'] = round($av_added_notes,2);
-            $dati_stude[$av_student]['read_notes'] = round($av_read_notes,2);
-            $dati_stude[$av_student]['message_count_in'] = round($av_message_count_in,2);
-            $dati_stude[$av_student]['message_count_out'] = round($av_message_count_out,2);
-            $dati_stude[$av_student]['chat'] = round($av_chat_count_out,2);
-            $dati_stude[$av_student]['bookmarks'] = round($av_bookmarks_count,2);
-
-            $dati_stude[$av_student]['index'] = round($av_index,2);
-            $dati_stude[$av_student]['status'] = "-";
-            if (MODULES_BADGES) {
-                $rew = Lynxlab\ADA\Module\Badges\RewardedBadge::getInstanceRewards();
-                $dati_stude[$av_student]['badges'] = round(array_sum($rew['studentsRewards']) / $tot_students,2).' '.translateFN('su').' '.$rew['total'];
-            }
-            $dati_stude[$av_student]['level'] = '<span id="averageLevel">'.round($av_level,2).'</span>';
-            $dati_stude[$av_student]['level_plus'] = "-";
-            // @author giorgio 16/mag/2013
-            // was $dati_stude[$av_student]['level_minus'] = "-";
-            // $dati_stude[$av_student]['level_less'] = "-";
-
-            if (!empty($order)) {
-                //var_dump($dati_stude);
-                $dati_stude = masort($dati_stude, $order,1,SORT_NUMERIC);
-            }
-
-            // TABLE LABELS
-            $table_labels[0] = $this->generate_class_report_header();
-
-            /**
-             * @author giorgio 16/mag/2013
-             *
-             * unset the unwanted columns data and labels. unwanted cols are defined in config/config_class_report.inc.php
-             */
-
-            $arrayToUse = 'report'.$type.'ColArray';
-            $this->clean_class_reportFN($arrayToUse, $table_labels, $dati_stude);
 
            	return array('report_generation_date'=>$report_generation_TS) + array_merge($table_labels,$dati_stude);
         } else {
@@ -2065,4 +2305,3 @@ class Student_class {
 
     }
 } // end class students class
-?>
