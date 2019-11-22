@@ -159,13 +159,17 @@ switch ($op) {
                 $id_course = 0;
             }
         }
+        /*
         if ($mode=='update') {
-        	if (!isset($order)) $order=null;
-            $courses_student = get_student_coursesFN($id_instance,$id_course,$order, "HTML", $speed_mode);
-        } else {
+        */
+        if (!isset($order)) $order=null;
+        $courses_student = get_student_coursesFN($id_instance,$id_course,$order, "HTML", $speed_mode);
+        /*
+            } else {
             // load
             $courses_student = get_student_courses_from_dbFN($id_course, $id_instance);
         }
+        */
 
         if (!is_null($courses_student)) {
         	if (isset($courses_student['report_generation_date']) && !is_null($courses_student['report_generation_date'])) {
@@ -178,21 +182,27 @@ switch ($op) {
         	$tObj->setAttribute('class', 'default_table doDataTable '.ADA_SEMANTICUI_TABLECLASS);
         	$data = $tObj->getHtml();
         } else {
+            /*
         	if ($mode=='update') {
+            */
         		$data = translateFN("Non ci sono studenti in questa classe");
-        	} else {
+            /*
+            } else {
 //         		$http_root_dir = $GLOBALS['http_root_dir'];
 //         		$data  = translateFN("Non è presente un report dell'attivita' della classe aggiornato alla data odierna. ");
 //         		$data .= "<a href=\"$http_root_dir/tutor/tutor.php?op=student&id_instance=$id_instance&id_course=$id_course&mode=update\">";
 //         		$data .= translateFN("Aggiorna il report.");
 //         		$data .= "</a>";
+            */
 				/**
 				 * @author giorgio 27/ott/2014
 				 *
 				 * if no class report was ever generated, redirect the user to the mode=update page
 				 */
+            /*
         		redirect("$http_root_dir/tutor/tutor.php?op=student&id_instance=$id_instance&id_course=$id_course&mode=update");
-        	}
+            }
+            */
         }
 
         $info_course = $dh->get_course($id_course); // Get title course
