@@ -82,6 +82,8 @@ if (!isset($_GET['mode'])) {
   $mode = $_GET['mode'];
 }
 
+$speed_mode = (!isset($_GET['speed_mode']) || (isset($_GET['speed_mode']) && $_GET['speed_mode']!=='false'));
+
 if (!isset($op)) $op = null;
 
 /**
@@ -159,7 +161,7 @@ switch ($op) {
         }
         if ($mode=='update') {
         	if (!isset($order)) $order=null;
-            $courses_student = get_student_coursesFN($id_instance,$id_course,$order);
+            $courses_student = get_student_coursesFN($id_instance,$id_course,$order, "HTML", $speed_mode);
         } else {
             // load
             $courses_student = get_student_courses_from_dbFN($id_course, $id_instance);
@@ -385,7 +387,7 @@ switch ($op) {
     	if (!in_array($type, $allowed_export_types)) $type = 'xls';
 
     	// get needed data
-    	$courses_student = get_student_coursesFN($id_instance, $id_course,'', ($type=='xls') ? 'HTML' : 'FILE');
+    	$courses_student = get_student_coursesFN($id_instance, $id_course,'', ($type=='xls') ? 'HTML' : 'FILE', $speed_mode);
 
     	// build the caption
     	// 0. Get title course
