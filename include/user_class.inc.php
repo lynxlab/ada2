@@ -1156,7 +1156,9 @@ abstract class ADALoggableUser extends ADAGenericUser {
     		 * this fixes a quite big problem in the 'history_nodi' table
     		 */
     		if (isset($remindMe) && intval($remindMe)>0) {
-    			ini_set('session.cookie_lifetime', 60 * 60 * 24 * ADA_SESSION_LIFE_TIME);  // day cookie lifetime
+                if (session_status() != PHP_SESSION_NONE) session_write_close();
+                ini_set('session.cookie_lifetime', 60 * 60 * 24 * ADA_SESSION_LIFE_TIME);  // day cookie lifetime
+                session_start();
     		}
     		session_regenerate_id(true);
 
