@@ -933,7 +933,7 @@ class Course_instance_Old {
         $icon = "_gruppo.png";
 
         $out_fields_ar = array('data_creazione','tipo');
-        $clause = "id_istanza =  $sess_id_course_instance AND tipo = 2";
+        $clause = "id_istanza =  $sess_id_course_instance AND tipo = ".ADA_NOTE_TYPE;
         $childrenAr = $dh->find_course_nodes_list($out_fields_ar,$clause,$sess_id_course);
         $note_count = count($childrenAr);
         $index = $note_count . translateFN(" note attualmente presenti nel Forum di classe.");
