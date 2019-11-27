@@ -24,7 +24,7 @@
   * multiprovider behaviour, false is single provider
   * each with its own home page and anonymous pages
   */
-  define ('MULTIPROVIDER', getenv('MULTIPROVIDER') ? (bool) getenv('MULTIPROVIDER') : true);
+  define ('MULTIPROVIDER', getenv('MULTIPROVIDER') !== false ? (bool)intval(getenv('MULTIPROVIDER')) : true);
 
  /**
   * Main include file

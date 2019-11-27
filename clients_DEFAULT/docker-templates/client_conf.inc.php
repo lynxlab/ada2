@@ -30,7 +30,7 @@ if (!MULTIPROVIDER) {
 	 * DO NOT REMOVE the trailing // *js_import*
 	 */
 	define('HTTP_ROOT_DIR', '${PROV_HTTP}'); // *js_import*
-	if (getenv('PORTAL_NAME')) {
+	if (getenv('PORTAL_NAME')!==false) {
 		$pname = getenv('PORTAL_NAME');
 	} else {
 		$pname = getenv('ADA_OR_WISP') ? strtoupper(getenv('ADA_OR_WISP')) : 'ADA 2.2';

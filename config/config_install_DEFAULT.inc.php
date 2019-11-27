@@ -68,10 +68,10 @@ define('ADA_DEFAULT_AVATAR','default_avatar.png');
  * portal name string - displayed in window titlebar
 */
 if (!defined('PORTAL_NAME')) {
-    if (getenv('PORTAL_NAME')){
+    if (getenv('PORTAL_NAME')!==false){
         define('PORTAL_NAME', getenv('PORTAL_NAME'));
     } else {
-        define('PORTAL_NAME', getenv('ADA_OR_WISP') ? strtoupper(getenv('ADA_OR_WISP')) : 'ADA 2.2');
+        define('PORTAL_NAME', getenv('ADA_OR_WISP')!==false ? strtoupper(getenv('ADA_OR_WISP')) : 'ADA 2.2');
     }
 }
 
