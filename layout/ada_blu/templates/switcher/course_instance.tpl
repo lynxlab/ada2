@@ -11,8 +11,8 @@
             <template_field class="microtemplate_field" name="header">header</template_field>
         </div> <!-- / testata -->
         <!-- menu -->
-            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-        <!-- / menu --> 
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
+        <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -72,10 +72,11 @@
                         <div class="table_result">
                            <template_field class="template_field" name="buttonSubscription">buttonSubscription</template_field>
                            <template_field class="template_field" name="buttonSubscriptions">buttonSubscriptions</template_field>
+                           <template_field class="template_field" name="buttondownloadCertificates">buttondownloadCertificates</template_field>
                            <template_field class="template_field" name="table">table</template_field>
                            <template_field class="template_field" name="tooltip">tooltip</template_field>
                            <div class="clearfix"></div>
-                        </div> 
+                        </div>
                     </div>
                 </div>
             </div>
@@ -84,7 +85,7 @@
         <!-- / contenitore -->
 		<div id="push"></div>
 		</div>
-		
+
         <!-- com_tools -->
         <div class="clearfix"></div>
         <div id="com_tools">
@@ -92,13 +93,15 @@
                 <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
             </div>
         </div>
-        <!-- /com_tools -->		
-		
+        <!-- /com_tools -->
+
         <!-- piede -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->
-
+	<!--  please wait message -->
+ 		<template_field class="microtemplate_field" name="pleasewait">pleasewait</template_field>
+  	<!-- / please wait message -->
     </body>
 </html>
