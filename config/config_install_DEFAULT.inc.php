@@ -19,21 +19,21 @@
 /*
  * ADA Common database
  */
-define('ADA_COMMON_DB_TYPE',  'mysql');
-define('ADA_COMMON_DB_NAME',  'ada2.0_common');
-define('ADA_COMMON_DB_USER',  'root');
-define('ADA_COMMON_DB_PASS',  '');
-define('ADA_COMMON_DB_HOST',  'localhost');
+define('ADA_COMMON_DB_TYPE', 'mysql');
+define('ADA_COMMON_DB_NAME', getenv('MYSQL_DATABASE') ?: 'ada2.0_common');
+define('ADA_COMMON_DB_USER', getenv('MYSQL_USER') ?: 'root');
+define('ADA_COMMON_DB_PASS', getenv('MYSQL_PASSWORD') ?:'');
+define('ADA_COMMON_DB_HOST', getenv('MYSQL_HOST') ?:'localhost');
 
 /*
  * ADA default provider.
  */
-define('ADA_PUBLIC_TESTER', 'client0');
-define('ADA_DEFAULT_TESTER_DB_TYPE',  'mysql');
-define('ADA_DEFAULT_TESTER_DB_NAME',  'ada2.0_provider0');
-define('ADA_DEFAULT_TESTER_DB_USER',  'root');
-define('ADA_DEFAULT_TESTER_DB_PASS',  '');
-define('ADA_DEFAULT_TESTER_DB_HOST',  'localhost');
+define('ADA_PUBLIC_TESTER', getenv('DEFAULT_PROVIDER_POINTER') ?: 'client0');
+define('ADA_DEFAULT_TESTER_DB_TYPE', 'mysql');
+define('ADA_DEFAULT_TESTER_DB_NAME', getenv('DEFAULT_PROVIDER_DB') ?: 'ada2.0_provider0');
+define('ADA_DEFAULT_TESTER_DB_USER', getenv('MYSQL_USER') ?: 'root');
+define('ADA_DEFAULT_TESTER_DB_PASS', getenv('MYSQL_PASSWORD') ?: '');
+define('ADA_DEFAULT_TESTER_DB_HOST', getenv('MYSQL_HOST') ?: 'localhost');
 /*
  * Session Cookie Lifetime in days
  * If 0 the session end when the browser is closed
@@ -80,14 +80,20 @@ if (MULTIPROVIDER) {
  * URL
  * DO NOT REMOVE the trailing // *js_import*
  */
-if (!defined('HTTP_ROOT_DIR')) define('HTTP_ROOT_DIR','http://localhost/ada22'); // *js_import*
+if (!defined('HTTP_ROOT_DIR')) define('HTTP_ROOT_DIR', getenv('HTTP_ROOT_DIR') ?: 'http://localhost/ada22'); // *js_import*
 
 define('ADA_DEFAULT_AVATAR','default_avatar.png');
 
 /**
  * portal name string - displayed in window titlebar
 */
-if (!defined('PORTAL_NAME')) define('PORTAL_NAME','ADA 2.2');
+if (!defined('PORTAL_NAME')) {
+    if (getenv('PORTAL_NAME')!==false){
+        define('PORTAL_NAME', getenv('PORTAL_NAME'));
+    } else {
+        define('PORTAL_NAME', getenv('ADA_OR_WISP')!==false ? strtoupper(getenv('ADA_OR_WISP')) : 'ADA 2.2');
+    }
+}
 
 /**
  * set to true to always display the maintenance page
@@ -190,12 +196,12 @@ define('AVATAR_MAX_HEIGHT', "500");
 /**
  * Default admin mail address
  */
-define('ADA_ADMIN_MAIL_ADDRESS','graffio@lynxlab.com');
+define('ADA_ADMIN_MAIL_ADDRESS', getenv('ADA_ADMIN_MAIL_ADDRESS') ?: 'graffio@lynxlab.com');
 
 /**
  * Default noreply mail address
  */
-define('ADA_NOREPLY_MAIL_ADDRESS','noreply@lynxlab.com');
+define('ADA_NOREPLY_MAIL_ADDRESS', getenv('ADA_NOREPLY_MAIL_ADDRESS') ?: 'noreply@lynxlab.com');
 
 /**
  * ADA version

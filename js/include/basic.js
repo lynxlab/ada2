@@ -169,6 +169,76 @@ function readCookie(name) {
     return null;
 }
 
+/**
+ * file download: setting document.location.href and using a
+ * beforeDownlad and afterDownload callback functions
+ *
+ * @param options object with properties: url, beforeDownload, afterDownload
+ */
+function doDownload(options) {
+	if ('undefined' != typeof options.url) {
+		var beforeRetval = null;
+		if ('function' == typeof options.beforeDownload) beforeRetval = options.beforeDownload();
+		if (beforeRetval == false) return;
+
+		// send a token to the server, and check at time interval that
+		// we have it back in a cookie, telling that file download has started
+		var token = new Date().getTime();
+		var fileDownloadCheckAttempts = 1800; // try for max 30 minutes (60sec*30)
+		var fileDownloadCookie = 'fileDownloadToken';
+
+		var form = $j('<form></form>').attr('action', options.url).attr('method', 'post');
+		form.append($j("<input></input>").attr('type', 'hidden').attr('name', 'c').attr('value', fileDownloadCookie));
+		form.append($j("<input></input>").attr('type', 'hidden').attr('name', 't').attr('value', token));
+
+		var fileDownloadCheckTimer = window.setInterval(function () {
+	    	fileDownloadCheckAttempts--;
+	    	// NOTE: readCookie is in js/include/basic.js file
+	        var cookieValue = readCookie('fileDownloadToken');
+	        if (cookieValue == token || fileDownloadCheckAttempts<=0) {
+	        	window.clearInterval(fileDownloadCheckTimer);
+	        	// removes the cookie by setting its expire time to yesterday
+	       	 	myDate = new Date();
+	       	 	myDate.setTime(myDate.getTime()+(-1*24*60*60*1000));
+	       	 	document.cookie = fileDownloadCookie +" = ; expires = " + myDate.toGMTString();
+	        	if ('function' == typeof options.afterDownload) options.afterDownload(fileDownloadCheckAttempts<=0);
+	        }
+	      }, 1000); // check cookie arrival every 1 second
+
+		// append options.data hidden fields to the form
+	    Object.keys(options.data).forEach(function(key){
+	    	var value = options.data[key];
+	    	if (value instanceof Array) {
+	    		var index=0;
+	    		value.forEach(function(v) {
+	    			if (typeof v === 'object') {
+    	    			var tmp = queryStringToObj($j.param(v));
+    	    			Object.keys(tmp).forEach(function(tmpkey) {
+    	    				var useKey = tmpkey.replace(']','');
+    	    				useKey = useKey.replace('[','][');
+    	    				if (typeof tmp[tmpkey] !== 'object') {
+    	    					form.append($j("<input></input>").attr('type', 'hidden').attr('name', key+'['+(index)+']'+'['+useKey+']').attr('value', tmp[tmpkey]).attr('class','array-object'));
+    	    				}
+    	    			});
+	    	    	} else {
+	    				form.append($j("<input></input>").attr('type', 'hidden').attr('name', key+'['+(index)+']').attr('value', v).attr('class','array-scalar'));
+	    	    	}
+	    			index++;
+	    		});
+	    	} else if (typeof value === 'object') {
+	    		Object.keys(value).forEach(function(subkey) {
+	    			form.append($j("<input></input>").attr('type', 'hidden').attr('name', key+'['+subkey+']').attr('value', value[subkey]).attr('class','object'));
+	    		});
+	    	} else {
+	    		form.append($j("<input></input>").attr('type', 'hidden').attr('name', key).attr('value', value).attr('class','scalar'));
+	    	}
+	    });
+
+	    //send request and remove form
+	    form.appendTo('body').submit().remove();
+	}
+}
+
 if (window.attachEvent) {window.attachEvent('onload', checkCookie);}
 else if (window.addEventListener) {window.addEventListener('load', checkCookie, false);}
 else {document.addEventListener('load', checkCookie, false);}

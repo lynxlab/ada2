@@ -305,6 +305,11 @@ $buttonSubscription->addChild (new CText(translateFN('Iscrivi studente')));
 $buttonSubscriptions = CDOMElement::create('button','class:Subscription_Button');
 $buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscription(\'subscriptions\');');
 $buttonSubscriptions->addChild (new CText(translateFN('Upload file')));
+
+$buttondownloadCertificates = CDOMElement::create('button','class:Subscription_Button');
+$buttondownloadCertificates->setAttribute('onclick', 'javascript:downloadCertificates('.$instanceId.');');
+$buttondownloadCertificates->addChild (new CText(translateFN('Download certificati')));
+
 /*
 * OUTPUT
 */
@@ -326,6 +331,7 @@ $content_dataAr = array(
 'edit_profile'=> $userObj->getEditProfilePage(),
 'buttonSubscription'=>$buttonSubscription->getHtml(),
 'buttonSubscriptions'=>$buttonSubscriptions->getHtml(),
+'buttondownloadCertificates'=>$buttondownloadCertificates->getHtml(),
 'messages' => $user_messages->getHtml(),
 'agenda '=> $user_agenda->getHtml()
 );
@@ -340,6 +346,7 @@ $layout_dataAr['JS_filename'] = array(
 			SEMANTICUI_DATATABLE,
 			JQUERY_DATATABLE_REDRAW,
             JQUERY_DATATABLE_DATE,
+            ROOT_DIR. '/js/include/jquery/jquery.blockUI.js',
             ROOT_DIR. '/js/include/jquery/dataTables/selectSortPlugin.js',
             JQUERY_NO_CONFLICT
 

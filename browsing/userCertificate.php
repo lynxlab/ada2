@@ -75,9 +75,11 @@ require_once 'include/browsing_functions.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-require_once '../switcher/include/switcher_functions.inc.php';
+require_once ROOT_DIR.'/switcher/include/switcher_functions.inc.php';
 
-$self = whoami();
+if (!isset($self)) {
+    $self = whoami();
+}
 
 $title =  translateFN('Attestato di frequenza');
 
@@ -101,6 +103,10 @@ if(isset($_GET['id_instance']))
 {
     $id_instance = $_GET['id_instance'];
 }
+if(isset($_GET['forcereturn'])) {
+    $forcereturn = (bool)intval($_GET['forcereturn']);
+} else $forcereturn = false;
+
 $codice_corso = $courseObj->getCode();
 
 $UserCertificateObj = Multiport::findUser($id_user,$id_instance);
@@ -160,8 +166,8 @@ $content_dataAr   = array(
  'title'=> $title,
  'logoProvider'=>$logoProvider,
  'userFullName'=>$userFullName,
- 'birthSentence'=>$birthSentence,
- 'CodeFiscSentence'=>$CodeFiscSentence,
+ 'birthSentence'=>isset($birthSentence) ? $birthSentence : null ,
+ 'CodeFiscSentence'=>isset($CodeFiscSentence) ? $CodeFiscSentence : null,
  'mainSentence'=>$mainSentence,
  'timeSentence'=>$timeSentence,
  'data_Sentence'=>$data_Sentence,
@@ -171,6 +177,12 @@ $content_dataAr   = array(
  'courseDescription' => (isset($courseObj) && $courseObj instanceof Course) ? $courseObj->getDescription() : null,
  'courseDurationSentence' => isset($courseDurationSentence) ? $courseDurationSentence : null
  );
-ARE::render($layout_dataAr, $content_dataAr,ARE_PDF_RENDER,array('outputfile'=>translateFN('Attestato').'-['.$codice_corso.']-['.$id_user.']'));
 
-
+ if ($forcereturn) {
+    return [
+        'filename' => translateFN('Attestato').'-['.$codice_corso.']-['.$id_user.'].pdf',
+        'content' => ARE::render($layout_dataAr, $content_dataAr,ARE_PDF_RENDER,array('returnasstring' => true,'outputfile'=>translateFN('Attestato').'-['.$codice_corso.']-['.$id_user.']'))
+    ];
+ } else {
+     ARE::render($layout_dataAr, $content_dataAr,ARE_PDF_RENDER,array('outputfile'=>translateFN('Attestato').'-['.$codice_corso.']-['.$id_user.']'));
+ }
