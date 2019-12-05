@@ -41,9 +41,23 @@ SwitcherHelper::init($neededObjAr);
 
 $doDownload = false;
 $data = null;
-$checkOnly = (array_key_exists('check', $_REQUEST) && intval($_REQUEST['check'])>=0) ? (bool)intval($_REQUEST['check']) : true;
 
-if (isset($_REQUEST['c']) && isset($_REQUEST['t']) && strlen($_REQUEST['c'])>0 && strlen($_REQUEST['t'])>0) {
+$checkOnly = (array_key_exists('check', $_REQUEST) && intval($_REQUEST['check'])>=0) ? (bool)intval($_REQUEST['check']) : true;
+$sendEmail = (array_key_exists('email', $_REQUEST) && intval($_REQUEST['email'])>=0) ? (bool)intval($_REQUEST['email']) : false;
+
+$logfile = ROOT_DIR.'/log/instanceCertificate.log';
+if (!is_file($logfile)) touch($logfile);
+ini_set("log_errors", 1);
+ini_set("error_log", $logfile);
+
+function formatBytes($bytes, $precision = 2) {
+    if ($bytes > pow(1024,3)) return round($bytes / pow(1024,3), $precision)."GB";
+    else if ($bytes > pow(1024,2)) return round($bytes / pow(1024,2), $precision)."MB";
+    else if ($bytes > 1024) return round($bytes / 1024, $precision)."KB";
+    else return ($bytes)."B";
+}
+
+if (!$checkOnly && isset($_REQUEST['c']) && isset($_REQUEST['t']) && strlen($_REQUEST['c'])>0 && strlen($_REQUEST['t'])>0) {
 	// a cookie name and token has been passed, send them back to the server in a cookie
 	setcookie($_REQUEST['c'],$_REQUEST['t'],time() + 600, "/"); // expires in 10 minutes
 }
@@ -55,29 +69,82 @@ if (array_key_exists('id_instance', $_REQUEST) && intval($_REQUEST['id_instance'
 		if(!$courseInstanceObj->isTutorCommunity() && defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE)) {
 			$subscriptions = Subscription::findSubscriptionsToClassRoom($courseInstanceObj->getId(), true);
 			if (is_array($subscriptions) && count($subscriptions)>0) {
+				// filter out students non having the requirements
+				$subscriptions = array_filter($subscriptions, function($asub) {
+					return ADAUser::Check_Requirements_Certificate($asub->getSubscriberId(), $asub->getSubscriptionStatus());
+				});
 				if (!$checkOnly) {
+					if ($sendEmail) {
+						if (strlen($userObj->getEmail())<=0) {
+							$data = translateFN("Impostare un indirizzo email nel proprio profilo");
+						} else {
+							// headers to close connection and send to the background....
+							$data = sprintf(translateFN('Il file con i %d certificati %s sarà inviato per email appena pronto'), count($subscriptions), '<br/>');
+							// buffer the output, close the connection with the browser and run a "background" task
+							session_write_close();
+							ob_end_clean();
+							header("Connection: close\r\n");
+							header("Content-Encoding: none\r\n");
+							ignore_user_abort(true);
+							// capture output
+							ob_start();
+							echo json_encode(['data' => $data]);
+							// these headers tell the browser to close the connection
+							// once all content has been transmitted
+							header("Content-Type: application/json\r\n");
+							header("Content-Length: ".ob_get_length()."\r\n");
+							// flush all output
+							ob_end_flush();
+							flush();
+							@ob_end_clean();
+							if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+						}
+					}
+
+					ini_set('memory_limit','512M');
 					$_GET['forcereturn'] = true;
+					$_GET['id_course_instance'] = $courseInstanceObj->getId();
 					// These are needed by the Rendering Engine called by the userCertificate inclusion
 					$self = 'userCertificate';
 					$GLOBALS['self'] = $self;
 					$layout_dataAr['module_dir'] = 'browsing/';
-					// Prepare ZipArchive
-					$file = ADA_UPLOAD_PATH . translateFN('Certificati-classe-').$courseInstanceObj->getId().'.zip';
-					$zip = new \ZipArchive();
-					$zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+					$count = 0; $total = count($subscriptions);
+					// $addFiles = [];
+					$dirname = ADA_UPLOAD_PATH . str_replace(' ','-',microtime());
+					mkdir($dirname);
+					$dirname .= DIRECTORY_SEPARATOR;
+
 					foreach($subscriptions as $subscription) {
-						if (ADAUser::Check_Requirements_Certificate($subscription->getSubscriberId(), $subscription->getSubscriptionStatus())) {
-							// must set the id_user to be used by userCertificate
-							$_GET['id_user'] = $subscription->getSubscriberId();
-							$pdfArr = include ROOT_DIR.'/browsing/userCertificate.php';
-							if (array_key_exists('content', $pdfArr) && strlen($pdfArr['content'])>0) {
-								$zipname = (array_key_exists('filename', $pdfArr) && strlen($pdfArr['filename'])>0) ? $pdfArr['filename'] : translateFN('studente').'-'. $subscription->getSubscriberId() .'.pdf';
-								$zip->addFromString($zipname, $pdfArr['content']);
-								$doDownload = true;
-							}
+						++$count;
+						ADAFileLogger::log(sprintf("student ID %4d (%03d/%03d) [Mem.%5s]", $subscription->getSubscriberId(), $count, $total,formatBytes(memory_get_peak_usage(true))), $logfile);
+						// must set the id_user to be used by userCertificate
+						$_GET['id_user'] = $subscription->getSubscriberId();
+						set_time_limit(120);
+						$pdfArr = include ROOT_DIR.'/browsing/userCertificate.php';
+						if (array_key_exists('content', $pdfArr) && strlen($pdfArr['content'])>0) {
+							$zipname = (array_key_exists('filename', $pdfArr) && strlen($pdfArr['filename'])>0) ? $pdfArr['filename'] : translateFN('studente').'-'. $subscription->getSubscriberId() .'.pdf';
+							file_put_contents($dirname . $zipname, $pdfArr['content']);
+						}
+						unset($pdfArr);
+						if ($count == $total || ($count % 25)===0) {
+							ADAFileLogger::log('Collect garbage...',$logfile);
+							gc_collect_cycles();
+							if (function_exists('gc_mem_caches')) gc_mem_caches();
 						}
 					}
-					$zip->close();
+
+					if ($count>0) {
+						// Prepare ZipArchive
+						$file = $dirname . translateFN('Certificati-classe-').$courseInstanceObj->getId().'.zip';
+						$zip = new \ZipArchive();
+						$zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+						$zip->addGlob($dirname.'*.{pdf}', GLOB_BRACE, ['remove_all_path' => true]);
+						$zip->close();
+						array_map('unlink', glob($dirname.'*.{pdf}', GLOB_BRACE));
+						$doDownload = !$sendEmail;
+					}
+
 					if ($doDownload) {
 						//Set headers
 						header("Pragma: public");
@@ -90,8 +157,40 @@ if (array_key_exists('id_instance', $_REQUEST) && intval($_REQUEST['id_instance'
 						header('Content-Length: ' . filesize($file));
 						header('Content-Disposition: attachment; filename="'.basename($file).'"');
 						readfile($file);
+					} else if ($sendEmail) {
+						// code to send the email here
+						require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
+						// true will make PHPMailer throw exceptions
+						$phpmailer = new PHPMailer(true);
+						// $phpmailer->SMTPDebug = 1;
+						// $phpmailer->Debugoutput = function($str, $level) use ($logfile) {
+						// 	if ($level <= 1) ADAFileLogger::log('MAILER: '.$str, $logfile);
+						// };
+						try {
+							$phpmailer->IsSendmail();
+							$phpmailer->CharSet = ADA_CHARSET;
+							$phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);
+							$phpmailer->AddReplyTo(ADA_NOREPLY_MAIL_ADDRESS);
+							$phpmailer->IsHTML(true);
+							$phpmailer->Subject = translateFN('Certificati per la classe').': '. $courseInstanceObj->getTitle();
+							$phpmailer->AddAddress($userObj->getEmail(),  $userObj->getFullName());
+							$phpmailer->Body = translateFN('In allegato il file richiesto');
+							$phpmailer->AltBody = $phpmailer->Body;
+
+							ADAFileLogger::log(sprintf("Add attachment [Mem.%5s]",formatBytes(memory_get_peak_usage(true))), $logfile);
+							$phpmailer->AddAttachment($file, basename($file));
+							ADAFileLogger::log(sprintf("Send email [Mem.%5s]",formatBytes(memory_get_peak_usage(true))), $logfile);
+							$emailed = $phpmailer->Send();
+							ADAFileLogger::log(sprintf("Send email result %s [Mem.%5s]",($emailed ? 'true' : 'false'), formatBytes(memory_get_peak_usage(true))), $logfile);
+						} catch (Exception $e) {
+							$data = $e->getMessage();
+							ADAFileLogger::log('exception message: '.$data, $logfile);
+						}
+
 					} else $data = translateFN('Nessun certificato da scaricare');
+					ADAFileLogger::log('unlink '.basename($file));
 					@unlink($file);
+					@rmdir(rtrim($dirname, DIRECTORY_SEPARATOR));
 				} else $data = 'OK';
 
 			} else $data = translateFN('Nessuno studente iscritto alla classe');
@@ -101,6 +200,8 @@ if (array_key_exists('id_instance', $_REQUEST) && intval($_REQUEST['id_instance'
 
 if ($checkOnly && !is_null($data)) {
 	header('Content-Type: application/json');
-	die (json_encode(array('data'=>$data)));
+	$out['data'] = $data;
+	$out['count'] = is_array($subscriptions) ? count($subscriptions) : 0;
+	die (json_encode($out));
 }
 die();

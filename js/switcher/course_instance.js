@@ -161,11 +161,11 @@ function saveStatus(select)
 }
 
 function downloadCertificates(idInstance) {
-    var checkDownload = function(idInstance) {
+    var certificateAction = function(idInstance, check, email) {
         return $j.ajax({
             type	: 'GET',
             url	: HTTP_ROOT_DIR+ '/switcher/ajax/zipInstanceCertificates.php',
-            data	: { id_instance: idInstance, check: 1 },
+            data	: { id_instance: idInstance, check: check, email: email },
             dataType :'json'
             })
         .done(function (response){
@@ -177,30 +177,30 @@ function downloadCertificates(idInstance) {
         });
     }
 	if ('udenfined' !== typeof $j(this).attr('disabled') && idInstance>0) {
-        $j.when(checkDownload(idInstance)).done(function(checkResponse){
+        $j.when(certificateAction(idInstance,1,0)).done(function(checkResponse){
             if ('data' in checkResponse && checkResponse.data.length>0 && checkResponse.data=='OK') {
-
-                if ($j('#pleaseWaitMSG').length>0) $j.blockUI.defaults.message = $j('#pleaseWaitMSG').html();
-                $j.blockUI.defaults.css.padding = 15;
-
-                var data = {
-                    id_instance: idInstance,
-                    check: 0
-                };
-                var options = {
-                        url: HTTP_ROOT_DIR+ '/switcher/ajax/zipInstanceCertificates.php',
-                        data: data,
-                        beforeDownload: function() {
-                            $j(this).attr('disabled','disabled');
-                            $j.blockUI();
-                        },
-                        afterDownload: function(attemptsExpired) {
-                            if (attemptsExpired) alert ($j('#attemptsExpired').text());
-                            $j.unblockUI();
-                            $j(this).removeAttr('disabled');
-                        }
-                };
-                doDownload(options);
+                if ('count' in checkResponse && !isNaN(parseInt(checkResponse.count)) && parseInt(checkResponse.count)>30) {
+                    // ask the ajax to run in the background and send an email
+                    certificateAction(idInstance,0,1);
+                } else {
+                    // do the download
+                    if ($j('#pleaseWaitMSG').length>0) $j.blockUI.defaults.message = $j('#pleaseWaitMSG').html();
+                    $j.blockUI.defaults.css.padding = 15;
+                    var options = {
+                            url: HTTP_ROOT_DIR+ '/switcher/ajax/zipInstanceCertificates.php',
+                            data: { id_instance: idInstance, check: 0 },
+                            beforeDownload: function() {
+                                $j(this).attr('disabled','disabled');
+                                $j.blockUI();
+                            },
+                            afterDownload: function(attemptsExpired) {
+                                if (attemptsExpired) alert ($j('#attemptsExpired').text());
+                                $j.unblockUI();
+                                $j(this).removeAttr('disabled');
+                            }
+                    };
+                    doDownload(options);
+                }
             }
         });
 	}
