@@ -29,7 +29,7 @@ $allowedUsersAr = array(AMA_TYPE_SWITCHER,AMA_TYPE_STUDENT);
  * Get needed objects
  */
 $neededObjAr = array(
-   AMA_TYPE_SWITCHER =>array('layout', 'user'); // ,'course','course_instance'),
+   AMA_TYPE_SWITCHER =>array('layout', 'user'), // ,'course','course_instance'),
    AMA_TYPE_STUDENT=>array('layout', 'course','course_instance')
 );
 
