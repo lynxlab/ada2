@@ -331,10 +331,12 @@ $content_dataAr = array(
 'edit_profile'=> $userObj->getEditProfilePage(),
 'buttonSubscription'=>$buttonSubscription->getHtml(),
 'buttonSubscriptions'=>$buttonSubscriptions->getHtml(),
-'buttondownloadCertificates'=>$buttondownloadCertificates->getHtml(),
 'messages' => $user_messages->getHtml(),
 'agenda '=> $user_agenda->getHtml()
 );
+if (defined('ADA_PRINT_CERTIFICATE') && (ADA_PRINT_CERTIFICATE === true)) {
+    $content_dataAr['buttondownloadCertificates'] = $buttondownloadCertificates->getHtml();
+}
 $layout_dataAr['CSS_filename'] = array (
             JQUERY_UI_CSS,
             SEMANTICUI_DATATABLE_CSS,
