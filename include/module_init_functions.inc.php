@@ -365,6 +365,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
 
   $dh = new AMA_DataHandler($sess_selected_tester_dsn);
   $GLOBALS['dh'] = $dh;
+  loadServiceTypes();
 
   if(empty($GLOBALS['sess_id'])) {
     $invalid_session = TRUE;

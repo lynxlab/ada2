@@ -81,7 +81,6 @@ if (!isset($trackPageToNavigationHistory)) {
 	$trackPageToNavigationHistory = true;
 }
 session_controlFN($neededObjAr, $allowedUsersAr, $trackPageToNavigationHistory);
-loadServiceTypes();
 /**
  * Clears variables specified in $whatAR
  */
