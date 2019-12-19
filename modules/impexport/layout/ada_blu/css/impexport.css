@@ -1,3 +1,5 @@
+@import url("showHideDiv.css");
+
 #pagecontainer {
 	margin-bottom: -55px;
 }
@@ -43,12 +45,12 @@ fieldset.form li.form {
 }
 
 fieldset.form li.form:not(:first-child) {
-	margin-bottom:0; 
+	margin-bottom:0;
 	border-bottom: none;
 }
 
 fieldset.form li.form:not(:last-child) {
-	border-bottom: 1px solid #aaaaaa;	
+	border-bottom: 1px solid #aaaaaa;
 }
 
 fieldset.form fieldset.form {
@@ -83,6 +85,22 @@ input.input_text {
 	display: inline-block;
 	text-align: right;
 	width: 45%;
+}
+
+form[name="exportStep3Form"]>fieldset.form li.form {
+	border: none;
+}
+
+input.form.repotitle {
+    text-align: initial;
+    width: calc(100% - 1em);
+    padding: 0.5em;
+}
+
+textarea.form.repodescr {
+	width: calc(100% - 1em);
+	padding: 0.5em;
+	height: 13em;
 }
 
 textarea.form {
@@ -156,4 +174,8 @@ form[name=importStep1Form] input[type=submit] {
 	text-align: left;
 	width: 95%;
 	margin: 0 auto;
+}
+
+.first .exportFormStep2 .step2buttons {
+	margin-top: 2em;
 }

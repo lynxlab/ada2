@@ -22,6 +22,12 @@ ul.jqtree-tree li.jqtree_common {
     clear: both;
     list-style-type: none;
 }
+
+ul.jqtree-tree li.jqtree_common:last-child,
+ul.jqtree-tree li.jqtree-folder:last-child {
+    border-bottom: none;
+}
+
 ul.jqtree-tree .jqtree-toggler {
     display: block;
     position: absolute;
