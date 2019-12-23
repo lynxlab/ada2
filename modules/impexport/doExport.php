@@ -64,14 +64,16 @@ $exportToRepo = isset($_REQUEST['exporttorepo']) && intval($_REQUEST['exporttore
 
 try {
 	if ($exportToRepo) {
+		require_once MODULES_IMPEXPORT_PATH .'/include/AMARepositoryDataHandler.inc.php';
+		$rdh = AMARepositoryDataHandler::instance();
 		// build needed save data and throw exception on error
 		if ($exportCourse > 0) {
 			$saveData = [
 				'id_course' => $exportCourse
 			];
-			$testerInfo = $GLOBALS['common_dh']->get_tester_info_from_pointer($_SESSION['sess_selected_tester']);
-			if (!AMA_DB::isError($testerInfo) && is_array($testerInfo) && isset($testerInfo[0])) {
-				$saveData['id_tester'] = $testerInfo[0];
+			$testerId = $rdh->getTesterIDFromPointer();
+			if (!is_null($testerId)) {
+				$saveData['id_tester'] = $testerId;
 				if (isset($_REQUEST['repotitle']) && strlen(trim($_REQUEST['repotitle']))>0) {
 					$saveData['title'] = trim($_REQUEST['repotitle']);
 					if (isset($_REQUEST['repodescr']) && strlen(trim($_REQUEST['repodescr']))>0) {
@@ -301,8 +303,6 @@ try {
 				throw new Exception(translateFN('Impossibile scrivere il file di destinazione'), 500);
 			}
 			// save to the db
-			require_once MODULES_IMPEXPORT_PATH .'/include/AMARepositoryDataHandler.inc.php';
-			$rdh = AMARepositoryDataHandler::instance();
 			try {
 				$saveData['filename'] = $fileName;
 				$rdh->saveExportData($saveData);
