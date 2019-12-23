@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `module_impexport_repository` (
   `id` int(10) UNSIGNED NOT NULL,
   `id_course` int(10) UNSIGNED NOT NULL,
+  `exporter_userid` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
   `filename` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -44,7 +45,8 @@ CREATE TABLE `module_impexport_repository` (
 ALTER TABLE `module_impexport_repository`
   ADD PRIMARY KEY (`id`),
   ADD KEY `repository_idcourse` (`id_course`),
-  ADD KEY `repository_idtester` (`id_tester`);
+  ADD KEY `repository_idtester` (`id_tester`),
+  ADD KEY `repository_exporterid` (`exporter_userid`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate
@@ -64,6 +66,7 @@ ALTER TABLE `module_impexport_repository`
 -- Limiti per la tabella `module_impexport_repository`
 --
 ALTER TABLE `module_impexport_repository`
+  ADD CONSTRAINT `repository_exporterid` FOREIGN KEY (`exporter_userid`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `repository_idcourse` FOREIGN KEY (`id_course`) REFERENCES `servizio` (`id_servizio`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `repository_idtester` FOREIGN KEY (`id_tester`) REFERENCES `tester` (`id_tester`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
