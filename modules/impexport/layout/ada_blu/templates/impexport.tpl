@@ -9,11 +9,11 @@
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
-        </div> 
+        </div>
         <!-- / testata -->
         <!-- menu -->
-            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-        <!-- / menu -->  
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
+        <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
             <!-- PERCORSO -->
@@ -79,7 +79,7 @@
         <!-- / contenitore -->
      	<div id="push"></div>
 		</div>
-		
+
 		<!-- com_tools -->
         <div class="clearfix"></div>
         <div id="com_tools">
@@ -88,14 +88,17 @@
             </div>
         </div>
         <!-- /com_tools -->
-        
+
         <!-- piede -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->
-        
+
         <span id="emptyURLMSG" style="display:none;"><i18n>Inserire una url da cui importare</i18n></span>
+        <span id="exportoToRepoMustSelect" style="display:none;"><i18n>Selezionare un nodo da esportare</i18n></span>
+        <span id="exportoToRepoNodelbl" style="display:none;"><i18n>Nodo</i18n></span>
+        <span id="exportoToRepoBaseDescr" style="display:none;"><i18n>Esportazione dal corso</i18n></span>
 
     </body>
 </html>

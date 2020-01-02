@@ -159,11 +159,12 @@ margin-top: 50px;
 }
 
 form[name=exportStep1Form] input[type=submit] ,
+form[name=exportStep3Form] input[type=submit] ,
 #exportButton {
 float: right;
 }
 
-.step3Title {
+.stepExportTitle {
 font-size: 1.2em;
 font-weight: bold;
 display: block;
@@ -171,7 +172,7 @@ text-align: center;
 margin-bottom: 20px;
 }
 
-.step3Text {
+.stepExportText {
 display: block;
 text-align: center;
 }

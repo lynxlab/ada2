@@ -1,0 +1,35 @@
+@import url("showHideDiv.css");
+@import url("mainloader.css");
+
+#contentcontent {
+    overflow: visible;
+}
+
+#buttonContainer {
+    text-align: right;
+    width: 97%;
+    margin: 0 auto;
+}
+
+#mainPage.ui.segment {
+    margin-top: 0;
+}
+
+td.dt-body-center {
+    text-align: center;
+}
+
+td.actions .ui.button {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.ui.small.modal .content p {
+    font-size: 1.5em;
+    text-align: center;
+    opacity: .65;
+}
+
+table#repositoryList.dataTable tr.dtrg-group td {
+    background-color: #dfe4e8;
+}

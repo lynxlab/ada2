@@ -19,13 +19,13 @@ require_once(ROOT_DIR.'/include/Forms/lib/classes/FForm.inc.php');
 */
 class FormSelectExportCourse extends FForm {
 
-	public function __construct( $formName, $courseList ) {
+	public function __construct( $formName, $courseList, $selectedCourse = 0 ) {
 		parent::__construct();
 		$this->setName($formName);
 
 		$courseList[0] = translateFN('Scegli un corso da esportare');
 
-		$this->addSelect('course', translateFN('Seleziona un corso da cui esportatre'), $courseList, 0)
+		$this->addSelect('course', translateFN('Seleziona un corso da cui esportatre'), $courseList, $selectedCourse)
 			->setRequired()
 			->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
 
@@ -39,7 +39,7 @@ class FormSelectExportCourse extends FForm {
 
 
 		$this->setSubmitValue(translateFN('Avanti')."&nbsp;&gt;&gt;");
-		$this->setOnSubmit('return goToExportStepTwo();');
+		$this->setOnSubmit('return goToExportStepTwo(\'exportFormStep1\');');
 
 	}
 }

@@ -1,0 +1,3 @@
+#pagecontainer > *:not(#header), #footer {
+   opacity: 0;
+}

@@ -1,12 +1,12 @@
 <?php
 /**
- * EXPORT MODULE.
+ * EXPORT MODULE
  *
  * @package		export/import course
- * @author			giorgio <g.consorti@lynxlab.com>
- * @copyright		Copyright (c) 2009, Lynx s.r.l.
+ * @author		giorgio <g.consorti@lynxlab.com>
+ * @copyright	Copyright (c) 2009, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @link			impexport
+ * @link		impexport
  * @version		0.1
  */
 ini_set('display_errors', '0'); error_reporting(E_ALL);
@@ -42,12 +42,13 @@ BrowsingHelper::init($neededObjAr);
 require_once dirname(__FILE__).'/config/config.inc.php';
 require_once MODULES_IMPEXPORT_PATH.'/include/exportHelper.class.inc.php';
 require_once MODULES_IMPEXPORT_PATH.'/include/forms/formExport.inc.php';
-
+require_once MODULES_IMPEXPORT_PATH.'/include/forms/formExportToRepoDetails.inc.php';
 
 $self = 'impexport';
 
 $error = false;
-
+$exportToRepo = isset($_GET['exporttorepo']) && intval($_GET['exporttorepo']) === 1;
+$exportCourse = (isset($_GET['id_course']) && intval($_GET['id_course'])>0) ? intval($_GET['id_course']) : 0;
 /**
  * load course list from the DB
  */
@@ -67,12 +68,12 @@ if (empty($courses))
 if (!$error)
 {
 
-	$form1 = new FormSelectExportCourse('exportStep1Form', $courses);
+	$form1 = new FormSelectExportCourse('exportStep1Form', $courses, $exportCourse);
 
-	$step1DIV = CDOMElement::create('div','class:exportFormStep1');
+	$step1DIV = CDOMElement::create('div','class:exportFormStep1 initshown');
 	$step1DIV->addChild (new CText($form1->getHtml()));
 
-	$step2DIV = CDOMElement::create('div','class:exportFormStep2');
+	$step2DIV = CDOMElement::create('div','class:exportFormStep2 inithidden');
 	$step2DIV->setAttribute('style', 'display:none');
 
 	$spanHelpText = CDOMElement::create('span','class:exportStep2Help');
@@ -88,18 +89,31 @@ if (!$error)
 	$spanSelCourse->setAttribute('style', 'display:none');
 	$spanSelNode = CDOMElement::create('span','id:selNode');
 	$spanSelNode->setAttribute('style', 'display:none');
+	$spanSelCourseDescr = CDOMElement::create('span','id:selCourseDescr');
+	$spanSelCourseDescr->setAttribute('style', 'display:none');
 
 	$buttonDIV = CDOMElement::create('div','class:step2buttons');
 
 	$buttonPrev = CDOMElement::create('button','id:backButton');
 	$buttonPrev->setAttribute('type', 'button');
-	$buttonPrev->setAttribute('onclick', 'javascript:self.document.location.href=\''.$_SERVER['PHP_SELF'].'\'');
-	$buttonPrev->addChild (new CText('&lt;&lt;'.translateFN('Indietro')));
+	$buttonPrev->setAttribute('onclick', 'javascript:initDoc();');
+	$buttonPrev->addChild (new CText('&lt;&lt;&nbsp;'.translateFN('Indietro')));
 
 	$buttonNext = CDOMElement::create('button','id:exportButton');
 	$buttonNext->setAttribute('type', 'button');
-	$buttonNext->setAttribute('onclick', 'doExport();');
-	$buttonNext->addChild (new CText(translateFN('Esporta')));
+
+	$step3DIV = CDOMElement::create('div','class:exportFormStep3 inithidden');
+	$step3DIV->setAttribute('style', 'display:none');
+	$form3 = new FormExportToRepoDetails('exportStep3Form', $exportToRepo);
+	$step3DIV->addChild(new CText($form3->getHtml()));
+
+	if ($exportToRepo) {
+		$buttonNext->setAttribute('onclick', 'return goToExportStepThree();');
+		$buttonNext->addChild (new CText(translateFN('Avanti')."&nbsp;&gt;&gt;"));
+	} else {
+		$buttonNext->setAttribute('onclick', 'doExport(\'exportFormStep2\');');
+		$buttonNext->addChild (new CText(translateFN('Esporta')));
+	}
 
 	$buttonDIV->addChild($buttonPrev);
 	$buttonDIV->addChild($buttonNext);
@@ -109,21 +123,22 @@ if (!$error)
 	$step2DIV->addChild ($courseTreeLoading);
 	$step2DIV->addChild ($spanSelCourse);
 	$step2DIV->addChild ($spanSelNode);
+	$step2DIV->addChild ($spanSelCourseDescr);
 	$step2DIV->addChild ($buttonDIV);
 
-	$step3DIV = CDOMElement::create('div','class:exportFormStep3');
-	$step3DIV->setAttribute('style', 'display:none');
+	$stepExportDIV = CDOMElement::create('div','class:exportFormStepExport inithidden');
+	$stepExportDIV->setAttribute('style', 'display:none');
 
-	$exporting = CDOMElement::create('span','class:step3Title');
+	$exporting = CDOMElement::create('span','class:stepExportTitle');
 	$exporting->addChild (new CText(translateFN('Esportazione in corso')));
 
-	$txtSpan = CDOMElement::create('span','class:step3Text');
+	$txtSpan = CDOMElement::create('span','class:stepExportText');
 	$txtSpan->addChild (new CText(translateFN('Il download si avvier&agrave; automaticamente ad esportazione ultimata')));
 
-	$step3DIV->addChild($exporting);
-	$step3DIV->addChild($txtSpan);
+	$stepExportDIV->addChild($exporting);
+	$stepExportDIV->addChild($txtSpan);
 
-	$data = $step1DIV->getHtml().$step2DIV->getHtml().$step3DIV->getHtml();
+	$data = $step1DIV->getHtml().$step2DIV->getHtml().$step3DIV->getHtml().$stepExportDIV->getHtml();
 }
 
 $content_dataAr = array(
