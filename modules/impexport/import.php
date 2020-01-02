@@ -125,7 +125,17 @@ else
 		 * form1 has a css class in form.css to hide the submit button
 		 * should someone ever chagne its name, pls reflect change in css
 		 */
-		$form1 = new FormUploadImportFile('importStep1Form');
+		if (isset($_GET['repofile']) && strlen(trim($_GET['repofile']))>0) {
+			$form1opts = [
+				'importURL' => str_replace(
+					ROOT_DIR,
+					HTTP_ROOT_DIR,
+					MODULES_IMPEXPORT_REPOBASEDIR . trim(urldecode($_GET['repofile']))
+				),
+				'forceRunImport' => true
+			];
+		} else $form1opts = [];
+		$form1 = new FormUploadImportFile('importStep1Form', $form1opts);
 		$form2 = new FormSelectDatasForImport('importStep2Form', $authors, $courses);
 
 		$step1DIV = CDOMElement::create('div','class:importFormStep1');

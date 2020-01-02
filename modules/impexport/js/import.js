@@ -94,6 +94,11 @@ function initDoc(maxSize) {
 			alert ($j('#emptyURLMSG').text());
 		}
 	});
+
+	if ($j('#forceRunImport').length==1 && $j('#forceRunImport').val()=='1') {
+		// $j('#importFormStep1').hide();
+		$j('#importUrlBtn').click();
+	}
 }
 
 /**
