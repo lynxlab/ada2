@@ -659,7 +659,7 @@ if ($op !== false && $op == 'course_info') {
 	                        	$instancesAr[$instKey]['isended'] = ($instanceEl['data_fine'] > 0 && $instanceEl['data_fine'] < time()) ? true : false;
                         	}
 
-	                        $row['instances'] = json_encode($instancesAr, JSON_UNESCAPED_SLASHES);
+	                        $row['instances'] = json_encode(array_values($instancesAr), JSON_UNESCAPED_SLASHES);
                         }
                         $tbody_data[] = $row;
                     }
