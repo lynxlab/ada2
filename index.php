@@ -21,7 +21,11 @@
  */
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 
-require_once realpath(dirname(__FILE__)).'/config_path.inc.php';
+if (is_file(realpath(dirname(__FILE__)).'/config_path.inc.php')) {
+	require_once realpath(dirname(__FILE__)).'/config_path.inc.php';
+} else {
+	header('Location: install.php', true, 302);
+}
 
 /**
  * redirect to install if ADA is NOT installed, either with install script or manually
