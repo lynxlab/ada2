@@ -39,7 +39,7 @@ class Layout {
 	$this->error = "";
 	if (empty($module_dir)) {
 		$modules_dir = str_replace($root_dir,'',$modules_dir);
-		$actual_dir = str_replace($root_dir,'',dirname($_SERVER['SCRIPT_FILENAME']));
+		$actual_dir = str_replace($root_dir,'',realpath(dirname($_SERVER['SCRIPT_FILENAME'])));
 
 		if (empty($actual_dir)) {
 			$module_dir = 'main';
