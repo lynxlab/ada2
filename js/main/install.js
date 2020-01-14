@@ -31,10 +31,11 @@ function initDoc() {
     // Listen to message from child window
     bindEvent(window, 'message', function (e) {
         if (e.isTrusted) {
+            $j('#installResults').contents().find("body").css('cursor', 'default');
             if (e.data == "doneException") {
                 $j('#retryButton-cnt').show();
             } else if (e.data == "doneOK") {
-                $j("form[name='installform']").remove();
+                $j(".ui.attached").remove();
             }
         }
     });
@@ -42,7 +43,7 @@ function initDoc() {
     $j('#retryButton').click(function() {
         $j('#retryButton-cnt').hide();
         $j("#installResults").slideUp(500, function() {
-            $j("form[name='installform']").slideDown(500, function (){
+            $j(".ui.attached").slideDown(500, function (){
             });
         });
     });
@@ -50,8 +51,9 @@ function initDoc() {
     $j('form[name="installform"]').form(formInitObj, {
         debug: false,
         onSuccess: function() {
-            $j("form[name='installform']").slideUp(500, function() {
+            $j(".ui.attached").slideUp(500, function() {
                 $j("#installResults").slideDown(500, function (){
+                    $j('#installResults').contents().find("body").css('cursor', 'wait');
                 });
             });
         }
