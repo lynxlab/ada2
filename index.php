@@ -24,6 +24,11 @@ use Lynxlab\ADA\Module\GDPR\GdprPolicy;
 require_once realpath(dirname(__FILE__)).'/config_path.inc.php';
 
 /**
+ * redirect to install if ADA is NOT installed, either with install script or manually
+ */
+if (!is_file(ENV_FILENAME) && !is_dir(ROOT_DIR.'/clients')) redirect('install.php');
+
+/**
  * Clear node and layout variable in $_SESSION
  * $_SESSION was destroyed, so we do not need to clear data in session.
  */
