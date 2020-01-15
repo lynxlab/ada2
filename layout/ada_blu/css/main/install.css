@@ -1,0 +1,81 @@
+div.first {
+    font-size: 1.3em;
+    width: 60%;
+    margin: 0 auto;
+}
+
+div.first .ui.form.segment .field>label,
+div.first .ui.form.segment .field>.radio>label {
+    width: initial;
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    height: 1.5em;
+}
+
+div.first .ui.form.segment .field>label>i,
+div.first .ui.form.segment .field>.radio>label>i {
+    margin-left: 1em;
+    font-size: 0.7em;
+}
+
+.ui.form.segment .ui.dropdown .menu .item {
+    font-size: 1.1em;
+}
+
+.ui.form.segment .ui.dropdown i.dropdown.icon {
+    right: 1em;
+    position: absolute;
+    opacity: 0.5;
+}
+
+.ui.form.segment .ui.dropdown .default.text {
+    opacity: 0.5;
+}
+
+div.first .ui.form.segment .field .ui.dropdown,
+div.first .ui.form.segment .field .ui.dropdown:hover {
+    width:calc(100% - 2em);
+}
+
+div.first .ui.form.segment .field.error .ui.dropdown,
+div.first .ui.form.segment .field.error .ui.dropdown:hover {
+    width:calc(100% - 2.55em);
+    border-left: 0.3em solid #D95C5C;
+    padding-left: 1.2em;
+    border-bottom-left-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+}
+
+div.first .ui.form.segment .field.error .ui.dropdown .default.text,
+div.first .ui.form.segment .field.error .ui.dropdown:hover .default.text {
+    color: inherit;
+}
+
+div.first .ui.message p {
+    margin-top:0;
+    margin-bottom: .2em;
+}
+
+#footer_login {
+    margin-top: 2em;
+}
+
+.ui.form.segment .ui.error.message ul.list li {
+    color: inherit;
+    border: none;
+    line-height: inherit;
+}
+
+#retryButton-cnt {
+    display: none;
+    text-align: right;
+    margin-top: 1em;
+}
+
+#installResults {
+    border: 1px solid #aaa;
+    width: 100%;
+    height: 600px;
+    display: none;
+}

@@ -19,6 +19,12 @@
   */
   define('ROOT_DIR', __DIR__);
 
+  /**
+   * Load env file built by the installer
+   */
+  define('ENV_FILENAME', ROOT_DIR . '/config/env_install.inc.php');
+  if (is_file(ENV_FILENAME)) require_once ENV_FILENAME;
+
  /**
   * sets multiprovider flag, true is the default
   * multiprovider behaviour, false is single provider

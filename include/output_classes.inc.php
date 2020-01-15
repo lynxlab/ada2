@@ -244,12 +244,14 @@ class ARE
          *
          * make menu here
          */
-        require_once ROOT_DIR.'/include/menu_class.inc.php';
-        // menu property created 'on-the-fly'
-        $layoutObj->menu = new Menu($layoutObj->module_dir,
-        		basename(($_SERVER['SCRIPT_FILENAME'])),
-        		$_SESSION['sess_userObj']->getType(),
-        		$menuoptions);
+        if (0 !== strcasecmp('install.php', basename($_SERVER['SCRIPT_FILENAME']))) {
+          require_once ROOT_DIR.'/include/menu_class.inc.php';
+          // menu property created 'on-the-fly'
+          $layoutObj->menu = new Menu($layoutObj->module_dir,
+              basename(($_SERVER['SCRIPT_FILENAME'])),
+              $_SESSION['sess_userObj']->getType(),
+              $menuoptions);
+        } else $layoutObj->menu = null;
 
         if ($renderer == ARE_PDF_RENDER) {
 
@@ -284,8 +286,10 @@ class ARE
          * adamenu must be the first key of $content_dataAr
          * for the template_field substitution to work inside the menu
          */
-        $content_dataAr = array ('adamenu'=>$layoutObj->menu->getHtml()) + $content_dataAr;
-        $content_dataAr['isVertical'] = ($layoutObj->menu->isVertical()) ? ' vertical' : '';
+        if (!is_null($layoutObj->menu)) {
+          $content_dataAr = array ('adamenu'=>$layoutObj->menu->getHtml()) + $content_dataAr;
+          $content_dataAr['isVertical'] = ($layoutObj->menu->isVertical()) ? ' vertical' : '';
+        }
 
         $html_renderer->fillin_templateFN($content_dataAr);
 
@@ -804,7 +808,9 @@ class  Generic_Html extends Output
     /*
      * vito, 6 ottobre 2008: import PHP defines from ada_config.php as javascript variables.
      */
-    $html_js_code .= "<script type=\"text/javascript\" src=\"$http_root_dir/include/PHPjavascript.php\"></script>";
+    if (false === stristr($this->JS_filename,'install.js')) {
+      $html_js_code .= "<script type=\"text/javascript\" src=\"$http_root_dir/include/PHPjavascript.php\"></script>";
+    }
 
     foreach ($jsAr as $javascript){
       if (!empty($javascript)){
