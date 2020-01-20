@@ -236,20 +236,24 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 	/**
 	 * Gets the array of the policies accepted and rejected by the user
 	 *
-	 * @param integer $userID
-	 * @param whereArr array to be added to the where clause
+	 * @param array|integer $userID
+	 * @param array whereArr array to be added to the where clause
 	 * @return array
 	 */
 	public function getUserPolicies($userID, $whereArr = array()) {
-		$sql = 'SELECT `id_policy`, `acceptedVersion`, `lastmodTS`, `isAccepted` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`=?';
+		$isArray = is_array($userID);
+		$sql = 'SELECT `id_utente`, `id_policy`, `acceptedVersion`, `lastmodTS`, `isAccepted` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`';
+		if ($isArray) $sql .= ' IN('.implode(',',$userID).')';
+		else $sql.'=?';
 		foreach ($whereArr as $field => $value) {
 			$sql .= ' AND `'.$field.'`='.$value;
 		}
-		$result = self::getPoliciesDB()->getAllPrepared($sql, $userID, AMA_FETCH_ASSOC);
+		$result = self::getPoliciesDB()->getAllPrepared($sql, $isArray ? null : $userID, AMA_FETCH_ASSOC);
 		$retArr = array();
 		if (!\AMA_DB::isError($result) && is_array($result) && count($result)>0) {
 			foreach ($result as $row) {
-				$retArr[$row['id_policy']] = $row;
+				if ($isArray) $retArr[$row['id_utente']][$row['id_policy']] = $row;
+				else $retArr[$row['id_policy']] = $row;
 			}
 		}
 		return $retArr;
