@@ -113,7 +113,7 @@ class BadgesActions {
 			'allowedUsers' => array(),
 			'neededObjects' => array()
 		);
-		if (is_null($fileName)) $fileName = $_SERVER['SCRIPT_FILENAME'];
+		if (is_null($fileName)) $fileName = realpath($_SERVER['SCRIPT_FILENAME']);
 		$fileName = trim(str_replace(MODULES_BADGES_PATH, '', $fileName), '/');
 		if (strlen($fileName)>0) {
 			// admin, coordinator, author and editor have access to everything by default

@@ -197,6 +197,50 @@ class GdprAPI {
 	}
 
 	/**
+	 * Checks if the passed users have accepted all the mandatory policies
+	 * the returned array will have the following keys:
+	 * - accepted: true or false
+	 * - details: if accepted is true: null
+	 *            if accepted is false: current (holding current policy) and user (holding the accepted privacy version)
+	 *            if accepted is false and no user accepted version: null
+	 *
+	 * @param array $userIDs
+	 * @return array
+	 */
+	public function checkMandatoryPoliciesForUserArray(array $userIDs) {
+		$retArr = [];
+		$policies = $this->getMandatoryPolicies();
+		$userPolicies = $this->_dh->getUserPolicies($userIDs);
+		foreach($userIDs as $userID) {
+			if (array_key_exists($userID, $userPolicies)) {
+				$retArr[$userID] = [];
+				$accepted = true;
+				/** @var GdprPolicy $policy */
+				foreach ($policies as $policy) {
+					// user MUST accept all mandatory policies!!
+					$accepted = $accepted && self::ckeckAcceptedPolicy($policy, $userPolicies[$userID]);
+					if (false === $accepted) {
+						$retArr[$userID] = [
+							'accepted' => false,
+							'details' => [
+								'current' => $policy,
+								'user' => $userPolicies[$userID][$policy->getPolicy_content_id()]
+							],
+						];
+						// break out of the loop at the first not accepted policy
+						break;
+					}
+				}
+				if ($accepted) {
+					$retArr[$userID] = [ 'accepted' => $accepted, 'details' => null ];
+				}
+			} else $retArr[$userID] = [ 'accepted' => false, 'details' => null ];
+
+		}
+		return $retArr;
+	}
+
+	/**
 	 * Checks if the passed user has accepted all the mandatory policies
 	 *
 	 * @param \ADALoggableUser $userObj
@@ -219,9 +263,7 @@ class GdprAPI {
 				/** @var GdprPolicy $policy */
 				foreach ($policies as $policy) {
 					// user MUST accept all mandatory policies!!
-					$okToLogin = $okToLogin &&
-						(array_key_exists($policy->getPolicy_content_id(), $userPolicies) &&
-						intval($userPolicies[$policy->getPolicy_content_id()]['acceptedVersion']) >= $policy->getVersion());
+					$okToLogin = $okToLogin && self::ckeckAcceptedPolicy($policy, $userPolicies);
 				}
 				return $okToLogin;
 			} else {
@@ -231,6 +273,18 @@ class GdprAPI {
 				return true;
 			}
 		}
+	}
+
+	/**
+	 * checks if the passed policy is accepted by the user
+	 *
+	 * @param GdprPolicy $policy
+	 * @param array $userPolicies
+	 * @return boolean
+	 */
+	private static function ckeckAcceptedPolicy(GdprPolicy $policy, array $userPolicies) {
+		return (array_key_exists($policy->getPolicy_content_id(), $userPolicies) &&
+		intval($userPolicies[$policy->getPolicy_content_id()]['acceptedVersion']) >= $policy->getVersion());
 	}
 
 	/**
