@@ -244,7 +244,7 @@ class AMAGdprDataHandler extends \AMA_DataHandler {
 		$isArray = is_array($userID);
 		$sql = 'SELECT `id_utente`, `id_policy`, `acceptedVersion`, `lastmodTS`, `isAccepted` FROM `'.self::PREFIX.'policy_utente` WHERE `id_utente`';
 		if ($isArray) $sql .= ' IN('.implode(',',$userID).')';
-		else $sql.'=?';
+		else $sql.='=?';
 		foreach ($whereArr as $field => $value) {
 			$sql .= ' AND `'.$field.'`='.$value;
 		}
