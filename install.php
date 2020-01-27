@@ -261,7 +261,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 sendToBrowser(sprintf(translateFN('Importazione Database %s').' ...', $provider['DB']));
                 if ($providers[$i]['empty']) {
                     importSQL(ROOT_DIR . '/db/ada_provider_empty.sql', $providers[$i]['pdo']);
-                    $sql = "INSERT INTO ".$provider['DB'].".utente SELECT * FROM ".$postData['COMMONDB'].".utente WHERE id_utente=1; INSERT INTO amministratore_sistema (id_utente_amministratore_sist) VALUES (1);";
+                    $sql = "INSERT INTO ".$provider['DB'].".utente SELECT * FROM ".$postData['COMMONDB'].".utente WHERE id_utente=1; INSERT INTO ".$provider['DB'].".amministratore_sistema (id_utente_amministratore_sist) VALUES (1);";
                     $stmt = $commonpdo->prepare($sql);
                     $stmt->execute();
                     unset($stmt);
