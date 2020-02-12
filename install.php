@@ -168,7 +168,7 @@ require_once ROOT_DIR.'/include/user_class.inc.php';
 /**
  * redirect to homepage if ADA is installed, either with install script or manually
  */
-if (is_file(ENV_FILENAME) || is_dir('clients')) redirect(HTTP_ROOT_DIR);
+if (is_dir('clients')) redirect(HTTP_ROOT_DIR);
 
 session_start();
 $_SESSION['sess_userObj'] = new ADAGuest();
