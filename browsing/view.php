@@ -400,7 +400,7 @@ switch($id_profile) {
 /*  gli studenti dei corsi in autoistruzione non devono poter inviare media etc etc
 		 *  TODO: va riportata la modifica fatta per ADA Icon
 		 * */
-		if ($id_profile == AMA_TYPE_STUDENT && $courseInstanceObj instanceof Course_instance && $courseInstanceObj->getSelfInstruction()){
+		if ($id_profile == AMA_TYPE_STUDENT && isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance && $courseInstanceObj->getSelfInstruction()){
 		  $mod_enabled = FALSE;
 		  $com_enabled = FALSE;
 		} else if ($id_profile == AMA_TYPE_VISITOR) {
@@ -612,7 +612,7 @@ switch ($op){
 				 */
 				'isActive' => 0, // !$courseObj->getIsPublic() && !in_array($user_status, array(ADA_STATUS_COMPLETED, ADA_STATUS_TERMINATED)),
 				'courseId' => $courseObj->getId(),
-				'courseInstanceId' => $courseInstanceObj->getId(),
+				'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) ? $courseInstanceObj->getId() : -1,
 				'userId' => $userObj->getId()
 			];
 
@@ -621,7 +621,7 @@ switch ($op){
 			$layout_dataAR['widgets']['badges'] = [
 				'isActive' => defined('MODULES_BADGES') && MODULES_BADGES,
 				'courseId' => $courseObj->getId(),
-				'courseInstanceId' => $courseInstanceObj->getId(),
+				'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) ? $courseInstanceObj->getId() : -1,
 				'userId' => $userObj->getId()
 			];
 
