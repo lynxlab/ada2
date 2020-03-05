@@ -35,8 +35,14 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
    * sets the selected provider by detecting it from the filename that's executing
    */
    if (!MULTIPROVIDER) {
-
-	list($client) = explode ('.',preg_replace('/(http[s]?:\/\/)/', '', $_SERVER['SERVER_NAME']));
+    if (isset($_SERVER)) {
+      if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+        $servername = $_SERVER['HTTP_X_FORWARDED_HOST'];
+      } else if (isset($_SERVER['SERVER_NAME'])) {
+        $servername = $_SERVER['SERVER_NAME'];
+      }
+      list ($client) = explode ('.',preg_replace('/(http[s]?:\/\/)/', '', $servername));
+    }
 
 	if (isset($client) && !empty ($client) && is_dir(ROOT_DIR.'/clients/'.$client))
   	{
