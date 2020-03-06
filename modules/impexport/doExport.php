@@ -341,8 +341,9 @@ try {
 	if (!$exportToRepo) {
 		die ($e->getMessage());
 	} else {
-		if (!empty($e->getCode())) {
-			header(' ', true, $e->getCode());
+		$code = $e->getCode();
+		if (!empty($code)) {
+			header(' ', true, $code);
 		}
 		header('Content-Type: application/json');
 		die (json_encode(['title' => translateFN('Esportazione'), 'message' => $e->getMessage()]));
