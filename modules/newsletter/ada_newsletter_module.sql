@@ -6,6 +6,10 @@
 -- Generato il: Lug 29, 2013 alle 11:22
 -- Versione del server: 5.5.32-0ubuntu0.12.04.1
 -- Versione PHP: 5.3.10-1ubuntu3.7
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
@@ -39,3 +43,4 @@ CREATE TABLE IF NOT EXISTS `module_newsletter_newsletters` (
   `draft` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+COMMIT;

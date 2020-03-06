@@ -18,8 +18,8 @@ SET time_zone = "+00:00";
 -- Struttura della tabella `module_forkedpaths_history`
 --
 
-CREATE TABLE `module_forkedpaths_history` (
-  `module_forkedpaths_history_id` int(10) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `module_forkedpaths_history` (
+  `module_forkedpaths_history_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `userId` int(10) UNSIGNED NOT NULL,
   `courseInstanceId` int(10) UNSIGNED NOT NULL,
   `nodeFrom` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
@@ -27,26 +27,7 @@ CREATE TABLE `module_forkedpaths_history` (
   `userLevelFrom` tinyint(3) UNSIGNED NOT NULL,
   `userLevelTo` tinyint(3) UNSIGNED NOT NULL,
   `saveTS` int(10) UNSIGNED NOT NULL,
-  `session_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+  `session_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`module_forkedpaths_history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Indici per le tabelle scaricate
---
-
---
--- Indici per le tabelle `module_forkedpaths_history`
---
-ALTER TABLE `module_forkedpaths_history`
-  ADD PRIMARY KEY (`module_forkedpaths_history_id`);
-
---
--- AUTO_INCREMENT per le tabelle scaricate
---
-
---
--- AUTO_INCREMENT per la tabella `module_forkedpaths_history`
---
-ALTER TABLE `module_forkedpaths_history`
-  MODIFY `module_forkedpaths_history_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;

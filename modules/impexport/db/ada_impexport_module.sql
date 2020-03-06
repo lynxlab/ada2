@@ -24,39 +24,20 @@ SET time_zone = "+00:00";
 -- Struttura della tabella `module_impexport_repository`
 --
 
-CREATE TABLE `module_impexport_repository` (
-  `id` int(10) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `module_impexport_repository` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_course` int(10) UNSIGNED NOT NULL,
   `exporter_userid` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
   `filename` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_tester` int(10) UNSIGNED NOT NULL,
-  `exportTS` int(11) NOT NULL
+  `exportTS` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `repository_idcourse` (`id_course`),
+  KEY `repository_idtester` (`id_tester`),
+  KEY `repository_exporterid` (`exporter_userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Indici per le tabelle scaricate
---
-
---
--- Indici per le tabelle `module_impexport_repository`
---
-ALTER TABLE `module_impexport_repository`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `repository_idcourse` (`id_course`),
-  ADD KEY `repository_idtester` (`id_tester`),
-  ADD KEY `repository_exporterid` (`exporter_userid`);
-
---
--- AUTO_INCREMENT per le tabelle scaricate
---
-
---
--- AUTO_INCREMENT per la tabella `module_impexport_repository`
---
-ALTER TABLE `module_impexport_repository`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Limiti per le tabelle scaricate

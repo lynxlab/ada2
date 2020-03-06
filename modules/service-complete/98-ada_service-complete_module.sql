@@ -6,7 +6,10 @@
 -- Generato il: Dic 09, 2013 alle 13:54
 -- Versione del server: 5.5.34-0ubuntu0.13.10.1
 -- Versione PHP: 5.5.3-1ubuntu2
-
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
@@ -47,3 +50,4 @@ CREATE TABLE IF NOT EXISTS `module_complete_operations` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+COMMIT;
