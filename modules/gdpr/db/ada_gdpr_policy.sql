@@ -20,51 +20,27 @@ SET time_zone = "+00:00";
 -- Struttura della tabella `module_gdpr_policy_content`
 --
 
-CREATE TABLE `module_gdpr_policy_content` (
-  `policy_content_id` int(10) UNSIGNED NOT NULL,
-  `title` text COLLATE utf8_unicode_ci,
-  `content` text COLLATE utf8_unicode_ci,
+CREATE TABLE IF NOT EXISTS `module_gdpr_policy_content` (
+  `policy_content_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `content` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `tester_pointer` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `mandatory` tinyint(3) UNSIGNED DEFAULT '0',
-  `isPublished` tinyint(3) UNSIGNED DEFAULT '0' NOT NULL,
+  `mandatory` tinyint(3) UNSIGNED DEFAULT 0,
+  `isPublished` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `lastEditTS` int(11) NOT NULL,
-  `version` int(11) UNSIGNED DEFAULT'1' NOT NULL
+  `version` int(11) UNSIGNED NOT NULL DEFAULT 1,
+  PRIMARY KEY (`policy_content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Struttura della tabella `module_gdpr_policy_utente`
 --
 
-CREATE TABLE `module_gdpr_policy_utente` (
+CREATE TABLE IF NOT EXISTS `module_gdpr_policy_utente` (
   `id_utente` int(10) UNSIGNED NOT NULL,
   `id_policy` int(10) UNSIGNED NOT NULL,
   `acceptedVersion` int(11) UNSIGNED NOT NULL,
   `lastmodTS` int(11) UNSIGNED NOT NULL,
-  `isAccepted` tinyint(3) UNSIGNED DEFAULT '0' NOT NULL
+  `isAccepted` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id_utente`,`id_policy`,`acceptedVersion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Indici per le tabelle scaricate
---
-
---
--- Indici per le tabelle `module_gdpr_policy_content`
---
-ALTER TABLE `module_gdpr_policy_content`
-  ADD PRIMARY KEY (`policy_content_id`);
-
---
--- AUTO_INCREMENT per le tabelle scaricate
---
-
---
--- AUTO_INCREMENT per la tabella `module_gdpr_policy_content`
---
-ALTER TABLE `module_gdpr_policy_content`
-  MODIFY `policy_content_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-  
---
--- Indici per le tabelle `module_gdpr_policy_utente`
---
-ALTER TABLE `module_gdpr_policy_utente`
-  ADD PRIMARY KEY (`id_utente`,`id_policy`,`acceptedVersion`);

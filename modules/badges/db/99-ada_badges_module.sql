@@ -16,12 +16,13 @@ SET time_zone = "+00:00";
 --
 -- Struttura della tabella `module_badges_badges`
 --
-CREATE TABLE `module_badges_badges` (
+CREATE TABLE IF NOT EXISTS `module_badges_badges` (
   `uuid_bin` binary(16) NOT NULL,
 -- # `uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
   `name` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `criteria` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+  `criteria` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`uuid_bin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -35,20 +36,15 @@ ALTER TABLE `module_badges_badges`
 --
 -- Struttura della tabella `module_badges_course_badges`
 --
-CREATE TABLE `module_badges_course_badges` (
+CREATE TABLE IF NOT EXISTS `module_badges_course_badges` (
   `badge_uuid_bin` binary(16) NOT NULL,
 --  `badge_uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`badge_uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
   `id_corso` int(10) UNSIGNED DEFAULT NULL,
-  `id_conditionset` int(10) UNSIGNED NOT NULL
+  `id_conditionset` int(10) UNSIGNED NOT NULL,
+  UNIQUE KEY `course_badges_idx` (`badge_uuid_bin`,`id_corso`,`id_conditionset`) USING BTREE,
+  KEY `fk_badge_uuid` (`badge_uuid_bin`),
+  KEY `fk_id_conditionset` (`id_conditionset`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Indici per le tabelle `module_badges_course_badges`
---
-ALTER TABLE `module_badges_course_badges`
-  ADD UNIQUE KEY `course_badges_idx` (`badge_uuid_bin`,`id_corso`,`id_conditionset`) USING BTREE,
-  ADD KEY `fk_badge_uuid` (`badge_uuid_bin`),
-  ADD KEY `fk_id_conditionset` (`id_conditionset`);
 
 --
 -- Limiti per la tabella `module_badges_course_badges`
@@ -61,7 +57,7 @@ ALTER TABLE `module_badges_course_badges`
 --
 -- Struttura della tabella `module_badges_rewarded_badges`
 --
-CREATE TABLE `module_badges_rewarded_badges` (
+CREATE TABLE IF NOT EXISTS `module_badges_rewarded_badges` (
   `uuid_bin` binary(16) NOT NULL,
 --  `uuid` varchar(36) CHARACTER SET utf8 GENERATED ALWAYS AS (insert(insert(insert(insert(hex(`uuid_bin`),9,0,'-'),14,0,'-'),19,0,'-'),24,0,'-')) VIRTUAL,
   `badge_uuid_bin` binary(16) NOT NULL,
@@ -71,19 +67,14 @@ CREATE TABLE `module_badges_rewarded_badges` (
   `notified` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
   `id_utente` int(10) UNSIGNED NOT NULL,
   `id_corso` int(10) UNSIGNED NOT NULL,
-  `id_istanza_corso` int(10) UNSIGNED NOT NULL
+  `id_istanza_corso` int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid_bin`),
+  UNIQUE KEY `unique_badge_student_course` (`badge_uuid_bin`,`id_utente`,`id_corso`,`id_istanza_corso`),
+  KEY `fk_rewarded_badge_uuid` (`badge_uuid_bin`),
+  KEY `fk_rewarded_badge_id_corso` (`id_corso`),
+  KEY `fk_rewarded_badge_id_istanza_corso` (`id_istanza_corso`),
+  KEY `fk_rewarded_badge_id_utente` (`id_utente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Indici per le tabelle `module_badges_rewarded_badges`
---
-ALTER TABLE `module_badges_rewarded_badges`
-  ADD PRIMARY KEY (`uuid_bin`),
-  ADD UNIQUE KEY `unique_badge_student_course` (`badge_uuid_bin`,`id_utente`,`id_corso`,`id_istanza_corso`),
-  ADD KEY `fk_rewarded_badge_uuid` (`badge_uuid_bin`),
-  ADD KEY `fk_rewarded_badge_id_corso` (`id_corso`),
-  ADD KEY `fk_rewarded_badge_id_istanza_corso` (`id_istanza_corso`),
-  ADD KEY `fk_rewarded_badge_id_utente` (`id_utente`);
 
 --
 -- Limiti per la tabella `module_badges_rewarded_badges`
