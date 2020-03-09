@@ -25,13 +25,6 @@ CREATE TABLE IF NOT EXISTS `module_badges_badges` (
   PRIMARY KEY (`uuid_bin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Indici per le tabelle `module_badges_badges`
---
-ALTER TABLE `module_badges_badges`
-  ADD PRIMARY KEY (`uuid_bin`);
-
-
 -- --------------------------------------------------------
 --
 -- Struttura della tabella `module_badges_course_badges`
