@@ -9860,7 +9860,7 @@ CREATE TABLE IF NOT EXISTS `tester` (
   `telefono` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `e_mail` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `responsabile` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `puntatore` varchar(30) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `puntatore` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `descrizione` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_tester`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
