@@ -9833,8 +9833,8 @@ CREATE TABLE IF NOT EXISTS `servizio_tester` (
   `id_servizio` int(10) unsigned NOT NULL,
   `id_corso` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id_tester`,`id_servizio`),
-  KEY `id_corso` (`id_corso`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+  UNIQUE KEY `id_corso` (`id_corso`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `servizio_tester`
