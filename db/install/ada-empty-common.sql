@@ -20461,7 +20461,7 @@ CREATE TABLE `servizio_tester` (
   `id_tester` int(10) UNSIGNED NOT NULL,
   `id_servizio` int(10) UNSIGNED NOT NULL,
   `id_corso` int(10) UNSIGNED NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -20652,7 +20652,7 @@ ALTER TABLE `servizio`
 --
 ALTER TABLE `servizio_tester`
   ADD PRIMARY KEY (`id_tester`,`id_servizio`),
-  ADD KEY `id_corso` (`id_corso`);
+  ADD UNIQUE KEY `id_corso` (`id_corso`);
 
 --
 -- Indici per le tabelle `tester`
