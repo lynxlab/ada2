@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `module_impexport_repository` (
 --
 ALTER TABLE `module_impexport_repository`
   ADD CONSTRAINT `repository_exporterid` FOREIGN KEY (`exporter_userid`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `repository_idcourse` FOREIGN KEY (`id_course`) REFERENCES `servizio` (`id_servizio`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `repository_idcourse` FOREIGN KEY (`id_course`) REFERENCES `servizio_tester` (`id_corso`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `repository_idtester` FOREIGN KEY (`id_tester`) REFERENCES `tester` (`id_tester`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
