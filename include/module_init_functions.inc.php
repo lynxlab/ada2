@@ -42,14 +42,15 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
         $servername = $_SERVER['SERVER_NAME'];
       }
       list ($client) = explode ('.',preg_replace('/(http[s]?:\/\/)/', '', $servername));
+      $tmpcommon = AMA_Common_DataHandler::instance();
+      $client = $tmpcommon->getPointerFromThirdLevel($client);
+      unset($tmpcommon);
     }
 
 	if (isset($client) && !empty ($client) && is_dir(ROOT_DIR.'/clients/'.$client))
   	{
-      $tmpcommon = AMA_Common_DataHandler::instance();
   		// $_SESSION['sess_user_provider'] = $client;
-      $GLOBALS['user_provider'] = $tmpcommon->getPointerFromThirdLevel($client);
-      unset($tmpcommon);
+      $GLOBALS['user_provider'] = $client;
   		// other session vars per provider may go here...
   	}
   	else unset ($GLOBALS['user_provider']);
