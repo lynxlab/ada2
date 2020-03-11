@@ -2905,6 +2905,26 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
     }
 
     /**
+     * In a non multiprovider environment, returns the tester pointer associated to the
+     * passed 3rd level domain (i.e. an internet domain name up until the first dot)
+     * If the 3rd level is not found or the column in the tester table does not exists,
+     * will return $thirdleveldomain
+     *
+     * @param string $thirdleveldomain
+     * @return string|null
+     */
+    public function getPointerFromThirdLevel($thirdleveldomain = null) {
+        if (!MULTIPROVIDER && strlen($thirdleveldomain)>0) {
+            $query = "SELECT `puntatore` FROM `tester` WHERE `3rdleveldomain`=?";
+            $res = $this->getOnePrepared($query, [ $thirdleveldomain ]);
+            if($res !== false && !AMA_DB::isError($res) && strlen($res)>0) {
+                return $res;
+            }
+        }
+        return $thirdleveldomain;
+    }
+
+    /**
      * (non-PHPdoc)
      * @see include/Abstract_AMA_DataHandler#__destruct()
      */

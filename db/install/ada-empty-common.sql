@@ -20481,6 +20481,7 @@ CREATE TABLE `tester` (
   `e_mail` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `responsabile` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `puntatore` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `3rdleveldomain` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `descrizione` text COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -46,8 +46,10 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
 
 	if (isset($client) && !empty ($client) && is_dir(ROOT_DIR.'/clients/'.$client))
   	{
+      $tmpcommon = AMA_Common_DataHandler::instance();
   		// $_SESSION['sess_user_provider'] = $client;
-  		$GLOBALS['user_provider'] = $client;
+      $GLOBALS['user_provider'] = $tmpcommon->getPointerFromThirdLevel($client);
+      unset($tmpcommon);
   		// other session vars per provider may go here...
   	}
   	else unset ($GLOBALS['user_provider']);

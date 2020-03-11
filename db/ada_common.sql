@@ -9861,6 +9861,7 @@ CREATE TABLE IF NOT EXISTS `tester` (
   `e_mail` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `responsabile` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `puntatore` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `3rdleveldomain` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `descrizione` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_tester`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
