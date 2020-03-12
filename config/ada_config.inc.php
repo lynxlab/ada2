@@ -19,6 +19,8 @@
  */
 require_once('config_main.inc.php');
 
+require_once(ROOT_DIR.'/include/ModuleLoaderHelper.inc.php');
+
 /**
  * if it's not a multiprovider environment
  * find out 3rd level domain name and include

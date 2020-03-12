@@ -11,17 +11,15 @@
  * If a module is to be enabled for this client only, pls add the proper inclusion code here
  * E.g. to add MODULES_DUMMY for this client only, add the following:
  *
- * if (!defined('MODULES_DUMMY')) {
- * // defines for module dummy
- * define ('MODULES_DUMMY_PATH', MODULES_DIR.'/dummy');
- * if (file_exists(MODULES_DUMMY_PATH.'/config/config.inc.php')) {
- * 		require_once(MODULES_DUMMY_PATH.'/config/config.inc.php');
- * 		define('MODULES_DUMMY', true);
- * 		define('MODULES_DUMMY_HTTP', HTTP_ROOT_DIR.'/modules/dummy');
- * 	} else {
- * 		define('MODULES_DUMMY', false);
- * 	}
- * }
+ * ModuleLoaderHelper::loadModule('dummy', 'dummy-module-dir');
  *
+ * or
+ *
+ * ModuleLoaderHelper::loadModuleFromArray([
+ *  [ 'name' => 'dummy', 'dirname' => 'dummy-module-dir' ]
+ * ]);
+ *
+ * NOTE: dirname is optional, if module dir name equals module dir
+ *
+ * pls look the ModuleLoaderHelper for more info
  */
-?>
