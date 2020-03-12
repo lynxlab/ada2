@@ -102,14 +102,15 @@ class ModuleLoaderHelper {
      *
      * @param string $modulename
      * @param string|null $moduledir
+	 * @param bool $forcedisable
      * @return void
      */
-	public static function loadModule($modulename, $moduledir = null) {
+	public static function loadModule($modulename, $moduledir = null, $forcedisable = false) {
         if (is_null($moduledir)) $moduledir = $modulename;
 		$basedefine = strtoupper('MODULES_'.$modulename);
 		if (!defined($basedefine)) {
 			$modConfig = ModuleLoaderHelper::getModuleIncludeConfig($modulename, $moduledir);
-			if (!is_null($modConfig) && ModuleLoaderHelper::checkModuleLoadCondtion($modulename, $moduledir)) {
+			if (!$forcedisable && !is_null($modConfig) && ModuleLoaderHelper::checkModuleLoadCondtion($modulename, $moduledir)) {
 					$root_dir = ROOT_DIR;
 					define($basedefine . '_NAME', $modulename);
 					define($basedefine . '_PATH', MODULES_DIR.DIRECTORY_SEPARATOR.$moduledir);
@@ -132,8 +133,9 @@ class ModuleLoaderHelper {
         if (is_array($modules)) {
             foreach ($modules as $module) {
                 if (array_key_exists('name', $module)) {
-                    if (!array_key_exists('dirname',$module)) $module['dirname'] = $module['name'];
-                    self::loadModule($module['name'], $module['dirname']);
+					if (!array_key_exists('dirname',$module)) $module['dirname'] = $module['name'];
+					if (!array_key_exists('forcedisable',$module)) $module['forcedisable'] = false;
+                    self::loadModule($module['name'], $module['dirname'], $module['forcedisable']);
                 }
             }
         }
