@@ -40,7 +40,7 @@ BrowsingHelper::init($neededObjAr);
 require_once ROOT_DIR . '/include/FileUploader.inc.php';
 
 // MODULE's OWN IMPORTS
-require_once dirname(__FILE__).'/config/config.inc.php';
+// require_once dirname(__FILE__).'/config/config.inc.php';
 require_once MODULES_IMPEXPORT_PATH.'/include/forms/formImport.inc.php';
 require_once MODULES_IMPEXPORT_PATH.'/include/importHelper.class.inc.php';
 

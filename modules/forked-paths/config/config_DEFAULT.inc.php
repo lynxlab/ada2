@@ -8,7 +8,7 @@
  */
 
 try {
-	if (! @include_once(dirname(__FILE__).'/../vendor/autoload.php')) {
+	if (! @include_once(MODULES_FORKEDPATHS_PATH.'/vendor/autoload.php')) {
 		// @ - to suppress warnings,
 		throw new Exception (
 			json_encode(array(
