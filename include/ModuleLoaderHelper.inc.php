@@ -50,13 +50,13 @@ class ModuleLoaderHelper
 			'codeman'
 		];
 		$checks = [
-			ROOT_DIR . DIRECTORY_SEPARATOR . self::configdir . DIRECTORY_SEPARATOR . $modulename . DIRECTORY_SEPARATOR . $configfile,
+			ROOT_DIR . DIRECTORY_SEPARATOR . self::configdir . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $modulename . DIRECTORY_SEPARATOR . $configfile,
 			MODULES_DIR . DIRECTORY_SEPARATOR . $modulename . DIRECTORY_SEPARATOR . self::configdir . DIRECTORY_SEPARATOR . $configfile
 		];
 		if (!is_null($moduledir)) {
 			array_push(
 				$checks,
-				ROOT_DIR . DIRECTORY_SEPARATOR . self::configdir . DIRECTORY_SEPARATOR . $moduledir . DIRECTORY_SEPARATOR . $configfile,
+				ROOT_DIR . DIRECTORY_SEPARATOR . self::configdir . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $moduledir . DIRECTORY_SEPARATOR . $configfile,
 				MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir . DIRECTORY_SEPARATOR . self::configdir . DIRECTORY_SEPARATOR . $configfile
 			);
 		}
