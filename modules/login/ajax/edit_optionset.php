@@ -1,7 +1,7 @@
 <?php
 /**
  * LOGIN MODULE - config page for login provider
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
@@ -37,7 +37,7 @@ $neededObjAr = array(
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_LOGIN_PATH .'/config/config.inc.php';
+// require_once MODULES_LOGIN_PATH .'/config/config.inc.php';
 
 $GLOBALS['dh'] = AMALoginDataHandler::instance();
 
@@ -49,14 +49,14 @@ $retArray = array('status'=>'ERROR');
 $optionsClassName = null;
 if (isset($_REQUEST['providerClassName']) && strlen($_REQUEST['providerClassName'])>0) {
 	$type = trim($_REQUEST['providerClassName']);
-	if (in_array($type, abstractLogin::getLoginProviders(null))) {		
+	if (in_array($type, abstractLogin::getLoginProviders(null))) {
 		require_once MODULES_LOGIN_PATH . '/include/'.$type.'.class.inc.php';
 		$optionsClassName = $type::MANAGEMENT_CLASS;
 	}
 }
 
 if (!is_null($optionsClassName)) {
-	
+
 	require_once MODULES_LOGIN_PATH.'/include/management/'.$optionsClassName.'.inc.php';
 
 	if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -83,11 +83,11 @@ if (!is_null($optionsClassName)) {
 					die (json_encode($retArray));
 				}
 			}
-			
+
 			$res = $GLOBALS['dh']->saveOptionByKey($optionsManager->toArray());
 			$editElement = 'Chiave'; // translatedFN delayed when building msg
 		}
-	
+
 		if (AMA_DB::isError($res)) {
 			// if it's an error display the error message
 			$retArray['status'] = "ERROR";
@@ -97,8 +97,8 @@ if (!is_null($optionsClassName)) {
 			$retArray['status'] = "OK";
 			$retArray['msg'] = translateFN($editElement.' salvata');
 			if (is_string($res) && strlen($res)>0) $retArray['displayValue'] = $res;
-		}	
-	} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
+		}
+	} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 				isset($_GET['option_id']) && intval(trim($_GET['option_id']))>0) {
 		/**
 		 * it's a GET with an option_id, load it and display
@@ -106,7 +106,7 @@ if (!is_null($optionsClassName)) {
 		$option_id = intval(trim($_GET['option_id']));
 		// try to load it
 		$res = $GLOBALS['dh']->getOptionSet($option_id);
-		
+
 		if (AMA_DB::isError($res)) {
 			// if it's an error display the error message without the form
 			$retArray['status'] = "ERROR";
@@ -115,7 +115,7 @@ if (!is_null($optionsClassName)) {
 			// display the form with loaded data
 			$optionsManager = new $optionsClassName($res);
 			$data = $optionsManager->run(MODULES_LOGIN_EDIT_OPTIONSET);
-			
+
 			$retArray['status'] = "OK";
 			$retArray['html'] = $data['htmlObj']->getHtml();
 			$retArray['dialogTitle'] = translateFN('Modifica '.$editElement);
@@ -126,7 +126,7 @@ if (!is_null($optionsClassName)) {
 		 */
 		$optionsManager = new $optionsClassName();
 		$data = $optionsManager->run(MODULES_LOGIN_EDIT_OPTIONSET);
-		
+
 		$retArray['status'] = "OK";
 		$retArray['html'] = $data['htmlObj']->getHtml();
 		$retArray['dialogTitle'] = translateFN('Nuova '.$editElement);

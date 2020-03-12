@@ -17,7 +17,7 @@ use Lynxlab\ADA\Module\Badges\CourseBadgeForm;
 require_once(realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_GDPR_PATH . '/config/config.inc.php';
+// require_once MODULES_GDPR_PATH . '/config/config.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION

@@ -14,7 +14,7 @@ namespace Lynxlab\ADA\Module\GDPR;
  *
  * @author giorgio
  */
-require_once MODULES_GDPR_PATH .'/config/config.inc.php';
+// require_once MODULES_GDPR_PATH .'/config/config.inc.php';
 
 class GdprAPI {
 

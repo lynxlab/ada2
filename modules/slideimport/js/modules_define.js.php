@@ -13,7 +13,7 @@ header("Content-type: application/x-javascript");
 /**
  * Module config file
  */
-require_once MODULES_SLIDEIMPORT_PATH.'/config/config.inc.php';
+// require_once MODULES_SLIDEIMPORT_PATH.'/config/config.inc.php';
 
 if (defined('MODULES_SLIDEIMPORT_HTTP')) {
 	echo 'var MODULES_SLIDEIMPORT_HTTP=\''.MODULES_SLIDEIMPORT_HTTP.'\';'.PHP_EOL;
