@@ -79,7 +79,7 @@ require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
-require_once dirname(__FILE__).'/config/config.inc.php';
+// require_once dirname(__FILE__).'/config/config.inc.php';
 
 unset ($_SESSION['importProgress']);
 
