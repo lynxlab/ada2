@@ -42,7 +42,7 @@ require_once(ROOT_DIR.'/switcher/include/switcher_functions.inc.php');
 SwitcherHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSAGENDA_PATH .'/config/config.inc.php';
+// require_once MODULES_CLASSAGENDA_PATH .'/config/config.inc.php';
 require_once MODULES_CLASSAGENDA_PATH.'/include/AMAClassagendaDataHandler.inc.php';
 require_once MODULES_CLASSAGENDA_PATH.'/include/management/calendarsManagement.inc.php';
 

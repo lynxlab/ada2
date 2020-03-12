@@ -39,7 +39,7 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
+// require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
 require_once MODULES_CLASSBUDGET_PATH .'/include/management/costItemManagement.inc.php';
 require_once MODULES_CLASSBUDGET_PATH .'/include/management/costitemBudgetManagement.inc.php';
 require_once MODULES_CLASSBUDGET_PATH .'/include/AMAClassbudgetDataHandler.inc.php';
@@ -68,8 +68,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		$costItemBudget = new costitemBudgetManagement($costItemManager->id_istanza_corso);
 		$htmlObj = $costItemBudget->run(MODULES_CLASSBUDGET_EDIT);
 		$retArray['html'] = $htmlObj->getHtml();
-	}	
-} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
+	}
+} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 			isset($_GET['cost_item_id']) && intval(trim($_GET['cost_item_id']))>0) {
 	/**
 	 * it's a GET with an cost_item_id, load it and display
@@ -77,7 +77,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	$cost_item_id = intval(trim($_GET['cost_item_id']));
 	// try to load it
 	$res = $GLOBALS['dh']->getCostItem($cost_item_id);
-	
+
 	if (AMA_DB::isError($res)) {
 		// if it's an error display the error message without the form
 		$retArray['status'] = "ERROR";
@@ -86,7 +86,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		// display the form with loaded data
 		$costItemManager = new costItemManagement($res);
 		$data = $costItemManager->run(MODULES_CLASSBUDGET_EDIT_COST_ITEM);
-		
+
 		$retArray['status'] = "OK";
 		$retArray['html'] = $data['htmlObj']->getHtml();
 		$retArray['dialogTitle'] = translateFN('Modifica Voce di Costo');
@@ -99,7 +99,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	else $course_instance_id = null;
 	$costItemManager = new costItemManagement(array('id_istanza_corso'=>$course_instance_id));
 	$data = $costItemManager->run(MODULES_CLASSBUDGET_EDIT_COST_ITEM);
-	
+
 	$retArray['status'] = "OK";
 	$retArray['html'] = $data['htmlObj']->getHtml();
 	$retArray['dialogTitle'] = translateFN('Nuova Voce di Costo');

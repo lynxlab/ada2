@@ -40,7 +40,7 @@ require_once(ROOT_DIR.'/switcher/include/switcher_functions.inc.php');
 SwitcherHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
+// require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
 require_once MODULES_CLASSBUDGET_PATH.'/include/AMAClassbudgetDataHandler.inc.php';
 require_once MODULES_CLASSBUDGET_PATH.'/include/management/abstractClassbudgetManagement.inc.php';
 require_once MODULES_CLASSBUDGET_PATH . '/include/classbudgetAPI.inc.php';

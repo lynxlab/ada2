@@ -38,7 +38,7 @@ $neededObjAr = array(
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSROOM_PATH .'/config/config.inc.php';
+// require_once MODULES_CLASSROOM_PATH .'/config/config.inc.php';
 require_once MODULES_CLASSROOM_PATH.'/include/management/venuesManagement.inc.php';
 
 $self = 'venues';
@@ -64,8 +64,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		// redirect to classrooms page
 		$retArray['status'] = "OK";
 		$retArray['msg'] = translateFN('Luogo salvato');
-	}	
-} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
+	}
+} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 			isset($_GET['id_venue']) && intval(trim($_GET['id_venue']))>0) {
 	/**
 	 * it's a GET with an id_venue, load it and display
@@ -73,7 +73,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	$id_venue = intval(trim($_GET['id_venue']));
 	// try to load it
 	$res = $GLOBALS['dh']->classroom_getVenue($id_venue);
-	
+
 	if (AMA_DB::isError($res)) {
 		// if it's an error display the error message without the form
 		$retArray['status'] = "ERROR";
@@ -82,7 +82,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		// display the form with loaded data
 		$venuesManager = new venuesManagement($res);
 		$data = $venuesManager->run(MODULES_CLASSROOM_EDIT_VENUE);
-		
+
 		$retArray['status'] = "OK";
 		$retArray['html'] = $data['htmlObj']->getHtml();
 		$retArray['dialogTitle'] = translateFN('Modifica Luogo');
@@ -93,10 +93,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	 */
 	$venuesManager = new venuesManagement();
 	$data = $venuesManager->run(MODULES_CLASSROOM_EDIT_VENUE);
-	
+
 	$retArray['status'] = "OK";
 	$retArray['html'] = $data['htmlObj']->getHtml();
-	$retArray['dialogTitle'] = translateFN('Nuovo Luogo');	
+	$retArray['dialogTitle'] = translateFN('Nuovo Luogo');
 }
 
 echo json_encode($retArray);

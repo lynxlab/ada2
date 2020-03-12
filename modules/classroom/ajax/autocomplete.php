@@ -39,12 +39,12 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSROOM_PATH .'/config/config.inc.php';
+// require_once MODULES_CLASSROOM_PATH .'/config/config.inc.php';
 
 $GLOBALS['dh'] = AMAClassroomDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
-	if (isset($tableName) && strlen($tableName)>0 && isset($fieldName) && strlen($fieldName)>0) {				
+	if (isset($tableName) && strlen($tableName)>0 && isset($fieldName) && strlen($fieldName)>0) {
 		echo json_encode($GLOBALS['dh']->doSearchForAutocomplete ($tableName, $fieldName, trim($term), $primaryKey));
-	}	
+	}
 }

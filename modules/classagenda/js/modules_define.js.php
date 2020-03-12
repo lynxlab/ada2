@@ -13,7 +13,7 @@ header("Content-type: application/x-javascript");
 /**
  * Module config file
  */
-require_once MODULES_CLASSBUDGET_PATH.'/config/config.inc.php';
+// require_once MODULES_CLASSBUDGET_PATH.'/config/config.inc.php';
 
 /**
  * export defines for allowed user in calendars.php

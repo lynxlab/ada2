@@ -39,7 +39,7 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
+// require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
 require_once MODULES_CLASSBUDGET_PATH .'/include/AMAClassbudgetDataHandler.inc.php';
 
 $GLOBALS['dh'] = AMAClassbudgetDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
@@ -48,5 +48,5 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	if (isset($tableName) && strlen($tableName)>0 && isset($fieldName) && strlen($fieldName)>0) {
 		if (!isset($primaryKey) || (isset($primaryKey) && strlen($primaryKey)<=0)) $primaryKey = null;
 		echo json_encode($GLOBALS['dh']->doSearchForAutocomplete ($tableName, $fieldName, trim($term), $primaryKey));
-	}	
+	}
 }

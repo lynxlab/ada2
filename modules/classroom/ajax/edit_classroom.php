@@ -39,7 +39,7 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSROOM_PATH .'/config/config.inc.php';
+// require_once MODULES_CLASSROOM_PATH .'/config/config.inc.php';
 require_once MODULES_CLASSROOM_PATH.'/include/management/classroomManagement.inc.php';
 
 $GLOBALS['dh'] = AMAClassroomDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
@@ -54,7 +54,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	$classroomManager = new classroomManagement($_POST);
 	// try to save it
 	$res = $GLOBALS['dh']->classroom_saveClassroom($classroomManager->toArray());
-	
+
 	if (AMA_DB::isError($res)) {
 		// if it's an error display the error message
 		$retArray['status'] = "ERROR";
@@ -62,9 +62,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		// redirect to classrooms page
 		$retArray['status'] = "OK";
-		$retArray['msg'] = translateFN('Aula salvata'); 
-	}	
-} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
+		$retArray['msg'] = translateFN('Aula salvata');
+	}
+} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 			isset($_GET['id_classroom']) && intval(trim($_GET['id_classroom']))>0) {
 	/**
 	 * it's a GET with an id_classroom, load it and display the form
@@ -72,7 +72,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	$id_classroom = intval(trim($_GET['id_classroom']));
 	// try to load it
 	$res = $GLOBALS['dh']->classroom_getClassroom($id_classroom);
-	
+
 	if (AMA_DB::isError($res)) {
 		// if it's an error display the error message without the form
 		$retArray['status'] = "ERROR";
@@ -81,11 +81,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		// display the form with loaded data
 		$classroomManager = new classroomManagement($res);
 		$data = $classroomManager->run(MODULES_CLASSROOM_EDIT_CLASSROOM);
-		
+
 		$retArray['status'] = "OK";
 		$retArray['html'] = $data['htmlObj']->getHtml();
 		$retArray['dialogTitle'] = translateFN('Modifica Aula');
-		
+
 	}
 } else {
 	/**
@@ -93,7 +93,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	 */
 	$classroomManager = new classroomManagement();
 	$data = $classroomManager->run(MODULES_CLASSROOM_EDIT_CLASSROOM);
-	
+
 	$retArray['status'] = "OK";
 	$retArray['html'] = $data['htmlObj']->getHtml();
 	$retArray['dialogTitle'] = translateFN('Nuova Aula');

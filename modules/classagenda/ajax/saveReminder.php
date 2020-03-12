@@ -40,7 +40,7 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSAGENDA_PATH.'/config/config.inc.php';
+// require_once MODULES_CLASSAGENDA_PATH.'/config/config.inc.php';
 
 $GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
@@ -49,15 +49,15 @@ $retArray = array();
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_POST['reminderEventID']) && intval($_POST['reminderEventID'])>0) {
 		if (isset($_POST['reminderEventHTML']) && strlen(trim($_POST['reminderEventHTML']))>0) {
-			
+
 			$result = $GLOBALS['dh']->saveReminderForEvent(intval($_POST['reminderEventID']),trim($_POST['reminderEventHTML']));
-			
+
 			if (!AMA_DB::isError($result) && intval($result)>0) {
 				$retArray = array("status"=>"OK", "reminderID"=>$result, "msg"=>translateFN("Promemoria salvato e inviato"));
 			} else {
 				$retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore nel salvataggio"));
 			}
-			
+
 		} else {
 			$retArray = array("status"=>"ERROR", "msg"=>translateFN("Testo promemoria vuoto"));
 		} // if isset html

@@ -39,7 +39,7 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
+// require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
 require_once MODULES_CLASSBUDGET_PATH .'/include/management/costItemManagement.inc.php';
 require_once MODULES_CLASSBUDGET_PATH .'/include/management/costitemBudgetManagement.inc.php';
 require_once MODULES_CLASSBUDGET_PATH .'/include/AMAClassbudgetDataHandler.inc.php';
@@ -51,11 +51,11 @@ $retArray = array();
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	if (!isset($_POST['cost_item_id'])) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Non so cosa cancellare"));
-	else {		
+	else {
 		$costItemManager = new costItemManagement($GLOBALS['dh']->getCostItem($cost_item_id));
 		$result = $GLOBALS['dh']->deleteCostItem(intval($_POST['cost_item_id']));
-		
-		if (!AMA_DB::isError($result)) {		
+
+		if (!AMA_DB::isError($result)) {
 			$retArray = array ("status"=>"OK", "msg"=>translateFN("Voce cancellata"));
 			// get the new item cost table to be displayed
 			$costItemBudget = new costitemBudgetManagement($costItemManager->id_istanza_corso);

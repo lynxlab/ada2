@@ -39,7 +39,7 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_CLASSROOM_PATH .'/config/config.inc.php';
+// require_once MODULES_CLASSROOM_PATH .'/config/config.inc.php';
 
 $GLOBALS['dh'] = AMAClassroomDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
 
@@ -51,9 +51,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	else
 	{
 		$result = $GLOBALS['dh']->classroom_deleteClassroom (intval($_POST['id_classroom']));
-		
+
 		if (!AMA_DB::isError($result))
-		{		
+		{
 			$retArray = array ("status"=>"OK", "msg"=>translateFN("Aula cancellata"));
 		}
 		else
