@@ -40,7 +40,7 @@ require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
-require_once MODULES_SERVICECOMPLETE_PATH .'/config/config.inc.php';
+// require_once MODULES_SERVICECOMPLETE_PATH .'/config/config.inc.php';
 require_once MODULES_SERVICECOMPLETE_PATH .'/include/init.inc.php';
 
 $self = whoami();

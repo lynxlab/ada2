@@ -41,7 +41,7 @@ $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
-require_once MODULES_SLIDEIMPORT_PATH . '/config/config.inc.php';
+// require_once MODULES_SLIDEIMPORT_PATH . '/config/config.inc.php';
 $error=1;
 
 if (isset($_GET['selectedPages']) && is_array($_GET['selectedPages']) && count($_GET['selectedPages'])>0) {

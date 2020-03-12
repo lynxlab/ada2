@@ -40,7 +40,7 @@ include_once ROOT_DIR . '/services/include/author_functions.inc.php';
 ServiceHelper::init($neededObjAr);
 
 // MODULE's OWN IMPORTS
-require_once MODULES_SLIDEIMPORT_PATH .'/config/config.inc.php';
+// require_once MODULES_SLIDEIMPORT_PATH .'/config/config.inc.php';
 
 $self = 'slideimport';
 

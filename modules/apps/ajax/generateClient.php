@@ -3,7 +3,7 @@
  * generateClient.php
  *
  * @package        generateClient
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2014, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           generateClient
@@ -45,7 +45,7 @@ $neededObjAr = array(
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_APPS_PATH .'/config/config.inc.php';
+// require_once MODULES_APPS_PATH .'/config/config.inc.php';
 
 $dh = AMAAppsDataHandler::instance();
 
@@ -59,9 +59,9 @@ $dh = AMAAppsDataHandler::instance();
 $userArr = $dh->get_user_info(intval($userID));
 
 if (!AMA_DB::isError($userArr) && $userArr['tipo']==AMA_TYPE_SWITCHER)
-{	
+{
 	$clientArray = $dh->saveClientIDAndSecret(generateConsumerIdAndSecret(),intval($userArr['id']));
-		
+
 	if (!AMA_DB::isError($clientArray)) {
 		$output = CDOMElement::create('div','class:appsecret');
 			$span = CDOMElement::create('span','class:clientIDLabel');
@@ -80,7 +80,7 @@ if (!AMA_DB::isError($userArr) && $userArr['tipo']==AMA_TYPE_SWITCHER)
 		echo $output->getHtml();
 	}
 	else print_r($clientArray);
-	
+
 } else {
 	$output = CDOMElement::create('div','class:appsecreterror');
 	$output->addChild (new CText(translateFN('Passed user does not look like a valid Swithcer')));

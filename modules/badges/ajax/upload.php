@@ -14,7 +14,7 @@ use Lynxlab\ADA\Module\Badges\BadgesActions;
 */
 
 require_once (realpath(dirname(__FILE__)) . '/../../../config_path.inc.php');
-require_once MODULES_BADGES_PATH . '/config/config.inc.php';
+// require_once MODULES_BADGES_PATH . '/config/config.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION

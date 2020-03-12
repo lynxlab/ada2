@@ -1,7 +1,7 @@
 <?php
 /**
  * LOGIN MODULE - config page for login provider
- * 
+ *
  * @package 	login module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2015, Lynx s.r.l.
@@ -37,22 +37,22 @@ $neededObjAr = array(
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-require_once MODULES_LOGIN_PATH .'/config/config.inc.php';
+// require_once MODULES_LOGIN_PATH .'/config/config.inc.php';
 
 $GLOBALS['dh'] = AMALoginDataHandler::instance();
 
 $retArray = array('status'=>'ERROR');
 
-require_once MODULES_LOGIN_PATH.'/include/management/loginProviderManagement.inc.php';	
+require_once MODULES_LOGIN_PATH.'/include/management/loginProviderManagement.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	/**
 	 * it's a POST, save the passed options config data
 	 */
-	// build an optionManager with passed POST data		
+	// build an optionManager with passed POST data
 	$loginProviderManager = new loginProviderManagement($_POST);
 	$res = $GLOBALS['dh']->saveLoginProvider($loginProviderManager->toArray());
-	
+
 	if (AMA_DB::isError($res)) {
 		// if it's an error display the error message
 		$retArray['status'] = "ERROR";
@@ -61,8 +61,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		// redirect to config page
 		$retArray['status'] = "OK";
 		$retArray['msg'] = translateFN('Login Provider salvato');
-	}	
-} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
+	}
+} else if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 			isset($_GET['provider_id']) && intval(trim($_GET['provider_id']))>0) {
 	/**
 	 * it's a GET with an provider_id, load it and display
@@ -70,7 +70,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	$provider_id = intval(trim($_GET['provider_id']));
 	// try to load it
 	$res = $GLOBALS['dh']->getLoginProvider($provider_id);
-	
+
 	if (AMA_DB::isError($res)) {
 		// if it's an error display the error message without the form
 		$retArray['status'] = "ERROR";
@@ -79,7 +79,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		// display the form with loaded data
 		$optionsManager = new loginProviderManagement($res);
 		$data = $optionsManager->run(MODULES_LOGIN_EDIT_LOGINPROVIDER);
-		
+
 		$retArray['status'] = "OK";
 		$retArray['html'] = $data['htmlObj']->getHtml();
 		$retArray['dialogTitle'] = translateFN('Modifica Login Provider');
@@ -90,10 +90,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	 */
 	$optionsManager = new loginProviderManagement();
 	$data = $optionsManager->run(MODULES_LOGIN_EDIT_LOGINPROVIDER);
-	
+
 	$retArray['status'] = "OK";
 	$retArray['html'] = $data['htmlObj']->getHtml();
-	$retArray['dialogTitle'] = translateFN('Nuovo Login Provider');	
+	$retArray['dialogTitle'] = translateFN('Nuovo Login Provider');
 }
 
 echo json_encode($retArray);
