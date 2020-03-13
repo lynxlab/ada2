@@ -25,12 +25,12 @@ legend.form {
 }
 
 fieldset.form li.form:not(:first-child) {
-	margin-bottom:0; 
+	margin-bottom:0;
 	border-bottom: none;
 }
 
 fieldset.form li.form:not(:last-child) {
-	border-bottom: none	
+	border-bottom: none
 }
 
 textarea.form {
@@ -83,4 +83,8 @@ div.fform form fieldset fieldset label { margin-left:0; width: 45%; display: inl
 
 @keyframes yellow-back-pulse {
 	50% { background-color: rgba(254, 254, 124, 0.40); }
+}
+
+div.policy.text p {
+    text-align: initial;
 }
