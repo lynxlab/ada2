@@ -18,3 +18,7 @@ span.pass-validator-text {
     font-size: 0.9em;
     margin-top: -2em;
 }
+
+div.policy.text p {
+    text-align: initial;
+}
