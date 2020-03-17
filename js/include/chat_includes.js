@@ -27,8 +27,8 @@ var REDIRECT_TO_PRACTITIONER_EXIT_CHAT_URL = 1;
 
 /**
  * variables used to store a reference to the two periodical
- * executers on which this chat is based. 
- * these two variables are used in exitChat function to stop 
+ * executers on which this chat is based.
+ * these two variables are used in exitChat function to stop
  * the periodical executers before exiting the chat.
  */
 var READ_MESSAGES_PERIODICAL_EXECUTER = null;
@@ -38,21 +38,21 @@ var CONTROL_CHAT_PERIODICAL_EXECUTER  = null;
  * variables used to mantain the periodical executers periods,
  * in seconds.
  */
- 
-// test periodical executer 
+
+// test periodical executer
 var READ_MESSAGES_PERIODICAL_EXECUTER_TIME_INTERVAL = 1;
-// test periodical executer 
+// test periodical executer
 var SECONDS_SINCE_LAST_READ_MESSAGE = 0;
 
-var CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = 4;
+var CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = 1;
 var CONTROL_CHAT_TIME_INTERVAL  = 60;//20;
 
 ///**
 // Non sono utilizzate, l'idea era di incrementare l'intervallo di tempo tra le letture dei messaggi
 // ogni volta che si esegue un controllo dei messaggi ricevuti e non ce ne sono.
 // Se invece si ricevono dei messaggi, l'intervallo di tempo tra le due letture deve diminuire.
-var MINIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = 4;
-var MAXIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = 30;
+var MINIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = 2;
+var MAXIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = 10;
 var SECONDS_TO_ADD = 2;
 //*/
 
@@ -90,13 +90,13 @@ function startChat()
 {
 	ARGUMENTS = getArguments();
 
-// test periodical executer 
+// test periodical executer
 //	READ_MESSAGES_PERIODICAL_EXECUTER = new PeriodicalExecuter(readMessages, CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE);
-// test periodical executer 
+// test periodical executer
 	// Start periodical executers for reading chat messages
 	READ_MESSAGES_PERIODICAL_EXECUTER = new PeriodicalExecuter(shouldReadMessages, READ_MESSAGES_PERIODICAL_EXECUTER_TIME_INTERVAL);
 	CONTROL_CHAT_PERIODICAL_EXECUTER  = new PeriodicalExecuter(controlChat, CONTROL_CHAT_TIME_INTERVAL);
-	
+
 
 	readMessages();
 	controlChat();
@@ -105,7 +105,7 @@ function startChat()
 
 /**
  * function loadTopChat()
- * called by function startChat(), obtains the data to display into 
+ * called by function startChat(), obtains the data to display into
  * the chat header by performin an AJAX request.
  *
  */
@@ -120,42 +120,45 @@ function loadTopChat()
  * period CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE, obtains chat messages by performing
  * an AJAX request and updates READ_MESSAGES_DIV content.
  */
-function readMessages()
-{
+function readMessages() {
 
-	if (GET_AJAX_REQUEST_EXECUTION_TIME)
-	{
+	if (GET_AJAX_REQUEST_EXECUTION_TIME) {
 		var request_time = Date.now();
 	}
 
-	new Ajax.Request(READ_CHAT_URL, {
-		method: 'Post',
-		parameters: {chatroom:ARGUMENTS,all_messages:LAST_READ_MESSAGE_ID}, 
-		onComplete: function(transport) {
-
-			var json = transport.responseText.evalJSON(true);
-			if (GET_AJAX_REQUEST_EXECUTION_TIME)
-			{
-				var response_time = Date.now();
-			}
-		    if ( json.error == 0 )
-		    {	
-		    	if(json.data.length > 0) {
-		    		logMessageOnScreen('Letti ' + json.data.length +' messaggi');
-		    	}
-		    	displayMessages(json.data);
-			}
-			else
-			{
-				logMessageOnScreen('readMessages json error: ' + json.error);
-				handleError('readMessages',json);
-//				displayErrorMessage('readMessages', json);
-			}
-
-		},
-		onFailure: function() {
-			displayErrorMessage('readMessages', null);
+	$j.ajax({
+		method: 'POST',
+		data: {chatroom:ARGUMENTS,all_messages:LAST_READ_MESSAGE_ID},
+		url: READ_CHAT_URL,
+		beforeSend: function() {
+			if (DEBUG_LOG_ENABLED) console.groupCollapsed('readMessages async')
 		}
+	})
+	.done(function(ajaxresp){
+		if (DEBUG_LOG_ENABLED) console.log(ajaxresp);
+
+		if (GET_AJAX_REQUEST_EXECUTION_TIME) {
+			 var response_time = Date.now();
+		}
+		if (ajaxresp.error == 0) {
+			if (ajaxresp.data.length > 0) {
+				logMessageOnScreen('Letti ' + ajaxresp.data.length + ' messaggi');
+			}
+			displayMessages(ajaxresp.data);
+		}
+		else {
+			logMessageOnScreen('readMessages json error: ' + ajaxresp.error);
+			handleError('readMessages', ajaxresp);
+			// displayErrorMessage('readMessages', json);
+		}
+	})
+	.fail(function(response) {
+		if (DEBUG_LOG_ENABLED) console.log('FAIL', response);
+		displayErrorMessage('readMessages', null);
+
+	})
+	.always(function() {
+		if (DEBUG_LOG_ENABLED) console.groupEnd();
 	});
 }
 
@@ -181,7 +184,7 @@ function controlChat()
 			{
 				var response_time = Date.now();
 			}
-	
+
 		    if ( json.error == 0 )
 		    {
 		    	updateControlChatData(json.data);
@@ -217,13 +220,13 @@ function sendMessage()
 //		div_error.insert('Devi inserire del testo, per inviare un messaggio.');
 //		$(READ_MESSAGES_DIV).insert(div_error);
 		return;
-	}	
+	}
 	//var message_to_send = '&message_to_send='+encodeURIComponent($F(SEND_MESSAGE_INPUT));
 	var message_to_send = $F(SEND_MESSAGE_INPUT);
 
 //DISABILITIAMO L'INVIO DI ULTERIORI MESSAGGI FINO A CONCLUSIONE DELL'OPERAZIONE DI INVIO.
 	$(SEND_MESSAGE_INPUT).disable();
-	
+
 	if (GET_AJAX_REQUEST_EXECUTION_TIME)
 	{
 		var request_time = Date.now();
@@ -234,17 +237,17 @@ function sendMessage()
 		parameters: {chatroom:ARGUMENTS, message_to_send:message_to_send},
 		onComplete: function(transport) {
 			var json = transport.responseText.evalJSON(true);
-	
+
 			if (GET_AJAX_REQUEST_EXECUTION_TIME)
 			{
 				var response_time = Date.now();
 			}
-	
+
 		    if ( json.error == 0 )
 		    {
 				logMessageOnScreen('messaggio inviato');
 				$(SEND_MESSAGE_INPUT).clear();
-				// Quando invio un messaggio, faccio ripartire il tempo di lettura messaggi dal minimo. 
+				// Quando invio un messaggio, faccio ripartire il tempo di lettura messaggi dal minimo.
 				CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = MINIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE;
 
 				readMessages();
@@ -252,14 +255,14 @@ function sendMessage()
 				$(SEND_MESSAGE_INPUT).focus();
 			}
 			else
-			{	
+			{
 				logMessageOnScreen('sendMessages json error: ' + json.error);
 				handleError('sendMessages', json);
 				//displayErrorMessage('sendMessages', json);
 				$(SEND_MESSAGE_INPUT).enable();
 				$(SEND_MESSAGE_INPUT).focus();
 			}
-			
+
 		},
 		onFailure: function() {
 			displayErrorMessage('sendMessages', null);
@@ -281,14 +284,14 @@ function exitChat(action, action_arguments)
 {
 // stoppare i periodical executers e poi fare una richiesta AJAX per aggiornare
 // lo stato dell'utente all'interno del database
-	READ_MESSAGES_PERIODICAL_EXECUTER.stop();		
+	READ_MESSAGES_PERIODICAL_EXECUTER.stop();
 	CONTROL_CHAT_PERIODICAL_EXECUTER.stop();
 
 	if (GET_AJAX_REQUEST_EXECUTION_TIME)
 	{
 		var request_time = Date.now();
 	}
-	
+
 	new Ajax.Request(EXIT_CHAT_URL, {
 		method: 'Post',
 		parameters: {chatroom:ARGUMENTS,exit_reason:0},
@@ -301,11 +304,11 @@ function exitChat(action, action_arguments)
 			}
 		    if ( json.error == 0 )
 		    {
-		    	// vito, 20 mar 2009. 
+		    	// vito, 20 mar 2009.
 		    	//displayMessages(json.data);
 		    	//alert(HOW_MANY_READS);
 		    	if(action == REDIRECT_TO_PRACTITIONER_EXIT_CHAT_URL) {
-		    		self.location = PRACTITIONER_EXIT_CHAT_URL+'?'+action_arguments;	
+		    		self.location = PRACTITIONER_EXIT_CHAT_URL+'?'+action_arguments;
 		    	}
 		    	else {
 		    		self.close();
@@ -333,13 +336,13 @@ function displayMessages(messages)
 {
 	/*
 	 * Display each received message
-	 */ 
+	 */
 	messages.each(displayMessage);
 	/*
 	 * Adjust scrolling, if autoscroll is on
-	 */ 
+	 */
 //	if ($F(AUTOSCROLL_CHECKBOX) == 'on')
-//	{ 
+//	{
 		$(READ_MESSAGES_DIV).scrollTop=$(READ_MESSAGES_DIV).scrollHeight;
 //	}
 	/*
@@ -354,10 +357,10 @@ function displayMessages(messages)
  */
 function displayMessage(message)
 {
-  var this_message_class = 0;
+	var this_message_class = 0;
 	var this_message_text  = null;
-	var result             = null;	
-  
+	var result             = null;
+
   if(message.id > LAST_READ_MESSAGE_ID) {
   	LAST_READ_MESSAGE_ID = message.id;
   }
@@ -365,13 +368,13 @@ function displayMessage(message)
 	// a volte legge due volte lo stesso messaggio, (problema di timing?)
 	// con le righe seguenti evitiamo di mostrare dei doppioni
 	var message_exists = 'msg_'+message.id;
-  
+
 	if ($(message_exists))
 	{
 		return;
 	}
 	// fine
-	
+
 	/*
 	 * Check if current message contains a mood message:
 	 * e.g. APPLAUSE, DISAGREE...
@@ -381,7 +384,7 @@ function displayMessage(message)
 		this_message_class = getClassForMoodMessageType(result[0]);
 		// result[1] contiene l'id dello studente a cui l'azione del mittente e' rivolta(eventualmente=0)
 		// result[2] contiene l'id del messaggio a cui l'azione del mittente e' rivolta(eventualmente=0)
-		
+
 		this_message_text  = result[3];
 	}
 	/*
@@ -409,24 +412,24 @@ function displayMessage(message)
 		this_message_class = getClassForChatMessage(message);
 		this_message_text  = message.text;
 	}
-	
+
 	/*
 	 * Display current message.
-	 */ 
+	 */
 	// div message dovrebbe avere id=id messaggio
 	var div_message       = new Element('div',  {'id': 'msg_'+message.id, 'class': this_message_class});
 	var span_message_time = new Element('span', {'class':'message_time'});
 	var span_user_name    = new Element('span', {'class':'user_name'});
 	var span_message_text = new Element('span', {'class': 'message_text'});
-	
+
 	span_message_time.insert(message.time);
 	span_user_name.insert(message.sender);
 	span_message_text.insert(this_message_text);
-	
+
 	div_message.insert(span_message_time);
 	div_message.insert(span_user_name);
 	div_message.insert(span_message_text);
-	
+
 	$(READ_MESSAGES_DIV).insert(div_message);
 }
 
@@ -450,7 +453,7 @@ function checkForMoodMessage(message_text)
 	{
 		return new Array(result[1], result[2],result[3],result[4]);
 	}
-	
+
 	return null;
 }
 
@@ -472,7 +475,7 @@ function checkForOperatorMessage(message_text)
 	{
 		return new Array(result[1], result[2], result[3]);
 	}
-	
+
 	return null;
 }
 
@@ -487,12 +490,12 @@ function checkForAdminMessage(message_sender)
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
 /*
- * This function shall return the appropriate CSS classname for 
+ * This function shall return the appropriate CSS classname for
  * the mood message type passed as argument.
  *
  */
@@ -503,7 +506,7 @@ function getClassForMoodMessageType(message_type)
 }
 
 /*
- * This function shall return the appropriate CSS classname for 
+ * This function shall return the appropriate CSS classname for
  * the operator message type passed as argument.
  *
  */
@@ -514,7 +517,7 @@ function getClassForOperatorMessageType(message_type)
 }
 
 /*
- * This function shall return the appropriate CSS classname for 
+ * This function shall return the appropriate CSS classname for
  * the chat message passed as argument.
  *
  */
@@ -561,37 +564,37 @@ function updateControlChatData(data)
 	var div_user_status_label = new Element('div', {'class': 'user_status_label'});
 	div_user_status_label.insert(data.user_status_label);
 	$(USER_STATUS_DIV).insert(div_user_status_label);
-	$(USER_STATUS_DIV).insert(data.user_status);	
-	
+	$(USER_STATUS_DIV).insert(data.user_status);
+
 	/*
 	 * Display chatroom control actions for the current user.
 	 */
 /*	if (!USER_ACTIONS_FILLED)
-	{	
+	{
 		var div_user_options_label = new Element('div', {'class': 'options_list_label'});
 		div_user_options_label.insert(data.options_list_label);
 		$(USER_ACTIONS_DIV).insert(div_user_options_label);
 
 		var actions_select = new Element('select', {'id':USER_ACTIONS_SELECT});
 		$(USER_ACTIONS_DIV).insert(actions_select);
-		
+
 		data.options_list.each(addActionToUserActionSelect);
-		
+
 		USER_ACTIONS_FILLED = true;
 	}
 */
 	$(USERS_LIST_DIV).update();
 //	$(INVITED_USERS_LIST_UL).update();
-	
+
 	var div_users_list_label = new Element('div', {'class': 'users_list_label'});
 	div_users_list_label.insert(data.users_list_label);
 	$(USERS_LIST_DIV).insert(div_users_list_label);
 
 	var users_list_select = new Element('select', {'id': USERS_LIST_SELECT, 'size':'8'});
 	$(USERS_LIST_DIV).insert(users_list_select);
-	
+
 	data.users_list.each(addUserToUserSelect);
-	
+
 //	data.invited_users_list.each(addUserToInvitedUsers);
 }
 
@@ -600,7 +603,7 @@ function addActionToUserActionSelect(action)
 	var opt = new Element('option', {'value': action.value});
 	opt.insert(action.text);
 	$(USER_ACTIONS_SELECT).insert(opt);
-	//$(USER_ACTIONS_SELECT).insert('<option value="'+action.value+'">'+action.text+'</option>');		
+	//$(USER_ACTIONS_SELECT).insert('<option value="'+action.value+'">'+action.text+'</option>');
 }
 
 function addUserToUserSelect(user)
@@ -608,7 +611,7 @@ function addUserToUserSelect(user)
 	var opt = new Element('option', {'value': user.id});
 	opt.insert(user.username);
 	$(USERS_LIST_SELECT).insert(opt);
-//	$(USERS_LIST_SELECT).insert('<option value="'+user.id+'">'+user.username+'</option>');		
+//	$(USERS_LIST_SELECT).insert('<option value="'+user.id+'">'+user.username+'</option>');
 }
 
 function addUserToInvitedUsers(user)
@@ -624,7 +627,7 @@ function getArguments()
 	var passed_args = $('data').innerHTML.unescapeHTML();
 	var chatroom_re = /chatroom=([0-9]+)/;
 	var found = passed_args.match(chatroom_re);
-	
+
 	return found[1];
 }
 
@@ -636,7 +639,7 @@ function executeControlAction()
 	{
 		var request_time = Date.now();
 	}
-	
+
 	var control_action = $F(USER_ACTIONS_SELECT);
 	var user_id        = $F(USERS_LIST_SELECT);
 //	alert(CONTROL_ACTION_URL+'?'+ARGUMENTS+'&action='+control_action+'&target_user='+user_id);
@@ -670,7 +673,7 @@ function executeControlAction()
 	});
 }
 
-// test periodical executer 
+// test periodical executer
 function updateReadChatInterval(read_messages_number)
 {
 	if(read_messages_number == 0)
@@ -679,24 +682,24 @@ function updateReadChatInterval(read_messages_number)
 		if (CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE > MAXIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE)
 		{
 			CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = MAXIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE;
-		}				
+		}
 	}
 	else
 	{
 		//var mps = Math.round(read_messages_number/CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE);
 		//CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE -= mps;
 		CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE -= read_messages_number;
-		
+
 		if(CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE < MINIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE)
 		{
 			CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE = MINIMUM_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE;
 		}
 	}
-	// Debug only					
+	// Debug only
 	//$('debug').innerHTML = CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE;
 }
 
-// test periodical executer 
+// test periodical executer
 function shouldReadMessages()
 {
 	if (SECONDS_SINCE_LAST_READ_MESSAGE < CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE)
@@ -707,7 +710,7 @@ function shouldReadMessages()
 	{
 		SECONDS_SINCE_LAST_READ_MESSAGE = 0;
 		readMessages();
-		// Debug only					
+		// Debug only
 		HOW_MANY_READS++;
 	}
 }
@@ -723,20 +726,20 @@ function handleError(function_name, error_object)
 		// stop periodical executer, exit chat
 		READ_MESSAGES_PERIODICAL_EXECUTER.stop();
 		CONTROL_CHAT_PERIODICAL_EXECUTER.stop();
-		
+
 		var div_message       = new Element('div',  {'class': 'php_error'});
 		var span_message_time = new Element('span', {'class': 'message_time'});
 		var span_user_name    = new Element('span', {'class': 'user_name'});
 		var span_message_text = new Element('span', {'class': 'message_text'});
-		
+
 		span_message_time.insert();
 		span_user_name.insert('ada chat');
 		span_message_text.insert(error_object.message);
-		
+
 		div_message.insert(span_message_time);
 		div_message.insert(span_user_name);
 		div_message.insert(span_message_text);
-		
+
 		$(READ_MESSAGES_DIV).insert(div_message);
 	}
 }
