@@ -126,6 +126,7 @@ function readMessages() {
 		var request_time = Date.now();
 	}
 
+	var prevLast = LAST_READ_MESSAGE_ID;
 	$j.ajax({
 		method: 'POST',
 		data: {chatroom:ARGUMENTS,all_messages:LAST_READ_MESSAGE_ID},
@@ -143,8 +144,11 @@ function readMessages() {
 		if (ajaxresp.error == 0) {
 			if (ajaxresp.data.length > 0) {
 				logMessageOnScreen('Letti ' + ajaxresp.data.length + ' messaggi');
+				displayMessages(ajaxresp.data);
+				if (prevLast > 0) {
+					$j('#msg_'+LAST_READ_MESSAGE_ID).hide().fadeIn('slow');
+				}
 			}
-			displayMessages(ajaxresp.data);
 		}
 		else {
 			logMessageOnScreen('readMessages json error: ' + ajaxresp.error);
@@ -197,9 +201,17 @@ function controlChat()
 				handleError('controlChat', json);
 				//displayErrorMessage('controlChat', json);
 			}
+			if ($j('#'+REFRESH_CHAT_BUTTON).hasClass('disabled')) {
+				$j('#'+REFRESH_CHAT_BUTTON).removeClass('disabled');
+				$j('.refresh.icon').removeClass('loading');
+			}
 		},
 		onFailure: function() {
 			displayErrorMessage('controlChat', null);
+			if ($j('#'+REFRESH_CHAT_BUTTON).hasClass('disabled')) {
+				$j('#'+REFRESH_CHAT_BUTTON).removeClass('disabled');
+				$j('.refresh.icon').removeClass('loading');
+			}
 		}
 
 	});
@@ -226,6 +238,7 @@ function sendMessage()
 
 //DISABILITIAMO L'INVIO DI ULTERIORI MESSAGGI FINO A CONCLUSIONE DELL'OPERAZIONE DI INVIO.
 	$(SEND_MESSAGE_INPUT).disable();
+	$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').addClass('disabled');
 
 	if (GET_AJAX_REQUEST_EXECUTION_TIME)
 	{
@@ -252,6 +265,7 @@ function sendMessage()
 
 				readMessages();
 				$(SEND_MESSAGE_INPUT).enable();
+				$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
 				$(SEND_MESSAGE_INPUT).focus();
 			}
 			else
@@ -260,6 +274,7 @@ function sendMessage()
 				handleError('sendMessages', json);
 				//displayErrorMessage('sendMessages', json);
 				$(SEND_MESSAGE_INPUT).enable();
+				$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
 				$(SEND_MESSAGE_INPUT).focus();
 			}
 
@@ -267,6 +282,7 @@ function sendMessage()
 		onFailure: function() {
 			displayErrorMessage('sendMessages', null);
 				$(SEND_MESSAGE_INPUT).enable();
+				$j('#'+SEND_MESSAGE_DIV).siblings().find('.sendmessage.button').removeClass('disabled');
 				$(SEND_MESSAGE_INPUT).focus();
 		}
 	});
@@ -361,7 +377,7 @@ function displayMessage(message)
 	var this_message_text  = null;
 	var result             = null;
 
-  if(message.id > LAST_READ_MESSAGE_ID) {
+  if(parseInt(message.id) > parseInt(LAST_READ_MESSAGE_ID)) {
   	LAST_READ_MESSAGE_ID = message.id;
   }
 
@@ -417,17 +433,19 @@ function displayMessage(message)
 	 * Display current message.
 	 */
 	// div message dovrebbe avere id=id messaggio
-	var div_message       = new Element('div',  {'id': 'msg_'+message.id, 'class': this_message_class});
+	var div_message       = new Element('div',  {'id': 'msg_'+message.id, 'class': 'item '+this_message_class});
 	var span_message_time = new Element('span', {'class':'message_time'});
 	var span_user_name    = new Element('span', {'class':'user_name'});
 	var span_message_text = new Element('span', {'class': 'message_text'});
+	var item_header = new Element('div', {'class':'header'});
 
 	span_message_time.insert(message.time);
 	span_user_name.insert(message.sender);
 	span_message_text.insert(this_message_text);
 
-	div_message.insert(span_message_time);
-	div_message.insert(span_user_name);
+	item_header.insert(span_user_name);
+	item_header.insert(span_message_time);
+	div_message.insert(item_header);
 	div_message.insert(span_message_text);
 
 	$(READ_MESSAGES_DIV).insert(div_message);
@@ -586,7 +604,7 @@ function updateControlChatData(data)
 	$(USERS_LIST_DIV).update();
 //	$(INVITED_USERS_LIST_UL).update();
 
-	var div_users_list_label = new Element('div', {'class': 'users_list_label'});
+	var div_users_list_label = new Element('div', {'class': 'users_list_label ui small header'});
 	div_users_list_label.insert(data.users_list_label);
 	$(USERS_LIST_DIV).insert(div_users_list_label);
 
@@ -760,6 +778,10 @@ function catchEnter(event)
  */
 function refreshChat()
 {
-	readMessages();
-	controlChat();
+	if (!$j('#'+REFRESH_CHAT_BUTTON).hasClass('disabled')) {
+		$j('#'+REFRESH_CHAT_BUTTON).addClass('disabled');
+		$j('.refresh.icon').addClass('loading');
+		readMessages();
+		controlChat();
+	}
 }

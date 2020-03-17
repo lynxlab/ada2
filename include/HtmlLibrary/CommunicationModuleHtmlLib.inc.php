@@ -30,12 +30,20 @@ class CommunicationModuleHtmlLib
     /*
      * middle
      */
-    $middle = CDOMElement::create('div','id:middle');
+    $middle = CDOMElement::create('div','id:middle,class:ui stackable grid');
 
-    $chat_control = CDOMElement::create('div','id:chat_control');
-    $refresh_button = CDOMElement::create('input_button','id:refresh_chat, name:refresh_chat');
+    $chat_control = CDOMElement::create('div','id:chat_control,class: sixteen wide column');
+
+    $row = CDOMElement::create('div','class:two column row');
+    $row->addChild($chat_control);
+
+    $refresh_button = CDOMElement::create('div','id:refresh_chat,class:ui right labeled icon teal small button');
+    $refresh_button->addChild(CDOMElement::create('i','class:ui refresh icon'));
+    $refresh_button->addChild(new CText(translateFN('Aggiorna')));
+
+    // $refresh_button = CDOMElement::create('input_button','id:refresh_chat, name:refresh_chat');
     $refresh_button->setAttribute('onclick', 'refreshChat();');
-    $refresh_button->setAttribute('value',translateFN('Aggiorna'));
+    // $refresh_button->setAttribute('value',translateFN('Aggiorna'));
     $chat_control->addChild($refresh_button);
     //$scroll_label = CDOMElement::create('label','for:autoscroll');
     //$scroll_label->addChild(new CText(translateFN('Scroll automatico')));
@@ -43,11 +51,15 @@ class CommunicationModuleHtmlLib
     //$scroll_checkbox = CDOMElement::create('checkbox','id:autoscroll, name:autoscroll, value:on');
     //$chat_control->addChild($scroll_checkbox);
 
-    $middle->addChild($chat_control);
-    $middle->addChild(CDOMElement::create('div','id:messages'));
+    $middle->addChild($row);
 
-    $controlchat = CDOMElement::create('div', 'id:controlchat');
-    $controlchat->addChild(CDOMElement::create('div','id:user_status'));
+    $row = CDOMElement::create('div', 'class:row');
+    $middle->addChild($row);
+    $messagescol = CDOMElement::create('div','class:twelve wide equal height column');
+    $messagescol->addChild(CDOMElement::create('div','id:messages,class:ui list'));
+    $row->addChild($messagescol);
+    $controlchat = CDOMElement::create('div', 'id:controlchat,class:four wide equal height column');
+    $controlchat->addChild(CDOMElement::create('div','id:user_status,class:ui black block header'));
     //$controlchat->addChild(CDOMElement::create('div','id:user_actions'));
     $controlchat->addChild(CDOMElement::create('div','id:users_list'));
     //$controlchat->addChild(CDOMElement::create('ul','id:invited_users_list'));
@@ -57,26 +69,51 @@ class CommunicationModuleHtmlLib
     //$control_input->setAttribute('onclick','executeControlAction();');
     //$control_action->addChild($control_input);
     //$controlchat->addChild($control_input);
-    $middle->addChild($controlchat);
+    $row->addChild($controlchat);
 
     /*
      * bottom
      */
-    $bottom = CDOMElement::create('div','id:bottom');
-    $sendmessage = CDOMElement::create('div', 'id:sendmessage');
+    $bottom = CDOMElement::create('div','id:bottom, class:row');
+    $sendmessage = CDOMElement::create('div', 'id:sendmessage,class:ten wide equal height column');
+
+    $text_segment = CDOMElement::create('div','class:ui form basic');
+    $text_field = CDOMElement::create('div','class:field');
+    $text_divinput = CDOMElement::create('div','class:ui left labeled icon input');
+    $text_field->addChild($text_divinput);
+    $text_segment->addChild($text_field);
+
     $text_input = CDOMElement::create('text','id:chatmessage, name:chatmessage, size:50');
     $text_input->setAttribute('onkeydown','catchEnter(event);');
-    $button = CDOMElement::create('input_button', 'name:sendchatmessage');
-    $button->setAttribute('value',translateFN('Invia messaggio'));
+    $text_input->setAttribute('placeholder',translateFN('Scrivi qui il messaggio').'...');
+
+    $text_divinput->addChild($text_input);
+    $text_divinput->addChild(CDOMElement::create('i','class:ui chat outline icon'));
+
+    $buttoncont = CDOMElement::create('div','class:three wide equal height column');
+    $button = CDOMElement::create('div','class:sendmessage ui right labeled icon blue small button');
+    $button->addChild(CDOMElement::create('i','class:ui forward mail icon'));
+    $button->addChild(new CText(translateFN('Invia messaggio')));
     $button->setAttribute('onclick','sendMessage();');
-    $sendmessage->addChild($text_input);
-    $sendmessage->addChild($button);
+    $buttoncont->addChild($button);
+
+    // $button = CDOMElement::create('input_button', 'name:sendchatmessage');
+    // $button->setAttribute('value',translateFN('Invia messaggio'));
+    // $button->setAttribute('onclick','sendMessage();');
+    $sendmessage->addChild($text_segment);
+    // $sendmessage->addChild($button);
     $bottom->addChild($sendmessage);
+    $bottom->addChild($buttoncont);
 
 
-    $exitchat = CDOMElement::create('div','id:exitchat');
-    $exit_button = CDOMElement::create('input_button', 'name:exitchat');
-    $exit_button->setAttribute('value',translateFN('Esci dalla chat'));
+    $exitchat = CDOMElement::create('div','id:exitchat,class:three wide equal height column');
+
+    $exit_button = CDOMElement::create('div','class:ui right labeled icon red small button');
+    $exit_button->addChild(CDOMElement::create('i','class:ui sign out icon'));
+    $exit_button->addChild(new CText(translateFN('Esci dalla chat')));
+
+    // $exit_button = CDOMElement::create('input_button', 'name:exitchat');
+    // $exit_button->setAttribute('value',translateFN('Esci dalla chat'));
 
     if($userObj instanceof ADAPractitioner) {
       $onclick = "exitChat(1,'event_token=$event_token');";
@@ -91,7 +128,7 @@ class CommunicationModuleHtmlLib
 
     $html->addChild($top);
     $html->addChild($middle);
-    $html->addChild($bottom);
+    $middle->addChild($bottom);
 
     $html->addChild(CDOMElement::create('div','id:debug'));
     $args = CDOMElement::create('div','id:data');
@@ -1074,7 +1111,7 @@ class CommunicationModuleHtmlLib
 
     if(count($appointments_Ar) > 0) {
       $table = BaseHtmlLib::tableElement('',$thead_data, $appointments_Ar);
-      if (!isset($module)) $module=null;	
+      if (!isset($module)) $module=null;
       $form = CDOMElement::create('form',"name:form, method:post, action:$module");
       $form->addChild($table);
       $div = CDOMElement::create('div','id:buttons');

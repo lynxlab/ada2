@@ -4,14 +4,14 @@
 ----------------------------------------------- */
 html, body { font-family: "Helvetica Neue", "Helvetica", Arial, Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:10px; color:#000; font-size: small;
 			 background: #FFFFFF; }
-			 
+
 A IMG {border:none;}
 table,tbody, tr, td, th { border-collapse: collapse;font-weight: inherit;font-style: inherit;font-size: 100%;line-height: 1;
 						  font-family: inherit;text-align: left;vertical-align: baseline;}
-						  
+
 thead { border-collapse: collapse; background: #ececea; height:30px; font-weight: bold; line-height: 1; font-style: inherit;
 		font-size: 100%;line-height: 1;font-family: inherit;text-align: center; vertical-align: baseline;}
-		
+
 th{ vertical-align:middle; text-transform: uppercase; }
 
 tbody td { border-bottom:1px solid #ECECEA;	height:30px; line-height:1.5em;}
@@ -74,45 +74,62 @@ UL#menu LI A {text-transform: lowercase; color:#fff; font-weight:bold; text-deco
 #messages{
 	overflow: auto;
 	/*overflow: scroll;*/
-	height: 300px;
-	width: 490px;
+	height: 400px;
+	color: rgba(0,0,0,0.7);
+	font-size: 1.15em;
+	/* width: 490px;
 	float: left;
-	border: 1px solid #ececea;
-
+	border: 1px solid #ececea; */
 }
+
+#messages > .item.message > .header {
+	margin: 0.5rem 0;
+}
+
 #controlchat{
-	margin-left: 5px;
+	/* margin-left: 5px; */
 	height: 300px;
-	width: 200px;
+	/* width: 200px;
 	float: right;
-	border: 1px solid #ececea;
+	border: 1px solid #ececea; */
 	text-align: center;
 }
 #sendmessage{
-	margin-top: 5px;
+	/* margin-top: 5px;
 	padding: 5px;
 	height: 50px;
 	width: 480px;
 	float: left;
-	border: 1px solid #ececea;
+	border: 1px solid #ececea; */
 }
 
 #exitchat{
-	margin-top: 5px;
+	text-align: right;
+	/* margin-top: 5px;
 	padding: 5px;
 	height: 50px;
 	width: 190px;
 	float: right;
-	border: 1px solid #ececea;
+	border: 1px solid #ececea; */
 }
 
 #middle{
-	width:700px;
+	width:initial;
+	margin: 0;
 }
 
-#user_status
-{
-	margin-top: 5px;
+
+#middle > .row {
+	padding:0;
+	margin:0;
+}
+
+#middle > .row:not(:first-child) {
+	margin-top: 20px;
+}
+
+#middle  i.icon.loading {
+	background-color: transparent;
 }
 
 #user_actions
@@ -120,10 +137,14 @@ UL#menu LI A {text-transform: lowercase; color:#fff; font-weight:bold; text-deco
 	margin-top: 5px;
 }
 
+#user_status {
+	margin:0;
+}
+
 #users_list
 {
-	margin-top:5px;
-	margin-bottom: 5px;
+	background-color: rgba(0,0,0,.05);
+	padding-bottom: 1em;
 }
 
 #bottom{
@@ -142,13 +163,13 @@ div.admin_message
 	padding: 5px;
 	background-color: #FF6600;
 }
-div.message
+#messages > div.message
 {
-	margin-top: 2px;
-	margin-left: 2px;
-	margin-right: 2px;
-	padding: 5px;
-	background-color: #ECECEA;
+	padding: 0.5em 0;
+}
+
+#messages > div.message:not(:last-child) {
+	border-bottom: 1px dotted rgba(0,0,0,.15);
 }
 
 div.private_message
@@ -162,8 +183,10 @@ div.private_message
 
 span.message_time
 {
-	margin-right: 10px;
-	
+    font-weight: lighter;
+    color: rgba(0, 0, 0, 0.4);
+    float: right;
+    margin-right: 1em;
 }
 span.user_name
 {
@@ -172,9 +195,8 @@ span.user_name
 
 span.message_text
 {
-	margin-left: 10px;
-	padding-left: 5px;
-	padding-right: 5px;
+	display: inline-block;
+	margin: 0 1em;
 }
 
 span.operator_name
@@ -211,4 +233,18 @@ div.javascript_error
 	margin-right: 2px;
 	padding: 5px;
 	background-color: #ffff00;
+}
+
+select#users_list_select {
+	padding: 0.5em;
+	width: calc(100% - 2em);
+	border: 1px solid rgba(0,0,0,.15);
+    outline: 0;
+    color: rgba(0,0,0,.7);
+	border-radius: .3125em;
+	margin: 0 1em;
+}
+
+.users_list_label {
+	color: #5C6166!important;
 }
