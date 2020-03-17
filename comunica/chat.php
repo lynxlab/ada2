@@ -191,6 +191,8 @@ if ($exit_reason != NO_EXIT_REASON) {
 }
 else {
   //$event_token = $chatroomObj->get_event_token();
+  // GIORGIO 20200317: have no clue why this event_token  is commented out!
+  $event_token = null;
   $request_arguments = "chatroom=$id_chatroom";
   $chat = CommunicationModuleHtmlLib::getChat($request_arguments, $userObj, $event_token);
   $optionsAr = array('onload_func' => 'startChat();');
