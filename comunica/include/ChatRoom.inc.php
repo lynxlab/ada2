@@ -84,7 +84,7 @@ class ChatRoom {
                         //verify that this chatroom is the correct one for his classroom
                         if (!empty($sess_id_course_instance)) {
                             if ($sess_id_course_instance == $id_course_instance) {
-                                switch ($GLOBALS['id_profile']) {
+                                switch ($_SESSION['sess_id_user_type']) {
                                     case AMA_TYPE_STUDENT:
                                         switch ($present) {
                                             case STATUS_ACTIVE:
@@ -120,7 +120,7 @@ class ChatRoom {
                                     default:
                                         $this->error = 1;
                                         $this->error_msg = translateFN("Accesso negato. Impossibile proseguire"); // banned
-                                }// end of $GLOBALS['id_profile']
+                                }// end of $_SESSION['sess_id_user_type']
                             }
                             // sess_id_course_instance != id_course_instance
                             else {
@@ -130,7 +130,7 @@ class ChatRoom {
                             }// end of $sess_id_course_instance == $id_course_instance
                         }// end isset($sess_id_course_instance)
                         else {
-                            switch ($GLOBALS['id_profile']) {
+                            switch ($_SESSION['sess_id_user_type']) {
                                 case AMA_TYPE_STUDENT:
                                     //case student: does the student is subscribed into the course?
                                     $res_Ha = $dh->get_subscription($sess_id_user, $id_course_instance);
@@ -240,7 +240,7 @@ class ChatRoom {
                             //get course instance assigned to the chatroom
                             $id_course_instance = $chatroom_ha['id_istanza_corso'];
                             if ($sess_id_course_instance == $id_course_instance) {
-                                switch ($GLOBALS['id_profile']) {
+                                switch ($_SESSION['sess_id_user_type']) {
                                     case AMA_TYPE_STUDENT:
                                         switch ($present) {
                                             case STATUS_ACTIVE:
@@ -275,7 +275,7 @@ class ChatRoom {
                                     default:
                                         $this->error = 1;
                                         $this->error_msg = translateFN("Accesso negato. Impossibile proseguire"); // banned
-                                }//end switch $GLOBALS['id_profile']
+                                }//end switch $_SESSION['sess_id_user_type']
                             }
                             //case $sess_id_course_instance != $id_course_instance
                             else {
