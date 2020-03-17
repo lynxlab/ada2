@@ -85,7 +85,7 @@ else {
    * Gestire uscita dalla chat
    */
   // close_chat template will be loaded
-  $self = close_chat;
+  $self = 'close_chat';
   // motivate the exit of the user
   $exit_reason = EXIT_REASON_NOT_EXIST;
   // open close_chat.php
@@ -130,6 +130,7 @@ elseif($sort_field == "data_ora") {
   $sort_field .= " asc";
 }
 
+session_write_close();
 
 $msgs_pub_ha = array();
 /*
@@ -199,29 +200,16 @@ for ( $i = 0; $i <$msgs_number; $i++ )
   }
 
 }
-//$json_data .= "]";
 
-/*
- * costruisce la stringa json contenente i messaggi ricevuti
- */
-$json_data = "[";
-
-$messages_count = count($messages_display_Ha);
-$i = 0;
-while ( $messages_count > 1 )
-{
-  $message = $messages_display_Ha[$i];
-
-  $json_data .= '{"id":'.$message['id_messaggio'].',"tipo":"'.$message['tipo'].'", "time":"'.ts2tmFN($message['data_ora']).'","sender":"'.$message['nome'].'","text":"'.$message['testo'].'"},';
-  $messages_count--;
-  $i++;
-}
-if ( $messages_count == 1 )
-{
-  $message = $messages_display_Ha[$i];
-  $json_data .= '{"id":'.$message['id_messaggio'].',"tipo":"'.$message['tipo'].'", "time":"'.ts2tmFN($message['data_ora']).'","sender":"'.$message['nome'].'","text":"'.$message['testo'].'"}';
-}
-$json_data .= "]";
+$json_data = array_map(function($message){
+  return [
+    'id' => $message['id_messaggio'],
+    'tipo' => $message['tipo'],
+    'time' => ts2tmFN($message['data_ora']),
+    'sender' => $message['nome'],
+    'text' => stripslashes($message['testo'])
+  ];
+}, $messages_display_Ha);
 
 /*
  * fine di costruisce la stringa json contenente i messaggi ricevuti
@@ -234,6 +222,5 @@ $error  = 0;
 
 //$response = '{"error" : '.$error.', "execution_time" : '.$total_time.'}';
 
-$response = '{"error":'.$error.',"data":'.$json_data.'}';
-print($response);
-?>
+header('Content-Type: application/json');
+die(json_encode(['error'=>$error, "data" => $json_data ]));
