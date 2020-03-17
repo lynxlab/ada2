@@ -154,7 +154,7 @@ foreach ([
     $destfile = str_replace('_DEFAULT','',$mustfile);
     if (!is_file($destfile)) {
         if (false === copy ($mustfile, $destfile)) {
-            die("Cannot copy to $desfile, aborting installation!");
+            die("Cannot copy to $destfile, aborting installation!");
         }
     }
 }
