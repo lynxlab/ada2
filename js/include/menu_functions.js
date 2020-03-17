@@ -120,14 +120,10 @@ document.observe('dom:loaded', function() {
 				} else if ($j(this).hasClass('messages') || $j(this).hasClass('appointments')){
 					// maxium number of rows to display
 					var maxRows = 5;
-					totalRows = popupContent.find("table>tbody>tr").length;
-					if (totalRows > maxRows) {
-						popupContent.find("table>tbody>tr").each(function() {
-							if (totalRows > maxRows) {
-								$j(this).remove();
-								totalRows--;
-							}
-						});
+					var rows = popupContent.find("table>tbody>tr");
+					totalRows = rows.length;
+					while(totalRows > maxRows) {
+						$j(rows[totalRows--]).remove();
 					}
 				}
 				// if the resulting popup have no rows, disable
