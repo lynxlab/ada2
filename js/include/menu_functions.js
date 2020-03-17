@@ -122,7 +122,7 @@ document.observe('dom:loaded', function() {
 					var maxRows = 5;
 					var rows = popupContent.find("table>tbody>tr");
 					totalRows = rows.length;
-					while(totalRows > maxRows) {
+					while(totalRows >= maxRows) {
 						$j(rows[totalRows--]).remove();
 					}
 				}
