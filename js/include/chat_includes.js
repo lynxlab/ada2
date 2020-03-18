@@ -180,47 +180,30 @@ function readMessages() {
  */
 function controlChat()
 {
-	if (GET_AJAX_REQUEST_EXECUTION_TIME)
-	{
-		var request_time = Date.now();
-	}
-
-	new Ajax.Request(CONTROL_CHAT_URL, {
-		method: 'Post',
-		parameters: {chatroom:ARGUMENTS.chatroomId},
-		onComplete: function(transport) {
-			var json = transport.responseText.evalJSON(true);
-			if (GET_AJAX_REQUEST_EXECUTION_TIME)
-			{
-				var response_time = Date.now();
+	$j.ajax({
+		method: 'POST',
+		data: { chatroom: ARGUMENTS.chatroomId },
+		url: CONTROL_CHAT_URL
+	})
+		.done(function (json) {
+			if (json.error == 0) {
+				updateControlChatData(json);
 			}
-
-		    if ( json.error == 0 )
-		    {
-		    	updateControlChatData(json.data);
-				//alert(json.data.user_status+'<br />'+json.data.options_list+'<br />'+json.data.users_list);
-
-			}
-			else
-			{
+			else {
 				//logMessageOnScreen('controlChat json error: ' + json.error);
 				handleError('controlChat', json);
 				//displayErrorMessage('controlChat', json);
 			}
-			if ($j('#'+REFRESH_CHAT_BUTTON).hasClass('disabled')) {
-				$j('#'+REFRESH_CHAT_BUTTON).removeClass('disabled');
-				$j('.refresh.icon').removeClass('loading');
-			}
-		},
-		onFailure: function() {
+		})
+		.fail(function () {
 			displayErrorMessage('controlChat', null);
-			if ($j('#'+REFRESH_CHAT_BUTTON).hasClass('disabled')) {
-				$j('#'+REFRESH_CHAT_BUTTON).removeClass('disabled');
+		})
+		.always(function () {
+			if ($j('#' + REFRESH_CHAT_BUTTON).hasClass('disabled')) {
+				$j('#' + REFRESH_CHAT_BUTTON).removeClass('disabled');
 				$j('.refresh.icon').removeClass('loading');
 			}
-		}
-
-	});
+		});
 }
 
 /**
@@ -633,7 +616,7 @@ function addActionToUserActionSelect(action)
 function addUserToUserSelect(user)
 {
 	var opt = new Element('option', {'value': user.id});
-	opt.insert(user.username);
+	opt.insert(user.nome + ' '+ user.cognome);
 	$(USERS_LIST_SELECT).insert(opt);
 //	$(USERS_LIST_SELECT).insert('<option value="'+user.id+'">'+user.username+'</option>');
 }

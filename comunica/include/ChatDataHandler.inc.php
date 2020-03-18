@@ -758,7 +758,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
     // select a row from table utente_chatroom
     // vito, 26 settembre 2008
     //$sql = "select id_utente from utente_chatroom where id_chatroom=$id_chatroom and (stato_utente='$operator' or stato_utente='$active' or stato_utente='$mute')";
-    $sql = "select U.id_utente, U.username
+    $sql = "select U.id_utente, U.username, U.nome, U.cognome
                   from utente_chatroom AS UC, utente AS U
                  where UC.id_chatroom=$id_chatroom and UC.stato_utente IN('$operator','$active','$mute')
                    and U.id_utente = UC.id_utente ORDER BY U.username ASC";
@@ -783,7 +783,7 @@ class ChatDataHandler extends Abstract_AMA_DataHandler
 
     //local variables assigned to constants
     $invited = STATUS_INVITED;
-    $sql = "select U.id_utente, U.username
+    $sql = "select U.id_utente, U.username, U.nome, U.cognome
                   from utente_chatroom AS UC, utente AS U
                  where UC.id_chatroom=$id_chatroom and UC.stato_utente ='$invited'
                    and U.id_utente = UC.id_utente ORDER BY U.username ASC";
