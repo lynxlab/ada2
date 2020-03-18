@@ -56,9 +56,10 @@ if (!isset($_POST['chatroom']) || !isset($_POST['lastMsgId'])) {
   exitWith_JSON_Error(translateFN('Errore: parametri passati allo script PHP non corretti'));
 }
 
-$id_chatroom  = (int)$_POST['chatroom'];
-
-$lastMsgId = (int)$_POST['lastMsgId'];
+$id_chatroom  = (isset($_POST['chatroom']) && intval($_POST['chatroom'])>0) ? (int) $_POST['chatroom'] : null;
+$lastMsgId = (isset($_POST['lastMsgId']) && intval($_POST['lastMsgId'])>-1) ? (int) $_POST['lastMsgId'] : null;
+$ownerId = (isset($_POST['ownerId']) && intval($_POST['ownerId'])>0) ? (int) $_POST['ownerId'] : null;
+$studentId = (isset($_POST['studentId']) && intval($_POST['studentId'])>0) ? (int) $_POST['studentId'] : null;
 
 /*
  * Get Chatroom

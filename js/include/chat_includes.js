@@ -89,6 +89,7 @@ var HOW_MANY_READS = 0;
 function startChat()
 {
 	ARGUMENTS = getArguments();
+	if (DEBUG_LOG_ENABLED) $(DEBUG_DIV).insert('ARGUMENTS: ' + JSON.stringify(ARGUMENTS) + '<br />');
 
 // test periodical executer
 //	READ_MESSAGES_PERIODICAL_EXECUTER = new PeriodicalExecuter(readMessages, CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE);
@@ -130,7 +131,9 @@ function readMessages() {
 	$j.ajax({
 		method: 'POST',
 		data: {
-			chatroom: ARGUMENTS.chatroomId ,
+			chatroom: ARGUMENTS.chatroomId,
+			ownerId : ARGUMENTS.ownerId,
+			studentId: ARGUMENTS.studentId,
 			lastMsgId: LAST_READ_MESSAGE_ID
 		},
 		url: READ_CHAT_URL,
@@ -644,14 +647,10 @@ function addUserToInvitedUsers(user)
 
 function getArguments()
 {
-	var retobj = { chatroomId: 0 };
-//	return $('data').innerHTML.unescapeHTML();
 	var passed_args = $('data').innerHTML.unescapeHTML();
-	var chatroom_re = /chatroom=([0-9]+)/;
-	var chatroom = passed_args.match(chatroom_re);
-	if (chatroom != null) retobj.chatroomId = chatroom[1];
-
-	return retobj;
+	var retobj = { chatroomId: 0, ownerId: null, studentId: null };
+	var passedObj = passed_args.length > 0 ? JSON.parse(passed_args) : {};
+	return $j.extend({}, retobj, passedObj);
 }
 
 function executeControlAction()
