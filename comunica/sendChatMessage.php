@@ -16,7 +16,7 @@
 /**
  * Base config file
  */
-$start_time = time() + microtime();
+$start_time = microtime(true);
 
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
@@ -108,6 +108,8 @@ $chatroomObj = new ChatRoom($id_chatroom, $_SESSION['sess_selected_tester_dsn'])
 if (AMA_DataHandler::isError($chatroomObj)) {
   exitWith_JSON_Error(translateFN("Errore nella creazione della chatroom"));
 }
+
+session_write_close();
 
 $testo = $message_to_send;
 
@@ -214,7 +216,7 @@ if (count($errors) == 0) {
 
 $data =  array('id_chatroom'=> $id_chatroom);
 
-$end_time = time() + microtime();
+$end_time = microtime(true);
 $total_time = $end_time - $start_time;
 /*
  * Send back JSON data to caller
