@@ -25,26 +25,26 @@ define ('IMAGE_HEADER_PREVIEW','image/jpeg');
 /**
  * Define IMPORT_MIME_TYPE as a subset of ADA_MIME_TYPE
  */
-$IMPORT_MIME_TYPE["application/pdf"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/x-pdf"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/msword"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/mspowerpoint"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.ms-powerpoint"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.ms-excel"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.ms-office"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/pdf"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/x-pdf"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/msword"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/mspowerpoint"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.ms-powerpoint"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.ms-excel"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.ms-office"]['permission'] = _GO;
 // docx, xslx, pptx etc...
-$IMPORT_MIME_TYPE["application/vnd.openxmlformats-officedocument.wordprocessingml.document"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.openxmlformats-officedocument.wordprocessingml.template"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.openxmlformats-officedocument.spreadsheetml.template"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.openxmlformats-officedocument.presentationml.presentation"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.openxmlformats-officedocument.presentationml.template"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.openxmlformats-officedocument.presentationml.slideshow"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.openxmlformats-officedocument.wordprocessingml.document"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.openxmlformats-officedocument.wordprocessingml.template"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.openxmlformats-officedocument.spreadsheetml.template"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.openxmlformats-officedocument.presentationml.presentation"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.openxmlformats-officedocument.presentationml.template"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.openxmlformats-officedocument.presentationml.slideshow"]['permission'] = _GO;
 // odt, ods, odp etc...
-$IMPORT_MIME_TYPE["application/vnd.oasis.opendocument.text"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.oasis.opendocument.spreadsheet"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.oasis.opendocument.presentation"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.oasis.opendocument.graphics"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.oasis.opendocument.chart"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.oasis.opendocument.image"]['permission'] = _GO;
-$IMPORT_MIME_TYPE["application/vnd.oasis.opendocument.text-master"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.oasis.opendocument.text"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.oasis.opendocument.spreadsheet"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.oasis.opendocument.presentation"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.oasis.opendocument.graphics"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.oasis.opendocument.chart"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.oasis.opendocument.image"]['permission'] = _GO;
+$GLOBALS['IMPORT_MIME_TYPE']["application/vnd.oasis.opendocument.text-master"]['permission'] = _GO;
