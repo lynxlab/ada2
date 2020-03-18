@@ -193,8 +193,11 @@ else {
   //$event_token = $chatroomObj->get_event_token();
   // GIORGIO 20200317: have no clue why this event_token  is commented out!
   $event_token = null;
-  $request_arguments = "chatroom=$id_chatroom";
-  $chat = CommunicationModuleHtmlLib::getChat($request_arguments, $userObj, $event_token);
+  $request_arguments['chatroomId'] = intval($id_chatroom);
+  // pass these parameters that may be used by readChat.php to filter loaded messages
+  $request_arguments['ownerId'] = intval($id_owner);
+  $request_arguments['studentId'] = intval($userObj->getId());
+  $chat = CommunicationModuleHtmlLib::getChat(json_encode($request_arguments), $userObj, $event_token);
   $optionsAr = array('onload_func' => 'startChat();');
 }
 $banner = include ROOT_DIR.'/include/banner.inc.php';

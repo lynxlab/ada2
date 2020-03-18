@@ -89,6 +89,7 @@ var HOW_MANY_READS = 0;
 function startChat()
 {
 	ARGUMENTS = getArguments();
+	if (DEBUG_LOG_ENABLED) $(DEBUG_DIV).insert('ARGUMENTS: ' + JSON.stringify(ARGUMENTS) + '<br />');
 
 // test periodical executer
 //	READ_MESSAGES_PERIODICAL_EXECUTER = new PeriodicalExecuter(readMessages, CURRENT_TIME_INTERVAL_BETWEEN_TWO_READ_MESSAGE);
@@ -129,7 +130,12 @@ function readMessages() {
 	var prevLast = LAST_READ_MESSAGE_ID;
 	$j.ajax({
 		method: 'POST',
-		data: {chatroom:ARGUMENTS,all_messages:LAST_READ_MESSAGE_ID},
+		data: {
+			chatroom: ARGUMENTS.chatroomId,
+			ownerId : ARGUMENTS.ownerId,
+			studentId: ARGUMENTS.studentId,
+			lastMsgId: LAST_READ_MESSAGE_ID
+		},
 		url: READ_CHAT_URL,
 		beforeSend: function() {
 			if (DEBUG_LOG_ENABLED) console.groupCollapsed('readMessages async')
@@ -181,7 +187,7 @@ function controlChat()
 
 	new Ajax.Request(CONTROL_CHAT_URL, {
 		method: 'Post',
-		parameters: {chatroom:ARGUMENTS},
+		parameters: {chatroom:ARGUMENTS.chatroomId},
 		onComplete: function(transport) {
 			var json = transport.responseText.evalJSON(true);
 			if (GET_AJAX_REQUEST_EXECUTION_TIME)
@@ -247,7 +253,7 @@ function sendMessage()
 
 	new Ajax.Request(SEND_MESSAGE_URL, {
 		method: 'Post',
-		parameters: {chatroom:ARGUMENTS, message_to_send:message_to_send},
+		parameters: {chatroom:ARGUMENTS.chatroomId, message_to_send:message_to_send},
 		onComplete: function(transport) {
 			var json = transport.responseText.evalJSON(true);
 
@@ -310,7 +316,7 @@ function exitChat(action, action_arguments)
 
 	new Ajax.Request(EXIT_CHAT_URL, {
 		method: 'Post',
-		parameters: {chatroom:ARGUMENTS,exit_reason:0},
+		parameters: {chatroom:ARGUMENTS.chatroomId,exit_reason:0},
 		onComplete: function(transport) {
 			var json = transport.responseText.evalJSON(true);
 
@@ -641,12 +647,10 @@ function addUserToInvitedUsers(user)
 
 function getArguments()
 {
-//	return $('data').innerHTML.unescapeHTML();
 	var passed_args = $('data').innerHTML.unescapeHTML();
-	var chatroom_re = /chatroom=([0-9]+)/;
-	var found = passed_args.match(chatroom_re);
-
-	return found[1];
+	var retobj = { chatroomId: 0, ownerId: null, studentId: null };
+	var passedObj = passed_args.length > 0 ? JSON.parse(passed_args) : {};
+	return $j.extend({}, retobj, passedObj);
 }
 
 function executeControlAction()
@@ -664,7 +668,7 @@ function executeControlAction()
 	var controlActionParameters = '&action='+control_action+'&target_user='+user_id;
 //	alert(CONTROL_ACTION_URL+'?'+ARGUMENTS+controlActionParameters);
 
-	new Ajax.Request(CONTROL_ACTION_URL+'?'+ARGUMENTS+controlActionParameters, {
+	new Ajax.Request(CONTROL_ACTION_URL+'?'+ARGUMENTS.chatroomId+controlActionParameters, {
 		method: 'get',
 		onComplete: function(transport) {
 			var json = transport.responseText.evalJSON(true);
