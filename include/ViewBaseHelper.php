@@ -299,6 +299,9 @@ abstract class ViewBaseHelper
 
     if (in_array('chatroom', $thisUserNeededObjAr)) {
       global $id_chatroom;
+      global $id_room;
+
+      if (isset($id_room) && intval($id_room)>0) $id_chatroom = $id_room;
 
       require_once ROOT_DIR . '/comunica/include/ChatRoom.inc.php';
       require_once ROOT_DIR . '/comunica/include/ChatDataHandler.inc.php';
