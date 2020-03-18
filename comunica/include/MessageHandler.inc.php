@@ -409,7 +409,7 @@ class MessageHandler
       case ADA_MSG_CHAT:
 
         // select the appropriate spool
-        $spool = new ChatSpool($user_id,NULL,NULL, $this->dsn);
+        $spool = new ChatSpool($user_id,$type,NULL, $this->dsn);
 
         break;
 
