@@ -104,6 +104,7 @@ if ( !isset($_POST['chatroom'])/*!isset($_GET['chatroom'])*/ )
 }
 
 $id_chatroom = $_POST['chatroom'];//$_GET['chatroom'];
+$json_data = [];
 
 /*
  * Get an instance of the UserDataHandler class.
@@ -208,7 +209,7 @@ if (AMA_DataHandler::isError($still_running))
 if(!$still_running)
 {
     // close_chat template will loaded
-	$self = close_chat;
+	$self = 'close_chat';
 	// motivate the exit of the user
 	$exit_reason = EXIT_REASON_EXPIRED;
 	// open close_chat.php
@@ -233,16 +234,16 @@ if (AMA_DataHandler::isError($user_status))
 switch($user_status)
 {
     case STATUS_OPERATOR:
-        $view_user_status = translateFN("Moderatore");
+        $json_data['user_status'] = translateFN("Moderatore");
         break;
     case STATUS_ACTIVE:
-        $view_user_status = translateFN("Attivo");
+        $json_data['user_status'] = translateFN("Attivo");
         break;
     case STATUS_MUTE:
-        $view_user_status = translateFN("Senza Voce");
+        $json_data['user_status'] = translateFN("Senza Voce");
         break;
     case STATUS_BAN:
-        $view_user_status = translateFN("Accesso Negato");
+        $json_data['user_status'] = translateFN("Accesso Negato");
         break;
     default:
 }//end switch
@@ -286,23 +287,21 @@ if (is_array($userslist_ar))
     /*
      * Create the json for the users list
      */
-    $json_users_list = '[';
-
-    while (count($userslist_ar) > 1 )
-    {
-        $user_data        = array_shift($userslist_ar);
-        $json_users_list .= '{"id":"'.$user_data['id_utente'].'","username":"'.$user_data['username'].'"},';
-    }
-    if (count($userslist_ar) == 1)
-    {
-        $user_data        = array_shift($userslist_ar);
-        $json_users_list .= '{"id":"'.$user_data['id_utente'].'","username":"'.$user_data['username'].'"}';
-    }
-    $json_users_list .= ']';
-
+    $json_data['users_list'] = array_map(
+        function ($user_data) {
+            return [
+                'id' => $user_data['id_utente'],
+                'username' => $user_data['username'],
+                'nome' => $user_data['nome'],
+                'cognome' => $user_data['cognome']
+            ];
+        },
+        $userslist_ar
+    );
 }// end of users list
 else
 {
+    $json_data['users_list'] = [];
     // Errors on $userslist_ar should have been catched on line 138.
     //  $errObj = new ADA_error(translateFN("Errore durante la lettura del DataBase"),translateFN("Impossibile proseguire."));
 }
@@ -387,19 +386,19 @@ $error  = 0;
 /*
  * Get UI labels in the user's language.
  */
-$user_status_label  = translateFN("Stato Utente");
-$options_list_label = translateFN("Opzioni Utente");
-$users_list_label   = translateFN("Utenti nella Chatroom");
+$json_data['users_count'] = is_array($json_data['users_list']) ? count($json_data['users_list']) : 0;
+$json_data['user_status_label'] = translateFN("Stato Utente");
+$json_data['options_list_label'] = translateFN("Opzioni Utente");
+$json_data['users_list_label'] = $json_data['users_count'] . ' '. translateFN(sprintf("utent%s nella Chatroom", $json_data['users_count'] == 1 ? 'e' : 'i' ));
 
 /*
  * Li passiamo vuoit perche' in ADA non dovrebbe servire questo tipo di
  * informazioni
  */
-$json_banned_users_list  = '[]';
-$json_invited_users_list = '[]';
-$json_options_data       = '[]';
+$json_data['json_banned_users_list']  = []; // should be populated by $json_banned_users_list
+$json_data['json_invited_users_list'] = []; // should be populated by $json_invited_users_list
+$json_data['options_list'] = []; // should be populated by $json_options_data
+$json_data['error'] = $error;
 
-$response = '{"error":'.$error.',"data":{"user_status_label":"'.$user_status_label.'","user_status":"'.$view_user_status.'","options_list_label":"'.$options_list_label.'","options_list":'.$json_options_data.',"users_list_label":"'.$users_list_label.'","users_list":'.$json_users_list.',"invited_users_list":'.$json_invited_users_list.'}}';
-
-print $response;
-?>
+header('Content-Type: application/json');
+die(json_encode($json_data));
