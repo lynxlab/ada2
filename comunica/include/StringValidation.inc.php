@@ -36,7 +36,7 @@ function _is_valid($string, $min_length, $max_length, $regex)
     }
 
     // Does the string entirely consist of characters of $type?
-    if(!eregi("^$regex$", $string))
+    if(!preg_match("/^$regex$/", $string))
     {
         return(false);
     }
@@ -103,11 +103,11 @@ function is_email($string)
     // Remove whitespace
     $string = trim($string);
 
-    $ret = ereg(
-                '^([a-z0-9_]|\\-|\\.)+'.
+    $ret = preg_match(
+                '/^([a-z0-9_]|\\-|\\.)+'.
                 '@'.
                 '(([a-z0-9_]|\\-)+\\.)+'.
-                '[a-z]{2,4}$',
+                '[a-z]{2,4}$/',
                 $string);
 
     return($ret);
@@ -122,7 +122,7 @@ function is_email($string)
  */
 function is_clean_text($string, $min_length = 0, $max_length = 0)
 {
-    $ret = _is_valid($string, $min_length, $max_length, "[a-zA-Z0-9[:space:]@*ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûüış`´'():.]+");
+    $ret = _is_valid($string, $min_length, $max_length, "[a-zA-Z0-9[:space:]@*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½'():.]+");
 
     return($ret);
 }
@@ -187,7 +187,7 @@ function contains_bad_words($string)
 function contains_phone_number($string)
 {
      // Check for phone number
-     if(ereg("[[:digit:]]{3,10}[\. /\)\(-]*[[:digit:]]{6,10}", $string))
+     if(preg_match("/[[:digit:]]{3,10}[\. /\)\(-]*[[:digit:]]{6,10}/", $string))
      {
         return(true);
      }
@@ -205,9 +205,9 @@ function contains_phone_number($string)
  */
 function clean_text($string, $min_length = 0, $max_length = 0)
 {
-    $ret = _is_valid($string, $min_length, $max_length, "[a-zA-Z0-9[:space:]@*ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûüış`´'():.]+");
+    $ret = _is_valid($string, $min_length, $max_length, "[a-zA-Z0-9[:space:]@*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½'():.]+");
 	if (!$ret) {
-	 	$string =  ereg_replace("[&\"<>/\\=]+", " ", $string);  
+	 	$string =  preg_replace("#[&\"<>/\\=]+#", " ", $string);
 	}
     return($string);
 }
