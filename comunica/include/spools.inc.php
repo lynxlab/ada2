@@ -1548,7 +1548,7 @@ class ChatSpool extends Spool
 
     if ( $type == ADA_MSG_CHAT ) {
 
-      $sql  = "SELECT U.nome, M.id_messaggio, M.data_ora, M.tipo, M.testo, M.id_mittente as `id_mittente`
+      $sql  = "SELECT CONCAT(U.nome, \" \",U.cognome) AS `nome`, M.id_messaggio, M.data_ora, M.tipo, M.testo, M.id_mittente as `id_mittente`
                        FROM  (SELECT id_messaggio, data_ora, tipo, id_mittente, testo FROM messaggi
                                WHERE id_group=$id_group $message_id_sql AND tipo='$type') AS M
                              LEFT JOIN utente AS U ON (U.id_utente = M.id_mittente)";
@@ -1557,7 +1557,7 @@ class ChatSpool extends Spool
     elseif ( $type == ADA_MSG_PRV_CHAT ) {
       $user = $this->user_id;
 
-      $sql = "SELECT U.nome, M.id_messaggio, M.data_ora, M.tipo, M.testo, M.id_mittente as `id_mittente`
+      $sql = "SELECT CONCAT(U.nome, \" \",U.cognome) AS `nome`, M.id_messaggio, M.data_ora, M.tipo, M.testo, M.id_mittente as `id_mittente`
                   FROM (SELECT id_messaggio, data_ora, tipo, id_mittente, testo FROM messaggi
                              WHERE id_group=$id_group $message_id_sql AND tipo='$type') AS M
                            LEFT JOIN utente AS U ON (U.id_utente = M.id_mittente)
