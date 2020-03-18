@@ -16,8 +16,6 @@
 /**
  * Base config file
  */
-$start_time = time() + microtime();
-
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
 /**
@@ -252,11 +250,6 @@ switch($exit_reason){
 
         default:
 } // switch
-/*
- * tracciamento del tempo di esecuzione dello script
- */
-//$end_time = time() + microtime();
-//$total_time = $end_time - $start_time;
 
 /*
  * invio della risposta JSON al simulatore

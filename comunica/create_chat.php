@@ -279,7 +279,7 @@ array(
 	        $errors["start_day"] = translateFN("I campi 'Giorno di apertura' e 'Ora di avvio' devono essere entrambi impostati oppure entrambi lasciati vuoti!");
 	      }
 	      // verify the inserted start date
-	      if (eregi('^([0-3][0-9][\/][0-1][0-9][\/][0-9]{2})$',$_POST['start_day'])){
+	      if (preg_match('/^([0-3][0-9][\/][0-1][0-9][\/][0-9]{2})$/',$_POST['start_day'])){
 	        // if the format is correct
 	        $date_string = explode("/",$_POST['start_day']);
 	        $d = (int)$date_string[0];
@@ -294,8 +294,8 @@ array(
 	      }
 
 	      // verify the inserted start time
-	      if (!eregi('^([0-9]{2}[\:][0-9]{2}[\:][0-9]{2})$',$_POST['start_time'])){
-	        $errors["start_time"] = translateFN("Il formato del campo 'Ora di avvio' non �valido");
+	      if (!preg_match('/^([0-9]{2}[\:][0-9]{2}[\:][0-9]{2})$/',$_POST['start_time'])){
+	        $errors["start_time"] = translateFN("Il formato del campo 'Ora di avvio' non è valido");
 	      }
 
 	      if ((empty($_POST['end_day']) and (!empty($_POST['end_time']))) or
@@ -304,7 +304,7 @@ array(
 	      }
 
 	      // verify the inserted end date
-	      if (eregi('^([0-3][0-9][\/][0-1][0-9][\/][0-9]{2})$',$_POST['end_day'])){
+	      if (preg_match('/^([0-3][0-9][\/][0-1][0-9][\/][0-9]{2})$/',$_POST['end_day'])){
 	        // if the format is correct
 	        $date_string = explode("/",$_POST['end_day']);
 	        $d = (int)$date_string[0];
@@ -319,7 +319,7 @@ array(
 	      }
 
 	      // verify the inserted end time
-	      if (!eregi('^([0-9]{2}[\:][0-9]{2}[\:][0-9]{2})$',$_POST['end_time'])){
+	      if (!preg_match('/^([0-9]{2}[\:][0-9]{2}[\:][0-9]{2})$/',$_POST['end_time'])){
 	        $errors["end_time"] = translateFN("Il formato del campo 'Ora di avvio' non �valido");
 	      }
 

@@ -904,7 +904,8 @@ class MessageHandler
       $parsing_text[] = $string;
       $unparsed_text = end($parsing_text);
       $link= "<LINK TYPE=INTERNAL VALUE=\"([0-9]{1,4})\">";
-      $is_linked = eregi($link,$unparsed_text,$regs);
+      $regs = [];
+      $is_linked = preg_match('/'.$link.'/i',$unparsed_text,$regs);
       while ($is_linked){
         $id_link = $regs[1];
         if (!empty($id_link)){
@@ -918,22 +919,22 @@ class MessageHandler
               //  $exploded_link = "<a href=\"$http_root_dir/browsing/view.php?id_node=".$linked_node_id."\" target=\"_parent\" ><img src=\"img/_linka.png\" border=\"0\" alt=\"$name\"></a>";
               $url =  "$http_root_dir/browsing/view.php?id_node=".$linked_node_id;
               $exploded_link = "<a href=# onclick=parentLoc('$url');><img src=\"img/_linka.png\" border=\"0\" alt=\"$name\"></a>";
-              $parsing_text[] = eregi_replace($link,$exploded_link,$unparsed_text);
+              $parsing_text[] = preg_replace('/'.$link.'/i',$exploded_link,$unparsed_text);
             } else {
               $exploded_link = "<img src=\"img/_linkdis.png\" border=\"0\" alt=\"$name\">";
-              $parsing_text[] = eregi_replace($link,$exploded_link,$unparsed_text);
+              $parsing_text[] = preg_replace('/'.$link.'/i',$exploded_link,$unparsed_text);
             }
 
           } else {
             $link= "<LINK TYPE=INTERNAL VALUE=\"$id_link\">";
             $exploded_link = "<img src=\"img/_linkdis.png\" border=\"0\" alt=\"$id_link\">";
-            $parsing_text[] = eregi_replace($link,$exploded_link,$unparsed_text);
+            $parsing_text[] = preg_replace('/'.$link.'/i',$exploded_link,$unparsed_text);
 
           }
         }
         $unparsed_text = end($parsing_text);
         $link= "<LINK TYPE=INTERNAL VALUE=\"([0-9]{1,4})\">";
-        $is_linked = eregi($link,$unparsed_text,$regs);
+        $is_linked = preg_match('/'.$link.'/i',$unparsed_text,$regs);
       }
       return  end($parsing_text);
     } else {

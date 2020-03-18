@@ -155,7 +155,7 @@ class ADA_Error
        * Controlliamo se il programmatore ha specificato un indirizzo commpleto
        * contenente HTTP_ROOT_DIR, altrimenti lo appende.
        */
-      if(strncmp(HTTP_ROOT_DIR, $this->redirectTo, sizeof(HTTP_ROOT_DIR)) == 0) {
+      if(strncmp(HTTP_ROOT_DIR, $this->redirectTo, strlen(HTTP_ROOT_DIR)) == 0) {
         header('Location: ' . $this->redirectTo);
         exit();
       }
