@@ -16,8 +16,6 @@
 /**
  * Base config file
  */
-$start_time = time() + microtime();
-
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
 /**
@@ -379,14 +377,6 @@ $last_event= $chatroomObj->set_last_event_timeFN($sess_id_user,$id_chatroom);
 if (isset($bannedusers_ar) && AMA_DataHandler::isError($bannedusers_ar))
 {
     exitWith_JSON_Error(translateFN("Errore nell'aggiornamento del tempo relativo all'utlimo evento"));
-}
-/*
- * Optionally, track this script execution time.
- */
-if (defined('ADA_AJAX_CHAT_SCRIPT_TIMING'))
-{
-    $end_time = time() + microtime();
-    $total_time = $end_time - $start_time;
 }
 
 /*
