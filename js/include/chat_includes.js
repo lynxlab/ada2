@@ -567,11 +567,13 @@ function updateControlChatData(data)
 	/*
 	 * Display user status in the chatroom.
 	 */
-	$(USER_STATUS_DIV).update();
-	var div_user_status_label = new Element('div', {'class': 'user_status_label'});
-	div_user_status_label.insert(data.user_status_label);
-	$(USER_STATUS_DIV).insert(div_user_status_label);
-	$(USER_STATUS_DIV).insert(data.user_status);
+	if ($(USER_STATUS_DIV) != null) {
+		$(USER_STATUS_DIV).update();
+		var div_user_status_label = new Element('div', {'class': 'user_status_label'});
+		div_user_status_label.insert(data.user_status_label);
+		$(USER_STATUS_DIV).insert(div_user_status_label);
+		$(USER_STATUS_DIV).insert(data.user_status);
+	}
 
 	/*
 	 * Display chatroom control actions for the current user.
@@ -590,19 +592,21 @@ function updateControlChatData(data)
 		USER_ACTIONS_FILLED = true;
 	}
 */
-	$(USERS_LIST_DIV).update();
-//	$(INVITED_USERS_LIST_UL).update();
+	if ($(USERS_LIST_DIV) != null) {
+		$(USERS_LIST_DIV).update();
+	//	$(INVITED_USERS_LIST_UL).update();
 
-	var div_users_list_label = new Element('div', {'class': 'users_list_label ui small header'});
-	div_users_list_label.insert(data.users_list_label);
-	$(USERS_LIST_DIV).insert(div_users_list_label);
+		var div_users_list_label = new Element('div', {'class': 'users_list_label ui small header'});
+		div_users_list_label.insert(data.users_list_label);
+		$(USERS_LIST_DIV).insert(div_users_list_label);
 
-	var users_list_select = new Element('select', {'id': USERS_LIST_SELECT, 'size':'8'});
-	$(USERS_LIST_DIV).insert(users_list_select);
+		var users_list_select = new Element('select', {'id': USERS_LIST_SELECT, 'size':'8'});
+		$(USERS_LIST_DIV).insert(users_list_select);
 
-	data.users_list.each(addUserToUserSelect);
+		data.users_list.each(addUserToUserSelect);
 
-//	data.invited_users_list.each(addUserToInvitedUsers);
+	//	data.invited_users_list.each(addUserToInvitedUsers);
+	}
 }
 
 function addActionToUserActionSelect(action)
