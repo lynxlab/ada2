@@ -101,6 +101,7 @@ function initDoc() {
 
 		var checkRepeater = [];
 		for (i=0; i<window.frames.length; i++) {
+		try{
 			if ('Reveal' in window.frames[i].window) {
 				setupRevealListeners(i, checkRepeater, {
 					readyCallback: function() {
@@ -112,7 +113,13 @@ function initDoc() {
 				});
 			}
 		}
+		catch { }
+		}
 	}); // end $j function
+
+	if ($j('#chatsidebar').length>0) {
+		$j('#chatsidebar').first().sidebar({overlay:true}).sidebar('attach events', '#triggerchat');
+	}
 } // end initDoc
 
 function setupRevealListeners(frameIdx, checkRepeater, callbacks) {
