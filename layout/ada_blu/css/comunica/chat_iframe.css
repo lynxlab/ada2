@@ -1,0 +1,31 @@
+@import url("chat.css");
+
+html, body {
+    margin:0;
+    padding:0;
+    height: initial;
+}
+
+@media only screen and (max-width: 767px) {
+    #exitchat,
+    #bottom > div.three.wide.equal.height.column {
+        display: inline-block !important;
+    }
+
+    #exitchat {
+        position: absolute;
+        right: 1em;
+    }
+}
+
+#user_status .user_status_label {
+    display: inline-block;
+}
+
+#user_status .user_status_label::after {
+    content: ": ";
+  }
+
+#messages {
+    height: 370px;
+}
