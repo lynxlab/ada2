@@ -204,7 +204,7 @@ INSERT INTO `menu_items` (`item_id`, `label`, `extraHTML`, `icon`, `icon_size`, 
 (147, 'Gestione luoghi', NULL, 'building', NULL, NULL, '%MODULES_CLASSROOM_HTTP%', 'venues.php', NULL, NULL, 0, 0, 20, '%MODULES_CLASSROOM%'),
 (148, 'Gestione Aule', NULL, 'grid layout', NULL, NULL, '%MODULES_CLASSROOM_HTTP%', 'classrooms.php\r\n\r\n', NULL, NULL, 0, 0, 20, '%MODULES_CLASSROOM%'),
 (149, 'esporta', NULL, 'basic export', 'large', NULL, NULL, NULL, NULL, NULL, 0, 0, 0, '%MODULES_CLASSAGENDA%'),
-(150, 'Chiedi supporto', NULL, 'mail', NULL, NULL, '%MODULES_FORMMAIL_HTTP%', NULL, NULL, NULL, 0, 0, 0, '{"func":"menuEnableFormMail"}')
+(150, 'Chiedi supporto', NULL, 'mail', NULL, NULL, '%MODULES_FORMMAIL_HTTP%', NULL, NULL, NULL, 0, 0, 0, '{"func":"menuEnableFormMail"}'),
 (151, 'Aggiungi nota personale', NULL, 'doc basic', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=PRIVATE_NOTE', 'id_parent,id_course,id_course_instance', NULL, 0, 0, 0, '$mod_enabled'),
 (152, 'Aggiungi nota di classe', NULL, 'docs basic', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'addnode.php?type=NOTE', 'id_parent,id_course,id_course_instance', NULL, 0, 0, 0, '$mod_enabled'),
 (153, 'Modifica nota', NULL, 'pencil', NULL, NULL, '%HTTP_ROOT_DIR%/services', 'edit_node.php?op=edit', 'id_parent,id_course,id_course_instance,type', NULL, 0, 0, 0, '{\"func\": [\"\\\\BrowsingHelper\",\"isSessionUserAuthorOfSessionNote\"]}'),
