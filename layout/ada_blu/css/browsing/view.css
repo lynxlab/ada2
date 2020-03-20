@@ -132,12 +132,17 @@ div#contentcontent .ui.accordion {
 	height: 100%;
 }
 
-.video-outer {
+.dacast.video-outer {
+	width: 100%;
+	text-align: center;
+}
+
+.youtube.video-outer {
 	width: 60%;
 	margin: 0 auto;
 }
 
-.video-container {
+.youtube.video-container {
 	position: relative;
 	padding-bottom: 56.25%;
 	padding-top: 30px;
@@ -145,9 +150,9 @@ div#contentcontent .ui.accordion {
 	overflow: hidden;
 }
 
-.video-container iframe,
-.video-container object,
-.video-container embed {
+.youtube.video-container iframe,
+.youtube.video-container object,
+.youtube.video-container embed {
 	position: absolute;
 	top: 0;
 	left: 0;
