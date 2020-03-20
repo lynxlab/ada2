@@ -63,7 +63,7 @@ $neededObjAr = array(
  * Performs basic controls before entering this module
  */
 require_once ROOT_DIR.'/include/module_init.inc.php';
-$self = whoami();
+$self = (isset($_REQUEST['iframe']) && intval($_REQUEST['iframe'])===1) ? 'chat_iframe' : whoami();
 
 include_once 'include/comunica_functions.inc.php';
 
