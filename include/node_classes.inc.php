@@ -1182,7 +1182,7 @@ function search_text_in_glosary($text) {
 			$nwURL = HTTP_ROOT_DIR.'/adaProxy.php?q=';
 			$urlhashes = array();
 			foreach ($unique as $i=>$url) {
-				if (stripos($url, 'youtube.com') === false) {
+				if (stripos($url, 'youtube.com') === false && strncmp($url, HTTP_ROOT_DIR, strlen(HTTP_ROOT_DIR)) !== 0) {
           			$enc = openssl_encrypt($url, 'BF-ECB', ADAPROXY_ENC_KEY);
           			if (false === $enc) {
             			$enc = $url;
