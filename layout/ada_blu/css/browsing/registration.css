@@ -22,3 +22,7 @@ span.pass-validator-text {
 div.policy.text p {
     text-align: initial;
 }
+
+#unamecheckstatus {
+	margin-top: 1em;
+}

@@ -9,10 +9,10 @@
         <!-- testata -->
         <div id="header">
             <template_field class="microtemplate_field" name="header">header</template_field>
-        </div> 
+        </div>
         <!-- / testata -->
         <!-- menu -->
-            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
         <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
@@ -104,11 +104,12 @@
         <!-- / contenitore -->
 		<div id="push"></div>
 		</div>
-		
+
         <!-- piede -->
         <div id="footer">
             <template_field class="microtemplate_field" name="footer">footer</template_field>
         </div>
         <!-- / piede -->
+        <template_field class="microtemplate_field" name="unamecheckprogress">unamecheckprogress</template_field>
     </body>
 </html>
