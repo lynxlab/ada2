@@ -9,3 +9,7 @@
 .ui.header.nomargin {
 	margin: 0;
 }
+
+#unamecheckstatus {
+	margin-top: 1em;
+}

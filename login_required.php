@@ -188,6 +188,9 @@ if (defined('MODULES_GDPR') && MODULES_GDPR === true && isset($registration_data
     $optionsAr['onload_func'] .= 'initRegistration();';
 }
 
+if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
+	$layout_dataAr['JS_filename'][] = MODULES_SECRETQUESTION_PATH . '/js/modules_define.js.php';
+}
 
 $content_dataAr = array(
     'course_title' => $title,
