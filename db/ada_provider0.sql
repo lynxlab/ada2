@@ -8,6 +8,8 @@
 -- Versione PHP: 5.5.9-1ubuntu4.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET NAMES 'utf8';
+SET CHARSET 'utf8';
 SET time_zone = "+00:00";
 
 
