@@ -586,7 +586,9 @@ if ($op !== false && $op == 'course_info') {
 		$thead_data = array('&nbsp;', 'ID', translateFN('corso'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
 	} else {
 		$thead_data = array('&nbsp;', 'ID', translateFN('corso'), translateFN('Fornito da'), translateFN('descrizione'), translateFN('crediti'),'&nbsp;');
-		$publishedServices = $common_dh->get_published_courses();
+		$publishedServices = $common_dh->get_published_courses(
+			isset($_GET['provider']) && intval($_GET['provider']>0) ? intval($_GET['provider']) : null
+		);
 	}
 
     if(!AMA_Common_DataHandler::isError($publishedServices)) {
