@@ -997,7 +997,7 @@ class ChatRoom {
         if (is_array($chatroom_ha)) {
             $max_users = $chatroom_ha ['max_utenti'];
             $list = $this->list_users_chatroomFN($id_chatroom);
-            $how_many = count($list);
+            $how_many = is_array($list) ? count($list) : 0;
             if ($how_many > $max_users) {
                 return true;
             } else {
