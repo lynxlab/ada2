@@ -56,6 +56,34 @@ $GLOBALS['dh'] = AMANewsletterDataHandler::instance(MultiPort::getDSN($_SESSION[
 
 $retArray = array();
 
+// buffer the output, close the connection with the browser and run a "background" task
+
+ini_set('zlib.output_compression', 0);
+// Turn off output buffering
+ini_set('output_buffering', 'off');
+// Implicitly flush the buffer(s)
+ini_set('implicit_flush', true);
+ob_end_clean();
+
+header("Connection: close\r\n");
+header("Content-Encoding: none\r\n");
+header('Cache-Control: no-cache'); // recommended to prevent caching of event data.
+ignore_user_abort(true);
+// remove duplicate cookies set when calling CastingSystemQueueManagement::setSessionMessage
+// clear_duplicate_cookies();
+// capture output
+ob_start();
+echo str_pad(' ', 5 * 1024);
+// these headers tell the browser to close the connection
+// once all content has been transmitted
+header("Content-Type: application/html\r\n");
+header("Content-Length: ".ob_get_length()."\r\n");
+// flush all output
+ob_end_flush();
+flush();
+@ob_end_clean();
+if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 {
 	if (isset($_POST['id']) && intval($_POST['id'])>0)
@@ -130,39 +158,44 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 
 				$userInfo = $dh->get_user($recipient[0]);
 
-				$userFullName = '';
-
-				if (!AMA_DB::isError($userInfo))
-				{
-					// performs user substitutions
-					$HTMLText = str_replace(
-							array ("{name}","{lastname}","{e-mail}"),
-							array ($userInfo['nome'], $userInfo['cognome'], $userInfo['email']), $HTMLModelText);
-
-					$PLAINText = str_replace(
-							array ("{name}","{lastname}","{e-mail}"),
-							array ($userInfo['nome'], $userInfo['cognome'], $userInfo['email']), $PLAINModelText);
-
-					$userFullName = ucwords (strtolower ($userInfo['nome'].' '.$userInfo['cognome']));
-				}
-				else {
-					$HTMLText = $HTMLModelText;
-					$PLAINText = $PLAINModelText;
+				if (strlen($recipient[1])>0) {
 					$userFullName = '';
-				}
 
-				// $recipient[1] is the email in the current run loop
-				$phpmailer->AddAddress($recipient[1], $userFullName);
-				$phpmailer->Body = $HTMLText;
-				$phpmailer->AltBody = $PLAINText;
-				$phpmailer->Send();
-				$phpmailer->ClearAllRecipients();
+					if (!AMA_DB::isError($userInfo))
+					{
+						// performs user substitutions
+						$HTMLText = str_replace(
+								array ("{name}","{lastname}","{e-mail}"),
+								array ($userInfo['nome'], $userInfo['cognome'], $userInfo['email']), $HTMLModelText);
 
-				if ($num<count($recipients)-1)
-				{
-					ADAFileLogger::log('goin to sleep...', $logFile);
-					usleep ($sleepTime);
-					ADAFileLogger::log('...got woken up', $logFile);
+						$PLAINText = str_replace(
+								array ("{name}","{lastname}","{e-mail}"),
+								array ($userInfo['nome'], $userInfo['cognome'], $userInfo['email']), $PLAINModelText);
+
+						$userFullName = ucwords (strtolower ($userInfo['nome'].' '.$userInfo['cognome']));
+					}
+					else {
+						$HTMLText = $HTMLModelText;
+						$PLAINText = $PLAINModelText;
+						$userFullName = '';
+					}
+
+					// $recipient[1] is the email in the current run loop
+					$phpmailer->AddAddress($recipient[1], $userFullName);
+					$phpmailer->Body = $HTMLText;
+					$phpmailer->AltBody = $PLAINText;
+					$phpmailer->Send();
+					$phpmailer->ClearAllRecipients();
+
+					if ($num<count($recipients)-1)
+					{
+						ADAFileLogger::log('goin to sleep...', $logFile);
+						usleep ($sleepTime);
+						ADAFileLogger::log('...got woken up', $logFile);
+					}
+
+				} else {
+					ADAFileLogger::log('empty email#'.$num.' userID='.$recipient[0].' e-mail='.$recipient[1], $logFile);
 				}
 			}
 			$res = $dh->set_history_status ($history_id, MODULES_NEWSLETTER_HISTORY_STATUS_SENT);
@@ -171,4 +204,3 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 		}
 	}
 }
-?>
