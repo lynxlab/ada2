@@ -10813,7 +10813,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     $db =& $this->getConnection();
     if ( AMA_DB::isError( $db ) ) return $db;
 
-    $sql =  "select TS.id_utente_tutor, U.nome, U.cognome, U.username from tutor_studenti AS TS, utente AS U where id_istanza_corso=$id_instance AND TS.id_utente_tutor=U.id_utente";
+    $sql =  "select TS.id_utente_tutor, U.nome, U.cognome, U.username, U.e_mail from tutor_studenti AS TS, utente AS U where id_istanza_corso=$id_instance AND TS.id_utente_tutor=U.id_utente";
     if ($number==1) {
       $res =  $db->getRow($sql);
     }
