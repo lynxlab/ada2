@@ -21,6 +21,8 @@ class CommunicationModuleHtmlLib
 // MARK: Chat
   static public function getChat($data='', ADALoggableUser $userObj, $event_token) {
 
+    $callerData = strlen($data) > 0 ? json_decode($data, true): [];
+
     $html = CDOMElement::create('div','id:chat');
 
     $top  = CDOMElement::create('div','id:top');
@@ -53,11 +55,11 @@ class CommunicationModuleHtmlLib
 
     $middle->addChild($row);
 
-    $row = CDOMElement::create('div', 'class:row');
-    $middle->addChild($row);
+    $middlerow = CDOMElement::create('div', 'class:row');
+    $middle->addChild($middlerow);
     $messagescol = CDOMElement::create('div','class:twelve wide equal height column');
     $messagescol->addChild(CDOMElement::create('div','id:messages,class:ui list'));
-    $row->addChild($messagescol);
+    $middlerow->addChild($messagescol);
     $controlchat = CDOMElement::create('div', 'id:controlchat,class:four wide equal height column');
     $controlchat->addChild(CDOMElement::create('div','id:user_status,class:ui black block header'));
     //$controlchat->addChild(CDOMElement::create('div','id:user_actions'));
@@ -69,7 +71,10 @@ class CommunicationModuleHtmlLib
     //$control_input->setAttribute('onclick','executeControlAction();');
     //$control_action->addChild($control_input);
     //$controlchat->addChild($control_input);
-    $row->addChild($controlchat);
+    if (!isset($callerData['isIframe']) || (isset($callerData['isIframe']) && !$callerData['isIframe'])) {
+      // add control chat here ONLY IF NOT IN AN IFRAME
+      $middlerow->addChild($controlchat);
+    }
 
     /*
      * bottom
@@ -125,6 +130,11 @@ class CommunicationModuleHtmlLib
 
     $exitchat->addChild($exit_button);
     $bottom->addChild($exitchat);
+
+    // add controlchat to bottom ONLY IF TUTOR AND IN AN IFRAME
+    if (isset($callerData['isIframe']) && $callerData['isIframe'] && $userObj instanceof ADAPractitioner) {
+      $bottom->addChild($controlchat);
+    }
 
     $html->addChild($top);
     $html->addChild($middle);
