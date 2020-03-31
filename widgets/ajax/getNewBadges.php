@@ -81,7 +81,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	 */
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		if ($widgetMode != ADA_WIDGET_SYNC_MODE &&
-			preg_match("#^" . HTTP_ROOT_DIR . "($|/.*)#", $_SERVER['HTTP_REFERER']) != 1) {
+			preg_match("#^" . trim(HTTP_ROOT_DIR,"/") . "($|/.*)#", $_SERVER['HTTP_REFERER']) != 1) {
 			die('Only local execution allowed.');
 		}
 	}

@@ -6,14 +6,14 @@
  * @package		widget
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		giorgio <g.consorti@lynxlab.com>
- * 
+ *
  * @copyright	Copyright (c) 2013, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link 		widget
  * @version		0.1
  *
  * supported params you can pass either via XML or php array:
- *   
+ *
  *  name="url"			   mandatory, value: rss url to be loaded
  *  name="showDescription" optional,  value: shows or hides the post description. values: 0 or nonzero
  *                                           if invalid or omitted, description will be hidden
@@ -27,7 +27,7 @@
  *  name="headerImage"     optional,  value: if the link will be generated, it will have the passed image
  *                                           as a clickable element.
  *                                           if omitted, headerTitle will be used
- *  
+ *
  */
 
 /**
@@ -44,7 +44,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	 * (i.e. with a get request)
 	 */
 	if(isset($_SERVER['HTTP_REFERER'])){
-		if(preg_match("#^".HTTP_ROOT_DIR."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1){
+		if(preg_match("#^".trim(HTTP_ROOT_DIR,"/")."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1){
 			die ('Only local execution allowed.');
 		}
 	}
@@ -141,6 +141,6 @@ $output .= implode($clearfix, $rss_items);
 		case ADA_WIDGET_ASYNC_MODE:
 		default:
 			echo $output;
-		
+
 }
 ?>
