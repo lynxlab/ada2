@@ -38,7 +38,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	 * (i.e. with a get request)
 	 */
 	if(isset($_SERVER['HTTP_REFERER'])){
-		if(preg_match("#^".HTTP_ROOT_DIR."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1){
+		if(preg_match("#^".trim(HTTP_ROOT_DIR,"/")."($|/.*)#", $_SERVER['HTTP_REFERER']) != 1){
 			die ('Only local execution allowed.');
 		}
 	}
