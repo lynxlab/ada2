@@ -197,6 +197,7 @@ else {
   // pass these parameters that may be used by readChat.php to filter loaded messages
   $request_arguments['ownerId'] = intval($id_owner);
   $request_arguments['studentId'] = intval($userObj->getId());
+  $request_arguments['isIframe'] = isset($_GET['iframe']) && intval($_GET['iframe']) ===1;
   $chat = CommunicationModuleHtmlLib::getChat(json_encode($request_arguments), $userObj, $event_token);
   $optionsAr = array('onload_func' => 'startChat();');
 }
