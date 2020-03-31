@@ -21,6 +21,8 @@ require_once ROOT_DIR . '/include/ViewBaseHelper.php';
  */
 class ComunicaHelper extends ViewBaseHelper
 {
+  protected static $tutor_uname = null;
+
   /**
    * Builds array keys for the comunica directory scripts
    *
