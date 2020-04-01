@@ -132,6 +132,13 @@ div#contentcontent .ui.accordion {
 	height: 100%;
 }
 
+#chatsidebar {
+	-webkit-box-shadow: 5px 0px 5px 0px rgba(50, 50, 50, 0.15);
+	-moz-box-shadow:    5px 0px 5px 0px rgba(50, 50, 50, 0.15);
+	box-shadow:         5px 0px 5px 0px rgba(50, 50, 50, 0.15);
+	background-color: #fff;
+}
+
 .dacast.video-outer {
 	width: 100%;
 	text-align: center;

@@ -267,6 +267,7 @@ abstract class ViewBaseHelper
 
     if (in_array('tutor', $thisUserNeededObjAr)) {
       global $sess_id_course_instance;
+      $calledClass= get_called_class();
 
       if (isset($sess_id_course_instance)) {
         if (method_exists($userObj, 'get_student_status')) {
@@ -277,7 +278,7 @@ abstract class ViewBaseHelper
           if (!empty($tutor_id) && !AMA_DataHandler::isError($tutor_id)) {
             $tutorAr = $dh->get_tutor($tutor_id);
             if (!AMA_dataHandler::isError($tutorAr)) {
-              if (isset($tutorAr['username'])) BrowsingHelper::$tutor_uname = $tutorAr['username'];
+              if (isset($tutorAr['username'])) $calledClass::$tutor_uname = $tutorAr['username'];
               $retArr['tutor_id'] = $tutor_id;
             }
           }
@@ -350,7 +351,8 @@ abstract class ViewBaseHelper
                   $userObj->getLastName(),
                   $userObj->getEmail(),
                   $sess_id_user,
-                  $userObj->getType());
+                  $userObj->getType(),
+                  $sess_selected_tester);
               }
             } else {
               $status = addslashes(translateFN("Room not yet opened"));
@@ -395,6 +397,7 @@ abstract class ViewBaseHelper
         $close_page_message = addslashes(translateFN("You don't have a videochat appointment at this time."));
         $options_Ar = array('onload_func' => "close_page('$close_page_message');");
       }
+      if (isset($event_token))  $retArr['event_token'] = $event_token;
       if (isset($videoroomObj)) $retArr['videoroomObj'] = $videoroomObj;
       if (isset($options_Ar))   $retArr['options_Ar'] = $options_Ar;
     }

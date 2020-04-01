@@ -17,7 +17,7 @@ button.hybridLogin.login {
 }
 
 #facebook-button {
-  background-color: #3B579D;  
+  background-color: #3B579D;
 }
 
 #ldap-button::before,
@@ -46,30 +46,30 @@ button.hybridLogin.login {
 }
 
 div#language_selection {
-	width: 18em;
+	width: calc(100% - 0.5em);
 	border: .1em solid rgba(0,0,0,.1);
 	overflow: hidden;
 	background-repeat: no-repeat;
     background-position: 97% 50%;
     background-color: #fff;
     background-image:
-        url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHg9IjAiIHk9IjAiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDUxMiA1MTIiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjMDAwMDAwIiBmaWxsLW9wYWNpdHk9IjAuNCIgZD0iTTI1NiAzNTJMOTYgMTk4LjQgMTQxLjcgMTYwIDI1NiAyNzUuMiAzNzAuMyAxNjAgNDE2IDE5OC40IDI1NiAzNTJ6Ii8+PC9zdmc+");   
+        url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHg9IjAiIHk9IjAiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDUxMiA1MTIiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjMDAwMDAwIiBmaWxsLW9wYWNpdHk9IjAuNCIgZD0iTTI1NiAzNTJMOTYgMTk4LjQgMTQxLjcgMTYwIDI1NiAyNzUuMiAzNzAuMyAxNjAgNDE2IDE5OC40IDI1NiAzNTJ6Ii8+PC9zdmc+");
 }
 
 select#p_selected_language {
 	background: transparent;
 	color: rgba(0,0,0,.5);
 	border:0 none;
-	width: 20em;
+	width: 100%;
 	padding: 0.5em;
-	line-height: 1; 
+	line-height: 1;
 	-webkit-appearance:none;
 }
 
 #login_form #p_username,
 #login_form #p_password {
-	color: rgba(0,0,0,.5);	
-	width: 17em;
+	color: rgba(0,0,0,.5);
+	width: calc(100% - 1.5em);
 	padding: 0.5em;
 	border: .1em solid rgba(0,0,0,.1);
 	border-radius: 0;

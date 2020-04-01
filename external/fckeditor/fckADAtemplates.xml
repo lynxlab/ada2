@@ -27,7 +27,7 @@
  * GIORGIO: Preview Image size is 100x70
 -->
 <Templates imagesBasePath="fck_template/images/">
-			<Template title="Griglia" image="grid.png">
+	<Template title="Griglia" image="grid.png">
 		<Description>Griglia di impaginazione</Description>
 		<Html>
 			<![CDATA[
@@ -46,7 +46,7 @@
 					      <p>Testo seconda casella, secondo paragrafo.</p>
 					    </div>
 					  </div>
-					</div>	
+					</div>
 	  	]]>
 		</Html>
 	</Template>
@@ -120,19 +120,19 @@
 					<div class="semantic tabs">
 						<div class="top attached ui tabular menu">
 							<a class="active item" href="#tab1">Titolo Tab 1</a>
-							<a class="item" href="#tab2">Titolo Tab 2</a>	          		
+							<a class="item" href="#tab2">Titolo Tab 2</a>
 							<a class="item" href="#tab3">Titolo Tab 3</a>
-						</div> 				
+						</div>
 						<div class="ui bottom attached segment">
 							<div id="tab1" class="ui active tab">
 								<p style="text-align: justify;">Inserisci testo, immagini o altro contenuto inerente alla tab 1...</p>
-							</div> 					 					
+							</div>
 							<div id="tab2" class="ui active tab">
 								<p style="text-align: justify;">Inserisci testo, immagini o altro contenuto inerente alla tab 2...</p>
-							</div> 
+							</div>
 							<div id="tab3" class="ui active tab">
 								<p style="text-align: justify;">Inserisci testo, immagini o altro contenuto inerente alla tab 3...</p>
-							</div> 
+							</div>
 						</div>
 					</div>
 			]]>
@@ -217,7 +217,7 @@
 					<div class="ui fade reveal">
 					  <img class="visible content" src="immagine visibile">
 					  <img class="hidden content" src="immagine nascosta">
-					</div>	
+					</div>
 			]]>
 		</Html>
 	</Template>
@@ -234,4 +234,24 @@
 					]]>
 		</Html>
 	</Template>
-	</Templates>
+	<Template title="Webinar" image="webinar.png">
+		<Description>Webinar con video e chat a comparsa</Description>
+		<Html>
+			<![CDATA[
+				<div class="dacast video-outer">
+					<div class="video-container">
+						<iframe src="VIDEO_URL_HERE" frameborder="0" scrolling="no" allow="autoplay" allowfullscreen="" webkitallowfullscreen="" mozallowfullscreen="" oallowfullscreen="" msallowfullscreen="" width="853" height="480"></iframe>
+					</div>
+					<div class="triggerchat-container">
+						<div id="triggerchat" class="ui secondary toggle chat button">
+							Mostra/Nascondi Chat
+						</div>
+					</div>
+					<div class="ui very wide left sidebar" id="chatsidebar">
+						<iframe id="chatframe" src="HTTP_ROOT_HERE/comunica/chat.php?id_course=ID_COURSE_HERE&amp;iframe=1" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0"></iframe>
+					</div>
+				</div>
+			]]>
+		</Html>
+	</Template>
+</Templates>
