@@ -44,6 +44,7 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 				$firstElClass = 'active';
 				/** @var GdprPolicy $policy */
 				$accordion = \CDOMElement::create('div', 'class:ui fluid accordion');
+				$accordion->addChild(\CDOMElement::create('a','name:privacypolicies'));
 				if (array_key_exists('extraclass', $dataAr)) {
 					$accordion->setAttribute('class', $accordion->getAttribute('class').' '.$dataAr['extraclass']);
 				}
