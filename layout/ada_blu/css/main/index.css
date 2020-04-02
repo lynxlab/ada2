@@ -70,6 +70,8 @@ html,body {
 #container a { color: #72A9D3; }
 #container a:hover { color: #1263A0; }
 
+#container .first ul li { border: none; }
+
 .portlet-header .ui-icon { float: right; }
 /* .portlet-content { padding: 0.4em; } */
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
