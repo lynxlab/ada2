@@ -436,6 +436,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 ];
                 foreach($formtoenv as $formkey => $envvar) {
                     if (array_key_exists($formkey, $postData) && strlen($postData[$formkey])>0) {
+                        if ($formkey == 'HTTP_ROOT_DIR') {
+                            $postData[$formkey] = rtrim($postData[$formkey], DIRECTORY_SEPARATOR);
+                        }
                         $envlines[$formkey] = "putenv('$envvar=".$postData[$formkey]."')";
                     }
                 }
