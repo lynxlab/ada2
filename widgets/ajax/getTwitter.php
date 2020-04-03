@@ -192,7 +192,13 @@ foreach($twDatas as $k=>$twitterAr) {
 	{
 		$imgUrl = ($isRetweeded) ? $twitterAr->retweeted_status->user->profile_image_url :  $twitterAr->user->profile_image_url;
 		$imgUrl = preg_replace('#^https?://#', '', rtrim($imgUrl,'/'));
-		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')|| $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+		$protocol = 'http';
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+			$protocol .= 's';
+		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
+			$protocol .= 's';
+		}
+		$protocol .= '://';
 		$twitterLabel = CDOMElement::create('div','class:label');
 		$twitterImage = CDOMElement::create('img','src:'.$protocol.$imgUrl);
 		$twitterImage->setAttribute('class', 'ui image'.($circularImage ? ' circular' : ''));
