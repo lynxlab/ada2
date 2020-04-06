@@ -96,6 +96,9 @@
 								    <i class="users icon"></i><template_field class="template_field" name="goforum">goforum</template_field>
 								  </div>
 								  <div class="item">
+								    <i class="certificate icon"></i><template_field class="template_field" name="gocertificate">gocertificate</template_field>
+								  </div>
+								  <div class="item">
 								    <i class="time basic icon"></i><template_field class="template_field" name="gohistory">gohistory</template_field>
 								  </div>
 								  <template_field class="template_field" name="badgesLink">badgesLink</template_field>

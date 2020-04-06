@@ -1,12 +1,16 @@
 function initDoc() {
 
     var lastCol = $j('table.doDataTable thead th').length;
+    var hasCertificate = lastCol > 6;
     var colDefs = [
            {"aTargets" : [0], "sWidth":"50%" },
            {"aTargets" : [2,4], "sType":"date-eu" },
            {"aTargets" : [3], "sType":"formatted-num" },
            {"aTargets": [lastCol-1], "sClass" : "actionCol", "bSortable":false}
     ];
+    if (hasCertificate) {
+        colDefs.push({"aTargets": [lastCol-2], "sClass" : "actionCol", "bSortable":false});
+    }
 
     datatable = $j('table.doDataTable').dataTable({
     	"aaSorting": [[ 2, "desc" ]],

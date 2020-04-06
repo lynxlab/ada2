@@ -128,8 +128,11 @@ if(!AMA_DataHandler::isError($courseInstances)) {
            translateFN('Data inizio'),
            translateFN('Durata'),
            translateFN('Data fine'),
-           translateFN('Azioni')
-        );
+		   translateFN('Azioni'),
+		);
+	if (defined ('ADA_PRINT_CERTIFICATE') && ADA_PRINT_CERTIFICATE) {
+		$thead_dataAr[] = translateFN('Attestato');
+	}
 
 /**
  * @author giorgio 24/apr/2013
@@ -228,6 +231,19 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 					$link->setAttribute('href', $linkScript.'?'.http_build_query($linkParams));
 					$access_link->addChild($link);
 
+					if($subscription_status== ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+						$access_link_attestato = CDOMElement::create('div');
+						$link_attestato = CDOMElement::create('a','href:userCertificate.php?id_course='.$courseId.'&id_instance='.$courseInstanceId.'&id_user='.$userObj->getId().'&op=doPDF');
+						$link_attestato->addChild(new CText(translateFN('Stampa attestato')));
+						$link_attestato->setAttribute('target','_blank');
+						$access_link_attestato->addChild($link_attestato);
+					} else {
+						$access_link_attestato = CDOMElement::create('div');
+						$link_attestato = CDOMElement::create('a','href:user.php?');
+						$link_attestato->addChild(new CText(translateFN('Attestato non disponibile')));
+						$access_link_attestato->addChild($link_attestato);
+					}
+
 					// @author giorgio 24/apr/2013
 					// adds whats new link if needed
 					if (!$isEnded && ($subscription_status != ADA_STATUS_TERMINATED || $subscription_status != ADA_STATUS_COMPLETED) && MultiPort::checkWhatsNew($userObj, $courseInstanceId, $courseId)) {
@@ -240,14 +256,20 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 					}
 	            }
 
-	            $tbody_dataAr[] = array(
+				$row = array(
 	                $c['titolo'],
 	                $started,
 	                ts2dFN($start_date),
 	                sprintf(translateFN('%d giorni'), $duration),
 	                ts2dFN($end_date),
-	                $access_link
-	            );
+					$access_link,
+				);
+				if (defined ('ADA_PRINT_CERTIFICATE') && ADA_PRINT_CERTIFICATE) {
+					$row[] = $access_link_attestato;
+				}
+	            $tbody_dataAr[] = $row;
+				$access_link_attestato = '';
+				$access_link = '';
 	        }
 
 	        $data = BaseHtmlLib::tableElement('class:doDataTable '.ADA_SEMANTICUI_TABLECLASS, $thead_dataAr, $tbody_dataAr);
@@ -348,18 +370,33 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 					 	} else if ($isStarted && !$isEnded) {
 					 		$link->addChild(new CText(translateFN('Accedi')));
 					 	}
-					 	$access_link->addChild($link);
+						$access_link->addChild($link);
+						if ($subscription_status == ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+							$access_link_attestato = CDOMElement::create('div');
+							$link_attestato = CDOMElement::create('a','href:userCertificate.php?id_course='.$courseId.'&id_course_instance='.$courseInstanceId.'&id_user='.$userObj->getId().'&op=doPDF');
+							$link_attestato->addChild(new CText(translateFN('Stampa attestato')));
+							$link_attestato->setAttribute('target','_blank');
+							$access_link_attestato->addChild($link_attestato);
+						} else {
+							$access_link_attestato = CDOMElement::create('span','class:disabled');
+							$access_link_attestato->addChild(new CText(translateFN('Attestato non disponibile')));
+						}
 					 }
 	            }
-
-	            $tbody_dataAr[] = array(
+				$row = array(
 	                $c['titolo'],
 	                $started,
 	                ts2dFN($start_date),
 	                sprintf(translateFN('%d giorni'), $duration),
 	                ts2dFN($end_date),
-	                $access_link
-	            );
+					$access_link,
+				);
+				if (defined ('ADA_PRINT_CERTIFICATE') && ADA_PRINT_CERTIFICATE) {
+					$row[] = $access_link_attestato;
+				}
+				$tbody_dataAr[] = $row;
+				$access_link = '';
+				$access_link_attestato = '';
 	            $data = BaseHtmlLib::tableElement('class:doDataTable '.ADA_SEMANTICUI_TABLECLASS, $thead_dataAr, $tbody_dataAr);
 	        }
 	    } else {
@@ -546,6 +583,8 @@ else {
 		$goforum_link = $goforum->getHtml();
 		$gohistory = CDOMElement::create('span','class:disabled');
 		$gohistory->addChild(new CText(translateFN('Cronologia')));
+		$access_link_attestato = CDOMElement::create('span','class:disabled');
+		$access_link_attestato->addChild(new CText(translateFN('Attestato non disponibile')));
 	} elseif ($isStarted && !$isEnded) {
 		/**
 		 * @author giorgio 03/apr/2015
@@ -631,7 +670,9 @@ else {
 	$content_dataAr['subscription_status'] = Subscription::subscriptionStatusArray()[$subscription_status];
 	$content_dataAr['messages'] = $user_messages->getHtml();
 	$content_dataAr['agenda'] = $user_agenda->getHtml();
-
+	if (defined ('ADA_PRINT_CERTIFICATE') && ADA_PRINT_CERTIFICATE && isset($access_link_attestato) && $access_link_attestato instanceof CBaseElement) {
+		$content_dataAr['gocertificate'] = $access_link_attestato->getHtml();
+	}
 	// must set the DH to the course provider one
 	$GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
 
