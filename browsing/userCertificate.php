@@ -46,7 +46,7 @@ if (!$forcereturn) {
 
     require_once ROOT_DIR .'/include/Course.inc.php';
     require_once ROOT_DIR .'/include/CourseInstance.inc.php';
-    
+
     require_once 'include/browsing_functions.inc.php';
 
     /**
@@ -78,8 +78,8 @@ if (!$forcereturn) {
     * WARNING: $media_path is used as a global somewhere else,
     * e.g.: node_classes.inc.php:990
     */
-    BrowsingHelper::init($neededObjAr);    
-    
+    BrowsingHelper::init($neededObjAr);
+
     require_once ROOT_DIR.'/switcher/include/switcher_functions.inc.php';
 }
 
@@ -105,9 +105,21 @@ if(isset($_GET['id_user']))
 {
     $id_user = $_GET['id_user'];
 }
-if(isset($_GET['id_instance']))
-{
-    $id_instance = $_GET['id_instance'];
+if (isset($_GET['id_course_instance'])){
+	$id_instance = $_GET['id_course_instance'];
+} else {
+	$id_instance = $sess_id_instance;
+}
+
+//instance
+if (!(isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance)) {
+    $courseInstanceObj =  new Course_instance($id_instance);
+}
+$courseId = $courseInstanceObj->getCourseId();
+
+// course
+if (!(isset($courseObj) && $courseObj instanceof Course)) {
+    $courseObj = new Course($courseId);
 }
 
 $codice_corso = $courseObj->getCode();
