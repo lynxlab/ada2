@@ -373,7 +373,7 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 						$access_link->addChild($link);
 						if ($subscription_status == ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
 							$access_link_attestato = CDOMElement::create('div');
-							$link_attestato = CDOMElement::create('a','href:userCertificate.php?id_course='.$courseId.'&id_course_instance='.$courseInstanceId.'&id_user='.$userObj->getId().'&op=doPDF');
+							$link_attestato = CDOMElement::create('a','href:userCertificate.php?id_course='.$courseId.'&id_instance='.$courseInstanceId.'&id_user='.$userObj->getId().'&op=doPDF');
 							$link_attestato->addChild(new CText(translateFN('Stampa attestato')));
 							$link_attestato->setAttribute('target','_blank');
 							$access_link_attestato->addChild($link_attestato);
@@ -395,8 +395,8 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 					$row[] = $access_link_attestato;
 				}
 				$tbody_dataAr[] = $row;
-				$access_link = '';
-				$access_link_attestato = '';
+				// $access_link = '';
+				// $access_link_attestato = '';
 	            $data = BaseHtmlLib::tableElement('class:doDataTable '.ADA_SEMANTICUI_TABLECLASS, $thead_dataAr, $tbody_dataAr);
 	        }
 	    } else {
