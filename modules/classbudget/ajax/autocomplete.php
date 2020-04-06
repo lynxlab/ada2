@@ -39,7 +39,6 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-// require_once MODULES_CLASSBUDGET_PATH .'/config/config.inc.php';
 require_once MODULES_CLASSBUDGET_PATH .'/include/AMAClassbudgetDataHandler.inc.php';
 
 $GLOBALS['dh'] = AMAClassbudgetDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));

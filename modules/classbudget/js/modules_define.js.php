@@ -13,7 +13,6 @@ header("Content-type: application/x-javascript");
 /**
  * Module config file
  */
-// require_once MODULES_CLASSBUDGET_PATH.'/config/config.inc.php';
 
 if (defined('ADA_CURRENCY_SYMBOL')) echo 'var ADA_CURRENCY_SYMBOL = \''.ADA_CURRENCY_SYMBOL.'\';'.PHP_EOL;
 if (defined('ADA_CURRENCY_DECIMALS')) echo 'var ADA_CURRENCY_DECIMALS = '.ADA_CURRENCY_DECIMALS .';'.PHP_EOL;
