@@ -39,7 +39,6 @@ $neededObjAr = array(
 */
 $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
-// require_once MODULES_SLIDEIMPORT_PATH . '/config/config.inc.php';
 
 if (isset($_GET['url']) && strlen(trim($_GET['url']))>0 &&
 	isset($_GET['pageNum']) && intval($_GET['pageNum'])>0) {

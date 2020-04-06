@@ -15,7 +15,6 @@
  *
  * @author giorgio
  */
-// require_once MODULES_CLASSBUDGET_PATH . '/config/config.inc.php';
 require_once MODULES_CLASSBUDGET_PATH . '/include/AMAClassbudgetDataHandler.inc.php';
 
 class classbudgetAPI {

@@ -43,8 +43,6 @@ $layout_dataAr['node_type'] = $self;
 $online_users_listing_mode = 2;
 $online_users = ADAGenericUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
 
-
-// require_once(MODULES_TEST_PATH.'/config/config.inc.php');
 require_once(MODULES_TEST_PATH.'/include/init.inc.php');
 require_once(MODULES_TEST_PATH.'/include/management/managementTest.inc.php');
 require_once(MODULES_TEST_PATH.'/include/management/rootManagementTest.inc.php');

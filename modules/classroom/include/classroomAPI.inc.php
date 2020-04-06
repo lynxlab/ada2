@@ -15,7 +15,6 @@
  *
  * @author giorgio
  */
-// require_once MODULES_CLASSROOM_PATH . '/config/config.inc.php';
 
 class classroomAPI {
 
