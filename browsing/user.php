@@ -659,7 +659,6 @@ else {
 
 	if (defined('MODULES_BADGES') && MODULES_BADGES) {
 		// need the badges module data handler
-		require_once MODULES_BADGES_PATH .'/config/config.inc.php';
 		$bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(MultiPort::getDSN($provider['puntatore']));
 		// load all the badges for this course
 		$courseBadges = $bdh->findBy('CourseBadge', ['id_corso' => $courseId] );
