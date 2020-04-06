@@ -106,8 +106,8 @@ if(isset($_GET['id_user']))
     $id_user = $_GET['id_user'];
 }
 
-if (isset($_GET['id_instance'])){
-	$id_instance = $_GET['id_instance'];
+if (isset($_GET['id_course_instance'])){
+	$id_instance = $_GET['id_course_instance'];
 } else {
 	$id_instance = $sess_id_instance;
 }
