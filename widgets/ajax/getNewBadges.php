@@ -112,7 +112,6 @@ try {
 	if (!isset($testerName)) throw new \Exception(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
 
 	if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_BADGES') && MODULES_BADGES) {
-		require_once MODULES_BADGES_PATH . '/config/config.inc.php';
 		$bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(\MultiPort::getDSN($testerName));
 		$findByArr['id_utente'] = $userObj->getId();
 		$findByArr['notified'] = 0;

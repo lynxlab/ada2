@@ -41,7 +41,6 @@ $trackPageToNavigationHistory = false;
 require_once ROOT_DIR.'/include/module_init.inc.php';
 require_once ROOT_DIR.'/browsing/include/browsing_functions.inc.php';
 BrowsingHelper::init($neededObjAr);
-// require_once MODULES_SLIDEIMPORT_PATH . '/config/config.inc.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['sessionVar']) && strlen(trim($_POST['sessionVar']))>0) {
 	$sessionVar = trim($_POST['sessionVar']);

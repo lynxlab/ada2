@@ -44,7 +44,6 @@ $online_users_listing_mode = 2;
 $online_users = ADAGenericUser::get_online_usersFN($id_course_instance,$online_users_listing_mode);
 
 
-// require_once(MODULES_TEST_PATH.'/config/config.inc.php');
 require_once(MODULES_TEST_PATH.'/include/init.inc.php');
 //needed to promote AMADataHandler to AMATestDataHandler. $sess_selected_tester is already present in session
 $GLOBALS['dh'] = AMATestDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));

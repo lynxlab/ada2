@@ -37,7 +37,6 @@ $neededObjAr = array(
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 // MODULE's OWN IMPORTS
-// require_once MODULES_LOGIN_PATH .'/config/config.inc.php';
 
 $GLOBALS['dh'] = AMALoginDataHandler::instance();
 

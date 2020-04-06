@@ -98,7 +98,6 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
     );
 
     if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
-        require_once MODULES_SERVICECOMPLETE_PATH . '/config/config.inc.php';
         require_once MODULES_SERVICECOMPLETE_PATH . '/include/AMACompleteDataHandler.inc.php';
         $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $conditionset = $cdh->get_linked_conditionset_for_course($courseObj->getId());
@@ -106,7 +105,6 @@ if (!($courseObj instanceof Course) || !$courseObj->isFull()) {
     }
 
     if (defined('MODULES_BADGES') && MODULES_BADGES) {
-        require_once MODULES_BADGES_PATH . '/config/config.inc.php';
         $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
         $badges = $bdh->findBy('CourseBadge', [ 'id_corso' => $courseObj->getId() ]);
         if (!\AMA_DB::isError($badges) && is_array($badges) && count($badges)>0) {

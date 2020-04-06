@@ -194,7 +194,6 @@ class BrowsingHelper extends ViewBaseHelper
         isset($courseInstanceObj) && isset($courseObj) && isset($userObj) &&
         is_object($courseInstanceObj) && is_object($courseObj) && is_object($userObj)) {
         // need the badges module data handler
-        require_once MODULES_BADGES_PATH . '/config/config.inc.php';
         $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
         // need the service-complete module data handler
         require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';

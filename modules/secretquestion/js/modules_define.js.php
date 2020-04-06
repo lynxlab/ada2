@@ -13,7 +13,6 @@ header("Content-type: application/x-javascript");
 /**
  * Module config file
  */
-// require_once MODULES_SECRETQUESTION_PATH.'/config/config.inc.php';
 
 if (defined('MODULES_SECRETQUESTION_HTTP')) {
 	echo 'var MODULES_SECRETQUESTION_HTTP=\''.MODULES_SECRETQUESTION_HTTP.'\';'.PHP_EOL;

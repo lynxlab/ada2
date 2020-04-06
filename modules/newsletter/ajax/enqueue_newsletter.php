@@ -42,7 +42,6 @@ require_once ROOT_DIR.'/include/logger_class.inc.php';
 require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
 
 // MODULE's OWN IMPORTS
-// require_once MODULES_NEWSLETTER_PATH.'/config/config.inc.php';
 require_once MODULES_NEWSLETTER_PATH.'/include/AMANewsletterDataHandler.inc.php';
 require_once MODULES_NEWSLETTER_PATH.'/include/functions.inc.php';
 

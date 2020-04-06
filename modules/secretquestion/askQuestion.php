@@ -15,7 +15,6 @@ ini_set('display_errors', '0'); error_reporting(E_ALL);
 require_once (realpath(dirname(__FILE__)) . '/../../config_path.inc.php');
 
 // MODULE's OWN IMPORTS
-// require_once MODULES_SECRETQUESTION_PATH .'/config/config.inc.php';
 
 /**
  * Clear node and layout variable in $_SESSION
