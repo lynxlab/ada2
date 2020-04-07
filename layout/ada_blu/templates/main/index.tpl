@@ -103,7 +103,7 @@
 
 <div id="newscont" class="ada-column">
    <div class="portlet">
-     <div class="portlet-header"><a name="ultimenews"><i18n>Ultime news</i18n></a></div>
+     <div class="portlet-header"><a name="ultimenews"></a><i18n>Ultime news</i18n></div>
         <div class="portlet-content">
 	  <template_field class="template_field" name="bottomnews">bottomnews</template_field>
 	</div>
