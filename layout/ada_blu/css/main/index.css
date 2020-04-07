@@ -126,3 +126,9 @@ html,body {
 .ADAwidget .ui.basic.feed.segment .label img:not(.circular) { border-radius:0; }
 .ADAwidget .ui.basic.feed.segment .header a { font-weight: bold; }
 
+img[usemap] {
+    border: none;
+    height: auto;
+    max-width: 100%;
+    width: auto;
+}

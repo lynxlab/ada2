@@ -317,6 +317,7 @@ if (isset($_SESSION['sess_userObj']) && $_SESSION['sess_userObj']-> getType() !=
 		$layout_dataAr['JS_filename'] = array(
 				JQUERY,
 				JQUERY_UI,
+				ROOT_DIR . "/js/include/jquery/ui/jquery.rwdImageMaps.min.js",
 				JQUERY_NO_CONFLICT,
 				ROOT_DIR . "/js/main/index.js"
 		);
