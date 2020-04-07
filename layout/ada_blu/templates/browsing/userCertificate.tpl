@@ -6,49 +6,49 @@
     <body>
         <a name="top"></a>
         <!-- testata -->
-        <template_field class="template_field" name="logo">logo</template_field>
         <template_field class="template_field" name="logoProvider">logoProvider</template_field>
-      
+        <template_field class="template_field" name="logo">logo</template_field>
+
         <div class="header_Certificate">
-        </div> 
-		<div class="clearfix"></div>          
+        </div>
+		<div class="clearfix"></div>
         <!-- / testata -->
 
         <!-- contenitore -->
-       
+
         <div class="title_Certificate">
             <template_field class="template_field" name="title">title</template_field>
         </div>
         <div class="header_Certificate">
-            <i18n> SI ATTESTA CHE </i18n>
+            <i18n> Si attesta che </i18n>
         </div>
-        <div class="user_data">
-            <template_field class="template_field" name="userFullName">userFullName</template_field> 
+        <div class="user_data" style="
+        max-height:3.8em; overflow: hidden; text-align:center;
+        margin: 2.5em 0; font-weight:bold; font-size:2.2em; text-transform:capitalize;">
+            <template_field class="template_field" name="userFullName">userFullName</template_field>
             <template_field class="template_field" name="birthSentence">birthSentence</template_field>
             <template_field class="template_field" name="CodeFiscSentence">CodeFiscSentence</template_field>
         </div>
-        
+
         <div class="user_data">
-            <i18n> HA FREQUENTATO IL CORSO: </i18n>
+            in data <template_field class="template_field" name="creditsdate">creditsdate</template_field>  ha completato con<br/>successo il corso di formazione a distanza
         </div>
-        <div class="course_title">
+        <div class="course_title" style="
+        max-height: 5em; overflow: hidden; margin: 1.5em 0; font-weight:bold; text-transform:capitalize;">
             <template_field class="template_field" name="mainSentence">mainSentence</template_field>
         </div>
-        <div class="Certificate_datails">
-            <template_field class="template_field" name="timeSentence">timeSentence</template_field>
+        <div class="user_data">
+            superando positivamente il questionario finale
         </div>
-        <div class="Certificate_datails">
-            <template_field class="template_field" name="data_Sentence">data_Sentence</template_field>
+
+        <div style="position:absolute; width:100%; bottom:4.8em; text-align: center; page-break-after: auto;">
+            <template_field class="template_field" name="timbroFirma">timbroFirma</template_field>
         </div>
-        <div class="Certificate_datails">
-            <template_field class="template_field" name="providerSentence">providerSentence</template_field>
-        </div>
-        <div class="placeAndDate">
+
+		<div style="position:absolute; width:100%; bottom:2em; text-align: left; font-size:small;">
             <template_field class="template_field" name="placeAndDate">placeAndDate</template_field>
-            <div class="signature">
-                <template_field class="template_field" name="signature">signature</template_field>
-            </div>   
-        </div>
+     	</div>
+
         <!-- contenitore -->
     </body>
 </html>

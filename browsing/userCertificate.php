@@ -81,6 +81,7 @@ if (!$forcereturn) {
     BrowsingHelper::init($neededObjAr);
 
     require_once ROOT_DIR.'/switcher/include/switcher_functions.inc.php';
+    require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
 }
 
 if (!isset($self)) {
@@ -89,7 +90,9 @@ if (!isset($self)) {
 
 $title =  translateFN('Attestato di frequenza');
 
-$logo='<img class="usercredits_logo" src="'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/header-logo.png"  />';
+$logo ='<img class="usercredits_logo" src="'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/header-3rdlogo.png"  />';
+$logo.='<img class="usercredits_logoProvider" src="'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/LOGO_AMESCI_rosso.gif"  />';
+$timbroFirma='<img class="timbroFirma" src="'.HTTP_ROOT_DIR.'/layout/'.$_SESSION['sess_template_family'].'/img/firmatimbro.png"  />';
 $logoProvider = null;
 if (MULTIPROVIDER===false) {
 	$providerImg = HTTP_ROOT_DIR.'/clients/'.$client.'/layout/'.ADA_TEMPLATE_FAMILY.'/img/'.'header-logo.png';
@@ -126,6 +129,17 @@ if (!(isset($courseObj) && $courseObj instanceof Course)) {
 $codice_corso = $courseObj->getCode();
 
 $UserCertificateObj = Multiport::findUser($id_user,$id_instance);
+
+$s = array_filter(Subscription::findSubscriptionsToClassRoom($courseInstanceObj->getId()), function ($subsObj) use ($UserCertificateObj) {
+	return $subsObj->getSubscriberId() == $UserCertificateObj->getId();
+});
+$creditsdate = $courseInstanceObj->getEndDate();
+if (count($s) == 1) {
+	$s = reset($s);
+	if ($s->getSubscriptionStatus() == ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED && !is_null($s->getLastStatusUpdate())) {
+		$creditsdate = ' '.ts2dFN($s->getLastStatusUpdate()).' ';
+	}
+}
 
 $userFullName = $UserCertificateObj->getFullName();
 $gender = $UserCertificateObj->getGender();
@@ -172,7 +186,7 @@ if(!is_null($testerAr['nome']) && stripos($testerAr['nome'],'NULL')===false && s
 
 $currentData=ts2dFN(time());
 $luogo=$testerAr['citta'];
-$placeAndDate = $luogo.' '.$currentData;
+$placeAndDate = $luogo.', lì '.$currentData;
 
 $responsabile = $testerAr['responsabile'];
 $signature = translateFN('Il Rappresentante Legale del Provider: ').$responsabile;
@@ -182,14 +196,16 @@ $content_dataAr   = array(
  'title'=> $title,
  'logoProvider'=>$logoProvider,
  'userFullName'=>$userFullName,
- 'birthSentence'=>isset($birthSentence) ? $birthSentence : null ,
- 'CodeFiscSentence'=>isset($CodeFiscSentence) ? $CodeFiscSentence : null,
+ 'timbroFirma' => $timbroFirma,
+ 'creditsdate' => $creditsdate,
+//  'birthSentence'=>isset($birthSentence) ? $birthSentence : null ,
+//  'CodeFiscSentence'=>isset($CodeFiscSentence) ? $CodeFiscSentence : null,
  'mainSentence'=>$mainSentence,
  'timeSentence'=>$timeSentence,
  'data_Sentence'=>$data_Sentence,
  'providerSentence'=>$providerSentence,
  'placeAndDate'=>$placeAndDate,
- 'signature'=>$signature,
+//  'signature'=>$signature,
  'courseDescription' => (isset($courseObj) && $courseObj instanceof Course) ? $courseObj->getDescription() : null,
  'courseDurationSentence' => isset($courseDurationSentence) ? $courseDurationSentence : null
  );
