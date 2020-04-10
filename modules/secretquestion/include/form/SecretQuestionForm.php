@@ -26,8 +26,8 @@ class SecretQuestionForm extends FForm {
 		parent::__construct();
 
 		if (!$isAskQuestion) {
-			$this->addTextInput('uname', 'username')
-				 ->setRequired()->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR)
+			$this->addTextInput('uname', translateFN('email / username'))
+				 ->setRequired()->setValidator(FormValidator::EMAIL_VALIDATOR)
 				 ->setAttribute('data-isusername', 'true');
 			if ($isRegistration) {
 				// if username is null, it's the registration form itself, not in editProfileForm
