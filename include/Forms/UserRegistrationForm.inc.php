@@ -48,13 +48,24 @@ class UserRegistrationForm extends FForm
 
 //         $this->addTextInput('birthprovince', translateFN('Provincia di nascita'));
 
-        $email = $this->addTextInput('email', translateFN('Email'));
+        $email = $this->addHidden('email', translateFN('Email'));
         if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
             require_once MODULES_SECRETQUESTION_PATH .'/include/form/SecretQuestionForm.php';
         	(new SecretQuestionForm(strcmp(get_class($this),__CLASS__) === 0))->addControlsToForm($this);
         } else {
              $email->setRequired()->setValidator(FormValidator::EMAIL_VALIDATOR);
         }
+
+        $this->addTextInput('cap', translateFN('cap'))
+            ->setRequired()->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
+
+        $this->addTextInput('codice_fiscale', translateFN('Codice operatore volontario'))
+            ->setRequired()->setValidator(FormValidator::AMESCI_CODE_VALIDATOR);
+
+        $codetext = CDOMElement::create('span','class:pass-validator-text');
+        $codetext->addChild(new CText(translateFN('Il Codice operatorio volontario è composto da una V (maisucola) seguita'.
+        ' da 9 cifre. Es. V123456789')));
+        $this->addCDOM($codetext);
 
 //         $this->addSelect(
 //             'sesso',
