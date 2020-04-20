@@ -9,24 +9,27 @@
 <!-- testata -->
 <div id="header">
 		 <template_field class="microtemplate_field" name="header">header</template_field>
-</div> 
+</div>
 <!-- / testata -->
 <!-- contenitore -->
 <div id="container">
 <!-- contenuto -->
 <div id="content">
 <div id="topcont">
+<!--
     <div id="submenubanner">
- <template_field class="template_field" name="infomsg">infomsg</template_field>
-</div>
+        <template_field class="template_field_disabled" name="infomsg">infomsg</template_field>
+    &nbsp;
+    </div>
+-->
 
-</div>	 
+</div>
 <div id="contentcontent">
          <div class="first">
             <div class="sx">
                 <div class="wellcome">
                 <template_field class="template_field" name="message">message</template_field>
-                <template_field class="template_field" name="newsmsg">newsmsg</template_field>                                
+                <template_field class="template_field" name="newsmsg">newsmsg</template_field>
                 </div>
             </div>
             <div class="dx">
@@ -35,13 +38,13 @@
 		    		<!--div class="forget">
 				<a href="browsing/forget.php">
 					 <i18n>Did you forget your password?</i18n>
-				</a>		
+				</a>
 
                 </div-->
 		</div>
 		<div class="helpcont">
 		  <template_field class="template_field" name="helpmsg">helpmsg</template_field>
-		  <!-- widget sample 
+		  <!-- widget sample
 		  <template_field class="template_field" name="widgetSample">widgetSample</template_field>
 		   -->
             </div>
@@ -51,12 +54,12 @@
 </div>
 
 <div id="newscont">
-	<template_field class="template_field" name="bottomnews">bottomnews</template_field> 	
+	<template_field class="template_field" name="bottomnews">bottomnews</template_field>
 </div>
 <br class="clearfix">
 <div id="bottomcont"></div>
 </div> <!--  / contenuto -->
-</div> 
+</div>
 <!-- / contenitore -->
 <!-- MENU A TENDINA -->
 <div id="mainmenu">
@@ -77,16 +80,16 @@
 				</a>
         </li>
 	<!--li id="language_choose" class="language_choose">
-		| <a href="index.php?lang=bg">Български</a> | <a href="index.php?lang=en">English</a> | <a href="index.php?lang=es">Español</a> |  
-		 <a href="index.php?lang=is">Íslenska</a> | <a href="index.php?lang=it">Italiano</a> | <a href="index.php?lang=ro">Română</a> 
+		| <a href="index.php?lang=bg">Български</a> | <a href="index.php?lang=en">English</a> | <a href="index.php?lang=es">Español</a> |
+		 <a href="index.php?lang=is">Íslenska</a> | <a href="index.php?lang=it">Italiano</a> | <a href="index.php?lang=ro">Română</a>
 	</li-->
 	<br />
 	<li id="help_main" class="help_main">
 			<!--i18n>Explore the web site information or register and ask for a practitioner<i18n-->
-		 	<template_field class="template_field" name="status">status</template_field> 
+		 	<template_field class="template_field" name="status">status</template_field>
 	</li>
 </ul> <!-- / menu -->
-</div> 
+</div>
 <!-- / MENU A TENDINA -->
 <!-- PIEDE -->
 <div id="footer_login">

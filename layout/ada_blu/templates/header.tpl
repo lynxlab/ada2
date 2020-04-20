@@ -1,16 +1,10 @@
 <div id="intestazione">
-    <div id="logo_title">
-        <img src="img/header-logo.png">
+    <div class="ui image">
+        <a href="https://www.folias.it/" target="_blank">
+            <img src="img/header-logo.jpg" height="70">
+        </a>
     </div>
-
-	<!-- valerio
-	<div id="2nd_img">
-       <img src="img/20.png"></a>
+	<div class="ui image">
+        <img src="img/header-3rdlogo.jpg">
     </div>
-	
-	<div id="3rd_logo">
-       <img src="img/3rd_logo.png"></a>
-    </div>
-	-->
-	<div id="bis_logo"></div>
 </div>

@@ -6,19 +6,19 @@
 ---------------------------------------------------------------*/
 
 
-.ui.ada.menu { float:left; width: 100%; background-color: teal; color: white; 
-    
+.ui.ada.menu { float:left; width: 100%; background-color: #f1812d; color: white;
+
     border-radius:0;
-    border-bottom: 1px solid #009F98;
+    border-bottom: 1px solid #f1812d;
     }
-    
+
 #msglabel, #menuright { display: none; }
 #journey, #submenubanner, #help { margin-top: 60px; }
    .menuright_view {
        top:0;
        right:0;
-       border: 5px solid #fff; 
-       background: #eee;   
+       border: 5px solid #fff;
+       background: #eee;
    }
    #menurightcontent {
        padding: 10px;
@@ -34,17 +34,17 @@
    #menuright  h3 {
        text-align: center;
    }
-   
-   div.right.sidebar .accordion .content.field>a { 
-   display: block;    
+
+   div.right.sidebar .accordion .content.field>a {
+   display: block;
    margin-left:47px;
    line-height: 30px;
    text-decoration: none;
    background: transparent;
 }
-    
+
 .ui.ada.menu > ul.menu,
-.ui.ada.menu > ul.menu > li { background: none; border:none; -webkit-box-shadow: none; } 
+.ui.ada.menu > ul.menu > li { background: none; border:none; -webkit-box-shadow: none; }
 .ui.ada.menu > ul.menu > li > a { color: white; }
     ul.left.menu {
         float:left;
@@ -52,14 +52,14 @@
     ul.right.menu {
         float:right;
     }
-    ul.menu li.item,    
+    ul.menu li.item,
     ul.menu li.ui.dropdown ul.menu li.item { padding:0 !important; }
     .ui.ada.menu  ul.menu > li.item.disabled { opacity: 0.2; }
     .ui.ada.menu  ul.menu > li.item.disabled > a { cursor: default; }
     i.icon { display: none; }
     div.ui.icon.input { background: transparent; text-align: right; }
     ul.right.menu ul.menu { right:0px !important; }
-    
+
 
 /* Menu box
 ===================*/
@@ -94,12 +94,12 @@
 		background:#009F98;
 		color:#555;
 	}
-	
+
 	.sm-ada li.ui.item.dropdown ul li.item:hover,
 	.sm-ada li.ui.item.dropdown ul li.item a:hover {
 	   background: #eee;
 	}
-	
+
 	/* current items - add the class manually to some item or check the "markCurrentItem" script option */
 	.sm-ada a.current, .sm-ada a.current:hover, .sm-ada a.current:focus, .sm-ada a.current:active {
 		background:#555;
