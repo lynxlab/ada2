@@ -13,6 +13,7 @@
 #infotable tbody tr.instanceDetails td.instanceDetails ul li { color: inherit; border: none; height: 2em; display: flex; align-items: center; padding: 0.5em; }
 #infotable tbody tr.instanceDetails td.instanceDetails ul li:hover {  background-color: #d3d3d380; }
 #infotable tbody tr.instanceDetails td.instanceDetails ul li .label { padding-top: 0; padding-bottom: 0; margin-left: auto; }
+#infotable tbody tr.instanceDetails td.instanceDetails span:not(.title):not(.separator):not(.label) { margin-left: 0.2em; }
 
 /**
  * Table main
