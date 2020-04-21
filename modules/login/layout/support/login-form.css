@@ -74,3 +74,8 @@ select#p_selected_language {
 	border: .1em solid rgba(0,0,0,.1);
 	border-radius: 0;
 }
+
+#login_form #label_uname label,
+#login_form #label_pwd label {
+	width: auto;
+}
