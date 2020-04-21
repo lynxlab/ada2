@@ -66,7 +66,7 @@
 
 		<div class="helpcont ada-column">
                     <div class="portlet">
-                        <div class="portlet-header">&nbsp;</div>
+                        <div class="portlet-header"><i18n>Contatti</i18n></div>
                     <div class="portlet-content">
                       <template_field class="template_field" name="helpmsg">helpmsg</template_field>
                     </div>
@@ -77,7 +77,11 @@
                     <div class="portlet">
                         <div class="portlet-header"><i18n>facebook</i18n></div>
                         <div class="portlet-content">
-                            <template_field class="template_field" name="fbRSS">fbRSS</template_field>
+                            <div class="fb-page" data-href="https://www.facebook.com/FoliasCooperativaSociale" data-tabs="timeline" data-width="500" data-height="" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false">
+                                <blockquote cite="https://www.facebook.com/FoliasCooperativaSociale" class="fb-xfbml-parse-ignore">
+                                    <a href="https://www.facebook.com/FoliasCooperativaSociale">ADHR FORMAZIONE</a>
+                                </blockquote>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -115,6 +119,7 @@
 <div id="footer_login">
 		 <template_field class="microtemplate_field" name="footer">footer</template_field>
 </div> <!-- / piede -->
-
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v6.0"></script>
 </body>
 </html>
