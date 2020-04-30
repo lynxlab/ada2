@@ -418,13 +418,13 @@ break;
 
 $content_dataAr = array(
   'title'     => $title,
-  'message'   => $message,
-  'menu'      => $menu,
+  'message'   => isset($message) ? $message : '',
+  'menu'      => isset($menu) ? $menu : '',
   'data'      => $dati,
-  'help'      => $help,
+  'help'      => $help .(isset($message) ? $message : ''),
   'status'    => $status,
   'user_name' => $userObj->getUserName(),
-  'user_type' => $userType,
+  'user_type' => isset($userType) ? $userType : '',
 );
 
 ARE::render($layout_dataAr, $content_dataAr);
