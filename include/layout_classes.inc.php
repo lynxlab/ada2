@@ -39,8 +39,11 @@ class Layout {
 	$this->error = "";
 	if (empty($module_dir)) {
 		$modules_dir = str_replace($root_dir,'',$modules_dir);
-		$actual_dir = str_replace($root_dir,'',realpath(dirname($_SERVER['SCRIPT_FILENAME'])));
-
+        $actual_dir = str_replace($root_dir,'',realpath(dirname($_SERVER['SCRIPT_FILENAME'])));
+        /**
+         * windows fix: replace back with forwardslash
+         */
+        $actual_dir = str_replace('\\','/', $actual_dir);
 		if (empty($actual_dir)) {
 			$module_dir = 'main';
 		}
