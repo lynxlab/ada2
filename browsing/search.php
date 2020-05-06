@@ -352,8 +352,8 @@ $online_users = ADALoggableUser::get_online_usersFN($sess_id_course_instance,$on
 $banner = include (ROOT_DIR."/include/banner.inc.php");
 $SimpleSearchlabel = translateFN('Ricerca semplice');
 $AdvanceSearchlabel = translateFN('Ricerca avanzata');
-$Simple_searchLink="<a href='#'onClick=simpleSearch()>$SimpleSearchlabel</a>";
-$advanced_searchLink="<a href='#'onClick=advancedSearch()>$AdvanceSearchlabel</a>";
+$Simple_searchLink="<a class='simple-search' href='#'onClick=simpleSearch()>$SimpleSearchlabel</a>";
+$advanced_searchLink="<a class='advanced-search' href='#'onClick=advancedSearch()>$AdvanceSearchlabel</a>";
 /* 8.
 costruzione della pagina HTML
 */
