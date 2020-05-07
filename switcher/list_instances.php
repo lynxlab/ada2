@@ -130,14 +130,14 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
             $delete_link = BaseHtmlLib::link("delete_instance.php?id_course=$courseId&id_course_instance=$instanceId",
                     translateFN('Delete instance')
                     );
-            
+
             if (defined('MODULES_CLASSBUDGET') && MODULES_CLASSBUDGET) {
             	$budgetImg = CDOMElement::create('img','alt:'.translateFN('budget').',title:'.translateFN('budget'));
             	$budgetImg->setAttribute('src', MODULES_CLASSBUDGET_HTTP.'/layout/'.$template_family.'/img/budget_icon.png');
             	$budget_link = BaseHtmlLib::link(MODULES_CLASSBUDGET_HTTP."/index.php?id_course=$courseId&id_course_instance=$instanceId", $budgetImg->getHtml());
             	$actionsArray[] = $budget_link;
             }
-            
+
             $actionsArray[] = $delete_link;
             $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actionsArray);
             // $actions = BaseHtmlLib::plainListElement('class:inline_menu',array($edit_link/*,$view_link*/, $delete_link));
@@ -152,7 +152,7 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
             $end_date =  AMA_DataHandler::ts_to_date($instance[4]);
             $title = $instance[5];
 
-            $assign_tutor_link = BaseHtmlLib::link("assign_tutor.php?id_course=$courseId&id_course_instance=$instanceId", $tutorFullName);
+            $assign_tutor_link = BaseHtmlLib::link("assign_more_tutors.php?id_course=$courseId&id_course_instance=$instanceId", $tutorFullName);
             $subscriptions_link = BaseHtmlLib::link(
                     "course_instance.php?id_course=$courseId&id_course_instance=$instanceId",
                     translateFN('Lista studenti')
