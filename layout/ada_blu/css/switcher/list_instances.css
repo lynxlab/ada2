@@ -1,0 +1,4 @@
+ul.inline_menu li a:link, ul.inline_menu li a,
+ul.inline_menu li a:link, ul.inline_menu li a:visited {
+    background-color: transparent;
+}

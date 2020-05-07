@@ -102,6 +102,7 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
         $tbody_data = array();
 
         $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
+        $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:'.translateFN('Delete instance'));
         //$view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
 
         foreach($instancesAr as $instance) {
@@ -125,9 +126,7 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
 
             $edit_link = BaseHtmlLib::link("edit_instance.php?id_course=$courseId&id_course_instance=$instanceId", $edit_img->getHtml());
           //  $view_link = BaseHtmlLib::link("view_instance.php?id=$instanceId", $view_img->getHtml());
-            $delete_link = BaseHtmlLib::link("delete_instance.php?id_course=$courseId&id_course_instance=$instanceId",
-                    translateFN('Delete instance')
-                    );
+            $delete_link = BaseHtmlLib::link("delete_instance.php?id_course=$courseId&id_course_instance=$instanceId", $delete_img->getHtml());
             $actions = BaseHtmlLib::plainListElement('class:inline_menu',array($edit_link/*,$view_link*/, $delete_link));
 
             if($instance[1] > 0) {
