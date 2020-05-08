@@ -314,6 +314,7 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 						if ($isUserInProvider) {
 							$s = new \Subscription($student->getId(), $saveData['instanceId']);
 							$s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
+							$s->setStartStudentLevel($iArr['start_level_student']);
 							\Subscription::addSubscription($s);
 							++$counters['subscribed'];
 						}
