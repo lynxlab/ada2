@@ -99,7 +99,7 @@ class GroupForm extends StudentsGroupsAbstractForm {
 			$dzlegend = \CDOMElement::create('span','class:small');
 			$legend = [
 				'File in formato csv',
-				'Senza riga di intestazione, sequenza campi: nome, cognome, '.(MODULES_SECRETQUESTION ? 'username' : 'e-mail (che sarà anche l\'username').', password'
+				'Senza riga di intestazione, sequenza campi: nome, cognome, '.(MODULES_SECRETQUESTION ? 'username' : 'e-mail (che sarà anche l\'username)').', password'
 			];
 			$dzlegend->addChild(new \CText(implode('<br/>', array_map('translateFN', $legend))));
 			$row->addChild($dzlegend);

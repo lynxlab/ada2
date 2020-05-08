@@ -357,7 +357,7 @@ function toggleGroupDetails(groupId, imgObj) {
                 row.child( ()=>{
                     const html = ["<ol class='group-users-details ui list'>"];
                     JSONObj.data[0].members.map((el) => {
-                        html.push(`<li class='group-users-item'>${el.nome} ${el.coognome} (${el.username})</li>`)
+                        html.push(`<li class='group-users-item'>${el.nome} ${el.cognome} (${el.username})</li>`)
                     });
                     html.push('</ol>');
                     return html.join("\n");
