@@ -160,10 +160,11 @@ if(is_null($data)) {
 
 		if ($count>0) {
 			// Prepare ZipArchive
-			$file = $dirname . translateFN('Certificati-classe-').$courseInstanceObj->getId().'.zip';
+			$filename = translateFN('Certificati-classe-').$courseInstanceObj->getId();
+			$file = $dirname . $filename .'.zip';
 			$zip = new \ZipArchive();
 			$zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-			$zip->addGlob($dirname.'*.{pdf}', GLOB_BRACE, ['remove_all_path' => true]);
+			$zip->addGlob($dirname.'*.{pdf}', GLOB_BRACE, ['add_path' => $filename . DIRECTORY_SEPARATOR, 'remove_all_path' => true]);
 			$zip->close();
 			array_map('unlink', glob($dirname.'*.{pdf}', GLOB_BRACE));
 			$doDownload = !$sendEmail;
