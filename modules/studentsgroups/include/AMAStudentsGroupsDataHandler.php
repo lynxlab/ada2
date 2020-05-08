@@ -10,6 +10,8 @@
 
 namespace Lynxlab\ADA\Module\StudentsGroups;
 
+use Subscription;
+
 require_once(ROOT_DIR . '/include/ama.inc.php');
 class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 {
@@ -65,57 +67,8 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 
 		$sql = sprintf("SELECT %s FROM `%s`", implode(',', array_map(function ($el) {
 			return "`$el`";
-		}, $properties)), $className::table);
-
-		if (!is_null($whereArr) && count($whereArr) > 0) {
-			$invalidProperties = array_diff(array_keys($whereArr), $properties);
-			if (count($invalidProperties) > 0) {
-				throw new StudentsGroupsException(translateFN('Proprietà WHERE non valide: ') . implode(', ', $invalidProperties));
-			} else {
-				$sql .= ' WHERE ';
-				$sql .= implode(' AND ', array_map(function ($el) use (&$whereArr) {
-					if (is_null($whereArr[$el])) {
-						unset($whereArr[$el]);
-						return "`$el` IS NULL";
-					} else {
-						if (is_array($whereArr[$el])) {
-							$retStr = '';
-							if (array_key_exists('op', $whereArr[$el]) && array_key_exists('value', $whereArr[$el])) {
-								$whereArr[$el] = array($whereArr[$el]);
-							}
-							foreach ($whereArr[$el] as $opArr) {
-								if (strlen($retStr) > 0) $retStr = $retStr . ' AND ';
-								$retStr .= "`$el` " . $opArr['op'] . ' ' . $opArr['value'];
-							}
-							unset($whereArr[$el]);
-							return '(' . $retStr . ')';
-						} else if (is_numeric($whereArr[$el])) {
-							$op = '=';
-						} else {
-							$op = ' LIKE ';
-							$whereArr[$el] = '%' . $whereArr[$el] . '%';
-						}
-						return "`$el`$op?";
-					}
-				}, array_keys($whereArr)));
-			}
-		}
-
-		if (!is_null($orderByArr) && count($orderByArr) > 0) {
-			$invalidProperties = array_diff(array_keys($orderByArr), $properties);
-			if (count($invalidProperties) > 0) {
-				throw new StudentsGroupsException(translateFN('Proprietà ORDER BY non valide: ') . implode(', ', $invalidProperties));
-			} else {
-				$sql .= ' ORDER BY ';
-				$sql .= implode(', ', array_map(function ($el) use ($orderByArr) {
-					if (in_array($orderByArr[$el], array('ASC', 'DESC'))) {
-						return "`$el` " . $orderByArr[$el];
-					} else {
-						throw new StudentsGroupsException(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
-					}
-				}, array_keys($orderByArr)));
-			}
-		}
+		}, $properties)), $className::table)
+			. $this->buildWhereClause($whereArr, $properties) . $this->buildOrderBy($orderByArr, $properties);
 
 		if (is_null($dbToUse)) $dbToUse = $this;
 
@@ -193,7 +146,7 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 
 		// set to null all empty passed fields
 		foreach (array_keys($saveData) as $aKey) {
-			if (strpos($aKey, Groups::customFieldPrefix) === 0 && strlen($saveData[$aKey])<=0) {
+			if (strpos($aKey, Groups::customFieldPrefix) === 0 && strlen($saveData[$aKey]) <= 0) {
 				$saveData[$aKey] = null;
 			}
 		}
@@ -326,13 +279,63 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 	}
 
 	/**
+	 * Saves a group subscription to a course instance
+	 *
+	 * @param array $saveData
+	 * @return StudentsGroupsException|array
+	 */
+	public function saveSubscribeGroup($saveData)
+	{
+		$saveData = array_map('intval', $saveData);
+		$result = $this->findBy('Groups', ['id' => $saveData['groupId']]);
+		if (!\AMA_DB::isError($result)) {
+			// check instance existence
+			$iArr = $GLOBALS['dh']->course_instance_get($saveData['instanceId']);
+			if (!\AMA_DB::isError($iArr) && is_array($iArr) && isset($iArr['id_corso']) && $iArr['id_corso'] == $saveData['courseId']) {
+				require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
+				$counters = [
+					'alreadySubscribed' => 0,
+					'subscribed' => 0,
+				];
+				$group = reset($result);
+				$courseProviderAr = $GLOBALS['common_dh']->get_tester_info_from_id_course($saveData['courseId']);
+				$subscribedIds = array_map(function($s) {
+						return $s->getSubscriberId();
+					}, \Subscription::findSubscriptionsToClassRoom($saveData['instanceId'], true)
+				);
+				foreach ($group->getMembers() as $student) {
+					if (!in_array($student->getId(), $subscribedIds)) {
+						if (!in_array($courseProviderAr['puntatore'], $student->getTesters())) {
+							// subscribe user to course provider
+							$isUserInProvider = \Multiport::setUser($student, [$courseProviderAr['puntatore']]);
+						} else {
+							$isUserInProvider = true;
+						}
+						if ($isUserInProvider) {
+							$s = new \Subscription($student->getId(), $saveData['instanceId']);
+							$s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
+							\Subscription::addSubscription($s);
+							++$counters['subscribed'];
+						}
+					} else {
+						++$counters['alreadySubscribed'];
+					}
+				}
+				return $counters;
+
+			} else return new StudentsGroupsException(translateFN('ID corso o ID classe non valido'));
+
+		} else return new StudentsGroupsException($result->getMessage());
+	}
+
+	/**
 	 * Deletes a Group
 	 *
 	 * @param array $saveData
 	 * @return StudentsGroupsException|bool
 	 */
-	public function deleteGroup($saveData) {
-
+	public function deleteGroup($saveData)
+	{
 		$result = $this->queryPrepared(
 			$this->sqlDelete(
 				\Lynxlab\ADA\Module\StudentsGroups\Groups::table,
@@ -344,7 +347,6 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 		if (!\AMA_DB::isError($result)) {
 			return true;
 		} else return new StudentsGroupsException($result->getMessage());
-
 	}
 
 	/**
@@ -355,7 +357,8 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 	 * @param array $whereArr
 	 * @return string
 	 */
-	private function sqlUpdate($table, array $fields, &$whereArr) {
+	private function sqlUpdate($table, array $fields, &$whereArr)
+	{
 		return sprintf(
 			"UPDATE `%s` SET %s",
 			$table,
@@ -372,11 +375,17 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 	 * @param array $fields
 	 * @return string
 	 */
-	private function sqlInsert($table, array $fields) {
-		return sprintf("INSERT INTO `%s` (%s) VALUES (%s);",
-				$table,
-				implode(',',array_map(function($el){ return "`$el`"; }, array_keys($fields))),
-				implode(',',array_map(function($el){ return "?"; }, array_keys($fields)))
+	private function sqlInsert($table, array $fields)
+	{
+		return sprintf(
+			"INSERT INTO `%s` (%s) VALUES (%s);",
+			$table,
+			implode(',', array_map(function ($el) {
+				return "`$el`";
+			}, array_keys($fields))),
+			implode(',', array_map(function ($el) {
+				return "?";
+			}, array_keys($fields)))
 		);
 	}
 
@@ -387,7 +396,8 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 	 * @param array $whereArr
 	 * @return string
 	 */
-	private function sqlDelete($table, &$whereArr) {
+	private function sqlDelete($table, &$whereArr)
+	{
 		return sprintf(
 			"DELETE FROM `%s`",
 			$table
@@ -401,16 +411,17 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 	 * @param array $properties
 	 * @return string
 	 */
-	private function buildWhereClause(&$whereArr, $properties) {
-		$sql  ='';
+	private function buildWhereClause(&$whereArr, $properties)
+	{
+		$sql  = '';
 		$newWhere = [];
-		if (!is_null($whereArr) && count($whereArr)>0) {
-			$invalidProperties = array_diff(array_keys($whereArr),$properties);
-			if (count($invalidProperties)>0) {
-				throw new StudentsGroupsException(translateFN('Proprietà WHERE non valide: ').implode(', ', $invalidProperties));
+		if (!is_null($whereArr) && count($whereArr) > 0) {
+			$invalidProperties = array_diff(array_keys($whereArr), $properties);
+			if (count($invalidProperties) > 0) {
+				throw new StudentsGroupsException(translateFN('Proprietà WHERE non valide: ') . implode(', ', $invalidProperties));
 			} else {
 				$sql .= ' WHERE ';
-				$sql .= implode(' AND ', array_map(function($el) use (&$newWhere, $whereArr){
+				$sql .= implode(' AND ', array_map(function ($el) use (&$newWhere, $whereArr) {
 					if (is_null($whereArr[$el])) {
 						unset($whereArr[$el]);
 						return "`$el` IS NULL";
@@ -421,16 +432,16 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 								$whereArr[$el] = array($whereArr[$el]);
 							}
 							foreach ($whereArr[$el] as $opArr) {
-								if (strlen($retStr)>0) $retStr = $retStr. ' AND ';
-								$retStr .= "`$el` ".$opArr['op'].' '.$opArr['value'];
+								if (strlen($retStr) > 0) $retStr = $retStr . ' AND ';
+								$retStr .= "`$el` " . $opArr['op'] . ' ' . $opArr['value'];
 							}
 							unset($whereArr[$el]);
-							return '('.$retStr.')';
+							return '(' . $retStr . ')';
 						} else if (is_numeric($whereArr[$el])) {
 							$op = '=';
 						} else {
 							$op = ' LIKE ';
-							$whereArr[$el] = '%'.$whereArr[$el].'%';
+							$whereArr[$el] = '%' . $whereArr[$el] . '%';
 						}
 						$newWhere[$el] = $whereArr[$el];
 						return "`$el`$op?";
@@ -449,17 +460,18 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 	 * @param array $properties
 	 * @return string
 	 */
-	private function buildOrderBy(&$orderByArr, $properties) {
+	private function buildOrderBy(&$orderByArr, $properties)
+	{
 		$sql = '';
-		if (!is_null($orderByArr) && count($orderByArr)>0) {
-			$invalidProperties = array_diff(array_keys($orderByArr),$properties);
-			if (count($invalidProperties)>0) {
-				throw new StudentsGroupsException(translateFN('Proprietà ORDER BY non valide: ').implode(', ', $invalidProperties));
+		if (!is_null($orderByArr) && count($orderByArr) > 0) {
+			$invalidProperties = array_diff(array_keys($orderByArr), $properties);
+			if (count($invalidProperties) > 0) {
+				throw new StudentsGroupsException(translateFN('Proprietà ORDER BY non valide: ') . implode(', ', $invalidProperties));
 			} else {
 				$sql .= ' ORDER BY ';
-				$sql .= implode(', ', array_map(function($el) use ($orderByArr){
+				$sql .= implode(', ', array_map(function ($el) use ($orderByArr) {
 					if (in_array($orderByArr[$el], array('ASC', 'DESC'))) {
-						return "`$el` ".$orderByArr[$el];
+						return "`$el` " . $orderByArr[$el];
 					} else {
 						throw new StudentsGroupsException(sprintf(translateFN("ORDER BY non valido %s per %s"), $orderByArr[$el], $el));
 					}
@@ -468,5 +480,4 @@ class AMAStudentsGroupsDataHandler extends \AMA_DataHandler
 		}
 		return $sql;
 	}
-
 }
