@@ -1,0 +1,14 @@
+{
+    "name" : "lynxlab/ada-studentsgroups-forkedpaths",
+    "description" : "This is the ada module to manage groups of students.",
+    "license" : "GPL",
+    "authors" : [{
+        "name" : "Giorgio Consorti",
+        "email" : "g.consorti@lynxlab.com"
+    }],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\StudentsGroups\\" : ["include/", "include/form"]
+	    }
+    }
+}
