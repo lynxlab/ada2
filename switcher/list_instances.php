@@ -102,7 +102,11 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
         $tbody_data = array();
 
         $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
+        $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:'.translateFN('Delete instance'));
         //$view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
+        if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+            $subscribeGroup_img = CDOMElement::create('img','class:subscribe-group-icon,src:img/add_instances.png,alt:'.translateFN('Iscrivi gruppo'));
+        }
 
         foreach($instancesAr as $instance) {
             $instanceId = $instance[0];
@@ -125,22 +129,37 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
              }
 
             $edit_link = BaseHtmlLib::link("edit_instance.php?id_course=$courseId&id_course_instance=$instanceId", $edit_img->getHtml());
-            $actionsArray[] = $edit_link;
-          //  $view_link = BaseHtmlLib::link("view_instance.php?id=$instanceId", $view_img->getHtml());
-            $delete_link = BaseHtmlLib::link("delete_instance.php?id_course=$courseId&id_course_instance=$instanceId",
-                    translateFN('Delete instance')
-                    );
-            
+            $edit_link->setAttribute('title', translateFN('Modifica istanza'));
+            //  $view_link = BaseHtmlLib::link("view_instance.php?id=$instanceId", $view_img->getHtml());
+            $delete_link = BaseHtmlLib::link("delete_instance.php?id_course=$courseId&id_course_instance=$instanceId", $delete_img->getHtml());
+            $delete_link->setAttribute('title', translateFN('Cancella istanza'));
+            $actionsArr = [
+                $edit_link,
+                // $view_link,
+                $delete_link
+            ];
             if (defined('MODULES_CLASSBUDGET') && MODULES_CLASSBUDGET) {
             	$budgetImg = CDOMElement::create('img','alt:'.translateFN('budget').',title:'.translateFN('budget'));
             	$budgetImg->setAttribute('src', MODULES_CLASSBUDGET_HTTP.'/layout/'.$template_family.'/img/budget_icon.png');
             	$budget_link = BaseHtmlLib::link(MODULES_CLASSBUDGET_HTTP."/index.php?id_course=$courseId&id_course_instance=$instanceId", $budgetImg->getHtml());
-            	$actionsArray[] = $budget_link;
+                /**
+                 * insert budget link before deletelink
+                 */
+                array_splice($actionsArr, count($actionsArr)-1, 0, [ $budget_link ]);
             }
-            
-            $actionsArray[] = $delete_link;
-            $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actionsArray);
-            // $actions = BaseHtmlLib::plainListElement('class:inline_menu',array($edit_link/*,$view_link*/, $delete_link));
+
+            if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+                $subscribeGroup_link = BaseHtmlLib::link('javascript:void(0)', $subscribeGroup_img);
+                $subscribeGroup_link->setAttribute('class', 'subscribe-group');
+                $subscribeGroup_link->setAttribute('data-courseid', $courseId);
+                $subscribeGroup_link->setAttribute('data-instanceid', $instanceId);
+                $subscribeGroup_link->setAttribute('title', translateFN('Iscrivi gruppo'));
+                /**
+                 * insert subscribeGroup link before deletelink
+                 */
+                array_splice($actionsArr, count($actionsArr)-1, 0, [ $subscribeGroup_link ]);
+            }
+            $actions = BaseHtmlLib::plainListElement('class:actions inline_menu',$actionsArr);
 
             if($instance[1] > 0) {
                 $start_date = AMA_DataHandler::ts_to_date($instance[1]);
@@ -194,12 +213,22 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY_NO_CONFLICT
 );
 
-$optionsAr = array('onload_func' => "\$j('#list_instances').DataTable({
-        'oLanguage':
-            {
-                'sUrl': HTTP_ROOT_DIR + '/js/include/jquery/dataTables/dataTablesLang.php'
-            }
-});");
+if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+    $layout_dataAr['JS_filename'][] = MODULES_STUDENTSGROUPS_PATH . '/js/instanceSubscribe.js';
+    $layout_dataAr['CSS_filename'][] = MODULES_STUDENTSGROUPS_PATH .'/layout/ada_blu/css/showHideDiv.css';
+}
+
+$dataForJS = [
+    'datatables' => ['list_instances'],
+    'loadModuleJS' => [
+        [
+            'baseUrl' => MODULES_STUDENTSGROUPS_HTTP,
+            'className' => 'studentsgroupsAPI.GroupInstanceSubscribe',
+        ],
+    ],
+];
+
+$optionsAr = array('onload_func' => 'initDoc('.htmlentities(json_encode($dataForJS), ENT_COMPAT, ADA_CHARSET).');');
 
 $content_dataAr = array(
     'user_name' => $user_name,

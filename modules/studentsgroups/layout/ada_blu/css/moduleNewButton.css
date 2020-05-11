@@ -1,0 +1,8 @@
+@CHARSET "UTF-8";
+
+/**
+ * New Button jQuery-UI style, usually needed with a datatable component
+ */
+.newButton { float: right; margin: 0; }
+.newButton.top { margin-bottom: 20px; }
+.newButton.bottom { margin-top: 20px; }
