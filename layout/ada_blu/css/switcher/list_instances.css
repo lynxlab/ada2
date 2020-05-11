@@ -1,0 +1,12 @@
+ul.actions.inline_menu li {
+    border: none;
+}
+
+ul.actions.inline_menu li a:link, ul.inline_menu li a,
+ul.actions.inline_menu li a:link, ul.inline_menu li a:visited {
+    background-color: transparent;
+}
+
+form#subscribegroups li.form {
+    border: none;
+}

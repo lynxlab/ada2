@@ -19,4 +19,5 @@ ModuleLoaderHelper::loadModuleFromArray([
 	[ 'name' => 'secretquestion' ],
 	[ 'name' => 'forkedpaths', 'dirname' => 'forked-paths' ],
 	[ 'name' => 'badges' ],
+	[ 'name' => 'studentsgroups' ],
 ]);

@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+@import url("showHideDiv.css");
+@import url("moduleDataTables.css");
+@import url("moduleADAForm.css");
+@import url("moduleNewButton.css");
+@import url("dropzone.css");
+
+.ui.list.group-users-details {
+    margin-left: 7em;
+}
