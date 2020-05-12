@@ -1283,12 +1283,13 @@ EOT;
     $this->replace_microtemplate_field_code = $GLOBALS['replace_microtemplate_field_code'];
     $this->htmlheader.= "</head>\n";
 
+    $this->htmlbody = '<body class=\'ada-'.
+      str_replace(' ','-', strtolower(trim(ADAGenericUser::convertUserTypeFN($_SESSION['sess_userObj']->getType(), false)))).
+      '\'';
     if(isset($onload_func) && !empty($onload_func)) {
-      $this->htmlbody= "<body onload=\"$onload_func\">\n";
+      $this->htmlbody .= " onload=\"$onload_func\"";
     }
-    else {
-      $this->htmlbody = "<body>\n";
-    }
+    $this->htmlbody .= ">\n";
     $this->htmlfooter= "</body>\n</html>";
   }  // end function HTML
 
