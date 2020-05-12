@@ -444,36 +444,39 @@ abstract class ADAGenericUser {
 
 
     // FIXME: sarebbe statico, ma viene usato come metodo non statico.
-    public static function convertUserTypeFN($id_profile) {
+    public static function convertUserTypeFN($id_profile, $translate = true) {
         switch  ($id_profile) {
             case 0: // reserved
-                $user_type = translateFN('utente ada');
+                $user_type = 'utente ada';
                 break;
 
             case AMA_TYPE_AUTHOR:
-                $user_type = translateFN('autore');
+                $user_type = 'autore';
                 break;
 
             case AMA_TYPE_ADMIN:
-                $user_type = translateFN('amministratore');
+                $user_type = 'amministratore';
                 break;
 
             case AMA_TYPE_TUTOR:
-                $user_type = translateFN('tutor');
+                $user_type = 'tutor';
                 break;
             case AMA_TYPE_SWITCHER:
-                $user_type = translateFN('switcher');
+                $user_type = 'switcher';
                 break;
             case AMA_TYPE_SUPERTUTOR:
-                $user_type = translateFN('SuperTutor');
+                $user_type = 'SuperTutor';
                 break;
+            case AMA_TYPE_VISITOR:
+                $user_type = 'guest';
+            break;
 
             case AMA_TYPE_STUDENT:
             default:
             // FIXME: trovare dove controlliamo $user_type == 'studente' e sostituire con $user_type == 'utente'
-                $user_type = translateFN('utente');
+                $user_type = 'utente';
         }
-        return $user_type;
+        return ($translate ? translateFN($user_type) : $user_type);
     }
 
     public function get_agendaFN($id_user) {
@@ -1611,7 +1614,7 @@ class ADAPractitioner extends ADALoggableUser {
     	if (!is_null($user_dataAr)) {
     		parent::fillWithArrayData($user_dataAr);
 
-    		$this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : null;
+    		$this->tariffa = isset($user_dataAr['tariffa']) ? $user_dataAr['tariffa'] : 0;
     		$this->profilo = isset($user_dataAr['profilo']) ? $user_dataAr['profilo'] : null;
     	}
     }
