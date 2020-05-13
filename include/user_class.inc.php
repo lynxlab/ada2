@@ -101,6 +101,19 @@ abstract class ADAGenericUser {
         return $this->tipo;
     }
 
+    /* 12/05/2020 functions used by menu builder */
+    public static function isNotStudent() {
+        return !(self::isStudent());
+    }
+
+    public static function isStudent() {
+        if (isset($_SESSION['sess_id_user']) && isset($_SESSION['sess_id_user_type'])) {
+            return  ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT);
+        }
+        return false;
+    }
+    /* end menu */
+
     public function getTypeAsString() {
         switch($this->tipo) {
             case AMA_TYPE_ADMIN:
