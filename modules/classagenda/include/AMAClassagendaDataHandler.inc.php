@@ -41,12 +41,28 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		if (AMA_DB::isError($previousEvents)) $previousEvents = array();
 
 		if (!is_null($eventsArray)) {
+			$generatedIDs = [];
 			foreach ($eventsArray as $event) {
+				if (strlen($event['id'])<=0) {
+					$tempID = (isset($event['id']) && intval($event['id'])>0) ? null: $event['tempID'];
+				} else $tempID = null;
 				$eventID = $this->saveClassroomEvent($course_instance_id, $event);
 				if (!AMA_DB::isError($eventID) && intval($eventID)>0) {
 					// event has been updated, remove it from the previous events array
-					if (array_key_exists($eventID, $previousEvents)) unset ($previousEvents[$eventID]);
-					else $newSelectedID = $eventID;
+					if (array_key_exists($eventID, $previousEvents)) {
+						unset ($previousEvents[$eventID]);
+					}
+					/**
+					 * if we've just inserted the event that was selected in the UI,
+					 * return its ID in the database, so that the JS can re-select it
+					 */
+					if ($event['wasSelected']) {
+						$newSelectedID = $eventID;
+					}
+					// if it was a new event, link its tempID with the generated id
+					if (!is_null($tempID)) {
+						$generatedIDs[$tempID] = $eventID;
+					}
 				} else if (AMA_DB::isError($eventID)) {
 					// on error return right away
 					return $eventID;
@@ -61,7 +77,10 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		    $this->deleteClassroomEvent($eventID);
 		}
 
-		return (isset($newSelectedID) ? $newSelectedID : true);
+		return [
+			'newSelectedID' => isset($newSelectedID) ? $newSelectedID : true,
+			'generatedIDs' => (isset($generatedIDs) && is_array($generatedIDs) && count($generatedIDs)>0) ? $generatedIDs : [],
+		];
 	}
 
 	/**
@@ -189,17 +208,8 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		$result = $this->queryPrepared($sql,$values);
 
 		if (!AMA_DB::isError($result)) {
-			/**
-			 * if we've just inserted the event that was selected in the UI,
-			 * return its ID in the database, so that the JS can re-select it
-			 */
-			if ($eventData['wasSelected']) {
-				$insertRetval = $this->db->lastInsertId();
-			} else {
-				$insertRetval = 0;
-			}
-			// not error, return last updated id or zero
-			return ($isInsert ? $insertRetval : $eventData['id']);
+			// not error, return last updated id or inserted
+			return ($isInsert ? $this->db->lastInsertId() : $eventData['id']);
 		} else return $result;
 	}
 

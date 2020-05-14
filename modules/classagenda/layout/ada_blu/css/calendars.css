@@ -6,12 +6,16 @@
 #classcalendar { width: 70%; float:left; }
 #saveCalendar  { margin: 10px auto; }
 #selectClassContainer { border: 1px dotted gray; padding:10px; margin-bottom: 15px; }
+
+#calendar-boxes-container { width: calc(30% - 2em); float: right; padding: 0 1em; }
+
 #servicetypeContainer,
 #classrooms,
 #tutorsListContainer,
 #deleteButtonContainer,
 #reminderButtonContainer,
-#buttonsContainer { width: 26%; float: right; margin: 0 0 1% 1%; border: 1px dotted gray; padding: 1%; }
+#repeatButtonContainer,
+#buttonsContainer { border: 1px dotted gray; padding: 1em; margin: 0 0 1em 0 ; width: calc(100% - 2em); }
 /**
  * #classrooms div starts hidden, it will
  * be shown by the javascript if needed
@@ -23,10 +27,11 @@
 
 #deleteButtonContainer,
 #reminderButtonContainer,
+#repeatButtonContainer,
 #reminderButtonContainer .reminderDetailsContainer,
 #buttonsContainer { border:none; text-align: center; padding-top:0; padding-bottom:0; }
 
-#reminderButtonContainer .reminderDetailsContainer .reminderDetails { margin-bottom: 1%; display: inline-block; } 
+#reminderButtonContainer .reminderDetailsContainer .reminderDetails { margin-bottom: 1%; display: inline-block; }
 
 label.venuesListLabel { display: block; margin-bottom: 5px; }
 #venuesList, #tutorSelect { width: 100%; display: block; margin-bottom: 5px; }
@@ -41,7 +46,7 @@ label.venuesListLabel { display: block; margin-bottom: 5px; }
 #calendarContainer label { cursor: pointer; }
 
 ul#serviceduration { padding: 0 15px 0 15px; margin:5px 0 0 0;  }
-ul#serviceduration li { color: #000; border:none; } 
+ul#serviceduration li { color: #000; border:none; }
 
 span.roomnameInEvent { color: gold; margin: 5px 0 0 5px; display: block; }
 span.tutornameInEvent { color: darkgreen; margin: 5px 0 0 5px; display: block; }
@@ -87,12 +92,12 @@ div#confirmDialog #tutorOverlapquestion {
 }
 
 #classcalendar a.selectedClassroomEvent { background: red; }
-#reminderDialog { display: none; } 
+#reminderDialog { display: none; }
 #reminderDialogContent { width: 80%; float:left; }
 #reminderLegend { width: 19%; float:right; border: 1px dotted gray; position: relative; margin-top: 9px; }
 #reminderLegend ol { padding: 0 0 0 30px; margin: 5px 0 10px 10px; }
 #reminderLegend li { line-height: 1.5em;}
-#reminderLegend .legendTitle { position: relative; top: -8px; left: 5px; background: white; border: 1px dotted gray; padding: 2px 5px 2px 5px; } 
+#reminderLegend .legendTitle { position: relative; top: -8px; left: 5px; background: white; border: 1px dotted gray; padding: 2px 5px 2px 5px; }
 #reminderDialogContent input[type=submit] { display: none; }
 #reminderDialogContent div.fform { width: 100%; padding:0; margin:0; }
 #reminderDialogContent div.fform label { display: block; width: 100%; }
