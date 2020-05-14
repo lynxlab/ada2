@@ -371,6 +371,9 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
 
   $sess_selected_tester_dsn = MultiPort::getDSN($sess_selected_tester);
   $_SESSION['sess_selected_tester_dsn'] = $sess_selected_tester_dsn;
+  if (!isset($_SESSION['sess_selected_tester'])) {
+    $_SESSION['sess_selected_tester'] = $sess_selected_tester;
+  }
 
   $dh = new AMA_DataHandler($sess_selected_tester_dsn);
   $GLOBALS['dh'] = $dh;
