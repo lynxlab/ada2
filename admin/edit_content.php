@@ -80,17 +80,6 @@ AdminHelper::init($neededObjAr);
 require_once ROOT_DIR . '/include/Forms/CourseModelForm.inc.php';
 $options = '';
 $languages = Translator::getSupportedLanguages();
-
-// @author giorgio 08/mag/2013
-// extract available types from docs subdirectories
-$availableTypes = dirTree (ROOT_DIR.'/docs');
-
-// @author giorgio 08/mag/2013
-// get requested type from querystring
-$reqType = (isset($_REQUEST['type'])) ? trim ($_REQUEST['type']) : '';
-// set 'news' as default type if passed is invalid or not set
-if (!in_array($reqType,$availableTypes)) $reqType = 'news';
-
 /**
  * giorgio 12/ago/2013
  * sets files path if it's switcher or admin
@@ -98,9 +87,24 @@ if (!in_array($reqType,$availableTypes)) $reqType = 'news';
 if (!MULTIPROVIDER && $userObj->getType()==AMA_TYPE_SWITCHER)
 {
 	$testers = $userObj->getTesters();
-	$filePath = '/clients/'.$testers[0];
+    $filePath = '/clients/'.$testers[0];
+    $availableTypes = dirTree (ROOT_DIR . DIRECTORY_SEPARATOR . $filePath.'/docs');
 }
-else $filePath ='';
+else
+{
+    $filePath ='';
+    // @author giorgio 08/mag/2013
+    // extract available types from docs subdirectories
+    $availableTypes = dirTree (ROOT_DIR.'/docs');
+}
+
+
+// @author giorgio 08/mag/2013
+// get requested type from querystring
+$reqType = (isset($_REQUEST['type'])) ? trim ($_REQUEST['type']) : '';
+// set 'news' as default type if passed is invalid or not set
+if (!in_array($reqType,$availableTypes)) $reqType = 'news';
+
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
    $newsfile =  $_POST['file_edit'];
