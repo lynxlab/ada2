@@ -19,14 +19,14 @@ require_once MODULES_CLASSAGENDA_PATH . '/include/management/abstractClassagenda
 
 class calendarsManagement extends abstractClassAgendaManagement
 {
-	
+
 	/**
 	 * returns the placeholders for the reminder html
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function reminderPlaceholders() {
-		
+
 		$placeHolders = array(
 				'coursename' => translateFN('Nome del corso'),
 				'instancename' => translateFN('Nome della classe'),
@@ -39,7 +39,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				'eventstart' => translateFN('Ora di inizio dell\'evento'),
 				'eventend' => translateFN('Ora di fine dell\'evento')
 		);
-		
+
 		if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM) {
 			$placeHolders = array_merge($placeHolders, array(
 					'classroomname' => translateFN('Nome dell\'aula').' ('.translateFN('se disponibile').')',
@@ -49,28 +49,28 @@ class calendarsManagement extends abstractClassAgendaManagement
 				)
 			);
 		}
-		
+
 		return $placeHolders;
 	}
-	
+
 	/**
 	 * build, manage and display the module's pages
 	 *
 	 * @return array
-	 * 
+	 *
 	 * @access public
 	 */
 	public function run($action=null) {
-		
+
 		require_once ROOT_DIR . '/include/HtmlLibrary/BaseHtmlLib.inc.php';
-		
+
 		/* @var $html	string holds html code to be retuned */
 		$htmlObj = null;
 		/* @var $path	string  path var to render in the help message */
 		$help = translateFN('Da qui puoi inserire o modificare il calendario degli eventi di una classe');
 		/* @var $status	string status var to render in the breadcrumbs */
 		$title= translateFN('Calendario');
-		
+
 		switch ($action) {
 			case MODULES_CLASSAGENDA_EDIT_CAL:
 				/**
@@ -78,7 +78,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				 */
 				$htmlObj = CDOMElement::create('div','id:calendarContainer');
 				$calendarDIV = CDOMElement::create('div','id:classcalendar');
-				
+
 				/**
 				 * stuff needed only if user's a switcher
 				 */
@@ -93,7 +93,16 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$cancelButton->setAttribute('value', translateFN('Annulla'));
 					$buttonsDIV->addChild($saveButton);
 					$buttonsDIV->addChild($cancelButton);
-					
+
+					/**
+					 * repeat classroom event button
+					 */
+					$repeatButtonDIV = CDOMElement::create('div','id:repeatButtonContainer');
+					$repeatButton = CDOMElement::create('input_button','id:repeatButton');
+					$repeatButton->setAttribute('onclick', 'javascript:repeatSelectedEvent();');
+					$repeatButton->setAttribute('value', translateFN('Ripeti fino a fine corso'));
+					$repeatButtonDIV->addChild($repeatButton);
+
 					/**
 					 * delete classroom event button
 					 */
@@ -103,7 +112,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$deleteButton->setAttribute('value', translateFN('Cancella Elemento Selezionato'));
 					$deleteButtonDIV->addChild($deleteButton);
 				}
-				
+
 				/**
 				 * informational header div
 				 */
@@ -112,16 +121,16 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$infoHeaderSPAN->addChild(new CText(translateFN('Calendario degli eventi della classe').': '));
 				$infoHeaderSPAN->addChild(CDOMElement::create('span','id:headerInstanceTitle'));
 				$infoHeaderDIV->addChild($infoHeaderSPAN);
-				
+
 				/**
 				 * courses instances list shall be obtained by the javascript,
 				 * build empty select item and a span to hold number of subscribed students
-				 * 
+				 *
 				 */
 				$instancesSELECT = BaseHtmlLib::selectElement2('id:instancesList,name:instancesList',array());
 				$instancesLABEL = CDOMElement::create('label','for:instancesList');
 				$instancesLABEL->addChild(new CText(translateFN('Seleziona una classe').': '));
-				
+
 				/**
 				 * checkbox to filter active instances only
 				 */
@@ -135,7 +144,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 						$filterInstanceState,MODULES_CLASSAGENDA_ALL_INSTANCES);
 				$filterInstanceLABEL = CDOMElement::create('label','for:filterInstanceState');
 				$filterInstanceLABEL->addChild(new CText(translateFN('Filtra le classi').': '));
-				
+
 				/**
 				 * checkbox to filter selected instance only
 				 */
@@ -149,7 +158,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$onlySelectedCHECK->setAttribute('style', 'display:none;');
 					$onlySelectedLABEL->setAttribute('style', 'display:none;');
 				}
-				
+
 				$selectClassDIV = CDOMElement::create('div','id:selectClassContainer');
 				$selectClassDIV->addChild($instancesLABEL);
 				$selectClassDIV->addChild($instancesSELECT);
@@ -157,7 +166,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$selectClassDIV->addChild($filterInstanceSELECT);
 				$selectClassDIV->addChild($onlySelectedCHECK);
 				$selectClassDIV->addChild($onlySelectedLABEL);
-				
+
 				/**
 				 * service (aka course) type box with
 				 * an empty span to be filled in by javascript
@@ -165,19 +174,28 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$serviceTypeDIV = CDOMElement::create('div','id:servicetypeContainer');
 				$courseIDSPAN = CDOMElement::create('span','id:courseID');
 				$courseIDSPAN->setAttribute('style', 'display:none');
-				$serviceTypeDIV->addChild($courseIDSPAN);				
+				$serviceTypeDIV->addChild($courseIDSPAN);
 				$serviceSPANText = CDOMElement::create('span');
 				$serviceSPANText->addChild(new CText(translateFN('Corso di tipo').': '));
 				$serviceTypeDIV->addChild($serviceSPANText);
 				$serviceTypeDIV->addChild(CDOMElement::create('span','id:servicetype'));
-				
+
 				/**
 				 * span to hold number of subscribed students
 				 */
 				$studentCountSPAN = CDOMElement::create('span','class:studentcount');
 				$studentCountSPAN->addChild (new CText(translateFN('Numero di studenti iscritti: ')));
 				$studentCountSPAN->addChild (CDOMElement::create('span','id:studentcount'));
-				$serviceTypeDIV->addChild($studentCountSPAN);				
+				$serviceTypeDIV->addChild($studentCountSPAN);
+
+				/**
+				 * span to hold instance end date
+				 */
+				$endDate = CDOMElement::create('span','class:enddatecont');
+				$endDate->addChild(new CText(translateFN('Data fine').': '));
+				$endDate->addChild(CDOMElement::create('span','id:enddate'));
+				$serviceTypeDIV->addChild($endDate);
+
 				/**
 				 * total course instance duration and hours allocated by calendar
 				 */
@@ -188,19 +206,19 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$durationHours->addChild(new CText(translateFN('Durata prevista in ore').': '));
 				$durationHours->addChild(CDOMElement::create('span','id:duration_hours'));
 				$serviceTypeDurationUL->addChild($durationHours);
-				
+
 				$allocatedHours = CDOMElement::create('li','class:allocatedLI');
 				$allocatedHours->addChild(new CText(translateFN('Tempo allocato (ore:minuti)').': '));
 				$allocatedHours->addChild(CDOMElement::create('span','id:allocated_hours'));
 				$serviceTypeDurationUL->addChild($allocatedHours);
-				
+
 				$lessonsNumber = CDOMElement::create('li','class:lessonsLI');
 				$lessonsNumber->addChild(new CText(translateFN('Numero di incontri').': '));
 				$lessonsNumber->addChild(CDOMElement::create('span','id:lessons_count'));
 				$serviceTypeDurationUL->addChild($lessonsNumber);
-				
+
 				$serviceTypeDIV->addChild($serviceTypeDurationUL);
-				
+
 				/**
 				 * get Venues, build select item
 				 * and needed empty div to hold classroom list for selected venue
@@ -211,7 +229,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$classroomsDIV = CDOMElement::create('div','id:classrooms');
 					// prepare an empty select to be filled by calendars.js
 					$venuesSELECT = CDOMElement::create('select','id:venuesList,name:venuesList');
-					
+
 					/**
 					 * checkbox to filter selected venues only
 					 */
@@ -220,17 +238,17 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$onlySelectedVenueCHECK->setAttribute('name', 'onlySelectedVenue');
 					$onlySelectedVenueLABEL = CDOMElement::create('label','for:onlySelectedVenue');
 					$onlySelectedVenueLABEL->addChild(new CText(translateFN('Mostra solo il luogo selezionato')));
-										
+
 					$venuesLABEL = CDOMElement::create('label','for:venuesList,class:venuesListLabel');
 					$venuesLABEL->addChild(new CText(translateFN('Seleziona un luogo').': '));
-					
+
 					/**
 					 * container for classroom radio buttons
 					 */
 					$classroomSPAN = CDOMElement::create('span','class:selectclassroomspan');
 					$classroomSPAN->addChild(new CText(translateFN('Seleziona un\'aula').': '));
 					$classroomlistDIV = CDOMElement::create('div','id:classroomlist');
-					
+
 					$classroomsDIV->addChild ($venuesLABEL);
 					$classroomsDIV->addChild ($venuesSELECT);
 					$classroomsDIV->addChild ($onlySelectedVenueCHECK);
@@ -241,7 +259,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 						$classroomsDIV->setAttribute('style', 'display:none;');
 					}
 				}
-				
+
 				/**
 				 * build a DIV to hold the tutor list of the selected instance
 				 * must be there for js reason, but hide it if user's not a switcher
@@ -252,7 +270,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$tutorsDIV->addChild($tutorsSPAN);
 				$tutorsDIV->addChild(CDOMElement::create('div','id:tutorslist'));
 				if ($_SESSION['sess_userObj']->getType()!=AMA_TYPE_SWITCHER) $tutorsDIV->setAttribute('style','display:none;');
-				
+
 				/**
 				 * send event reminder button and div to hold the dialog
 				 */
@@ -263,7 +281,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$reminderButton->setAttribute('value', translateFN('Invia Promemoria agli iscritti'));
 					$reminderButtonDIV->addChild($reminderButton);
 				}
-				
+
 				$reminderDialog = CDOMElement::create('div','id:reminderDialog');
 				$reminderDialog->setAttribute('title', translateFN('Promemoria Evento'));
 				$reminderDialog->addChild (CDOMElement::create('div','id:reminderDialogContent'));
@@ -272,7 +290,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$reminderLegendTitle = CDOMElement::create('span','class:legendTitle');
 				$reminderLegendTitle->addChild (new CText(translateFN('Campi valorizzati')));
 				$reminderLegend->addChild($reminderLegendTitle);
-				
+
 				$reminderLegendOL = CDOMElement::create('ol');
 				foreach (self::reminderPlaceholders() as $legendItem=>$legendDescription) {
 					$legendLI = CDOMElement::create('li','class:legendItem tooltip');
@@ -280,10 +298,10 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$legendLI->addChild (new CText('{'.$legendItem.'}'));
 					$reminderLegendOL->addChild($legendLI);
 				}
-				
+
 				$reminderLegend->addChild($reminderLegendOL);
 				$reminderDialog->addChild($reminderLegend);
-				
+
 				// this shall become the ok button label inside the dialog
 				$reminderOK = CDOMElement::create('span','class:confirmOKLbl');
 				$reminderOK->setAttribute('style','display:none;');
@@ -295,7 +313,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				// add the elements to the div
 				$reminderDialog->addChild($reminderOK);
 				$reminderDialog->addChild($reminderCancel);
-				
+
 				/**
 				 * confirm dialog box
 				 */
@@ -347,7 +365,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmDIV->addChild($confirmReminderNonSavedEvent);
 				$confirmDIV->addChild($confirmCancelCalendarSPAN);
 				$confirmDIV->setAttribute('style','display:none;');
-				
+
 				/**
 				 * add all generated elements to the container
 				 */
@@ -356,17 +374,23 @@ class calendarsManagement extends abstractClassAgendaManagement
 				}
 				$htmlObj->addChild($infoHeaderDIV);
 				$htmlObj->addChild($calendarDIV);
-				$htmlObj->addChild($serviceTypeDIV);
-				if (isset($classroomsDIV)) $htmlObj->addChild($classroomsDIV);
-				if (isset($tutorsDIV)) $htmlObj->addChild($tutorsDIV);
-				if (isset($reminderButtonDIV)) $htmlObj->addChild($reminderButtonDIV);
-				if (isset($deleteButtonDIV)) $htmlObj->addChild($deleteButtonDIV);
-				if (isset($buttonsDIV)) $htmlObj->addChild($buttonsDIV);
+				/**
+				 * build a wrapper holding the info boxes
+				 */
+				$calendarBoxes = CDOMElement::create('div','id:calendar-boxes-container');
+				$htmlObj->addChild($calendarBoxes);
+				$calendarBoxes->addChild($serviceTypeDIV);
+				if (isset($classroomsDIV)) $calendarBoxes->addChild($classroomsDIV);
+				if (isset($tutorsDIV)) $calendarBoxes->addChild($tutorsDIV);
+				if (isset($reminderButtonDIV)) $calendarBoxes->addChild($reminderButtonDIV);
+				if (isset($repeatButtonDIV)) $calendarBoxes->addChild($repeatButtonDIV);
+				if (isset($deleteButtonDIV)) $calendarBoxes->addChild($deleteButtonDIV);
+				if (isset($buttonsDIV)) $calendarBoxes->addChild($buttonsDIV);
 				$htmlObj->addChild(CDOMElement::create('div','class:clearfix'));
-				
+
 				$htmlObj->addChild($reminderDialog);
 				$htmlObj->addChild($confirmDIV);
-				
+
 				break;
 			default:
 				/**
@@ -374,31 +398,31 @@ class calendarsManagement extends abstractClassAgendaManagement
 				 */
 				break;
 		}
-		
+
 		return array(
 			'htmlObj'   => $htmlObj,
 			'help'      => $help,
 			'title'     => $title,
 		);
 	}
-	
+
 	/**
 	 * builds export calendar HTML or array data
 	 * if type is 'pdf', the HTML is built and converted to a pdf by the rendering engine
 	 * if type is 'csv', only the array of data is returned and the caller shall build the csv
-	 * 
+	 *
 	 * @param Course $courseObj
 	 * @param Course_instance $courseInstanceObj
 	 * @param string $type 'pdf' or 'csv', defaults to pdf
-	 * 
+	 *
 	 * @return multitype:Ambigous <NULL, CBaseElement, unknown>
 	 */
 	public function exportCalendar(Course $courseObj, Course_instance $courseInstanceObj, $type='pdf') {
-		
+
 		$dh = $GLOBALS['dh'];
-		
+
 		if (!in_array($type, self::$exportFormats)) $type = 'pdf';
-		
+
 		$result = $dh->getInstanceFullCalendar($courseInstanceObj->getId());
 		if (!AMA_DB::isError($result)) {
 			$head = array (
@@ -414,13 +438,13 @@ class calendarsManagement extends abstractClassAgendaManagement
 						translateFN('Indirizzo')
 				));
 			}
-			
+
 			if ($type=='pdf') {
 				// if type is pdf
 				$htmlObj = CDOMElement::create('div','id:pdfCalendar');
 				if (count($result)>0) {
 					$htmlObj->addChild(BaseHtmlLib::tableElement('class:pdfcalendar',$head,$result));
-				}				
+				}
 				return array('htmlObj'   => $htmlObj);
 			} else if ($type=='csv') {
 				if (count($result)>0) {
@@ -429,12 +453,12 @@ class calendarsManagement extends abstractClassAgendaManagement
 			}
 		}
 	}
-	
+
 	/**
 	 * gets all venues with at least a classroom from the classroom API
-	 * 
+	 *
 	 * @return array|NULL
-	 * 
+	 *
 	 * @access private
 	 */
 	private function _getVenues() {
