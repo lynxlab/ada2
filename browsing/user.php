@@ -606,15 +606,15 @@ else {
    	$content_dataAr['edit_profile'] = $userObj->getEditProfilePage();
 	$content_dataAr['gostart'] = $gostart_link;
 	$content_dataAr['gocontinue'] = $last_node_visited_link;
-	$content_dataAr['goindex'] = $goindex_link;
+	$content_dataAr['goindex'] = isset($goindex_link) ? $goindex_link: null;
 	if ($new_nodes_html!=='') $content_dataAr['new_nodes_links'] = $new_nodes_html;
 	// msg forum sono le note in realta'
 	$content_dataAr['msg_forum'] = $msg_forum_count;
 	$content_dataAr['msg_agenda'] =  $msg_agenda_count;
 	$content_dataAr['msg'] = $msg_simple_count;
 	$content_dataAr['goclasse'] = $students_link;
-	$content_dataAr['goforum'] = $goforum_link;
-	$content_dataAr['gochat'] = $gochat_link;
+	$content_dataAr['goforum'] = isset($goforum_link) ? $goforum_link : null;
+	$content_dataAr['gochat'] = isset($gochat_link) ? $gochat_link : null;
 
 	$content_dataAr['banner'] = isset($banner) ? $banner : null;
 	$content_dataAr['today'] = $ymdhms;
