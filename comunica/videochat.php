@@ -18,15 +18,8 @@
 require_once realpath(dirname(__FILE__)).'/../config_path.inc.php';
 
 /**
- * Specific Openmeetings config file
- */
-require_once 'include/videochat_config.inc.php';
-
-/**
  * Clear node and layout variable in $_SESSION
  */
-
-
 $variableToClearAR = array();
 array_push($variableToClearAR, 'layout');
 array_push($variableToClearAR, 'user');
@@ -46,8 +39,6 @@ $neededObjAr = array(
   AMA_TYPE_TUTOR => array('layout','tutor','course','course_instance','videoroom')
 );
 
-
-
 /**
  * Performs basic controls before entering this module
  */
@@ -55,6 +46,11 @@ require_once ROOT_DIR.'/include/module_init.inc.php';
 $self = whoami();
 
 include_once 'include/comunica_functions.inc.php';
+
+/**
+ * Specific Openmeetings config file
+ */
+require_once 'include/videochat_config.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
