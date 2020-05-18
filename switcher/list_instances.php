@@ -31,7 +31,7 @@ $allowedUsersAr = array(AMA_TYPE_SWITCHER);
  * Performs basic controls before entering this module
  */
 $neededObjAr = array(
-    AMA_TYPE_SWITCHER => array('layout','course')
+    AMA_TYPE_SWITCHER => array('layout', 'course')
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
@@ -78,7 +78,7 @@ SwitcherHelper::init($neededObjAr);
 //if($courseId !== false && $courseId > 0) {
 
 
-if($courseObj instanceof Course && $courseObj->isFull()) {
+if ($courseObj instanceof Course && $courseObj->isFull()) {
 
     $courseId = $courseObj->getId();
     $course_title = $courseObj->getTitle();
@@ -87,28 +87,28 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
 
     $fieldsAr = array('data_inizio', 'data_inizio_previsto', 'durata', 'data_fine', 'title');
     $instancesAr = $dh->course_instance_get_list($fieldsAr, $courseId);
-    if(is_array($instancesAr) && count($instancesAr) > 0) {
+    if (is_array($instancesAr) && count($instancesAr) > 0) {
         $thead_data = array(
-           translateFN('id'),
-           translateFN('classe'),
-           translateFN('data inizio previsto'),
-           translateFN('durata'),
-           translateFN('data inizio'),
-           translateFN('data fine'),
-           translateFN('tutor'),
-           translateFN('iscritti'),
-           translateFN('azioni')
+            translateFN('id'),
+            translateFN('classe'),
+            translateFN('data inizio previsto'),
+            translateFN('durata'),
+            translateFN('data inizio'),
+            translateFN('data fine'),
+            translateFN('tutor'),
+            translateFN('iscritti'),
+            translateFN('azioni')
         );
         $tbody_data = array();
 
         $edit_img = CDOMElement::create('img', 'src:img/edit.png,alt:edit');
-        $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:'.translateFN('Delete instance'));
+        $delete_img = CDOMElement::create('img', 'src:img/trash.png,alt:' . translateFN('Delete instance'));
         //$view_img = CDOMElement::create('img', 'src:img/zoom.png,alt:view');
         if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
-            $subscribeGroup_img = CDOMElement::create('img','class:subscribe-group-icon,src:img/add_instances.png,alt:'.translateFN('Iscrivi gruppo'));
+            $subscribeGroup_img = CDOMElement::create('img', 'class:subscribe-group-icon,src:img/add_instances.png,alt:' . translateFN('Iscrivi gruppo'));
         }
 
-        foreach($instancesAr as $instance) {
+        foreach ($instancesAr as $instance) {
             $instanceId = $instance[0];
             $actionsArray = array();
 
@@ -116,17 +116,17 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
              * Da migliorare, spostare l'ottenimento dei dati necessari in un'unica query
              * per ogni istanza corso (qualcosa che vada a sostituire course_instance_get_list solo in questo caso.
              */
-             $tutorId = $dh->course_instance_tutor_get($instanceId);
-             if(!AMA_DataHandler::isError($tutorId) && $tutorId !== false) {
+            $tutorId = $dh->course_instance_tutor_get($instanceId);
+            if (!AMA_DataHandler::isError($tutorId) && $tutorId !== false) {
                 $tutor_infoAr = $dh->get_tutor($tutorId);
-                if(!AMA_DataHandler::isError($tutor_infoAr)) {
+                if (!AMA_DataHandler::isError($tutor_infoAr)) {
                     $tutorFullName = $tutor_infoAr['nome'] . ' ' . $tutor_infoAr['cognome'];
                 } else {
                     $tutorFullName = translateFN('Utente non trovato');
                 }
-             } else {
-                 $tutorFullName = translateFN('Nessun tutor');
-             }
+            } else {
+                $tutorFullName = translateFN('Nessun tutor');
+            }
 
             $edit_link = BaseHtmlLib::link("edit_instance.php?id_course=$courseId&id_course_instance=$instanceId", $edit_img->getHtml());
             $edit_link->setAttribute('title', translateFN('Modifica istanza'));
@@ -157,11 +157,11 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
                 /**
                  * insert subscribeGroup link before deletelink
                  */
-                array_splice($actionsArr, count($actionsArr)-1, 0, [ $subscribeGroup_link ]);
+                array_splice($actionsArr, count($actionsArr) - 1, 0, [$subscribeGroup_link]);
             }
-            $actions = BaseHtmlLib::plainListElement('class:actions inline_menu',$actionsArr);
+            $actions = BaseHtmlLib::plainListElement('class:actions inline_menu', $actionsArr);
 
-            if($instance[1] > 0) {
+            if ($instance[1] > 0) {
                 $start_date = AMA_DataHandler::ts_to_date($instance[1]);
             } else {
                 $start_date = translateFN('Non iniziato');
@@ -173,13 +173,13 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
 
             $assign_tutor_link = BaseHtmlLib::link("assign_more_tutors.php?id_course=$courseId&id_course_instance=$instanceId", $tutorFullName);
             $subscriptions_link = BaseHtmlLib::link(
-                    "course_instance.php?id_course=$courseId&id_course_instance=$instanceId",
-                    translateFN('Lista studenti')
+                "course_instance.php?id_course=$courseId&id_course_instance=$instanceId",
+                translateFN('Lista studenti')
             );
             $tbody_data[] = array(
                 $instanceId,
                 $title,
-                $scheduled ,
+                $scheduled,
                 $duration,
                 $start_date,
                 $end_date,
@@ -188,7 +188,7 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
                 $actions
             );
         }
-        $data = BaseHtmlLib::tableElement('id:list_instances, class:'.ADA_SEMANTICUI_TABLECLASS, $thead_data, $tbody_data);
+        $data = BaseHtmlLib::tableElement('id:list_instances, class:' . ADA_SEMANTICUI_TABLECLASS, $thead_data, $tbody_data);
     } else {
         $data = new CText(translateFN('Non sono state trovate istanze per il corso selezionato'));
     }
@@ -197,38 +197,39 @@ if($courseObj instanceof Course && $courseObj->isFull()) {
 }
 
 
-$label = translateFN('Lista istanze del corso'). ' '.$course_title;
+$label = translateFN('Lista istanze del corso') . ' ' . $course_title;
 $help = translateFN('Da qui il provider admin può vedere la lista delle istanze del corso selezionato');
 
-$layout_dataAr['CSS_filename'] = array (
-		JQUERY_UI_CSS,
-		SEMANTICUI_DATATABLE_CSS,
+$layout_dataAr['CSS_filename'] = array(
+    JQUERY_UI_CSS,
+    SEMANTICUI_DATATABLE_CSS,
 );
 $layout_dataAr['JS_filename'] = array(
-		JQUERY,
-		JQUERY_UI,
-		JQUERY_DATATABLE,
-		SEMANTICUI_DATATABLE,
-		JQUERY_DATATABLE_DATE,
-		JQUERY_NO_CONFLICT
+    JQUERY,
+    JQUERY_UI,
+    JQUERY_DATATABLE,
+    SEMANTICUI_DATATABLE,
+    JQUERY_DATATABLE_DATE,
+    JQUERY_NO_CONFLICT
 );
-
-if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
-    $layout_dataAr['JS_filename'][] = MODULES_STUDENTSGROUPS_PATH . '/js/instanceSubscribe.js';
-    $layout_dataAr['CSS_filename'][] = MODULES_STUDENTSGROUPS_PATH .'/layout/ada_blu/css/showHideDiv.css';
-}
 
 $dataForJS = [
     'datatables' => ['list_instances'],
-    'loadModuleJS' => [
+];
+
+if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS) {
+    $layout_dataAr['JS_filename'][] = MODULES_STUDENTSGROUPS_PATH . '/js/instanceSubscribe.js';
+    $layout_dataAr['CSS_filename'][] = MODULES_STUDENTSGROUPS_PATH . '/layout/ada_blu/css/showHideDiv.css';
+    $dataForJS['loadModuleJS'] = [
         [
             'baseUrl' => MODULES_STUDENTSGROUPS_HTTP,
             'className' => 'studentsgroupsAPI.GroupInstanceSubscribe',
         ],
-    ],
-];
+    ];
+}
 
-$optionsAr = array('onload_func' => 'initDoc('.htmlentities(json_encode($dataForJS), ENT_COMPAT, ADA_CHARSET).');');
+
+$optionsAr = array('onload_func' => 'initDoc(' . htmlentities(json_encode($dataForJS), ENT_COMPAT, ADA_CHARSET) . ');');
 
 $content_dataAr = array(
     'user_name' => $user_name,
@@ -236,7 +237,7 @@ $content_dataAr = array(
     'status' => $status,
     'label' => $label,
     'help' => $help,
-    'edit_profile'=>$userObj->getEditProfilePage(),
+    'edit_profile' => $userObj->getEditProfilePage(),
     'data' => $data->getHtml(),
     'module' => isset($module) ? $module : '',
     'messages' => $user_messages->getHtml()
