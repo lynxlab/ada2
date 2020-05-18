@@ -120,6 +120,10 @@ function initDoc() {
 	if ($j('#chatsidebar').length>0) {
 		$j('#chatsidebar').first().sidebar({overlay:true}).sidebar('attach events', '#triggerchat');
 	}
+
+	if ($j('#jitsi-meet-placeholder').length>0) {
+		$j.getScript('../js/comunica/ada-jitsi.js.php?isView=1&parentId=jitsi-meet-placeholder');
+	}
 } // end initDoc
 
 function setupRevealListeners(frameIdx, checkRepeater, callbacks) {

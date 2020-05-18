@@ -98,7 +98,7 @@ $help = translateFN("Da qui l'autore pu&ograve; vedere vedere un report generale
 $field_list_ar = array('nome','titolo','data_creazione','media_path','id_nodo_iniziale');
 $key = $sess_id_user;
 $search_fields_ar = array('id_utente_autore');
-$dataHa = $dh->find_courses_list_by_key($field_list_ar, $key, $search_fields_ar);
+$dataHa = $dh->find_courses_list($field_list_ar, 'id_utente_autore='.$key);
 
 if (AMA_DataHandler::isError($dataHa)){
   /*
