@@ -103,7 +103,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $field_list_ar = array('titolo','data_creazione','data_pubblicazione','tipo_servizio','duration_hours', 'crediti');
             $key = $id_user;
             $search_fields_ar = array('id_utente_autore');
-            $DetailsAr = $dh->find_courses_list_by_key($field_list_ar, $key, $search_fields_ar);
+            $DetailsAr = $dh->find_courses_list($field_list_ar, 'id_utente_autore='.$key);
             break;
         case AMA_TYPE_TUTOR:
             $thead_data = array(
