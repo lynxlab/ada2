@@ -17,6 +17,8 @@ header("Content-type: application/x-javascript");
 /**
  * export defines for allowed user in calendars.php
  */
-if (defined('AMA_TYPE_STUDENT'))  echo 'var AMA_TYPE_STUDENT = ' . AMA_TYPE_STUDENT.';';
-if (defined('AMA_TYPE_TUTOR'))    echo 'var AMA_TYPE_TUTOR = ' . AMA_TYPE_TUTOR.';';
-if (defined('AMA_TYPE_SWITCHER')) echo 'var AMA_TYPE_SWITCHER = ' . AMA_TYPE_SWITCHER.';';
+if (defined('AMA_TYPE_STUDENT'))  echo 'const AMA_TYPE_STUDENT = ' . AMA_TYPE_STUDENT.';' .PHP_EOL;
+if (defined('AMA_TYPE_TUTOR'))    echo 'const AMA_TYPE_TUTOR = ' . AMA_TYPE_TUTOR.';' .PHP_EOL;
+if (defined('AMA_TYPE_SWITCHER')) echo 'const AMA_TYPE_SWITCHER = ' . AMA_TYPE_SWITCHER.';' .PHP_EOL;
+echo 'const MODULES_CLASSAGENDA_EMAIL_REMINDER=' . (defined('MODULES_CLASSAGENDA_EMAIL_REMINDER') && MODULES_CLASSAGENDA_EMAIL_REMINDER ? 'true;' : 'false;');
+echo  PHP_EOL;

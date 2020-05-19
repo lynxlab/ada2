@@ -286,8 +286,9 @@ class calendarsManagement extends abstractClassAgendaManagement
 				if (in_array($_SESSION['sess_userObj']->getType(), array(AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR))) {
 					$reminderButtonDIV = CDOMElement::create('div','id:reminderButtonContainer');
 					$reminderButton = CDOMElement::create('input_button','id:reminderButton');
-					$reminderButton->setAttribute('onclick', 'javascript:reminderSelectedEvent();');
+					$reminderButton->setAttribute('onclick', 'javascript:reminderSelectedEvent($j(this));');
 					$reminderButton->setAttribute('value', translateFN('Invia Promemoria agli iscritti'));
+					$reminderButton->setAttribute('data-email-reminder', MODULES_CLASSAGENDA_EMAIL_REMINDER ? 'true' : 'false');
 					$reminderButtonDIV->addChild($reminderButton);
 				}
 

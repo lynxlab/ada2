@@ -1270,26 +1270,27 @@ function repeatSelectedEvent() {
  * opens up the dialog to set and send the email
  * reminder to subscribed students
  */
-function reminderSelectedEvent() {
+function reminderSelectedEvent(buttonObj) {
 
 	var selectedEvent = getSelectedEvent();
+	const emailReminder = buttonObj.data('email-reminder') || false;
 
 	if (userType==AMA_TYPE_SWITCHER && ('undefined' == typeof selectedEvent.id || mustSave)) {
 		// ask to save events if needed
 		jQueryConfirm('#confirmDialog', '#reminderNonSavedEventquestion',
 				function() {
 					$j.when(saveClassRoomEvents()).then(function() {
-						displayReminderDialog(getSelectedEvent());
+						displayReminderDialog(getSelectedEvent(), emailReminder);
 					});
 				},
 				function() { return null; }
 		);
-	} else displayReminderDialog(selectedEvent);
+	} else displayReminderDialog(selectedEvent, emailReminder);
 }
 
-function displayReminderDialog(selectedEvent) {
+function displayReminderDialog(selectedEvent, emailReminder) {
 
-	if (reminderDialog == null) reminderDialog = prepareReminderDialog('#reminderDialog');
+	if (reminderDialog == null) reminderDialog = prepareReminderDialog('#reminderDialog', emailReminder);
 
 	$j.ajax({
 				type	:	'GET',
@@ -1328,7 +1329,7 @@ function displayReminderDialog(selectedEvent) {
 /**
  * prepares the reminder dialog to show the form
  */
-function prepareReminderDialog(id) {
+function prepareReminderDialog(id, emailReminder) {
 	var okLbl = $j(id + ' .confirmOKLbl').html();
 	var cancelLbl = $j(id + ' .confirmCancelLbl').html();
 
@@ -1382,7 +1383,7 @@ function prepareReminderDialog(id) {
 						if (okToSubmit) {
 							var that = this;
 							$j('#reminderEventHTML').val(FCKeditorAPI.GetInstance(oFCKeditor.InstanceName).GetHTML(true));
-							$j.when(saveAndSendReminder($j(id + ' form').serialize())).
+							$j.when(saveAndSendReminder($j(id + ' form').serialize(), emailReminder)).
 								done (function(JSONObj) {
 									if (JSONObj && JSONObj.status=='OK') {
 										$j(that).dialog("close");
@@ -1411,7 +1412,7 @@ function prepareReminderDialog(id) {
 /**
  * handles reminder saving and sending with an ajax call
  */
-function saveAndSendReminder(data) {
+function saveAndSendReminder(data, emailReminder) {
 	return $j.ajax({
 				type	:	'POST',
 				url		:	'ajax/saveReminder.php',
@@ -1420,7 +1421,7 @@ function saveAndSendReminder(data) {
 	}).done (function(JSONObj){
 		if (JSONObj) {
 			showHideDiv('',JSONObj.msg,JSONObj.status=='OK');
-			if ('undefined' != typeof JSONObj.reminderID && parseInt(JSONObj.reminderID)>0) {
+			if (emailReminder && 'undefined' != typeof JSONObj.reminderID && parseInt(JSONObj.reminderID)>0) {
 				$j.ajax({
 					type	: 'POST',
 					url		: 'ajax/sendReminder.php',
