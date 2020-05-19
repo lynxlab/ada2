@@ -104,6 +104,15 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$repeatButtonDIV->addChild($repeatButton);
 
 					/**
+					 * delete all classroom events button
+					 */
+					$deleteAllButtonDIV = CDOMElement::create('div','id:deleteAllButtonContainer');
+					$deleteAllButton = CDOMElement::create('input_button','id:deleteAllButton');
+					$deleteAllButton->setAttribute('onclick', 'javascript:deleteAllEvents();');
+					$deleteAllButton->setAttribute('value', translateFN('Cancella Tutti gli eventi'));
+					$deleteAllButtonDIV->addChild($deleteAllButton);
+
+					/**
 					 * delete classroom event button
 					 */
 					$deleteButtonDIV = CDOMElement::create('div','id:deleteButtonContainer');
@@ -347,6 +356,11 @@ class calendarsManagement extends abstractClassAgendaManagement
 				// question for not saved events (case #cancelCalendar button is clicked)
 				$confirmCancelCalendarSPAN = CDOMElement::create('span','id:cancelCalendarquestion,class:dialogQuestion');
 				$confirmCancelCalendarSPAN->addChild(new CText(translateFN('Ci sono dei dati non salvati, ricaricare il calendario?')));
+				// question asked when deleting all instance events
+				$confirmDeleteAllSPAN = CDOMElement::create('span','id:deleteAllButtonquestion,class:dialogQuestion');
+				$confirmDeleteAllSPAN->addChild(new CText(translateFN('Confermi la cancellazione di tutti gli eventi della classe').' '));
+				$confirmDeleteAllSPAN->addChild(CDOMElement::create('span','id:deleteAllButtonInstanceName'));
+				$confirmDeleteAllSPAN->addChild(new CText('?'));
 				// this shall become the ok button label inside the dialog
 				$confirmOK = CDOMElement::create('span','class:confirmOKLbl');
 				$confirmOK->setAttribute('style','display:none;');
@@ -364,6 +378,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				$confirmDIV->addChild($confirmTutorOverlap);
 				$confirmDIV->addChild($confirmReminderNonSavedEvent);
 				$confirmDIV->addChild($confirmCancelCalendarSPAN);
+				$confirmDIV->addChild($confirmDeleteAllSPAN);
 				$confirmDIV->setAttribute('style','display:none;');
 
 				/**
@@ -385,6 +400,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				if (isset($reminderButtonDIV)) $calendarBoxes->addChild($reminderButtonDIV);
 				if (isset($repeatButtonDIV)) $calendarBoxes->addChild($repeatButtonDIV);
 				if (isset($deleteButtonDIV)) $calendarBoxes->addChild($deleteButtonDIV);
+				if (isset($deleteAllButtonDIV)) $calendarBoxes->addChild($deleteAllButtonDIV);
 				if (isset($buttonsDIV)) $calendarBoxes->addChild($buttonsDIV);
 				$htmlObj->addChild(CDOMElement::create('div','class:clearfix'));
 

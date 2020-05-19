@@ -114,6 +114,7 @@ function initDoc(passedUserType) {
 	 * or the fullcalendar to be initialized.
 	 */
 	loadCourseInstances();
+	$j('#deleteAllButton').button();
 }
 
 /**
@@ -326,6 +327,8 @@ function initCancelButton() {
 		var doReset = function() {
 			// refetch calendar events
 			if ('undefined' != typeof calendar) calendar.fullCalendar('refetchEvents');
+			// reload instance details: allocated_hours and lessons_count
+			$j('#instancesList').trigger('change');
 			setMustSave(false);
 		};
 
@@ -1187,6 +1190,53 @@ function deleteSelectedEvent() {
 		if (eventID.search('tmp_')==-1 && UIDeletedEvents.indexOf(eventID)==-1) UIDeletedEvents.push(eventID);
 		if ('undefined' != typeof UIEvents[eventID]) delete UIEvents[eventID];
 	}
+}
+
+/**
+ * delete all classroom events
+ */
+function deleteAllEvents() {
+
+	const doDeleteAllEvents = () => {
+		const selectedInstance = getSelectedCourseInstance();
+		if (null != selectedInstance) {
+			var selectedDuration = null;
+			var eventIDs = [];
+			calendar.fullCalendar('removeEvents', function (clEvent) {
+				if (clEvent.instanceID == selectedInstance) {
+					if (selectedDuration == null) {
+						selectedDuration = moment.duration();
+					}
+					selectedDuration.add(clEvent.end.subtract(clEvent.start));
+					if ('undefined' != typeof clEvent.eventID) eventIDs.push(clEvent.eventID);
+					else if ('undefined' != typeof clEvent.id) eventIDs.push(clEvent.id+'');
+					console.log(clEvent);
+					return true;
+				} else return false;
+			});
+
+			setCanDelete(false);
+			if (!mustSave) setMustSave(true);
+			if (selectedDuration != null) updateAllocatedHours(selectedDuration, -1 * eventIDs.length);
+			if (eventIDs.length>0) {
+				/**
+				 * add events to UIDeletedEvents array only if
+				 * it was not a new event and has not been previously added
+				 */
+				eventIDs.map(eventID => {
+					if (eventID.search('tmp_')==-1 && UIDeletedEvents.indexOf(eventID)==-1) UIDeletedEvents.push(eventID);
+					if ('undefined' != typeof UIEvents[eventID]) delete UIEvents[eventID];
+				});
+			}
+		}
+	};
+
+	$j('#deleteAllButtonInstanceName').text('');
+	if ($j('#headerInstanceTitle').length>0 && $j('#headerInstanceTitle').text().length>0) {
+		$j('#deleteAllButtonInstanceName').text($j('#headerInstanceTitle').text().split('>').slice(-1)[0].trim());
+	}
+
+	jQueryConfirm('#confirmDialog', '#deleteAllButtonquestion', doDeleteAllEvents, () => {} );
 }
 
 function repeatSelectedEvent() {
