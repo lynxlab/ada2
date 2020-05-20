@@ -287,8 +287,13 @@ class calendarsManagement extends abstractClassAgendaManagement
 					$reminderButtonDIV = CDOMElement::create('div','id:reminderButtonContainer');
 					$reminderButton = CDOMElement::create('input_button','id:reminderButton');
 					$reminderButton->setAttribute('onclick', 'javascript:reminderSelectedEvent($j(this));');
-					$reminderButton->setAttribute('value', translateFN('Invia Promemoria agli iscritti'));
-					$reminderButton->setAttribute('data-email-reminder', MODULES_CLASSAGENDA_EMAIL_REMINDER ? 'true' : 'false');
+					if (MODULES_CLASSAGENDA_EMAIL_REMINDER) {
+						$reminderButton->setAttribute('value', translateFN('Invia Promemoria agli iscritti'));
+						$reminderButton->setAttribute('data-email-reminder', 'true');
+					} else {
+						$reminderButton->setAttribute('value', translateFN('Promemoria agli iscritti'));
+						$reminderButton->setAttribute('data-email-reminder', 'false');
+					}
 					$reminderButtonDIV->addChild($reminderButton);
 				}
 
@@ -315,7 +320,7 @@ class calendarsManagement extends abstractClassAgendaManagement
 				// this shall become the ok button label inside the dialog
 				$reminderOK = CDOMElement::create('span','class:confirmOKLbl');
 				$reminderOK->setAttribute('style','display:none;');
-				$reminderOK->addChild (new CText(translateFN('Invia')));
+				$reminderOK->addChild (new CText(translateFN(MODULES_CLASSAGENDA_EMAIL_REMINDER ? 'Invia' : 'Salva')));
 				// this shall become the cancel button label inside the dialog
 				$reminderCancel = CDOMElement::create('span','class:confirmCancelLbl');
 				$reminderCancel->setAttribute('style', 'display:none;');

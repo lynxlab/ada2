@@ -351,14 +351,33 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * @access public
 	 */
 	public function saveReminderForEvent($eventID, $html) {
+		$isUpdate = false;
 		$sql = 'INSERT INTO `'.self::$PREFIX.'reminder_history` (`'.
 				self::$PREFIX.'calendars_id`, `html`, `creation_date`) VALUES (?,?,?)';
+		$sqlParams = [
+			$eventID,
+			$html,
+			$this->date_to_ts('now'),
+		];
 
-		$result = $this->queryPrepared($sql,array($eventID, $html, $this->date_to_ts('now')));
+		if (!MODULES_CLASSAGENDA_EMAIL_REMINDER) {
+			// check if a reminder is there
+			$evData  = $this->getReminderForEvent($eventID);
+			if (!AMA_DB::isError($evData) && $evData!==false) {
+				$isUpdate = true;
+				$sql = 'UPDATE `'.self::$PREFIX.'reminder_history` SET `html`=?, `creation_date`=?  WHERE `'.self::$PREFIX.'reminder_history_id`=?';
+				$sqlParams = [
+					$html,
+					$this->date_to_ts('now'),
+					$evData['id']
+				];
+			}
+		}
+		$result = $this->queryPrepared($sql, $sqlParams);
 
 		if (!AMA_DB::isError($result)) {
 			// not error, return last updated id or zero
-			return $this->db->lastInsertID();
+			return $isUpdate ? true : $this->db->lastInsertID();
 		} else return $result;
 	}
 
@@ -372,10 +391,11 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * @access public
 	 */
 	public function getReminderForEvent($eventID) {
-		$sql = 'SELECT * FROM `'.self::$PREFIX.'reminder_history` WHERE `'.self::$PREFIX.'calendars_id`=?';
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'reminder_history` WHERE `'.self::$PREFIX.'calendars_id`=? ORDER BY `creation_date` DESC';
 		$retval = $this->getRowPrepared($sql,$eventID,AMA_FETCH_ASSOC);
 
 		if (!AMA_DB::isError($retval) && $retval!==false) {
+			$retval['id'] = $retval[self::$PREFIX.'reminder_history_id'];
 			$retval['date'] = ts2dFN($retval['creation_date']);
 			$retval['time'] = substr(ts2tmFN($retval['creation_date']), 0, -3); // remove seconds from time
 		}
@@ -389,9 +409,9 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 *
 	 * @access public
 	 */
-	public function getLastEventReminderHMTL() {
-		$sql = 'SELECT `html` FROM `'.self::$PREFIX.'reminder_history` ORDER BY `creation_date` DESC';
-		return $this->getOnePrepared($sql);
+	public function getLastEventReminderHTML($eventID) {
+		$sql = 'SELECT `html` FROM `'.self::$PREFIX.'reminder_history` WHERE `'.self::$PREFIX.'calendars_id`=? ORDER BY `creation_date` DESC';
+		return $this->getOnePrepared($sql, $eventID);
 	}
 
 	/**
