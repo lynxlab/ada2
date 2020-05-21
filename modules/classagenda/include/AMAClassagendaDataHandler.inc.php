@@ -41,12 +41,28 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		if (AMA_DB::isError($previousEvents)) $previousEvents = array();
 
 		if (!is_null($eventsArray)) {
+			$generatedIDs = [];
 			foreach ($eventsArray as $event) {
+				if (strlen($event['id'])<=0) {
+					$tempID = (isset($event['id']) && intval($event['id'])>0) ? null: $event['tempID'];
+				} else $tempID = null;
 				$eventID = $this->saveClassroomEvent($course_instance_id, $event);
 				if (!AMA_DB::isError($eventID) && intval($eventID)>0) {
 					// event has been updated, remove it from the previous events array
-					if (array_key_exists($eventID, $previousEvents)) unset ($previousEvents[$eventID]);
-					else $newSelectedID = $eventID;
+					if (array_key_exists($eventID, $previousEvents)) {
+						unset ($previousEvents[$eventID]);
+					}
+					/**
+					 * if we've just inserted the event that was selected in the UI,
+					 * return its ID in the database, so that the JS can re-select it
+					 */
+					if ($event['wasSelected']) {
+						$newSelectedID = $eventID;
+					}
+					// if it was a new event, link its tempID with the generated id
+					if (!is_null($tempID)) {
+						$generatedIDs[$tempID] = $eventID;
+					}
 				} else if (AMA_DB::isError($eventID)) {
 					// on error return right away
 					return $eventID;
@@ -61,7 +77,10 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		    $this->deleteClassroomEvent($eventID);
 		}
 
-		return (isset($newSelectedID) ? $newSelectedID : true);
+		return [
+			'newSelectedID' => isset($newSelectedID) ? $newSelectedID : true,
+			'generatedIDs' => (isset($generatedIDs) && is_array($generatedIDs) && count($generatedIDs)>0) ? $generatedIDs : [],
+		];
 	}
 
 	/**
@@ -189,17 +208,8 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		$result = $this->queryPrepared($sql,$values);
 
 		if (!AMA_DB::isError($result)) {
-			/**
-			 * if we've just inserted the event that was selected in the UI,
-			 * return its ID in the database, so that the JS can re-select it
-			 */
-			if ($eventData['wasSelected']) {
-				$insertRetval = $this->db->lastInsertId();
-			} else {
-				$insertRetval = 0;
-			}
-			// not error, return last updated id or zero
-			return ($isInsert ? $insertRetval : $eventData['id']);
+			// not error, return last updated id or inserted
+			return ($isInsert ? $this->db->lastInsertId() : $eventData['id']);
 		} else return $result;
 	}
 
@@ -341,14 +351,33 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * @access public
 	 */
 	public function saveReminderForEvent($eventID, $html) {
+		$isUpdate = false;
 		$sql = 'INSERT INTO `'.self::$PREFIX.'reminder_history` (`'.
 				self::$PREFIX.'calendars_id`, `html`, `creation_date`) VALUES (?,?,?)';
+		$sqlParams = [
+			$eventID,
+			$html,
+			$this->date_to_ts('now'),
+		];
 
-		$result = $this->queryPrepared($sql,array($eventID, $html, $this->date_to_ts('now')));
+		if (!MODULES_CLASSAGENDA_EMAIL_REMINDER) {
+			// check if a reminder is there
+			$evData  = $this->getReminderForEvent($eventID);
+			if (!AMA_DB::isError($evData) && $evData!==false) {
+				$isUpdate = true;
+				$sql = 'UPDATE `'.self::$PREFIX.'reminder_history` SET `html`=?, `creation_date`=?  WHERE `'.self::$PREFIX.'reminder_history_id`=?';
+				$sqlParams = [
+					$html,
+					$this->date_to_ts('now'),
+					$evData['id']
+				];
+			}
+		}
+		$result = $this->queryPrepared($sql, $sqlParams);
 
 		if (!AMA_DB::isError($result)) {
 			// not error, return last updated id or zero
-			return $this->db->lastInsertID();
+			return $isUpdate ? true : $this->db->lastInsertID();
 		} else return $result;
 	}
 
@@ -362,10 +391,11 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 * @access public
 	 */
 	public function getReminderForEvent($eventID) {
-		$sql = 'SELECT * FROM `'.self::$PREFIX.'reminder_history` WHERE `'.self::$PREFIX.'calendars_id`=?';
+		$sql = 'SELECT * FROM `'.self::$PREFIX.'reminder_history` WHERE `'.self::$PREFIX.'calendars_id`=? ORDER BY `creation_date` DESC';
 		$retval = $this->getRowPrepared($sql,$eventID,AMA_FETCH_ASSOC);
 
 		if (!AMA_DB::isError($retval) && $retval!==false) {
+			$retval['id'] = $retval[self::$PREFIX.'reminder_history_id'];
 			$retval['date'] = ts2dFN($retval['creation_date']);
 			$retval['time'] = substr(ts2tmFN($retval['creation_date']), 0, -3); // remove seconds from time
 		}
@@ -379,9 +409,9 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	 *
 	 * @access public
 	 */
-	public function getLastEventReminderHMTL() {
-		$sql = 'SELECT `html` FROM `'.self::$PREFIX.'reminder_history` ORDER BY `creation_date` DESC';
-		return $this->getOnePrepared($sql);
+	public function getLastEventReminderHTML($eventID) {
+		$sql = 'SELECT `html` FROM `'.self::$PREFIX.'reminder_history` WHERE `'.self::$PREFIX.'calendars_id`=? ORDER BY `creation_date` DESC';
+		return $this->getOnePrepared($sql, $eventID);
 	}
 
 	/**

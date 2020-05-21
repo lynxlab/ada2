@@ -43,12 +43,12 @@ require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 $retArray['serviceTypeString'] = translateFN('Tipo di corso sconosciuto');
 
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' && 
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 	isset($instanceID) && intval($instanceID)>0 && isset($courseID) && intval($courseID)>0) {
-		
+
 	$selTester = null;
 	if (isset($_SESSION['sess_selected_tester'])) {
-		$selTester = $_SESSION['sess_selected_tester'];			
+		$selTester = $_SESSION['sess_selected_tester'];
 	} else {
 		switch ($_SESSION['sess_userObj']->getType()) {
 			case AMA_TYPE_STUDENT:
@@ -62,18 +62,19 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 				break;
 		}
 	}
-	
+
 	$GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($selTester));
 	$retArray = null;
-	
+
 	$courseInstanceObj = read_course_instance_from_DB($instanceID);
-	
+
 	if (!AMA_DB::isError($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) {
 		$retArray['courseID'] = intval($courseID);
 		$retArray['duration_hours'] = $courseInstanceObj->getDurationHours();
 		$eventsArr = $GLOBALS['dh']->getClassRoomEventsForCourseInstance($instanceID, null);
 		$retArray['allocated_hours'] = 0;
 		$retArray['lessons_count'] = 0;
+		$retArray['endDate'] = $courseInstanceObj->getEndDate();
 		$serviceLevel = $courseInstanceObj->getServiceLevel();
 		if (is_null($serviceLevel)) $serviceLevel = DEFAULT_SERVICE_TYPE;
 		/**
@@ -101,7 +102,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET' &&
 					break;
 			}
 		}
-		
+
 		if (!AMA_DB::isError($eventsArr) && is_array($eventsArr) && count($eventsArr)>0) {
 			$retArray['lessons_count'] = count($eventsArr);
 			foreach ($eventsArr as $event) {

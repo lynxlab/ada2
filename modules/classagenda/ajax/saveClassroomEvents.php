@@ -44,7 +44,7 @@ $retArray = array();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_POST['instanceID']) && intval($_POST['instanceID'])>0) {
-		
+
 		if (isset($_POST['venueID']) && intval($_POST['venueID'])>0) {
 			$venueID = intval($venueID);
 		} else $venueID = null;
@@ -52,23 +52,24 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		if (isset($_POST['events']) && is_array($_POST['events']) && count($_POST['events'])>0) {
 			$postEvents = $_POST['events'];
 		} else $postEvents = null;
-		
+
 		$start = (isset($_REQUEST['start']) && intval($_REQUEST['start'])>0) ? intval($_REQUEST['start']) :0;
 		$end = (isset($_REQUEST['end']) && intval($_REQUEST['end'])>0) ? intval($_REQUEST['end']) :0;
-		
+
 		$result = $GLOBALS['dh']->saveClassroomEvents(intval($_POST['instanceID']),$venueID,
 													  $postEvents,$start,$end);
-		
-		if (!AMA_DB::isError($result) && ($result===true || intval($result)>0)) {
+
+		if (!AMA_DB::isError($result) && is_array($result)) {
 			$retArray = array("status"=>"OK", "msg"=>translateFN("Calendario salvato"));
-			if ($result!==true && intval($result)>0) $retArray['newSelectedID'] = $result;
+			if ($result['newSelectedID']!==true && intval($result['newSelectedID'])>0) $retArray['newSelectedID'] = $result;
+			if (count($result['generatedIDs'])) $retArray['generatedIDs'] = $result['generatedIDs'];
 		} else {
 			$retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore nel salvataggio"));
 		}
-		
+
 	} else {
 		$retArray = array("status"=>"ERROR", "msg"=>translateFN("Selezionare un'istanza di corso"));
-	}	
+	}
 }
 
 if (empty($retArray)) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore sconosciuto"));
