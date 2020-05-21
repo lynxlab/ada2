@@ -141,7 +141,7 @@ function initCalendar() {
 			firstDay : 1,		// monday is the first day
 			minTime  : "08:00",	// events starts at 08AM ,
 			maxTime  : "20:00",	// events ends at 08PM
-			weekends : false,	// hide weekends
+			weekends : true,	// hide weekends
 			defaultEventMinutes: 60,
 			height : 564,
 			editable : (userType == AMA_TYPE_SWITCHER) || (userType == AMA_TYPE_TUTOR),
