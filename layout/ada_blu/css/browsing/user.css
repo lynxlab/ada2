@@ -125,3 +125,11 @@
 	-webkit-filter: blur(7px) grayscale(100%); /* Safari 6.0 - 9.0 */
 	filter: blur(3px) grayscale(100%);
  }
+
+ #instanceReminder.ADAwidget .close.icon {
+	 background-image: none;
+ }
+
+ #instanceReminder.ADAwidget > #instanceReminders {
+	 margin: 1em 0;
+ }

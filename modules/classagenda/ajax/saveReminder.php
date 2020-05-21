@@ -52,7 +52,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 			$result = $GLOBALS['dh']->saveReminderForEvent(intval($_POST['reminderEventID']),trim($_POST['reminderEventHTML']));
 
 			if (!AMA_DB::isError($result) && intval($result)>0) {
-				$retArray = array("status"=>"OK", "reminderID"=>$result, "msg"=>translateFN("Promemoria salvato e inviato"));
+				$msg = 'Promemoria salvato' . ( MODULES_CLASSAGENDA_EMAIL_REMINDER ? ' e inviato' : '');
+				$retArray = array("status"=>"OK", "reminderID"=>$result, "msg"=>translateFN($msg));
 			} else {
 				$retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore nel salvataggio"));
 			}

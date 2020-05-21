@@ -24,20 +24,22 @@ function initDoc() {
     var icon = $j('#bagesPopupLink').siblings('.icon').first();
     var dataUrl = $j('#bagesPopupLink').parent('.item').data('dataurl');
     var jsUrl = $j('#bagesPopupLink').parent('.item').data('jsurl');
-    $j.ajax({
-        type: "GET",
-        url: dataUrl,
-        cache: false,
-        beforeSend: function() {
-            icon.addClass('loading');
-        }
-    })
-    .done(function(userbadges) {
-        fillBadges(userbadges, jsUrl);
-    })
-    .always(function() {
-        icon.removeClass('loading');
-    });
+    if ('undefined' !== typeof dataUrl) {
+        $j.ajax({
+            type: "GET",
+            url: dataUrl,
+            cache: false,
+            beforeSend: function() {
+                icon.addClass('loading');
+            }
+        })
+        .done(function(userbadges) {
+            fillBadges(userbadges, jsUrl);
+        })
+        .always(function() {
+            icon.removeClass('loading');
+        });
+    }
 
     $j('#bagesPopupLink').on('click', function() {
         $j('#badgesModal').modal('show');

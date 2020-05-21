@@ -632,6 +632,10 @@ else {
 	$content_dataAr['messages'] = $user_messages->getHtml();
 	$content_dataAr['agenda'] = $user_agenda->getHtml();
 
+	$layout_dataAr['widgets']['instanceReminder'] = [
+		'isActive' => (defined('MODULES_CLASSAGENDA') && MODULES_CLASSAGENDA) ? 1 : 0,
+	];
+
 	// must set the DH to the course provider one
 	$GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
 
@@ -672,6 +676,11 @@ else {
 			$badgesLink->addChild($popupLink);
 			$content_dataAr['badgesLink'] = $badgesLink->getHtml();
 		}
+	}
+
+	if ($layout_dataAr['widgets']['instanceReminder']['isActive']) {
+		$layout_dataAr['widgets']['instanceReminder']['id_course'] =  $courseId;
+		$layout_dataAr['widgets']['instanceReminder']['id_course_instance'] = $courseInstanceId;
 	}
 
 	if (!isset($content_dataAr['completeSummary'])) {

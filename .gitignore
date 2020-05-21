@@ -1,0 +1,11 @@
+/.externalToolBuilders/
+/.settings/
+/.buildpath
+/.project
+/.vscode/
+/clients/
+/config_path.inc.php
+*.txt
+/docs/
+/nbproject/
+/log/
