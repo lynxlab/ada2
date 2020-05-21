@@ -41,7 +41,7 @@ $trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
-	
+
 	$selTester = null;
 	if (isset($_SESSION['sess_selected_tester'])) {
 		$selTester = $_SESSION['sess_selected_tester'];
@@ -60,17 +60,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 				break;
 		}
 	}
-	
+
 	$GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($selTester));
 	$dh = $GLOBALS['dh'];
-	
+
 	if (isset($instanceID) && intval($instanceID)>0) {
 		$instanceID = intval($instanceID);
 	} else $instanceID=null; // null means to get all instances
-	
+
 	$filterInstanceState =  (isset($filterInstanceState) && intval($filterInstanceState)>0) ?
 		$filterInstanceState : MODULES_CLASSAGENDA_ALL_INSTANCES;
-	
+
 	if (is_null($instanceID)) {
 		/**
 		 * take care of active only instances only if
@@ -110,10 +110,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	if (isset($venueID) && intval($venueID)>0) {
 		$venueID = intval($venueID);
 	} else $venueID=null; // null means to get all classrooms
-	
+
 	$start = (isset($_REQUEST['start']) && intval($_REQUEST['start'])>0) ? intval($_REQUEST['start']) :0;
 	$end = (isset($_REQUEST['end']) && intval($_REQUEST['end'])>0) ? intval($_REQUEST['end']) :0;
-	
+
 	$result = $GLOBALS['dh']->getClassRoomEventsForCourseInstance($instanceID, $venueID, $start, $end);
 	if(!AMA_DB::isError($result)) {
 		// convert return array to data structure needed by calendar component
@@ -122,19 +122,19 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 		foreach ($result as $eventID=>$aResult) {
 			$retArray[$i]['id'] = $eventID;
 			$retArray[$i]['instanceID'] = (int) $aResult['id_istanza_corso'];
-			$retArray[$i]['classroomID'] = (int) $aResult['id_classroom'];
+			$retArray[$i]['classroomID'] = ((int) $aResult['id_classroom'] > 0) ? (int) $aResult['id_classroom'] : null;
 			$retArray[$i]['tutorID'] = (int) $aResult['id_utente_tutor'];
 			$retArray[$i]['isSelected'] = false;
 			if (defined('MODULES_CLASSROOM') && MODULES_CLASSROOM===true && !is_null($aResult['id_venue'])) {
 				$retArray[$i]['venueID'] = (int) $aResult['id_venue'];
 			} else $retArray[$i]['venueID'] = null;
-			
+
 			list ($day, $month, $year) = explode ('/',ts2dFN($aResult['start']));
 			$retArray[$i]['start'] = $year.'-'.$month.'-'.$day.'T'.ts2tmFN($aResult['start']);
-			
+
 			list ($day, $month, $year) = explode ('/',ts2dFN($aResult['end']));
 			$retArray[$i]['end'] = $year.'-'.$month.'-'.$day.'T'.ts2tmFN($aResult['end']);
-			
+
 			$i++;
 		}
 		die (json_encode($retArray));

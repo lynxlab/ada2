@@ -48,12 +48,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	$formName = 'formEventReminder';
 	$formAction = 'javascript:saveAndSendReminder();';
 	$dataArr = array();
-	
+
 	if (isset($_GET['eventID']) && strlen($_GET['eventID'])>0)
-		$dataArr['reminderEventID'] = $_GET['eventID'];
-	
-	$htmlContent = $GLOBALS['dh']->getLastEventReminderHMTL();
-	
+		$dataArr['reminderEventID'] = (int) $_GET['eventID'];
+
+	$htmlContent = $GLOBALS['dh']->getLastEventReminderHTML($dataArr['reminderEventID']);
+
 	if ($htmlContent === false &&
 			is_file(MODULES_CLASSAGENDA_REMINDER_HTML) &&
 			is_readable(MODULES_CLASSAGENDA_REMINDER_HTML)) {
@@ -62,12 +62,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	} else {
 		$dataArr['reminderEventHTML'] = $htmlContent;
 	}
-	
+
 	$theForm = new FormEventReminder(count($dataArr) ? $dataArr : null, $formName, $formAction);
-	
+
 	if ($theForm->isValid()) {
 		$retArray = array ('status'=>'OK', 'html'=>$theForm->getHtml());
 	} else $retArray ['html'] = 'ERROR: Invalid form';
-	
+
 }
 die (json_encode($retArray));

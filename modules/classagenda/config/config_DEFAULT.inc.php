@@ -3,7 +3,7 @@
  * CLASSAGENDA MODULE.
  *
  * @package        classagenda module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2014, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           classagenda
@@ -20,6 +20,8 @@ define('MODULES_CLASSAGENDA_ALL_INSTANCES',			1); // filter all course instances
 define('MODULES_CLASSAGENDA_STARTED_INSTANCES',		2); // filter started course instances
 define('MODULES_CLASSAGENDA_NONSTARTED_INSTANCES',	3); // filter non started course instances
 define('MODULES_CLASSAGENDA_CLOSED_INSTANCES',		4); // filter closed course instances
+
+define('MODULES_CLASSAGENDA_EMAIL_REMINDER', true); // false to disable emailed reminders
 
 // html template for the event reminder e-mail
 define('MODULES_CLASSAGENDA_REMINDER_HTML', MODULES_CLASSAGENDA_PATH.'/doc/reminderTemplate.htm');

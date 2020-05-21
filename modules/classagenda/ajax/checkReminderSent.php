@@ -45,37 +45,46 @@ $retArray = array();
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 	if (isset($_GET['reminderEventID']) && intval($_GET['reminderEventID'])>0) {
-			
+
 			$result = $GLOBALS['dh']->getReminderForEvent(intval($_GET['reminderEventID']));
-			
+
 			if (!AMA_DB::isError($result) && $result!==false) {
-				
+
 				$reminderContentDIVId = 'reminderContent';
-				
+
 				$reminderDIV = CDOMElement::create('div','class:reminderDetailsContainer');
 				$reminderDIV->setAttribute('style', 'display:none;');
-								
+
 				$reminderSPAN = CDOMElement::create('span','class:reminderDetails');
 				$reminderSPAN->addChild(new CText(
-						translateFN('Promemoria inviato il').' '.$result['date'].' '.
-						translateFN('alle').': '.$result['time']));
-				
+						translateFN(MODULES_CLASSAGENDA_EMAIL_REMINDER ? 'Promemoria inviato il': 'Promemoria salvato il').
+						' '.$result['date'].' '.translateFN('alle').' '.$result['time']
+					)
+				);
+
 				$reminderButton = CDOMElement::create('button');
-				$reminderButton->addChild(new CText(translateFN('Vedi Promemoria')));
-				$reminderButton->setAttribute('onclick', 'javascript:openReminder(\'#'.$reminderContentDIVId.'\');');
-				
+				if (MODULES_CLASSAGENDA_EMAIL_REMINDER) {
+					$reminderButton->addChild(new CText(translateFN('Vedi Promemoria')));
+					$reminderButton->setAttribute('data-email-reminder', 'true');
+					$reminderButton->setAttribute('onclick', 'javascript:openReminder(\'#'.$reminderContentDIVId.'\');');
+				} else {
+					$reminderButton->addChild(new CText(translateFN('Modifica')));
+					$reminderButton->setAttribute('data-email-reminder', 'false');
+					$reminderButton->setAttribute('onclick', 'javascript:reminderSelectedEvent($j(this))');
+				}
+
 				$reminderDIV->addChild($reminderSPAN);
 				$reminderDIV->addChild($reminderButton);
-				
+
 				$reminderContent = CDOMElement::create('div','id:'.$reminderContentDIVId);
 				$reminderContent->setAttribute('style', 'display:none');
 				$reminderContent->addChild(new CText($result['html']));
-				
+
 				$retArray = array("status"=>"OK", "html"=>$reminderDIV->getHtml(), "content"=>$reminderContent->getHtml());
 			} else {
 				$retArray = array("status"=>"OK");
 			}
-			
+
 	} else {
 		$retArray = array("status"=>"ERROR", "msg"=>translateFN("Selezionare un evento"));
 	} // if isset eventID
