@@ -121,7 +121,7 @@ class ModuleLoaderHelper
 				$defval = true;
 				define($basedefine . '_NAME', $modulename);
 				define($basedefine . '_PATH', MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir);
-				define($basedefine . '_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_DIR) . DIRECTORY_SEPARATOR . $moduledir);
+				define($basedefine . '_HTTP', HTTP_ROOT_DIR . str_replace(ROOT_DIR, '', MODULES_DIR) . '/' . $moduledir);
 				if (strlen($modConfig) > 0) {
 					$tmp = require_once($modConfig);
 					if (is_bool($tmp)) {
