@@ -22,9 +22,9 @@ if (!defined('PDF_EXPORT_FOOTER'))
  * costitem is the basic cost management class
  * the script using this module is responsible for
  * checking wich modules are installed and possibily
- * add the classroom and tutor cost management 
+ * add the classroom and tutor cost management
  */
-$classBudgetComponents = array (
+$GLOBALS['classBudgetComponents'] = array (
 		array ('classname'=>'costitemBudgetManagement')
 );
 
@@ -37,4 +37,3 @@ $GLOBALS['availableCostItems'] = array(
 		MODULES_CLASSBUDGET_COST_ITEM_PER_STUDENT => 'ogni studente',
 		MODULES_CLASSBUDGET_COST_ITEM_PER_NODE => 'ogni nodo'
 );
-?>
