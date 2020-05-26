@@ -73,6 +73,11 @@ if ($export !== false) {
 	$render = null;
 }
 
+if (isset($GLOBALS['classBudgetComponents'])) {
+	$classBudgetComponents = $GLOBALS['classBudgetComponents'];
+} else {
+	$classBudgetComponents = [];
+}
 /**
  * add classroom and tutor cost management as needed
  */
