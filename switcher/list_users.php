@@ -74,9 +74,9 @@ SwitcherHelper::init($neededObjAr);
  * YOUR CODE HERE
  */
 
-$type = DataValidator::validate_not_empty_string($_GET['list']);
+$usersType = DataValidator::validate_not_empty_string($_GET['list']);
 $fieldsAr = array('nome','cognome','username','tipo','stato');
-switch($type) {
+switch($usersType) {
     case 'authors':
         $usersAr = $dh->get_authors_list($fieldsAr);
         $profilelist = translateFN('lista degli autori');
@@ -85,6 +85,14 @@ switch($type) {
         $usersAr = $dh->get_tutors_list($fieldsAr);
         if (defined('AMA_TYPE_SUPERTUTOR')) $usersAr = array_merge($usersAr,$dh->get_supertutors_list($fieldsAr));
         $profilelist = translateFN('lista dei tutors');
+        /**
+    	 * @author steve 28/mag/2020
+    	 *
+    	 * adding link to Tutor Subscrition from file
+    	 */
+        $buttonSubscriptions = CDOMElement::create('button','class:Subscription_Button');
+        $buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscription(\'tutor_subscriptions\');');
+        $buttonSubscriptions->addChild (new CText(translateFN('Carica da file').'...'));
         break;
     case 'students':
     default:
@@ -134,11 +142,6 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         if (isset($imgDetails)) $imgDetails->setAttribute('class', 'imgDetls tooltip');
         else $imgDetails = CDOMElement::create('span');
 
-
-//        $span_idUser = $userId;
-//        $span_idUser = CDOMElement::create('span');
-//        $span_idUser->setAttribute('class', 'id_user');
-//        $span_idUser->addChild(new CText($user[0]));
 
         $User_fullname = CDOMElement::create('span');
         $User_fullname->setAttribute('class', 'fullname');
@@ -193,15 +196,25 @@ if(is_array($usersAr) && count($usersAr) > 0) {
 }
 
 $label = $profilelist;
-$help = translateFN('Da qui il provider admin può vedere la '.$profilelist.' presenti sul provider');
-$help .= ' ' .translateFN('Numero utenti'). ': '. $UserNum;
+
+$helpSpan = CDOMElement::create('span');
+$helpSpan->addChild(new CText(ucfirst(translateFN($profilelist.' presenti nel provider').': ')));
+$helpSpan->addChild(new CText(isset($UserNum) ? $UserNum : 0));
+ /**
+ * @author steve 28/mag/2020
+ *
+ * adding link to Tutor Subscrition from file
+ */
+if ($usersType == 'tutors') {
+    $helpSpan->addChild($buttonSubscriptions);
+}
 
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
-    'help' => $help,
+    'help' => $helpSpan->getHtml(),
     'data' => $data->getHtml(),
     'edit_profile'=>$userObj->getEditProfilePage(),
     'module' => isset($module) ? $module : '',

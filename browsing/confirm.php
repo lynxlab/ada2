@@ -125,8 +125,9 @@ switch ($op){
                              .urlencode(translateFN('Impossibile confermare la richiesta')));
   }
 
-  $userObj = MultiPort::findUser($userid);
-  if($userObj instanceof ADAUser && $userObj->getStatus() == ADA_STATUS_PRESUBSCRIBED) {
+  $userObj = MultiPort::findUser($userid); 
+  
+  if ((($userObj instanceof ADAUser) || ($userObj instanceof ADAPractitioner)) && $userObj->getStatus() == ADA_STATUS_PRESUBSCRIBED) {
     $username = $userObj->getUserName();
      /*
      * Update user password and change his/her subscription status
@@ -179,7 +180,7 @@ switch ($op){
   }
   else {
     /*
-     * Only presubscribed ADAUsers can access this module.
+     * Only presubscribed ADAUsers OR ADAPractitioners can access this module.
      */
     $message = translateFN("Non hai bisogno di confermare la tua registrazione a"). ' ' . PORTAL_NAME .' (2)';
 //    $message = translateFN("You don't need to confirm your registration to ICON").'(2)';
@@ -279,7 +280,8 @@ case 'set_new_password':
   }
 
   $userObj = MultiPort::findUser($userid);
-  if($userObj instanceof ADAUser) {
+  
+  if (($userObj instanceof ADAUser) || ($userObj instanceof ADAPractitioner)) {
     // se stato != preiscritto mostrare un messaggio adeguato
     if($userObj->getStatus() != ADA_STATUS_PRESUBSCRIBED) {
       $message = translateFN('Forse un utente con questi dati ha già confermato la tua registrazione');
@@ -290,7 +292,7 @@ case 'set_new_password':
   }
   else {
     /*
-     * Only ADAUser can use this module, redirect to ADA index page.
+     * Only ADAUser OR ADAPractitioner right now can use this module; else redirect to ADA index page.
      */
       $message = sprintf(translateFN("Non hai bisogno di confermare la tua registrazione a %s"), PORTAL_NAME);
 //      $message = translateFN("You don't need to confirm your registration to ADA");

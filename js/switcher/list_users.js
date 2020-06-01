@@ -106,3 +106,15 @@ function  initToolTips()
     }); 
 }
 
+function goToSubscription(path)
+{
+	$j.when(
+	    $j('.table_result').effect('drop', function() {
+	        $j('#course_instance_Table').effect('slide');
+	    })
+	).done(
+		function() {
+			self.document.location.href = path+'.php'+location.search;
+		}
+	);
+}
