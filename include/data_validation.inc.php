@@ -174,13 +174,22 @@ class DataValidator
 
   }
 
-  // TODO: definire minima e massima lunghezza per la password
+  
   public static function validate_password($password, $passwordcheck) {
+   /**
+    	 * @author steve 28/mag/2020
+    	 *
+    	 * adding  variables for min and max length of password
+       * @todo move in configuration
+    	 */
+    $minLen = 8;
+    $maxLen = 40;
+ 
     if(isset($password) && !empty($password) && isset($passwordcheck)
        && !empty($passwordcheck) && $password == $passwordcheck
     ) {
-      $pattern = '/^[A-Za-z0-9_\.]{8,40}$/';
-      if (preg_match($pattern, $password)) {
+      $pattern = '/^[A-Za-z0-9_\.]{'.$minLen.','.$maxLen.'}$/'; 
+      if (preg_match($pattern, $password))  {
         return $password;
       }
     }

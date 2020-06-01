@@ -301,10 +301,19 @@ $help = translateFN('Da qui il provider admin può gestire le iscrizioni alla cl
 $buttonSubscription = CDOMElement::create('button','class:Subscription_Button');
 $buttonSubscription->setAttribute('onclick', 'javascript:goToSubscription(\'subscribe\');');
 $buttonSubscription->addChild (new CText(translateFN('Iscrivi studente')));
-
-$buttonSubscriptions = CDOMElement::create('button','class:Subscription_Button');
-$buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscription(\'subscriptions\');');
-$buttonSubscriptions->addChild (new CText(translateFN('Upload file')));
+/**
+* @author steve 28/mag/2020
+*
+* If module StudentsGroups is loaded, this button now is not useful, since we can (and should) load students as groups
+*/
+if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS === true){
+    $buttonSubscriptions = CDOMElement::create('span');
+    $buttonSubscriptions->addChild (new CText(''));
+} else {    
+    $buttonSubscriptions = CDOMElement::create('button','class:Subscription_Button');
+    $buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscription(\'subscriptions\');');
+    $buttonSubscriptions->addChild (new CText(translateFN('Upload file'))); 
+}
 
 $buttondownloadCertificates = CDOMElement::create('button','class:Subscription_Button');
 $buttondownloadCertificates->setAttribute('onclick', 'javascript:downloadCertificates('.$instanceId.');');
