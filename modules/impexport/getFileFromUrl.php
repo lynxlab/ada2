@@ -104,8 +104,9 @@ if ($url !== false) {
 			if ($fh !== false) {
 
 				$ch = curl_init($url);
-				curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 				curl_setopt( $ch, CURLOPT_NOPROGRESS, false );
+				curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
 				curl_setopt( $ch, CURLOPT_PROGRESSFUNCTION, 'progressCallback' );
 				curl_setopt( $ch, CURLOPT_FILE, $fh );
 				curl_exec( $ch );
