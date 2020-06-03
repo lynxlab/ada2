@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `history_esercizi` (
   `PUNTEGGIO` smallint(4) DEFAULT NULL,
   `CORREZIONE_RISPOSTA_LIBERA` text COLLATE utf8_unicode_ci,
   `RIPETIBILE` smallint(1) NOT NULL DEFAULT '0',
-  `ALLEGATO` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
+  `ALLEGATO` text CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   PRIMARY KEY (`ID_HISTORY_EX`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -382,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `module_test_history_answer` (
   `commento` text COLLATE utf8_unicode_ci COMMENT 'tutor''s comment',
   `punteggio` smallint(4) DEFAULT NULL,
   `correzione_risposta` text COLLATE utf8_unicode_ci,
-  `allegato` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
+  `allegato` text CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL,
   `data` int(10) NOT NULL,
   PRIMARY KEY (`id_answer`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
