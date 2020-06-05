@@ -62,11 +62,16 @@ if ($type=='pdf') {
 			'data' => (!is_null($data) && isset($data['htmlObj'])) ? $data['htmlObj']->getHtml() : translateFN('Nessun evento trovato')
 	);
 	$GLOBALS['adafooter'] = translateFN(PDF_EXPORT_FOOTER);
+	ini_set('memory_limit', '512M');
+	ini_set('max_execution_time', '300'); //300 seconds = 5 minutes
 	ARE::render($layout_dataAr, $content_dataAr, ARE_PDF_RENDER, array('outputfile'=>$courseInstanceObj->getTitle()) );
 } else if ($type=='csv') {
 	// output headers so that the file is downloaded rather than displayed
 	header('Content-Type: text/csv; charset='.strtolower(ADA_CHARSET));
 	header('Content-Disposition: attachment; filename='.$courseInstanceObj->getTitle().'.csv');
+	if (is_null($data)) {
+		$data = [];
+	}
 	$out = fopen('php://output', 'w');
 	foreach ($data as $row) fputcsv($out, $row);
 	fclose($out);
