@@ -196,9 +196,11 @@ class rollcallManagement extends abstractClassAgendaManagement
 				 */
 				$header = array_merge(array ('id',translateFN('Nome e Cognome')),$timestamps);
 
+				$search = [ '<br/>', '<strong>', '</strong>'];
+				$replace = [ "\n", '', ' (*)'];
 				foreach($studentsList as $skey=>$astud) {
 					foreach($astud as $key=>$val) {
-						$studentsList[$skey][$key] = str_replace('<br/>', "\n", $val);
+						$studentsList[$skey][$key] = str_replace($search, $replace, $val);
 					}
 				}
 
