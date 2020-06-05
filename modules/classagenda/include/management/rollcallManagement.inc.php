@@ -419,25 +419,54 @@ class rollcallManagement extends abstractClassAgendaManagement
 	 */
 	private function _getStudentsList($action) {
 		$dh = $GLOBALS['dh'];
+		$supportedTypes = [
+			AMA_TYPE_STUDENT => [
+				'getter' => 'get_student',
+				'format' => "%s", // double quote for sprintf
+			],
+			AMA_TYPE_TUTOR => [
+				'getter' => 'get_tutor',
+				'format' => "<strong>%s</strong>",
+			],
+		];
+
 		$student_listHa = array();
 
 		$stud_status = ADA_STATUS_SUBSCRIBED; //only subscribed students
 		$students =  $dh->course_instance_students_presubscribe_get_list($this->id_course_instance,$stud_status);
-		if (!AMA_DB::isError($students) && is_array($students) && count($students)>0) {
+		if (!(!AMA_DB::isError($students) && is_array($students) && count($students)>0)) {
+			$students = [];
+		}
+		$tutors = $dh->course_instance_tutor_get($this->id_course_instance, 'ALL');
+		// remap tutors array so it will have same keys as students
+		if (!AMA_DB::isError($tutors) && is_array($tutors) && count($tutors)>0) {
+			$tutors = array_map(function($tutorId){
+				return [
+					'id_utente_studente' => $tutorId,
+				];
+			}, $tutors);
+		} else {
+			$tutors = [];
+		}
+		$students = array_merge($tutors, $students);
+		if (is_array($students) && count($students)>0) {
 			foreach ($students as $one_student) {
 				$id_stud = $one_student['id_utente_studente'];
-				if ($dh->get_user_type($id_stud)==AMA_TYPE_STUDENT) {
-					$studn = $dh->get_student($id_stud);
+				$userType = $dh->get_user_type($id_stud);
+				if (array_key_exists($userType, $supportedTypes)) {
+					$studn = $dh->{$supportedTypes[$userType]['getter']}($id_stud);
 					if ($action==MODULES_CLASSAGENDA_DO_ROLLCALL) {
 						$row = array(
 								$one_student['id_utente_studente'],
-								$studn['nome'],
-								$studn['cognome'],
-								$studn['email'] );
+								sprintf($supportedTypes[$userType]['format'], $studn['nome']),
+								sprintf($supportedTypes[$userType]['format'], $studn['cognome']),
+								sprintf($supportedTypes[$userType]['format'], $studn['email']),
+							);
 					} else if ($action==MODULES_CLASSAGENDA_DO_ROLLCALLHISTORY) {
 						$row = array(
-								'id'=>$one_student['id_utente_studente'],
-								'name'=>$studn['nome'].' '.$studn['cognome']);
+								'id' => $one_student['id_utente_studente'],
+								'name' => sprintf($supportedTypes[$userType]['format'],$studn['nome'].' '.$studn['cognome']),
+							);
 					}
 					array_push($student_listHa,$row);
 				}
