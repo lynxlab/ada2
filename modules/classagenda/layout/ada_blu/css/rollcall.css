@@ -1,3 +1,8 @@
 @CHARSET "UTF-8";
 
 @import url("moduleDataTables.css");
+
+.rollcallBtn {
+    margin: 1em 0;
+    text-align: right;
+}

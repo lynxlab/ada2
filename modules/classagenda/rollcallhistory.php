@@ -51,6 +51,12 @@ $GLOBALS['dh'] = AMAClassagendaDataHandler::instance(MultiPort::getDSN($_SESSION
 $rollcallManager = new rollcallManagement($id_course_instance);
 $data = $rollcallManager->run(MODULES_CLASSAGENDA_DO_ROLLCALLHISTORY);
 
+$btnCont = CDOMElement::create('div','class:rollcallBtn');
+$exportBtn = CDOMElement::create('a','id:rollcallExpBtn,class:ui button,href:exportRollCallHistory.php?id_course='.$id_course.'&id_course_instance='.$id_course_instance);
+$exportBtn->addChild(CDOMElement::create('i','class:table icon'));
+$exportBtn->addChild(new \CText(translateFN('Esporta')));
+$btnCont->addChild($exportBtn);
+
 $content_dataAr = array(
 		'user_name' => $user_name,
 		'user_type' => $user_type,
@@ -59,7 +65,7 @@ $content_dataAr = array(
 		'status' => $status,
 		'help' => $data['help'],
 		'title' => $data['title'],
-		'data' => $data['htmlObj']->getHtml()
+		'data' => $btnCont->getHtml().$data['htmlObj']->getHtml()
 );
 
 $layout_dataAr ['JS_filename'] =  array ( JQUERY, JQUERY_UI, JQUERY_DATATABLE, SEMANTICUI_DATATABLE );
