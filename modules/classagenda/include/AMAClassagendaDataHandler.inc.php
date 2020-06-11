@@ -302,10 +302,42 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 			   ' RC.`entertime`,RC.`exittime` FROM '.
 			   ' `'.self::$PREFIX.'rollcall` AS RC JOIN `'.self::$PREFIX.'calendars` AS CAL'.
 			   ' ON RC.`'.self::$PREFIX.'calendars_id` = CAL.`'.self::$PREFIX.'calendars_id`'.
-			   ' WHERE `id_utente_studente` = ? AND `id_istanza_corso`=?';
+			   ' WHERE `id_utente_studente` = ? AND `id_istanza_corso`=? ORDER BY RC.`entertime` ASC';
 
-		return $this->getAllPrepared($sql,array($id_student, $id_course_instance), AMA_FETCH_ASSOC);
+		return $this->fixExitTimes(
+			$id_course_instance,
+			$this->getAllPrepared($sql,array($id_student, $id_course_instance), AMA_FETCH_ASSOC)
+		);
+	}
 
+	/**
+	 * set the exittime of the passed rollcall elements to the calendar event 'end' time
+	 * only if the exittime is null and the calendar event ends in the past
+	 *
+	 * @param integer $id_course_instance
+	 * @param array $dataArr
+	 * @return array
+	 */
+	private function fixExitTimes($id_course_instance = 0, array $dataArr = []) {
+		$events = null;
+		$sql = 'UPDATE `'.self::$PREFIX.'rollcall` SET `exittime`=? WHERE `'.self::$PREFIX.'rollcall_id`=?';
+		foreach($dataArr as $i => $element) {
+			if (is_null($element['exittime'])) {
+				if (is_null($events)) {
+					$events = $this->getClassRoomEventsForCourseInstance($id_course_instance, null);
+				}
+				if (array_key_exists($element[self::$PREFIX.'calendars_id'], $events) && time() >= $events[$element[self::$PREFIX.'calendars_id']]['end']) {
+					$result = $this->queryPrepared($sql, [
+						$events[$element[self::$PREFIX.'calendars_id']]['end'] ,
+						$element[self::$PREFIX.'rollcall_id'],
+					 ]);
+					if (!AMA_DB::isError($result)) {
+						$dataArr[$i]['exittime'] = $events[$element[self::$PREFIX.'calendars_id']]['end'];
+					}
+				}
+			}
+		}
+		return $dataArr;
 	}
 
 	/**

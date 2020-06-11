@@ -2,7 +2,7 @@
  * CLASSAGENDA MODULE.
  *
  * @package        classagenda module
- * @author         Giorgio Consorti <g.consorti@lynxlab.com>         
+ * @author         Giorgio Consorti <g.consorti@lynxlab.com>
  * @copyright      Copyright (c) 2014, Lynx s.r.l.
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link           classagenda
@@ -10,19 +10,18 @@
  */
 
 function initDoc() {
-	
+
 	var commonDataTableOptions = {
 	        "bFilter": true,
 	        "bInfo": true,
 	        "bSort": true,
 	        "bAutoWidth": true,
-	        "bPaginate" : true,	        
+	        "bPaginate" : true,
 	        "oLanguage": {
 	        	"sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
 	        }
 		};
-	
-	
+
 	if ($j('#rollcallTable').length>0) {
 		var tableOptions = $j.extend(commonDataTableOptions,{
 			 "aoColumns": [
@@ -35,19 +34,20 @@ function initDoc() {
 		        ],
 		        "aaSorting": [[ 2, "asc" ]]
 		});
-		
 		$j('#rollcallTable').dataTable(tableOptions).show();
 		initButtons();
 	} else if ($j('#rollcallHistoryTable').length>0) {
 		var tableOptions = $j.extend(commonDataTableOptions,{
-//			 "bSort" : false
+			"aoColumnDefs": [
+				{ "bVisible": false, "aTargets": [0] },
+			],
 		});
 		$j('#rollcallHistoryTable').dataTable(tableOptions).show();
 	}
 }
 
 function toggleStudentEnterExit (jQueryObj, id_student, classagenda_calendars_id, isEntering) {
-	
+
 	$j.ajax({
 		type	:	'POST',
 		url		:	'ajax/toggleStudentEnterExit.php',
@@ -56,12 +56,12 @@ function toggleStudentEnterExit (jQueryObj, id_student, classagenda_calendars_id
 					  isEntering : isEntering ? 1 :0 },
 		dataType:	'html'
 	}).done (function(htmlcode){
-		if (htmlcode && htmlcode.length>0) { 
+		if (htmlcode && htmlcode.length>0) {
 			$j('#'+id_student+'_details').html($j('#'+id_student+'_details').html()+htmlcode);
 		};
 	}).always(function() {
 		jQueryObj.hide();
-		var className = (isEntering) ? '.exitbutton' : '.enterbutton' ; 
+		var className = (isEntering) ? '.exitbutton' : '.enterbutton' ;
 		var visibleButton = jQueryObj.parents('div').first().find(className).first();
 		visibleButton.button( "option", "disabled", true );
 		visibleButton.show();
