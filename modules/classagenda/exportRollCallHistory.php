@@ -53,7 +53,25 @@ $rollcallManager = new rollcallManagement($id_course_instance);
 $expData = $rollcallManager->exportRollCallHistory();
 
 if ($type=='csv') {
-	$data = [];
+	$data = [
+		[
+			translateFN('Corso'),
+			$courseObj->getTitle(). ' (ID:'.$courseObj->getId().')',
+		],
+		[
+			translateFN('Classe'),
+			$courseInstanceObj->getTitle(). ' (ID:'.$courseInstanceObj->getId().')',
+		],
+		[
+			'URL',
+			rtrim(HTTP_ROOT_DIR, '/') . '/browsing/view.php?id_node='.$courseObj->getId().'_'.$courseObj->id_nodo_toc.'&id_course='.$courseObj->getId().'&id_course_instance='.$courseInstanceObj->getId()
+		],
+		[
+			translateFN('Data e ora di generazione del file'),
+			strftime(ADA_DATE_FORMAT.' %T'),
+		],
+		[], // empty csv line
+	];
 	if (count($expData)>0) {
 		if (array_key_exists('header', $expData)) {
 			array_push($data, $expData['header']);
