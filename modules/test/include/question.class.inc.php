@@ -247,6 +247,7 @@ abstract class QuestionTest extends NodeTest
 		}
 
 		if ($feedback) {
+			$ul->setAttribute('class', $ul->getAttribute('class').' feedback');
 			if ($_SESSION['sess_id_user_type'] == AMA_TYPE_TUTOR) {
 				$span = CDOMElement::create('span','class:tutor_comment_test');
 				$span->addChild(new CText(translateFN('Commento del Tutor per l\'esercizio')));
