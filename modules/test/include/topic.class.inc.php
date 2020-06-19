@@ -59,15 +59,15 @@ class TopicTest extends NodeTest
 	 */
 	protected function renderingHtml(&$ref = null,$feedback=false,$rating=false,$rating_answer=false) {
 		if (!$this->display) return new CText(''); //if we don't have to display this question, let's return an empty item
-		
+
 		$out = CDOMElement::create('li','id:liTopic'.$this->id_nodo);
 		$out->setAttribute('class', 'topic_test');
 
 		$out->addChild(new CText($this->titolo));
-		
+
 		// add topic to history_esercizi table
 		if (!$feedback) $this->trackTopicToExerciseHistory();
-		
+
 		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_AUTHOR) {
 			if ($this->durata > 0 && is_a($this->_parent,'RootTest')) {
 				$minuti = round($this->durata/60,2);
@@ -82,7 +82,7 @@ class TopicTest extends NodeTest
 				$span = CDOMElement::create('span');
 				$span->addChild(new CText(translateFN('ordine').': '));
 				$div->addChild($span);
-				
+
 				$span = CDOMElement::create('span','class:span_order');
 				$span->addChild(new CText($this->ordine));
 				$div->addChild($span);
@@ -144,6 +144,9 @@ class TopicTest extends NodeTest
 		}
 		$ul = CDOMElement::create('ul');
 		$ul->setAttribute('class', 'question_group_test');
+		if ($feedback) {
+			$ul->setAttribute('class', $ul->getAttribute('class').' feedback');
+		}
 		/*
 		if (isset($this->_children[0])) {
 			$ul->setAttribute('start', $this->_children[0]->ordine);
@@ -154,24 +157,24 @@ class TopicTest extends NodeTest
 
 		return $out;
 	}
-	
+
 	/**
 	 * @author giorgio 30/ott/2014
-	 * 
+	 *
 	 * adds the topic that's about to be rendered to the history_esercizi table
-	 * 
+	 *
 	 * @access protected
 	 */
 	protected function trackTopicToExerciseHistory() {
 		if ($_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT && isset($_SESSION['sess_id_user']) &&
 			isset($_SESSION['sess_id_course_instance']) && isset($GLOBALS['dh'])) {
-				
+
 			if (!isset($_GET['unload'])) {
 				$GLOBALS['dh']->add_ex_history($_SESSION['sess_id_user'], $_SESSION['sess_id_course_instance'], $this->id_nodo);
 			} else {
 				$GLOBALS['dh']->update_exit_time_ex_history($_SESSION['sess_id_user'], $_SESSION['sess_id_course_instance'], $this->id_nodo);
 			}
-			
+
 		}
 	}
 }
