@@ -63,8 +63,8 @@ class UserRegistrationForm extends FForm
             ->setRequired()->setValidator(FormValidator::AMESCI_CODE_VALIDATOR);
 
         $codetext = CDOMElement::create('span','class:pass-validator-text');
-        $codetext->addChild(new CText(translateFN('Il Codice operatorio volontario è composto da una V (maisucola) seguita'.
-        ' da 9 cifre. Es. V123456789')));
+        $codetext->addChild(new CText(translateFN('Il Codice operatore volontario è composto da una V (maisucola) seguita'.
+        ' da 9 o 10 cifre (Es. V0123456789), oppure da una V (maiuscola) seguita da 4 lettere (maiuscole) e 5 cifre (Es. VABCD12345).')));
         $this->addCDOM($codetext);
 
 //         $this->addSelect(

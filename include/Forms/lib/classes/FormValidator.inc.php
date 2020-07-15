@@ -103,5 +103,5 @@ class FormValidator
     const TIME_VALIDATOR_REGEXP = '/^[0-9]{2}\:[0-9]{2}\:[0-9]{2}$/';
     const MULTILINE_TEXT_VALIDATOR_REGEXP = '/^.*$/m'; // /m is equivalent to /s in javascript regex (multiline)
     const NON_NEGATIVE_MONEY_VALIDATOR_REGEXP = '/^[0-9]+(\.[0-9]{0,2})?$/'; // /^[0]|^[1-9][0-9]*\.[0-9]{2}$/';
-    const AMESCI_CODE_VALIDATOR_REGEXP = '/^[V]{1}[0-9]{9}$/';
+    const AMESCI_CODE_VALIDATOR_REGEXP = '/^[V]{1}[0-9]{9,10}|[V]{1}[A-Z]{4}[0-9]{5}$/';
 }
