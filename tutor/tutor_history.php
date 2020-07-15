@@ -157,10 +157,10 @@ switch ($mode) {
 
         // Tempo di visita nodi
         $history .= "<p align=\"center\">";
-        $history .= translateFN("Tempo totale di visita dei nodi (in ore:minuti): ") ;
+        $history .= translateFN("Tempo totale di visita dei nodi (in ore:minuti:secondi): ") ;
         $history .= "<b>". $user_historyObj->history_nodes_time_FN() ."</b><br>" ;
         // Media di visita nodi
-        $history .= translateFN("Tempo medio di visita dei nodi (in minuti:secondi): ") ;
+        $history .= translateFN("Tempo medio di visita dei nodi (in ore:minuti:secondi): ") ;
         $history .= "<b>". $user_historyObj->history_nodes_average_FN()."</b>" ;
         $history .= "</p>";
 
