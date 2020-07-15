@@ -162,7 +162,7 @@ class History
   function history_last_nodes_FN($nodes_num, $returnHTML = true)
   {
     $result = $this->get_last_nodes($nodes_num);
-    $formatted_data = History::format_history_dataFN($result, $returnHTML);
+    $formatted_data = $this->format_history_dataFN($result, $returnHTML);
 
     if ($returnHTML)
     {
@@ -188,8 +188,9 @@ class History
     $int_hours = floor($this->total_time/3600);
     $rest_sec = $this->total_time - ($int_hours * 3600);
     $int_mins = floor($rest_sec/60);
+    $int_secs = floor($this->total_time - ($int_hours*3600) - ($int_mins*60));
 
-    $res = sprintf("%02d:%02d", $int_hours, $int_mins);
+    $res = sprintf("%02d:%02d:%02d", $int_hours, $int_mins, $int_secs);
     return $res;
   }
 
@@ -301,7 +302,7 @@ class History
     else
     	$caption = translateFN("Tutti i nodi visitati");
 
-    $formatted_data = History::format_history_dataFN($result);
+    $formatted_data = $this->format_history_dataFN($result);
 
     if ($returnHTML)
     {
@@ -463,13 +464,14 @@ class History
       // $id_visited_node = $id_course."_".$historyHa[0]; Id_node gia' completo
       $u_time_spent = ($exit_date - $visit_date);
 
-      $int_mins = floor($u_time_spent/60);
-      $rest_secs = $u_time_spent - ($int_mins * 60);
-      $int_secs = floor($rest_secs);
+      $int_hours = floor($u_time_spent/3600);
+      $rest_sec = $u_time_spent - ($int_hours * 3600);
+      $int_mins = floor($rest_sec/60);
+      $int_secs = floor($u_time_spent - ($int_hours*3600) - ($int_mins*60));
 
-      $time_spent = sprintf("%02d:%02d", $int_mins, $int_secs);
+      $time_spent = sprintf("%02d:%02d:%02d", $int_hours, $int_mins, $int_secs);
 
-      if ($time_spent == '00:00') {
+      if ($time_spent == '00:00:00') {
         $time_spent = '-';
       }
 

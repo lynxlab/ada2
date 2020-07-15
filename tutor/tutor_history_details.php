@@ -286,7 +286,7 @@ switch ($op) {
 	// Tempo di visita nodi
 	$prehistory .= "<p align=\"center\">";
 	$prehistory .= translateFN("Tempo totale di visita dei nodi (in ore:minuti): ") ;
-	$prehistory .= "<b>". $user_historyObj->history_nodes_time_FN() ."</b><br>" ;
+	$prehistory .= "<b data-seconds=".$user_historyObj->total_time.">". $user_historyObj->history_nodes_time_FN() ."</b><br>" ;
 	// Media di visita nodi
 	$prehistory .= translateFN("Tempo medio di visita dei nodi (in minuti:secondi): ") ;
 	$prehistory .= "<b>". $user_historyObj->history_nodes_average_FN()."</b>" ;
