@@ -663,6 +663,7 @@ switch ($op){
         $menuOptions['id_course_instance'] = $sess_id_course_instance;
         $menuOptions['id_node'] = $sess_id_node;
 		$menuOptions['id_parent'] = $sess_id_node;
+		$menuOptions['id_student'] = $userObj->getId();
 		$menuOptions['type'] = $nodeObj->type;
 
         // define to enable author menu items
