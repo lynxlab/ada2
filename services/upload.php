@@ -124,7 +124,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
             $file_type = finfo_file($finfo, $source);
         }
     } else {
-        $file_type = $_FILES['file_up']['type'];
+        $file_type = mime_content_type($_FILES['file_up']['type']);
     }
 
     /*
@@ -304,7 +304,8 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
     $filename          = $_FILES['file_up']['name'];
     $source            = $_FILES['file_up']['tmp_name'];
     $file_size         = $_FILES['file_up']['size'];
-    $file_type         = $_FILES['file_up']['type'];
+    $file_type         = mime_content_type($source);
+    // $_FILES['file_up']['type'];
     $file_upload_error = $_FILES['file_up']['error'];
     // contiene il codice di errore da restituire al chiamante
     $error_code = 0;
