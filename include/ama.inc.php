@@ -4373,7 +4373,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if (AMA_DB::isError($db)) return $db;
 
         // the fields id and student return always
-        $select = "SELECT  utente.id_utente AS id, CONCAT(utente.nome ,' ',utente.cognome) AS student ";
+        $select = "SELECT  utente.id_utente AS id, CONCAT(utente.nome ,'::',utente.cognome) AS student ";
         $from = "
             FROM  (
                 (Select * from iscrizioni WHERE id_istanza_corso = $id_instance and status <> " . ADA_STATUS_VISITOR . " ) as iscrizioni
@@ -6457,6 +6457,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             $student_data[$id_log]['id_stud'] = $res_item['id_user'];
             // vito, 27 mar 2009
             $student_data[$id_log]['student'] = $res_item['nome'] .' '. $res_item['cognome'];
+            $student_data[$id_log]['nome'] = $res_item['nome'];
+            $student_data[$id_log]['cognome'] = $res_item['cognome'];
 
             //        $student_data[$id_log]['id_course_instance'] = $res_item[2];
             //        $student_data[$id_log]['id_course'] = $res_item[3];

@@ -134,6 +134,7 @@ else {
             translateFN('Hidden_status'),
             translateFN('Id'),
             translateFN('Nome'),
+            translateFN('Cognome'),
             translateFN('Status'),
             translateFN('Id_istance'),
             translateFN('Data iscrizione'),
@@ -174,7 +175,8 @@ else {
         foreach($arrayUsers as $user)
         {
 
-            $name = $user->getSubscriberFullname();
+            $name = $user->getSubscriberFirstname();
+            $lastname = $user->getSubscriberLastname();
 
             /* add tooltip */
             if (isset($student_subscribed_course_instance[$user->getSubscriberId()])) {
@@ -192,10 +194,13 @@ else {
             }
             $span_label = CDOMElement::create('span');
             $span_label->setAttribute('title', $title);
-
             $span_label->setAttribute('class', 'UserName tooltip');
             $span_label->setAttribute('id', $user->getSubscriberId());
             $span_label->addChild(new CText($name));
+
+            $span_lastname = CDOMElement::create('span');
+            $span_lastname->setAttribute('class', 'LastName');
+            $span_lastname->addChild(new CText($lastname));
 
             $Tooltip=CDOMElement::create('div');
             $Tooltip->setAttribute('title', $title);
@@ -248,6 +253,7 @@ else {
                 translateFN('Hidden_status')=>$span_selected->getHtml(),
                 translateFN('Id')=>$user->getSubscriberId(),
                 translateFN('Nome')=>$span_label->getHtml(),
+                translateFN('Cognome')=>$span_lastname->getHtml(),
                 translateFN('Status')=>$select->getHtml(),
                 translateFN('Id_istance')=>$span_instance->getHtml(),
                 translateFN('Data iscrizione')=>$data_iscrizione,
@@ -309,10 +315,10 @@ $buttonSubscription->addChild (new CText(translateFN('Iscrivi studente')));
 if (defined('MODULES_STUDENTSGROUPS') && MODULES_STUDENTSGROUPS === true){
     $buttonSubscriptions = CDOMElement::create('span');
     $buttonSubscriptions->addChild (new CText(''));
-} else {    
+} else {
     $buttonSubscriptions = CDOMElement::create('button','class:Subscription_Button');
     $buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscription(\'subscriptions\');');
-    $buttonSubscriptions->addChild (new CText(translateFN('Upload file'))); 
+    $buttonSubscriptions->addChild (new CText(translateFN('Upload file')));
 }
 
 $buttondownloadCertificates = CDOMElement::create('button','class:Subscription_Button');

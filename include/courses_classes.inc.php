@@ -1647,12 +1647,22 @@ class Student_class {
                         $dati_stude[$key]['badges'] = Lynxlab\ADA\Module\Badges\RewardedBadge::buildStudentRewardHTML($id_course, $id_instance, $id_student)->getHtml();
                     }
 
+                    list ($firstanme, $lastname) = explode('::', $dati_stude[$key]["student"]);
                     // build HTML for name and surname
                     $st_name = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
                     $st_name .= "&id_course=" . $id_course . "&id_instance=" . $id_instance . ">";
-                    $st_name .= $dati_stude[$key]["student"] . "</a>";
+                    $st_name .= $firstanme . "</a>";
                     $dati_stude[$key]["student"] = $st_name;
 
+                    $st_lastname = "<a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
+                    $st_lastname .= "&id_course=" . $id_course . "&id_instance=" . $id_instance . ">";
+                    $st_lastname .= $lastname . "</a>";
+
+                    // insert lastname after student (aka firstname)
+                    $nameIndex = 1+array_search("student", array_keys($dati_stude[$key]));
+                    $dati_stude[$key] = array_slice($dati_stude[$key], 0, $nameIndex, true) +
+                    array("lastname" => $st_lastname) +
+                    array_slice($dati_stude[$key], $nameIndex, count($dati_stude[$key])-$nameIndex, true);
 
                     if (array_key_exists(REPORT_COLUMN_ADDED_NOTES, $columns)) {
                         // build HTML for added_notes
@@ -1697,10 +1707,12 @@ class Student_class {
                 // set av_student to the last dati_stude array key plus 1
                 $av_student = 1+intval(key(array_slice($dati_stude, -1, 1, true)));
                 $dati_stude[$av_student]['id'] = "-";
-                $dati_stude[$av_student]['student'] = translateFN("Media");
+                $dati_stude[$av_student]["student"] = translateFN("Media");
+                $dati_stude[$av_student]['lastname'] = "&nbsp;";
 
                 $tableHeader['id'] = translateFN("Id");
-                $tableHeader['student'] = translateFN("Studente");
+                $tableHeader["student"] = translateFN("Nome");
+                $tableHeader["lastname"] = translateFN("Cognome");
 
                 if (array_key_exists(REPORT_COLUMN_HISTORY, $columns)) {
                     $tableHeader['history'] = translateFN("Visite");
@@ -1824,7 +1836,8 @@ class Student_class {
                                  */
                                 $studentObj = $studentObj->toStudent();
                             }
-                            $student_name = $studentObj->getFullname(); //$studentObj->nome." ".$studentObj->cognome;
+                            $student_name = $studentObj->getFirstName(); //$studentObj->nome." ".$studentObj->cognome;
+                            $student_lastname = $studentObj->getLastName();
 
                             // vito
                             $studentObj->set_course_instance_for_history($id_instance);
@@ -1892,6 +1905,11 @@ class Student_class {
                             $st_name .= "&id_course=" . $id_course . "&id_instance=" . $id_instance . ">";
                             $st_name .= $student_name . "</a>";
 
+                            $st_lastname = "<!-- $student_lastname --><a href=" .  $http_root_dir . "/tutor/tutor.php?op=zoom_student&id_student=" . $id_student;
+
+                            $st_lastname .= "&id_course=" . $id_course . "&id_instance=" . $id_instance . ">";
+                            $st_lastname .= $student_lastname . "</a>";
+
                             $st_history_count_norm = str_pad($st_history_count, 5, "0", STR_PAD_LEFT);
                             $st_history = "<!-- $st_history_count_norm --><a href=" .  $http_root_dir . "/tutor/tutor_history.php?id_student=" . $id_student;
                             $st_history .= "&id_course=" . $id_course . "&id_course_instance=" . $id_instance . ">";
@@ -1916,6 +1934,7 @@ class Student_class {
                             // user data
                             $dati_stude[$num_student]['id'] = $id_student;
                             $dati_stude[$num_student]['student'] = $st_name;
+                            $dati_stude[$num_student]['lastname'] = $st_lastname;
 
                             // history
                             $dati_stude[$num_student]['history'] = $st_history;
@@ -2089,6 +2108,7 @@ class Student_class {
                 $av_student = 1+intval(key(array_slice($dati_stude, -1, 1, true)));
                 $dati_stude[$av_student]['id'] = "-";
                 $dati_stude[$av_student]['student'] = translateFN("Media");
+                $dati_stude[$av_student]['lastname'] = "&nbsp;";
                 $dati_stude[$av_student]['history'] = round($av_history, 2);
                 $dati_stude[$av_student]['last_access'] = "-";
                 $dati_stude[$av_student]['exercises'] = '<span class="dontwrap">' . $av_exercises . '</span>';
@@ -2186,7 +2206,8 @@ class Student_class {
     private function generate_class_report_header() {
 
     	$tableHeader['id'] = translateFN("Id");
-    	$tableHeader['student'] = translateFN("Studente");
+        $tableHeader['student'] = translateFN("Nome");
+        $tableHeader['lastname'] = translateFN("Cognome");
     	$tableHeader['history'] = translateFN("Visite");
     	$tableHeader['last_access'] = translateFN("Recente");
     	$tableHeader['exercises'] = translateFN("Punti A");

@@ -34,23 +34,27 @@ function createDataTable()
         },
         {
            "aTargets": [ 3 ],
+           "sClass": "LastName_Column",
+        },
+        {
+           "aTargets": [ 4 ],
            "sClass": "Status_Column",
            "sType": "select",
            "bSearchable":false
         },
         {
-           "aTargets": [ 4 ],
+           "aTargets": [ 5 ],
            "bVisible":false,
            "bSearchable":false
         },
 
         {
-           "aTargets": [ 5 ],
+           "aTargets": [ 6 ],
            "sClass": "Date_Column",
            "sType":"date-eu"
         },
         {
-           "aTargets": [ 6 ],
+           "aTargets": [ 7 ],
            "sClass": "Level_Column",
         },
     ],
@@ -145,7 +149,7 @@ function saveStatus(select)
            $j(select).val(myVal);
            $j(select).find('option[value="'+myVal+'"]').prop('selected', true).attr('selected', 'selected');
 
-           datatable.fnUpdate($j(select)[0].outerHTML, indexRow, indexColumn+3, false);
+           datatable.fnUpdate($j(select)[0].outerHTML, indexRow, indexColumn+4, false);
            // console.log($j(select)[0].outerHTML);
            datatable.fnStandingRedraw();
            /* if user status is removed  it deletes user row from datatable */
