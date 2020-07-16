@@ -24,7 +24,7 @@ class FileUploader
         $this->_name = $_FILES[$fieldUploadName]['name'];
         $this->_size = $_FILES[$fieldUploadName]['size'];
         $this->_tmpName = $_FILES[$fieldUploadName]['tmp_name'];
-        $this->_type = trim($_FILES[$fieldUploadName]['type'],'"');
+        $this->_type = trim(mime_content_type($this->_tmpName),'"');
 
         $this->_destinationFolder = $pathToUploadFolder;
         $this->_errorMessage = '';
