@@ -111,7 +111,8 @@ if(is_array($usersAr) && count($usersAr) > 0) {
     $thead_data = array(
        null,
        translateFN('id'),
-       translateFN('nome e cognome'),
+       translateFN('nome'),
+       translateFN('cognome'),
        translateFN('username'),
        translateFN('azioni'),
        translateFN('Confermato')
@@ -143,9 +144,13 @@ if(is_array($usersAr) && count($usersAr) > 0) {
         else $imgDetails = CDOMElement::create('span');
 
 
-        $User_fullname = CDOMElement::create('span');
-        $User_fullname->setAttribute('class', 'fullname');
-        $User_fullname->addChild(new CText($user[1].' '.$user[2]));
+        $User_firstname = CDOMElement::create('span');
+        $User_firstname->setAttribute('class', 'fullname');
+        $User_firstname->addChild(new CText($user[1]));
+
+        $User_lastname = CDOMElement::create('span');
+        $User_lastname->setAttribute('class', 'fullname');
+        $User_lastname->addChild(new CText($user[2]));
 
         $span_UserName = CDOMElement::create('span');
         $span_UserName->setAttribute('class', 'UserName');
@@ -183,7 +188,7 @@ if(is_array($usersAr) && count($usersAr) > 0) {
          */
         $isConfirmed = ($user[5] == ADA_STATUS_REGISTERED) ? translateFN("Si") : translateFN("No");
 
-        $tmpArray = array($imgDetails->getHtml(),$userId, $User_fullname->getHtml(), $span_UserName->getHtml(), $actions, $isConfirmed);
+        $tmpArray = array($imgDetails->getHtml(),$userId, $User_firstname->getHtml(), $User_lastname->getHtml(), $span_UserName->getHtml(), $actions, $isConfirmed);
         unset($imgDetails);
 
         $tbody_data[] = $tmpArray;
