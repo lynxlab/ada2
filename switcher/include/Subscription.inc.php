@@ -75,6 +75,8 @@ class Subscription
             foreach($result as $r) {
                 $subscription = new Subscription($r['id_utente'], $classRoomId,$r['data_iscrizione']);
                 $subscription->setSubscriberFullname($r['nome'] . ' ' . $r['cognome']);
+                $subscription->setSubscriberFirstname($r['nome']);
+                $subscription->setSubscriberLastname($r['cognome']);
                 $subscription->setSubscriptionStatus($r['status']);
                 $subscription->setLastStatusUpdate($r['laststatusupdate']);
                 $subscription->_loadedStatus = $subscription->getSubscriptionStatus();
@@ -204,6 +206,20 @@ class Subscription
     }
     /**
      *
+     * @return string the firstname of the subscriber
+     */
+    public function getSubscriberFirstname() {
+        return $this->_subscriberFirstname;
+    }
+    /**
+     *
+     * @return string the lastname of the subscriber
+     */
+    public function getSubscriberLastname() {
+        return $this->_subscriberLastname;
+    }
+    /**
+     *
      * @return string a string representation of the subscription date
      */
     public function getSubscriptionDate() {
@@ -233,6 +249,12 @@ class Subscription
 
     public function setSubscriberFullname($fullname) {
         $this->_subscriberFullname = $fullname;
+    }
+    public function setSubscriberFirstname($firstname) {
+        $this->_subscriberFirstname = $firstname;
+    }
+    public function setSubscriberLastname($lastname) {
+        $this->_subscriberLastname = $lastname;
     }
     public function setSubscriptionStatus($status) {
         $this->_subscriptionStatus = $status;
@@ -266,6 +288,8 @@ class Subscription
 
     private $_subscriberId;
     private $_subscriberFullname;
+    private $_subscriberFirstname;
+    private $_subscriberLastname;
     private $_classRoomId;
     private $_subscriptionDate;
     private $_subscriptionStatus;
