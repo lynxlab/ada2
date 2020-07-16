@@ -19,7 +19,7 @@ and open the template in the editor.
     height:40%;
 }
 .Name_Column{
-    width: 33%;
+    width: 25%;
     height:40%;
  }
 .Status_Column{
@@ -27,8 +27,8 @@ and open the template in the editor.
     height:40%;
 }
 .Date_Column{
-    width: 20%;
-    text-align: center;
+    width: 8%;
+    text-align: right;
     height:40%;
 }
 .Level_Column{
