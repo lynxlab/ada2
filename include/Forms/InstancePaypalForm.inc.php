@@ -11,7 +11,7 @@
  */
 require_once 'lib/classes/FForm.inc.php';
 /**
- * 
+ *
  */
 class InstancePaypalForm extends FForm {
     public function  __construct() {
@@ -21,6 +21,7 @@ class InstancePaypalForm extends FForm {
         $this->setAction($action);
         $submitValue = translateFN('Paga Ora');
         $this->setSubmitValue($submitValue);
+        $this->setId('paypal-ada-form');
 
         $this->addHidden('cmd');
         $this->addHidden('business');
@@ -41,9 +42,9 @@ class InstancePaypalForm extends FForm {
         $this->addHidden('item_name_1');
         $this->addHidden('rm');
         $this->addHidden('no_shipping');
-        
+
         /*$this->addHidden('id_layout')->withData(0);
-        
+
         $this->addTextInput('data_inizio_previsto', translateFN('Data inizio previsto'))
              ->setRequired()
              ->setValidator(FormValidator::DATE_VALIDATOR);
