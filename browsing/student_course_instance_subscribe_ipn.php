@@ -211,7 +211,7 @@ if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
                         fwrite($fpx, "|$payment_status| : |Completed|\n\n");
                     }
                     if (
-                        ($receiver_email == $paypal_email_address) &&
+                        // ($receiver_email == $paypal_email_address) &&
                         ($payment_amount == $product_price) &&
                         ($payment_currency == $price_currency) &&
                         ($payment_status == 'Completed')
@@ -224,7 +224,10 @@ if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
                         $body_mail .= translateFN('Questo addebito verrà visualizzato sull\'estratto conto della carta di credito o prepagata come pagamento a PAYPAL ' . PAYPAL_NAME_ACCOUNT);
                         $message_ha["titolo"] = PORTAL_NAME . " - " . translateFN('Conferma di pagamento') . ' - ' . translateFN("Iscrizione al corso:") . " " . $course_name;
                         $sender_email = ADA_ADMIN_MAIL_ADDRESS;
-                        $recipients_emails_ar = array($payer_email, $buyerObj->getEmail());
+                        $recipients_emails_ar = array($payer_email);
+                        if (!in_array($buyerObj->getEmail(), $recipients_emails_ar)) {
+                            $recipients_emails_ar[] = $buyerObj->getEmail();
+                        }
 
                         // iscrizione al corso
                         $status = 2;
@@ -275,27 +278,6 @@ if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
                         }
                         $mailer = new Mailer();
                         $res = $mailer->send_mail($message_ha, $sender_email, $recipients_emails_ar);
-
-                        // subscribe student
-                        require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
-                        $isSubscribed = count(array_filter(
-                            Subscription::findSubscriptionsToClassRoom($instanceObj->getId()),
-                            function ($s) use ($buyerObj) {
-                                return $buyerObj->getId() == $s->getSubscriberId();
-                            }
-                        )) > 0;
-                        if (!$isSubscribed) {
-                            $s = new Subscription($buyerObj->getId(), $instanceObj->getId());
-                            $s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
-                            Subscription::addSubscription($s);
-                            if ($debug == 1) {
-                                fwrite($fpx, "Successfully subscribed!!\n");
-                            }
-                        } else {
-                            if ($debug == 1) {
-                                fwrite($fpx, "Was already subscribed!!\n");
-                            }
-                        }
                     } else {
                         $message = translateFN('Gentile') . " " . $firstname . ", <BR />";
                         $message .= translateFN('il corso pagato non corrisponde ai dettagli in nostro possesso') . "<BR />";
