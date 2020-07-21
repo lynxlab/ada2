@@ -5,7 +5,7 @@
  * @author		Stefano Penge <steve@lynxlab.com>
  * @author		Maurizio "Graffio" Mazzoneschi <graffio@lynxlab.com>
  * @author		Vito Modena <vito@lynxlab.com>
- * @copyright           Copyright (c) 2009-2012, Lynx s.r.l.
+ * @copyright   Copyright (c) 2009-2012, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link		info
  * @version		0.2
@@ -32,7 +32,7 @@ $allowedUsersAr = array(AMA_TYPE_STUDENT);
  * Get needed objects
  */
 $neededObjAr = array(
-    AMA_TYPE_STUDENT => array('layout', 'course_instance')
+    AMA_TYPE_STUDENT => array('layout', 'course', 'course_instance')
 );
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
@@ -86,12 +86,12 @@ $courseId = DataValidator::is_uinteger($_GET['course']);
 $instanceId = DataValidator::is_uinteger($_GET['instance']);
 $studentId = DataValidator::is_uinteger($_GET['student']);
 
-$testerInfoAr = $common_dh->get_tester_info_from_id($providerId,'AMA_FETCH_ASSOC');
+$testerInfoAr = $common_dh->get_tester_info_from_id($providerId, AMA_FETCH_BOTH);
 if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $provider_name = $testerInfoAr[1];
     $tester = $testerInfoAr[10];
     $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-    $currentTesterId = $newTesterId;
+    // $currentTesterId = $newTesterId;
     $GLOBALS['dh'] = $tester_dh;
     $dh = $tester_dh;
 
@@ -99,8 +99,13 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     * GESTIONE LOG
     */
     $logStr = "";
-    $log_file = ROOT_DIR . '/browsing/paypal/'.PAYPAL_IPN_LOG;
-    $logFd = fopen($log_file, "a");
+    if (!is_dir(ROOT_DIR . '/log/paypal/')) {
+        $oldmask = umask(0);
+        mkdir (ROOT_DIR . '/log/paypal/', 0775, true);
+        umask($oldmask);
+    }
+    $log_file = ROOT_DIR . '/log/paypal/'.PAYPAL_PDT_LOG;
+    // $logFd = fopen($log_file, "a");
     $fpx = fopen($log_file, 'a');
 
     $debug = 1;
@@ -129,7 +134,7 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     // preparazione output HTML e print dell' output
     $title = translateFN("Conferma pagamento iscrizione al corso");
 //    $link_annulla_iscrizione = "<a href=\"".$http_root_dir . "/iscrizione/student_course_instance_unsubscribe.php?id_instance=".
-    $id_course_instance ."&id_student=" . $id_studente . "&back_url=student_course_instance_menu.php\">". translateFN('Annulla iscrizione') . "</a>";
+    $instanceId ."&id_student=" . $studentId . "&back_url=student_course_instance_menu.php\">". translateFN('Annulla iscrizione') . "</a>";
     $link_torna_home = "<a href=\"".$http_root_dir . "/browsing/student.php\">". translateFN('Torna alla Home') . "</a>";
 
     $info_div = CDOMElement::create('DIV', 'id:info_div');
@@ -164,9 +169,11 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $req .= "&tx=$tx_token&at=$auth_token";
 
     // post back to PayPal system to validate
-    $header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
+    $header  = "POST /cgi-bin/webscr HTTP/1.1\r\n";
     $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-    $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
+    $header .= "Content-Length: " . strlen($req) . "\r\n";
+    $header .= "Host: $paypal_ipn_url\r\n";
+    $header .= "Connection: close\r\n\r\n";
     //$fp = fsockopen ($paypal_ipn_url, 80, $errno, $errstr, 30);
     // If possible, securely post back to paypal using HTTPS
     // Your PHP server will need to be SSL enabled
@@ -178,7 +185,7 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
         $message .= "<br />".translateFN("Se non riceverei una mail di comunicazione, scrivi a") . ADA_ADMIN_MAIL_ADDRESS;
         if ($debug == 1) { fwrite($fpx, "Error connecting to Paypal\n"); }
     } else {
-        if ($debug == 1) { fwrite($fpx, "connecting to Paypal...\n"); }
+        if ($debug == 1) { fwrite($fpx, sprintf("sending to Paypal...\n%s\n%s", $header, $req)); }
 
         fputs ($fp, $header . $req);
         // read the body data
@@ -214,10 +221,10 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
             // process payment
             // $first_name = $keyarray['first_name'];
             // $last_name = $keyarray['last_name'];
-            $item_name = $keyarray['item_name'];
+            $item_name = $keyarray['item_name1'];
             $payment_amount = $keyarray['mc_gross'];
             $payment_currency = $keyarray['mc_currency'];
-            $item_number = $keyarray['item_number'];
+            $item_number = $keyarray['item_number1'];
             $txn_id = $keyarray['txn_id'];
             $receiver_email = $keyarray['business'];
             $payer_email = $keyarray['payer_email'];
@@ -229,7 +236,6 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
                 ($payment_status == 'Completed')
             ) {
                 $date = AMA_DataHandler::ts_to_date(time(), "%d/%m/%Y - %H:%M:%S");
-                $ipn_log .= "Paypal PDT DATA OK\n";
                 if ($debug == 1) {
                     fwrite($fpx, "Paypal PDT DATA OK - $date\n");
                 }
@@ -253,12 +259,28 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
                 $message .= "<br />" . translateFN('ID della transazione:')." ". $txn_id;
                 $message .= "<br />--------<br />";
 
+                // subscribe student
+                require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
+                $isSubscribed = count(array_filter(
+                    Subscription::findSubscriptionsToClassRoom($instanceObj->getId()),
+                    function ($s) use ($userObj) {
+                        return $userObj->getId() == $s->getSubscriberId();
+                    }
+                )) > 0;
+                if (!$isSubscribed) {
+                    $s = new Subscription($userObj->getId(), $instanceObj->getId());
+                    $s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
+                    Subscription::addSubscription($s);
+                    if ($debug == 1) { fwrite($fpx, "Successfully subscribed!!\n"); }
+                } else {
+                    if ($debug == 1) { fwrite($fpx, "Was already subscribed!!\n"); }
+                }
+
             } else {
                 $message = translateFN('Gentile') . " " . $first_name .", <BR />";
                 $message .= translateFN('il corso pagato non corrisponde ai dettagli in nostro possesso')."<BR />";
                 $message .= translateFN('se hai bisogno di maggiori informazioni scrivi una mail a:') . " " . ADA_ADMIN_MAIL_ADDRESS ."<br />";
 
-                $ipn_log .= "Purchase does not match product details\n";
                 if ($debug == 1) { fwrite($fpx, "Purchase does not match product details\n"); }
             }
         }
@@ -294,11 +316,11 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $data = $info_div;
 //    print_r($data->getHtml());
     $path = translateFN('modulo di iscrizione');
-    $dati .= $link_torna_home;
+    $dati = $link_torna_home;
 
     $field_data = array(
      'menu'=>"", //$menu,
-     'banner'=>$banner,
+     // 'banner'=>$banner,
      'path'=>$path,
      //'data'=>$dati,
      'data'=>$info_div->getHtml(),
@@ -308,7 +330,7 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
      'messages'=>$user_messages->getHtml(),
      'agenda'=>$user_agenda->getHtml(),
      'titolo_corso'=>$course_name,
-     'annulla_iscrizione'=>$link_annulla_iscrizione,
+     'annulla_iscrizione'=>isset($link_annulla_iscrizione) ? $link_annulla_iscrizione : '',
      'price'=>$price
     );
 
@@ -335,5 +357,3 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
  * Sends data to the rendering engine
  */
 ARE::render($layout_dataAr, $field_data);
-
-?>
