@@ -13,6 +13,7 @@
 
 require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider']) && is_readable(ROOT_DIR . '/clients/' . $GLOBALS['user_provider'] . '/Jitsi.config.inc.php')) {
+	require_once ROOT_DIR . '/clients/' . $GLOBALS['user_provider'] . '/Jitsi.config.inc.php';
 } else {
 	require_once ROOT_DIR . '/comunica/include/Jitsi.config.inc.php';
 }

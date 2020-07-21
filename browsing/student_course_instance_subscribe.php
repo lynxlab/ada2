@@ -150,7 +150,7 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
                 'country' => $userObj->getCountry(),
                 'first_name' => $userObj->getFirstName(),
                 'last_name' => $userObj->getLastName(),
-                'address_override' => "1",
+                'address_override' => "0",
                 'email' => $userObj->getEmail(),
                 'amount_1' => $amount1,
                 'cmd' => $cmd,
@@ -213,5 +213,3 @@ $optionsAr['onload_func'] = 'initDoc();';
  * Sends data to the rendering engine
  */
 ARE::render($layout_dataAr, $content_dataAr, null, $optionsAr);
-
-?>
