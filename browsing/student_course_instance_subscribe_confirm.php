@@ -268,10 +268,14 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
                     }
                 )) > 0;
                 if (!$isSubscribed) {
-                    $s = new Subscription($userObj->getId(), $instanceObj->getId());
-                    $s->setSubscriptionStatus(ADA_STATUS_SUBSCRIBED);
-                    Subscription::addSubscription($s);
-                    if ($debug == 1) { fwrite($fpx, "Successfully subscribed!!\n"); }
+                    $ressub = $dh->course_instance_student_subscribe($instanceObj->getId(), $userObj->getId(), ADA_STATUS_SUBSCRIBED, $instanceObj->getStartLevelStudent());
+                    if ($debug == 1) {
+                        if (!AMA_DB::isError($ressub)) {
+                            fwrite($fpx, "Successfully subscribed!!\n");
+                        } else {
+                            fwrite($fpx, "DB Error while subscribing!!\n");
+                        }
+                    }
                 } else {
                     if ($debug == 1) { fwrite($fpx, "Was already subscribed!!\n"); }
                 }
