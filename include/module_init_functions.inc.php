@@ -603,7 +603,7 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
      * dato che non ce ne sono.
      */
 
-    if(!$invalid_course && !$sess_courseObj->getIsPublic ()) {
+    if(!$invalid_course && !is_null($sess_courseObj) && !$sess_courseObj->getIsPublic ()) {
 
       if (isset($target_course_instance)) {
       	$id_course_instance = DataValidator::is_uinteger($target_course_instance);
