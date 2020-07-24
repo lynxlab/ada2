@@ -4636,7 +4636,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $sql_root_node = "SELECT N.id_nodo, N.nome, N.tipo, H.visite AS numero_visite
       FROM (SELECT id_nodo, count(data_visita) AS VISITE FROM history_nodi
       WHERE id_istanza_corso=$id_course_instance AND id_utente_studente=$id_student AND id_nodo='".$id_course."_0' GROUP BY id_nodo)
-	 	                      AS H LEFT JOIN nodo AS N ON (N.id_nodo=H.id_nodo)";
+	 	                      AS H LEFT JOIN nodo AS N ON (N.id_nodo=H.id_nodo) WHERE N.id_istanza IN (NULL, 0, $id_course_instance)";
         $result_root_node = $db->getRow($sql_root_node, null, AMA_FETCH_ASSOC);
 
         if (AMA_DB::isError($result_root_node)) {
@@ -4651,7 +4651,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
       LEFT JOIN (SELECT id_nodo, count(id_nodo) AS numero_visite FROM history_nodi
       WHERE id_istanza_corso=$id_course_instance AND id_utente_studente=$id_student
       GROUP BY id_nodo) AS visite ON (N.id_nodo=visite.id_nodo)
-      WHERE N.id_nodo LIKE '".$id_course."\_%' AND N.tipo IN (".implode(',',$nodes_id).") AND N2.tipo IN(".implode(',',$nodes_id).")
+      WHERE N.id_nodo LIKE '".$id_course."\_%' AND N.id_istanza IN (NULL, 0, $id_course_instance) AND N.tipo IN (".implode(',',$nodes_id).") AND N2.tipo IN(".implode(',',$nodes_id).")
 	             ORDER BY visite.numero_visite DESC";
         $result = $db->getAll($sql, null, AMA_FETCH_ASSOC);
         if (AMA_DB::isError($result_root_node)) {
