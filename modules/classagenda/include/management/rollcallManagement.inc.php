@@ -109,14 +109,14 @@ class rollcallManagement extends abstractClassAgendaManagement
 							 * 1. get the timestamps of the first student
 							 * and use them to build the header of the table
 							 */
-							$timestamps = array_keys(array_slice($studentsList[0], 2,null, true));
+							$timestamps = array_keys(array_slice($studentsList[0], 3,null, true));
 							for ($i=0;$i<count($timestamps);$i++) $timestamps[$i] = ts2dFN($timestamps[$i]);
 							/**
 							 * 2. build the header with 'Nome e Cognome' in the
 							 * first position and then all the timestamps converted
 							 * into human readable dates
 							 */
-							$header = array_merge(array ('id',translateFN('Nome e Cognome')),$timestamps);
+							$header = array_merge(array ('id',translateFN('Nome'), translateFN('Cognome')),$timestamps);
 
 							$caption = translateFN('Riepilogo presenze studenti');
 							$tableID = 'rollcallHistoryTable';
@@ -135,6 +135,9 @@ class rollcallManagement extends abstractClassAgendaManagement
 						 */
 						$tableObj = BaseHtmlLib::tableElement('id:'.$tableID,$header,$studentsList,null,$caption);
 						$tableObj->setAttribute('class', $tableObj->getAttribute('class').' '.ADA_SEMANTICUI_TABLECLASS);
+						if ($action==MODULES_CLASSAGENDA_DO_ROLLCALLHISTORY) {
+							$tableObj->setAttribute('class', 'display nowrap '.$tableObj->getAttribute('class'));
+						}
 						$htmlObj->addChild($tableObj);
 					} else {
 						$htmlObj->addChild(new CText(translateFN('Nessuno studente iscritto')));
@@ -187,14 +190,14 @@ class rollcallManagement extends abstractClassAgendaManagement
 				 * 1. get the timestamps of the first student
 				 * and use them to build the header of the table
 				 */
-				$timestamps = array_keys(array_slice($studentsList[0], 2,null, true));
+				$timestamps = array_keys(array_slice($studentsList[0], 3,null, true));
 				for ($i=0;$i<count($timestamps);$i++) $timestamps[$i] = ts2dFN($timestamps[$i]);
 				/**
 				 * 2. build the header with 'Nome e Cognome' in the
 				 * first position and then all the timestamps converted
 				 * into human readable dates
 				 */
-				$header = array_merge(array ('id',translateFN('Nome e Cognome')),$timestamps);
+				$header = array_merge(array ('id',translateFN('Nome'), translateFN('Cognome')),$timestamps);
 
 				foreach($studentsList as $skey=>$astud) {
 					foreach($astud as $key=>$val) {
@@ -398,7 +401,8 @@ class rollcallManagement extends abstractClassAgendaManagement
 
 		foreach ($studentsList as $i=>$student) {
 			$retArray[$i]['id'] = $student['id'];
-			$retArray[$i]['name'] = strtolower($student['name']);
+			$retArray[$i]['name'] = ucwords(strtolower($student['name']));
+			$retArray[$i]['lastname'] = ucwords(strtolower($student['lastname']));
 			foreach ($allTimestamps as $timestamp) {
 				$retArray[$i][$timestamp] = (!array_key_exists($timestamp, $student)) ? '' : $studentsList[$i][$timestamp];
 			}
@@ -437,7 +441,8 @@ class rollcallManagement extends abstractClassAgendaManagement
 					} else if ($action==MODULES_CLASSAGENDA_DO_ROLLCALLHISTORY) {
 						$row = array(
 								'id'=>$one_student['id_utente_studente'],
-								'name'=>$studn['nome'].' '.$studn['cognome']);
+								'name'=>$studn['nome'],
+								'lastname' => $studn['cognome']);
 					}
 					array_push($student_listHa,$row);
 				}
