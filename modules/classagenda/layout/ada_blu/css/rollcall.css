@@ -6,3 +6,11 @@
     margin: 1em 0;
     text-align: right;
 }
+
+#rollcallHistoryTable {
+    width: inherit !important;
+}
+
+.dataTables_scrollHeadInner table caption {
+    margin-top: 0 !important;
+}

@@ -38,6 +38,7 @@ function initDoc() {
 		initButtons();
 	} else if ($j('#rollcallHistoryTable').length>0) {
 		var tableOptions = $j.extend(commonDataTableOptions,{
+			"scrollX": true,
 			"aoColumnDefs": [
 				{ "bVisible": false, "aTargets": [0] },
 			],
