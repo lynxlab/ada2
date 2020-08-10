@@ -29,7 +29,7 @@ class Jitsi extends videoroom implements iVideoRoom
 		parent::__construct($id_course_instance);
 	}
 
-	public function addRoom($name, $pass, $remindMe, $language) {
+	public function addRoom($name = 'service', $sess_id_course_instance, $sess_id_user, $comment = 'Inserimento automatico via ADA', $num_user = 25, $course_title = 'service', $selected_provider=ADA_PUBLIC_TESTER) {
 
 	}
 
