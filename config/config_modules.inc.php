@@ -20,4 +20,5 @@ ModuleLoaderHelper::loadModuleFromArray([
 	[ 'name' => 'forkedpaths', 'dirname' => 'forked-paths' ],
 	[ 'name' => 'badges' ],
 	[ 'name' => 'studentsgroups' ],
+	[ 'name' => 'bigbluebutton', 'dirname' => 'bbb-integration' ],
 ]);
