@@ -113,8 +113,13 @@ if ($videoroomObj->link_to_room instanceof CBase) {
     if (defined($className.'::onload_js')) {
       $options_Ar = array('onload_func' => constant($className.'::onload_js'));
     }
-} else  if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room)>0) {
-    $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height' ></iframe>";
+} else if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room)>0) {
+    $className = get_class($videoroomObj);
+    $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
+    if (defined($className.'::iframeAttr')) {
+      $iframe .= constant($className.'::iframeAttr');
+    }
+    $iframe .= "></iframe>";
 } else {
   $iframe = '';
   $status = addslashes(translateFN("ops, there was a problem!"));
