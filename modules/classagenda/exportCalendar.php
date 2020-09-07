@@ -68,7 +68,7 @@ if ($type=='pdf') {
 } else if ($type=='csv') {
 	// output headers so that the file is downloaded rather than displayed
 	header('Content-Type: text/csv; charset='.strtolower(ADA_CHARSET));
-	header('Content-Disposition: attachment; filename='.$courseInstanceObj->getTitle().'.csv');
+	header('Content-Disposition: attachment; filename='.urlencode($courseInstanceObj->getTitle()).'.csv');
 	if (is_null($data)) {
 		$data = [];
 	}
