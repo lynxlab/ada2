@@ -123,6 +123,15 @@ function initDoc() {
 
 	if ($j('#jitsi-meet-placeholder').length>0) {
 		$j.getScript('../js/comunica/ada-jitsi.js.php?isView=1&parentId=jitsi-meet-placeholder');
+	} else if ($j('#bbb-placeholder').length>0) {
+		$j('#bbb-placeholder').load('../modules/bbb-integration/nodeembed.php', function (response, status, xhr) {
+			if (status == "error") {
+				var msg = "Sorry but there was an error: ";
+				$j('#bbb-placeholder').html(msg + xhr.status + " " + xhr.statusText);
+			} else {
+				$j.getScript('../js/comunica/videochat.js');
+			}
+		});
 	}
 } // end initDoc
 
