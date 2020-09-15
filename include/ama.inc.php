@@ -11480,9 +11480,9 @@ public function get_updates_nodes($userObj, $pointer)
      */
     public function delete_videoroom($id_room) {
 
-        $sql = "DELETE FROM openmeetings_room WHERE id_room = $id_room";
+        $sql = "DELETE FROM openmeetings_room WHERE id_room = ?";
 
-        $res = $this->executeCritical( $sql );
+        $res = $this->queryPrepared( $sql, $id_room );
         if (AMA_DB::isError($res)) {
             // $res is ana AMA_Error object
             return $res;

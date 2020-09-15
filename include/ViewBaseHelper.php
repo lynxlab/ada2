@@ -377,6 +377,7 @@ abstract class ViewBaseHelper
                   $sess_selected_tester);
               }
             } else {
+              $course_title = (isset ($courseObj)) ? $courseObj->getTitle() : '';
               $room_name = $course_title . ' - ' . translateFN('Tutor') . ': ' . $userObj->getUserName() . ' ' . translateFN('data') . ': ' . $creationDate;
               $comment = translateFN('inserimento automatico via') . ' ' . PORTAL_NAME;
               $numUserPerRoom = 4;
@@ -388,7 +389,8 @@ abstract class ViewBaseHelper
                   $userObj->getLastName(),
                   $userObj->getEmail(),
                   $sess_id_user,
-                  $userObj->getType());
+                  $userObj->getType(),
+                  $sess_selected_tester);
               }
             }
             break;
