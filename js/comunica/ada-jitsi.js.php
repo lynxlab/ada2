@@ -117,7 +117,7 @@ if ($userObj->getType() == AMA_TYPE_STUDENT) {
 	  // jitsi toolbarbuttons for tutor
 	  $TOOLBAR_BUTTONS = [
         'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-        'fodeviceselection', 'hangup', 'profile', 'info', 'chat', 'recording',
+        'fodeviceselection', 'hangup', 'profile', 'info', 'chat', /* 'recording', */
         'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
         'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
         'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone',
