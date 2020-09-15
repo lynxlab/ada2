@@ -9,4 +9,4 @@
  * @version		0.1
  */
 
-document.write("<script type='text/javascript' src='../js/browsing/view.js'></script>");
+document.write("<script type='text/javascript' src='../js/browsing/view.js' data-author='1'></script>");
