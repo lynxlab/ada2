@@ -123,9 +123,12 @@ function initDoc() {
 	}
 
 	if (!isAuthor) {
+		const loaderHtml = '<div style="padding:1em;"><div class="ui active inverted dimmer"><div class="ui loader"></div></div></div>';
 		if ($j('#jitsi-meet-placeholder').length>0) {
+			$j('#jitsi-meet-placeholder').html(loaderHtml);
 			$j.getScript('../js/comunica/ada-jitsi.js.php?isView=1&parentId=jitsi-meet-placeholder');
 		} else if ($j('#bbb-placeholder').length>0) {
+			$j('#bbb-placeholder').html(loaderHtml);
 			$j('#bbb-placeholder').load('../modules/bbb-integration/nodeembed.php', function (response, status, xhr) {
 				if (status == "error") {
 					var msg = "Sorry but there was an error: ";
