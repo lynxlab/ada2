@@ -18,7 +18,7 @@ use Lynxlab\ADA\Module\BBBIntegration\BBBIntegrationException;
 class BigBlueButton extends videoroom implements iVideoRoom
 {
 
-    const iframeAttr = ' allowfullscreen allow=\'camera '.BBB_SERVER.'; microphone '.BBB_SERVER.'\'';
+    const iframeAttr = ' class=\'ada-videochat-embed bbb\' allowfullscreen allow=\'camera '.BBB_SERVER.'; microphone '.BBB_SERVER.'\'';
 
     private $bbbAPI = null;
 
