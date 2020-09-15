@@ -52,6 +52,7 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
             );
             $createParams->setAttendeePassword($meetingData['attendeePW']->toString())
                 ->setModeratorPassword($meetingData['moderatorPW']->toString())
+                ->setLogoutUrl($this->getLogoutUrl())->setEndCallbackUrl($this->getLogoutUrl())
                 ->setRecord(true);
             $this->createMeeting($createParams);
             return $meetingData;
@@ -80,5 +81,9 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
         } catch (\Exception $e) {
             return [];
         }
+    }
+
+    private function getLogoutUrl() {
+        return MODULES_BIGBLUEBUTTON_HTTP . '/endvideochat.php';
     }
 }
