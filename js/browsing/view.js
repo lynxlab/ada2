@@ -14,7 +14,7 @@
  * appropriate
  */
 function initDoc() {
-	const isAuthor = $j('script[src*="view.js"]').attr('data-author') || 0;
+	const isAuthor = $j('body').hasClass('ada-autore');
 	// run script after document is ready
 	$j(function() {
 		// install flowplayer to an element with CSS class "ADAflowplayer"
