@@ -21,4 +21,5 @@ ModuleLoaderHelper::loadModuleFromArray([
 	[ 'name' => 'badges' ],
 	[ 'name' => 'studentsgroups' ],
 	[ 'name' => 'bigbluebutton', 'dirname' => 'bbb-integration' ],
+	[ 'name' => 'zoomconf', 'dirname' => 'zoom-integration' ],
 ]);
