@@ -137,6 +137,16 @@ function initDoc() {
 					$j.getScript('../js/comunica/videochat.js');
 				}
 			});
+		} else if ($j('#zoom-placeholder').length>0) {
+			$j('#zoom-placeholder').html(loaderHtml);
+			$j('#zoom-placeholder').load('../modules/zoom-integration/nodeembed.php', function (response, status, xhr) {
+				if (status == "error") {
+					var msg = "Sorry but there was an error: ";
+					$j('#zoom-placeholder').html(msg + xhr.status + " " + xhr.statusText);
+				} else {
+					$j.getScript('../js/comunica/videochat.js');
+				}
+			});
 		}
 	}
 } // end initDoc

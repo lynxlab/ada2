@@ -1,0 +1,16 @@
+{
+    "name": "lynxlab/ada-zoom-integration",
+    "description": "This is the ada module for Zoom.us integration.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\ZoomIntegration\\" : ["include/"]
+	    }
+    }
+}
