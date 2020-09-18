@@ -27,6 +27,36 @@
  * GIORGIO: Preview Image size is 100x70
 -->
 <Templates imagesBasePath="fck_template/images/">
+	<Template title="Jitsi-meet" image="jitsi.png">
+		<Description>Video conferenza - Jitsi meet</Description>
+		<Html>
+			<![CDATA[
+				<h4 class="ui top attached header">Video conferenza - Jitsi Meet</h4>
+				<div class="ui segment attached"><div id="jitsi-meet-placeholder"></div></div>
+				<h4 class="ui bottom attached header">&nbsp;</h4>
+		]]>
+		</Html>
+	</Template>
+	<Template title="BigBlueButton" image="BBB.png">
+		<Description>Video conferenza - BigBlueButton</Description>
+		<Html>
+			<![CDATA[
+				<h4 class="ui top attached header">Video conferenza - BigBlueButton</h4>
+				<div class="ui segment attached"><div id="bbb-placeholder"></div></div>
+				<h4 class="ui bottom attached header">&nbsp;</h4>
+		]]>
+		</Html>
+	</Template>
+	<Template title="Zoom.us" image="zoomconf.png">
+		<Description>Video conferenza - Zoom</Description>
+		<Html>
+			<![CDATA[
+				<h4 class="ui top attached header">Video conferenza - Zoom.us</h4>
+				<div class="ui segment attached"><div id="zoom-placeholder"></div></div>
+				<h4 class="ui bottom attached header">&nbsp;</h4>
+		]]>
+		</Html>
+	</Template>
 	<Template title="Griglia" image="grid.png">
 		<Description>Griglia di impaginazione</Description>
 		<Html>
