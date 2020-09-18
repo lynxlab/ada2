@@ -168,7 +168,8 @@ div#contentcontent .ui.accordion {
 }
 
 #jitsi-meet-placeholder,
-#bbb-placeholder {
+#bbb-placeholder,
+#zoom-placeholder {
 	text-align: center;
 }
 
