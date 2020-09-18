@@ -92,7 +92,17 @@ if ($userObj->getType() == AMA_TYPE_VISITOR) {
 $width = FRAME_WIDTH;
 $height = FRAME_HEIGHT;
 
-if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room) > 0) {
+if (is_null($videoroomObj->link_to_room)) {
+  $errdiv = CDOMElement::create('div','class:ui icon error message');
+  $errdiv->addChild(CDOMElement::create('i','class: ban circle icon'));
+  $content = CDOMElement::create('div','class:content');
+  $header = CDOMElement::create('div','class:header');
+  $header->addChild(new CText(translateFN('Video Conferenza')));
+  $content->addChild($header);
+  $content->addChild(new \CText('<p>'.translateFN('Video Conferenza non ancora iniziata').'</p>'));
+  $errdiv->addChild($content);
+  die($errdiv->getHtml());
+} else if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room) > 0) {
   $className = get_class($videoroomObj);
   $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
   if (defined($className . '::iframeAttr')) {
