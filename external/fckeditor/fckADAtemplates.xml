@@ -57,6 +57,21 @@
 		]]>
 		</Html>
 	</Template>
+	<Template title="Chat a comparsa" image="adachat.png">
+		<Description>Chat a comparsa - INSERIRE L'ID CORSO DALLA VISTA DEL SORGENTE</Description>
+		<Html>
+			<![CDATA[
+				<div class="triggerchat-container">
+					<div id="triggerchat" class="ui secondary toggle chat button">
+						Mostra/Nascondi Chat
+					</div>
+				</div>
+				<div class="ui very wide left sidebar" id="chatsidebar">
+					<iframe id="chatframe" src="HTTP_ROOT_HERE/comunica/chat.php?id_course=ID_COURSE_HERE&amp;iframe=1" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0"></iframe>
+				</div>
+			]]>
+		</Html>
+	</Template>
 	<Template title="Griglia" image="grid.png">
 		<Description>Griglia di impaginazione</Description>
 		<Html>
@@ -185,7 +200,7 @@
 						]]>
 		</Html>
 	</Template>
-	<Template title="Botton" image="bottone.png">
+	<Template title="Bottone" image="bottone.png">
 		<Description> Bottone con link </Description>
 		<Html>
 			<![CDATA[
@@ -193,7 +208,7 @@
 		]]>
 		</Html>
 	</Template>
-		<Template title="DIvisore" image="divider.png">
+		<Template title="Divisore" image="divider.png">
 		<Description>Divisore orizzontale</Description>
 		<Html>
 			<![CDATA[
