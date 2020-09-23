@@ -14,8 +14,8 @@ $allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR); //, AMA_TYPE_AUTHOR, 
  */
 $neededObjAr = array(
     // AMA_TYPE_VISITOR => array('node', 'layout', 'course'),
-    AMA_TYPE_STUDENT => array('node', 'layout', 'tutor', 'course', 'course_instance'),
-    AMA_TYPE_TUTOR => array('node', 'layout', 'course', 'course_instance'),
+    AMA_TYPE_STUDENT => array('layout', 'tutor', 'course', 'course_instance'),
+    AMA_TYPE_TUTOR => array('layout', 'course', 'course_instance'),
     // AMA_TYPE_AUTHOR => array('node', 'layout', 'course'),
 	// AMA_TYPE_SWITCHER => array('node', 'layout', 'course')
 );
