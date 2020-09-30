@@ -11440,7 +11440,7 @@ public function get_updates_nodes($userObj, $pointer)
      *        res_ar['tempo_fine']
      */
 
-    public function get_videoroom_info($id_course_instance, $ora_attuale= NULL) {
+    public function get_videoroom_info($id_course_instance, $ora_attuale= NULL, $more_query = NULL) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
@@ -11450,6 +11450,9 @@ public function get_updates_nodes($userObj, $pointer)
         if ($ora_attuale != NULL) {
             $where_more = " and tempo_avvio<=$ora_attuale and $ora_attuale<=tempo_fine";
             $query .= $where_more;
+        }
+        if ($more_query != NULL) {
+            $query .= ' '.$more_query;
         }
         $res_ar =  $db->getRow($query, NULL, AMA_FETCH_ASSOC);
         if (AMA_DB::isError($res_ar)) {
