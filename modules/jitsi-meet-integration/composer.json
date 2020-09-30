@@ -1,0 +1,16 @@
+{
+    "name": "lynxlab/ada-jitsi-integration",
+    "description": "This is the ada module for Jitsi.meet integration.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\JitsiIntegration\\" : ["include/"]
+	    }
+    }
+}

@@ -22,4 +22,5 @@ ModuleLoaderHelper::loadModuleFromArray([
 	[ 'name' => 'studentsgroups' ],
 	[ 'name' => 'bigbluebutton', 'dirname' => 'bbb-integration' ],
 	[ 'name' => 'zoomconf', 'dirname' => 'zoom-integration' ],
+	[ 'name' => 'jitsi', 'dirname' => 'jitsi-meet-integration' ],
 ]);

@@ -126,8 +126,13 @@ function initDoc() {
 		const loaderHtml = '<div id="videochat-loader" style="padding:1em;"><div class="ui active inverted dimmer"><div class="ui loader"></div></div></div>';
 		if ($j('#jitsi-meet-placeholder').length>0) {
 			$j('#jitsi-meet-placeholder').html(loaderHtml);
-			$j.getScript('../js/comunica/ada-jitsi.js.php?isView=1&parentId=jitsi-meet-placeholder', function( data, textStatus, jqxhr ) {
-				$j('#videochat-loader').remove();
+			$j('#jitsi-meet-placeholder').load('../modules/jitsi-integration/nodeembed.php', function (response, status, xhr) {
+				if (status == "error") {
+					var msg = "Sorry but there was an error: ";
+					$j('#jitsi-meet-placeholder').html(msg + xhr.status + " " + xhr.statusText);
+				} else {
+					$j.getScript('../js/comunica/videochat.js');
+				}
 			});
 		} else if ($j('#bbb-placeholder').length>0) {
 			$j('#bbb-placeholder').html(loaderHtml);
