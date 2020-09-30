@@ -19,6 +19,7 @@ class ZoomConf extends videoroom implements iVideoRoom
 {
 
     const iframeAttr = ' class=\'ada-videochat-embed zoomconf\' allowfullscreen allow=\'camera; microphone;\' sandbox=\'allow-forms allow-scripts allow-same-origin\'';
+    const videochattype = 'Z';
 
     private $zoomAPI = null;
     private $meetingID = null;
@@ -36,15 +37,15 @@ class ZoomConf extends videoroom implements iVideoRoom
     public function addRoom($name = 'service', $sess_id_course_instance, $sess_id_user, $comment = 'Inserimento automatico via ADA', $num_user = 25, $course_title = 'service', $selected_provider = ADA_PUBLIC_TESTER)
     {
         try {
-            $interval = 60 * 60 * 12; // 12 hours
+            $interval = 60 * 60 * 24 * 365; // 1 year
             $videoroom_dataAr = array();
             $videoroom_dataAr['id_room'] = 0; // will be set to the id by the datahandler
             $videoroom_dataAr['id_istanza_corso'] = $sess_id_course_instance;
             $videoroom_dataAr['id_tutor'] = $sess_id_user;
-            $videoroom_dataAr['tipo_videochat'] = 'Z'; // for ZoomConf
+            $videoroom_dataAr['tipo_videochat'] = self::videochattype;
             $videoroom_dataAr['descrizione_videochat'] = $name;
             $videoroom_dataAr['tempo_avvio'] = time();
-            $videoroom_dataAr['tempo_fine'] = time() + $interval; // unused
+            $videoroom_dataAr['tempo_fine'] = $videoroom_dataAr['tempo_avvio'] + $interval; // unused
             $videoroom_dataAr['room_name'] = $course_title;
             $videoroom_data = $this->zoomAPI->create($videoroom_dataAr);
             $this->id_room = $videoroom_data['openmeetings_room_id'];
@@ -56,10 +57,11 @@ class ZoomConf extends videoroom implements iVideoRoom
         }
     }
 
-    public function videoroom_info($id_course_instance, $tempo_avvio = NULL, $interval = NULL)
+    public function videoroom_info($id_course_instance, $tempo_avvio = NULL, $interval = NULL, $more_query = NULL)
     {
         // load parent info
-        parent::videoroom_info($id_course_instance,$tempo_avvio, $interval);
+        if (is_null($more_query)) $more_query = 'AND `tipo_videochat`="'.self::videochattype.'" ORDER BY `tempo_avvio` DESC';
+        parent::videoroom_info($id_course_instance,$tempo_avvio, $interval, $more_query);
         // load Zoom own info and check that meeting does exists
         $video_roomAr = $this->zoomAPI->getInfo($this->id);
         $this->setMeetingID(null)->setMeetingPWD(null);
