@@ -48,7 +48,11 @@ abstract class videoroom
 
     public static function getVideoObj()
     {
-        require_once $GLOBALS['root_dir'] . '/comunica/include/' . CONFERENCE_TO_INCLUDE . '.config.inc.php';
+        if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider']) && is_readable(ROOT_DIR . '/clients/' . $GLOBALS['user_provider'] . '/' . CONFERENCE_TO_INCLUDE . '.config.inc.php')) {
+            require_once ROOT_DIR . '/clients/' . $GLOBALS['user_provider'] . '/' . CONFERENCE_TO_INCLUDE . '.config.inc.php';
+        } else {
+            require_once ROOT_DIR . '/comunica/include/' . CONFERENCE_TO_INCLUDE . '.config.inc.php';
+        }
         require_once $GLOBALS['root_dir'] . '/comunica/include/' . CONFERENCE_TO_INCLUDE . '.class.inc.php';
         $videoObjToInstantiate = CONFERENCE_TO_INCLUDE;
         return new $videoObjToInstantiate();
@@ -56,14 +60,14 @@ abstract class videoroom
     /*
      * retrieve infos about room memorized in local DB
      */
-    public function videoroom_info($id_course_instance, $tempo_avvio = NULL, $interval = NULL)
+    public function videoroom_info($id_course_instance, $tempo_avvio = NULL, $interval = NULL, $more_query = NULL)
     {
         $dh            =   $GLOBALS['dh'];
         $error         =   $GLOBALS['error'];
         $debug         =   isset($GLOBALS['debug']) ? $GLOBALS['debug'] : null;
         $root_dir      =   $GLOBALS['root_dir'];
         $http_root_dir =   $GLOBALS['http_root_dir'];
-        $video_roomAr = $dh->get_videoroom_info($id_course_instance, $tempo_avvio, $interval);
+        $video_roomAr = $dh->get_videoroom_info($id_course_instance, $tempo_avvio, $more_query);
 
         if (AMA_DataHandler::isError($video_roomAr) || !is_array($video_roomAr)) {
             $this->full = 0;
