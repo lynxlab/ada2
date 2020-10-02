@@ -106,6 +106,7 @@ $label = "Video Chat on ".$date;
 
 $width = FRAME_WIDTH;
 $height = FRAME_HEIGHT;
+$logEnter = false;
 
 if ($videoroomObj->link_to_room instanceof CBase) {
     $iframe = $videoroomObj->link_to_room->getHtml();
@@ -113,6 +114,7 @@ if ($videoroomObj->link_to_room instanceof CBase) {
     if (defined($className.'::onload_js')) {
       $options_Ar = array('onload_func' => constant($className.'::onload_js'));
     }
+    $logEnter = true;
 } else if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room)>0) {
     $className = get_class($videoroomObj);
     $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
@@ -120,12 +122,17 @@ if ($videoroomObj->link_to_room instanceof CBase) {
       $iframe .= constant($className.'::iframeAttr');
     }
     $iframe .= "></iframe>";
+    $logEnter = true;
 } else {
   $iframe = '';
   $status = addslashes(translateFN("ops, there was a problem!"));
   if (!isset($GLOBALS['options_Ar'])) {
     $options_Ar = array('onload_func' => "close_page('$status');");
   }
+}
+
+if ($logEnter) {
+  $videoroomObj->logEnter();
 }
 
 $menu_01 = "<a href=\"close_videochat.php?id_room=".$videoroomObj->id_room ."&event_token=$event_token\">" . translateFN("Chiudi") . "</a>";

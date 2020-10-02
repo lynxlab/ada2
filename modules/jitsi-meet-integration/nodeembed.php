@@ -36,7 +36,7 @@ $neededObjAr = array(
 );
 
 if (!defined('CONFERENCE_TO_INCLUDE')) {
-  define('CONFERENCE_TO_INCLUDE', 'Jitsi'); // Zoom
+  define('CONFERENCE_TO_INCLUDE', 'Jitsi');
 }
 
 if (!defined('DATE_CONTROL')) {
@@ -105,6 +105,7 @@ if (is_null($videoroomObj->link_to_room)) {
 } else if ($videoroomObj->link_to_room instanceof CBase) {
   $className = get_class($videoroomObj);
   if (defined($className.'::onload_js')) {
+    $videoroomObj->logEnter();
     die ("<script>". constant($className.'::onload_js') ."</script>");
   }
 } else {

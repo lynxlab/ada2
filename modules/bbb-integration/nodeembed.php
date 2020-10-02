@@ -109,6 +109,7 @@ if (is_null($videoroomObj->link_to_room)) {
     $iframe .= constant($className . '::iframeAttr');
   }
   $iframe .= "></iframe>";
+  $videoroomObj->logEnter();
   die($iframe);
 } else {
   header(' ', true, 500);
