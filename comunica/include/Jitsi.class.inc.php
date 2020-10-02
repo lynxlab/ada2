@@ -16,7 +16,7 @@ use Lynxlab\ADA\Module\JitsiIntegration\JitsiIntegrationException;
 class Jitsi extends videoroom implements iVideoRoom
 {
 
-	const onload_js = "if (\$j('#jitsi-meet-placeholder').length>0) {
+	const onload_js = "if (\$j('#".JITSI_HTML_PLACEHOLDER_ID."').length>0) {
 		\$j.getScript('".MODULES_JITSI_HTTP."/ada-jitsi.js.php?parentId=".JITSI_HTML_PLACEHOLDER_ID."');
 	}";
 	const videochattype = 'J';
@@ -42,7 +42,8 @@ class Jitsi extends videoroom implements iVideoRoom
             $videoroom_dataAr['tempo_fine'] = $videoroom_dataAr['tempo_avvio'] + $interval; // unused
 			$videoroom_dataAr['room_name'] = $course_title;
             $videoroom_data = $this->jitsiAPI->create($videoroom_dataAr);
-            $this->id_room = $videoroom_data['openmeetings_room_id'];
+			$this->id_room = $videoroom_data['openmeetings_room_id'];
+			$this->id_istanza_corso = $videoroom_data['id_istanza_corso'];
             $this->meetingID = $videoroom_data['meetingID'];
             return $this->id_room;
         } catch (JitsiIntegrationException $e) {

@@ -47,6 +47,7 @@ class BigBlueButton extends videoroom implements iVideoRoom
             $videoroom_dataAr['room_name'] = $course_title;
             $videoroom_data = $this->bbbAPI->create($videoroom_dataAr);
             $this->id_room = $videoroom_data['openmeetings_room_id'];
+            $this->id_istanza_corso = $videoroom_data['id_istanza_corso'];
             $this->meetingID = $videoroom_data['meetingID']->toString();
             $this->moderatorPW = $videoroom_data['moderatorPW']->toString();
             $this->attendeePW = $videoroom_data['attendeePW']->toString();

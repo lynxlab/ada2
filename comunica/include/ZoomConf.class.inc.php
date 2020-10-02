@@ -18,7 +18,7 @@ use Lynxlab\ADA\Module\ZoomIntegration\ZoomIntegrationException;
 class ZoomConf extends videoroom implements iVideoRoom
 {
 
-    const iframeAttr = ' class=\'ada-videochat-embed zoomconf\' allowfullscreen allow=\'camera; microphone;\' sandbox=\'allow-forms allow-scripts allow-same-origin\'';
+    const iframeAttr = ' class=\'ada-videochat-embed zoom\' allowfullscreen allow=\'camera; microphone;\' sandbox=\'allow-forms allow-scripts allow-same-origin\'';
     const videochattype = 'Z';
 
     private $zoomAPI = null;
@@ -49,6 +49,7 @@ class ZoomConf extends videoroom implements iVideoRoom
             $videoroom_dataAr['room_name'] = $course_title;
             $videoroom_data = $this->zoomAPI->create($videoroom_dataAr);
             $this->id_room = $videoroom_data['openmeetings_room_id'];
+            $this->id_istanza_corso = $videoroom_data['id_istanza_corso'];
             $this->meetingID = $videoroom_data['meetingID'];
             $this->meetingPWD = $videoroom_data['meetingPWD'];
             return $this->id_room;
