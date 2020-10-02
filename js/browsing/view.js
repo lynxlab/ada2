@@ -15,6 +15,7 @@
  */
 function initDoc() {
 	const isAuthor = $j('body').hasClass('ada-autore');
+	const supportedVideochat = [ 'jitsi-meet', 'zoom', 'bbb' ];
 	// run script after document is ready
 	$j(function() {
 		// install flowplayer to an element with CSS class "ADAflowplayer"
@@ -124,37 +125,24 @@ function initDoc() {
 
 	if (!isAuthor) {
 		const loaderHtml = '<div id="videochat-loader" style="padding:1em;"><div class="ui active inverted dimmer"><div class="ui loader"></div></div></div>';
-		if ($j('#jitsi-meet-placeholder').length>0) {
-			$j('#jitsi-meet-placeholder').html(loaderHtml);
-			$j('#jitsi-meet-placeholder').load('../modules/jitsi-integration/nodeembed.php', function (response, status, xhr) {
-				if (status == "error") {
-					var msg = "Sorry but there was an error: ";
-					$j('#jitsi-meet-placeholder').html(msg + xhr.status + " " + xhr.statusText);
-				} else {
-					$j.getScript('../js/comunica/videochat.js');
-				}
-			});
-		} else if ($j('#bbb-placeholder').length>0) {
-			$j('#bbb-placeholder').html(loaderHtml);
-			$j('#bbb-placeholder').load('../modules/bbb-integration/nodeembed.php', function (response, status, xhr) {
-				if (status == "error") {
-					var msg = "Sorry but there was an error: ";
-					$j('#bbb-placeholder').html(msg + xhr.status + " " + xhr.statusText);
-				} else {
-					$j.getScript('../js/comunica/videochat.js');
-				}
-			});
-		} else if ($j('#zoom-placeholder').length>0) {
-			$j('#zoom-placeholder').html(loaderHtml);
-			$j('#zoom-placeholder').load('../modules/zoom-integration/nodeembed.php', function (response, status, xhr) {
-				if (status == "error") {
-					var msg = "Sorry but there was an error: ";
-					$j('#zoom-placeholder').html(msg + xhr.status + " " + xhr.statusText);
-				} else {
-					$j.getScript('../js/comunica/videochat.js');
-				}
-			});
-		}
+		$j('div[id$="-placeholder"]').each(function(i, el) {
+			// load supported videochat in its placeholder div
+			if (supportedVideochat.indexOf($j(el).attr('id').replace('-placeholder','')) != -1) {
+				$j.getScript('../js/comunica/videochat.js', function() {
+					const elID = '#'+ $j(el).attr('id');
+					const moduledir = getDirFromPlaceholder(elID);
+					if (moduledir != null) {
+						$j(elID).html(loaderHtml);
+						$j(elID).load(moduledir + 'nodeembed.php', function (response, status, xhr) {
+							if (status == "error") {
+								var msg = "Sorry but there was an error: ";
+								$j(elID).html(msg + xhr.status + " " + xhr.statusText);
+							}
+						});
+					}
+				});
+			}
+		});
 	}
 } // end initDoc
 
