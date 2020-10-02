@@ -11493,7 +11493,40 @@ public function get_updates_nodes($userObj, $pointer)
         return true;
     }
 
+    public function log_videoroom($logData) {
+        $sql = '';
+        $values = [];
+        if ($logData['event'] == videoroom::EVENT_ENTER) {
+            $sql = "INSERT INTO `log_videochat` (`id_user`, `is_tutor`, `id_room`, `id_istanza_corso`, `entrata`) VALUES (?, ?, ?, ?, ?)";
+            $values = [
+                $logData['id_user'],
+                (int) $logData['is_tutor'],
+                $logData['id_room'],
+                $logData['id_istanza_corso'],
+                $this->date_to_ts('now'),
+            ];
+        } else if ($logData['event'] == videoroom::EVENT_EXIT) {
+            $sql = "UPDATE `log_videochat` SET `uscita`=? WHERE `id_room` = ? AND `id_istanza_corso`=? AND `uscita` IS NULL";
+            $values = [
+                $this->date_to_ts('now'),
+                $logData['id_room'],
+                $logData['id_istanza_corso'],
+            ];
+            if (!$logData['is_tutor']) {
+                $sql .= " AND `id_user` = ?";
+                $values[] = $logData['id_user'];
+            }
+        }
 
+        if (count($values)>0 && strlen($sql)>0) {
+            $res = $this->queryPrepared($sql, $values);
+            if (AMA_DB::isError($res)) {
+                // $res is ana AMA_Error object
+                return $res;
+            }
+        }
+        return true;
+    }
 
     public function get_tester_services_not_started() {
         $db =& $this->getConnection();
