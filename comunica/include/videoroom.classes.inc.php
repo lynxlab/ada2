@@ -37,6 +37,9 @@ abstract class videoroom
     var $room_properties;
     var $list_room; // elenco stanze disponibili sul server
 
+    const EVENT_ENTER = 1;
+    const EVENT_EXIT = 2;
+
     public function __construct($id_course_instance = "")
     {
         $dh            =   $GLOBALS['dh'];
@@ -88,6 +91,39 @@ abstract class videoroom
     {
         if (isset($object[$attribute]))
             return (string) $object[$attribute];
+    }
+
+    public function logEnter() {
+        return $this->logEvent(self::EVENT_ENTER);
+
+    }
+
+    public function logExit() {
+        return $this->logEvent(self::EVENT_EXIT);
+    }
+
+    protected function logEvent ($event) {
+        $retval = false;
+        $dh = $GLOBALS['dh'];
+        if ($event == self::EVENT_ENTER) {
+            $dh->log_videoroom([
+                'event' => $event,
+                'id_user' => $_SESSION['sess_userObj']->getId(),
+                'id_room' => $this->id_room,
+                'id_istanza_corso' => $this->id_istanza_corso,
+                'is_tutor' => $_SESSION['sess_userObj']->getType() == AMA_TYPE_TUTOR,
+            ]);
+
+        } else if ($event == self::EVENT_EXIT) {
+            $dh->log_videoroom([
+                'event' => $event,
+                'id_user' => $_SESSION['sess_userObj']->getId(),
+                'id_room' => $this->id_room,
+                'id_istanza_corso' => $this->id_istanza_corso,
+                'is_tutor' => $_SESSION['sess_userObj']->getType() == AMA_TYPE_TUTOR,
+            ]);
+        }
+        return $retval;
     }
 }
 
