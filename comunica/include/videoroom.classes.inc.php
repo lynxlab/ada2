@@ -125,6 +125,22 @@ abstract class videoroom
         }
         return $retval;
     }
+
+    public static function getInstanceLog($id_course_instance, $id_room = null, $id_user = null) {
+        $dh = $GLOBALS['dh'];
+        return $dh->get_log_videoroom($id_course_instance, $id_room, $id_user);
+    }
+
+    public static function initialToDescr($initial) {
+        if ($initial === 'J') {
+            return 'Jitsi Meet';
+        } else if ($initial === 'Z') {
+            return 'Zoom';
+        } else if ($initial === 'B') {
+            return 'BigBlueButton';
+        }
+        return translateFN('Sconosciuto');
+    }
 }
 
 interface iVideoRoom
