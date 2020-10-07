@@ -661,4 +661,40 @@ CREATE TABLE IF NOT EXISTS `utente_messaggio_log` (
 --
 ALTER TABLE `nodo` ADD FULLTEXT KEY `testo` (`testo`,`titolo`,`nome`);
 
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `log_videochat`
+--
+
+CREATE TABLE `log_videochat` (
+  `id_log` int(11) NOT NULL,
+  `id_user` int(10) UNSIGNED NOT NULL,
+  `is_tutor` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `id_room` int(10) UNSIGNED NOT NULL,
+  `id_istanza_corso` int(10) UNSIGNED NOT NULL,
+  `entrata` int(11) NOT NULL,
+  `uscita` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Indici per le tabelle scaricate
+--
+
+--
+-- Indici per le tabelle `log_videochat`
+--
+ALTER TABLE `log_videochat`
+  ADD PRIMARY KEY (`id_log`);
+
+--
+-- AUTO_INCREMENT per le tabelle scaricate
+--
+
+--
+-- AUTO_INCREMENT per la tabella `log_videochat`
+--
+ALTER TABLE `log_videochat`
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT;
+
 COMMIT;

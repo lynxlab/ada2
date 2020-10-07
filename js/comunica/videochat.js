@@ -14,4 +14,23 @@ function receiveMessage(event)
       }
   }
 }
+
+function endVideoChat(event)
+{
+  $j('.ada-videochat-embed').each(function() {
+    const fakePlaceholder = $j(this).attr('class').replace('.','').replace('ada-videochat-embed','').trim();
+    const url = getDirFromPlaceholder(fakePlaceholder) + 'endvideochat.php';
+    if (!navigator.sendBeacon) return;
+    navigator.sendBeacon(url);
+  });
+}
+
 window.addEventListener("message", receiveMessage, false);
+window.addEventListener("beforeunload", endVideoChat, false);
+
+function getDirFromPlaceholder(placeholder) {
+  if (placeholder.length >0) {
+    return '../modules/' + placeholder.replace('#','').replace('-placeholder','') + '-integration/';
+  }
+  return null;
+}

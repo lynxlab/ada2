@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package 	bigbluebutton module
+ * @package 	jitsi integration module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2020, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
@@ -36,7 +36,7 @@ $neededObjAr = array(
 );
 
 if (!defined('CONFERENCE_TO_INCLUDE')) {
-  define('CONFERENCE_TO_INCLUDE', 'BigBlueButton'); // BigBlueButton
+  define('CONFERENCE_TO_INCLUDE', 'Jitsi');
 }
 
 if (!defined('DATE_CONTROL')) {
@@ -102,15 +102,12 @@ if (is_null($videoroomObj->link_to_room)) {
   $content->addChild(new \CText('<p>'.translateFN('Video Conferenza non ancora iniziata').'</p>'));
   $errdiv->addChild($content);
   die($errdiv->getHtml());
-} else if (is_string($videoroomObj->link_to_room) && strlen($videoroomObj->link_to_room) > 0) {
+} else if ($videoroomObj->link_to_room instanceof CBase) {
   $className = get_class($videoroomObj);
-  $iframe = "<iframe src='$videoroomObj->link_to_room' width='$width' height = '$height'";
-  if (defined($className . '::iframeAttr')) {
-    $iframe .= constant($className . '::iframeAttr');
+  if (defined($className.'::onload_js')) {
+    $videoroomObj->logEnter();
+    die ("<script>". constant($className.'::onload_js') ."</script>");
   }
-  $iframe .= "></iframe>";
-  $videoroomObj->logEnter();
-  die($iframe);
 } else {
   header(' ', true, 500);
 }

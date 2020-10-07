@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package 	zoom integration module
+ * @package 	jitsi integration module
  * @author		giorgio <g.consorti@lynxlab.com>
  * @copyright	Copyright (c) 2020, Lynx s.r.l.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
@@ -36,7 +36,7 @@ $neededObjAr = array(
 );
 
 if (!defined('CONFERENCE_TO_INCLUDE')) {
-  define('CONFERENCE_TO_INCLUDE', 'ZoomConf');
+  define('CONFERENCE_TO_INCLUDE', 'Jitsi');
 }
 
 if (!defined('DATE_CONTROL')) {

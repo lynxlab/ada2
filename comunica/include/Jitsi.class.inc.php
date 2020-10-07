@@ -1,5 +1,7 @@
 <?php
 
+use Lynxlab\ADA\Module\JitsiIntegration\JitsiIntegrationException;
+
 /**
  * Jitsi meet specific class
  *
@@ -11,26 +13,42 @@
  * @version	  0.1
  */
 
-require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
-if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_provider']) && is_readable(ROOT_DIR . '/clients/' . $GLOBALS['user_provider'] . '/Jitsi.config.inc.php')) {
-	require_once ROOT_DIR . '/clients/' . $GLOBALS['user_provider'] . '/Jitsi.config.inc.php';
-} else {
-	require_once ROOT_DIR . '/comunica/include/Jitsi.config.inc.php';
-}
-
 class Jitsi extends videoroom implements iVideoRoom
 {
 
-	const onload_js = "if (\$j('#jitsi-meet-placeholder').length>0) {
-		\$j.getScript('../js/comunica/ada-jitsi.js.php?parentId=".JITSI_HTML_PLACEHOLDER_ID."');
+	const onload_js = "if (\$j('#".JITSI_HTML_PLACEHOLDER_ID."').length>0) {
+		\$j.getScript('".MODULES_JITSI_HTTP."/ada-jitsi.js.php?parentId=".JITSI_HTML_PLACEHOLDER_ID."');
 	}";
+	const videochattype = 'J';
+
+	private $jitsiAPI = null;
+	private $meetingID = null;
 
 	public function __construct($id_course_instance = "") {
 		parent::__construct($id_course_instance);
+		$this->jitsiAPI = new \Lynxlab\ADA\Module\JitsiIntegration\ADAJitsiApi();
 	}
 
 	public function addRoom($name = 'service', $sess_id_course_instance, $sess_id_user, $comment = 'Inserimento automatico via ADA', $num_user = 25, $course_title = 'service', $selected_provider=ADA_PUBLIC_TESTER) {
-
+        try {
+            $interval = 60 * 60 * 24 * 365; // 1 year
+            $videoroom_dataAr = array();
+            $videoroom_dataAr['id_room'] = 0; // will be set to the id by the datahandler
+            $videoroom_dataAr['id_istanza_corso'] = $sess_id_course_instance;
+            $videoroom_dataAr['id_tutor'] = $sess_id_user;
+            $videoroom_dataAr['tipo_videochat'] = self::videochattype;
+            $videoroom_dataAr['descrizione_videochat'] = $name;
+            $videoroom_dataAr['tempo_avvio'] = time();
+            $videoroom_dataAr['tempo_fine'] = $videoroom_dataAr['tempo_avvio'] + $interval; // unused
+			$videoroom_dataAr['room_name'] = $course_title;
+            $videoroom_data = $this->jitsiAPI->create($videoroom_dataAr);
+			$this->id_room = $videoroom_data['openmeetings_room_id'];
+			$this->id_istanza_corso = $videoroom_data['id_istanza_corso'];
+            $this->meetingID = $videoroom_data['meetingID'];
+            return $this->id_room;
+        } catch (JitsiIntegrationException $e) {
+            return false;
+        }
 	}
 
 	/**
@@ -42,14 +60,23 @@ class Jitsi extends videoroom implements iVideoRoom
 	 * @param [type] $interval
 	 * @return void
 	 */
-	public function videoroom_info($id_course_instance,$tempo_avvio=NULL, $interval=NULL) {
-		parent::videoroom_info($id_course_instance,$tempo_avvio, $interval);
-		if ($this->full == 0) $this->full = 1;
+	public function videoroom_info($id_course_instance,$tempo_avvio=NULL, $interval=NULL, $more_query = NULL) {
+        // load parent info
+        if (is_null($more_query)) $more_query = 'AND `tipo_videochat`="'.self::videochattype.'" ORDER BY `tempo_avvio` DESC';
+        parent::videoroom_info($id_course_instance,$tempo_avvio, $interval, $more_query);
+        // load Jitsi own info
+        $video_roomAr = $this->jitsiAPI->getInfo($this->id);
+        $this->meetingID = null;
+        if (is_array($video_roomAr) && count($video_roomAr)>0) {
+            $this->meetingID = $video_roomAr['meetingID'];
+        }
+        $this->full = !is_null($this->meetingID);
 	}
 
-	public function serverLogin() {
-		$this->login = true;
-	}
+    public function serverLogin() {
+        $this->login = 1;
+        return true;
+    }
 
 	public function roomAccess($username, $nome, $cognome, $user_email, $sess_id_user, $id_profile, $selected_provider) {
 		$this->link_to_room = CDOMElement::create('div','id:'.JITSI_HTML_PLACEHOLDER_ID);
@@ -60,5 +87,25 @@ class Jitsi extends videoroom implements iVideoRoom
 
 	public function getRoom($id_room) {
 
+	}
+
+	/**
+	 * Get the value of meetingID
+	 */
+	public function getMeetingID()
+	{
+		return $this->meetingID;
+	}
+
+	/**
+	 * Set the value of meetingID
+	 *
+	 * @return  self
+	 */
+	public function setMeetingID($meetingID)
+	{
+		$this->meetingID = $meetingID;
+
+		return $this;
 	}
 }

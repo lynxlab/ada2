@@ -75,7 +75,7 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
                 $meetingData['meetingID'] = null;
                 if (isset($meetingData['moderatorPW'])) unset($meetingData['moderatorPW']);
                 if (isset($meetingData['attendeePW'])) unset($meetingData['attendeePW']);
-                $this->dh->delete_videoroom($roomId);
+                // $this->dh->delete_videoroom($roomId);
             }
             return $meetingData;
         } catch (\Exception $e) {

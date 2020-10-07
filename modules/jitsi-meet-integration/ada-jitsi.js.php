@@ -14,15 +14,23 @@ $allowedUsersAr = array(AMA_TYPE_STUDENT, AMA_TYPE_TUTOR); //, AMA_TYPE_AUTHOR, 
  */
 $neededObjAr = array(
     // AMA_TYPE_VISITOR => array('node', 'layout', 'course'),
-    AMA_TYPE_STUDENT => array('layout', 'tutor', 'course', 'course_instance'),
-    AMA_TYPE_TUTOR => array('layout', 'course', 'course_instance'),
+    AMA_TYPE_STUDENT => array('layout', 'tutor', 'course', 'course_instance', 'videoroom'),
+    AMA_TYPE_TUTOR => array('layout', 'course', 'course_instance', 'videoroom'),
     // AMA_TYPE_AUTHOR => array('node', 'layout', 'course'),
 	// AMA_TYPE_SWITCHER => array('node', 'layout', 'course')
 );
 $trackPageToNavigationHistory = false;
+
+if (!defined('CONFERENCE_TO_INCLUDE')) {
+    define('CONFERENCE_TO_INCLUDE', 'Jitsi'); // Jitsi conference
+}
+if (!defined('DATE_CONTROL')) {
+    define('DATE_CONTROL', FALSE);
+}
+
 require_once ROOT_DIR . '/include/module_init.inc.php';
 require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
-require_once ROOT_DIR . '/comunica/include/Jitsi.class.inc.php';
+require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
 
 /**
  * This will at least import in the current symbol table the following vars.
@@ -184,6 +192,7 @@ $j.getScript(
 			if (isset($_REQUEST['parentId']) && strlen($_REQUEST['parentId'])>0) {
 		?>
 		if (null !== document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>')) {
+			document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>').className += 'ada-videochat-embed jitsi-meet';
 			options.parentNode = document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>');
 		}
 <?php
@@ -208,15 +217,9 @@ $j.getScript(
 		jitsiAPI.executeCommand('email', '<?php echo $userObj->getemail(); ?>');
 		jitsiAPI.on('readyToClose',() => {
 			jitsiAPI.dispose();
-<?php
-		if (!$isView) {
-?>
-			closeMeAndReloadParent();
-<?php
-		}
-?>
+			$j('#<?php echo trim($_REQUEST['parentId']) ?>').load('<?php echo MODULES_JITSI_HTTP; ?>/endvideochat.php', function (response, status, xhr) {
+			});
 		});
-
 <?php
     if ($userObj->getType() == AMA_TYPE_TUTOR) {
 		?>

@@ -79,7 +79,7 @@ class ADAZoomApi
                 if (!(is_array($serverData) && array_key_exists('id', $serverData))) {
                     $meetingData['meetingID'] = null;
                     if (isset($meetingData['meetingPWD'])) unset($meetingData['meetingPWD']);
-                    $this->dh->delete_videoroom($roomId);
+                    // $this->dh->delete_videoroom($roomId);
                     return [];
                 }
             } else {
