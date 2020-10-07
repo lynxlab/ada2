@@ -22,7 +22,7 @@ class OpenMeetingV3 extends videoroom implements iVideoRoom {
 	/*
 	 * Creazione videochat in openmeetings v3 e registrazione dei dati nel DB locale
 	 */
-	public function addRoom($name = "service", $sess_id_course_instance, $sess_id_user, $comment = "Inserimento automatico via ADA", $num_user = 25) {
+	 public function addRoom($name = "service", $sess_id_course_instance, $sess_id_user, $comment = "Inserimento automatico via ADA", $num_user = 25, $course_title = 'service', $selected_provider=ADA_PUBLIC_TESTER) {
 
 		$dh = $GLOBALS['dh'];
 		$host = OPENMEETINGS_HOST;

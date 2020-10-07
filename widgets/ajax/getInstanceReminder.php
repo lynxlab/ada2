@@ -97,8 +97,23 @@ try {
 		$GLOBALS['dh'] = $tester_dh;
 	} else throw new \Exception(translateFN('Spiacente, non so a che fornitore di servizi sei collegato'));
 
-	$start = $tester_dh->date_to_ts($tester_dh::ts_to_date($tester_dh->date_to_ts('now')));
-	$end = $tester_dh->date_to_ts($tester_dh::ts_to_date($tester_dh->add_number_of_days(1, $tester_dh->date_to_ts('now'))));
+	if (array_key_exists('start', $_REQUEST) && intval($_REQUEST['start'])>0) {
+		list ($date,$time) = explode('T',$_REQUEST['start']);
+		list ($year, $month, $day) = explode('-', $date);
+		$start = $tester_dh->date_to_ts($day.'/'.$month.'/'.$year, $time);
+		$headerTxt = translateFN('Eventi del').' '.ts2dFN($start);
+	} else {
+		$start = $tester_dh->date_to_ts($tester_dh::ts_to_date($tester_dh->date_to_ts('now')));
+		$headerTxt = translateFN('Eventi di oggi');
+	}
+
+	if (array_key_exists('end', $_REQUEST) && intval($_REQUEST['end'])>0) {
+		list ($date,$time) = explode('T',$_REQUEST['end']);
+		list ($year, $month, $day) = explode('-', $date);
+		$end = $tester_dh->date_to_ts($day.'/'.$month.'/'.$year, $time);
+	} else {
+		$end = $tester_dh->date_to_ts($tester_dh::ts_to_date($tester_dh->add_number_of_days(1, $tester_dh->date_to_ts('now'))));
+	}
 
 	$events = $tester_dh->getClassRoomEventsForCourseInstance($id_course_instance, null, $start, $end);
 	if (!AMA_DB::isError($events) && is_array($events) && count($events)>0) {
@@ -107,7 +122,7 @@ try {
 		});
 		$outDIV = \CDOMElement::create('div','id:instanceReminders,class:ui feed basic segment');
 		$header = \CDOMElement::create('h4','class:ui header');
-		$header->addChild(new \CText(translateFN('Eventi di oggi')));
+		$header->addChild(new \CText($headerTxt));
 		$outDIV->addChild($header);
 		foreach($events as $eventID => $event) {
 			$evDIV = \CDOMElement::create('div','class:event');

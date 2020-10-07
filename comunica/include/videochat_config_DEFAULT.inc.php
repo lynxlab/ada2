@@ -22,8 +22,10 @@ if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && !empty($GLOBALS['user_
  */
 if (!defined('CONFERENCE_TO_INCLUDE')) {
     define('CONFERENCE_TO_INCLUDE', 'OpenMeeting'); // OpenMeeting
+    // define ('CONFERENCE_TO_INCLUDE','BigBlueButton'); // BigBlueButton
+    // define ('CONFERENCE_TO_INCLUDE','ZoomConf'); // Zoom conference
     // define ('CONFERENCE_TO_INCLUDE','Jitsi'); // Jitsi
-    //define ('CONFERENCE_TO_INCLUDE','AdobeConnect'); //Adobe Connect
+    // define ('CONFERENCE_TO_INCLUDE','AdobeConnect'); //Adobe Connect
 }
 
 /**
