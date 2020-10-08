@@ -58,7 +58,13 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
 	                    $dati_corso[$num_courses][$durata_key] = $durata_corso;
 	                    $dati_corso[$num_courses][$azioni_key] = $naviga;
 	                    $dati_corso[$num_courses][$azioni_key] .= $valuta;
-	                    $dati_corso[$num_courses][$azioni_key] .= $videochatlog;
+
+                        if (defined('VIDEOCHAT_REPORT') && VIDEOCHAT_REPORT) {
+                            $videochatlog = '<a href="'.$http_root_dir.'/tutor/videochatlog.php?id_course='.$id_course.'&id_course_instance='.$id_instance.'">'.
+	                    	'<img src="img/videochatlog.png"  alt="'.translateFN('log videochat').'" title="'.translateFN('log videochat').'" class="tooltip" border="0"></a>';
+                            $dati_corso[$num_courses][$azioni_key] .= $videochatlog;
+                        }
+
 	                    if(defined('MODULES_CLASSAGENDA') && (MODULES_CLASSAGENDA)) {
 	                    	$dati_corso[$num_courses][$azioni_key] .= $presenze;
 	                    	$dati_corso[$num_courses][$azioni_key] .= $registro;
