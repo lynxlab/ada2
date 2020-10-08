@@ -82,6 +82,11 @@ if (!defined('PORTAL_NAME')) {
 if (!defined('MAINTENANCE_MODE')) define('MAINTENANCE_MODE', false);
 if (!defined('MAINTENANCE_TPL') && MAINTENANCE_MODE === true) define ('MAINTENANCE_TPL', 'maintenancemode');
 
+/**
+ * set to true to enable the videocahtroom report for the tutor
+ */
+if (!defined('VIDEOCHAT_REPORT')) define('VIDEOCHAT_REPORT', false);
+
 // key used to cipher urls sent to adaProxy.php
 if (!defined('ADAPROXY_ENC_KEY')) define ('ADAPROXY_ENC_KEY', 'adaProxyKey');
 
