@@ -3968,7 +3968,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $exit_date = $visit_date;
 
         // update field exit_date in table history_nodi
-        $sql  = "select id_history,id_nodo from history_nodi where session_id='$session_id' ORDER BY id_history DESC";
+        $sql  = "select id_history,id_nodo from history_nodi where session_id='$session_id' AND `data_visita`=`data_uscita` ORDER BY id_history DESC";
         $res_ar =  $db->getRow($sql, null, AMA_FETCH_ASSOC);
         if (AMA_DB::isError($res_ar)) {
             return new AMA_Error(AMA_ERR_GET);
