@@ -144,6 +144,13 @@ function initDoc() {
 			}
 		});
 	}
+
+	if (window.addEventListener) {
+		window.addEventListener('beforeunload', closeNodeHistory, { 'once' : true, 'passive' : true });
+	} else if (window.attachEvent)  {
+		window.attachEvent('beforeunload', closeNodeHistory);
+	}
+
 } // end initDoc
 
 function setupRevealListeners(frameIdx, checkRepeater, callbacks) {
@@ -168,4 +175,19 @@ function setupRevealListeners(frameIdx, checkRepeater, callbacks) {
 			},1000);
 		}
 	});
+}
+
+function closeNodeHistory(nodeId) {
+	if (!navigator.sendBeacon) return;
+	const debug = false;
+	const url = 'ajax/updateNodeHistory.php';
+	// Create the data to send
+	// if undefined nodeId, will close session node
+	const data = 'undefined' !== typeof nodeId ?'nodeId=' + nodeId : null;
+	// Send the beacon
+	const status = navigator.sendBeacon(url, data);
+	if (debug) {
+		// Log the data and result
+		console.log('closeNodeHistory: URL = ', url, '; data = ', data, '; status = ', status);
+	}
 }
