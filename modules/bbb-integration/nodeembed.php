@@ -46,6 +46,7 @@ if (!defined('DATE_CONTROL')) {
 /**
  * Performs basic controls before entering this module
  */
+$trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 require_once ROOT_DIR . '/comunica/include/comunica_functions.inc.php';
 
