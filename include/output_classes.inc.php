@@ -824,8 +824,9 @@ class  Generic_Html extends Output
 		}
 
         if (file_exists($javascript)){
+          $jsFileTS = filemtime($javascript);
             $javascript = str_replace($root_dir,$http_root_dir,$javascript);
-          $html_js_code .= "<script type=\"text/javascript\" src=\"$javascript\"></script>\n<noscript>".translateFN("Questo browser non supporta Javascript")."</noscript>\n";
+          $html_js_code .= "<script type=\"text/javascript\" src=\"$javascript?ts=$jsFileTS\"></script>\n<noscript>".translateFN("Questo browser non supporta Javascript")."</noscript>\n";
         }
       }
     }
@@ -942,8 +943,9 @@ class  Generic_Html extends Output
     foreach (array ('../','') as $subdir) {
     	$fileName = $stylesheetpath . $subdir . $lookFor;
     	if (file_exists($fileName)) {
+        $fileTS = filemtime($fileName);
     		$fileName = str_replace($root_dir,$http_root_dir,$fileName);
-    		$html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName\" type=\"text/css\" media=\"print\">\n";
+    		$html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName?ts=$fileTS\" type=\"text/css\" media=\"print\">\n";
     	}
     }
 
@@ -956,8 +958,9 @@ class  Generic_Html extends Output
         foreach (array ('',$template_family.'/css/') as $subdir){
             $fileName = $stylesheetpath .$subdir.$lookFor;
             if (file_exists($fileName)) {
+                $fileTS = filemtime($fileName);
                 $fileName = str_replace($root_dir,$http_root_dir,$fileName);
-                $html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName\" type=\"text/css\" media=\"print\">\n";
+                $html_css_code .= "<link rel=\"stylesheet\" href=\"$fileName?ts=$fileTS\" type=\"text/css\" media=\"print\">\n";
             }
         }
     }
