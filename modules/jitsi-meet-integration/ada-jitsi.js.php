@@ -63,8 +63,7 @@ require_once ROOT_DIR . '/comunica/include/videoroom.classes.inc.php';
  */
 BrowsingHelper::init($neededObjAr);
 
-$roomName = 'adaInstance-'. sprintf("%d-%d", $courseObj->getId(), $courseInstanceObj->getId());
-$roomHash = md5($roomName);
+$roomHash = $videoroomObj->getMeetingID();
 $jwt = null;
 $isView = isset($_REQUEST['isView']) && intval($_REQUEST['isView']) == 1;
 
@@ -217,7 +216,7 @@ $j.getScript(
 		jitsiAPI.executeCommand('email', '<?php echo $userObj->getemail(); ?>');
 		jitsiAPI.on('readyToClose',() => {
 			jitsiAPI.dispose();
-			$j('#<?php echo trim($_REQUEST['parentId']) ?>').load('<?php echo MODULES_JITSI_HTTP; ?>/endvideochat.php', function (response, status, xhr) {
+			$j('#<?php echo trim($_REQUEST['parentId']) ?>').load('<?php echo $videoroomObj->getLogoutUrl(); ?>', function (response, status, xhr) {
 			});
 		});
 <?php

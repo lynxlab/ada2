@@ -53,7 +53,7 @@ class ADAJitsiApi
         }
     }
 
-    private function getLogoutUrl() {
+    public function getLogoutUrl() {
         return MODULES_JITSI_HTTP . '/endvideochat.php';
     }
 }
