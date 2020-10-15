@@ -25,8 +25,20 @@ function endVideoChat(event)
   });
 }
 
-window.addEventListener("message", receiveMessage, false);
-window.addEventListener("beforeunload", endVideoChat, false);
+
+if (window.attachEvent) {
+  window.attachEvent('message', receiveMessage, false);
+  window.attachEvent('onload', () => { setInterval( doPing, 600000 ); }); // 10 minutes
+  window.attachEvent('beforeunload', endVideoChat, false);
+} else if (window.addEventListener) {
+  window.addEventListener('message', receiveMessage, false);
+	window.addEventListener('load', () => { setInterval( doPing, 600000 ); }); // 10 minutes
+  window.addEventListener('beforeunload', endVideoChat, false);
+} else {
+  document.addEventListener('message', receiveMessage, false);
+  document.addEventListener('load', () => { setInterval( doPing, 600000 ); }); // 10 minutes
+  document.addEventListener('beforeunload', endVideoChat, false);
+}
 
 function getDirFromPlaceholder(placeholder) {
   if (placeholder.length >0) {

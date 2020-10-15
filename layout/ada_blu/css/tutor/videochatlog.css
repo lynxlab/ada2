@@ -1,12 +1,29 @@
-#videochatlog thead th:not(.details-control) { cursor: pointer; }
-#videochatlog thead th.details-control { width: 1.3em; }
-#videochatlog tbody td.details-control { text-align: center; }
-#videochatlog tbody td.details-control i { opacity: 1; margin:0; line-height: normal; font-size: 1.3em; cursor: pointer; }
+#videochatlog thead th:not(.details-control) {
+    cursor: pointer;
+}
+
+#videochatlog thead th.details-control {
+    width: 1.3em;
+}
+
+#videochatlog tbody td.details-control {
+    text-align: center;
+}
+
+#videochatlog tbody td.details-control i {
+    opacity: 1;
+    margin: 0;
+    line-height: normal;
+    font-size: 1.3em;
+    cursor: pointer;
+}
+
 #videochatlog tbody tr.videochatroomDetails td.videochatroomDetails tr.group {
     cursor: pointer;
     font-weight: bold;
     background: rgba(0, 0, 0, 0.2);
 }
+
 #videochatlog tbody tr.videochatroomDetails td.videochatroomDetails tr.group td {
     padding-top: 0;
     padding-bottom: 0;
@@ -14,7 +31,7 @@
 
 #videochatlog tbody tr.videochatroomDetails td.videochatroomDetails .dataTables_wrapper {
     width: 85%;
-    margin:0;
+    margin: 0;
     padding: 2em;
 }
 
@@ -38,4 +55,9 @@
 
 #videochatlog tbody tr.videochatroomDetails td.videochatroomDetails .ui.grid>.row.dt-table {
     margin-top: 0.5%;
+}
+
+#videochatlog tbody tr.videochatroomDetails tr.event-detail td.wasnull {
+    font-style: italic;
+    opacity: 0.5;
 }

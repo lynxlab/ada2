@@ -108,4 +108,9 @@ class Jitsi extends videoroom implements iVideoRoom
 
 		return $this;
 	}
+
+	public function getLogoutUrl()
+    {
+		return $this->jitsiAPI->getLogoutUrl();
+    }
 }

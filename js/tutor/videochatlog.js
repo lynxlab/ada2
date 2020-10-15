@@ -92,10 +92,10 @@ function initDoc(id_course, id_course_instance) {
 				if ('events' in user && user.events.length > 0) {
 					user.events.forEach((uevent, uindex) => {
 						const rowHtml = [];
-						rowHtml.push('<tr>');
-						rowHtml.push('<td>' + user.nome + ' ' + user.cognome + '</td>');
-						rowHtml.push('<td>' + uevent.entrata + '</td>');
-						rowHtml.push('<td>' + uevent.uscita + '</td>');
+						rowHtml.push('<tr class="event-detail">');
+						rowHtml.push(`<td class="fullname">${user.nome} ${user.cognome}</td>`);
+						rowHtml.push('<td class="entrata'+(uevent.entrata.wasnull ? ' wasnull' : '')+'">' + uevent.entrata.timestamp + '</td>');
+						rowHtml.push('<td class="uscita'+(uevent.uscita.wasnull ? ' wasnull' : '')+'">' + uevent.uscita.timestamp + '</td>');
 						rowHtml.push('</tr>');
 						$j('tbody', childTable).prepend(rowHtml.join(''));
 					});

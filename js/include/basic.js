@@ -241,6 +241,40 @@ function doDownload(options) {
 	}
 }
 
+function doPing() {
+
+	const getQueryVariable = function(variable) {
+		var query = window.location.search.substring(1);
+		var vars = query.split('&');
+		for (var i = 0; i < vars.length; i++) {
+			var pair = vars[i].split('=');
+			if (decodeURIComponent(pair[0]) == variable) {
+				return decodeURIComponent(pair[1]);
+			}
+		}
+		return null;
+	}
+
+	// 1. Create a new XMLHttpRequest object
+	const xhr = new XMLHttpRequest();
+	// 2. Configure it: GET-request
+	xhr.open('GET', '/comunica/ping.php');
+	// 3. This will be called after the response is received
+	xhr.onload = function () {
+		if (xhr.status == 401) { // analyze HTTP status of the response
+			console.log('Session expired, redirecting...');
+			var r = getQueryVariable('r');
+			if (r === null) r = document.location.href;
+			document.location.href = '/?expired=1' + '&r='+encodeURIComponent(r);
+		}
+	};
+	xhr.onerror = function () {
+		console.error('ping request failed!');
+	};
+	// 4. Send the request over the network
+	xhr.send();
+ }
+
 if (window.attachEvent) {window.attachEvent('onload', checkCookie);}
 else if (window.addEventListener) {window.addEventListener('load', checkCookie, false);}
 else {document.addEventListener('load', checkCookie, false);}

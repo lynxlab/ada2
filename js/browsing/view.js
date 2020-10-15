@@ -144,14 +144,18 @@ function initDoc() {
 			}
 		});
 	}
-
-	if (window.addEventListener) {
-		window.addEventListener('beforeunload', closeNodeHistory, { 'once' : true, 'passive' : true });
-	} else if (window.attachEvent)  {
-		window.attachEvent('beforeunload', closeNodeHistory);
-	}
-
 } // end initDoc
+
+if (window.attachEvent) {
+	window.attachEvent('onload', () => { setInterval( doPing, 600000 ); }); // 10 minutes
+	window.attachEvent('beforeunload', closeNodeHistory);
+} else if (window.addEventListener) {
+	window.addEventListener('load', () => { setInterval( doPing, 600000 ); }); // 10 minutes
+	window.addEventListener('beforeunload', closeNodeHistory, { 'once' : true, 'passive' : true });
+} else {
+	document.addEventListener('load', () => { setInterval( doPing, 600000 ); }); // 10 minutes
+	document.addEventListener('beforeunload', closeNodeHistory, { 'once' : true, 'passive' : true });
+}
 
 function setupRevealListeners(frameIdx, checkRepeater, callbacks) {
 	var callbacks = callbacks || {};
