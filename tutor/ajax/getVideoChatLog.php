@@ -54,6 +54,16 @@ $data = array_map(function ($el) {
     if (array_key_exists('users', $el)) {
         $el['users'] = array_map(function ($u) use ($el) {
             if (array_key_exists('events', $u)) {
+                $i = 0;
+                while ($i < count($u['events'])-1) {
+                    if ($u['events'][$i]['uscita'] == $u['events'][$i+1]['entrata']) {
+                        $u['events'][$i+1]['entrata'] = $u['events'][$i]['entrata'];
+                        array_splice($u['events'], $i, 1);
+                        $i = 0;
+                    } else {
+                        $i++;
+                    }
+                }
                 foreach ($u['events'] as $i => $event) {
                     foreach (['entrata' => 'inizio', 'uscita' => 'fine'] as $what => $detail) {
                         $u['events'][$i][$what] = [
@@ -63,6 +73,9 @@ $data = array_map(function ($el) {
                         $u['events'][$i][$what]['display'] = ts2dFN($u['events'][$i][$what]['timestamp']) . ' ' . ts2tmFN($u['events'][$i][$what]['timestamp']);
                     }
                 }
+                $u['events'] = array_filter($u['events'], function($el) {
+                    return $el['entrata']['timestamp'] != $el['uscita']['timestamp'];
+                });
             }
             return $u;
         }, $el['users']);

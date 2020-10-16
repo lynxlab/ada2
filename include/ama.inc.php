@@ -11556,9 +11556,9 @@ public function get_updates_nodes($userObj, $pointer)
                     $sql = 'SELECT `log_videochat`.*,`utente`.`nome` AS `nome`, `utente`.`cognome` AS `cognome` '.
                            'FROM `log_videochat` JOIN `utente` ON '.
                            '`log_videochat`.`id_user`=`utente`.`id_utente` '.
-                           'WHERE `is_tutor`=? AND `id_istanza_corso`=? AND ((`entrata`>=? AND `uscita`<=?) OR (`entrata`>=? AND `uscita` IS NULL))';
+                           'WHERE `is_tutor`=? AND `id_istanza_corso`=? AND`id_room`=? AND ((`entrata`>=? AND `uscita`<=?) OR (`entrata`>=? AND `uscita` IS NULL))';
                     $values = [
-                        false, $id_instance, $showChatRoom['entrata'], $showChatRoom['uscita'], $showChatRoom['entrata'],
+                        false, $id_instance, $showChatRoom['id_room'], $showChatRoom['entrata'], $showChatRoom['uscita'], $showChatRoom['entrata'],
                     ];
                     if (!is_null($id_user)) {
                         $sql .= ' AND `log_videochat`.`id_user`=?';
