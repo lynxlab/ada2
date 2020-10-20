@@ -109,6 +109,7 @@ if (is_null($videoroomObj->link_to_room)) {
   if (defined($className . '::iframeAttr')) {
     $iframe .= constant($className . '::iframeAttr');
   }
+  $iframe .= " data-logout='".urlencode($videoroomObj->getLogoutUrlParams())."'";
   $iframe .= "></iframe>";
   $videoroomObj->logEnter();
   die($iframe);

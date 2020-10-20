@@ -192,6 +192,7 @@ $j.getScript(
 		?>
 		if (null !== document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>')) {
 			document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>').className += 'ada-videochat-embed jitsi-meet';
+			document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>').setAttribute('data-logout','<?php echo urlencode($videoroomObj->getLogoutUrlParams()); ?>');
 			options.parentNode = document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>');
 		}
 <?php

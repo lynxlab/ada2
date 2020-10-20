@@ -97,7 +97,7 @@ class ADAZoomApi
     }
 
     private static function getTesterToUse() {
-        if (array_key_exists('sess_selected_tester', $_SESSION)) {
+        if (isset($_SESSION) && array_key_exists('sess_selected_tester', $_SESSION)) {
             return $_SESSION['sess_selected_tester'];
         } else if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
             return $GLOBALS['user_provider'];

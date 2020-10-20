@@ -21,7 +21,8 @@ function endVideoChat(event)
     const fakePlaceholder = $j(this).attr('class').replace('.','').replace('ada-videochat-embed','').trim();
     const url = getDirFromPlaceholder(fakePlaceholder) + 'endvideochat.php';
     if (!navigator.sendBeacon) return;
-    navigator.sendBeacon(url);
+    const data = decodeURIComponent($j(this).data('logout')).substr(1);
+    navigator.sendBeacon(url, data);
   });
 }
 

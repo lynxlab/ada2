@@ -93,42 +93,38 @@ abstract class videoroom
             return (string) $object[$attribute];
     }
 
-    public function logEnter() {
-        return $this->logEvent(self::EVENT_ENTER);
+    public function logEnter($eventData = null) {
+        return $this->logEvent(self::EVENT_ENTER, $eventData);
 
     }
 
-    public function logExit() {
-        return $this->logEvent(self::EVENT_EXIT);
+    public function logExit($eventData = null) {
+        return $this->logEvent(self::EVENT_EXIT, $eventData);
     }
 
-    protected function logEvent ($event) {
-        $retval = false;
-        $dh = $GLOBALS['dh'];
-        if ($event == self::EVENT_ENTER) {
-            $dh->log_videoroom([
+    protected function logEvent ($event, $eventData = null) {
+        if (is_null($eventData)) {
+            $eventData = [
                 'event' => $event,
                 'id_user' => $_SESSION['sess_userObj']->getId(),
                 'id_room' => $this->id_room,
                 'id_istanza_corso' => $this->id_istanza_corso,
                 'is_tutor' => $_SESSION['sess_userObj']->getType() == AMA_TYPE_TUTOR,
-            ]);
-
-        } else if ($event == self::EVENT_EXIT) {
-            $dh->log_videoroom([
-                'event' => $event,
-                'id_user' => $_SESSION['sess_userObj']->getId(),
-                'id_room' => $this->id_room,
-                'id_istanza_corso' => $this->id_istanza_corso,
-                'is_tutor' => $_SESSION['sess_userObj']->getType() == AMA_TYPE_TUTOR,
-            ]);
+            ];
         }
-        return $retval;
+        return $GLOBALS['dh']->log_videoroom($eventData);
     }
 
     public static function getInstanceLog($id_course_instance, $id_room = null, $id_user = null) {
-        $dh = $GLOBALS['dh'];
-        return $dh->get_log_videoroom($id_course_instance, $id_room, $id_user);
+        return $GLOBALS['dh']->get_log_videoroom($id_course_instance, $id_room, $id_user);
+    }
+
+    public function getLogoutUrlParams() {
+        return '?p='.$_SESSION['sess_selected_tester'].
+        '&id_user='.$_SESSION['sess_userObj']->getId().
+        '&id_room='.$this->id_room.
+        '&id_istanza_corso='.$this->id_istanza_corso.
+        '&ist='.intval($_SESSION['sess_userObj']->getId() == $this->id_tutor);
     }
 
     public static function initialToDescr($initial) {
