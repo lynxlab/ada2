@@ -119,5 +119,6 @@
         <!-- / piede -->
         <span id="exportExcelBtnText" style="display:none;"><i class="download disk icon" aria-hidden="true"></i><i18n>Excel</i18n></span>
         <span id="exportPDFBtnText" style="display:none;"><i class="download disk icon" aria-hidden="true"></i><i18n>PDF</i18n></span>
+        <span id="tutorRowText" style="display:none;">&nbsp;(tutor)</span>
     </body>
 </html>

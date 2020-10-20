@@ -93,8 +93,9 @@ function initDoc(id_course, id_course_instance) {
 				if ('events' in user && user.events.length > 0) {
 					user.events.forEach((uevent, uindex) => {
 						const rowHtml = [];
+						const userLbl = user.isTutor ? $j('#tutorRowText').html() : '';
 						rowHtml.push('<tr class="event-detail">');
-						rowHtml.push(`<td class="fullname">${user.nome} ${user.cognome}</td>`);
+						rowHtml.push(`<td class="fullname">${user.nome} ${user.cognome}${userLbl}</td>`);
 						rowHtml.push('<td class="entrata'+(uevent.entrata.wasnull ? ' wasnull' : '')+'">' + uevent.entrata.timestamp + '</td>');
 						rowHtml.push('<td class="uscita'+(uevent.uscita.wasnull ? ' wasnull' : '')+'">' +
 							(uevent.uscita.wasnull ? (lastTutorExit != null ? lastTutorExit : uevent.uscita.timestamp) : uevent.uscita.timestamp)
