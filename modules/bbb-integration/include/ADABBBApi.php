@@ -52,7 +52,7 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
             );
             $createParams->setAttendeePassword($meetingData['attendeePW']->toString())
                 ->setModeratorPassword($meetingData['moderatorPW']->toString())
-                ->setLogoutUrl($this->getLogoutUrl())->setEndCallbackUrl($this->getLogoutUrl())
+                ->setLogoutUrl($this->getLogoutUrl($meetingData))->setEndCallbackUrl($this->getLogoutUrl($meetingData))
                 ->setRecord(true);
             $this->createMeeting($createParams);
             return $meetingData;
@@ -83,7 +83,13 @@ class ADABBBApi extends \BigBlueButton\BigBlueButton
         }
     }
 
-    private function getLogoutUrl() {
-        return MODULES_BIGBLUEBUTTON_HTTP . '/endvideochat.php';
+    private function getLogoutUrl($meetingData)
+    {
+        return MODULES_BIGBLUEBUTTON_HTTP . '/endvideochat.php' .
+            '?p=' . $_SESSION['sess_selected_tester'] .
+            '&id_user=' . $_SESSION['sess_userObj']->getId() .
+            '&id_room=' . $meetingData['openmeetings_room_id'] .
+            '&id_istanza_corso=' . $meetingData['id_istanza_corso'] .
+            '&is_tutor=' . intval($_SESSION['sess_userObj']->getId() == $meetingData['id_tutor']);
     }
 }
