@@ -121,6 +121,7 @@ if ($videoroomObj->link_to_room instanceof CBase) {
     if (defined($className.'::iframeAttr')) {
       $iframe .= constant($className.'::iframeAttr');
     }
+    $iframe .= " data-logout='".urlencode($videoroomObj->getLogoutUrlParams())."'";
     $iframe .= "></iframe>";
     $logEnter = true;
 } else {
