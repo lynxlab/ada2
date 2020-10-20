@@ -23,7 +23,7 @@ class ADAJitsiApi
             $this->dh = $GLOBALS['dh'];
         } else {
             if (is_null($tester)) {
-                if (array_key_exists('sess_selected_tester', $_SESSION)) {
+                if (isset($_SESSION) && array_key_exists('sess_selected_tester', $_SESSION)) {
                     $tester = $_SESSION['sess_selected_tester'];
                 } else if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && strlen($GLOBALS['user_provider']) > 0) {
                     $tester = $GLOBALS['user_provider'];
