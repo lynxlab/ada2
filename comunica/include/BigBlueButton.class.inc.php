@@ -35,7 +35,6 @@ class BigBlueButton extends videoroom implements iVideoRoom
     public function addRoom($name = 'service', $sess_id_course_instance, $sess_id_user, $comment = 'Inserimento automatico via ADA', $num_user = 25, $course_title = 'service', $selected_provider=ADA_PUBLIC_TESTER)
     {
         try {
-            $interval = 60 * 60 * 24 * 365; // 1 year
             $videoroom_dataAr = array();
             $videoroom_dataAr['id_room'] = 0; // will be set to the id by the datahandler
             $videoroom_dataAr['id_istanza_corso'] = $sess_id_course_instance;
@@ -43,7 +42,7 @@ class BigBlueButton extends videoroom implements iVideoRoom
             $videoroom_dataAr['tipo_videochat'] = self::videochattype;
             $videoroom_dataAr['descrizione_videochat'] = $name;
             $videoroom_dataAr['tempo_avvio'] = time();
-            $videoroom_dataAr['tempo_fine'] = $videoroom_dataAr['tempo_avvio'] + $interval; // unused
+            $videoroom_dataAr['tempo_fine'] = strtotime('tomorrow midnight')-1;
             $videoroom_dataAr['room_name'] = $course_title;
             $videoroom_data = $this->bbbAPI->create($videoroom_dataAr);
             $this->id_room = $videoroom_data['openmeetings_room_id'];

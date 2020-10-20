@@ -55,9 +55,10 @@ $data = array_map(function ($el) {
         $el['users'] = array_map(function ($u) use ($el) {
             if (array_key_exists('events', $u)) {
                 $i = 0;
-                while ($i < count($u['events'])-1) {
-                    if ($u['events'][$i]['uscita'] == $u['events'][$i+1]['entrata']) {
-                        $u['events'][$i+1]['entrata'] = $u['events'][$i]['entrata'];
+                $u['events'] = array_values($u['events']);
+                while ($i < count($u['events']) - 1) {
+                    if ($u['events'][$i]['uscita'] == $u['events'][$i + 1]['entrata'] && !is_null($u['events'][$i + 1]['uscita'])) {
+                        $u['events'][$i + 1]['entrata'] = $u['events'][$i]['entrata'];
                         array_splice($u['events'], $i, 1);
                         $i = 0;
                     } else {

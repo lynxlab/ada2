@@ -777,7 +777,8 @@ CREATE TABLE `log_videochat` (
   `id_room` int(10) UNSIGNED NOT NULL,
   `id_istanza_corso` int(10) UNSIGNED NOT NULL,
   `entrata` int(11) NOT NULL,
-  `uscita` int(11) DEFAULT NULL
+  `uscita` int(11) DEFAULT NULL,
+  `sessionID` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
