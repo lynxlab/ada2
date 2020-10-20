@@ -11496,22 +11496,38 @@ public function get_updates_nodes($userObj, $pointer)
     public function log_videoroom($logData) {
         $sql = '';
         $values = [];
+        $sid = session_id();
+        $sid = strlen($sid) > 0 ? $sid : null;
+        // always execute an EVENT_EXIT
+        $sql = "UPDATE `log_videochat` SET `uscita`=? WHERE `id_room` = ? AND `id_istanza_corso`=? AND `uscita` IS NULL AND `id_user` = ?";
+        $values = [
+            $this->date_to_ts('now'),
+            $logData['id_room'],
+            $logData['id_istanza_corso'],
+            $logData['id_user'],
+        ];
+        if (!is_null($sid)) {
+            $sql .= " AND `sessionID` = ? ";
+            $values[] = $sid;
+        } else {
+            $sql .= ' ORDER BY `id_log` DESC LIMIT 1';
+        }
         if ($logData['event'] == videoroom::EVENT_ENTER) {
-            $sql = "INSERT INTO `log_videochat` (`id_user`, `is_tutor`, `id_room`, `id_istanza_corso`, `entrata`) VALUES (?, ?, ?, ?, ?)";
+            // run the prepared exit query
+            $res = $this->queryPrepared($sql, $values);
+            if (AMA_DB::isError($res)) {
+                // $res is ana AMA_Error object
+                return $res;
+            }
+            // prepare the enter query
+            $sql = "INSERT INTO `log_videochat` (`id_user`, `is_tutor`, `id_room`, `id_istanza_corso`, `entrata`, `sessionID`) VALUES (?, ?, ?, ?, ?, ?)";
             $values = [
                 $logData['id_user'],
                 (int) $logData['is_tutor'],
                 $logData['id_room'],
                 $logData['id_istanza_corso'],
                 $this->date_to_ts('now'),
-            ];
-        } else if ($logData['event'] == videoroom::EVENT_EXIT) {
-            $sql = "UPDATE `log_videochat` SET `uscita`=? WHERE `id_room` = ? AND `id_istanza_corso`=? AND `uscita` IS NULL AND `id_user` = ?";
-            $values = [
-                $this->date_to_ts('now'),
-                $logData['id_room'],
-                $logData['id_istanza_corso'],
-                $logData['id_user'],
+                $sid,
             ];
         }
 
@@ -11542,6 +11558,12 @@ public function get_updates_nodes($userObj, $pointer)
             foreach ($showChatRooms as $showChatRoom) {
                 if (!array_key_exists($showChatRoom['id_room'], $roomCache)) {
                     $roomCache[$showChatRoom['id_room']] = $this->get_videoroom_info($id_instance, null, ' AND `id_room`='. $showChatRoom['id_room']);
+                    // add tutor max uscita for the room
+                    $sql = 'SELECT MAX(`uscita`) AS `uscita` FROM `log_videochat` WHERE `is_tutor` = 1 AND`id_istanza_corso`=? AND `id_room`=?';
+                    $sql .= ' GROUP BY `log_videochat`.`id_room`';
+                    $values = [$id_instance, (int) $showChatRoom['id_room']];
+                    $tutorExit = $this->getOnePrepared($sql, $values);
+                    $roomCache[$showChatRoom['id_room']]['lastTutorExit'] = $tutorExit;
                 }
                 if (!AMA_DB::isError($roomCache[$showChatRoom['id_room']])) {
                     // 01. load room details in the returned array
@@ -11556,9 +11578,9 @@ public function get_updates_nodes($userObj, $pointer)
                     $sql = 'SELECT `log_videochat`.*,`utente`.`nome` AS `nome`, `utente`.`cognome` AS `cognome` '.
                            'FROM `log_videochat` JOIN `utente` ON '.
                            '`log_videochat`.`id_user`=`utente`.`id_utente` '.
-                           'WHERE `is_tutor`=? AND `id_istanza_corso`=? AND`id_room`=? AND ((`entrata`>=? AND `uscita`<=?) OR (`entrata`>=? AND `uscita` IS NULL))';
+                           'WHERE `id_istanza_corso`=? AND `id_room`=? AND ((`entrata`>=? AND `uscita`<=?) OR (`entrata`>=? AND `uscita` IS NULL))';
                     $values = [
-                        false, $id_instance, $showChatRoom['id_room'], $showChatRoom['entrata'], $showChatRoom['uscita'], $showChatRoom['entrata'],
+                        $id_instance, $showChatRoom['id_room'], $showChatRoom['entrata'], $showChatRoom['uscita'], $showChatRoom['entrata'],
                     ];
                     if (!is_null($id_user)) {
                         $sql .= ' AND `log_videochat`.`id_user`=?';
@@ -11577,6 +11599,7 @@ public function get_updates_nodes($userObj, $pointer)
                                     'id' => $logEvent['id_user'],
                                     'nome' => $logEvent['nome'],
                                     'cognome' => $logEvent['cognome'],
+                                    'isTutor' => (1 === intval($logEvent['is_tutor'])),
                                     'events' => [],
                                 ];
                             }
