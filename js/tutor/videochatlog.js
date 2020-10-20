@@ -40,9 +40,9 @@ function initDoc(id_course, id_course_instance) {
 			},
 		},
 		{
-			"data": "details.fine",
+			"data": "details",
 			"render": function (data, type) {
-				return (type === 'display') ? ts2date(data) : data;
+				return (type === 'display') ? ts2date(data.lastTutorExit != null ? data.lastTutorExit : data.fine) : data;
 			},
 		},
 		{
@@ -87,6 +87,7 @@ function initDoc(id_course, id_course_instance) {
 			tr.addClass('details');
 			const template = $j('div#videochatlog-details').clone();
 			const childTable = $j('table', template);
+			const lastTutorExit = data.details.lastTutorExit;
 			childTable.prop('id', 'details-' + data.details.id_room);
 			data.users.forEach((user, index) => {
 				if ('events' in user && user.events.length > 0) {
@@ -95,7 +96,9 @@ function initDoc(id_course, id_course_instance) {
 						rowHtml.push('<tr class="event-detail">');
 						rowHtml.push(`<td class="fullname">${user.nome} ${user.cognome}</td>`);
 						rowHtml.push('<td class="entrata'+(uevent.entrata.wasnull ? ' wasnull' : '')+'">' + uevent.entrata.timestamp + '</td>');
-						rowHtml.push('<td class="uscita'+(uevent.uscita.wasnull ? ' wasnull' : '')+'">' + uevent.uscita.timestamp + '</td>');
+						rowHtml.push('<td class="uscita'+(uevent.uscita.wasnull ? ' wasnull' : '')+'">' +
+							(uevent.uscita.wasnull ? (lastTutorExit != null ? lastTutorExit : uevent.uscita.timestamp) : uevent.uscita.timestamp)
+						 + '</td>');
 						rowHtml.push('</tr>');
 						$j('tbody', childTable).prepend(rowHtml.join(''));
 					});
