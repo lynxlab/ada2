@@ -189,11 +189,11 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
                                .'">'. translateFN('Annulla iscrizione') . '</a>';
     $content_dataAr = array(
     // 'home'=>$home,
-     'menu'=>$menu,
-     'banner'=>$banner,
+    'menu'=>isset($menu) ? $menu : null,
+    'banner'=>isset($banner) ? $banner : null,
      'data'=>$data,
      'data_bonifico'=>  $dataTransfer,
-     'help'=>$help,
+     'help'=>isset($help) ? $help : null,
     // 'status'=>$status,
      'user_name'=>$user_name,
      'user_type'=>$user_type,
@@ -202,7 +202,7 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
      'titolo_corso'=>$course_name,
      'annulla_iscrizione'=>$link_annulla_iscrizione,
      'price'=>$price,
-     'complete_name'=>$userObj->getFirstName() . ' ' .$userObj->getLastName()
+     'complete_name'=>$userObj->getFirstName() . ' ' .$userObj->getLastName(),
     );
 }
 $help = '';

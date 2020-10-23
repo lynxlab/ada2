@@ -13,6 +13,7 @@ html, body { font-family: "Helvetica Neue", "Helvetica", Arial, Lucida Sans,Verd
 #footer, #push { height: 15px; clear: both; }
 
 A IMG {border:none;}
+a:focus { outline: none !important; }
 
 h1 {font-size: medium;}
 
