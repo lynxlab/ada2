@@ -153,11 +153,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 $help = translateFN('Per poter proseguire, è necessario che tu sia un utente registrato.');
 $title = translateFN('Richiesta di autenticazione');
 
-$registrationDataHtml = '';
-if (is_object($registration_data)) {
-    $registrationDataHtml = $registration_data->getHtml();
-}
-
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_MASKEDINPUT,
@@ -180,7 +175,6 @@ if (defined('MODULES_GDPR') && MODULES_GDPR === true && isset($registration_data
     	'extraclass' => 'ui form',
     	'isRegistration' => true
     ));
-    $registrationDataHtml = $registration_data->getHtml();
 
     $layout_dataAr['CSS_filename'][] = MODULES_GDPR_PATH . '/layout/'.ADA_TEMPLATE_FAMILY.'/css/acceptPolicies.css';
     $layout_dataAr['JS_filename'][] =  MODULES_GDPR_PATH . '/js/acceptPolicies.js';
@@ -190,6 +184,11 @@ if (defined('MODULES_GDPR') && MODULES_GDPR === true && isset($registration_data
 
 if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
 	$layout_dataAr['JS_filename'][] = MODULES_SECRETQUESTION_PATH . '/js/modules_define.js.php';
+}
+
+$registrationDataHtml = '';
+if (is_object($registration_data)) {
+    $registrationDataHtml = $registration_data->getHtml();
 }
 
 $content_dataAr = array(
