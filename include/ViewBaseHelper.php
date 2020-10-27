@@ -56,6 +56,7 @@ abstract class ViewBaseHelper
         isset(self::$helperData['nodeObj']) ? self::$helperData['nodeObj']->template_family : null,
         isset(self::$helperData['courseInstanceObj']) ? self::$helperData['courseInstanceObj']->template_family : null,
         isset(self::$helperData['courseObj']) ? self::$helperData['courseObj']->template_family : null);
+      self::$helperData['layout_dataAr']['family'] = self::$helperData['template_family'];
     }
     return self::getHelperData();
   }
