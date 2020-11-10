@@ -166,3 +166,13 @@ div#contentcontent .ui.accordion {
 	width: 100%;
 	height: 100%;
 }
+
+#jitsi-meet-placeholder,
+#bbb-placeholder,
+#zoom-placeholder {
+	text-align: center;
+}
+
+iframe.ada-videochat-embed {
+	border: none;
+}

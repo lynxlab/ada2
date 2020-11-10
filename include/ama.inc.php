@@ -3969,7 +3969,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $exit_date = $visit_date;
 
         // update field exit_date in table history_nodi
-        $sql  = "select id_history,id_nodo from history_nodi where session_id='$session_id' ORDER BY id_history DESC";
+        $sql  = "select id_history,id_nodo from history_nodi where session_id='$session_id' AND `data_visita`=`data_uscita` ORDER BY id_history DESC";
         $res_ar =  $db->getRow($sql, null, AMA_FETCH_ASSOC);
         if (AMA_DB::isError($res_ar)) {
             return new AMA_Error(AMA_ERR_GET);
@@ -11441,7 +11441,7 @@ public function get_updates_nodes($userObj, $pointer)
      *        res_ar['tempo_fine']
      */
 
-    public function get_videoroom_info($id_course_instance, $ora_attuale= NULL) {
+    public function get_videoroom_info($id_course_instance, $ora_attuale= NULL, $more_query = NULL) {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
@@ -11451,6 +11451,9 @@ public function get_updates_nodes($userObj, $pointer)
         if ($ora_attuale != NULL) {
             $where_more = " and tempo_avvio<=$ora_attuale and $ora_attuale<=tempo_fine";
             $query .= $where_more;
+        }
+        if ($more_query != NULL) {
+            $query .= ' '.$more_query;
         }
         $res_ar =  $db->getRow($query, NULL, AMA_FETCH_ASSOC);
         if (AMA_DB::isError($res_ar)) {
@@ -11481,9 +11484,9 @@ public function get_updates_nodes($userObj, $pointer)
      */
     public function delete_videoroom($id_room) {
 
-        $sql = "DELETE FROM openmeetings_room WHERE id_room = $id_room";
+        $sql = "DELETE FROM openmeetings_room WHERE id_room = ?";
 
-        $res = $this->executeCritical( $sql );
+        $res = $this->queryPrepared( $sql, $id_room );
         if (AMA_DB::isError($res)) {
             // $res is ana AMA_Error object
             return $res;
@@ -11491,7 +11494,132 @@ public function get_updates_nodes($userObj, $pointer)
         return true;
     }
 
+    public function log_videoroom($logData) {
+        $sql = '';
+        $values = [];
+        $sid = session_id();
+        $sid = strlen($sid) > 0 ? $sid : null;
+        // always execute an EVENT_EXIT
+        $sql = "UPDATE `log_videochat` SET `uscita`=? WHERE `id_room` = ? AND `id_istanza_corso`=? AND `uscita` IS NULL AND `id_user` = ?";
+        $values = [
+            $this->date_to_ts('now'),
+            $logData['id_room'],
+            $logData['id_istanza_corso'],
+            $logData['id_user'],
+        ];
+        if (!is_null($sid)) {
+            $sql .= " AND `sessionID` = ? ";
+            $values[] = $sid;
+        } else {
+            $sql .= ' ORDER BY `id_log` DESC LIMIT 1';
+        }
+        if ($logData['event'] == videoroom::EVENT_ENTER) {
+            // run the prepared exit query
+            $res = $this->queryPrepared($sql, $values);
+            if (AMA_DB::isError($res)) {
+                // $res is ana AMA_Error object
+                return $res;
+            }
+            // prepare the enter query
+            $sql = "INSERT INTO `log_videochat` (`id_user`, `is_tutor`, `id_room`, `id_istanza_corso`, `entrata`, `sessionID`) VALUES (?, ?, ?, ?, ?, ?)";
+            $values = [
+                $logData['id_user'],
+                (int) $logData['is_tutor'],
+                $logData['id_room'],
+                $logData['id_istanza_corso'],
+                $this->date_to_ts('now'),
+                $sid,
+            ];
+        }
 
+        if (count($values)>0 && strlen($sql)>0) {
+            $res = $this->queryPrepared($sql, $values);
+            if (AMA_DB::isError($res)) {
+                // $res is ana AMA_Error object
+                return $res;
+            }
+        }
+        return true;
+    }
+
+    public function get_log_videoroom($id_instance, $id_room = null, $id_user = null) {
+        $retArr = [];
+        $retArrIdx = 0;
+        $roomCache = [];
+        // 00. get min entrata and max uscita
+        $sql = 'SELECT `id_room`, MIN(`entrata`) AS `entrata`, MAX(`uscita`) AS `uscita` FROM `log_videochat` WHERE `id_istanza_corso`=?';
+        $values = [$id_instance];
+        if (!is_null($id_room)) {
+            $sql .= ' AND `log_videochat`.`id_room`=?';
+            $values[] = $id_room;
+        }
+        $sql .= ' GROUP BY `log_videochat`.`id_room`';
+        $showChatRooms = $this->getAllPrepared($sql, $values, AMA_FETCH_ASSOC);
+        if (!AMA_DB::isError($showChatRooms) && is_array($showChatRooms) && count($showChatRooms)>0) {
+            foreach ($showChatRooms as $showChatRoom) {
+                if (!array_key_exists($showChatRoom['id_room'], $roomCache)) {
+                    $roomCache[$showChatRoom['id_room']] = $this->get_videoroom_info($id_instance, null, ' AND `id_room`='. $showChatRoom['id_room']);
+                    // add tutor max uscita for the room
+                    $sql = 'SELECT MAX(`uscita`) AS `uscita` FROM `log_videochat` WHERE `is_tutor` = 1 AND`id_istanza_corso`=? AND `id_room`=?';
+                    $sql .= ' GROUP BY `log_videochat`.`id_room`';
+                    $values = [$id_instance, (int) $showChatRoom['id_room']];
+                    $tutorExit = $this->getOnePrepared($sql, $values);
+                    $roomCache[$showChatRoom['id_room']]['lastTutorExit'] = $tutorExit;
+                }
+                if (!AMA_DB::isError($roomCache[$showChatRoom['id_room']])) {
+                    // 01. load room details in the returned array
+                    $retArr[$retArrIdx] = [
+                        'details' => $roomCache[$showChatRoom['id_room']],
+                        'users' => [],
+                    ];
+                    // user tutor enter and exit time as room start/end times
+                    $retArr[$retArrIdx]['details']['inizio'] = $showChatRoom['entrata'];
+                    $retArr[$retArrIdx]['details']['fine'] = $showChatRoom['uscita'];
+                    // 02. load log events and push it to the users subarray
+                    $sql = 'SELECT `log_videochat`.*,`utente`.`nome` AS `nome`, `utente`.`cognome` AS `cognome` '.
+                           'FROM `log_videochat` JOIN `utente` ON '.
+                           '`log_videochat`.`id_user`=`utente`.`id_utente` '.
+                           'WHERE `id_istanza_corso`=? AND `id_room`=? AND ((`entrata`>=? AND `uscita`<=?) OR (`entrata`>=? AND `uscita` IS NULL))';
+                    $values = [
+                        $id_instance, $showChatRoom['id_room'], $showChatRoom['entrata'], $showChatRoom['uscita'], $showChatRoom['entrata'],
+                    ];
+                    if (!is_null($id_user)) {
+                        $sql .= ' AND `log_videochat`.`id_user`=?';
+                        $values[] = $id_user;
+                    }
+                    if (!is_null($id_room)) {
+                        $sql .= ' AND `log_videochat`.`id_room`=?';
+                        $values[] = $id_room;
+                    }
+                    $logEvents = $this->getAllPrepared($sql, $values, AMA_FETCH_ASSOC);
+
+                    if (!AMA_DB::isError($logEvents) && is_array($logEvents) && count($logEvents)>0) {
+                        foreach($logEvents as $logEvent) {
+                            if (!array_key_exists($logEvent['id_user'], $retArr[$retArrIdx]['users'])) {
+                                $retArr[$retArrIdx]['users'][$logEvent['id_user']] = [
+                                    'id' => $logEvent['id_user'],
+                                    'nome' => $logEvent['nome'],
+                                    'cognome' => $logEvent['cognome'],
+                                    'isTutor' => (1 === intval($logEvent['is_tutor'])),
+                                    'events' => [],
+                                ];
+                            }
+                            array_push(
+                                $retArr[$retArrIdx]['users'][$logEvent['id_user']]['events'],
+                                [
+                                    'entrata' => $logEvent['entrata'],
+                                    'uscita' => $logEvent['uscita'],
+                                ]
+                            );
+                        }
+                        $retArr[$retArrIdx]['users'] = array_values($retArr[$retArrIdx]['users']);
+                    }
+                    $retArrIdx++;
+                }
+            }
+        }
+        return $retArr;
+    }
 
     public function get_tester_services_not_started() {
         $db =& $this->getConnection();

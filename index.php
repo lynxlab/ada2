@@ -249,6 +249,12 @@ $login = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_
 $message = CDOMElement::create('div');
 if(isset($_GET['message'])) {
   $message->addChild(new CText($_GET['message']));
+} else if (isset($_GET['expired']) && intval($_GET['expired'])===1) {
+	$sessExpMsg = '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
+	$sessExpMsg .= '<div class="header">'.translateFN('La tua sessione è scaduta').'</div>';
+	$sessExpMsg .= '<p>'.translateFN('Rifare il login').'</p>';
+	$sessExpMsg .= '</div></div>';
+	$message->addChild(new CText($sessExpMsg));
 }
 
 /**

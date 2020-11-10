@@ -27,6 +27,51 @@
  * GIORGIO: Preview Image size is 100x70
 -->
 <Templates imagesBasePath="fck_template/images/">
+	<Template title="Jitsi-meet" image="jitsi.png">
+		<Description>Video conferenza - Jitsi meet</Description>
+		<Html>
+			<![CDATA[
+				<h4 class="ui top attached header">Video conferenza - Jitsi Meet</h4>
+				<div class="ui segment attached"><div id="jitsi-meet-placeholder"></div></div>
+				<h4 class="ui bottom attached header">&nbsp;</h4>
+		]]>
+		</Html>
+	</Template>
+	<Template title="BigBlueButton" image="BBB.png">
+		<Description>Video conferenza - BigBlueButton</Description>
+		<Html>
+			<![CDATA[
+				<h4 class="ui top attached header">Video conferenza - BigBlueButton</h4>
+				<div class="ui segment attached"><div id="bbb-placeholder"></div></div>
+				<h4 class="ui bottom attached header">&nbsp;</h4>
+		]]>
+		</Html>
+	</Template>
+	<Template title="Zoom.us" image="zoomconf.png">
+		<Description>Video conferenza - Zoom</Description>
+		<Html>
+			<![CDATA[
+				<h4 class="ui top attached header">Video conferenza - Zoom.us</h4>
+				<div class="ui segment attached"><div id="zoom-placeholder"></div></div>
+				<h4 class="ui bottom attached header">&nbsp;</h4>
+		]]>
+		</Html>
+	</Template>
+	<Template title="Chat a comparsa" image="adachat.png">
+		<Description>Chat a comparsa - INSERIRE L'ID CORSO DALLA VISTA DEL SORGENTE</Description>
+		<Html>
+			<![CDATA[
+				<div class="triggerchat-container">
+					<div id="triggerchat" class="ui secondary toggle chat button">
+						Mostra/Nascondi Chat
+					</div>
+				</div>
+				<div class="ui very wide left sidebar" id="chatsidebar">
+					<iframe id="chatframe" src="HTTP_ROOT_HERE/comunica/chat.php?id_course=ID_COURSE_HERE&amp;iframe=1" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0"></iframe>
+				</div>
+			]]>
+		</Html>
+	</Template>
 	<Template title="Griglia" image="grid.png">
 		<Description>Griglia di impaginazione</Description>
 		<Html>
@@ -155,7 +200,7 @@
 						]]>
 		</Html>
 	</Template>
-	<Template title="Botton" image="bottone.png">
+	<Template title="Bottone" image="bottone.png">
 		<Description> Bottone con link </Description>
 		<Html>
 			<![CDATA[
@@ -163,7 +208,7 @@
 		]]>
 		</Html>
 	</Template>
-		<Template title="DIvisore" image="divider.png">
+		<Template title="Divisore" image="divider.png">
 		<Description>Divisore orizzontale</Description>
 		<Html>
 			<![CDATA[

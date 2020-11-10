@@ -463,14 +463,15 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 		 * - start timestamp
 		 * - end timestamp
 		 * - id_classroom
-		 * - instance title
-		 * - course title
+		 * - instance title and id
+		 * - course title and id
 		 * - tutor name
 		 * - tutor lastname
 		 */
 
 		$sql = 'SELECT RH.`html`, CAL.`start`, CAL.`end`, CAL.`id_classroom`,'.
 				' IST.`title` AS `instancename`, IST.`id_istanza_corso`, MCO.`titolo` AS `coursename`,'.
+				' MCO.`id_corso` AS `id_course`, IST.`id_istanza_corso` AS `id_course_instance`,'.
 			    ' USER.`nome` AS `tutorname`, USER.`cognome` AS `tutorlastname`'.
 			   	' FROM `'.self::$PREFIX.'reminder_history` RH '.
 				' JOIN `'.self::$PREFIX.'calendars` CAL ON RH.`'.self::$PREFIX.'calendars_id` = CAL.`'.self::$PREFIX.'calendars_id`'.
@@ -567,4 +568,3 @@ class AMAClassagendaDataHandler extends AMA_DataHandler {
 	}
 
 }
-?>

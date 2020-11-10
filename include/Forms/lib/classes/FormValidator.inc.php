@@ -67,6 +67,10 @@ class FormValidator
                 return self::MULTILINE_TEXT_VALIDATOR_REGEXP;
             case self::NON_NEGATIVE_MONEY_VALIDATOR:
                 return self::NON_NEGATIVE_MONEY_VALIDATOR_REGEXP;
+            case self::NUMERIC_INTERVAL_TO_0_FROM_50:
+                return self::NUMERIC_INTERVAL_TO_0_FROM_50_VALIDATOR_REGEX;
+            case self::NONZERO_NUMBER:
+                return self::NONZERO_NUMBER_REGEX;
             case self::AMESCI_CODE_VALIDATOR:
                 return self::AMESCI_CODE_VALIDATOR_REGEXP;
             default:
@@ -87,7 +91,9 @@ class FormValidator
     const TIME_VALIDATOR = 9;
     const MULTILINE_TEXT_VALIDATOR = 10;
     const NON_NEGATIVE_MONEY_VALIDATOR = 11;
-    const AMESCI_CODE_VALIDATOR = 12;
+    const NUMERIC_INTERVAL_TO_0_FROM_50=12;
+    const NONZERO_NUMBER=13;
+    const AMESCI_CODE_VALIDATOR = 120;
 
 
     const DEFAULT_VALIDATOR_REGEXP = '/^.*|\s$/';
@@ -102,6 +108,8 @@ class FormValidator
     const DATE_VALIDATOR_REGEXP = '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/';
     const TIME_VALIDATOR_REGEXP = '/^[0-9]{2}\:[0-9]{2}\:[0-9]{2}$/';
     const MULTILINE_TEXT_VALIDATOR_REGEXP = '/^.*$/m'; // /m is equivalent to /s in javascript regex (multiline)
-    const NON_NEGATIVE_MONEY_VALIDATOR_REGEXP = '/^[0-9]+(\.[0-9]{0,2})?$/'; // /^[0]|^[1-9][0-9]*\.[0-9]{2}$/';
+    const NON_NEGATIVE_MONEY_VALIDATOR_REGEXP = '/0\.00|^[1-9][0-9]*\.[0-9]{2}$/'; // /^[0]|^[1-9][0-9]*\.[0-9]{2}$/';
+    const NUMERIC_INTERVAL_TO_0_FROM_50_VALIDATOR_REGEX='/^([1-4]{0,1}[0-9]{1}(\.[0-9])?|50|50.0)$/';
+    const NONZERO_NUMBER_REGEX='/^-?[1-9]\d*$/';
     const AMESCI_CODE_VALIDATOR_REGEXP = '/^[V]{1}[0-9]{9,10}|[V]{1}[A-Z]{4}[0-9]{5}$/';
 }

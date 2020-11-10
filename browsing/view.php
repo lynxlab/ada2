@@ -632,7 +632,7 @@ switch ($op){
 				if (defined('MODULES_FORKEDPATHS') && MODULES_FORKEDPATHS && $nodeObj->isForkedPaths) {
 					$newself = $self . 'ForkedPaths';
 					// self must be a relative path
-					$self = '/../../../../modules/'.MODULES_FORKEDPATHS_NAME.'/layout/' . $userObj->template_family . '/templates/browsing/' . $newself;
+					$self = '/../../../../modules/'.basename(MODULES_FORKEDPATHS_PATH).'/layout/' . $userObj->template_family . '/templates/browsing/' . $newself;
 					array_push($layout_dataAR['CSS_filename'], ROOT_DIR . '/layout/' . $userObj->template_family . '/css/browsing/view.css');
 					array_push($layout_dataAR['CSS_filename'], MODULES_FORKEDPATHS_PATH . '/layout/' . $userObj->template_family . '/css/browsing/' . $newself . '.css');
 					$content_dataAr['forkedPathsButtons'] = \Lynxlab\ADA\Module\ForkedPaths\ForkedPathsNode::buildForkedPathsButtons($nodeObj)->getHtml();

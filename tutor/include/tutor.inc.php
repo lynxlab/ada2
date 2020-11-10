@@ -42,6 +42,8 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
 	                    	'<img src="img/timon.png"  alt="'.translateFN('naviga').'" title="'.translateFN('naviga').'" class="tooltip" border="0"></a>';
 	                    $valuta = '<a href="'.$http_root_dir.'/tutor/tutor.php?op=student&id_instance='.$id_instance.'&id_course='.$id_course.'">'.
 	                    	'<img src="img/magnify.png"  alt="'.translateFN('valuta').'" title="'.translateFN('valuta').'" class="tooltip" border="0"></a>';
+                        $videochatlog = '<a href="'.$http_root_dir.'/tutor/videochatlog.php?id_course='.$id_course.'&id_course_instance='.$id_instance.'">'.
+	                    	'<img src="img/videochatlog.png"  alt="'.translateFN('log videochat').'" title="'.translateFN('log videochat').'" class="tooltip" border="0"></a>';
 	                    if(defined('MODULES_CLASSAGENDA') && (MODULES_CLASSAGENDA)) {
                         	$presenze = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcall.php?id_course='.$id_course.'&id_course_instance='.$id_instance.'"><img src="img/badge.png"  alt="'.translateFN('presenze').'"  title="'.translateFN('presenze').'" class="tooltip" border="0"></a>';
                         	$registro = '<a href="'.MODULES_CLASSAGENDA_HTTP.'/rollcallhistory.php?id_course='.$id_course.'&id_course_instance='.$id_instance.'"><img src="img/registro.png"  alt="'.translateFN('registro').'" title="'.translateFN('registro').'" class="tooltip" border="0"></a>';
@@ -56,6 +58,13 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
 	                    $dati_corso[$num_courses][$durata_key] = $durata_corso;
 	                    $dati_corso[$num_courses][$azioni_key] = $naviga;
 	                    $dati_corso[$num_courses][$azioni_key] .= $valuta;
+
+                        if (defined('VIDEOCHAT_REPORT') && VIDEOCHAT_REPORT) {
+                            $videochatlog = '<a href="'.$http_root_dir.'/tutor/videochatlog.php?id_course='.$id_course.'&id_course_instance='.$id_instance.'">'.
+	                    	'<img src="img/videochatlog.png"  alt="'.translateFN('log videochat').'" title="'.translateFN('log videochat').'" class="tooltip" border="0"></a>';
+                            $dati_corso[$num_courses][$azioni_key] .= $videochatlog;
+                        }
+
 	                    if(defined('MODULES_CLASSAGENDA') && (MODULES_CLASSAGENDA)) {
 	                    	$dati_corso[$num_courses][$azioni_key] .= $presenze;
 	                    	$dati_corso[$num_courses][$azioni_key] .= $registro;
