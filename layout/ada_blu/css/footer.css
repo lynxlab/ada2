@@ -5,3 +5,15 @@
 #footer .copyright{font-size:0.8em; line-height:1.2em;}
 #footer_registration {  position: relative; padding: 20px 10px 10px 30px; top: 90px; background: url(../../img/up.png) no-repeat left;
 						margin-left: 20px; margin-bottom: 100px; }
+
+.footer-logos {
+	display: flex;
+	justify-content: space-evenly;
+	flex-wrap: wrap;
+	margin-bottom: 0.5em;
+}
+
+.footer-logos img {
+	height: 65px;
+	margin: 1em;
+}

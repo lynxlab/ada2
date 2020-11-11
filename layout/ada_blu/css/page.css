@@ -3,7 +3,7 @@
 @CHARSET "UTF-8";
 @import url("footer.css");
 
-html, body { font-family: "Helvetica Neue", "Helvetica", Arial, Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:5px; color:#000; font-size: small;
+html, body { font-family: Arial, Lucida Sans,Verdana, Geneva, Arial, Helvetica, sans-serif; margin:0; padding:5px; color:#000; font-size: 0.9em;
 			 background: #fff; height: 99.5%; }
 
 #container { border-bottom: none; }
@@ -115,9 +115,20 @@ a:visited {text-decoration: none; }
  *
  */
 #intestazione {
-    background-color: #fff;
-    height: 60px;
-    padding-left:15px;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em;
+    height: 85px;
+}
+
+#intestazione > .ui.image {
+    background-color: transparent;
+}
+
+#intestazione > .ui.image img{
+    max-height: 83px;
 }
 
 #mainmenu {
@@ -455,20 +466,38 @@ width: 700px;
 
 #logo_title {
     position: relative;
-    top: 10px;
-	float:left;
+    top: 4px;
+    float:left;
 
 }
 
 #bis_logo {
-    /* background: url(../img/header-3rdlogo.png) no-repeat scroll right center; */
+    background: url(../img/header-3rdlogo.png) no-repeat scroll right center;
+
+
+    /* background: url(../img/header-3rdlogo.png) no-repeat scroll right center;
+    float: right;
+    height: 85%;
+    margin-right: 0px;
+    margin-top: 0.2em;
+    width: 5%;
+    background-size: 75%;
+    position: relative;
+    z-index: 10; */
+
+
+
+
+
+
     /* float: right; */
-    height: 50px;
+    height: 80px;
     /* margin-right: 10px; */
-    width: 5rem;
-    background-size: 5rem;
-    position: absolute;
+    /* width: 9rem;
+    background-size: 7rem; */
+    /* position: absolute;
     right: 1rem;
+    top: -2px; */
 }
 
 #endo_section {
@@ -545,7 +574,7 @@ html, body {
     padding:0;
 }
 #header {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 #container {

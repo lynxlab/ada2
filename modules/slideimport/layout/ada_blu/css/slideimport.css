@@ -19,7 +19,7 @@ html, body { height: 99.2%; margin:0; }
 #container { border-bottom: none; }
 #footer { border-top: 10px solid #1665AD; }
 #footer .footerright { margin-right: 1rem; margin-top: 0.4rem; }
-#pagecontainer { min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -30px; 
+#pagecontainer { min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -30px;
 }
 #footer, #push { height: 30px; clear: both; }
 /* end page rules */
@@ -30,9 +30,9 @@ html, body { height: 99.2%; margin:0; }
 #contentcontent .segment .header .content { margin:0; padding:0; }
 #contentcontent .ui.step { padding-top: 0; padding-bottom: 0; line-height: 3rem; }
 
-#previewContainer .column .ui.segment { 
+#previewContainer .column .ui.segment {
 	margin-top:0; margin-bottom:0; border-radius:0; box-shadow: none;
-	border: 1px solid #00B5AD; border-top:none; border-bottom:none;
+	border: 1px solid #AF3D44; border-top:none; border-bottom:none;
 	position: relative; cursor:pointer;
 }
 #previewContainer img.preview { width: 100%;  border-radius: 5px; }
@@ -50,7 +50,7 @@ html, body { height: 99.2%; margin:0; }
 #previewBox,
 #selectCourseContainer { margin-top: -20px; }
 #progressbar { width:99%; height:0.2rem; border-radius:0; }
-#progressbar .ui-progressbar-value { background-color: #00B5AD; }
+#progressbar .ui-progressbar-value { background-color: #AF3D44; }
 .ui.modal .actions { visibility: hidden; }
 .ui.modal span:not(.step0) { display: none; }
 #selectCourseContainer .askfrontpage.field { margin-bottom: 0; }

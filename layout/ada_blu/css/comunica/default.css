@@ -10,10 +10,10 @@
 A IMG {border:none;}
 table,tbody, tr, td, th { border-collapse: collapse;font-weight: inherit;font-style: inherit;font-size: 100%;line-height: 1;
 						  font-family: inherit;text-align: left;vertical-align: baseline;}
-						  
+
 thead { border-collapse: collapse; background: #ececea; height:30px; font-weight: bold; line-height: 1; font-style: inherit;
 		font-size: 100%;line-height: 1;font-family: inherit;text-align: center; vertical-align: baseline;}
-		
+
 th{ vertical-align:middle; text-transform: uppercase; }
 
 tbody td { border-bottom:1px solid #ECECEA;	height:30px; line-height:1.5em;}
@@ -40,7 +40,7 @@ a:visited { text-decoration: none; }
     margin: 0;
     padding: 0 0 0 10px;
 }
-#user_wrap 	{background:#00b5ad url(../../img/userid.png) no-repeat 99% 50%; width:100%}
+#user_wrap 	{background:#AF3D44 url(../../img/userid.png) no-repeat 99% 50%; width:100%}
 #content	{background:#fff; padding:10px; clear:both;border-bottom:10px solid #c9c9c9;}
 #pagecontainer { margin-bottom: -15px; }
 
@@ -98,7 +98,7 @@ UL#menu_std LI A {text-transform: lowercase; color:#fff; font-weight:bold; text-
 #submenu_actions_read ul { padding: 0; margin: 0;}
 /* LABEL
 ----------------------------------------------- */
-#label {float:left; background:#00b5ad no-repeat right top; width:30%; padding:0 0 0 10px;}
+#label {float:left; background:#AF3D44 no-repeat right top; width:30%; padding:0 0 0 10px;}
 #label H1 {margin:0; padding:20px 0 5px 0; font-size:1.2em; color:whitesmoke}
 #user_data {float:right; width:60%; color:#000; text-align:right; padding:10px 40px 0 0;}
 
@@ -144,17 +144,17 @@ TEXTAREA {width:400px;}
 
 
 
-.default_table { 
+.default_table {
 	width: 100% !important;
 	width: /**/97%;
 	margin:1.5em 0;
  }
- 
+
  #menuright .default_table {
 	width: auto !important;
 	width: /**/auto;
 }
- 
+
 #com_tools table {
 	table-layout: auto;
 	width: auto !important;
@@ -162,7 +162,7 @@ TEXTAREA {width:400px;}
 	border-collapse: separate;
 	border-spacing: 5px;
  }
- 
+
 #menuright tbody td, #mainmenu tbody td { line-height: normal; }
 
 /*classi per le righe pari e dispari*/
@@ -178,7 +178,7 @@ input#oggetto {width: 400px; }
 
 td.name { font-weight: bold;}
 td.input {}
- 
+
 #addressbook_div select { width: 100%; }
 #addressbook_div a { text-transform: uppercase;	}
 #addressbook_div a:hover { cursor: pointer; }
