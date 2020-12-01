@@ -4,15 +4,15 @@
 </div -->
 
 <div class="footer-logos">
-		<img src="img/loghi_partner/01_PETRA.png">
-		<img src="img/loghi_partner/02_CFLC.jpg">
-		<img src="img/loghi_partner/03_AMESCI.gif">
-		<img src="img/loghi_partner/04_APARE.png">
-		<img src="img/loghi_partner/05_ADR.JPG">
-		<img src="img/loghi_partner/06_AERE.png">
-		<img src="img/loghi_partner/07_JCI.jpg">
-		<img src="img/loghi_partner/08_ISSTE.jpg">
-		<img src="img/loghi_partner/09_JUST.png">
+		<a href="http://cde-petrapatrimonia.com" target="_blank"><img src="img/loghi_partner/01_PETRA.png"></a>
+		<a href="https://www.cflc-confcoopliguria.it" target="_blank"><img src="img/loghi_partner/02_CFLC.jpg"></a>
+		<a href="https://www.amesci.org" target="_blank"><img src="img/loghi_partner/03_AMESCI.gif"></a>
+		<a href="http://www.apare-cme.eu" target="_blank"><img src="img/loghi_partner/04_APARE.png"></a>
+		<a href="http://www.adr.org.lb" target="_blank"><img src="img/loghi_partner/05_ADR.JPG"></a>
+		<a href="https://it-it.facebook.com/aerehammamet/posts/d41d8cd9/3141396342644832/" target="_blank"><img src="img/loghi_partner/06_AERE.png"></a>
+		<a href="https://www.jcitunisia.com" target="_blank"><img src="img/loghi_partner/07_JCI.jpg"></a>
+		<a href="http://www.isste.rnu.tn" target="_blank"><img src="img/loghi_partner/08_ISSTE.jpg"></a>
+		<a href="http://www.just.edu.jo/Deanships/DeanshipofResearch/Pages/Default.aspx" target="_blank"><img src="img/loghi_partner/09_JUST.png"></a>
 </div>
 <div class="clearfix"></div>
 <div class="footerright" style="float:right">
