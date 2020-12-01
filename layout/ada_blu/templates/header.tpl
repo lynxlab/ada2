@@ -1,6 +1,6 @@
 <div id="intestazione">
     <div class="ui image">
-        <a href="https://resmyle.lynxlab.it" target="_blank">
+        <a href="https://resmyle.lynxlab.com" target="_blank">
             <img src="img/header-logo.png">
         </a>
     </div>

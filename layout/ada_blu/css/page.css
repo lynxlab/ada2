@@ -120,7 +120,7 @@ a:visited {text-decoration: none; }
     justify-content: space-between;
     align-items: center;
     padding: 0 1em;
-    height: 85px;
+    height: 210px;
 }
 
 #intestazione > .ui.image {
@@ -128,7 +128,7 @@ a:visited {text-decoration: none; }
 }
 
 #intestazione > .ui.image img{
-    max-height: 83px;
+    max-height: 200px;
 }
 
 #mainmenu {
