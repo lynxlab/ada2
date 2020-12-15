@@ -16,3 +16,7 @@ div.fform.form.ui form .field .error { color: #d94848; }
 div.fform.form #grantAccessButtons button {
     margin: 1em 0;
 }
+
+select#users, select#grantedUsers {
+    height: 155px;
+}

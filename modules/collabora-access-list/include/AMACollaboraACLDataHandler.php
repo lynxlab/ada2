@@ -129,6 +129,29 @@ class AMACollaboraACLDataHandler extends \AMA_DataHandler
         }
     }
 
+    public function deleteFileACL($id)
+    {
+        // delete from the files table, will delete the relation as well
+        $delData = [
+            'id' => $id,
+        ];
+        $this->beginTransaction();
+        $result = $this->queryPrepared(
+            $this->sqlDelete(
+                \Lynxlab\ADA\Module\CollaboraACL\FileACL::table,
+                $delData
+            ),
+            array_values($delData)
+        );
+        if (\AMA_DB::isError($result)) {
+            $this->rollBack();
+            return $result;
+        } else {
+            $this->commit();
+            return true;
+        }
+    }
+
     /**
      * loads an array of objects of the passed className with matching where values
      * and ordered using the passed values by performing a select query on the DB

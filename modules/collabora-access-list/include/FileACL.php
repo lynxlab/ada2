@@ -73,7 +73,11 @@ class FileACL extends CollaboraACLBase
                 return true;
             } else {
                 // $i-1 is the found filesACL index
-                foreach($filesACL[--$i]->getAllowedUsers() as $allowedAr) {
+                --$i;
+                if ($filesACL[$i]->getId_owner() == $userId) {
+                    return true;
+                }
+                foreach($filesACL[$i]->getAllowedUsers() as $allowedAr) {
                     if ($allowedAr['utente_id'] == $userId) {
                         return ($allowedAr['permissions'] & $permissions);
                     }

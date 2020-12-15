@@ -111,4 +111,22 @@ abstract class CollaboraACLAbstractForm extends \FForm
 		$this->isReadOnly = $isReadOnly;
 		return $this;
 	}
+
+	/**
+	 * Adds this form controls to the passed form, without building a new form
+	 *
+	 * @param FForm $theForm
+	 * @return FForm
+	 */
+	public function addControlsToForm(\FForm $theForm)
+	{
+		array_map(function ($control) use ($theForm) {
+			if ($control instanceof \FormControl) {
+				$theForm->addControl($control);
+			} else if ($control instanceof \CBaseAttributesElement) {
+				$theForm->addCDOM($control);
+			}
+		}, $this->getControls());
+		return $theForm;
+	}
 } // class ends here

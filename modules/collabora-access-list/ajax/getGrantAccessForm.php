@@ -136,7 +136,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $allUsers = array_map(
         function ($subscription) use ($acl) {
             $retval = [
-                'subscription' => $subscription,
+                'id' => $subscription->getSubscriberId(),
+                'nome' => $subscription->getSubscriberFirstname(),
+                'cognome' => $subscription->getSubscriberLastname(),
                 'granted' => false,
             ];
             foreach ($acl->getAllowedUsers() as $allowed) {
@@ -151,12 +153,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     );
     // sort by lastname asc
     usort($allUsers, function ($a, $b) {
-        return strcasecmp($a['subscription']->getSubscriberLastname(), $b['subscription']->getSubscriberLastname());
+        return strcasecmp($a['cognome'], $b['cognome']);
     });
     // display the form with loaded data
     $formData = [
         'fileAclId' => $passedData['fileAclId'] > 0 ? $passedData['fileAclId'] : 0,
         'allUsers' => $allUsers,
+        'isTutor' => $userObj->getType() == AMA_TYPE_TUTOR,
     ];
     $form = new GrantAccessForm('grantaccess', null, $formData);
     $retArray['status'] = "OK";

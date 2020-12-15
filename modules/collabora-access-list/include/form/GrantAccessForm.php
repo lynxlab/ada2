@@ -20,6 +20,19 @@ use CDOMElement;
 class GrantAccessForm extends CollaboraACLAbstractForm
 {
 
+    /**
+     * GrantAccessForm constructor
+     *
+     * $params must the following keys:
+     * fileAclId: the id of the fileAcl object being edited
+     * isTutor: true if the form must be displayed for a tutor. Defaults to false
+     * allUsers: array of users to be displayed following this rules
+     *  - array with at least 'id', 'nome', cognome', 'granted' (optional bool if user can access the file)
+     *
+     * @param string $formName
+     * @param string $action
+     * @param array $params
+     */
     public function __construct($formName = null, $action = null, $params = null)
     {
         parent::__construct($formName, $action);
@@ -30,6 +43,9 @@ class GrantAccessForm extends CollaboraACLAbstractForm
         if (!is_null($action)) $this->setAction($action);
 
         $isUpdate = array_key_exists('fileAclId', $params) && $params['fileAclId'] > 0;
+        $isTutor = array_key_exists('isTutor', $params) && $params['isTutor'] > 0;
+        $isStudent = !$isTutor;
+        $displayType = $isTutor ? 'Studenti' : 'Tutors';
 
         $grid = \CDOMElement::create('div','class:three column stackable ui grid');
         $this->addCDOM($grid);
@@ -41,16 +57,16 @@ class GrantAccessForm extends CollaboraACLAbstractForm
         $field = \CDOMElement::create('div', 'class:field');
         $col->addChild($field);
         $lbl = \CDOMElement::create('label', 'for:grouplbl');
-        $lbl->addChild(new \CText(translateFN('Studenti')));
-        $select = \CDOMElement::create('select', 'id:users');
+        $lbl->addChild(new \CText(translateFN($displayType)));
+        $select = \CDOMElement::create('select', 'id:users,class:ui form input');
         $select->setAttribute('multiple', 'multiple');
         $select->setAttribute('size', '8');
         $select->setAttribute('data-right','#grantedUsers');
         if (array_key_exists('allUsers', $params) && is_array($params['allUsers']) && count($params['allUsers'])>0) {
             foreach($params['allUsers'] as $u) {
-                $opt = \CDOMElement::create('option','value:'.$u['subscription']->getSubscriberId());
-                $opt->addChild(new \CText($u['subscription']->getSubscriberFullName()));
-                if ($u['granted']) {
+                $opt = \CDOMElement::create('option','value:'.$u['id']);
+                $opt->addChild(new \CText($u['nome'].' '.$u['cognome']));
+                if (array_key_exists('granted', $u) && $u['granted']) {
                     $opt->setAttribute('selected', 'selected');
                 }
                 $select->addChild($opt);
@@ -99,12 +115,15 @@ class GrantAccessForm extends CollaboraACLAbstractForm
         $field = \CDOMElement::create('div', 'class:field');
         $col->addChild($field);
         $lbl = \CDOMElement::create('label', 'for:grouplbl');
-        $lbl->addChild(new \CText(translateFN('Studenti con accesso al file')));
-        $select = \CDOMElement::create('select', 'id:grantedUsers,name:grantedUsers[]');
+        $lbl->addChild(new \CText(translateFN($displayType.' con accesso al file')));
+        $select = \CDOMElement::create('select', 'id:grantedUsers,class:ui form input,name:grantedUsers[]');
         $select->setAttribute('multiple', 'multiple');
         $select->setAttribute('size', '8');
         $field->addChild($lbl);
         $field->addChild($select);
+        $msg = \CDOMElement::create('div','class:ui small compact yellow message message-right');
+        $msg->addChild(new \CText(translateFN('Se questo elenco è vuoto, il file sarà pubblico')));
+        $field->addChild($msg);
 
         // note: there's no need for hiddens, collaboraaclAPI.js has all that it needs
         // if ($isUpdate) {
