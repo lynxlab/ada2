@@ -10,6 +10,10 @@
     font-size: 1.1em;
 }
 
+.saveResults.popup.error  {
+	background: rgba(222, 10, 17, 0.9);
+}
+
 .saveResults p {
 	margin:0;
 	padding:0;

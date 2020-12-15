@@ -458,7 +458,7 @@ class UserModuleHtmlLib {
 
   public static function uploadForm($action, $id_user, $id_course, $id_course_instance, $id_node, $error_message = null) {
 
-    $div  = CDOMElement::create('div');
+    $div  = CDOMElement::create('div','class:fform form ui');
 
     if($error_message !== null) {
       $div_error = CDOMElement::create('div', 'class:error_field');
@@ -466,16 +466,20 @@ class UserModuleHtmlLib {
       $div->addChild($div_error);
     }
 
-    $form = CDOMElement::create('form', "id:upload_form, name: upload_form, action:$action, method:post");
+    $form = CDOMElement::create('form', "id:upload_form, name: upload_form, action:$action, method:post, class:ui form");
     $form->setAttribute('onsubmit', 'return checkNec();');
     $form->setAttribute('enctype', 'multipart/form-data');
 
     $sender = CDOMElement::create('hidden',"id:sender, name:sender, value:$id_user");
     $id_course = CDOMElement::create('hidden', "id:id_course, name:id_course, value:$id_course");
-    $id_course_instance = CDOMElement::create('hidden', "id:id_course_instance, name:id_course_instance, value:$id_course_instance");
+    $Hid_course_instance = CDOMElement::create('hidden', "id:id_course_instance, name:id_course_instance, value:$id_course_instance");
     $id_node = CDOMElement::create('hidden', "id:id_node, name:id_node, value:$id_node");
 
     $input_file    = CDOMElement::create('file','id:file_up, name:file_up');
+    $table_data = array(
+      array(translateFN('File da inviare'), $input_file),
+    );
+    /*
     $copyright_yes = CDOMElement::create('radio','id:copyright, name:copyright, value:1');
     $copyright_no  = CDOMElement::create('radio','id:copyright, name:copyright, value:0');
     $div_copyright = CDOMElement::create('div');
@@ -483,11 +487,48 @@ class UserModuleHtmlLib {
     $div_copyright->addChild(new CText(translateFN('Si')));
     $div_copyright->addChild($copyright_no);
     $div_copyright->addChild(new CText(translateFN('No')));
+    */
+    if (defined('MODULES_COLLABORAACL') &&  MODULES_COLLABORAACL && array_key_exists('userObj', $GLOBALS)) {
+      // use the userObj global
+      if ($GLOBALS['userObj']->getType() == AMA_TYPE_TUTOR) {
+        require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
+        $users = array_map(function($s) {
+          return [
+            'id' => $s->getSubscriberId(),
+            'nome' => $s->getSubscriberFirstname(),
+            'cognome' => $s->getSubscriberLastname(),
+            'granted' => false,
+          ];
+        },Subscription::findSubscriptionsToClassRoom($id_course_instance));
+      } else {
+        // build the tutors list
+        $users = array_map(function ($tutor_id) {
+          return ['id' => $tutor_id, 'granted' => false ] + $GLOBALS['dh']->get_tutor($tutor_id);
+        }, $GLOBALS['dh']->course_instance_tutor_get($id_course_instance, 'ALL'));
+      }
+      // sort by lastname asc
+      usort($users, function ($a, $b) {
+        return strcasecmp($a['cognome'], $b['cognome']);
+      });
+      // build the grantaccess form
+      $grantAccess = new \Lynxlab\ADA\Module\CollaboraACL\GrantAccessForm('grantaccess', null, [
+        'allUsers' => $users,
+        'isTutor' => $GLOBALS['userObj']->getType() == AMA_TYPE_TUTOR,
+      ]);
+      // build a container and add form controls
+      $grantAccessDiv = CDOMElement::create('div','class:grantaccess-container');
+      foreach($grantAccess->getControls() as $c) {
+        if ($c instanceof CBase) {
+          $grantAccessDiv->addChild($c);
+        }
+      }
+      $table_data[] = array(translateFN('Utenti con cui condividerlo'), $grantAccessDiv);
+    }
 
     $submit_text = translateFN('Invia');
-    $submit = CDOMElement::create('submit', "id:submit, name:submit, value:$submit_text");
-    $reset  = CDOMElement::create('reset','id:reset, name:reset');
-    $buttons_div = CDOMElement::create('div');
+    $submit = CDOMElement::create('submit', "id:submit, class:ui green submit button, name:submit, value:$submit_text");
+    $reset  = CDOMElement::create('reset','id:reset, class:ui red reset button, name:reset');
+    $buttons_div = CDOMElement::create('div','class:ui center aligned basic segment');
     $buttons_div->addChild($submit);
     $buttons_div->addChild($reset);
 
@@ -495,16 +536,13 @@ class UserModuleHtmlLib {
 
     $form->addChild($sender);
     $form->addChild($id_course);
-    $form->addChild($id_course_instance);
+    $form->addChild($Hid_course_instance);
     $form->addChild($id_node);
 
-    $table_data = array(
-      array(translateFN('File da inviare'), $input_file),
-      array(translateFN('Copyright'), $div_copyright),
-      array($buttons_div, null)
-    );
+    // $table_data[] = array($buttons_div, null);
 
     $form->addChild(BaseHtmlLib::tableElement('class:upload',null, $table_data));
+    $form->addChild($buttons_div);
 
     $div->addChild($form);
     return $div;

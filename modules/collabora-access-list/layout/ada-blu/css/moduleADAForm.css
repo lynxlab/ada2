@@ -1,0 +1,22 @@
+@CHARSET "UTF-8";
+
+/**
+ * override standard ADA form styles
+ */
+div.fform { width: 90%; }
+div.fform form label { width: 50%; }
+div.fform form li { border-bottom: none; padding: 1em 0 0 0; }
+div.fform form input[type=text],
+div.fform form input[type=password],
+div.fform form select { width: 45%; border: 1px dotted gray; padding: 5px; }
+div.fform form fieldset fieldset { border: 1px dotted grey; margin-bottom: 10px; }
+div.fform form fieldset fieldset label { margin-left:0; width: 45%; display: inline-block; }
+div.fform.form.ui form .field .error { color: #d94848; }
+
+div.fform.form #grantAccessButtons button {
+    margin: 1em 0;
+}
+
+select#users, select#grantedUsers {
+    height: 155px;
+}

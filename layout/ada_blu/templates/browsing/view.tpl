@@ -142,6 +142,7 @@
 		  				<div class="keywords ui blue labels content">
 		    				<template_field class="template_field" name="keywords">keywords</template_field>
 		  				</div>
+                        <template_field class="template_field" name="collaborafiles">collaborafiles</template_field>
 
 		  			</div>
                 </div>

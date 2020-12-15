@@ -420,6 +420,26 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
            * This is done with a modal dialog, jQuery is needed
            */
 
+          if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL && array_key_exists('grantedUsers', $_POST) && count($_POST['grantedUsers'])) {
+            $saveData = [
+              'courseId' => intval($_POST['id_course']),
+              'instanceId' => intval($_POST['id_course_instance']),
+              'fileAclId' => 0, // new fileACL
+              'ownerId' => $userObj->getId(),
+              'nodeId' => trim($_POST['id_node']),
+              'filename' => basename($destination),
+              'grantedUsers' => array_map('intval', $_POST['grantedUsers']),
+            ];
+            $GLOBALS['dh'] = \Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $res = $GLOBALS['dh']->saveGrantedUsers($saveData);
+
+            if (AMA_DB::isError($res) || $res instanceof \Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException) {
+              // handle error here
+            } else {
+                // handle ACL saved OK here
+            }
+          }
+
           $layout_dataAr['JS_filename'] = array(
 					JQUERY,
 					JQUERY_UI,
@@ -466,6 +486,13 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
   else {
     $form = UserModuleHtmlLib::uploadForm('upload.php', $sess_id_user, $id_course, $id_course_instance, $id_node);
     $form = $form->getHtml();
+    if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+      $layout_dataAr['CSS_filename'][] = MODULES_COLLABORAACL_PATH . '/layout/ada-blu/css/moduleADAForm.css';
+      $layout_dataAr['JS_filename'] = [];
+      $layout_dataAr['JS_filename'][] = MODULES_COLLABORAACL_PATH . '/js/multiselect.min.js';
+      $optionsAr = [];
+      $optionsAr['onload_func'] = 'initDoc();';
+    }
   }
 
   $nodeObj = read_node_from_DB($id_node);
@@ -496,7 +523,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
     'author'       => $node_author,
     'level'        => $node_level,
     'keywords'	   => $node_keywords,
-    'course_title' => $course_title,
+    'course_title' => isset($course_title) ? $course_title : null,
     'path'         => $node_path
     //'node_medias'  => $node_medias,
     //'node_links'   => $media_links
@@ -505,7 +532,6 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
   /* 5.
   HTML page building
   */
-
 
 
   ARE::render($layout_dataAr, $content_dataAr,NULL,isset($optionsAr) ? $optionsAr : null);
