@@ -181,12 +181,10 @@ if (isset($_GET['file'])){
           if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
             $aclDH = AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
             $filesACL = $aclDH->findBy('FileACL', [ 'id_corso' => $id_course, 'id_istanza' => $id_course_instance, 'id_nodo' => $id_node ] );
-            if ($userObj->getType() == AMA_TYPE_STUDENT) {
-              $elencofile = array_filter($elencofile, function($fileel) use ($filesACL, $userObj) {
-                $elPath = str_replace(ROOT_DIR. DIRECTORY_SEPARATOR, '', $fileel['path_to_file']);
-                return FileACL::isAllowed($filesACL, $userObj->getId(), $elPath, CollaboraACLActions::READ_FILE);
-              });
-            }
+            $elencofile = array_filter($elencofile, function($fileel) use ($filesACL, $userObj) {
+              $elPath = str_replace(ROOT_DIR. DIRECTORY_SEPARATOR, '', $fileel['path_to_file']);
+              return FileACL::isAllowed($filesACL, $userObj->getId(), $elPath, CollaboraACLActions::READ_FILE);
+            });
             $aclDH->disconnect();
 
           }
@@ -231,7 +229,7 @@ if (isset($_GET['file'])){
             $i=0;
             foreach ($elencofile as $singleFile) {
                 $i++;
-        	 $data = $singleFile['data'];
+        	 $data = date("d/m/Y",$singleFile['filemtime']);
          	 $complete_file_name = $singleFile['file'];
 	         $filenameAr = explode('_',$complete_file_name);
 	         $stop = count($filenameAr)-1;
@@ -377,6 +375,7 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_DATATABLE,
 		SEMANTICUI_DATATABLE,
+		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT
 	);

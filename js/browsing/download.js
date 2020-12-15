@@ -16,6 +16,10 @@ function initDataTables() {
 		'bDeferRender': true,
 		'bPaginate': false,
 		"order": [[ 2, 'desc' ], [ 0, 'asc' ]],
+		"aoColumnDefs": [
+			{ "aTargets": [2], "sType": "date-eu" },
+			{ "aTargets": [-1], "sortable": false },
+		],
         "oLanguage": {
             "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
          }
