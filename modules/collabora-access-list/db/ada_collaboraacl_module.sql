@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `module_collaboraacl_files` (
   `id` int(10) UNSIGNED NOT NULL,
-  `filepath` varchar(21776) COLLATE utf8_unicode_ci NOT NULL COMMENT 'paths are relative to ada ROOT_DIR',
+  `filepath` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'path relative to ada ROOT_DIR',
   `id_corso` int(10) UNSIGNED NOT NULL,
   `id_istanza` int(10) UNSIGNED NOT NULL,
   `id_nodo` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
