@@ -605,8 +605,9 @@ function read_dir($dir,$ext=""){
 			      //$elencofile[$i]['file'] = $dir."/".$file;
 			      // vito, 30 mar 2009
 			      if (!is_array($elencofile)) $elencofile = array();
-			      $elencofile[$i]['path_to_file'] = $dir."/".$file;
-			      $filetime = date("d/m/y",filemtime($dir."/".$file));
+            $elencofile[$i]['path_to_file'] = $dir."/".$file;
+            $elencofile[$i]['filemtime'] = filemtime($dir."/".$file);
+			      $filetime = date("d/m/y",$elencofile[$i]['filemtime']);
 			      $elencofile[$i]['data'] = $filetime;
 			      $elencofile[$i]['file'] = $file;
 			      $i++;

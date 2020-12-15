@@ -12,6 +12,9 @@
  * @version		0.2
  */
 
+use Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler;
+use Lynxlab\ADA\Module\CollaboraACL\CollaboraACLActions;
+use Lynxlab\ADA\Module\CollaboraACL\FileACL;
 
 /**
  * Base config file
@@ -148,6 +151,7 @@ if (isset($_GET['file'])){
         if ($k<$stop)
            $filename .= "_";
     }
+    $mimetype = mime_content_type($download_path . DIRECTORY_SEPARATOR . $complete_file_name);
     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
    // always modified
@@ -155,11 +159,15 @@ if (isset($_GET['file'])){
     header("Cache-Control: post-check=0, pre-check=0", false);
     header("Pragma: no-cache");                          // HTTP/1.0
     //header("Content-Type: text/plain");
-    //header("Content-Length: ".filesize($name));
     header("Content-Description: File Transfer");
-    header("Content-Type: application/force-download");
-    header("Content-Disposition: attachment; filename=".basename($filename));
-    @readfile("$download_path/$complete_file_name");
+    if ($mimetype === 'application/octet-stream' || $mimetype === false) {
+      header("Content-Type: application/force-download");
+      header("Content-Disposition: attachment; filename=".basename($filename));
+    } else {
+      header("Content-Type: $mimetype");
+      header("Content-Length: ".filesize($download_path . DIRECTORY_SEPARATOR . $complete_file_name));
+    }
+    @readfile($download_path . DIRECTORY_SEPARATOR . $complete_file_name);
     exit;
 
 } else {
@@ -170,6 +178,16 @@ if (isset($_GET['file'])){
 //           $lista = translateFN("Nessun file inviato dagli studenti di questa classe.");
            $html = translateFN("Nessun file inviato dagli studenti di questa classe.");
 	} else {
+          if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+            $aclDH = AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $filesACL = $aclDH->findBy('FileACL', [ 'id_corso' => $id_course, 'id_istanza' => $id_course_instance, 'id_nodo' => $id_node ] );
+            $elencofile = array_filter($elencofile, function($fileel) use ($filesACL, $userObj) {
+              $elPath = str_replace(ROOT_DIR. DIRECTORY_SEPARATOR, '', $fileel['path_to_file']);
+              return FileACL::isAllowed($filesACL, $userObj->getId(), $elPath, CollaboraACLActions::READ_FILE);
+            });
+            $aclDH->disconnect();
+
+          }
   //          $fstop = count($elencofile);
   //          $lista ="<ol>";
         //  for  ($i=0; $i<$fstop; $i++){
@@ -211,7 +229,7 @@ if (isset($_GET['file'])){
             $i=0;
             foreach ($elencofile as $singleFile) {
                 $i++;
-        	 $data = $singleFile['data'];
+        	 $data = date("d/m/Y",$singleFile['filemtime']);
          	 $complete_file_name = $singleFile['file'];
 	         $filenameAr = explode('_',$complete_file_name);
 	         $stop = count($filenameAr)-1;
@@ -273,11 +291,31 @@ if (isset($_GET['file'])){
 
                                                 if ($userObj->getType()==AMA_TYPE_TUTOR) {
                                                 	$td = CDOMElement::create('td');
-	                                                	$buttonDel = CDOMElement::create('button','class:deleteButton');
-	                                                	$buttonDel->setAttribute('style', 'height: 1.5em');
+                                                    $buttonDel = CDOMElement::create('button','class:ui icon button deleteButton');
+                                                    $buttonDel->addChild(CDOMElement::create('i','class:trash icon'));
 	                                                	$buttonDel->setAttribute('onclick','javascript:deleteFile(\''.rawurlencode(translateFN('Confermi la cancellazione del file').' '.$filename.' ?').'\',\''.rawurlencode($complete_file_name).'\',\'row'.$i.'\');');
 	                                                	$buttonDel->setAttribute('title',translateFN('Clicca per cancellare il file'));
-                                                	$td->addChild($buttonDel);
+                                                  $td->addChild($buttonDel);
+                                                  if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+                                                    $aclId = FileACL::getIdFromFileName($filesACL, $singleFile['path_to_file']);
+                                                    if (!is_null($aclId)) {
+                                                      $aclObj = FileACL::getObjectById($filesACL, $aclId);
+                                                    } else {
+                                                      $aclObj = null;
+                                                    }
+                                                    if ((is_null($aclObj) && $id_sender == $userObj->getId()) || (!is_null($aclObj) && $aclObj->getId_owner() == $userObj->getId())) {
+                                                      $buttonACL = CDOMElement::create('button','class:ui icon button aclButton');
+                                                      $buttonACL->addChild(CDOMElement::create('i','class:basic add user icon'));
+                                                      $buttonACL->setAttribute('title',translateFN('Imposta chi può vedere il file'));
+                                                      $buttonACL->setAttribute('data-filename',rawurlencode($complete_file_name));
+                                                      $buttonACL->setAttribute('data-course-id',$id_course);
+                                                      $buttonACL->setAttribute('data-instance-id',$id_course_instance);
+                                                      $buttonACL->setAttribute('data-node-id',$id_node);
+                                                      $buttonACL->setAttribute('data-owner-id',$userObj->getId());
+                                                      $buttonACL->setAttribute('data-file-acl-id',is_null($aclId) ? -1 : $aclId);
+                                                      $td->addChild($buttonACL);
+                                                    }
+                                                  }
                                                 	$tr->addChild($td);
                                                 }
 
@@ -322,7 +360,7 @@ $node_data = array(
                'agenda'=>$user_agenda->getHtml(),
                'edit_profile'=> $userObj->getEditProfilePage(),
                'title'=>$node_title,
-               'course_title'=>$course_title,
+               'course_title'=>isset($course_title) ? $course_title : null,
                'path'=>$nodeObj->findPathFN(),
                'help'=>$help,
                'last_visit' => $last_access
@@ -337,6 +375,7 @@ $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_DATATABLE,
 		SEMANTICUI_DATATABLE,
+		JQUERY_DATATABLE_DATE,
 		JQUERY_UI,
 		JQUERY_NO_CONFLICT
 	);
@@ -346,6 +385,17 @@ $layout_dataAr['CSS_filename']= array(
 	);
   $render = null;
   $options['onload_func'] = 'initDoc()';
+
+  if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL && $userObj->getType()==AMA_TYPE_TUTOR) {
+    $layout_dataAr['CSS_filename'][] = MODULES_COLLABORAACL_PATH . '/layout/ada-blu/css/moduleADAForm.css';
+    array_splice( $layout_dataAr['JS_filename'], count($layout_dataAr['JS_filename']) - 1 , 0, [ MODULES_COLLABORAACL_PATH . '/js/multiselect.min.js' ] );
+    $layout_dataAr['JS_filename'][] = MODULES_COLLABORAACL_PATH . '/js/collaboraaclAPI.js';
+    $layout_dataAr['JS_filename'][] = MODULES_COLLABORAACL_PATH . '/js/download.js';
+    $dataForJS = [
+      'url' => MODULES_COLLABORAACL_HTTP,
+    ];
+    $options['onload_func'] .= '; initCollabora('.htmlentities(json_encode($dataForJS), ENT_COMPAT, ADA_CHARSET).');';
+  }
 
   $imgAvatar = $userObj->getAvatar();
   $avatar = CDOMElement::create('img','src:'.$imgAvatar);
