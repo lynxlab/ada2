@@ -348,10 +348,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
     if ( !is_dir($upload_path) || !is_writable($upload_path) ) {
       // restituire un messaggio di errore e saltare la parte di scrittura del file
       $error_code = ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH;
-      $error_message = translateFN('Upload del file non riuscito.');
-      $error_message .= ' '.translateFN('Il percorso di destinazione non è scrivibile.');
-      $form = UserModuleHtmlLib::uploadForm('upload.php', $sess_id_user, $id_course, $id_course_instance, $id_node, $error_message);
-      $form = $form->getHtml();
+      redirect( str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) . '?err_code='.$error_code);
     }
     else {
       // cartella di upload presente e scrivibile
@@ -420,10 +417,7 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
 		*/
         if($error_code != 0) {
           // gestire stampa del messaggio di errore
-          $error_message = translateFN('Upload del file non riuscito.');
-
-          $form = UserModuleHtmlLib::uploadForm('upload.php', $sess_id_user, $id_course, $id_course_instance, $id_node, $error_message);
-          $form = $form->getHtml();
+          redirect( str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) . '?err_code='.$error_code);
         }
         else {
           // redirige l'utente alla pagina da cui è arrivato all'upload.
@@ -448,64 +442,100 @@ else if($id_profile == AMA_TYPE_STUDENT || $id_profile == AMA_TYPE_TUTOR || $id_
             $res = $GLOBALS['dh']->saveGrantedUsers($saveData);
 
             if (AMA_DB::isError($res) || $res instanceof \Lynxlab\ADA\Module\CollaboraACL\CollaboraACLException) {
-              // handle error here
+              // handle ACL error here
             } else {
                 // handle ACL saved OK here
             }
           }
 
-          $layout_dataAr['JS_filename'] = array(
-					JQUERY,
-					JQUERY_UI,
-					JQUERY_NO_CONFLICT
-		  );
-
-		  $layout_dataAr['CSS_filename'] = array(
-					JQUERY_UI_CSS
-		  );
-
-		  $askOptions['title'] = translateFN('File caricato con successo');
-	      $askOptions['message']  = translateFN('Cosa vuoi fare ora?');
-		  $askOptions['buttons'][] = array ('label' => translateFN ('Torna al Corso'),
-											'action'=>HTTP_ROOT_DIR.'/browsing/view.php?id_node='.$id_node,
-											'icon'=>'ui-icon-arrowrefresh-1-w');
-		  $askOptions['buttons'][] = array ('label' => translateFN ('Carica un altro file'),
-											'action'=>$_SERVER['PHP_SELF'] ,
-											'icon'=>'ui-icon-circle-arrow-n');
-		  $askOptions['buttons'][] = array ('label' => translateFN('Vai all\'elenco dei file'),
-											'action'=>HTTP_ROOT_DIR.'/browsing/download.php',
-											'icon'=>'ui-icon-folder-open');
-
-		  $optionsAr['onload_func']  = "askActionToUser('".rawurlencode(json_encode($askOptions))."');";
-
-          // header("Location: $last_visited_node");
-          // exit();
+          $_SESSION['uploadOk'] = true;
+          redirect( str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']));
         }
       }
       else {
-        $error_message = translateFN('Upload del file non riuscito.');
-
+        $error_code = ADA_FILE_UPLOAD_ERROR_UPLOAD;
         if(!$accepted_filesize) {
-          $error_message .= translateFN('La dimensione del file supera quella massima consentita.');
+          $error_code = ADA_FILE_UPLOAD_ERROR_FILESIZE;
         }
         else if(!$accepted_mimetype) {
-          $error_message .= translateFN('Il tipo di file inviato non &egrave; tra quelli accettati dalla piattaforma.').' '.$file_type;
+          $error_code = ADA_FILE_UPLOAD_ERROR_MIMETYPE;
         }
-
-        $form = UserModuleHtmlLib::uploadForm('upload.php', $sess_id_user, $id_course, $id_course_instance, $id_node, $error_message);
-        $form = $form->getHtml();
+        redirect( str_replace($_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) . '?err_code='.$error_code);
       }
     }
   }
   else {
-    $form = UserModuleHtmlLib::uploadForm('upload.php', $sess_id_user, $id_course, $id_course_instance, $id_node);
+    $error_message = translateFN('Upload del file non riuscito.');
+    $get_errorcode = isset($_GET['err_code']) ? intval($_GET['err_code']) : -1;
+    switch($get_errorcode) {
+      case -1:
+        $error_message = null;
+      break;
+      case ADA_FILE_UPLOAD_ERROR_UPLOAD:
+        $error_message .= '';
+        break;
+      case ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH:
+        $error_message .= ' ' . translateFN('Il percorso di destinazione non è scrivibile.');
+        break;
+      case ADA_FILE_UPLOAD_ERROR_FILESIZE:
+        $error_message .= ' ' . translateFN('La dimensione del file supera quella massima consentita.');
+        break;
+      case ADA_FILE_UPLOAD_ERROR_MIMETYPE:
+        $error_message .= ' ' . translateFN('Il tipo di file inviato non &egrave; tra quelli accettati dalla piattaforma.');
+        break;
+    }
+    $form = UserModuleHtmlLib::uploadForm('upload.php', $sess_id_user, $id_course, $id_course_instance, $id_node, $error_message);
     $form = $form->getHtml();
+
+    $layout_dataAr['JS_filename'] = array(
+      JQUERY,
+      JQUERY_UI,
+      JQUERY_NO_CONFLICT
+    );
+
+    $layout_dataAr['CSS_filename'] = array(
+      JQUERY_UI_CSS
+    );
+
+    if (array_key_exists('uploadOk', $_SESSION) && $_SESSION['uploadOk'] === true) {
+      unset($_SESSION['uploadOk']);
+      header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+      header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
+      header("Cache-Control: post-check=0, pre-check=0", false);
+      header("Pragma: no-cache"); // HTTP/1.0
+      header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+
+      $askOptions['title'] = translateFN('File caricato con successo');
+      $askOptions['message']  = translateFN('Cosa vuoi fare ora?');
+      $askOptions['buttons'][] = array(
+        'label' => translateFN('Torna al Corso'),
+        'action' => HTTP_ROOT_DIR . '/browsing/view.php?id_node=' . $id_node,
+        'icon' => 'ui-icon-arrowrefresh-1-w'
+      );
+      $askOptions['buttons'][] = array(
+        'label' => translateFN('Carica un altro file'),
+        'action' => $_SERVER['PHP_SELF'],
+        'icon' => 'ui-icon-circle-arrow-n'
+      );
+      $askOptions['buttons'][] = array(
+        'label' => translateFN('Vai all\'elenco dei file'),
+        'action' => HTTP_ROOT_DIR . '/browsing/download.php',
+        'icon' => 'ui-icon-folder-open'
+      );
+
+      $optionsAr['onload_func']  = "askActionToUser('" . rawurlencode(json_encode($askOptions)) . "');";
+    }
+
     if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
       $layout_dataAr['CSS_filename'][] = MODULES_COLLABORAACL_PATH . '/layout/ada-blu/css/moduleADAForm.css';
-      $layout_dataAr['JS_filename'] = [];
-      $layout_dataAr['JS_filename'][] = MODULES_COLLABORAACL_PATH . '/js/multiselect.min.js';
-      $optionsAr = [];
-      $optionsAr['onload_func'] = 'initDoc();';
+      array_splice( $layout_dataAr['JS_filename'], count($layout_dataAr['JS_filename']) - 1 , 0, [ MODULES_COLLABORAACL_PATH . '/js/multiselect.min.js' ] );
+      if (!isset($optionsAr)) {
+        $optionsAr = [];
+      }
+      if (!array_key_exists('onload_func', $optionsAr)) {
+        $optionsAr['onload_func'] = '';
+      }
+      $optionsAr['onload_func'] .= 'initDoc();';
     }
   }
 
