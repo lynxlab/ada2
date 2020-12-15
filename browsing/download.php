@@ -173,7 +173,7 @@ if (isset($_GET['file'])){
 } else {
 
 	// indexing files
-	$elencofile = leggidir($download_path);
+	$elencofile = leggidir($download_path, '', [ 'csv' ]);
 	if ($elencofile == NULL) {
 //           $lista = translateFN("Nessun file inviato dagli studenti di questa classe.");
            $html = translateFN("Nessun file inviato dagli studenti di questa classe.");
