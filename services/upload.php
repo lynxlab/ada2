@@ -107,7 +107,7 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
     $filename          = $_FILES['file_up']['name'];
     $source            = $_FILES['file_up']['tmp_name'];
     $file_size         = $_FILES['file_up']['size'];
-    //$file_type         = $_FILES['file_up']['type'];
+    $up_file_type         = $_FILES['file_up']['type'];
     $file_upload_error = $_FILES['file_up']['error'];
     // contiene il codice di errore da restituire al chiamante
     $error_code = 0;
@@ -169,7 +169,14 @@ if ( isset($_GET['caller']) && $_GET['caller'] == 'editor' )
          * durante l'upload.
          */
     	$empty_filename = empty($filename);
-    	$accepted_mimetype = ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
+      $accepted_mimetype = ($ADA_MIME_TYPE[$file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
+      // if php detected mimetype is not accepted, try with browser declared mimetype
+      if ($accepted_mimetype == false) {
+        $accepted_mimetype = array_key_exists($up_file_type, $ADA_MIME_TYPE) && ($ADA_MIME_TYPE[$up_file_type]['permission'] == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE);
+        if ($accepted_mimetype != false) {
+          $file_type = $up_file_type;
+        }
+      }
     	$accepted_filesize = ($file_size < ADA_FILE_UPLOAD_MAX_FILESIZE);
 
         if ( !$empty_filename && !$file_upload_error && $file_type !== false
