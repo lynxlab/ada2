@@ -40,4 +40,11 @@
 		<id>badgesWidget</id>
 		<module>getNewBadges.php</module>
 	</widget>
+	<widget>
+		<!-- active>0</active -->
+		<async>1</async>
+		<field>collaborafiles</field>
+		<id>nodeAttachments</id>
+		<module>getNodeAttachments.php</module>
+	</widget>
 </widgets>

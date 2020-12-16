@@ -76,7 +76,7 @@ if ($userObj->getType() == AMA_TYPE_STUDENT) {
 
 	// jitsi toolbarbuttons for student
 	$TOOLBAR_BUTTONS = [
-	'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+	'microphone', 'camera', 'closedcaptions', /*'desktop', */ 'fullscreen',
 	'fodeviceselection', 'hangup', 'chat',
 	'etherpad', 'settings', 'raisehand',
 	'videoquality', 'filmstrip','feedback', 'stats', 'shortcuts',
@@ -105,7 +105,12 @@ if ($userObj->getType() == AMA_TYPE_STUDENT) {
 			"email" => $userObj->getEmail(),
 			"id" => $userObj->getId(),
 		  ],
-		  "group" => ""
+		  "group" => "",
+		  "features" => [
+			  "screen-sharing" => true,
+			  "livestreaming" => false,
+			  "recording" => false,
+			],
 		],
 		"aud" => JITSI_APP_ID,
 		"iss" => JITSI_JWT_ISS,
