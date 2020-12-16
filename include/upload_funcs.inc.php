@@ -19,6 +19,10 @@ function upload_file($file_up_ha,$source,$dest) {
     // controllo tipo file inviato, se non consentito -> stop
     $file_type = mime_content_type($source);
     $mimetypeControl = upload_tipo_stop($file_type);//$file_up_ha['file_up']['type']);
+    // if php detected mimetype is not accepted, try with browser declared mimetype
+    if($mimetypeControl != ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE) {
+        $mimetypeControl = upload_tipo_stop($file_up_ha['file_up']['type']);
+    }
     if($mimetypeControl == ADA_FILE_UPLOAD_ACCEPTED_MIMETYPE) {
         if(($source != 'none') && ($source != '')) {
             if($dest != '') {

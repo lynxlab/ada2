@@ -33,16 +33,28 @@ class AjaxRemoteContent {
 		if ($widgetObj->ajaxModule) {
 			$replacement = translateFN ( 'Loading' ) . '...';
 
+			if (array_key_exists('doneCallback', $widgetObj->optionsArr)) {
+				$doneCallback = $widgetObj->optionsArr['doneCallback'];
+				unset($widgetObj->optionsArr['doneCallback']);
+			} else $doneCallback = 'null';
+
+			if (array_key_exists('failCallback', $widgetObj->optionsArr)) {
+				$failCallback = $widgetObj->optionsArr['failCallback'];
+				unset($widgetObj->optionsArr['failCallback']);
+			} else $failCallback = 'null';
+
 			if (JQUERY_SUPPORT) {
 				$ajax_content = "<script type='text/javascript'>\$j.get('$widgetObj->ajaxModule'";
 				if (!empty( $widgetObj->optionsArr )) $ajax_content .= ' ,' . json_encode ( $widgetObj->optionsArr );
 				$ajax_content .= ").done( function(html){
 				\$j('#$widgetObj->generatedDIVId').removeClass('loading');
-				\$j('#$widgetObj->generatedDIVId').html(html);  } )
+				\$j('#$widgetObj->generatedDIVId').html(html);
+				if ('function' === typeof $doneCallback) $doneCallback(html, \$j('#$widgetObj->generatedDIVId')); } )
 				.fail(function(response){
 				\$j('#$widgetObj->generatedDIVId').removeClass('loading').addClass('error');
 				\$j('#$widgetObj->generatedDIVId').html('".translateFN('Errore caricamento')." ".
-				basename($widgetObj->ajaxModule). "');});</script>";
+				basename($widgetObj->ajaxModule). "');
+				if ('function' === typeof $failCallback) $failCallback(html, \$j('#$widgetObj->generatedDIVId')); });</script>";
 			} else {
 				// prototype 1.6 version
 				$ajax_content = "<script type='text/javascript'>

@@ -26,5 +26,11 @@ function askActionToUser(encAskOptions) {
 	modal: true,
 	minWidth: 550,
 	closeOnEscape: false
-  });	  
+  });
+}
+
+function initDoc() {
+	$j('#users', '#upload_form').multiselect({
+		keepRenderingSort: true
+	});
 }

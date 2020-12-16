@@ -647,6 +647,21 @@ switch ($op){
 			];
 		}
 
+		if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+			$layout_dataAR['widgets']['collaborafiles'] = [
+				'courseId' => $courseObj->getId(),
+				'courseInstanceId' => (isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance) ? $courseInstanceObj->getId() : -1,
+				'nodeId' => $nodeObj->id,
+				'userId' => $userObj->getId(),
+				'doneCallback' => 'nodeAttachmentsDone',
+			];
+			$layout_dataAR['JS_filename'][] = MODULES_COLLABORAACL_PATH.'/js/browsing/view.js';
+		} else {
+			$layout_dataAR['widgets']['collaborafiles'] = [
+				'isActive' => 0,
+			];
+		}
+
 		$optionsAr['onload_func'] = 'initDoc();';
 
         if(isset($msg))
