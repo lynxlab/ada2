@@ -1,0 +1,16 @@
+{
+    "name": "lynxlab/collabora-access-list",
+    "description": "This is the ada module for the collabora files access list.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\CollaboraACL\\" : ["include/", "include/form"]
+	    }
+    }
+}

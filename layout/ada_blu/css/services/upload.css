@@ -13,3 +13,20 @@ div.error_field {
 	border-color:;
 	text-align: center;
 }
+
+div.fform form .grantaccess-container label {
+	width: 100%;
+}
+
+table.upload {
+	width: 95%;
+	margin: 0 auto;
+}
+
+table.upload td {
+	padding: 1em 0.5em 0.5em 0.5em;
+}
+
+table.upload tr:last-child td {
+	border: none;
+}

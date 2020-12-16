@@ -100,10 +100,20 @@ if (!is_null($fileName) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUES
 		}
 		$download_path = $root_dir . $media_path;
 
-		$success = unlink($download_path.'/'.$fileName);
+		$success = unlink($download_path. DIRECTORY_SEPARATOR .$fileName);
 
-		if ($success) $retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN('File cancellato'));
-		else $retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>"Errore nella cancellazione del file");
+		if ($success) {
+			$retArray = array ("status"=>"OK", "title"=>$title, "msg"=>translateFN('File cancellato'));
+			if (defined('MODULES_COLLABORAACL') && MODULES_COLLABORAACL) {
+				$aclDH = \Lynxlab\ADA\Module\CollaboraACL\AMACollaboraACLDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+				$filesACL = $aclDH->findBy('FileACL', [ 'filepath' => str_replace(ROOT_DIR . DIRECTORY_SEPARATOR, '', $download_path . DIRECTORY_SEPARATOR . $fileName) ]);
+				if (is_array($filesACL) && count($filesACL)>0) {
+					foreach($filesACL as $fileACL) {
+						$aclDH->deleteFileACL($fileACL->getId());
+					}
+				}
+			}
+		} else $retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>"Errore nella cancellazione del file");
 
 	} else {
 		$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>"Errore nel caricamento del corso");
@@ -111,7 +121,7 @@ if (!is_null($fileName) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUES
 } else if (is_null($fileName)) {
 	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Il nome del file da cancellare non può essere vuoto"));
 } else {
-	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>trasnlateFN("Errore nella trasmissione dei dati"));
+	$retArray = array ("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore nella trasmissione dei dati"));
 }
 
 if (empty($retArray)) $retArray = array("status"=>"ERROR", "title"=>$title, "msg"=>translateFN("Errore sconosciuto"));

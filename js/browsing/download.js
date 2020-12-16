@@ -3,7 +3,7 @@ var fileSharingTable;
 function initDoc()
 {
 	initDataTables();
-	initButtons();	
+	// initButtons();
 }
 
 function initDataTables() {
@@ -14,7 +14,12 @@ function initDataTables() {
         'bSort': true,
         'bAutoWidth': true,
 		'bDeferRender': true,
-        'bPaginate': false,
+		'bPaginate': false,
+		"order": [[ 2, 'desc' ], [ 0, 'asc' ]],
+		"aoColumnDefs": [
+			{ "aTargets": [2], "sType": "date-eu" },
+			{ "aTargets": [-1], "sortable": false },
+		],
         "oLanguage": {
             "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
          }
@@ -22,7 +27,7 @@ function initDataTables() {
 	fileSharingTable.show();
 }
 
-function initButtons() {	
+function initButtons() {
 	$j('.deleteButton').button({
 		icons : {
 			primary : 'ui-icon-trash'
@@ -61,7 +66,7 @@ function deleteFile(confirmQuestion, fileName, rowID) {
 /**
  * shows and after 500ms removes the div to give feedback to the user about
  * the status of the executed operation (if it's been saved, delete or who knows what..)
- * 
+ *
  * @param title title to be displayed
  * @param message message to the user
  */
@@ -71,9 +76,9 @@ function showHideDiv ( title, message, reload )
 	theDiv.css("position","fixed");
 	theDiv.css("width", "350px");
 	theDiv.css("top", ($j(window).height() / 2) - (theDiv.outerHeight() / 2));
-	theDiv.css("left", ($j(window).width() / 2) - (theDiv.outerWidth() / 2));	
-	theDiv.hide().appendTo('body').fadeIn(500).delay(2000).fadeOut(500, function() { 
-		theDiv.remove(); 
+	theDiv.css("left", ($j(window).width() / 2) - (theDiv.outerWidth() / 2));
+	theDiv.hide().appendTo('body').fadeIn(500).delay(2000).fadeOut(500, function() {
+		theDiv.remove();
 		if (typeof reload != 'undefined' && reload) self.location.reload(true); });
 }
 

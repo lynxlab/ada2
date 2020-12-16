@@ -951,7 +951,7 @@ function getFileDataFromSelect(id_select) {
 function addToAuthorFileSelector(filename, filetype) {
 	var hint;
 
-	switch (filetype) {
+	switch (filetype.toString()) {
 	case ADA_MEDIA_IMAGE:
 		hint = '[IMAGE]';
 		break;

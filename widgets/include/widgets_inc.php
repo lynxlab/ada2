@@ -20,10 +20,10 @@ define ( 'JQUERY_SUPPORT', true );
  * @license http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
  * @link widget
  * @version 0.1
- *         
+ *
  */
 class Widget {
-	
+
 	/**
 	 * template field name where widget contest must appear on the page.
 	 * Must mactch one of the template_fields name in the .tpl file, or
@@ -32,7 +32,7 @@ class Widget {
 	 * @var string
 	 */
 	var $templateField;
-	
+
 	/**
 	 * id of the generated div holding the content, for prototype or jquery
 	 * handling and css styling.
@@ -40,7 +40,7 @@ class Widget {
 	 * @var string
 	 */
 	var $generatedDIVId;
-	
+
 	/**
 	 * filename of the script (relative to ROOT_DIR/widgets/ajax) that is
 	 * responsible for generating widget's content
@@ -48,14 +48,14 @@ class Widget {
 	 * @var string
 	 */
 	var $ajaxModule;
-	
+
 	/**
 	 * array of parameters to be passed as a GET query string to the ajaxModule
 	 *
-	 * @var string
+	 * @var array
 	 */
 	var $optionsArr;
-	
+
 	/**
 	 * true if widget is active, else false.
 	 * Defaults to true, can be set in the XML
@@ -63,7 +63,7 @@ class Widget {
 	 * @var boolean
 	 */
 	var $isActive;
-	
+
 	/**
 	 * tells if widget is to be called in sync or async mode.
 	 * Defaults to ADA_WIDGET_ASYNC_MODE, can be set in the XML
@@ -71,14 +71,14 @@ class Widget {
 	 * @var numeric
 	 */
 	var $asyncMode;
-	
+
 	/**
 	 * the widget module name
-	 * 
+	 *
 	 * @var string
 	 */
 	private $_widgetModule;
-	
+
 	function __construct($widget) {
 		$this->templateField = $widget ['field'];
 		$this->generatedDIVId = $widget ['id'];
@@ -86,7 +86,7 @@ class Widget {
 		$this->isActive = isset ( $widget ['active'] ) ? $widget ['active'] : 1;
 		$this->asyncMode = isset ( $widget ['async'] ) ? $widget ['async'] : ADA_WIDGET_ASYNC_MODE;
 		$this->optionsArr = array ();
-		
+
 		if (isset ( $widget ['param'] ) && ! empty ( $widget ['param'] )) {
 			foreach ( $widget ['param'] as $paramElement ) {
 				if (isset ( $paramElement [ArrayToXML::attr_arr_string] ))
@@ -97,10 +97,10 @@ class Widget {
 			}
 		}
 	}
-	
+
 	/**
 	 * sets a param for the widget
-	 * 
+	 *
 	 * @param string $name	name of the param to be set
 	 * @param string $value	value of the param to be set
 	 */
@@ -108,11 +108,11 @@ class Widget {
 		if (property_exists($this, $name)) $this->$name = $value;
 		else $this->optionsArr [$name] = $value;
 	}
-	
+
 	/**
 	 * sets the async mode and put in the ajaModule property the
 	 * proper filename to be executed
-	 * 
+	 *
 	 * @param number $asyncMode
 	 */
 	private function _setAsyncMode ($asyncMode) {
@@ -123,9 +123,9 @@ class Widget {
 			else if ($this->asyncMode == ADA_WIDGET_SYNC_MODE)
 				$this->ajaxModule = ADA_WIDGET_AJAX_ROOTDIR . '/' . $this->_widgetModule;
 		} else
-			$this->ajaxModule = false;		
+			$this->ajaxModule = false;
 	}
-	
+
 	/**
 	 * gets (aka render) the widget
 	 *
@@ -133,9 +133,9 @@ class Widget {
 	 */
 	public function getWidget() {
 		if (! $this->isActive) return '';
-		
+
 		$this->_setAsyncMode( $this->asyncMode );
-		
+
 		switch ($this->asyncMode) {
 			case ADA_WIDGET_ASYNC_MODE :
 			default :

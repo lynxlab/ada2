@@ -552,11 +552,11 @@ function delTree($dir) {
 	return rmdir($dir);
 }
 
-function leggidir($dir,$ext=""){
-  return read_dir($dir);
+function leggidir($dir,$ext="",$moreExtension = []){
+  return read_dir($dir,$ext, $moreExtension);
 }
 
-function read_dir($dir,$ext=""){
+function read_dir($dir,$ext="", $moreExtension = []){
   /*
    **** dato un percorso ritorna l'elenco dei file dei tipi consentiti ****
    */
@@ -566,7 +566,7 @@ function read_dir($dir,$ext=""){
   if (isset($ext) && $ext != "")
   $allowed_extAr = array($ext);
   else
-  $allowed_extAr = array(
+  $allowed_extAr = $moreExtension + array(
 			'txt',
 			'doc',
 			'rtf',
@@ -605,8 +605,9 @@ function read_dir($dir,$ext=""){
 			      //$elencofile[$i]['file'] = $dir."/".$file;
 			      // vito, 30 mar 2009
 			      if (!is_array($elencofile)) $elencofile = array();
-			      $elencofile[$i]['path_to_file'] = $dir."/".$file;
-			      $filetime = date("d/m/y",filemtime($dir."/".$file));
+            $elencofile[$i]['path_to_file'] = $dir."/".$file;
+            $elencofile[$i]['filemtime'] = filemtime($dir."/".$file);
+			      $filetime = date("d/m/y",$elencofile[$i]['filemtime']);
 			      $elencofile[$i]['data'] = $filetime;
 			      $elencofile[$i]['file'] = $file;
 			      $i++;
