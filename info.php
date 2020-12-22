@@ -99,12 +99,12 @@ if ($op !== false && $op == 'course_info') {
     				}
 
 
-    				if (isset($testerInfoAr['indirizzo']) && strlen($testerInfoAr['indirizzo'])>0) {
-    					$provAddress = $testerInfoAr['indirizzo'];
-    					if (isset($testerInfoAr['provincia']) && strlen($testerInfoAr['provincia'])>0) {
-    						$provAddress .= ' - '.$testerInfoAr['provincia'];
-	    					if (isset($testerInfoAr['citta']) && strlen($testerInfoAr['citta'])>0) {
-	    						$provAddress .= ' ('.strtoupper($testerInfoAr['citta']).')';
+    				if (isset($testerInfoAr['indirizzo']) && strlen(trim($testerInfoAr['indirizzo']))>0) {
+    					$provAddress = trim($testerInfoAr['indirizzo']);
+    					if (isset($testerInfoAr['provincia']) && strlen(trim($testerInfoAr['provincia']))>0) {
+    						$provAddress .= ' - '.trim($testerInfoAr['provincia']);
+	    					if (isset($testerInfoAr['citta']) && strlen(trim($testerInfoAr['citta']))>0) {
+	    						$provAddress .= ' ('.strtoupper(trim($testerInfoAr['citta'])).')';
 	    					}
     					}
 
@@ -116,7 +116,7 @@ if ($op !== false && $op == 'course_info') {
     					$layout_dataAr['widgets']['provider_address_map'] = array (
     						'url' => 'https://maps.googleapis.com/maps/api/staticmap?center='.urlencode($provAddress).'&zoom=17&size=338x199&maptype=roadmap'.
 	    					'&markers=size:mid%7C'.urlencode($provAddress),
-	    					'isActive'=>1
+	    					'isActive'=> strlen(trim($provAddress))>0 ? 1 : 0,
 	    				);
     				}
 
