@@ -824,9 +824,16 @@ class  Generic_Html extends Output
 		}
 
         if (file_exists($javascript)){
-          $jsFileTS = filemtime($javascript);
-            $javascript = str_replace($root_dir,$http_root_dir,$javascript);
-          $html_js_code .= "<script type=\"text/javascript\" src=\"$javascript?ts=$jsFileTS\"></script>\n<noscript>".translateFN("Questo browser non supporta Javascript")."</noscript>\n";
+          // giorgio: 28/dic/2020 try to load provider js if it's singleprovider environment
+          if (!MULTIPROVIDER && isset($GLOBALS['user_provider'])) {
+            $clientJavascript = str_replace($root_dir, $root_dir . DIRECTORY_SEPARATOR . 'clients' . DIRECTORY_SEPARATOR . $GLOBALS['user_provider'], $javascript);
+            if (is_readable($clientJavascript)) {
+                $javascript = $clientJavascript;
+            }
+        }
+        $jsFileTS = filemtime($javascript);
+        $javascript = str_replace($root_dir,$http_root_dir,$javascript);
+        $html_js_code .= "<script type=\"text/javascript\" src=\"$javascript?ts=$jsFileTS\"></script>\n<noscript>".translateFN("Questo browser non supporta Javascript")."</noscript>\n";
         }
       }
     }
