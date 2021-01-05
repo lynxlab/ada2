@@ -38,6 +38,10 @@ class ADAZoomApi
         try {
             $meetingData['meetingPWD'] = bin2hex(random_bytes(5));
             $timezone = \MultiPort::getTesterTimeZone(self::getTesterToUse());
+            $zoomuser = 'me';
+            if (array_key_exists('zoomUser', $meetingData)) {
+                $zoomuser = trim($meetingData['zoomUser'], ' /');
+            }
 
             $requestBody = [
                 'topic' => $meetingData['room_name'],
@@ -55,7 +59,7 @@ class ADAZoomApi
                     'waiting_room' => false,
                 ],
             ];
-            $response = $this->zoom->doRequest('POST','/users/me/meetings',[], [], json_encode($requestBody));
+            $response = $this->zoom->doRequest('POST',"/users/$zoomuser/meetings",[], [], json_encode($requestBody));
 
             if ($response != false) {
                 $meetingData['meetingID'] = $response['id'];

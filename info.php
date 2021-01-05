@@ -699,6 +699,9 @@ $content_dataAr = array(
 if (isset($courseInfoContent)) $content_dataAr = array_merge($content_dataAr, $courseInfoContent);
 
 /**
- * Sends data to the rendering engine
+ * Sends data to the rendering engine if it's not a PRESUBSCRIBED user subscribing to an instance
+ * in that case, this script is included by registration.php and $_SESSION['subscription_page'] is set
  */
-ARE::render($layout_dataAr, $content_dataAr, NULL, (isset($optionsAr) ? $optionsAr : NULL));
+if (!($userObj->getStatus() == ADA_STATUS_PRESUBSCRIBED && array_key_exists('subscription_page', $_SESSION))) {
+	ARE::render($layout_dataAr, $content_dataAr, NULL, (isset($optionsAr) ? $optionsAr : NULL));
+}
