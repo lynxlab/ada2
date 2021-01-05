@@ -35,6 +35,7 @@ $neededObjAr = array(
     AMA_TYPE_STUDENT => array('layout', 'course', 'course_instance')
 );
 
+$trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
 
@@ -311,11 +312,36 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $label_text = CDOMElement::create('span','class:info');
     $label_text->addChild(new CText($message));
     $info_div->addChild($label_text);
-    $homeUser = $userObj->getHomePage();
-    $link_span = CDOMElement::create('span','class:info_link');
-    $link_to_home = BaseHtmlLib::link($homeUser, translateFN('vai alla home per accedere.'));
-    $link_span->addChild($link_to_home);
-    $info_div->addChild($link_span);
+    if ($userObj->getStatus() == ADA_STATUS_PRESUBSCRIBED) {
+        /**
+         * add a message to info_div
+         */
+        $more_text = CDOMElement::create('span','class:moreinfo');
+        $more_text->addChild(new CText(translateFN("se ci sono problemi nel confemrare o concludere la tua iscrizione, contatta la segreteria")));
+        $info_div->addChild($more_text);
+        /**
+         * when a user does a self registration from login_required.php,
+         * then registration.php calls ADALoggableUser::setSessionAndRedirect
+         * to let info.php complete te subscription to the instance
+         *
+         * This has the side-effect that ADA sees the user as logged in,
+         * so a new ADAGuest must be set in the session.
+         */
+        session_unset();
+        session_destroy();
+        session_start();
+        $_SESSION['sess_userObj'] = new ADAGuest();
+        $_SESSION['sess_id_user_type'] = $_SESSION['sess_userObj']->getType();
+    } else {
+        /**
+         * user is registered and logged in, show the link to the homepage
+         */
+        $homeUser = $userObj->getHomePage();
+        $link_span = CDOMElement::create('span','class:info_link');
+        $link_to_home = BaseHtmlLib::link($homeUser, translateFN('vai alla home per accedere.'));
+        $link_span->addChild($link_to_home);
+        $info_div->addChild($link_span);
+    }
     //$data = new CText(translateFN('La tua iscrizione è stata effettuata con successo.'));
     $data = $info_div;
 //    print_r($data->getHtml());

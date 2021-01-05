@@ -258,6 +258,32 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	         */
         }
 
+		if (defined('ADA_SUBSCRIBE_FROM_LOGINREQUIRED') && (true === ADA_SUBSCRIBE_FROM_LOGINREQUIRED) &&
+			isset($_SESSION['subscription_page']) && strlen($_SESSION['subscription_page'])>0) {
+			$subUrl = $_SESSION['subscription_page'];
+			/**
+			 * setSessionAndRedirect wants the user to be in ADA_STATUS_REGISTERED status
+			 */
+			$oldStatus = $userObj->getStatus();
+			$userObj->setStatus(ADA_STATUS_REGISTERED);
+			ADALoggableUser::setSessionAndRedirect($userObj, false, $_SESSION['sess_user_language'], null, null, false);
+			$userObj->setStatus($oldStatus);
+			/**
+			 * parse the query string coming from subscription_page and include
+			 * info.php to reproduce the subscription sequence
+			 */
+			$qs = parse_url($subUrl, PHP_URL_QUERY);
+			if (strlen($qs) > 0) {
+				parse_str($qs, $_GET);
+				require_once ROOT_DIR . '/info.php';
+			}
+			/**
+			 * clean unwanted stuff
+			 */
+			unset($_SESSION['subscription_page']);
+			session_destroy();
+		}
+
         /*
          * Redirect the user to the "registration succeeded" page.
          */
