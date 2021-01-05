@@ -1162,8 +1162,10 @@ abstract class ADALoggableUser extends ADAGenericUser {
      * @param boolean $remindMe true if remindme check box has been checked
      * @param string $language lang selection at login form: language to be set
      * @param Object $loginProviderObj login provider class used, null if none used
+     * @param string $redirectURL url where the user must be redirected
+     * @param boolean $forceRedirect false to do NOT redirect and exit, but return a bool instead (defaults to true)
      */
-    public static function setSessionAndRedirect($userObj, $remindMe, $language, $loginProviderObj = null, $redirectURL = null) {
+    public static function setSessionAndRedirect($userObj, $remindMe, $language, $loginProviderObj = null, $redirectURL = null, $forceRedirect = true) {
     	if ($userObj->getStatus() == ADA_STATUS_REGISTERED)
     	{
     		/**
@@ -1188,8 +1190,12 @@ abstract class ADALoggableUser extends ADAGenericUser {
     				// that is not his/her own,
     				// redirect to his/her own provider home page
     				$redirectURL = preg_replace("/(http[s]?:\/\/)(\w+)[.]{1}(\w+)/", "$1".$user_default_tester.".$3", $userObj->getHomePage());
-    				header('Location:'.$redirectURL);
-    				exit();
+                    if ($forceRedirect) {
+                        header('Location:'.$redirectURL);
+                        exit();
+                    } else {
+                        return true;
+                    }
     			}
     		}
 
@@ -1242,8 +1248,12 @@ abstract class ADALoggableUser extends ADAGenericUser {
                     }
                 }
             }
-    		header('Location:'.$redirectURL);
-    		exit();
+            if ($forceRedirect) {
+                header('Location:'.$redirectURL);
+                exit();
+            } else {
+                return true;
+            }
     	}
 
     	return false;
