@@ -137,12 +137,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	 */
 	Translator::loadSupportedLanguagesInSession();
 	$supported_languages = Translator::getSupportedLanguages();
-	$login_page_language_code = Translator::negotiateLoginPageLanguage($lang_get);
+	$login_page_language_code = Translator::negotiateLoginPageLanguage(isset($lang_get) ? $lang_get : null);
 	$_SESSION['sess_user_language'] = $login_page_language_code;
 
     $form_action = HTTP_ROOT_DIR ;
     $form_action .= '/'.whoami().'.php';
-    $data = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_page_language_code, $login_error_message);
+    $data = UserModuleHtmlLib::loginForm($form_action, $supported_languages,$login_page_language_code, isset($login_error_message) ? $login_error_message : '');
 
     $registration_action = HTTP_ROOT_DIR . '/browsing/registration.php';
     $cod = FALSE;
