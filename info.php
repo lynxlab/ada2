@@ -99,12 +99,12 @@ if ($op !== false && $op == 'course_info') {
     				}
 
 
-    				if (isset($testerInfoAr['indirizzo']) && strlen($testerInfoAr['indirizzo'])>0) {
-    					$provAddress = $testerInfoAr['indirizzo'];
-    					if (isset($testerInfoAr['provincia']) && strlen($testerInfoAr['provincia'])>0) {
-    						$provAddress .= ' - '.$testerInfoAr['provincia'];
-	    					if (isset($testerInfoAr['citta']) && strlen($testerInfoAr['citta'])>0) {
-	    						$provAddress .= ' ('.strtoupper($testerInfoAr['citta']).')';
+    				if (isset($testerInfoAr['indirizzo']) && strlen(trim($testerInfoAr['indirizzo']))>0) {
+    					$provAddress = trim($testerInfoAr['indirizzo']);
+    					if (isset($testerInfoAr['provincia']) && strlen(trim($testerInfoAr['provincia']))>0) {
+    						$provAddress .= ' - '.trim($testerInfoAr['provincia']);
+	    					if (isset($testerInfoAr['citta']) && strlen(trim($testerInfoAr['citta']))>0) {
+	    						$provAddress .= ' ('.strtoupper(trim($testerInfoAr['citta'])).')';
 	    					}
     					}
 
@@ -116,7 +116,7 @@ if ($op !== false && $op == 'course_info') {
     					$layout_dataAr['widgets']['provider_address_map'] = array (
     						'url' => 'https://maps.googleapis.com/maps/api/staticmap?center='.urlencode($provAddress).'&zoom=17&size=338x199&maptype=roadmap'.
 	    					'&markers=size:mid%7C'.urlencode($provAddress),
-	    					'isActive'=>1
+	    					'isActive'=> strlen(trim($provAddress))>0 ? 1 : 0,
 	    				);
     				}
 
@@ -699,6 +699,9 @@ $content_dataAr = array(
 if (isset($courseInfoContent)) $content_dataAr = array_merge($content_dataAr, $courseInfoContent);
 
 /**
- * Sends data to the rendering engine
+ * Sends data to the rendering engine if it's not a PRESUBSCRIBED user subscribing to an instance
+ * in that case, this script is included by registration.php and $_SESSION['subscription_page'] is set
  */
-ARE::render($layout_dataAr, $content_dataAr, NULL, (isset($optionsAr) ? $optionsAr : NULL));
+if (!($userObj->getStatus() == ADA_STATUS_PRESUBSCRIBED && array_key_exists('subscription_page', $_SESSION))) {
+	ARE::render($layout_dataAr, $content_dataAr, NULL, (isset($optionsAr) ? $optionsAr : NULL));
+}

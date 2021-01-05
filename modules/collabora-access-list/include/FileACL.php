@@ -101,7 +101,7 @@ class FileACL extends CollaboraACLBase
         return $retval;
     }
 
-    public static function getIdFromFileName(array $filesACL = [], string $filepath = '') {
+    public static function getIdFromFileName(array $filesACL = [], $filepath = '') {
         $fileACL = array_filter($filesACL, function($el) use ($filepath) {
             $elPath = str_replace(ROOT_DIR. DIRECTORY_SEPARATOR, '', $filepath);
             return $el->getFilepath() == $elPath;
