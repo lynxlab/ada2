@@ -58,6 +58,15 @@ if (!MULTIPROVIDER)
 	 * Decimal point when formatting as currency
 	 */
 	define ('ADA_CURRENCY_DECIMAL_POINT', ',');
+
+    /**
+     * true if instance subscription must be done by login_required.php
+     * submitting to register.php
+     *
+     * NOTE: If subscription requires a payment, this will have the side-effect
+     * of requesting a payment before the user is confirmed (i.e. status set to ADA_STATUS_REGISTERED)
+     */
+    define ('ADA_SUBSCRIBE_FROM_LOGINREQUIRED', true);
 }
 
 /**
