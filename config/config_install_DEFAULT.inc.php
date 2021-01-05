@@ -53,27 +53,36 @@ if (MULTIPROVIDER) {
 	/**
 	 * How many news to get from the above mentioned course
 	 */
-	define ('NEWS_COUNT', 3);
-	
+    define ('NEWS_COUNT', 3);
+
 	/**
-	 * Currency symbol 
+	 * Currency symbol
 	 */
 	define ('ADA_CURRENCY_SYMBOL' , '&euro;');
-	
+
 	/**
 	 * How many decimal when formatting as currency
 	 */
 	define ('ADA_CURRENCY_DECIMALS', 2);
-	
+
 	/**
 	 * Thousands separator when formatting as currency
 	 */
 	define ('ADA_CURRENCY_THOUSANDS_SEP', '.');
-	
+
 	/**
 	 * Decimal point when formatting as currency
 	 */
-	define ('ADA_CURRENCY_DECIMAL_POINT', ',');
+    define ('ADA_CURRENCY_DECIMAL_POINT', ',');
+
+    /**
+     * true if instance subscription must be done by login_required.php
+     * submitting to register.php
+     *
+     * NOTE: If subscription requires a payment, this will have the side-effect
+     * of requesting a payment before the user is confirmed (i.e. status set to ADA_STATUS_REGISTERED)
+     */
+    define ('ADA_SUBSCRIBE_FROM_LOGINREQUIRED', true);
 }
 
 /**
