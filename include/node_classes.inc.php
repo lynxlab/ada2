@@ -1020,7 +1020,7 @@ function search_text_in_glosary($text) {
 		if ($level_filter) {
 			if (isset($_SESSION['sess_id_user_type']) &&
 				$_SESSION['sess_id_user_type'] == AMA_TYPE_STUDENT && $node_level > $student_level) {
-				return translateFN('Il contenuto di questo nodo non &egrave; accessibile ad utenti di livello ' . $student_level);
+				return translateFN('Il contenuto di questo nodo non &egrave; accessibile ad utenti di livello ') . $student_level;
 			}
 		}
 
@@ -1416,7 +1416,7 @@ function get_extended_nodeFN($user_level,$id_profile){
   $sess_id_user =   isset($_SESSION['sess_id_user']) ? $_SESSION['sess_id_user'] : null;
   $node_level = $this->level;
   if ($node_level>$user_level && $id_profile == AMA_TYPE_STUDENT){
-      return translateFN("Il contenuto di questo nodo non &egrave; accessibile ad utenti di livello $user_level");
+      return translateFN("Il contenuto di questo nodo non &egrave; accessibile ad utenti di livello"). $user_level;
   }
 
   $glossary_div = CDOMElement::create('DIV');

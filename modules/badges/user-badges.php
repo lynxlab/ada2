@@ -53,8 +53,8 @@ if (in_array($userObj->getType(), [ AMA_TYPE_SWITCHER , AMA_TYPE_TUTOR ])) {
         if (!\AMA_DB::isError($instance) && is_array($instance) && count($instance)==1) {
             $instance = reset($instance);
             if (!isset($title)) $title = "Badges";
-            $title .= " per la classe <strong>%s</strong> del corso <strong>%s</strong>";
-            $title = sprintf(translateFN($title),$instance['title'], $instance['titolo']);
+            $title .= ' '.translateFN("per la classe <strong>%s</strong> del corso <strong>%s</strong>");
+            $title = sprintf($title, $instance['title'], $instance['titolo']);
         }
     }
 } else {

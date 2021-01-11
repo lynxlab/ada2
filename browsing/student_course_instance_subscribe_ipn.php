@@ -221,7 +221,7 @@ if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
                             fwrite($fpx, "Paypal IPN DATA OK\n");
                         }
                         $body_mail = translateFN("Hai effettuato il pagamento di") . " " . $payment_amount . " EUR " . translateFN('tramite Paypal' . "\n\r");
-                        $body_mail .= translateFN('Questo addebito verrà visualizzato sull\'estratto conto della carta di credito o prepagata come pagamento a PAYPAL ' . PAYPAL_NAME_ACCOUNT);
+                        $body_mail .= translateFN('Questo addebito verrà visualizzato sull\'estratto conto della carta di credito o prepagata come pagamento a PAYPAL') . ' '. PAYPAL_NAME_ACCOUNT;
                         $message_ha["titolo"] = PORTAL_NAME . " - " . translateFN('Conferma di pagamento') . ' - ' . translateFN("Iscrizione al corso:") . " " . $course_name;
                         $sender_email = ADA_ADMIN_MAIL_ADDRESS;
                         $recipients_emails_ar = array($payer_email);

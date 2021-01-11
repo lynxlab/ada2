@@ -201,7 +201,7 @@ foreach($twDatas as $k=>$twitterAr) {
 		$protocol .= '://';
 		$twitterLabel = CDOMElement::create('div','class:label');
 		$twitterImage = CDOMElement::create('img','src:'.$protocol.$imgUrl);
-		$twitterImage->setAttribute('class', 'ui image'.($circularImage ? ' circular' : ''));
+		$twitterImage->setAttribute('class', 'ui mini image'.($circularImage ? ' circular' : ''));
 
 		$twitterLabel->addChild($twitterImage);
 		$twitterDIV->addChild($twitterLabel);
