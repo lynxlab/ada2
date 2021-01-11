@@ -1197,6 +1197,7 @@ class Html extends Generic_HTML
     <meta name="description" content="$description">
     <meta name="keywords" content="$keywords,$meta_keywords">
     <meta name=\"cachefile\" content=\"$static_filename\">
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
     <!-- Stile -->
     <!-- Javascript -->
     <title>$title</title>
@@ -1279,6 +1280,7 @@ EOT;
         <meta name=\"description\" content=\"$description\">
         <meta name=\"keywords\" content=\"$keywords,$meta_keywords\">
         <meta name=\"cachefile\" content=\"$static_filename\">
+        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
         <!-- Stile -->
         <!-- Javascript -->\n";
 

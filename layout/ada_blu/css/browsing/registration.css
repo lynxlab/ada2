@@ -26,3 +26,12 @@ div.policy.text p {
 #unamecheckstatus {
 	margin-top: 1em;
 }
+
+div.fform form li {
+    position: relative;
+}
+
+div.fform form input[type=text], div.fform form input[type=password], div.fform form select {
+    position: absolute;
+    right: 0;
+}
