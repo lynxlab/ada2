@@ -110,7 +110,7 @@ if(isset($_GET['id']))
                 default : $message = ""; break;
         }
 
-        $message .= "<br /><br /><b>".translateFN("Messaggio d'errore originale").":</b> " . $e->getMessage();
+        $message = translateFN($message)."<br /><br /><b>".translateFN("Messaggio d'errore originale").":</b> " . $e->getMessage();
 
         $messagespan = CDOMElement::create('span','class: login-error-message');
         $messagespan->addChild(new CText(translateFN($message)));

@@ -43,7 +43,7 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 			if (array_key_exists('policies', $dataAr)) {
 				$firstElClass = 'active';
 				/** @var GdprPolicy $policy */
-				$accordion = \CDOMElement::create('div', 'class:ui fluid accordion');
+				$accordion = \CDOMElement::create('div', 'id:policies-accordion,class:ui fluid accordion');
 				$accordion->addChild(\CDOMElement::create('a','name:privacypolicies'));
 				if (array_key_exists('extraclass', $dataAr)) {
 					$accordion->setAttribute('class', $accordion->getAttribute('class').' '.$dataAr['extraclass']);
@@ -53,7 +53,7 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 					$title = \CDOMElement::create('div', 'class:'.(($i==0) ? $firstElClass.' ':'').'title');
 					$title->addChild(\CDOMElement::create('i','class:dropdown icon'));
 					// policy title, left side
-					$spanTitle = \CDOMElement::create('span','class:policy title');
+					$spanTitle = \CDOMElement::create('span','class:policy header');
 					$spanTitle->addChild(new \CText($policy->getTitle()));
 					$title->addChild($spanTitle);
 					// policy accepted labels, right side
@@ -74,14 +74,17 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 						if ($dataAr['userAccepted'][$policy->getPolicy_content_id()]['acceptedVersion'] == $policy->getVersion()) {
 							$status = "ACCETTATA";
 							$labelColor = 'green';
+							$icon = 'ok sign';
 							$acceptedPolicies[$policy->getPolicy_content_id()] = true;
 						} else {
 							$status = "NUOVA VERSIONE";
 							$labelColor = 'blue';
+							$icon = 'attention';
 						}
 					} else if ($policy->getMandatory()) {
 						$status = $isRegistration ? "PRESTARE CONSENSO" : "NON ACCETTATA";
 						$labelColor = 'red';
+						$icon = 'warning';
 					}
 
 					$statusContainer = \CDOMElement::create('div','class: policy status container');
@@ -90,20 +93,27 @@ class GdprAcceptPoliciesForm extends GdprAbstractForm {
 						$spanTitle = \CDOMElement::create('span','class:policy status ui '.$labelColor.' label');
 						if (isset($labelTitle) && strlen($labelTitle)>0) {
 							$spanTitle->setAttribute('title', $labelTitle);
+						} else {
+							$spanTitle->setAttribute('title', translateFN($status));
 						}
-						$spanTitle->addChild(new \CText(translateFN($status)));
+						// $spanTitle->addChild(new \CText(translateFN($status)));
+						$spanTitle->addChild(\CDOMElement::create('i','class:ui icon '.$icon));
 						unset($status);
 						$statusContainer->addChild($spanTitle);
 					}
 
 					if (!$policy->getMandatory() && !$isRegistration) {
 						$status = "FACOLTATIVA";
-						$labelColor = 'orange';
+						$labelColor = 'purple';
+						$icon = 'empty checkbox';
 						$spanTitle = \CDOMElement::create('span','class:policy status ui '.$labelColor.' label');
 						if (isset($labelTitle) && strlen($labelTitle)>0) {
 							$spanTitle->setAttribute('title', $labelTitle);
+						} else {
+							$spanTitle->setAttribute('title', translateFN($status));
 						}
-						$spanTitle->addChild(new \CText(translateFN($status)));
+						// $spanTitle->addChild(new \CText(translateFN($status)));
+						$spanTitle->addChild(\CDOMElement::create('i','class:ui icon '.$icon));
 						unset($status);
 						$statusContainer->addChild($spanTitle);
 					}

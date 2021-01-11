@@ -167,8 +167,9 @@ class History
     if ($returnHTML)
     {
 	    $t = new Table();
-	    $t->initTable('0','center','1','1','90%','','','','','0','1');
-	    $t->setTable($formatted_data,translateFN("Ultime $nodes_num visite"),translateFN("Ultime $nodes_num visite"));
+      $t->initTable('0','center','1','1','90%','','','','','0','1');
+      $caption = sprintf(translateFN("Ultime %d visite"), $nodes_num);
+	    $t->setTable($formatted_data, $caption, $caption);
 	    return $t->getTable();
     }
     else return $formatted_data;

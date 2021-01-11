@@ -11,18 +11,33 @@ div.fform.form {
 #contentcontent .first .form .ui.accordion .title {
 	position: relative;
 }
-#contentcontent .first .form .ui.accordion .title .policy.title {
-	font-size: 1.1em;
+#contentcontent .first .form .ui.accordion .title .policy.header {
+	/* font-size: 1.1em; */
 	font-weight: bold;
-	width: calc(100% - 15em);
+	/* width: calc(100% - 15em); */
 	display: inline-block;
 	border: none;
 }
 
 #contentcontent .first .form .ui.accordion .title .policy.status.container {
 	float: right;
-	width: 11em;
-	text-align: center;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	/* width: 11em;
+	text-align: center; */
+}
+
+#policies-accordion {
+    font-size: 1rem !important;
+}
+
+.policy.text, .policy.text * {
+    font-size: 1rem !important;
+}
+
+.policy.status.container i {
+    margin:0;
 }
 
 #contentcontent .first .form .ui.accordion .title .policy.status.container .policy.status {

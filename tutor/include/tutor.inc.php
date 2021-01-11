@@ -101,7 +101,7 @@ function get_courses_tutorFN($id_user, $isSuper=false) {
     } else {
         $tObj = new Table();
         $tObj->initTable('0','center','0','1','','','','','','1');
-        $caption = translateFN("Non ci sono corsi monitorati da te al $ymdhms");
+        $caption = sprintf(translateFN("Non ci sono corsi monitorati da te al %s"), $ymdhms);
         $summary = translateFN("Elenco dei corsi monitorati");
         $tObj->setTable($dati_corso,$caption,$summary);
         $courses_list = $tObj->getTable();
