@@ -117,12 +117,10 @@ if (isset($testerName)) {
 		$output = '';
 		$maxLength = 600;
 		if (!AMA_DB::isError($newscontent) && count($newscontent)>0) {
-			$newsContainer = CDOMElement::create('div','class:ui three column divided grid');
+			$newsContainer = CDOMElement::create('div','class:ui three column divided stackable grid');
 			$newsContainer->setAttribute('data-courseID', $course_id);
 			$newsRow = CDOMElement::create('div','class:equal height row');
-			$continueRow = CDOMElement::create('div','class:continuelink row');
 			$newsContainer->addChild($newsRow);
-			$newsContainer->addChild($continueRow);
 
 			foreach ( $newscontent as $num=>$aNews ) {
 				$aNewsDIV = CDOMElement::create('div','class:column news,id:news-'.($num+1));
@@ -171,12 +169,10 @@ if (isset($testerName)) {
 					}
 
 					if ($addContinueLink) {
-						$contLink = CDOMElement::create('a', 'class:column continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+						$contLink = CDOMElement::create('a', 'class:continuelink,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
 								$course_id.'&id_node='.$aNews[0]);
 						$contLink->addChild (new CText(translateFN('Continua...')));
-						$continueRow->addChild ($contLink);
-					} else {
-						$continueRow->addChild(CDOMElement::create('span','class:column'));
+						$aNewsDIV->addChild($contLink);
 					}
 					// $output .= $aNewsDIV->getHtml();
 				}
