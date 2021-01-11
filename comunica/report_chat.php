@@ -167,7 +167,7 @@ switch ($op){
                 $tObj->initTable('0','right','1','0','90%','','','','','1','0');
                 // Syntax: $border,$align,$cellspacing,$cellpadding,$width,$col1, $bcol1,$col2, $bcol2
                 $caption = translateFN("Resoconto della chat di classe");
-                $summary = translateFN("Chat fino al $ymdhms");
+                $summary = sprintf(translateFN("Chat fino al %s"), $ymdhms);
                 $tObj->setTable($chat_dataAr,$caption,$summary);
                 $tabled_chat_dataHa = $tObj->getTable();
                 $menuOptions['id_instance']=$sess_id_course_instance;

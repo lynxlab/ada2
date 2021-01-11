@@ -123,7 +123,7 @@ try {
     $historyObj = $userObj->getHistoryInCourseInstance($courseInstanceId);
 	$historyObj->get_course_data();
 	$nodeSuff = $historyObj->visited_nodes_count>0 ? 'i' : 'o';
-	$nodesTxt = translateFN(sprintf("Hai visitato <strong>%d</strong> nod$nodeSuff su un totale di <strong>%d</strong>", $historyObj->visited_nodes_count, $historyObj->nodes_count));
+	$nodesTxt = sprintf(translateFN("Hai visitato <strong>%d</strong> nod$nodeSuff su un totale di <strong>%d</strong>"), $historyObj->visited_nodes_count, $historyObj->nodes_count);
 	list ($spentH, $spentM) = explode(':', $historyObj->history_nodes_time_FN());
 	$timeArr = [];
 	if ($spentH>0 || $spentM>0) {

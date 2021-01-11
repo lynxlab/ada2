@@ -244,14 +244,14 @@ function _get_course_instance_info($id_course,$id_course_instance){
 		      $requested_service_data = $tObj->getTable();
 		    }
 		    else {
-		      $requested_service_data = translateFN("Nessun'informazione disponibile sul servizio $id_course_instance.");
+		      $requested_service_data = sprintf(translateFN("Nessun'informazione disponibile sul servizio %d.", $id_course_instance));
 		    }
 	    } else {
-	    	  $requested_service_data = translateFN("Nessun'informazione disponibile sul servizio $id_course_instance.");
+	    	  $requested_service_data = sprintf(translateFN("Nessun'informazione disponibile sul servizio %d.", $id_course_instance));
 	    }
 
     }  else {
-    	  $requested_service_data = translateFN("Nessun'informazione disponibile sul servizio $id_course_instance.");
+    	  $requested_service_data = sprintf(translateFN("Nessun'informazione disponibile sul servizio %d.", $id_course_instance));
     }
 
 	return $requested_service_data;
