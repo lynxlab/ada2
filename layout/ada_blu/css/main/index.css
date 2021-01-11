@@ -42,14 +42,13 @@ html,body {
     background: #eaeaea;
     padding: 10px;
     border-radius: 10px;
-    margin: 5px 10px 5px 0;
+    margin: 0;
     /* box-shadow: 0px 5px 15px 0px rgba(120, 120, 120, .4);     */
 }
 
 .ada-column {
     padding-bottom: 10px;
-    width: 99%;
-    float: left;
+    width: 100%;
 }
 
 #container .portlet-header {
@@ -105,11 +104,11 @@ html,body {
 .RSSContent a { margin-top: 10px; display: inline-block; }
 .twitterContainer { margin-bottom: 15px; overflow: hidden; text-overflow: ellipsis; }
 
-#newscont .continuelink.row { margin:0; padding:0; }
 #newscont .newstitle { display: inline-block; }
 #newscont p.newscontent { color: #767676; line-height: 1.5rem; }
 #newscont a.newstitle { color: #777; }
 #newscont a.newstitle:hover { color: #1263A0; }
+#newscont a.continuelink { display: block; text-align: right; margin-top: 1.5rem; }
 
 .ADAwidget .ui.basic.feed.segment { padding:0; }
 .ADAwidget .ui.basic.feed.segment .event { padding-top:0; }
@@ -124,3 +123,6 @@ html,body {
 .ADAwidget .ui.basic.feed.segment .label img:not(.circular) { border-radius:0; }
 .ADAwidget .ui.basic.feed.segment .header a { font-weight: bold; }
 
+#contentcontent .first.grid .column:last-child {
+    padding-left: 0;
+}

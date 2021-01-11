@@ -153,7 +153,7 @@ switch ($mode) {
         $tObj = new Table();
         $tObj->initTable('0','right','1','0','90%','','','','','1','0');
         // Syntax: $border,$align,$cellspacing,$cellpadding,$width,$col1, $bcol1,$col2, $bcol2
-        $caption = translateFN("Esercizi eseguiti fino al $ymdhms");
+        $caption = sprintf(translateFN("Esercizi eseguiti fino al %s"),  $ymdhms);
         $summary = translateFN("Elenco degli esercizi eseguiti");
         $tObj->setTable($exercise_dataHa,$caption,$summary);
         $tabled_exercise_dataHa = $tObj->getTable();

@@ -21,8 +21,8 @@
 <template_field class="template_field" name="message">message</template_field>
 </div>
 <div id="contentcontent">
-         <div class="first">
-            <div class="sx">
+         <div class="first ui two column stackable grid">
+            <div class="sx ui eleven wide column">
                 <div class="ada-column">
                     <!-- <div class="portlet">
                         <div class"portlet-header"><i18n>messaggi</i18n></div>
@@ -45,7 +45,7 @@
                   </div>
                 </div -->
             </div>
-            <div class="dx">
+            <div class="dx ui five wide column">
                 <div class="ada-column">
                 <div class="login portlet" id="loginform">
                     <div class="portlet-header"><i18n>login</i18n></div>
@@ -58,7 +58,7 @@
     		</div>
                 </div>
 
-		        <div class="helpcont ada-column">
+		<div class="helpcont ada-column">
                     <div class="portlet">
                         <div class="portlet-header">&nbsp;</div>
                     <div class="portlet-content">
