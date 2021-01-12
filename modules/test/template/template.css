@@ -157,7 +157,7 @@ ul.tableLike li {
     width: 100px;
 }
 
-.image {
+.image:not(.ui) {
     display: inline-block;
     height: 50px;
     margin-left: 5px;
