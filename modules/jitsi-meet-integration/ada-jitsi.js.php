@@ -186,6 +186,7 @@ $j.getScript(
 			configOverwrite: {
 				startWithVideoMuted : <?php echo ($userObj->getType() == AMA_TYPE_TUTOR ? 'false' : 'true');  ?>,
 				startWithAudioMuted : <?php echo ($userObj->getType() == AMA_TYPE_TUTOR ? 'false' : 'true');  ?>,
+				defaultLanguage: '<?php echo strtolower($_SESSION['sess_user_language']) ?>',
 			},
 			interfaceConfigOverwrite: {
 				TOOLBAR_BUTTONS: [ <?php echo '\''.implode('\', \'',$TOOLBAR_BUTTONS). '\''; ?> ],
