@@ -4,10 +4,8 @@
 /*
  *
  */
-.sx {width:70%; float:left;}
-.dx {width:29%; float:right;}
 
-/*
+ /*
  *
 .wellcome P {margin:0 0 0.8em 0;}
 .wellcome P A {color:#505050; background:#eee; padding:15px 50px 15px 10px; display:block; font-weight:bold;}
@@ -77,4 +75,4 @@
 
 #contentcontent .ui.error.message .message a:hover {
 	color: #FF6F6F;
-} 
+}

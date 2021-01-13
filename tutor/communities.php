@@ -129,6 +129,10 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 			$duration = $c['durata'];
 			$end_date = $c['data_fine'];
 		}
+		/**
+		 * giorgio 13/01/2021: force end_date to have time set to 23:59:59
+		 */
+		$end_date = strtotime('tomorrow midnight', $end_date) - 1;
 
 		if (!in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_VISITOR, ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED, ADA_STATUS_TERMINATED))) {
 			$access_link = BaseHtmlLib::link("#", translateFN('Abilitazione in corso...'));
@@ -145,6 +149,10 @@ if(!AMA_DataHandler::isError($courseInstances) && is_array($courseInstances) && 
 				}
 				if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 				$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
+				/**
+				 * giorgio 13/01/2021: force subscritionEndDate to have time set to 23:59:59
+				 */
+				$subscritionEndDate = strtotime('tomorrow midnight', $subscritionEndDate) - 1;
 				if ($isEnded || time()>=$subscritionEndDate) {
 					if ($userObj instanceof ADAPractitioner) $tmpUserObj = $userObj->toStudent();
 					else $tmpUserObj = $userObj;
