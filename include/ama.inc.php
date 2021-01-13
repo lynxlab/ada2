@@ -5435,6 +5435,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         else {
             $data_fine = $this->add_number_of_days($durata,$data_inizio);
         }
+        /**
+         * giorgio 13/01/2021: force data_fine to have time set to 23:59:59
+         */
+        $data_fine = strtotime('tomorrow midnight', $data_fine) - 1;
 
         // check if corso exists
         $sql  = "select id_corso from modello_corso where id_corso=$id_corso";
@@ -5833,6 +5837,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         else {
             $data_fine = $this->add_number_of_days($durata,$data_inizio);
         }
+        /**
+         * giorgio 13/01/2021: force data_fine to have time set to 23:59:59
+         */
+        $data_fine = strtotime('tomorrow midnight', $data_fine) - 1;
 
         // verify that the record exists
         $res_id =  $db->getRow("select id_istanza_corso from istanza_corso where id_istanza_corso=$id");
@@ -5877,6 +5885,10 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
     		foreach ($subscriptions as $subscription) {
     			$updateSubscription = false;
     			$subscritionEndDate = $this->add_number_of_days($duration_subscription, intval($subscription->getSubscriptionDate()));
+                /**
+                 * giorgio 13/01/2021: force subscritionEndDate to have time set to 23:59:59
+                 */
+                $subscritionEndDate = strtotime('tomorrow midnight', $subscritionEndDate) - 1;
     			if ($subscription->getSubscriptionStatus() == ADA_STATUS_SUBSCRIBED &&
     				$subscritionEndDate<=time()) {
     					$subscription->setSubscriptionStatus(ADA_STATUS_TERMINATED);
