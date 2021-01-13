@@ -179,6 +179,11 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            	$end_date = $c['data_fine'];
 	            }
 
+				/**
+				 * giorgio 13/01/2021: force end_date to have time set to 23:59:59
+         		 */
+        		$end_date = strtotime('tomorrow midnight', $end_date) - 1;
+
 	            /*
 	            if ($isStarted && !$isEnded) {
 	                $access_link = BaseHtmlLib::link("view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId",
@@ -205,6 +210,10 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            		}
 	            		if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 	            		$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
+						/**
+			 			 * giorgio 13/01/2021: force subscritionEndDate to have time set to 23:59:59
+			 			 */
+						$subscritionEndDate = strtotime('tomorrow midnight', $subscritionEndDate) - 1;
 	            		if ($isEnded || time()>=$subscritionEndDate) {
 	            			$userObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
 	            			$subscription_status = ADA_STATUS_TERMINATED;
@@ -293,6 +302,10 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            	$duration = $c['duration_subscription'];
 	            	$end_date = $c['data_fine'];
 	            }
+				/**
+				 * giorgio 13/01/2021: force end_date to have time set to 23:59:59
+         		 */
+				$end_date = strtotime('tomorrow midnight', $end_date) - 1;
 
 	            $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 	            $isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;
@@ -321,6 +334,10 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 	            		if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione'])===0) $c['data_iscrizione']=time();
 	            		if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 	            		$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
+						/**
+			 			 * giorgio 13/01/2021: force subscritionEndDate to have time set to 23:59:59
+			 			 */
+						$subscritionEndDate = strtotime('tomorrow midnight', $subscritionEndDate) - 1;
 	            		if ($isEnded || time()>=$subscritionEndDate) {
 	            			$userObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
 	            			$subscription_status = ADA_STATUS_TERMINATED;
@@ -557,6 +574,10 @@ else {
 			if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione'])===0) $c['data_iscrizione']=time();
 			if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription']= PHP_INT_MAX;
 			$subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
+			/**
+			 * giorgio 13/01/2021: force end_date to have time set to 23:59:59
+			 */
+			$subscritionEndDate = strtotime('tomorrow midnight', $subscritionEndDate) - 1;
 			if ($isEnded || time()>=$subscritionEndDate) {
 				$userObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
 				$subscription_status = ADA_STATUS_TERMINATED;

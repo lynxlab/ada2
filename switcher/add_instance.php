@@ -108,6 +108,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $data_inizio_previsto = dt2tsFN($_POST['data_inizio_previsto']);
             $durata = $_POST['durata'];
             $data_fine = $dh->add_number_of_days($durata,isset($data_inizio) ? $data_inizio : null);
+            /**
+			 * giorgio 13/01/2021: force data_fine to have time set to 23:59:59
+			 */
+            $data_fine = strtotime('tomorrow midnight', $data_fine) - 1;
             $id_istanza_corso = $result;
             $chatroom_ha['id_chat_owner']= $userObj->id_user;
             $chatroom_ha['chat_title'] = $course_title; // $_POST['chat_title'];
