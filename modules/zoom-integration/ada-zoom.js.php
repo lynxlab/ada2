@@ -80,7 +80,8 @@ ZoomMtg.preLoadWasm();
 ZoomMtg.prepareJssdk();
 
 //Add the language code to the internationalization.reload method.
-$.i18n.reload("<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
+ZoomMtg.i18n.load("<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
+ZoomMtg.i18n.reload("<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
 //Add the language code to the ZoomMtg.reRender method.
 ZoomMtg.reRender({lang: "<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>"});
 
