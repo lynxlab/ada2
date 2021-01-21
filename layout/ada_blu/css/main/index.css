@@ -74,24 +74,6 @@ html,body {
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 .ui-sortable-placeholder * { visibility: hidden; }
 
-.ui.popup, .user_data_default {
-	min-width:220px;
-	max-width:500px;
-}
-.user_data_default {
-    text-align: left;
-    text-transform: capitalize;
-    line-height:1.7em;
-}
-.ui.popup span {
-    color:#000;
-    display: block;
-}
-.avatar_user {
-  float: left;
-  margin-right: 5px;
-}
-
 #span_remindme {
 	float: left;
 	margin-top:  4px;
