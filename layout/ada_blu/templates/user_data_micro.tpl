@@ -1,5 +1,5 @@
-<div id="status_bar">
-    <div class="user_data_default status_bar">
+
+        <template_field class="template_field" name="impersonatelink">impersonatelink</template_field>
         <div class="avatar-container">
             <span class="avatar_user ui small image">
                 <template_field class="template_field" name="user_avatar">user_avatar</template_field>
@@ -20,11 +20,10 @@
                 <i18n>status: </i18n>
                 <template_field class="template_field" name="status">status</template_field>
             </span>
+            <span>
+                <template_field class="template_field" name="last_visit">last_visit</template_field>
+            </span>
+            <span>
+                <template_field class="template_field" name="user_level">user_level</template_field>
+            </span>
         </div>
-        <div class="impersonate-link-container">
-            <a class="ui tiny button impersonatelink" href="<template_field class="template_field" name="user_modprofilelink">user_modprofilelink</template_field>">
-                <i18n>Vai alla tua Home</i18n>
-            </a>
-        </div>
-    </div>
-</div>

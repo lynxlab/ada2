@@ -143,6 +143,56 @@ a:visited {text-decoration: none; }
   border-bottom:1px dotted #ddd;
   display: none;
 }
+.status_bar.user_data_default {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    text-transform: capitalize;
+    line-height: 1.5em;
+}
+.status_bar.user_data_default .avatar-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.status_bar.user_data_default .user-data-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.5em;
+    overflow: hidden;
+    white-space: nowrap;
+    justify-content: flex-start;
+    flex: 1;
+}
+
+.status_bar.user_data_default .user-data-container.more {
+    flex-basis: 100%;
+    border-top: 1px solid lightgray;
+    padding: 0.5em 0;
+    margin-top: 0.5em;
+}
+
+.status_bar.user_data_default .user-data-container span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.status_bar.user_data_default .user-data-container span.uname {
+    text-transform: none;
+}
+
+.status_bar.user_data_default .impersonate-link-container {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    order: 50;
+}
+
+.status_bar.user_data_default .impersonate-link-container a.impersonatelink {
+    margin-top: 0.5em;
+}
+
 #user_data {
     float:right;
  /*   border-top:1px solid #e0e0e0;*/
