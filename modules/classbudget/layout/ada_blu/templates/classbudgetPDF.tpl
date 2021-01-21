@@ -13,7 +13,7 @@ if ( isset($pdf) ) {
   $text_height = $fontMetrics->getFontHeight($font, $size);
 
   $foot = $pdf->open_object();
-  
+
   $w = $pdf->get_width();
   $h = $pdf->get_height();
 
@@ -26,7 +26,7 @@ if ( isset($pdf) ) {
   $text = $GLOBALS['adafooter'];
   $pdf->text(16, $y, $text, $font, $size, $color);
 
-  $text = translateFN("Pagina")." {PAGE_NUM} ".translateFN("di")." {PAGE_COUNT}";  
+  $text = translateFN("Pagina")." {PAGE_NUM} ".translateFN("di")." {PAGE_COUNT}";
 
   // Center the text
   $width = $fontMetrics->getTextWidth($text, $font, $size);
@@ -34,9 +34,9 @@ if ( isset($pdf) ) {
 
   $pdf->close_object();
   $pdf->add_object($foot, "all");
-  
+
 }
-</script>    
+</script>
         <a name="top"></a>
         <!-- testata -->
         <div id="header">
@@ -48,47 +48,14 @@ if ( isset($pdf) ) {
             <div id="user_wrap">
             <!--dati utente-->
                 <div id="status_bar">
-                    <div id="user_data" class="user_data_default">
-                        <i18n>utente: </i18n>
+                    <div class="user_data_default status_bar">
+                        <template_field class="microtemplate_field" name="user_data_micro">user_data_micro</template_field>
                         <span>
-                            <template_field class="template_field" name="user_name">user_name</template_field>
+                            <template_field class="template_field" name="message">message</template_field>
                         </span>
-                        <i18n>tipo: </i18n>
-                        <span>
-                            <template_field class="template_field" name="user_type">user_type</template_field>
-                        </span>
-                        <div class="status">
-                        <i18n>status: </i18n>
-                        <span>
-                            <template_field class="template_field" name="status">status</template_field>
-                        </span>
-                        </div>
-                          <i18n>ultimo accesso: </i18n>
-                        <span>
-                            <template_field class="template_field" name="last_visit">last_visit</template_field>
-                        </span>
-                        <i18n>livello</i18n>:
-                          <span>
-                            <template_field class="template_field" name="user_level">user_level</template_field>
-                         </span>
-                    </div>            
-                <!-- / dati utente -->
-                <!-- label -->
-                <div id="label">
-                    <div class="topleft">
-                        <div class="topright">
-                            <div class="bottomleft">
-                                <div class="bottomright">
-                                    <div class="contentlabel">
-                                        <template_field class="template_field" name="message">message</template_field>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
-                <!-- /label -->
-                </div>
+                <!-- / dati utente -->
             </div>
 
             <!-- contenuto -->
@@ -105,7 +72,7 @@ if ( isset($pdf) ) {
                             &nbsp;<i18n>le spese ammontano a</i18n>:
                             &nbsp;<template_field class="template_field" name="currency">currency</template_field>&nbsp;
                             <span id="instance-cost" data-instance-totalcost='<template_field class="template_field" name="totalcost">totalcost</template_field>'><template_field class="template_field" name="totalcostStr">totalcostStr</template_field></span>
-                            <br/>(<i18n>differenza</i18n>: 
+                            <br/>(<i18n>differenza</i18n>:
                             <template_field class="template_field" name="currency">currency</template_field>
                             <span id="instance-balance" class='<template_field class="template_field" name="balanceclass">balanceclass</template_field>' data-instance-balance='<template_field class="template_field" name="balance">balance</template_field>'><template_field class="template_field" name="balanceStr">balanceStr</template_field></span>)
                             </h2>
