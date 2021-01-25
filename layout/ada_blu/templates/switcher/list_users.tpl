@@ -70,7 +70,7 @@
         <template_field class="microtemplate_field" name="footer">footer</template_field>
     </div>
     <!-- / piede -->
-
+    <span id="unknownErrorMSG" style="display:none;"><i18n>Errore sconosciuto</i18n></span>
 </body>
 
 </html>
