@@ -76,10 +76,12 @@ SwitcherHelper::init($neededObjAr);
 
 $usersType = DataValidator::validate_not_empty_string($_GET['list']);
 $fieldsAr = array('nome','cognome','username','tipo','stato');
+$amaUserType = AMA_TYPE_VISITOR;
 switch($usersType) {
     case 'authors':
         $usersAr = $dh->get_authors_list($fieldsAr);
         $profilelist = translateFN('lista degli autori');
+        $amaUserType = AMA_TYPE_AUTHOR;
         break;
     case 'tutors':
         $usersAr = $dh->get_tutors_list($fieldsAr);
@@ -93,6 +95,7 @@ switch($usersType) {
         $buttonSubscriptions = CDOMElement::create('button','class:Subscription_Button');
         $buttonSubscriptions->setAttribute('onclick', 'javascript:goToSubscription(\'tutor_subscriptions\');');
         $buttonSubscriptions->addChild (new CText(translateFN('Carica da file').'...'));
+        $amaUserType = AMA_TYPE_TUTOR;
         break;
     case 'students':
     default:
@@ -103,7 +106,21 @@ switch($usersType) {
     	 */
         $usersAr = $dh->get_students_list($fieldsAr);
         $profilelist = translateFN('lista degli studenti');
+        $amaUserType = AMA_TYPE_STUDENT;
         break;
+}
+
+if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE) {
+    // get the list of users linked to the current listed type
+    $impDH = \Lynxlab\ADA\Module\Impersonate\AMAImpersonateDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+    try {
+        $linkedUsers = $impDH->findBy('LinkedUsers', [
+            'source_type' => $amaUserType,
+            'is_active' => true,
+        ]);
+    } catch (\Lynxlab\ADA\Module\Impersonate\ImpersonateException $ie) {
+        $linkedUsers = [];
+    }
 }
 
 if(is_array($usersAr) && count($usersAr) > 0) {
@@ -180,6 +197,13 @@ if(is_array($usersAr) && count($usersAr) > 0) {
 	        $actionsArr[] = $undelete_link;
         }
 
+        if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE && $user[5] == ADA_STATUS_REGISTERED) {
+            $impActions = \Lynxlab\ADA\Module\Impersonate\Utils::buildActionsLinks($userId, $user[4], $linkedUsers);
+            if (is_array($impActions) && count($impActions)>0) {
+                $actionsArr =  array_merge($actionsArr, $impActions);
+            }
+        }
+
         $actions = BaseHtmlLib::plainListElement('class:inline_menu',$actionsArr);
         /**
          * @author giorgio 11/apr/2018
@@ -233,12 +257,17 @@ $layout_dataAr['JS_filename'] = array(
         JQUERY_DATATABLE_DATE,
         ROOT_DIR. '/js/include/jquery/dataTables/selectSortPlugin.js',
         JQUERY_NO_CONFLICT
-	);
-$layout_dataAr['CSS_filename']= array(
+    );
+
+
+    $layout_dataAr['CSS_filename']= array(
         JQUERY_UI_CSS,
         SEMANTICUI_DATATABLE_CSS
 	);
-  $render = null;
-  $optionsAr['onload_func'] = 'initDoc();';
+    $render = null;
+    $optionsAr['onload_func'] = 'initDoc();';
+    if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE) {
+        $layout_dataAr['JS_filename'][] = MODULES_IMPERSONATE_PATH . '/js/impersonateAPI.js';
+        $layout_dataAr['CSS_filename'][] = MODULES_IMPERSONATE_PATH . '/layout/css/showHideDiv.css';
+    }
   ARE::render($layout_dataAr, $content_dataAr, $render, $optionsAr);
-
