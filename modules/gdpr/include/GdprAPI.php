@@ -251,6 +251,12 @@ class GdprAPI {
 			 * the ADMIN is not required to accept all mandatory policies
 			 */
 			return true;
+		} else if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE && \Lynxlab\ADA\Module\Impersonate\Utils::isImpersonating()) {
+			/**
+			 * if impersonate module is active and logged user is impersonating another user
+			 * no policy must be accepted
+			 */
+			return true;
 		} else {
 			/**
 			 * other types of users must be checked
