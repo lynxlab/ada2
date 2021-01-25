@@ -1,0 +1,16 @@
+{
+    "name": "lynxlab/impersonate",
+    "description": "This is the ada module to let an ada user impersonate a different type of user.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Impersonate\\" : ["include/", "include/form"]
+	    }
+    }
+}

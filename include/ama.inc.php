@@ -3037,8 +3037,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $add_author_values = array(
                 $author_ha['id_utente'],
-                $this->or_zero($author_ha['tariffa']),
-                $this->or_null($author_ha['profilo'])
+                $this->or_zero(array_key_exists('tariffa', $author_ha) ? $author_ha['tariffa'] : null),
+                $this->or_null(array_key_exists('profilo', $author_ha) ? $author_ha['profilo'] : null),
         );
 
         $result = $this->executeCriticalPrepared($add_author_sql, $add_author_values);
