@@ -1,11 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-    <head>
-        <link rel="stylesheet" href="../../css/services/default.css" type="text/css">
-    </head>
-    <body>
-        <a name="top"></a>
-		<div id="pagecontainer">
+
+<head>
+    <link rel="stylesheet" href="../../css/services/default.css" type="text/css">
+</head>
+
+<body>
+    <a name="top"></a>
+    <div id="pagecontainer">
 
         <!-- testata -->
         <div id="header">
@@ -13,8 +15,8 @@
         </div>
         <!-- / testata -->
         <!-- menu -->
-            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-        <!-- / menu -->  
+        <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
+        <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->
@@ -28,24 +30,18 @@
                 </span>
             </div>
             <!-- / percorso -->
+
+            <!-- dati utente -->
             <div id="status_bar">
-            <!--dati utente-->
-            <div id="user_data" class="user_data_default">
-                <i18n>utente: </i18n>
-                <span>
-                    <template_field class="template_field" name="user_name">user_name</template_field>
-                </span>
-                <i18n>tipo: </i18n>
-                <span>
-                    <template_field class="template_field" name="user_type">user_type</template_field>
-                </span>
-                <div class="status">
-                    <i18n>status: </i18n>
+                <div class="user_data_default status_bar">
+                    <template_field class="microtemplate_field" name="user_data_micro">user_data_micro</template_field>
                     <span>
-                        <template_field class="template_field" name="status">status</template_field>
+                        <template_field class="template_field" name="message">message</template_field>
                     </span>
                 </div>
-            </div> <!-- / dati utente -->
+            </div>
+            <!-- / dati utente -->
+
             <!-- label -->
             <!--
             <div id="label">
@@ -65,10 +61,9 @@
             </div>
             -->
             <!-- /label -->
-            </div>
             <!-- contenuto -->
             <div id="content">
-                <div id="contentcontent" class="contentcontent_default" >
+                <div id="contentcontent" class="contentcontent_default">
                     <div class="first">
                         <div class="help">
                             <template_field class="template_field" name="help">help</template_field>
@@ -83,12 +78,13 @@
             <!--  / contenuto -->
         </div>
         <!-- / contenitore -->
-		<div id="push"></div>
-		</div>
-        <!-- piede -->
-        <div id="footer">
-            <template_field class="microtemplate_field" name="footer">footer</template_field>
-        </div>
-        <!-- / piede -->
-    </body>
+        <div id="push"></div>
+    </div>
+    <!-- piede -->
+    <div id="footer">
+        <template_field class="microtemplate_field" name="footer">footer</template_field>
+    </div>
+    <!-- / piede -->
+</body>
+
 </html>

@@ -8,15 +8,15 @@
 <body>
 	<a name="top"></a>
 	<div id="pagecontainer">
-	
+
 <!-- testata -->
 <div id="header">
 		 <template_field class="microtemplate_field" name="header">header</template_field>
-</div> 
+</div>
 <!-- / testata -->
 <!-- menu -->
-    <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-<!-- / menu -->  
+    <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
+<!-- / menu -->
 <!-- contenitore -->
 <div id="container">
 <!-- PERCORSO -->
@@ -26,24 +26,13 @@
 		 <template_field class="template_field" name="module">module</template_field>
 		 </span>
 	</div> <!-- / percorso -->
-  <!--dati utente-->
-  <div id="status_bar">
-    <div id="user_data" class="user_data_default">
-        <i18n>utente: </i18n>
-            <span>
-                 <template_field class="template_field" name="user_name">user_name</template_field>
-            </span>
-        <i18n>tipo: </i18n>
-            <span>
-                 <template_field class="template_field" name="user_type">user_type</template_field>
-            </span>
-    <div class="status">
-        <i18n>status: </i18n>
-            <span>
-                <template_field class="template_field" name="status">status</template_field>
-            </span>
-  										 </div>
-  </div> <!-- / dati utente -->
+	<!--dati utente-->
+	<div id="status_bar">
+		<div class="user_data_default status_bar">
+		<template_field class="microtemplate_field" name="user_data_micro">user_data_micro</template_field>
+		</div>
+	</div>
+	<!-- / dati utente -->
   </div>
   <!-- label -->
   <div id="label">
@@ -59,7 +48,7 @@
   							</div>
   						</div>
   					</div>
-  			</div>		
+  			</div>
   </div><!-- /label -->
 
   <!-- contenuto -->
@@ -68,14 +57,14 @@
         <div class="first">
           <template_field class="template_field" name="help">help</template_field>
             <template_field class="template_field" name="data">data</template_field>
-					
+
        </div>
     </div>
     <div id="bottomcont">
     </div>
 	</div><!-- /contenuto -->
-	
-	
+
+
   <!-- menudestra -->
   <!--
   <div id="menuright" class="sottomenu_off menuright_default">
@@ -127,15 +116,15 @@
 															 		<i18n>templates</i18n>
 															 </a>
 													 </li>
-												 
+
                   			</ul>
     </div>
     <div id="bottommenur">
     </div>
-  </div> 
+  </div>
   -->
   <!-- /menudestra  -->
-  
+
 </div> <!-- /contenitore -->
 	<div id="push"></div>
 	</div>
@@ -146,7 +135,7 @@
                 <template_field class="microtemplate_field" name="com_tools">com_tools</template_field>
             </div>
         </div>
-        <!-- /com_tools -->	
+        <!-- /com_tools -->
 <!-- PIEDE -->
 <div id="footer">
 		 <template_field class="microtemplate_field" name="footer">footer</template_field>

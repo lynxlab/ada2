@@ -14,8 +14,8 @@
         </div>
         <!-- / testata -->
         <!-- menu -->
-            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>  
-        <!-- / menu -->  
+            <template_field class="microtemplate_field" name="adamenu">adamenu</template_field>
+        <!-- / menu -->
         <!-- contenitore -->
         <div id="container">
             <!-- percorso -->
@@ -29,43 +29,13 @@
                 </span>
             </div>
             <!-- / percorso -->
-            <div id="status_bar">
             <!--dati utente-->
-            <div id="user_data" class="user_data_default">
-                <i18n>utente: </i18n>
-                <span>
-                    <template_field class="template_field" name="user_name">user_name</template_field>
-                </span>
-                <i18n>tipo: </i18n>
-                <span>
-                    <template_field class="template_field" name="user_type">user_type</template_field>
-                </span>
-                <div class="status">
-                    <i18n>status: </i18n>
-                    <span>
-                        <template_field class="template_field" name="status">status</template_field>
-                    </span>
-                </div>
+           <div id="status_bar">
+              <div class="user_data_default status_bar">
+                <template_field class="microtemplate_field" name="user_data_micro">user_data_micro</template_field>
+              </div>
             </div>
             <!-- / dati utente -->
-
-            <!-- label -->
-            <!--
-            <div id="label">
-                <div class="topleft">
-                    <div class="topright">
-                        <div class="bottomleft">
-                            <div class="bottomright">
-                                <div class="contentlabel">
-                                    <h1><i18n>Home autore</i18n></h1>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            -->
-            <!-- /label -->
             </div>
             <!-- contenuto -->
             <div id="content">

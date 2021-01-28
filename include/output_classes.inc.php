@@ -291,6 +291,39 @@ class ARE
           $content_dataAr['isVertical'] = ($layoutObj->menu->isVertical()) ? ' vertical' : '';
         }
 
+        if (isset($_SESSION['sess_userObj'])) {
+          if (!array_key_exists('user_avatar', $content_dataAr)) {
+            $content_dataAr['user_avatar'] = CDOMElement::create('img','class,img_user_avatr,src:'.$_SESSION['sess_userObj']->getAvatar())->getHtml();
+          }
+
+          if (!array_key_exists('user_uname', $content_dataAr)) {
+            $content_dataAr['user_uname'] = $_SESSION['sess_userObj']->getUserName();
+          }
+
+          if (!array_key_exists('last_visit', $content_dataAr)) {
+            $tmpla = trim(AMA_DataHandler::ts_to_date($_SESSION['sess_userObj']->get_last_accessFN(null,"UT",null)));
+            if (strlen($tmpla)>0) {
+              $content_dataAr['last_visit'] = translateFN('ultimo accesso').': '. $tmpla;
+            }
+          } else {
+            $content_dataAr['last_visit'] = translateFN('ultimo accesso').': '. $content_dataAr['last_visit'];
+          }
+
+          if (!array_key_exists('user_level', $content_dataAr)) {
+            if (isset($_GLOBALS['user_lever']) && strlen($_GLOBALS['user_level'])>0) {
+              $content_dataAr['user_level'] = translateFN('livello').':'. $_GLOBALS['user_level'];
+            }
+          } else {
+            $content_dataAr['user_level'] = translateFN('livello').':'. $content_dataAr['user_level'];
+          }
+
+          if (defined('MODULES_IMPERSONATE') && MODULES_IMPERSONATE &&
+            \Lynxlab\ADA\Module\Impersonate\ImpersonateActions::canDo(\Lynxlab\ADA\Module\Impersonate\ImpersonateActions::IMPERSONATE) &&
+            !array_key_exists('impersonatelink', $content_dataAr)) {
+            $content_dataAr['impersonatelink'] = \Lynxlab\ADA\Module\Impersonate\Utils::generateMenu()->getHtml();
+          }
+        }
+
         $html_renderer->fillin_templateFN($content_dataAr);
 
         $imgpath = (dirname($layout_template));
