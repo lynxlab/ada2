@@ -2521,11 +2521,10 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $last_char = count($message_text);
+        $last_char = strlen($message_text);
         /*
-     * Check if the user has specified an exact query (e.g. '"some text"')
-     *
-        */
+         * Check if the user has specified an exact query (e.g. '"some text"')
+         */
         if($message_text[0] == '"' && $message_text[$last_char-1] == '"' ) {
             $sql_prepared_text = $this->sql_prepared(trim($message_text,'"'));
             $sql_for_where     = "testo_messaggio=$sql_prepared_text";
@@ -2535,8 +2534,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
             $sql_for_where     = "testo_messaggio=$sql_prepared_text";
         }
         /*
-     * The user entered some search tokens (e.g. 'some text')
-        */
+         * The user entered some search tokens (e.g. 'some text')
+         */
         else {
             $sql_for_where = "";
             $token = strtok($message_text, ' ');
@@ -3038,8 +3037,8 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
 
         $add_author_values = array(
                 $author_ha['id_utente'],
-                $this->or_zero($author_ha['tariffa']),
-                $this->or_null($author_ha['profilo'])
+                $this->or_zero(array_key_exists('tariffa', $author_ha) ? $author_ha['tariffa'] : null),
+                $this->or_null(array_key_exists('profilo', $author_ha) ? $author_ha['profilo'] : null),
         );
 
         $result = $this->executeCriticalPrepared($add_author_sql, $add_author_values);
