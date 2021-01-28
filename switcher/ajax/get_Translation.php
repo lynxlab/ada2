@@ -164,5 +164,5 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         $retArray=array("status"=>"ERROR","msg"=>  translateFN("Dati inseriti non validi"),"html"=>null);
     }
 
-    echo json_encode($retArray);
+    echo json_encode($retArray, JSON_INVALID_UTF8_IGNORE);
 }

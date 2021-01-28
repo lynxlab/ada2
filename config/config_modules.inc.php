@@ -24,4 +24,5 @@ ModuleLoaderHelper::loadModuleFromArray([
 	[ 'name' => 'zoomconf', 'dirname' => 'zoom-integration' ],
 	[ 'name' => 'jitsi', 'dirname' => 'jitsi-meet-integration' ],
 	[ 'name' => 'collaboraacl', 'dirname' => 'collabora-access-list' ],
+	[ 'name' => 'impersonate' ],
 ]);
