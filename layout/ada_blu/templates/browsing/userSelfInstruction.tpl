@@ -147,9 +147,10 @@
                                         <strong>
 								    	<template_field class="template_field" name="subscription_status">subscription_status</template_field>
 								    </strong>
-								  </div>
-								</div>
-								<!-- getInstanceReminder widget -->
+                                    </div>
+                                </div>
+                                <!-- getInstanceReminder widget -->
+                            </div>
 
                         </div>
                     </div>
