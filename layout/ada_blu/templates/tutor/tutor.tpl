@@ -31,7 +31,6 @@
               </div>
             </div>
             <!-- / dati utente -->
-             </div>
 
             <!-- contenuto -->
             <div id="content_view">
