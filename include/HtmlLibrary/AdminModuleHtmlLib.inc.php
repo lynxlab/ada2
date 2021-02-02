@@ -517,6 +517,9 @@ class AdminModuleHtmlLib
     $tester_resp = FormElementCreator::addTextInput('tester_resp','Responsabile',$tester_dataAr, $errorsAr);
     $form->addChild($tester_resp);
 
+    $tester_iban = FormElementCreator::addTextInput('tester_iban','IBAN',$tester_dataAr, $errorsAr);
+    $form->addChild($tester_iban);
+
     $tester_pointer = FormElementCreator::addTextInput('tester_pointer','Puntatore al database',$tester_dataAr, $errorsAr);
     $form->addChild($tester_pointer);
 
