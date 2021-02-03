@@ -66,7 +66,7 @@
                         <template_field class="template_field" name="errorMSG">errorMSG</template_field>
 
                         <div id="courseInfo" class="ui stackable grid">
-                            <div class="firstcol <template_field class=" template_field " name="firstcol_wideness ">firstcol_wideness</template_field> column">
+                            <div class="firstcol <template_field class="template_field" name="firstcol_wideness">firstcol_wideness</template_field> column">
                                 <!-- course info segment -->
                                 <div class="courseinfo">
                                     <div class="ui top attached segment">
