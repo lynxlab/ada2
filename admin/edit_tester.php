@@ -179,7 +179,8 @@ else {
         'tester_email'    => $tester_infoAr[8],
       	'tester_resp'     => $tester_infoAr[9],
         'tester_pointer'  => $tester_infoAr[10],
-        'tester_desc'     => $tester_infoAr[11]
+        'tester_desc'     => $tester_infoAr[11],
+        'tester_iban'     => $tester_infoAr[12],
       );
 
       $form = AdminModuleHtmlLib::getEditTesterForm($testersAr, $tester_dataAr);
