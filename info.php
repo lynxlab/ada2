@@ -402,6 +402,7 @@ if ($op !== false && $op == 'course_info') {
                 $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
                 $course_instance_infoAR = $tester_dh->course_instance_get($instanceId);
                 if (!AMA_DataHandler::isError($course_instance_infoAR)) {
+					$course_infoAr = $tester_dh->get_course($courseId);
                     $startStudentLevel = $course_instance_infoAR['start_level_student'];
 
                       // add user to tester DB
@@ -433,7 +434,7 @@ if ($op !== false && $op == 'course_info') {
 								$doMailSend = true;
 								$mailTxt = [
 									"Gentile %s %s",
-									"hai effettuato la pre-iscrizione al corso <strong>%s</strong>.",
+									"hai effettuato la pre-iscrizione al corso <strong>%s</strong>, classe <strong>%s</strong>.",
 									"Se hai già effettuato il pagamento tramite PayPal non devi fare nulla, altrimenti effettua il bonifico usando le seguenti coordinate:",
 									"",
 									"Bonifico bancario",
@@ -450,6 +451,7 @@ if ($op !== false && $op == 'course_info') {
 								$mailTxt = sprintf(
 									translateFN(implode(PHP_EOL, $mailTxt)),
 									$userObj->getFirstName(), $userObj->getLastName(),
+									$course_infoAr['titolo'],
 									$course_instance_infoAR['title'],
 									$testerInfoAr['iban'],
 									$testerInfoAr['ragione_sociale'],
@@ -476,7 +478,7 @@ if ($op !== false && $op == 'course_info') {
 									$doMailSend = true;
 									$mailTxt = [
 										"Gentile %s %s",
-										"hai effettuato l'iscrizione al corso <strong>%s</strong>.",
+										"hai effettuato l'iscrizione al corso <strong>%s</strong>, classe <strong>%s</strong>.",
 										"",
 										"Per accedere al corso dovrai fare login, scrivendo il tuo username e la tua password a questo indirizzo: %s",
 										"",
@@ -485,6 +487,7 @@ if ($op !== false && $op == 'course_info') {
 									$mailTxt = sprintf(
 										translateFN(implode(PHP_EOL, $mailTxt)),
 										$userObj->getFirstName(), $userObj->getLastName(),
+										$course_infoAr['titolo'],
 										$course_instance_infoAR['title'],
 										BaseHtmlLib::link(HTTP_ROOT_DIR, HTTP_ROOT_DIR)->getHtml()
 									);
