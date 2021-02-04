@@ -174,7 +174,7 @@ class DataValidator
 
   }
 
-  
+
   public static function validate_password($password, $passwordcheck) {
    /**
     	 * @author steve 28/mag/2020
@@ -184,11 +184,11 @@ class DataValidator
     	 */
     $minLen = 8;
     $maxLen = 40;
- 
+
     if(isset($password) && !empty($password) && isset($passwordcheck)
        && !empty($passwordcheck) && $password == $passwordcheck
     ) {
-      $pattern = '/^[A-Za-z0-9_\.]{'.$minLen.','.$maxLen.'}$/'; 
+      $pattern = '/^[A-Za-z0-9_\.]{'.$minLen.','.$maxLen.'}$/';
       if (preg_match($pattern, $password))  {
         return $password;
       }
@@ -258,6 +258,24 @@ class DataValidator
 
       if(preg_match($url_pattern, $url)) {
         return $url;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  public static function validate_iban($iban) {
+    if(isset($iban) && !empty($iban)) {
+    	/**
+    	 * Regular Expression for IBAN validation
+    	 * Pls refer to https://stackoverflow.com/a/44657292
+    	 * for details and upgrades
+    	 */
+
+      $iban_pattern = '/^([A-Z]{2}[ \-]?[0-9]{2})(?=(?:[ \-]?[A-Z0-9]){9,30}$)((?:[ \-]?[A-Z0-9]{3,5}){2,7})([ \-]?[A-Z0-9]{1,3})?$/m';
+
+      if(preg_match($iban_pattern, $iban)) {
+        return $iban;
       }
       return false;
     }

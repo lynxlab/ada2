@@ -132,6 +132,10 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $errorsAr['tester_pointer'] = true;
   }
 
+  if (array_key_exists('tester_iban', $_POST) && strlen(trim($_POST['tester_iban']))>0 && DataValidator::validate_iban(trim($_POST['tester_iban'])) === FALSE) {
+    $errorsAr['tester_iban'] = true;
+  }
+
 
   if(count($errorsAr) > 0) {
     $tester_dataAr = $_POST;

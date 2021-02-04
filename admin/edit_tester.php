@@ -132,6 +132,10 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $errorsAr['tester_pointer'] = true;
   }
 
+  if (array_key_exists('tester_iban', $_POST) && strlen(trim($_POST['tester_iban']))>0 && DataValidator::validate_iban(trim($_POST['tester_iban'])) === FALSE) {
+    $errorsAr['tester_iban'] = true;
+  }
+
   if(count($errorsAr) > 0) {
     $tester_dataAr = $_POST;
     $form = AdminModuleHtmlLib::getEditTesterForm($testersAr,$tester_dataAr,$errorsAr);
@@ -175,7 +179,8 @@ else {
         'tester_email'    => $tester_infoAr[8],
       	'tester_resp'     => $tester_infoAr[9],
         'tester_pointer'  => $tester_infoAr[10],
-        'tester_desc'     => $tester_infoAr[11]
+        'tester_desc'     => $tester_infoAr[11],
+        'tester_iban'     => $tester_infoAr[12],
       );
 
       $form = AdminModuleHtmlLib::getEditTesterForm($testersAr, $tester_dataAr);

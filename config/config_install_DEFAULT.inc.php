@@ -83,6 +83,13 @@ if (MULTIPROVIDER) {
      * of requesting a payment before the user is confirmed (i.e. status set to ADA_STATUS_REGISTERED)
      */
     define ('ADA_SUBSCRIBE_FROM_LOGINREQUIRED', true);
+
+    /**
+     * true if instance subscription email must be send
+     *
+     * NOTE: will send an email only if the subscribing user has a non empty email address
+     */
+    define ('ADA_SEND_INSTANCE_SUBSCRIPTION_EMAIL', true);
 }
 
 /**

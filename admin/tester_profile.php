@@ -101,6 +101,7 @@ if($id_tester !== FALSE) {
       array(translateFN('E-mail')    , $tester_infoAr[8]),
       array(translateFN('Descrizione')     , $tester_infoAr[11]),
       array(translateFN('Responsabile')     , $tester_infoAr[9]),
+      array(translateFN('IBAN')     , $tester_infoAr[12]),
       array(translateFN('Puntatore al database')  , $tester_infoAr[10])
       );
     //$tester_data = BaseHtmlLib::tableElement('',array(),$tester_dataAr);
