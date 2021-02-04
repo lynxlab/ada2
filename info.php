@@ -422,12 +422,40 @@ if ($op !== false && $op == 'course_info') {
 
                             $MSGheader->addChild(new CText(translateFN('La tua preiscrizione è stata effettuata con successo.')));
                             $MSGtext->addChild(BaseHtmlLib::link($userObj->getHomePage(), translateFN('Clicca qui')));
-                            $MSGtext->addChild (new CText(' '.translateFN('per tornare alla tua home page')));
+							$MSGtext->addChild (new CText(' '.translateFN('per tornare alla tua home page')));
+							$doMailSend = false;
+							$doRedirect = false;
 
                             if ($course_instance_infoAR['price'] > 0) {
-                                $args = '?provider='.$providerId.'&id_course='.$courseId.'&id_course_instance='.$instanceId;
-                                header('Location: ' . HTTP_ROOT_DIR . '/browsing/student_course_instance_subscribe.php'.$args);
-                                exit();
+								$args = '?provider='.$providerId.'&id_course='.$courseId.'&id_course_instance='.$instanceId;
+								$redirectUrl = HTTP_ROOT_DIR . '/browsing/student_course_instance_subscribe.php'.$args;
+								$doRedirect = true;
+								$doMailSend = true;
+								$mailTxt = [
+									"Gentile %s %s",
+									"hai effettuato la pre-iscrizione al corso <strong>%s</strong>.",
+									"Se hai già effettuato il pagamento tramite PayPal non devi fare nulla, altrimenti effettua il bonifico usando le seguenti coordinate:",
+									"",
+									"Bonifico bancario",
+									"IBAN: <strong>%s</strong>",
+									"Intestato a: <strong>%s</strong>",
+									"Importo: <strong>" . ADA_CURRENCY_SYMBOL . "%s</strong>",
+									"",
+									"Nella causale del bonifico devi indicare: il tuo Nome e Cognome e il Titolo del corso. Invia il bonifico alla segreteria e ti verrà immediatamente attivata l'iscrizione.",
+									"",
+									"Per accedere al corso dovrai fare login, scrivendo il tuo username e la tua password a questo indirizzo: %s",
+									"",
+									"Buon lavoro",
+								];
+								$mailTxt = sprintf(
+									translateFN(implode(PHP_EOL, $mailTxt)),
+									$userObj->getFirstName(), $userObj->getLastName(),
+									$course_instance_infoAR['title'],
+									$testerInfoAr['iban'],
+									$testerInfoAr['ragione_sociale'],
+									number_format($course_instance_infoAR['price'], ADA_CURRENCY_DECIMALS, ADA_CURRENCY_DECIMAL_POINT, ADA_CURRENCY_THOUSANDS_SEP),
+									BaseHtmlLib::link(HTTP_ROOT_DIR, HTTP_ROOT_DIR)->getHtml()
+								);
                             } else {
                                 $result = $tester_dh->course_instance_student_subscribe($instanceId, $userObj->getId(),ADA_STATUS_SUBSCRIBED, $startStudentLevel);
                                 if(!AMA_DataHandler::isError($result)) {
@@ -444,10 +472,50 @@ if ($op !== false && $op == 'course_info') {
 
                                 	$MSGheader->addChild(new CText(translateFN('La tua iscrizione è stata effettuata con successo.')));
                                 	$MSGtext->addChild(BaseHtmlLib::link($userObj->getHomePage(), translateFN('Clicca qui')));
-                                	$MSGtext->addChild (new CText(' '.translateFN('per andare alla tua home page e accedere')));
+									$MSGtext->addChild (new CText(' '.translateFN('per andare alla tua home page e accedere')));
+									$doMailSend = true;
+									$mailTxt = [
+										"Gentile %s %s",
+										"hai effettuato l'iscrizione al corso <strong>%s</strong>.",
+										"",
+										"Per accedere al corso dovrai fare login, scrivendo il tuo username e la tua password a questo indirizzo: %s",
+										"",
+										"Buon lavoro",
+									];
+									$mailTxt = sprintf(
+										translateFN(implode(PHP_EOL, $mailTxt)),
+										$userObj->getFirstName(), $userObj->getLastName(),
+										$course_instance_infoAR['title'],
+										BaseHtmlLib::link(HTTP_ROOT_DIR, HTTP_ROOT_DIR)->getHtml()
+									);
                                 }
+							}
 
-                            }
+							if (defined('ADA_SEND_INSTANCE_SUBSCRIPTION_EMAIL') && ADA_SEND_INSTANCE_SUBSCRIPTION_EMAIL &&  strlen($userObj->getEmail()) > 0 && $doMailSend) {
+								/**
+								 * Send the message an email message
+								 * via PHPMailer
+								 */
+								require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
+								$phpmailer = new PHPMailer();
+								$phpmailer->CharSet = ADA_CHARSET;
+								$phpmailer->IsSendmail();
+								$phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);
+								$phpmailer->IsHTML(true);
+								$phpmailer->Subject = sprintf(translateFN("[%s] - Iscrizione a %s"), PORTAL_NAME, $course_instance_infoAR['title']);
+								$phpmailer->AddAddress($userObj->getEmail(),  $userObj->getFullName());
+								$phpmailer->Body = nl2br($mailTxt);
+								$phpmailer->AltBody = html_entity_decode(strip_tags($mailTxt), ENT_QUOTES, ADA_CHARSET);
+								if (DEV_ALLOW_SENDING_EMAILS) {
+									$emailed = $phpmailer->Send();
+								} else {
+									$emailed = true;
+								}
+							}
+
+							if ($doRedirect) {
+								redirect($redirectUrl);
+							}
 
 //                        } else if($result->code == AMA_ERR_UNIQUE_KEY) {
 //                            $data = new CText(translateFN('Risulti già preiscritto a questa edizione del corso'));

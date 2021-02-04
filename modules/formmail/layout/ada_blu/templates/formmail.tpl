@@ -118,7 +118,7 @@
                 </div>
             </div>
             <div class="actions">
-                <a class="ui positive right labeled icon button" href="<template_field class=" template_field " name="user_homepage ">user_homepage</template_field>">
+                <a class="ui positive right labeled icon button" href="<template_field class="template_field" name="user_homepage">user_homepage</template_field>">
           				ok
           				<i class="checkmark icon"></i>
         			</a>

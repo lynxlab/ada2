@@ -74,7 +74,7 @@
                                 </div>
                                 <i18n>Oggetto: </i18n>
                                 <div>
-                                    <input id="oggetto" type="text" name="titolo" maxlength="255" size="60" value="<template_field class=" template_field " name="titolo ">titolo</template_field>">
+                                    <input id="oggetto" type="text" name="titolo" maxlength="255" size="60" value="<template_field class="template_field" name="titolo">titolo</template_field>">
                                 </div>
                                 <div>
                                     <i18n>Testo: </i18n>
