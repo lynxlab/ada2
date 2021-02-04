@@ -68,7 +68,7 @@
                             </div>
                             <i18n>Oggetto: </i18n>
                             <div>
-                                <input type="text" name="titolo" id="oggetto" maxlength="40" size="60" value="<template_field class=" template_field " name="titolo ">titolo</template_field>">
+                                <input type="text" name="titolo" id="oggetto" maxlength="40" size="60" value="<template_field class="template_field" name="titolo">titolo</template_field>">
                             </div>
                             <div>
                                 <i18n>Testo: </i18n>
@@ -78,11 +78,11 @@
                             </div>
                             <p>
                                 <i18n>Ora (hh:mm:sec): </i18n>
-                                <input type="text" name="ora_evento" value="<template_field class=" template_field " name="event_time ">event_time</template_field>">
+                                <input type="text" name="ora_evento" value="<template_field class="template_field" name="event_time">event_time</template_field>">
                             </p>
                             <p>
                                 <i18n>Giorno (gg/mm/aaaa): </i18n>
-                                <input name="data_evento" type="text" size="10" maxlength="10" id="event_date" class="date_input" value="<template_field class=" template_field " name="event_date ">event_date</template_field>">
+                                <input name="data_evento" type="text" size="10" maxlength="10" id="event_date" class="date_input" value="<template_field class="template_field" name="event_date">event_date</template_field>">
                                 <a href="javascript:show_calendar('document.form.data_evento', document.form.data_evento.value);"><img src="img/cal.png" alt="Scegli una data">
                                 </a>
                                 <!--input type="text" name="data_evento" value="<template_field class="template_field" name="event_date">event_date</template_field>"-->

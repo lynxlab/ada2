@@ -1673,7 +1673,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $testers_sql = "SELECT id_tester,nome,ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione FROM tester "
+        $testers_sql = "SELECT id_tester,nome,ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione,iban FROM tester "
                 . "WHERE id_tester = ?";
 
         $testers_result = $db->getRow($testers_sql, $id_tester, $fetchmode);
@@ -1688,7 +1688,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $tester_sql = "SELECT T.id_tester,T.nome,T.ragione_sociale,T.indirizzo,T.citta,T.provincia,T.nazione,T.telefono,T.e_mail,T.responsabile,T.puntatore,T.descrizione "
+        $tester_sql = "SELECT T.id_tester,T.nome,T.ragione_sociale,T.indirizzo,T.citta,T.provincia,T.nazione,T.telefono,T.e_mail,T.responsabile,T.puntatore,T.descrizione,T.iban "
                 . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_corso=$id_course AND T.id_tester=ST.id_tester";
 
         $tester_resultAr = $db->getRow($tester_sql,NULL, AMA_FETCH_ASSOC);
@@ -1706,7 +1706,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $tester_sql = "SELECT T.id_tester,T.nome,T.ragione_sociale,T.indirizzo,T.provincia,T.nazione,T.telefono,T.e_mail,T.responsabile,T.puntatore,T.descrizione "
+        $tester_sql = "SELECT T.id_tester,T.nome,T.ragione_sociale,T.indirizzo,T.provincia,T.nazione,T.telefono,T.e_mail,T.responsabile,T.puntatore,T.descrizione,T.iban "
                 . "FROM tester AS T, servizio_tester AS ST WHERE ST.id_servizio=$id_service AND T.id_tester=ST.id_tester";
 
         $tester_resultAr = $db->getRow($tester_sql,NULL, AMA_FETCH_ASSOC);
@@ -1725,7 +1725,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if (AMA_DB::isError($db)) return $db;
 
-        $testers_sql = "SELECT id_tester,nome,ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione FROM tester "
+        $testers_sql = "SELECT id_tester,nome,ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione,iban FROM tester "
                 . "WHERE puntatore = '$tester'";
 
         $testers_result = $db->getRow($testers_sql);
@@ -1738,8 +1738,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
     public function add_tester($tester_dataAr=array()) {
 
-        $tester_sql = 'INSERT INTO tester(nome, ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione) '
-                . 'VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+        $tester_sql = 'INSERT INTO tester(nome, ragione_sociale,indirizzo,citta,provincia,nazione,telefono,e_mail,responsabile,puntatore,descrizione,iban) '
+                . 'VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
 
         $valuesAr = array(
                 $tester_dataAr['tester_name'],
@@ -1752,7 +1752,8 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
                 $tester_dataAr['tester_email'],
         		$tester_dataAr['tester_resp'],
         		$tester_dataAr['tester_pointer'],
-                $tester_dataAr['tester_desc']
+                $tester_dataAr['tester_desc'],
+                (array_key_exists('tester_iban', $tester_dataAr) && strlen(trim($tester_dataAr['tester_iban']))>0) ? trim($tester_dataAr['tester_iban']) : null,
         );
 
         $result = $this->queryPrepared($tester_sql, $valuesAr);
@@ -1765,7 +1766,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
 
     public function set_tester($tester_id, $tester_dataAr=array()) {
 
-        $tester_sql = 'UPDATE tester SET nome=?, ragione_sociale=?,indirizzo=?,citta=?,provincia=?,nazione=?,telefono=?,e_mail=?,responsabile=?,puntatore=?,descrizione=? WHERE id_tester=?';
+        $tester_sql = 'UPDATE tester SET nome=?, ragione_sociale=?,indirizzo=?,citta=?,provincia=?,nazione=?,telefono=?,e_mail=?,responsabile=?,puntatore=?,descrizione=?,iban=? WHERE id_tester=?';
 
         $valuesAr = array(
                 $tester_dataAr['tester_name'],
@@ -1779,6 +1780,7 @@ class AMA_Common_DataHandler extends Abstract_AMA_DataHandler {
                 $tester_dataAr['tester_resp'],
                 $tester_dataAr['tester_pointer'],
                 $tester_dataAr['tester_desc'],
+                (array_key_exists('tester_iban', $tester_dataAr) && strlen(trim($tester_dataAr['tester_iban']))>0) ? trim($tester_dataAr['tester_iban']) : null,
                 $tester_id
         );
 
