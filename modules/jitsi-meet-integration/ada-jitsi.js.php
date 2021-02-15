@@ -121,10 +121,11 @@ if ($userObj->getType() == AMA_TYPE_STUDENT) {
 	  ], JSON_UNESCAPED_SLASHES);
 	  $base64urlpayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
 
-	  $signature = hash_hmac('sha256', $base64urlheader . "." . $base64urlpayload, JITSI_APP_SECRET, true);
-	  $base64urlsignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
-
-	  $jwt = $base64urlheader . "." . $base64urlpayload . "." . $base64urlsignature;
+	  if (defined('JITSI_APP_SECRET') && strlen(JITSI_APP_SECRET)>0) {
+		  $signature = hash_hmac('sha256', $base64urlheader . "." . $base64urlpayload, JITSI_APP_SECRET, true);
+		  $base64urlsignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+		  $jwt = $base64urlheader . "." . $base64urlpayload . "." . $base64urlsignature;
+	  }
 
 	  // jitsi toolbarbuttons for tutor
 	  $TOOLBAR_BUTTONS = [
