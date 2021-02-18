@@ -1,0 +1,25 @@
+.ui.modal .condition.item.satisfied {
+	color: #29a329;
+}
+
+.ui.modal .condition.item.unsatisfied {
+	color: #e94141;
+}
+
+.ui.modal h3 {
+	margin: 0;
+	padding: 0;
+}
+
+.ui.modal .pre {
+	display: block;
+    font-family: monospace;
+    white-space: pre-line;
+    margin: 0.5em 0px 0px 0px;
+	border: 1px solid #dadada;
+	padding: 1em;
+}
+
+.ui.modal #conditionCode {
+	display: none;
+}

@@ -136,16 +136,15 @@ class BrowsingHelper extends ViewBaseHelper
    * Possibly sets the user status to ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED in the passed instance
    *
    * @param ADAGenericUser $userObj
-   * @param Course $courseObj
-   * @param Course_Instance $courseInstanceObj
+   * @param int $courseId
+   * @param int $courseInstanceId
    *
    * @return void
    */
-  public static function checkServiceComplete(ADAGenericUser $userObj, Course $courseObj = null, Course_Instance $courseInstanceObj = null)
+  public static function checkServiceComplete(ADAGenericUser $userObj, $courseId = null, $courseInstanceId = null)
   {
     if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
-      if (isset($courseInstanceObj) && isset($courseObj) && isset($userObj) &&
-        is_object($courseInstanceObj) && is_object($courseObj) && is_object($userObj)) {
+      if (intval($courseInstanceId)>0 && intval($courseId)>0 && isset($userObj) && is_object($userObj)) {
         $user_status = self::getUserBrowsingData($userObj)['user_status'];
         if ($user_status != ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
 
@@ -153,12 +152,12 @@ class BrowsingHelper extends ViewBaseHelper
           require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
           $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
           // load the conditionset for this course
-          $conditionSet = $mydh->get_linked_conditionset_for_course($courseObj->getId());
+          $conditionSet = $mydh->get_linked_conditionset_for_course($courseId);
           $mydh->disconnect();
 
           if ($conditionSet instanceof CompleteConditionSet) {
             // evaluate the conditionset for this instance ID and course ID
-            $is_course_instance_complete = $conditionSet->evaluateSet(array($courseInstanceObj->getId(), $userObj->getId()));
+            $is_course_instance_complete = $conditionSet->evaluateSet(array($courseInstanceId, $userObj->getId()));
           } else {
             $is_course_instance_complete = false;
           }
@@ -166,7 +165,7 @@ class BrowsingHelper extends ViewBaseHelper
           // if course is complete, save this information to the db
           if ($is_course_instance_complete) {
             require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
-            $s = new Subscription($userObj->getId(), $courseInstanceObj->getId());
+            $s = new Subscription($userObj->getId(), $courseInstanceId);
             $s->setSubscriptionStatus(ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
             if (isset($userObj->livello) && intval($userObj->livello) > 0) $s->setStartStudentLevel($userObj->livello);
             $subscribedCount = Subscription::updateSubscription($s);
@@ -182,24 +181,23 @@ class BrowsingHelper extends ViewBaseHelper
    * with some badges in the passed course
    *
    * @param ADAGenericUser $userObj
-   * @param Course $courseObj
-   * @param Course_Instance $courseInstanceObj
+   * @param int $courseId
+   * @param int $courseInstanceId
    *
    * @return void
    */
-  public static function checkRewardedBadges(ADAGenericUser $userObj, Course $courseObj = null, Course_Instance $courseInstanceObj = null)
+  public static function checkRewardedBadges(ADAGenericUser $userObj, $courseId = null,$courseInstanceId = null)
   {
     if ($userObj->getType() == AMA_TYPE_STUDENT && defined('MODULES_BADGES') && MODULES_BADGES) {
       if (
-        isset($courseInstanceObj) && isset($courseObj) && isset($userObj) &&
-        is_object($courseInstanceObj) && is_object($courseObj) && is_object($userObj)) {
+        intval($courseInstanceId)>0 && intval($courseId)>0 && isset($userObj) && is_object($userObj)) {
         // need the badges module data handler
         $bdh = \Lynxlab\ADA\Module\Badges\AMABadgesDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
         // need the service-complete module data handler
         require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
         $cdh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
         // load the badges linked to this course
-        $badgesList = $bdh->findBy('CourseBadge', ['id_corso' => $courseObj->getId()]);
+        $badgesList = $bdh->findBy('CourseBadge', ['id_corso' => $courseId]);
         if (!\AMA_DB::isError($badgesList) && is_array($badgesList) && count($badgesList) > 0) {
           /**
            * @var \Lynxlab\ADA\Module\Badges\CourseBadges $cb
@@ -210,14 +208,14 @@ class BrowsingHelper extends ViewBaseHelper
               $badge = reset($badge);
               $cs = $cdh->getCompleteConditionSet($cb->getId_conditionset());
               if ($badge instanceof \Lynxlab\ADA\Module\Badges\Badge && $cs instanceof \CompleteConditionSet) {
-                if ($cs->evaluateSet(array($courseInstanceObj->getId(), $userObj->getId()))) {
+                if ($cs->evaluateSet(array($courseInstanceId, $userObj->getId()))) {
                   // student is rewarded with the badge
                   $bdh->saveRewardedBadge([
                     'badge_uuid' => $badge->getUuid(),
                     'approved' => 1,
                     'id_utente' => $userObj->getId(),
-                    'id_corso' => $courseObj->getId(),
-                    'id_istanza_corso' => $courseInstanceObj->getId()
+                    'id_corso' => $courseId,
+                    'id_istanza_corso' => $courseInstanceId,
                   ]);
                   // don't check for database errors, there's an index preventing badge reward duplication
                   // therefore some kind of error could be generated on purpose
