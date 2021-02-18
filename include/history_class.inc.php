@@ -100,13 +100,17 @@ class History
     return $html_string;
   }
 
+  function history_nodes_visitedpercent_FN($node_types=null)
+  {
+    return number_format($this->history_nodes_visitedpercent_float_FN($node_types), 0, '.', '');
+  }
   /**
-   * history_nodes_visitedpercent_FN
+   * history_nodes_visitedpercent_float_FN
    *
    * @param int|array $node_types - ADA node typeor array of node types, as defined in ada_config.inc.php
    * @return int - number of visited nodes
    */
-  function history_nodes_visitedpercent_FN($node_types=null)
+  function history_nodes_visitedpercent_float_FN($node_types=null)
   {
     $nodes_percent = $visited = $total = 0;
     if ( !isset($this->course_data) )
@@ -131,9 +135,9 @@ class History
     }
     if ( $total > 0 )
     {
-      $nodes_percent = number_format( ($visited / $total * 100), 0, '.', '');
+      $nodes_percent = $visited / $total * 100;
     }
-    return $nodes_percent;
+    return floatval($nodes_percent);
   }
 
   function get_last_nodes ( $num )

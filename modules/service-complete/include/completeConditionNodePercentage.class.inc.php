@@ -70,14 +70,15 @@ class CompleteConditionNodePercentage extends CompleteCondition
 		$history = new History($id_course_instance, $id_student);
 		$id_course = $GLOBALS['dh']->get_course_id_for_course_instance($id_course_instance);
 		if (is_numeric($id_course)) $history->setCourse($id_course);
-		$retval = floatval($history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE])) >= floatval($this->_param);
+		$checkFloat = $history->history_nodes_visitedpercent_float_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]);
+		$retval =  $checkFloat >= floatval($this->_param);
 
 		if ($this->getLogToFile()) {
 				$logLines = [
 						__FILE__.': '.__LINE__,
 						'running '.__METHOD__,
 						print_r(['instance_id' => $id_course_instance, 'student_id' => $id_student], true),
-						sprintf("History object says node percent visit is %s, param is %s", floatval($history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE])), $this->_param),
+						sprintf("History object says node percent visit is %s, param is %s", $checkFloat, $this->_param),
 						__METHOD__.' returning ' . ($retval ? 'true' : 'false')
 				];
 				logToFile($logLines);
@@ -87,7 +88,7 @@ class CompleteConditionNodePercentage extends CompleteCondition
 			$summary[__CLASS__] = [
 				'isSatisfied' => $retval,
 				'param' => floatval($this->_param),
-				'check' => floatval($history->history_nodes_visitedpercent_FN([ADA_GROUP_TYPE, ADA_LEAF_TYPE]))
+				'check' => $checkFloat,
 			];
 		}
 
