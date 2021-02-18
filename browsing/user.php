@@ -187,6 +187,16 @@ if(!AMA_DataHandler::isError($courseInstances)) {
          		 */
         		$end_date = strtotime('tomorrow midnight', $end_date) - 1;
 
+				// check service completeness
+				$provider = $common_dh->get_tester_info_from_id_course($courseId);
+				if (array_key_exists('puntatore', $provider)) {
+					$_SESSION['sess_selected_tester'] = $provider['puntatore'];
+					BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId);
+					BrowsingHelper::checkRewardedBadges($userObj, $courseId, $courseInstanceId);
+					unset($_SESSION['sess_selected_tester']);
+				}
+				unset($provider);
+
 	            /*
 	            if ($isStarted && !$isEnded) {
 	                $access_link = BaseHtmlLib::link("view.php?id_node=$nodeId&id_course=$courseId&id_course_instance=$courseInstanceId",
@@ -328,6 +338,16 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 				 * giorgio 13/01/2021: force end_date to have time set to 23:59:59
          		 */
 				$end_date = strtotime('tomorrow midnight', $end_date) - 1;
+
+				// check service completeness
+				$provider = $common_dh->get_tester_info_from_id_course($courseId);
+				if (array_key_exists('puntatore', $provider)) {
+					$_SESSION['sess_selected_tester'] = $provider['puntatore'];
+					BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId);
+					BrowsingHelper::checkRewardedBadges($userObj, $courseId, $courseInstanceId);
+					unset($_SESSION['sess_selected_tester']);
+				}
+				unset($provider);
 
 	            $isEnded = ($c['data_fine'] > 0 && $c['data_fine'] < time()) ? true : false;
 	            $isStarted = ($c['data_inizio'] > 0 && $c['data_inizio'] <= time()) ? true : false;

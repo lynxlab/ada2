@@ -34,6 +34,7 @@ $neededObjAr = array(
 /**
  * Performs basic controls before entering this module
 */
+$trackPageToNavigationHistory = false;
 require_once(ROOT_DIR.'/include/module_init.inc.php');
 require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
