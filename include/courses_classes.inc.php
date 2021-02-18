@@ -1608,6 +1608,18 @@ class Student_class {
                     require_once ROOT_DIR . '/switcher/include/Subscription.inc.php';
                 }
 
+                $stausIsButton = false;
+                if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
+                    // need the service-complete module data handler
+                    require_once MODULES_SERVICECOMPLETE_PATH . '/include/init.inc.php';
+                    $mydh = AMACompleteDataHandler::instance(MultiPort::getDSN($_SESSION['sess_selected_tester']));
+                    // load the conditionset for this course
+                    $conditionSet = $mydh->get_linked_conditionset_for_course($id_course);
+                    $stausIsButton = $conditionSet instanceof \CompleteConditionSet;
+                    $mydh->disconnect();
+                }
+
+
                 $dati_stude = $dh->get_students_report($id_instance, $id_course, $columns, $weights);
 
                 foreach ($dati_stude as $key => $user) {
@@ -1690,7 +1702,16 @@ class Student_class {
 
                     if (array_key_exists(REPORT_COLUMN_STATUS, $columns)) {
                         //build level HTML
-                        $dati_stude[$key]['status'] = Subscription::subscriptionStatusArray()[$dati_stude[$key]['status']];
+                        if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE && $stausIsButton) {
+                            $stBtn = \CDOMElement::create('button','class:ui tiny button servicecomplete-summary-modal');
+                            $stBtn->setAttribute('data-student-id', $id_student);
+                            $stBtn->setAttribute('data-instance-id', $id_instance);
+                            $stBtn->setAttribute('data-course-id',$id_course);
+                            $stBtn->addChild(new \CText(Subscription::subscriptionStatusArray()[$dati_stude[$key]['status']]));
+                            $dati_stude[$key]['status'] = $stBtn->getHtml();
+                        } else {
+                            $dati_stude[$key]['status'] = Subscription::subscriptionStatusArray()[$dati_stude[$key]['status']];
+                        }
                     }
 
                     if (array_key_exists(REPORT_COLUMN_LEVEL_PLUS, $columns) or in_array(REPORT_COLUMN_LEVEL_LESS, $columns)) {
