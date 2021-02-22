@@ -291,7 +291,7 @@ $http_root_dir = HTTP_ROOT_DIR;
 $root_dir      = ROOT_DIR;
 $modules_dir   = MODULES_DIR;
 
-define('ADA_DEFAULT_EMAIL_FOOTER', sprintf(translateFN("This message has been sent to you by ADA. For additional information please visit the following address: %s"), HTTP_ROOT_DIR));
+define('ADA_DEFAULT_EMAIL_FOOTER', sprintf("This message has been sent to you by ADA. For additional information please visit the following address: %s", HTTP_ROOT_DIR));
 /**
  * default author upload path
  */
