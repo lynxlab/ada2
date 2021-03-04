@@ -25,4 +25,5 @@ ModuleLoaderHelper::loadModuleFromArray([
 	[ 'name' => 'jitsi', 'dirname' => 'jitsi-meet-integration' ],
 	[ 'name' => 'collaboraacl', 'dirname' => 'collabora-access-list' ],
 	[ 'name' => 'impersonate' ],
+	[ 'name' => 'etherpad', 'dirname' => 'etherpad-integration' ],
 ]);
