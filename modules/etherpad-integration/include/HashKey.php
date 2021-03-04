@@ -34,23 +34,30 @@ class HashKey extends EtherpadBase
         parent::__construct($data);
     }
 
-    public static function build($dbToUse = null) {
-        if (is_null($dbToUse)) {
-            $dbToUse = AMAEtherpadDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+    public static function build() {
+        if (array_key_exists('sess_selected_tester',$_SESSION)) {
+            $etDH = AMAEtherpadDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
+            $retval = $etDH->findOneBy('HashKey',[ 'isActive' => true ]);
+            $tester = $_SESSION['sess_selected_tester'];
+        } else {
+            $etDH = null;
+            $retval = null;
+            $tester = 'unknown';
         }
-        $retval = $dbToUse->findOneBy('HashKey',[ 'isActive' => true ]);
         if (!($retval instanceof HashKey)) {
             $retval = new self();
-            $retval->setUuid(Uuid::uuid5(Uuid::NAMESPACE_URL, HTTP_ROOT_DIR)->toString());
+            $retval->setUuid(Uuid::uuid5(Uuid::NAMESPACE_URL, HTTP_ROOT_DIR . '/' . $tester)->toString());
             $retval->setIsActive(true);
-            try {
-                $saveResult = $dbToUse->saveHashKey($retval->toArray());
-            } catch (EtherpadException $e) {
-                $saveResult = false;
-                $retval = new self();
+            if (!is_null($etDH)) {
+                try {
+                    $saveResult = $etDH->saveHashKey($retval->toArray());
+                } catch (EtherpadException $e) {
+                    $saveResult = false;
+                    $retval = new self();
+                }
+                $etDH->disconnect();
             }
         }
-        $dbToUse->disconnect();
         return $retval;
     }
 
