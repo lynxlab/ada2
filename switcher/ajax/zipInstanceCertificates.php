@@ -184,15 +184,16 @@ if(is_null($data)) {
 			readfile($file);
 		} else if ($sendEmail) {
 			// code to send the email here
-			require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
+			require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
+			require_once ROOT_DIR.'/include/phpMailer/src/Exception.php';
 			// true will make PHPMailer throw exceptions
-			$phpmailer = new PHPMailer(true);
+			$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer(true);
 			// $phpmailer->SMTPDebug = 1;
 			// $phpmailer->Debugoutput = function($str, $level) use ($logfile) {
 			// 	if ($level <= 1) ADAFileLogger::log('MAILER: '.$str, $logfile);
 			// };
 			try {
-				// $phpmailer->IsSendmail();
+				$phpmailer->configSend();
 				$phpmailer->CharSet = ADA_CHARSET;
 				$phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);
 				$phpmailer->AddReplyTo(ADA_NOREPLY_MAIL_ADDRESS);

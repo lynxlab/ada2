@@ -20,7 +20,7 @@
 **NOTE**: each define can be either in the module or client config (for non multiprovider installs). Client define takes precedence over the module config.
 
 ## Module behaviour
-- Tutors and Students will both get a menu item under the 'Agisci' tree, one for each enabled pad type (instance and/or node)
+- Tutors and Students will both get a menu item under the 'Do' menu tree, one for each enabled pad type (instance and/or node)
 - Tutors have privileges to create new pads, so they will always have the menu items enabled
 - Students will see the menu item only if the tutor has created a pad beforehand
 
