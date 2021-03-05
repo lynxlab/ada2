@@ -566,16 +566,16 @@ switch ($op) {
                     if  ( $notification_interval == ADA_NOTIFICATION_REALTIME ){
 
                     	// require phpmailer
-                    	require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
+                    	require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
                     	require_once ROOT_DIR.'/include/data_validation.inc.php';
 
                     	/**
                     	 * Send the message an email message
                     	 * via PHPMailer
                     	 */
-                    	$phpmailer = new PHPMailer();
+                    	$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
                     	$phpmailer->CharSet = 'UTF-8';
-                    	$phpmailer->IsSendmail();
+                    	$phpmailer->configSend();
                     	$phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);
                     	$phpmailer->IsHTML(true);
                     	$phpmailer->Priority = 2;

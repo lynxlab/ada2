@@ -39,7 +39,7 @@ require_once(ROOT_DIR.'/browsing/include/browsing_functions.inc.php');
 BrowsingHelper::init($neededObjAr);
 
 require_once ROOT_DIR.'/include/logger_class.inc.php';
-require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
+require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
 
 // MODULE's OWN IMPORTS
 require_once MODULES_NEWSLETTER_PATH.'/include/AMANewsletterDataHandler.inc.php';
@@ -139,10 +139,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST')
 			$HTMLModelText = preg_replace('/(src=[\'"])\/?[^>]*(\/?services\/media\/)/', '$1'.HTTP_ROOT_DIR.'/$2', $HTMLModelText);
 
 			// email class init and common values
-			$phpmailer = new PHPMailer();
+			$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
 			$phpmailer->CharSet = 'UTF-8';
 
-			$phpmailer->IsSendmail();
+			$phpmailer->configSend();
 
 			$phpmailer->SetFrom($senderEmail,$senderFullName);
 			$phpmailer->AddReplyTo($senderEmail,$senderFullName);
