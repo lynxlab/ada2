@@ -57,7 +57,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 			if (!AMA_DB::isError($recipients) && is_array($recipients) && count($recipients)>0) {
 
 				require_once ROOT_DIR.'/include/logger_class.inc.php';
-				require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
+				require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
 				require_once MODULES_CLASSAGENDA_PATH.'/include/management/calendarsManagement.inc.php';
 
 				$senderEmail = $_SESSION['sess_userObj']->getEmail();
@@ -92,9 +92,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 				$HTMLModelText = preg_replace('/(src=[\'"])\/?[^>]*(\/?services\/media\/)/', '$1'.HTTP_ROOT_DIR.'/$2', $HTMLModelText);
 
 				// email class init and common values
-				$phpmailer = new PHPMailer();
+				$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
 				$phpmailer->CharSet = ADA_CHARSET;
-				$phpmailer->IsSendmail();
+				$phpmailer->configSend();
 
 				$phpmailer->SetFrom($senderEmail,$senderFullName);
 				$phpmailer->AddReplyTo($senderEmail,$senderFullName);
