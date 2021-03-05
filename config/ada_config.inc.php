@@ -88,3 +88,19 @@ if (!MULTIPROVIDER && isset($client) && !empty ($client) && is_readable(ROOT_DIR
  * THIS FILE CONTAINS PATH TO SUPPORTED MODULES
  */
 require_once('config_modules.inc.php');
+
+/**
+ * if it's not a multiprovider environment
+ * include provider smtp setting
+ */
+if (!MULTIPROVIDER && isset($client) && !empty ($client) && is_readable(ROOT_DIR.'/clients/'.$client.'/config_smtp.inc.php')) {
+	require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
+	require_once ROOT_DIR.'/clients/'.$client.'/config_smtp.inc.php';
+	define ('ADA_SMTP', true);
+} else if (is_readable(ROOT_DIR . '/config/config_smtp.inc.php')) {
+	require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
+	require_once('config_smtp.inc.php');
+	define ('ADA_SMTP', true);
+} else {
+	define ('ADA_SMTP', false);
+}
