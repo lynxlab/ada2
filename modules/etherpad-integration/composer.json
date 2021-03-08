@@ -1,0 +1,20 @@
+{
+    "name": "lynxlab/ada-etherpad-integration",
+    "description": "This is the ada module for Etherpad integration.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\EtherpadIntegration\\" : ["include/"]
+	    }
+    },
+    "require": {
+        "tomnomnom/etherpad-lite-client": "^0.1.2",
+        "ramsey/uuid": "^4.1"
+    }
+}

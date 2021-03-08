@@ -1630,7 +1630,21 @@ class Mailer
                  . HTTP_ROOT_DIR;
 
         //$res =  @mail($recipient_list,$subject,$message,$headers);
-        $res =  @mail($recipient_list,'=?UTF-8?B?' . base64_encode($subject) . '?=',$message,$headers);
+        if (defined('ADA_SMTP') && ADA_SMTP) {
+	        $phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
+	        $phpmailer->CharSet = ADA_CHARSET;
+	        $phpmailer->configSend();
+	        $phpmailer->SetFrom($sender_email);
+	        $phpmailer->AddReplyTo($sender_email);
+	        $phpmailer->IsHTML(true);
+	        $phpmailer->Subject = $subject;
+	        $phpmailer->AddAddress($recipient_list);
+	        $phpmailer->Body = nl2br($message);
+	        $phpmailer->AltBody = strip_tags(html_entity_decode($message, ENT_QUOTES, ADA_CHARSET));
+	        $res = $phpmailer->Send();
+        } else {
+          $res =  @mail($recipient_list,'=?UTF-8?B?' . base64_encode($subject) . '?=',$message,$headers);
+        }
         if (!$res){
           $errObj = new ADA_error(NULL,"Errore nell'invio dell'email", 'Mailer', AMA_ERR_SEND_MSG);
           return $errObj;
