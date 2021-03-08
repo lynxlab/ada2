@@ -162,7 +162,11 @@ if (parentElement != null) {
 $j.getScript(
 	'<?php echo JITSI_PROTOCOL; ?>://'+domain+'/external_api.js',
 	function() {
-		var debug = true;
+		/**
+		 * set to non null to lock the room with a password
+		 */
+		const pwd = null;
+		var debug = false;
 		var jitsiAPI = null;
 		var options = {
 			roomName: '<?php echo $roomHash; ?>',
@@ -175,15 +179,14 @@ $j.getScript(
 ?>
 			width: ifwidth,
 			height: ifheight,
-				// hosts: {
-				//	domain: domain,
-
-					// muc: 'conference.'+domain, // FIXME: use XEP-0030
-					// focus: 'focus.'+domain,
-				// },
-				// bosh:'https://'+domain+'/http-bind', // FIXME: use xep-0156 for that
-				// The name of client node advertised in XEP-0115 'c' stanza
-				// clientNode: 'http://jitsi.org/jitsimeet',
+			// hosts: {
+			// domain: domain,
+			// muc: 'conference.'+domain, // FIXME: use XEP-0030
+			// focus: 'focus.'+domain,
+			// },
+			// bosh:'https://'+domain+'/http-bind', // FIXME: use xep-0156 for that
+			// The name of client node advertised in XEP-0115 'c' stanza
+			// clientNode: 'http://jitsi.org/jitsimeet',
 			configOverwrite: {
 				startWithVideoMuted : <?php echo ($userObj->getType() == AMA_TYPE_TUTOR ? 'false' : 'true');  ?>,
 				startWithAudioMuted : <?php echo ($userObj->getType() == AMA_TYPE_TUTOR ? 'false' : 'true');  ?>,
@@ -195,22 +198,21 @@ $j.getScript(
 			}
 		};
 <?php
-			if (isset($_REQUEST['parentId']) && strlen($_REQUEST['parentId'])>0) {
-		?>
+	if (isset($_REQUEST['parentId']) && strlen($_REQUEST['parentId'])>0) {
+?>
 		if (null !== document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>')) {
 			document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>').className += 'ada-videochat-embed jitsi-meet';
 			document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>').setAttribute('data-logout','<?php echo urlencode($videoroomObj->getLogoutUrlParams()); ?>');
 			options.parentNode = document.querySelector('#<?php echo trim($_REQUEST['parentId']) ?>');
 		}
 <?php
-			}
-			if (isset($userInfo) && is_array($userInfo)) {
-		?>
+	}
+	if (isset($userInfo) && is_array($userInfo)) {
+?>
 		options.userInfo = <?php echo json_encode($userInfo, JSON_FORCE_OBJECT); ?>;
 <?php
-			}
-		?>
-
+	}
+?>
 		if (debug) {
 			console.groupCollapsed('ADA-JITSI');
 			console.log('JITSI External API loaded');
@@ -219,22 +221,42 @@ $j.getScript(
 
 		// var
 		jitsiAPI = new JitsiMeetExternalAPI(domain, options);
-		jitsiAPI.executeCommand('subject', '<?php echo $courseInstanceObj->getTitle(); ?>');
-		jitsiAPI.executeCommand('displayName', '<?php echo $userObj->getFullName(); ?>');
-		jitsiAPI.executeCommand('email', '<?php echo $userObj->getemail(); ?>');
+
 		jitsiAPI.on('readyToClose',() => {
 			jitsiAPI.dispose();
-			$j('#<?php echo trim($_REQUEST['parentId']) ?>').load('<?php echo $videoroomObj->getLogoutUrl(); ?>', function (response, status, xhr) {
-			});
+			$j('#<?php echo trim($_REQUEST['parentId']) ?>')
+				.load('<?php echo $videoroomObj->getLogoutUrl(); ?>', function (response, status, xhr) {});
 		});
+
+		setTimeout(() => {
+			jitsiAPI.executeCommand('displayName', '<?php echo $userObj->getFullName(); ?>');
+			jitsiAPI.executeCommand('email', '<?php echo $userObj->getEmail(); ?>');
 <?php
     if ($userObj->getType() == AMA_TYPE_TUTOR) {
 		?>
-        // jitsiAPI.executeCommand('password', 'lynx#2020');
-        // console.log('password set!');
+			jitsiAPI.executeCommand('subject', '<?php echo $courseInstanceObj->getTitle(); ?>');
+			// set new password for channel
+			if (pwd != null) {
+				jitsiAPI.addEventListener('participantRoleChanged', function(event) {
+					if (event.role === "moderator") {
+						jitsiAPI.executeCommand('password', pwd);
+						if (debug) console.log('password set!');
+					}
+				});
+			}
 <?php
-    }
+    } else {
 ?>
+			// when local user is trying to enter in a locked room
+			if (pwd != null) {
+				jitsiAPI.addEventListener('passwordRequired', () => {
+					jitsiAPI.executeCommand('password', pwd);
+				});
+			}
+<?php
+	}
+?>
+		}, 50); // end setTimeout
 		if (debug) {
 			console.groupEnd();
 			dbgJitsiapi = jitsiAPI;

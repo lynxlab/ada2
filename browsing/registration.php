@@ -70,7 +70,7 @@ BrowsingHelper::init($neededObjAr);
 require_once ROOT_DIR.'/include/Forms/UserRegistrationForm.inc.php';
 include_once ROOT_DIR.'/include/token_classes.inc.php';
 
-require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
+require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
 
 $self =  whoami();
 /**
@@ -235,9 +235,9 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	         * Send the message an email message
 	         * via PHPMailer
 	         */
-	        $phpmailer = new PHPMailer();
+	        $phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
 	        $phpmailer->CharSet = ADA_CHARSET;
-	        $phpmailer->IsSendmail();
+	        $phpmailer->configSend();
 	        $phpmailer->SetFrom($adm_email);
 	        $phpmailer->AddReplyTo($adm_email);
 	        $phpmailer->IsHTML(true);

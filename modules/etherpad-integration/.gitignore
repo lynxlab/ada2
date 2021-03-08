@@ -1,0 +1,6 @@
+/vendor/
+/composer.lock
+/composer.phar
+*.bak*
+/config/config.inc.php
+/config/*.txt

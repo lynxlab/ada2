@@ -499,10 +499,10 @@ if ($op !== false && $op == 'course_info') {
 								 * Send the message an email message
 								 * via PHPMailer
 								 */
-								require_once ROOT_DIR.'/include/phpMailer/class.phpmailer.php';
-								$phpmailer = new PHPMailer();
+								require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
+								$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
 								$phpmailer->CharSet = ADA_CHARSET;
-								$phpmailer->IsSendmail();
+								$phpmailer->configSend();
 								$phpmailer->SetFrom(ADA_NOREPLY_MAIL_ADDRESS);
 								$phpmailer->IsHTML(true);
 								$phpmailer->Subject = sprintf(translateFN("[%s] - Iscrizione a %s"), PORTAL_NAME, $course_instance_infoAR['title']);
