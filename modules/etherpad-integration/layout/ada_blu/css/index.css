@@ -1,0 +1,12 @@
+.first {
+    margin: 0;
+    padding: 0;
+}
+iframe#etherpad-integration {
+    width: calc(99.9% - 2em);
+    height: 585px;
+    padding: 1em;
+    border: 1px solid #e4e4e4;
+    border-radius: 5px;
+    margin: 0 auto;
+}
