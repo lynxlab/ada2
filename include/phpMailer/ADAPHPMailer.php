@@ -20,6 +20,9 @@ class ADAPHPMailer extends PHPMailer {
             if ($this->SMTPAuth) {
                 $this->Username = ADA_SMTP_USERNAME;
                 $this->Password = ADA_SMTP_PASSWORD;
+                if (defined('ADA_SMTP_AUTHTYPE') && ADA_SMTP_AUTHTYPE && strlen(ADA_SMTP_AUTHTYPE)>0) {
+                    $this->AuthType = ADA_SMTP_AUTHTYPE;
+                }
             }
             if (defined('ADA_SMTP_DEBUG') && ADA_SMTP_DEBUG) {
                 $this->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
