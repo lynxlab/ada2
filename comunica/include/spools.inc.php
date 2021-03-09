@@ -1621,13 +1621,8 @@ class Mailer
         $subject = $message_ha['titolo'];
 
         $message = $message_ha['testo']
-                 . "\n"
-                 . "\n"
-                 . '-----'
-                 . "\n"
-                 . translateFN('This message has been sent to you by ADA. For additional information please visit the following address: ')
-                 . "\n"
-                 . HTTP_ROOT_DIR;
+                 . "<br/><br/><hr style='border:0; border-top: 1px solid #eee;'/><br/>"
+                 . sprintf(translateFN("Messaggio generato da %s. Per maggiori informazioni consulta %s"), PORTAL_NAME, BaseHtmlLib::link(HTTP_ROOT_DIR, HTTP_ROOT_DIR)->getHtml());
 
         if (defined('ADA_SMTP') && ADA_SMTP) {
           $phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
