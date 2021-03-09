@@ -202,14 +202,11 @@ switch ($op){
       }
       $token    = $tokenObj->getTokenString();
 
-      $titolo = translateFN("Password changing request");
-      $testo = translateFN("An ADA user with username: ");
-      $testo.= $username;
-      $testo.=translateFN(" requested to change his/her password in ADA");
+      $titolo = translateFN("Richiesta cambio password");
+      $testo = sprintf(translateFN("Abbiamo ricevuto una richiesta di cambio password per l'utente %s della piattaforma %s."), $username, PORTAL_NAME);
+      $testo .= '<br/><br/>';
       $link = HTTP_ROOT_DIR."/browsing/forget.php?uid=$user_id&tok=$token";
-
-      $testo.= PHP_EOL . PHP_EOL. translateFN(" To confirm this request, please follow this link:");
-      $testo.= " ".$link;
+      $testo.= sprintf(translateFN("Se hai fatto tu la richiesta, apri questo link %s"), BaseHtmlLib::link($link, $link)->getHtml());
 
       // $mh = MessageHandler::instance(MultiPort::getDSN($tester)); /* FIXME */
       // should we user common DB?
