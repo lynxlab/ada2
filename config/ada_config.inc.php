@@ -104,3 +104,22 @@ if (!MULTIPROVIDER && isset($client) && !empty ($client) && is_readable(ROOT_DIR
 } else {
 	define ('ADA_SMTP', false);
 }
+
+/**
+ * each php script includes this file, set general cookie params here
+ */
+$pieces = parse_url(HTTP_ROOT_DIR);
+$domain = isset($pieces['host']) ? $pieces['host'] : '';
+$secure = isset($pieces['scheme']) && ($pieces['scheme'] === 'https');
+if (strlen($domain)>0) {
+    session_set_cookie_params(
+        0, // lifetime: ends when browser closes
+        '/; samesite='.($secure ? 'Strict' : 'Lax'),
+        $domain,
+        $secure,
+        false // http only
+    );
+}
+unset($domain);
+unset($pieces);
+unset($secure);
