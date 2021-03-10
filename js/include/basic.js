@@ -152,7 +152,7 @@ function checkCookie() {
 				  days = 365; //number of days to keep the cookie
 				  myDate = new Date();
 				  myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
-				  document.cookie = "ada_comply_cookie = comply_yes; expires = " + myDate.toGMTString() + "; path=/"; //creates the cookie: name|value|expiry|path
+				  document.cookie = "ada_comply_cookie = comply_yes; expires = " + myDate.toGMTString() + "; samesite=lax; path=/"; //creates the cookie: name|value|expiry|path
 				  if (elem != null) elem.parentNode.removeChild(elem);
 			}
 		}
