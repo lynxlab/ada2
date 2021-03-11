@@ -293,6 +293,7 @@ class ARE
 
         if (isset($_SESSION['sess_userObj'])) {
           if (!array_key_exists('user_avatar', $content_dataAr)) {
+            require_once ROOT_DIR.'/include/HtmlLibrary/BaseHtmlLib.inc.php';
             $content_dataAr['user_avatar'] = CDOMElement::create('img','class,img_user_avatr,src:'.$_SESSION['sess_userObj']->getAvatar())->getHtml();
           }
 

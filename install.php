@@ -80,16 +80,16 @@ function sendToBrowser ($message) {
 
 function createDB($saveData, $dbname, $options=[]) {
     $pdo = new PDO(
-        'mysql:host='.$saveData['MYSQL_HOST'].';dbname=INFORMATION_SCHEMA',
-        $saveData['MYSQL_USER'],
-        $saveData['MYSQL_PASSWORD'], $options
+        'mysql:host='.$saveData['HOST'].';dbname=INFORMATION_SCHEMA',
+        $saveData['USER'],
+        $saveData['PASSWORD'], $options
     );
-    $stmt = $pdo->query("CREATE DATABASE `".$dbname."`");
+    $stmt = $pdo->query("CREATE DATABASE `".$dbname."` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     if ($stmt) {
         return new PDO(
-            'mysql:host='.$saveData['MYSQL_HOST'].';dbname='.$dbname,
-            $saveData['MYSQL_USER'],
-            $saveData['MYSQL_PASSWORD'], $options
+            'mysql:host='.$saveData['HOST'].';dbname='.$dbname,
+            $saveData['USER'],
+            $saveData['PASSWORD'], $options
         );
     } else {
         throw new Exception(translateFN("Errore creazione Database"), 1);
@@ -98,16 +98,16 @@ function createDB($saveData, $dbname, $options=[]) {
 
 function checkDB ($saveData, $dbname, $options=[]) {
     $pdo = new PDO(
-        'mysql:host='.$saveData['MYSQL_HOST'].';dbname=INFORMATION_SCHEMA',
-        $saveData['MYSQL_USER'],
-        $saveData['MYSQL_PASSWORD'], $options
+        'mysql:host='.$saveData['HOST'].';dbname=INFORMATION_SCHEMA',
+        $saveData['USER'],
+        $saveData['PASSWORD'], $options
     );
     $stmt = $pdo->query("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '".$dbname."'");
     if ((bool) $stmt->fetchColumn()) {
         return new PDO(
-            'mysql:host='.$saveData['MYSQL_HOST'].';dbname='.$dbname,
-            $saveData['MYSQL_USER'],
-            $saveData['MYSQL_PASSWORD'], $options
+            'mysql:host='.$saveData['HOST'].';dbname='.$dbname,
+            $saveData['USER'],
+            $saveData['PASSWORD'], $options
         );
     }
     return false;
@@ -206,9 +206,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $inCommon=['ada_apps_module.sql',  'ada_secretquestion_module.sql', 'ada_impexport_module.sql'];
 
     try {
-        if (array_key_exists('MYSQL_HOST', $postData) && array_key_exists('MYSQL_USER', $postData) &&  array_key_exists('MYSQL_PASSWORD', $postData) &&
-            strlen($postData['MYSQL_HOST'])>0 && strlen($postData['MYSQL_USER']) && strlen($postData['MYSQL_PASSWORD'])>0
-        ) {
+        if (array_key_exists('MYSQL', $postData) && array_key_exists('COMMON', $postData['MYSQL']) && is_array($postData['MYSQL']['COMMON']) && count($postData['MYSQL']['COMMON']) == 3) {
             $providers = isset($postData['PROVIDER']) && is_array($postData['PROVIDER']) ? $postData['PROVIDER'] : [];
             foreach ($providers as $i=>$provider) {
                 $providers[$i]['pointer'] = str_replace(' ', '_', trim($provider['NAME']));
@@ -219,12 +217,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ];
             $commonExisted = true;
-            $commonpdo = checkDB($postData, $postData['COMMONDB'], $options);
+            $commonpdo = checkDB($postData['MYSQL']['COMMON'], $postData['COMMONDB'], $options);
             if ($commonpdo === false) {
                 sendToBrowser(sprintf(translateFN('Creazione Database %s').' ...', $postData['COMMONDB']));
                 $commonExisted = false;
                 $commonEmpty = true;
-                $commonpdo = createDB($postData, $postData['COMMONDB'], $options);
+                $commonpdo = createDB($postData['MYSQL']['COMMON'], $postData['COMMONDB'], $options);
                 sendOK();
             } else {
                 sendToBrowser(sprintf(translateFN('Database %s esistente').' ...', $postData['COMMONDB']));
@@ -246,12 +244,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             foreach ($providers as $i=>$provider) {
                 $providers[$i]['pdoexisted'] = true;
-                $providers[$i]['pdo'] = checkDB($postData, $provider['DB'], $options);
+                $providers[$i]['pdo'] = checkDB($postData['MYSQL'][$i], $provider['DB'], $options);
                 if ($providers[$i]['pdo'] === false) {
                     sendToBrowser(sprintf(translateFN('Creazione Database %s').' ...', $provider['DB']));
                     $providers[$i]['pdoexisted'] = false;
                     $providers[$i]['empty'] = true;
-                    $providers[$i]['pdo'] = createDB($postData, $provider['DB'], $options);
+                    $providers[$i]['pdo'] = createDB($postData['MYSQL'][$i], $provider['DB'], $options);
                     sendOK();
                 } else {
                     sendToBrowser(sprintf(translateFN('Database %s esistente').' ...', $provider['DB']));
@@ -261,8 +259,21 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 sendToBrowser(sprintf(translateFN('Importazione Database %s').' ...', $provider['DB']));
                 if ($providers[$i]['empty']) {
                     importSQL(ROOT_DIR . '/db/ada_provider_empty.sql', $providers[$i]['pdo']);
-                    $sql = "INSERT INTO ".$provider['DB'].".utente SELECT * FROM ".$postData['COMMONDB'].".utente WHERE id_utente=1; INSERT INTO ".$provider['DB'].".amministratore_sistema (id_utente_amministratore_sist) VALUES (1);";
-                    $stmt = $commonpdo->prepare($sql);
+
+                    $adminRow = "SELECT * FROM ".$postData['COMMONDB'].".utente WHERE id_utente=1;";
+                    $stmt = $commonpdo->prepare($adminRow);
+                    $stmt->execute();
+                    $adminData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    $fields = '`' . implode('`, `', array_keys($adminData)) . '`';
+                    $fields_data = implode(', ', array_map(function() { return '?'; }, $adminData));
+                    $sql =  "INSERT INTO `".$provider['DB']."`.`utente` (${fields}) VALUES (${fields_data});";
+                    $stmt = $providers[$i]['pdo']->prepare($sql);
+                    $stmt->execute(array_values($adminData));
+                    unset($stmt);
+
+                    $sql = "INSERT INTO ".$provider['DB'].".amministratore_sistema (id_utente_amministratore_sist) VALUES (1);";
+                    $stmt = $providers[$i]['pdo']->prepare($sql);
                     $stmt->execute();
                     unset($stmt);
                     $sql = "INSERT INTO tester(nome,puntatore) VALUES ('".$provider['NAME']."', '".$providers[$i]['pointer']."'); INSERT INTO utente_tester(id_utente, id_tester) VALUES (1, LAST_INSERT_ID());";
@@ -276,9 +287,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (!is_dir(ROOT_DIR . '/clients/'.$providers[$i]['pointer']) && !is_file(ROOT_DIR . '/clients/'.$providers[$i]['pointer'].'/client_conf.inc.php')) {
                     mkdir(ROOT_DIR . '/clients/'.$providers[$i]['pointer'], 0770, true);
                     $outfile = str_replace(
-                        [ '${UPPERPROVIDER}', '${ASISPROVIDER}_provider', '${PROV_HTTP}' ],
-                        [ strtoupper($providers[$i]['pointer']), $provider['DB'], $postData['HTTP_ROOT_DIR'] ],
-                        file_get_contents(ROOT_DIR . '/clients_DEFAULT/docker-templates/client_conf.inc.php')
+                        [ '${UPPERPROVIDER}', '${ASISPROVIDER}_provider', '${PROV_HTTP}', '${MYSQL_USER}', '${MYSQL_PASSWORD}', '${MYSQL_HOST}', ],
+                        [ strtoupper($providers[$i]['pointer']), $provider['DB'], $postData['HTTP_ROOT_DIR'], $postData['MYSQL'][$i]['USER'], $postData['MYSQL'][$i]['PASSWORD'], $postData['MYSQL'][$i]['HOST'], ],
+                        file_get_contents(ROOT_DIR . '/clients_DEFAULT/install-templates/client_conf.inc.php')
                     );
                     if (false === file_put_contents(ROOT_DIR . '/clients/'.$providers[$i]['pointer'].'/client_conf.inc.php', $outfile)) {
                         throw new Exception(translateFN('Impossibile scrivere il file di configurazione del provider'));
@@ -305,7 +316,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             in_array(basename($sqlFile), $inCommon) ||
                             (!$multiprovider && in_array(basename($sqlFile), $inBothIfNonMulti)) ||
                             ( $multiprovider && in_array(basename($sqlFile), $inCommonIfMulti))) {
-                                sendToBrowser(translateFN("Importazione").' '.basename($sqlFile).' in '.$postData['COMMONDB'].' ...');
+                                sendToBrowser(translateFN("Importazione").' '.str_replace(ROOT_DIR, '', $sqlFile).' in '.$postData['COMMONDB'].' ...');
                                 if ($commonEmpty) {
                                     importSQL($sqlFile, $commonpdo);
                                     sendOK();
@@ -319,7 +330,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 !in_array(basename($sqlFile), $inCommon) &&
                                 !( $multiprovider && in_array(basename($sqlFile), $inCommonIfMulti))
                                 ) {
-                                    sendToBrowser(translateFN("Importazione").' '.basename($sqlFile).' in '.$provider['DB'].' ...');
+                                    sendToBrowser(translateFN("Importazione").' '.str_replace(ROOT_DIR, '', $sqlFile).' in '.$provider['DB'].' ...');
                                     if ($providers[$i]['empty']) {
                                         importSQL($sqlFile, $provider['pdo']);
                                         sendOK();
@@ -419,9 +430,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 // form variable to environment variable name mappings
                 $formtoenv = [
                     'PORTAL_NAME' => 'PORTAL_NAME',
-                    'MYSQL_HOST' => 'MYSQL_HOST',
-                    'MYSQL_USER' => 'MYSQL_USER',
-                    'MYSQL_PASSWORD' => 'MYSQL_PASSWORD',
                     'COMMONDB' => 'MYSQL_DATABASE',
                     'HTTP_ROOT_DIR' => 'HTTP_ROOT_DIR',
                     'ADA_ADMIN_MAIL_ADDRESS' => 'ADA_ADMIN_MAIL_ADDRESS',
@@ -431,8 +439,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 $envlines = [
                     'ADA_OR_WISP' => "putenv('ADA_OR_WISP=ADA')",
                     'MULTIPROVIDER' => "putenv('MULTIPROVIDER=".intval($multiprovider)."')",
+                    'MYSQL_USER' => "putenv('MYSQL_USER=".$postData['MYSQL']['COMMON']['USER']."')",
+                    'MYSQL_PASSWORD' => "putenv('MYSQL_PASSWORD=".$postData['MYSQL']['COMMON']['PASSWORD']."')" ,
+                    'MYSQL_HOST' => "putenv('MYSQL_HOST=".$postData['MYSQL']['COMMON']['HOST']."')",
                     'DEFAULT_PROVIDER_POINTER' => "putenv('DEFAULT_PROVIDER_POINTER=".$providers[$defaultProvider]['pointer']."')",
-                    'DEFAULT_PROVIDER_DB' => "putenv('DEFAULT_PROVIDER_DB=".$providers[$defaultProvider]['DB']."')"
+                    'DEFAULT_PROVIDER_DB' => "putenv('DEFAULT_PROVIDER_DB=".$providers[$defaultProvider]['DB']."')",
+                    'DEFAULT_PROVIDER_DB_USER' => "putenv('DEFAULT_PROVIDER_DB_USER=".$postData['MYSQL'][$defaultProvider]['USER']."')",
+                    'DEFAULT_PROVIDER_DB_PASS' => "putenv('DEFAULT_PROVIDER_DB_PASS=".$postData['MYSQL'][$defaultProvider]['PASSWORD']."')",
+                    'DEFAULT_PROVIDER_DB_HOST' => "putenv('DEFAULT_PROVIDER_DB_HOST=".$postData['MYSQL'][$defaultProvider]['HOST']."')",
                 ];
                 foreach($formtoenv as $formkey => $envvar) {
                     if (array_key_exists($formkey, $postData) && strlen($postData[$formkey])>0) {
