@@ -193,7 +193,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (array_key_exists('MODULES_DISABLE', $postData)) {
         $disabledModules = explode(',',$postData['MODULES_DISABLE']);
-        array_map('trim', $disabledModules);
+        $disabledModules = array_map('trim', $disabledModules);
     }
 
     $multiprovider = true;
@@ -397,7 +397,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         $modulename = basename($dirname);
                         if (stristr($composerFile,'vendor') === false) {
                             sendToBrowser(translateFN('Installazione dipendenze per il modulo').' '.$modulename.' ...');
-                            if (!in_array($modulename, $disabledModules)) {
+                            // if (!in_array($modulename, $disabledModules)) {
                                 if (is_dir($dirname) && is_writable($dirname)) {
                                     chdir($dirname);
                                     // Create the commands
@@ -417,7 +417,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                     sendFail();
                                     sendToBrowser('** '.translateFN('Impossibile scrivere nella directory del modulo'));
                                 }
-                            } else sendSkip();
+                            // } else sendSkip();
                         }
                     }
                 }
