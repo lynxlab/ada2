@@ -10,10 +10,6 @@
  * @version		0.1
  */
 
-//Use the Composer classes
-use Composer\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-
 function output_buffer_off() {
     if (!headers_sent()) {
         // Disable gzip in PHP.
@@ -180,6 +176,7 @@ if (!function_exists('translateFN')) {
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     output_buffer_off();
+    ini_set('max_execution_time', 300);
     $postData = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
     $postData = array_map(function($el) {
         if (is_string($el)) return trim($el);
@@ -243,6 +240,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             sendOK();
 
             foreach ($providers as $i=>$provider) {
+                set_time_limit(300);
                 $providers[$i]['pdoexisted'] = true;
                 $providers[$i]['pdo'] = checkDB($postData['MYSQL'][$i], $provider['DB'], $options);
                 if ($providers[$i]['pdo'] === false) {
@@ -312,6 +310,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 // import modules sql in the databases
                 if (is_array($modulesSQL) && count($modulesSQL)>0) {
                     foreach($modulesSQL as $sqlFile) {
+                        set_time_limit(300);
                         if (stristr($sqlFile, "menu") !== false ||
                             in_array(basename($sqlFile), $inCommon) ||
                             (!$multiprovider && in_array(basename($sqlFile), $inBothIfNonMulti)) ||
@@ -323,9 +322,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 } else sendSkip();
                         }
                     }
+                    unset($commonpdo);
                     // done with the common db, now the providers
                     foreach ($providers as $i=>$provider) {
                         foreach($modulesSQL as $sqlFile) {
+                            set_time_limit(300);
                             if (stristr($sqlFile, "menu") === false &&
                                 !in_array(basename($sqlFile), $inCommon) &&
                                 !( $multiprovider && in_array(basename($sqlFile), $inCommonIfMulti))
@@ -337,8 +338,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                     } else sendSkip();
                             }
                         }
+                        unset($providers[$i]['pdo']);
                     }
                 }
+                gc_collect_cycles();
 
                 // modules config files setup
                 $regIter = new RegexIterator($iterator, '/\/.+\/config\_DEFAULT\.inc\.php$/', RecursiveRegexIterator::GET_MATCH);
@@ -378,6 +381,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     define('COMPOSER_URL', 'https://getcomposer.org/download/1.10.20/composer.phar');
                     if (!is_dir(COMPOSER_DIRECTORY)) mkdir(COMPOSER_DIRECTORY);
                     if (file_exists(COMPOSER_DIRECTORY.'/vendor/autoload.php') !== true) {
+                        set_time_limit(300);
                         sendToBrowser(translateFN('Download composer').'...');
                         copy(COMPOSER_URL, COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
                         sendOK();
@@ -387,9 +391,10 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         sendOK();
                         unset($composerPhar);
                     }
-                    ini_set('memory_limit', '512M');
+                    ini_set('memory_limit', '1024M');
                     // Composer\Factory::getHomeDir() method needs COMPOSER_HOME environment variable set
                     putenv('COMPOSER_HOME=' . COMPOSER_DIRECTORY);
+                    putenv('COMPOSER_MEMORY_LIMIT=128M');
                     //This requires the phar to have been extracted successfully.
                     require_once (COMPOSER_DIRECTORY.'/vendor/autoload.php');
 
@@ -397,17 +402,20 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                         $dirname = dirname($composerFile);
                         $modulename = basename($dirname);
                         if (stristr($composerFile,'vendor') === false) {
+                            set_time_limit(300);
                             sendToBrowser(translateFN('Installazione dipendenze per il modulo').' '.$modulename.' ...');
                             // if (!in_array($modulename, $disabledModules)) {
                                 if (is_dir($dirname) && is_writable($dirname)) {
+                                    $logfile = fopen(ROOT_DIR . DIRECTORY_SEPARATOR .'log' . DIRECTORY_SEPARATOR . 'composer-install.log', 'a');
+                                    fwrite ($logfile, sprintf("\n\n******** %s ********\n", $modulename));
                                     chdir($dirname);
                                     // Create the commands
-                                    $input = new Symfony\Component\Console\Input\StringInput('update -vvv -n --no-cache');
+                                    $input = new \Symfony\Component\Console\Input\StringInput('update -vvv -n --no-cache');
                                     // Create the application and run it with the commands
-                                    $application = new Application();
+                                    $application = new \Composer\Console\Application\Application();
                                     $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
                                     // $application->setCatchExceptions(false);
-                                    $output = $application->run($input, new Symfony\Component\Console\Output\StreamOutput(fopen(ROOT_DIR . DIRECTORY_SEPARATOR .'log' . DIRECTORY_SEPARATOR . 'composer-install.log', 'a')));
+                                    $output = $application->run($input, $logfile);
                                     if ($output == 0) {
                                         sendOK();
                                     } else {
@@ -415,6 +423,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                         sendToBrowser('** '.translateFN('Problemi con composer'));
                                     }
                                     chdir(__DIR__);
+                                    fclose($logfile);
                                 } else {
                                     sendFail();
                                     sendToBrowser('** '.translateFN('Impossibile scrivere nella directory del modulo'));
