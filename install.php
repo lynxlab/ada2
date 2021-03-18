@@ -410,12 +410,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                     fwrite ($logfile, sprintf("\n\n******** %s ********\n", $modulename));
                                     chdir($dirname);
                                     // Create the commands
-                                    $input = new \Symfony\Component\Console\Input\StringInput('update -vvv -n --no-cache');
+                                    $input = new Symfony\Component\Console\Input\StringInput('update -vvv -n --no-cache');
                                     // Create the application and run it with the commands
-                                    $application = new \Composer\Console\Application\Application();
+                                    $application = new Composer\Console\Application();
                                     $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
-                                    // $application->setCatchExceptions(false);
-                                    $output = $application->run($input, $logfile);
+                                    $application->setCatchExceptions(false);
+                                    $output = $application->run($input, new Symfony\Component\Console\Output\StreamOutput($logfile));
                                     if ($output == 0) {
                                         sendOK();
                                     } else {
