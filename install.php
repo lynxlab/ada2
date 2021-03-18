@@ -166,10 +166,6 @@ require_once ROOT_DIR.'/include/user_class.inc.php';
  */
 if (is_dir('clients')) redirect(HTTP_ROOT_DIR);
 
-session_start();
-$_SESSION['sess_userObj'] = new ADAGuest();
-$self = whoami();
-
 if (!function_exists('translateFN')) {
     function translateFN($msg) { return $msg; }
 }
@@ -491,6 +487,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         die();
     }
 } else {
+    session_start();
+    $_SESSION['sess_userObj'] = new ADAGuest();
+    $self = whoami();
     $modulesAv = [];
     $modulesDIS = [ 'secretquestion','code_man' ];
     if (is_dir(MODULES_DIR)) {
