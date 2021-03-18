@@ -375,10 +375,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 if (is_array($composerFiles) && count($composerFiles)>0) {
                     // Composer in php code, thanks to https://stackoverflow.com/a/17244866
                     define('COMPOSER_DIRECTORY', ADA_UPLOAD_PATH . 'composer');
+                    define('COMPOSER_URL', 'https://getcomposer.org/download/1.10.20/composer.phar');
                     if (!is_dir(COMPOSER_DIRECTORY)) mkdir(COMPOSER_DIRECTORY);
                     if (file_exists(COMPOSER_DIRECTORY.'/vendor/autoload.php') !== true) {
                         sendToBrowser(translateFN('Download composer').'...');
-                        copy('https://getcomposer.org/composer-stable.phar', COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
+                        copy(COMPOSER_URL, COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
                         sendOK();
                         sendToBrowser(translateFN('Estrazione composer').'...');
                         $composerPhar = new Phar(COMPOSER_DIRECTORY . DIRECTORY_SEPARATOR . 'Composer.phar');
@@ -401,11 +402,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 if (is_dir($dirname) && is_writable($dirname)) {
                                     chdir($dirname);
                                     // Create the commands
-                                    $input = new ArrayInput(array('command' => 'update'));
+                                    $input = new Symfony\Component\Console\Input\StringInput('update -vvv -n --no-cache');
                                     // Create the application and run it with the commands
                                     $application = new Application();
                                     $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
-                                    $output = $application->run($input);
+                                    // $application->setCatchExceptions(false);
+                                    $output = $application->run($input, new Symfony\Component\Console\Output\StreamOutput(fopen(ROOT_DIR . DIRECTORY_SEPARATOR .'log' . DIRECTORY_SEPARATOR . 'composer-install.log', 'a')));
                                     if ($output == 0) {
                                         sendOK();
                                     } else {
