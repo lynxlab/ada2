@@ -164,7 +164,9 @@ require_once ROOT_DIR.'/include/user_class.inc.php';
 /**
  * redirect to homepage if ADA is installed, either with install script or manually
  */
-if (is_dir('clients')) redirect(HTTP_ROOT_DIR);
+if (is_dir('clients') && count(glob(ROOT_DIR."/clients/*/client_conf.inc.php"))>0) {
+    redirect(HTTP_ROOT_DIR);
+}
 
 if (!function_exists('translateFN')) {
     function translateFN($msg) { return $msg; }
@@ -197,6 +199,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $inCommonIfMulti=['ada_gdpr_policy.sql', 'ada_login_module.sql'];
     // put here filenames to be ALWAYS imported in the common db
     $inCommon=['ada_apps_module.sql',  'ada_secretquestion_module.sql', 'ada_impexport_module.sql'];
+    $defaultProvider = array_key_exists('DEFAULT_PROVIDER', $postData) && intval($postData['DEFAULT_PROVIDER'])>0 ? intval($postData['DEFAULT_PROVIDER']) : 0;
+    $adminUserId = 1; // id of the adminAda user
+    $switcherIds = [
+        'default' => [],
+        'provider' => [],
+    ];
+    $authorIds = [
+        'default' => [],
+        'provider' => [],
+    ];
+    $newUsers = [];
 
     try {
         if (array_key_exists('MYSQL', $postData) && array_key_exists('COMMON', $postData['MYSQL']) && is_array($postData['MYSQL']['COMMON']) && count($postData['MYSQL']['COMMON']) == 3) {
@@ -229,8 +242,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             } else sendSkip();
 
             // SET THE PASSWORD PROVIDED IN ADMIN_PASSWORD FOR USER 'adminAda'
-            sendToBrowser(translateFN('Impostazione password utente adminAda').' ...');
-            $sql = "UPDATE utente SET password=SHA1(\"".$postData['ADMIN_PASSWORD']."\") WHERE id_utente=1 AND password=\"\";";
+            sendToBrowser(translateFN('Impostazione password utenti').' ...');
+            $sql = "UPDATE utente SET password=SHA1(\"".$postData['ADMIN_PASSWORD']."\") WHERE password=\"\";";
             $stmt = $commonpdo->prepare($sql);
             $stmt->execute();
             sendOK();
@@ -252,34 +265,82 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 sendToBrowser(sprintf(translateFN('Importazione Database %s').' ...', $provider['DB']));
                 if ($providers[$i]['empty']) {
-                    importSQL(ROOT_DIR . '/db/ada_provider_empty.sql', $providers[$i]['pdo']);
+                    $sqlFile = ROOT_DIR . '/db/ada_provider_empty.sql';
+                    $usersKey = 'provider';
+                    if ($i == $defaultProvider) {
+                        $usersKey = 'default';
+                        if (is_readable(ROOT_DIR . '/db/install/ada_default_empty.sql')) {
+                            $sqlFile = ROOT_DIR . '/db/install/ada_default_empty.sql';
+                        }
+                    } else if (is_readable(ROOT_DIR . '/db/install/ada_provider_empty.sql')) {
+                        $sqlFile = ROOT_DIR . '/db/install/ada_provider_empty.sql';
+                    }
+                    importSQL($sqlFile, $providers[$i]['pdo']);
 
-                    $adminRow = "SELECT * FROM ".$postData['COMMONDB'].".utente WHERE id_utente=1;";
-                    $stmt = $commonpdo->prepare($adminRow);
-                    $stmt->execute();
-                    $adminData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                    $fields = '`' . implode('`, `', array_keys($adminData)) . '`';
-                    $fields_data = implode(', ', array_map(function() { return '?'; }, $adminData));
-                    $sql =  "INSERT INTO `".$provider['DB']."`.`utente` (${fields}) VALUES (${fields_data});";
-                    $stmt = $providers[$i]['pdo']->prepare($sql);
-                    $stmt->execute(array_values($adminData));
-                    unset($stmt);
-
-                    $sql = "INSERT INTO ".$provider['DB'].".amministratore_sistema (id_utente_amministratore_sist) VALUES (1);";
-                    $stmt = $providers[$i]['pdo']->prepare($sql);
-                    $stmt->execute();
-                    unset($stmt);
-                    $sql = "INSERT INTO tester(nome,puntatore) VALUES ('".$provider['NAME']."', '".$providers[$i]['pointer']."'); INSERT INTO utente_tester(id_utente, id_tester) VALUES (1, LAST_INSERT_ID());";
+                    $sql = "INSERT INTO tester(nome,puntatore) VALUES ('".$provider['NAME']."', '".$providers[$i]['pointer']."');";
                     $stmt = $commonpdo->prepare($sql);
                     $stmt->execute();
+                    $providerId = $commonpdo->lastInsertId();
                     unset($stmt);
+
+                    foreach(array_merge([$adminUserId], $switcherIds[$usersKey], $authorIds[$usersKey]) as $anUserId) {
+                        $uRow = "SELECT * FROM ".$postData['COMMONDB'].".utente WHERE id_utente=$anUserId;";
+                        $stmt = $commonpdo->prepare($uRow);
+                        $stmt->execute();
+                        $uData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                        $fields = '`' . implode('`, `', array_keys($uData)) . '`';
+                        $fields_data = implode(', ', array_map(function() { return '?'; }, $uData));
+                        $sql =  "INSERT INTO `".$provider['DB']."`.`utente` (${fields}) VALUES (${fields_data});";
+                        $stmt = $providers[$i]['pdo']->prepare($sql);
+                        $stmt->execute(array_values($uData));
+                        unset($stmt);
+
+                        $sql = "INSERT INTO utente_tester(id_utente, id_tester) VALUES ($anUserId, $providerId);";
+                        $stmt = $commonpdo->prepare($sql);
+                        $stmt->execute();
+                        unset($stmt);
+
+                        $updateUser = false;
+                        if ($anUserId == $adminUserId) {
+                            $sql = "INSERT INTO ".$provider['DB'].".`amministratore_sistema` (id_utente_amministratore_sist) VALUES ($adminUserId);";
+                            $stmt = $providers[$i]['pdo']->prepare($sql);
+                            $stmt->execute();
+                            unset($stmt);
+                        } else if (in_array($anUserId, $authorIds[$usersKey])) {
+                            $sql = "INSERT INTO `".$provider['DB']."`.`autore` (`id_utente_autore`, `profilo`, `tariffa`) VALUES ($anUserId, NULL, 0);".
+                                   "UPDATE `".$provider['DB']."`.`modello_corso` SET `id_utente_autore`=$anUserId, `data_pubblicazione`=".time().", `data_creazione`=".time().";".
+                                   "UPDATE `".$provider['DB']."`.`nodo` SET `id_utente`=$anUserId, `data_creazione`=".time().";";
+                            $stmt = $providers[$i]['pdo']->prepare($sql);
+                            $stmt->execute();
+                            unset($stmt);
+                            $updateUser = true;
+                            $userPrefix = 'autore';
+                        } else if (in_array($anUserId, $switcherIds[$usersKey])) {
+                            $updateUser = true;
+                            $userPrefix = 'coordinatore';
+                        }
+
+                        if ($updateUser) {
+                            $sql = "UPDATE `utente` SET `cognome`='".$provider['NAME']."', `username`='$userPrefix.".$providers[$i]['pointer']."' WHERE `id_utente`=$anUserId;";
+                            $stmt = $commonpdo->prepare($sql);
+                            $stmt->execute();
+                            unset($stmt);
+                            $stmt = $providers[$i]['pdo']->prepare($sql);
+                            $stmt->execute();
+                            unset($stmt);
+                            array_push($newUsers, $userPrefix.'.'.$providers[$i]['pointer']);
+                            $updateUser = false;
+                        }
+                    }
                     sendOK();
                 } else sendSkip();
 
                 sendToBrowser(sprintf(translateFN("Configurazione provider %s").'...', $provider['NAME']));
-                if (!is_dir(ROOT_DIR . '/clients/'.$providers[$i]['pointer']) && !is_file(ROOT_DIR . '/clients/'.$providers[$i]['pointer'].'/client_conf.inc.php')) {
-                    mkdir(ROOT_DIR . '/clients/'.$providers[$i]['pointer'], 0770, true);
+                if (!is_file(ROOT_DIR . '/clients/'.$providers[$i]['pointer'].'/client_conf.inc.php')) {
+                    if (!is_dir(ROOT_DIR . '/clients/'.$providers[$i]['pointer'])) {
+                        mkdir(ROOT_DIR . '/clients/'.$providers[$i]['pointer'], 0770, true);
+                    }
                     $outfile = str_replace(
                         [ '${UPPERPROVIDER}', '${ASISPROVIDER}_provider', '${PROV_HTTP}', '${MYSQL_USER}', '${MYSQL_PASSWORD}', '${MYSQL_HOST}', ],
                         [ strtoupper($providers[$i]['pointer']), $provider['DB'], $postData['HTTP_ROOT_DIR'], $postData['MYSQL'][$i]['USER'], $postData['MYSQL'][$i]['PASSWORD'], $postData['MYSQL'][$i]['HOST'], ],
@@ -311,7 +372,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             in_array(basename($sqlFile), $inCommon) ||
                             (!$multiprovider && in_array(basename($sqlFile), $inBothIfNonMulti)) ||
                             ( $multiprovider && in_array(basename($sqlFile), $inCommonIfMulti))) {
-                                sendToBrowser(translateFN("Importazione").' '.str_replace(ROOT_DIR, '', $sqlFile).' in '.$postData['COMMONDB'].' ...');
+                                sendToBrowser(translateFN("Importazione").' '.str_replace(ROOT_DIR. '/modules/', '', $sqlFile).' in '.$postData['COMMONDB'].' ...');
                                 if ($commonEmpty) {
                                     importSQL($sqlFile, $commonpdo);
                                     sendOK();
@@ -327,7 +388,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 !in_array(basename($sqlFile), $inCommon) &&
                                 !( $multiprovider && in_array(basename($sqlFile), $inCommonIfMulti))
                                 ) {
-                                    sendToBrowser(translateFN("Importazione").' '.str_replace(ROOT_DIR, '', $sqlFile).' in '.$provider['DB'].' ...');
+                                    sendToBrowser(translateFN("Importazione").' '.str_replace(ROOT_DIR. '/modules/', '', $sqlFile).' in '.$provider['DB'].' ...');
                                     if ($providers[$i]['empty']) {
                                         importSQL($sqlFile, $provider['pdo']);
                                         sendOK();
@@ -442,7 +503,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                     'ADA_ADMIN_MAIL_ADDRESS' => 'ADA_ADMIN_MAIL_ADDRESS',
                     'ADA_NOREPLY_MAIL_ADDRESS' => 'ADA_NOREPLY_MAIL_ADDRESS'
                 ];
-                $defaultProvider = array_key_exists('DEFAULT_PROVIDER', $postData) && intval($postData['DEFAULT_PROVIDER'])>0 ? intval($postData['DEFAULT_PROVIDER']) : 0;
                 $envlines = [
                     'ADA_OR_WISP' => "putenv('ADA_OR_WISP=ADA')",
                     'MULTIPROVIDER' => "putenv('MULTIPROVIDER=".intval($multiprovider)."')",
@@ -474,6 +534,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             sendToBrowser(translateFN('Rimozione file temopranei').' ...');
             delTree(COMPOSER_DIRECTORY) ? sendOK() : sendFail();
 
+            if (is_array($newUsers) && count($newUsers)>0) {
+                sendToBrowser(PHP_EOL.PHP_EOL."<div style='font-size:1.2em;color:#ff9d51;'>Trascrivere in un posto sicuro le login degli utenti generati che sono:<strong>".PHP_EOL.implode(PHP_EOL, $newUsers).PHP_EOL."</strong>la password è quella fornita.</div>".PHP_EOL);
+            }
             sendToBrowser('&nbsp;');
             sendToBrowser(PHP_EOL."<strong>".translateFN("ADA è installata, naviga su:") . " <a style='color:lime;' href='".
             $postData['HTTP_ROOT_DIR']."' target='_top'>".$postData['HTTP_ROOT_DIR']."</a></strong>");
