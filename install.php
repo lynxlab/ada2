@@ -535,7 +535,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             delTree(COMPOSER_DIRECTORY) ? sendOK() : sendFail();
 
             if (is_array($newUsers) && count($newUsers)>0) {
-                sendToBrowser(PHP_EOL.PHP_EOL."<div style='font-size:1.2em;color:#ff9d51;'>Trascrivere in un posto sicuro le login degli utenti generati che sono:<strong>".PHP_EOL.implode(PHP_EOL, $newUsers).PHP_EOL."</strong>la password è quella fornita.</div>".PHP_EOL);
+                sendToBrowser(PHP_EOL.PHP_EOL."<div style='font-size:1.2em;color:#ff9d51;'>Trascrivere in un posto sicuro lo username e la password degli utenti generati che sono:<strong>".PHP_EOL.implode(PHP_EOL, $newUsers).PHP_EOL."</strong>la password è quella fornita durante l'installazione.</div>".PHP_EOL);
             }
             sendToBrowser('&nbsp;');
             sendToBrowser(PHP_EOL."<strong>".translateFN("ADA è installata, naviga su:") . " <a style='color:lime;' href='".
