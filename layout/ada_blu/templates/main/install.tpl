@@ -38,7 +38,7 @@
 
                     <!-- MYSQL/MARIADB -->
                     <h2 class="ui black top attached header"><i18n>Configurazione MySQL/MariaDB</i18n>
-                        <div class="sub header" style="font-size:small; opacity:0.5;">
+                        <div class="sub header" style="opacity:0.85; line-height:2rem;">
                             <i18n>ADA ha bisogno di 3 database per funzionare: uno per eventuali corsi pubblici, uno per corsi con iscrizione ed uno per i dati comuni ai 2</i18n>
                         </div>
                     </h2>
@@ -130,8 +130,8 @@
                         </div>
                         <input type="hidden" name="DEFAULT_PROVIDER" value="0" />
                     </div>
-                    <div class="ui black bottom attached header">
-                            <span style="font-size:small; opacity:0.5; font-weight: normal;">
+                    <div class="ui inverted blue bottom attached header">
+                            <span style="font-size:medium; opacity:0.9;">
                                 <i18n>Se i database non esistono e l'utente MySQL ne ha i permessi, l'installazione proverà a crearli</i18n>
                             </span>
                     </div>

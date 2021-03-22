@@ -15,9 +15,9 @@ CONTENTS OF THIS FILE
 
 REQUIREMENTS
 --------------
-- Apache 2.2.21>
-- MySql 5.1.6 >
-- PHP 5.3.*> compiled with support for MySql, XML, GD, PDO
+- Apache 2.4.6>
+- MySql 5.5.* >
+- PHP 7.*> compiled with support for MySql, XML, GD, PDO
 - PEAR::XML_Parser 1.3.x>
 - PEAR 1.9.x>
 - PEAR::XML_Util 1.2.x>
