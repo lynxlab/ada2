@@ -123,12 +123,6 @@ if (isset($testerName)) {
 			$newsContainer->addChild($newsRow);
 
 			foreach ( $newscontent as $num=>$aNews ) {
-				$aNewsDIV = CDOMElement::create('div','class:column news,id:news-'.($num+1));
-				$newsRow->addChild($aNewsDIV);
-				$aNewsTitle = CDOMElement::create('a', 'class:newstitle ui header,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
-						$course_id.'&id_node='.$aNews[0]);
-				$aNewsTitle->addChild (new CText($aNews[1]));
-				$aNewsDIV->addChild ($aNewsTitle);
 
 				// @author giorgio 01/ott/2013
 				// remove unwanted div ids: tabs
@@ -136,6 +130,12 @@ if (isset($testerName)) {
 				$removeIds = array ('slider','tabs');
 
 				if (strlen(trim($aNews[2]))>0) {
+					$aNewsDIV = CDOMElement::create('div','class:column news,id:news-'.($num+1));
+					$newsRow->addChild($aNewsDIV);
+					$aNewsTitle = CDOMElement::create('a', 'class:newstitle ui header,href:'.HTTP_ROOT_DIR.'/browsing/view.php?id_course='.
+							$course_id.'&id_node='.$aNews[0]);
+					$aNewsTitle->addChild (new CText($aNews[1]));
+					$aNewsDIV->addChild ($aNewsTitle);
 					$html = new DOMDocument('1.0', ADA_CHARSET);
 					/**
 					 * HTML uses the ISO-8859-1 encoding (ISO Latin Alphabet No. 1) as default per it's specs.
