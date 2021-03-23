@@ -49,6 +49,24 @@ function sendSkip() {
     return sendToBrowser('[ SKIP ]');
 }
 
+function getBaseUrl()
+{
+    // output: /myproject/index.php
+    $currentPath = $_SERVER['PHP_SELF'];
+
+    // output: Array ( [dirname] => /myproject [basename] => index.php [extension] => php [filename] => index )
+    $pathInfo = pathinfo($currentPath);
+
+    // output: localhost
+    $hostName = $_SERVER['HTTP_HOST'];
+
+    // output: http://
+    $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https'?'https':'http';
+
+    // return: http://localhost/myproject/
+    return $protocol.'://'.$hostName.$pathInfo['dirname']."/";
+}
+
 function sendToBrowser ($message) {
 
 	$style = '';
@@ -136,7 +154,7 @@ function importSQL ($filename, $pdoconn) {
 }
 
 putenv('PORTAL_NAME=ADA Install');
-putenv('HTTP_ROOT_DIR=.');
+putenv('HTTP_ROOT_DIR='.getBaseUrl());
 
 /**
  * Files that MUST exists and be copied before doing anything
@@ -173,6 +191,18 @@ if (!function_exists('translateFN')) {
 }
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (session_status() !== PHP_SESSION_NONE) {
+        session_start();
+        $_SESSION = [];
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+        session_destroy();
+    }
     output_buffer_off();
     ini_set('max_execution_time', 300);
     $postData = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
