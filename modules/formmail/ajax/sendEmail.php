@@ -66,7 +66,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 	 * Initializre the PHPMailer
 	 */
 	$phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
-	$phpmailer->CharSet = ADA_CHARSET;
+	$phpmailer->CharSet = strtolower(ADA_CHARSET);
 	$phpmailer->configSend();
 	$phpmailer->SetFrom($userObj->getEmail(), $userObj->getFullName());
 	$phpmailer->AddReplyTo($userObj->getEmail(), $userObj->getFullName());
@@ -74,7 +74,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 	$phpmailer->Subject = '['.trim($_POST['helpType']).'] - '.trim($_POST['subject']);
 	$phpmailer->AddAddress(trim($_POST['recipient']));
 	$phpmailer->Body = trim($_POST['msgbody']);
-	$phpmailer->AltBody = strip_tags(html_entity_decode($phpmailer->Body, ENT_QUOTES, ADA_CHARSET));
+	if (stripos(trim($_POST['recipient']), 'incoming.gitlab.com') !== false) {
+		// fixes to have working new lines in gitlab Service Desk
+		$phpmailer->Encoding = $phpmailer::ENCODING_QUOTED_PRINTABLE;
+		$phpmailer->AltBody = strip_tags(html_entity_decode($phpmailer->Body, ENT_QUOTES, ADA_CHARSET), '<br>');
+		$phpmailer->AltBody = trim(str_replace(['<br>', '<br/>', '<br />','<br/ >', PHP_EOL], PHP_EOL.PHP_EOL, $phpmailer->AltBody)).PHP_EOL;
+	} else {
+		$phpmailer->AltBody = strip_tags(html_entity_decode($phpmailer->Body, ENT_QUOTES, ADA_CHARSET));
+	}
 
 	if (isset($_POST['attachments']) && is_array($_POST['attachments']) && count($_POST['attachments'])>0) {
 		foreach ($_POST['attachments'] as $name=>$realfile) {
