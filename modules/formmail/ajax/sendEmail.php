@@ -74,10 +74,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 	$phpmailer->Subject = '['.trim($_POST['helpType']).'] - '.trim($_POST['subject']);
 	$phpmailer->AddAddress(trim($_POST['recipient']));
 	$phpmailer->Body = trim($_POST['msgbody']);
-	if ($selfSend) {
-		$phpmailer->SingleTo = true;
-		$phpmailer->AddAddress($userObj->getEmail(), $userObj->getFullName());
-	}
 
 	if (isset($_POST['attachments']) && is_array($_POST['attachments']) && count($_POST['attachments'])>0) {
 		foreach ($_POST['attachments'] as $name=>$realfile) {
@@ -94,6 +90,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 	}
 
 	$sentOK = $phpmailer->send();
+	if ($selfSend) {
+		$phpmailer->clearAllRecipients();
+		$phpmailer->AddAddress($userObj->getEmail(), $userObj->getFullName());
+		$phpmailer->send();
+	}
 
 	if (!$sentOK) {
 		$retArray['msg'] = translateFN('La richiesta non è stata spedita').'<br/>'.
