@@ -70,10 +70,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' &&
 	$phpmailer->configSend();
 	$phpmailer->SetFrom($userObj->getEmail(), $userObj->getFullName());
 	$phpmailer->AddReplyTo($userObj->getEmail(), $userObj->getFullName());
-	$phpmailer->IsHTML(false);
+	$phpmailer->IsHTML(true);
 	$phpmailer->Subject = '['.trim($_POST['helpType']).'] - '.trim($_POST['subject']);
 	$phpmailer->AddAddress(trim($_POST['recipient']));
 	$phpmailer->Body = trim($_POST['msgbody']);
+	$phpmailer->AltBody = strip_tags(html_entity_decode($phpmailer->Body, ENT_QUOTES, ADA_CHARSET));
 
 	if (isset($_POST['attachments']) && is_array($_POST['attachments']) && count($_POST['attachments'])>0) {
 		foreach ($_POST['attachments'] as $name=>$realfile) {
