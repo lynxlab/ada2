@@ -5683,7 +5683,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $more_fields = '';
 
         // build comma separated string out of $field_list_ar array
-        if (count($field_list_ar)) {
+        if (is_array($field_list_ar) && count($field_list_ar)) {
             $more_fields = ', '.implode(', ', $field_list_ar);
         }
 
@@ -10188,7 +10188,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if ( AMA_DB::isError( $db ) ) return $db;
 
         // build comma separated string out of $field_list_ar array
-        if (count($field_list_ar)) {
+        if (is_array($field_list_ar) && count($field_list_ar)) {
             $more_fields = ', '.implode(', ', $field_list_ar);
         }
 
