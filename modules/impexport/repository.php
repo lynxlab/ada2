@@ -32,6 +32,10 @@ $neededObjAr = array(
         AMA_TYPE_AUTHOR => array('layout')
 );
 
+if (array_key_exists('id_course', $_REQUEST) || array_key_exists('id_node', $_REQUEST)) {
+    $neededObjAr[AMA_TYPE_AUTHOR] = array('node', 'layout', 'course');
+}
+
 /**
  * Performs basic controls before entering this module
  */
@@ -44,7 +48,11 @@ BrowsingHelper::init($neededObjAr);
 $self = whoami();
 
 $data = null;
-$canEdit = in_array($userObj->getType(), [ AMA_TYPE_SWITCHER ]);
+
+$tableData = '';
+if (array_key_exists('id_course', $_REQUEST) || array_key_exists('id_node', $_REQUEST)) {
+    $tableData = sprintf("data-import-course-id=%d data-import-node-id=%s", $courseObj->getId(), $nodeObj->id);
+}
 
 $content_dataAr = array(
     'user_name' => $user_name,
@@ -58,7 +66,8 @@ $content_dataAr = array(
     'modalHeader' => translateFN('Conferma cancellazione'),
     'modalContent' => '<p>'.translateFN("Questo cancellerà l'esportazione definitivamente").'</p>',
     'modalYES' => translateFN('S&igrave;'),
-    'modalNO' => translateFN('NO')
+    'modalNO' => translateFN('NO'),
+    'tabledata' => $tableData,
 );
 
 $layout_dataAr['JS_filename'] = array(
@@ -82,6 +91,6 @@ $layout_dataAr['CSS_filename'] = array(
     SEMANTICUI_DATATABLE_CSS
 );
 
-$optionsAr['onload_func'] = 'initDoc('.($canEdit ? 'true':'false').');';
+$optionsAr['onload_func'] = 'initDoc();';
 
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);

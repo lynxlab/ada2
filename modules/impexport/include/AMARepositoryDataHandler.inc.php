@@ -81,6 +81,8 @@ class AMARepositoryDataHandler extends \AMA_Common_DataHandler {
 					$courseData = $pdh->get_course($element['id_course']);
 					if (!\AMA_DB::isError($courseData)) {
 						$cachedValues['courseTitles'][$element['id_course']] = $courseData['titolo'];
+					} else {
+						$cachedValues['courseTitles'][$element['id_course']] = translateFN('Corso Sconosciuto');
 					}
 					$cachedValues['courseProviders'][$element['id_course']] = $provider['puntatore'];
 				}

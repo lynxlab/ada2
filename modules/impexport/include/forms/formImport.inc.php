@@ -29,6 +29,10 @@ class FormUploadImportFile extends FForm {
 			$formElements[] = FormControl::create(FormControl::INPUT_HIDDEN, 'forceRunImport','')->withData(1);
 		}
 
+		if (array_key_exists('isAuthorImporting', $options)) {
+			$formElements[] = FormControl::create(FormControl::INPUT_HIDDEN, 'isAuthorImporting','')->withData(1);
+		}
+
 		$importURL = FormControl::create(FormControl::INPUT_TEXT, 'importURL', translateFN('URL per l\'importazione'));
 		if (array_key_exists('importURL', $options)) {
 			$importURL->withData($options['importURL']);
@@ -49,7 +53,7 @@ class FormUploadImportFile extends FForm {
  */
 class FormSelectDatasForImport extends FForm {
 
-	public function __construct( $formName, $authorsList, $courseList ) {
+	public function __construct( $formName, $authorsList, $courseList, $selAuthor = 0, $selCourse = 0) {
 		parent::__construct();
 
 		$authorsList[0] = translateFN('Scegli un autore per il corso');
@@ -60,11 +64,11 @@ class FormSelectDatasForImport extends FForm {
 
 		$this->addHidden('importFileName');
 
-		$this->addSelect('author', translateFN ("Seleziona l'autore a cui assegnare il corso importato"), $authorsList, 0)
+		$this->addSelect('author', translateFN ("Seleziona l'autore a cui assegnare il corso importato"), $authorsList, $selAuthor)
 			->setRequired()
 			->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
 
-		$this->addSelect('courseID', translateFN ("Seleziona il corso in cui importare"), $courseList, 0)
+		$this->addSelect('courseID', translateFN ("Seleziona il corso in cui importare"), $courseList, $selCourse)
 			->setRequired()
 			->setValidator(FormValidator::NON_NEGATIVE_NUMBER_VALIDATOR);
 

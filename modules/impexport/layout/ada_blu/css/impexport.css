@@ -179,3 +179,9 @@ form[name=importStep1Form] input[type=submit] {
 .first .exportFormStep2 .step2buttons {
 	margin-top: 2em;
 }
+
+body.ada-autore .first .exportFormStep2 .step2buttons #backButton,
+body.ada-autore .exportFormStep1,
+body.ada-autore .importFormStep1 {
+	display: none;
+}

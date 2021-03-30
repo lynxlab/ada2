@@ -18,6 +18,8 @@ function initDoc() {
  */
 function goToExportStepTwo(visibleStep) {
 
+	visibleStep = visibleStep || '';
+
 	var courseSelect = document.getElementById('course');
 	var courseID = courseSelect.options[courseSelect.selectedIndex].value;
 	var courseDescr = courseSelect.options[courseSelect.selectedIndex].innerText.split(' ').slice(1).join(' ');
@@ -30,9 +32,13 @@ function goToExportStepTwo(visibleStep) {
 
 	if (courseID > 0) {
 
-		$j('.'+visibleStep).effect('drop', function() {
+		if (visibleStep.length >0 && $j('.'+visibleStep).length>0) {
+			$j('.'+visibleStep).effect('drop', function() {
+				$j('.exportFormStep2').effect('slide');
+			});
+		} else {
 			$j('.exportFormStep2').effect('slide');
-		});
+		}
 
 		$j('#selCourse').text(courseID);
 		$j('#selNode').text(courseID + '_0');
