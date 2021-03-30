@@ -9,17 +9,25 @@
  * @version		0.1
  */
 
-function initDoc(canEdit) {
+function initDoc() {
     $j('#loader').fadeOut('fast', function(){
         $j(this).remove();
         $j('#pagecontainer > *, #footer').animate({ opacity:1 },'fast');
 	});
-    var dataTable = initDataTable(canEdit);
+    var dataTable = initDataTable();
 
-	function initDataTable(canEdit) {
+	function initDataTable() {
 		var data = {
 			what: 'Repository::List'
 		};
+
+		// check if it's an author importing from repository
+		if($j('#repositoryList').data('importCourseId')) {
+			data.id_course = $j('#repositoryList').data('importCourseId');
+		}
+		if($j('#repositoryList').data('importNodeId')) {
+			data.id_node = $j('#repositoryList').data('importNodeId');
+		}
 
 		dataTable = $j('#repositoryList')
 		.DataTable({
