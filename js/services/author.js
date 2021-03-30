@@ -22,9 +22,12 @@ function initDoc(){
     	moreColDefs = [{"aTargets": [lastCol-3], "sWidth" : "1%", "bSortable":false, "sClass" : "actionCol" },
     	               {"aTargets": [2], "sType":"date-eu" }];
     	// this column is an extra column only needed if there's a module with an action
-    	if (lastCol-4 > 0) {
-    		moreColDefs.push({"aTargets": [lastCol-4], "sWidth" : "1%", "bSortable":false, "sClass" : "actionCol" });
-    	}
+        const modulesCols = [4, 5];
+        modulesCols.forEach(function(colNum) {
+            if (lastCol-colNum > 0) {
+                moreColDefs.push({"aTargets": [lastCol-colNum], "sWidth" : "1%", "bSortable":false, "sClass" : "actionCol" });
+            }
+        });
     } else if ($j('#authorReport').length>0) {
     	moreColDefs = [{"aTargets": [lastCol-3], "sWidth" : "7%", "sClass":"centerAlign" },
     	               {"aTargets": [0], "sType":"formatted-num" }];
