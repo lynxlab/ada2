@@ -9316,7 +9316,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             return new AMA_Error(AMA_ERR_GET);
         }
 
-        ADALogger::log_db("got: ".count($ri_id). " records in risorse_nodi still referring to resource $res_id");
+        ADALogger::log_db("got: ".(is_array($ri_id) ? count($ri_id) : 0). " records in risorse_nodi still referring to resource $res_id");
         if (empty($ri_id)) {
             $sql = "delete from risorsa_esterna where id_risorsa_ext=$res_id";
             ADALogger::log_db("deleting record: $sql");
