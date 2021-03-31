@@ -42,7 +42,7 @@ class BadgeForm extends BadgesAbstractForm {
 
 		// 2nd row
 		$row = \CDOMElement::create('div'); // ,'class:two fields');
-		if (Uuid::isValid($badge->getUuid())) {
+		if (!is_null($badge->getUuid()) && Uuid::isValid($badge->getUuid())) {
 			$row->setAttribute('class','two fields');
 			$message = 'Trascina qui il file o clicca per sostituirlo';
 			$imgdiv = \CDOMElement::create('div','class:field, style:text-align:center');
@@ -94,7 +94,7 @@ class BadgeForm extends BadgesAbstractForm {
 		$field->addChild($lbl);
 		$field->addChild($input);
 
-		if (Uuid::isValid($badge->getUuid())) {
+		if (!is_null($badge->getUuid()) && Uuid::isValid($badge->getUuid())) {
 			$this->addHidden('badgeuuid')->withData($badge->getUuid());
 		}
 	}
