@@ -115,7 +115,7 @@ FCKConfig.ToolbarSets["Default"] = [
 	['OrderedList','UnorderedList','-','Outdent','Indent','Blockquote','CreateDiv'],
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['Link','Unlink','Anchor'],
-	['Image','Flash','Table','Rule','Smiley','SpecialChar','PageBreak'],
+	['Image','Table','Rule','Smiley','SpecialChar','PageBreak'],
 	'/',
 	['Style','FontFormat','FontName','FontSize'],
 	['TextColor','BGColor'],
@@ -130,7 +130,7 @@ FCKConfig.ToolbarSets["editcourse"] = [
 	['OrderedList','UnorderedList','-','Outdent','Indent','Blockquote','CreateDiv'],
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['Link','Unlink','Anchor'],
-	['Image','Flash','Table','Rule','Smiley','SpecialChar'],
+	['Image','Table','Rule','Smiley','SpecialChar'],
 	'/',
 	['Style','FontFormat','FontName','FontSize'],
 	['Templates','TextColor','BGColor']
@@ -144,7 +144,7 @@ FCKConfig.ToolbarSets["Test"] = [
 	['OrderedList','UnorderedList','-','Outdent','Indent','Blockquote'],
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['Link','Unlink'],
-	['Image','Flash','Media','Table','Rule','Smiley','SpecialChar'],
+	['Image','Media','Table','Rule','Smiley','SpecialChar'],
 	'/',
 	['Style','FontFormat','FontName','FontSize'],
 	['TextColor','BGColor']
@@ -158,7 +158,7 @@ FCKConfig.ToolbarSets["Cloze"] = [
 	['OrderedList','UnorderedList','-','Outdent','Indent','Blockquote'],
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['Link','Unlink'],
-	['Image','Flash','Media','Table','Rule','Smiley','SpecialChar','ClozeMarker'],
+	['Image','Media','Table','Rule','Smiley','SpecialChar','ClozeMarker'],
 	'/',
 	['Style','FontFormat','FontName','FontSize'],
 	['TextColor','BGColor']
@@ -170,7 +170,7 @@ FCKConfig.ToolbarSets["Basic"] = [
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
     ['Cut','Copy','Paste','PasteText','PasteWord', 'FitWindow'],
 	'/',
-	['Templates'/*,'-','Style'*/],['YouTube'],['Link','Unlink','Anchor'],['Image','Flash','Table','Rule','Smiley','SpecialChar']
+	['Templates'/*,'-','Style'*/],['YouTube'],['Link','Unlink','Anchor'],['Image','Table','Rule','Smiley','SpecialChar']
 ] ;
 
 FCKConfig.EnterMode = 'p' ;			// p | div | br
