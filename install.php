@@ -212,7 +212,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         return $el;
     }, $postData);
     if (array_key_exists('HTTP_ROOT_DIR', $postData)) {
-        $postData['HTTP_ROOT_DIR'] = rtrim($postData['HTTP_ROOT_DIR'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $postData['HTTP_ROOT_DIR'] = rtrim($postData['HTTP_ROOT_DIR'], '/') . '/';
     }
     $disabledModules = [];
     $modulesSQL = [];
@@ -403,7 +403,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                             in_array(basename($sqlFile), $inCommon) ||
                             (!$multiprovider && in_array(basename($sqlFile), $inBothIfNonMulti)) ||
                             ( $multiprovider && in_array(basename($sqlFile), $inCommonIfMulti))) {
-                                sendToBrowser(translateFN("Importazione").' '.str_replace(ROOT_DIR. '/modules/', '', $sqlFile).' in '.$postData['COMMONDB'].' ...');
+                                sendToBrowser(translateFN("Importazione").' '.ltrim(str_replace(ROOT_DIR. '/modules', '', $sqlFile),'\/').' in '.$postData['COMMONDB'].' ...');
                                 if ($commonEmpty) {
                                     importSQL($sqlFile, $commonpdo);
                                     sendOK();
@@ -419,7 +419,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                                 !in_array(basename($sqlFile), $inCommon) &&
                                 !( $multiprovider && in_array(basename($sqlFile), $inCommonIfMulti))
                                 ) {
-                                    sendToBrowser(translateFN("Importazione").' '.str_replace(ROOT_DIR. '/modules/', '', $sqlFile).' in '.$provider['DB'].' ...');
+                                    sendToBrowser(translateFN("Importazione").' '.ltrim(str_replace(ROOT_DIR. '/modules', '', $sqlFile),'\/').' in '.$provider['DB'].' ...');
                                     if ($providers[$i]['empty']) {
                                         importSQL($sqlFile, $provider['pdo']);
                                         sendOK();
@@ -432,7 +432,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 gc_collect_cycles();
 
                 // modules config files setup
-                $regIter = new RegexIterator($iterator, '/\/.+\/config\_DEFAULT\.inc\.php$/', RecursiveRegexIterator::GET_MATCH);
+                $regIter = new RegexIterator($iterator, '/^[a-z:|\/].+[\/|\\\]config\_DEFAULT\.inc\.php$/i', RecursiveRegexIterator::GET_MATCH);
                 $configFiles = [];
                 foreach ($regIter as $x) {
                     $configFiles = array_merge($configFiles, $x);
@@ -458,7 +458,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
 
                 // modules composer dependencies download
-                $regIter = new RegexIterator($iterator, '/\/.+\/composer\.json$/', RecursiveRegexIterator::GET_MATCH);
+                $regIter = new RegexIterator($iterator, '/^[a-z:|\/].+[\/|\\\]composer\.json$/i', RecursiveRegexIterator::GET_MATCH);
                 $composerFiles = [];
                 foreach ($regIter as $x) {
                     $composerFiles = array_merge($composerFiles, $x);
@@ -588,7 +588,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $modulesDIS = [ 'secretquestion','code_man' ];
     if (is_dir(MODULES_DIR)) {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(MODULES_DIR . DIRECTORY_SEPARATOR));
-        $regIter = new RegexIterator($iterator, '/\/.+\/config\_DEFAULT\.inc\.php$/', RecursiveRegexIterator::GET_MATCH);
+        $regIter = new RegexIterator($iterator, '/^[a-z:|\/].+[\/|\\\]config\_DEFAULT\.inc\.php$/i', RecursiveRegexIterator::GET_MATCH);
         $configFiles = [];
         foreach ($regIter as $x) {
             $configFiles = array_merge($configFiles, $x);
