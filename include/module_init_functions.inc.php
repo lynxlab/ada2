@@ -135,7 +135,12 @@ function session_controlFN($neededObjAr=array(), $allowedUsersAr=array(), $track
   if($sess_userObj instanceof ADAGenericUser) {
     $redirectTo = $sess_userObj->getHomePage();
     if (!isset($_REQUEST['r']) && $sess_userObj instanceof ADAGuest) {
-      $redirectTo .= '?r='.urlencode(HTTP_ROOT_DIR.$_SERVER['REQUEST_URI']);
+      $pieces = parse_url(HTTP_ROOT_DIR);
+      $domain = isset($pieces['host']) ? $pieces['host'] : '';
+      $scheme = isset($pieces['scheme']) ? $pieces['scheme'] : '';
+      if (strlen($scheme.$domain) >0) {
+        $redirectTo .= '?r='.urlencode($scheme.'://'.$domain.$_SERVER['REQUEST_URI']);
+      }
     }
   }
   else {
@@ -268,7 +273,12 @@ function parameter_controlFN($neededObjAr=array(), $allowedUsersAr=array()) {
     if(!in_array($sess_userObj->getType(), $allowedUsersAr)) {
       $requestedLink = '';
       if (!isset($_REQUEST['r']) && $sess_userObj instanceof ADAGuest) {
-        $requestedLink = '?r='.urlencode(HTTP_ROOT_DIR.$_SERVER['REQUEST_URI']);
+        $pieces = parse_url(HTTP_ROOT_DIR);
+        $domain = isset($pieces['host']) ? $pieces['host'] : '';
+        $scheme = isset($pieces['scheme']) ? $pieces['scheme'] : '';
+        if (strlen($scheme.$domain)>0) {
+          $requestedLink = '?r='.urlencode($scheme.'://'.$domain.$_SERVER['REQUEST_URI']);
+        }
       }
       header('Location: '.$sess_userObj->getHomePage().$requestedLink);
       exit();
