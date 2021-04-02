@@ -57,9 +57,8 @@
                                 data-semantic-validate-type="empty" data-semantic-validate-prompt="<i18n>[db corsi pubblici] Inserire l'username per il server</i18n>">
                             </div>
                             <div class="field">
-                                <label><i18n>password</i18n><i class="small icon red asterisk"></i></label>
-                                <input type="text" name="MYSQL[0][PASSWORD]" placeholder="<i18n>MySQL/MariaDB password</i18n>"
-                                data-semantic-validate-type="empty" data-semantic-validate-prompt="<i18n>[db corsi pubblici] Inserire la password per il server</i18n>">
+                                <label><i18n>password</i18n><!-- i class="small icon red asterisk" --></i></label>
+                                <input type="text" name="MYSQL[0][PASSWORD]" placeholder="<i18n>MySQL/MariaDB password</i18n>">
                             </div>
                             <div class="field">
                                 <label><i18n>Nome database</i18n><i class="small icon red asterisk"></i></label>
@@ -86,9 +85,8 @@
                                 data-semantic-validate-type="empty" data-semantic-validate-prompt="<i18n>[db corsi iscrizione] Inserire l'username per il server</i18n>">
                             </div>
                             <div class="field">
-                                <label><i18n>password</i18n><i class="small icon red asterisk"></i></label>
-                                <input type="text" name="MYSQL[1][PASSWORD]" placeholder="<i18n>MySQL/MariaDB password</i18n>"
-                                data-semantic-validate-type="empty" data-semantic-validate-prompt="<i18n>[db corsi iscrizione] Inserire la password per il server</i18n>">
+                                <label><i18n>password</i18n><!-- i class="small icon red asterisk" --></i></label>
+                                <input type="text" name="MYSQL[1][PASSWORD]" placeholder="<i18n>MySQL/MariaDB password</i18n>">
                             </div>
                             <div class="field">
                                 <label><i18n>Nome database</i18n><i class="small icon red asterisk"></i></label>
@@ -115,9 +113,8 @@
                                 data-semantic-validate-type="empty" data-semantic-validate-prompt="<i18n>[db comune] Inserire l'username per il server</i18n>">
                             </div>
                             <div class="field">
-                                <label><i18n>password</i18n><i class="small icon red asterisk"></i></label>
-                                <input type="text" name="MYSQL[COMMON][PASSWORD]" placeholder="<i18n>MySQL/MariaDB password</i18n>"
-                                data-semantic-validate-type="empty" data-semantic-validate-prompt="<i18n>[db comune] Inserire la password per il server MySQL/MariaDB</i18n>">
+                                <label><i18n>password</i18n><!-- i class="small icon red asterisk" --></i></label>
+                                <input type="text" name="MYSQL[COMMON][PASSWORD]" placeholder="<i18n>MySQL/MariaDB password</i18n>">
                             </div>
                             <div class="field">
                                 <label><i18n>Nome database</i18n><i class="small icon red asterisk"></i></label>
