@@ -37,8 +37,12 @@ session_start();// start session since we will be needing session parameters
 $URL = parse_url(HTTP_ROOT_DIR,  PHP_URL_HOST);
 if (strlen(parse_url(HTTP_ROOT_DIR,  PHP_URL_PATH)) > 1) $URL .= parse_url(HTTP_ROOT_DIR,  PHP_URL_PATH);
 if ($_SERVER['SERVER_NAME'] != $URL) {
-    $dir = str_replace($_SERVER['DOCUMENT_ROOT'],'',ROOT_DIR);
-	$dir = '/'.trim($dir,'/');
+	if (DIRECTORY_SEPARATOR === '/') {
+		$dir = str_replace($_SERVER['DOCUMENT_ROOT'],'',ROOT_DIR);
+		$dir = '/'.trim($dir,'/\\');
+	} else {
+		$dir = str_replace($_SERVER['DOCUMENT_ROOT'],'', str_replace('\\', '/', ROOT_DIR));
+	}
 } else {
     //$dir = str_replace($_SERVER['DOCUMENT_ROOT'],'',ROOT_DIR);
     $dir = '';
