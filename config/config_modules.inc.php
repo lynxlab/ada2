@@ -3,6 +3,8 @@
  * ModuleLoaderHelper is included in ada_config.inc.php file
  */
 ModuleLoaderHelper::loadModuleFromArray([
+	// keep eventdispatcher as first module, so others may use it
+	[ 'name' => 'eventdispatcher', 'dirname' => 'event-dispatcher' ],
 	[ 'name' => 'codeman', 'dirname' => 'code_man' ],
 	[ 'name' => 'test' ],
 	[ 'name' => 'newsletter' ],

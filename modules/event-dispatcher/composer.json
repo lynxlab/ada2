@@ -1,0 +1,22 @@
+{
+    "name": "lynxlab/ada-event-dispatcher",
+    "description": "This is the ada module for Event Dispatching",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\EventDispatcher\\" : ["include/"],
+            "Lynxlab\\ADA\\Module\\EventDispatcher\\Subscribers\\" : ["include/subscribers"],
+            "Lynxlab\\ADA\\Module\\EventDispatcher\\Events\\" : ["include/events"]
+	    }
+    },
+    "require": {
+        "symfony/event-dispatcher": "^5.2",
+        "symfony/stopwatch": "^5.2"
+    }
+}
