@@ -287,7 +287,29 @@ class ARE
          * for the template_field substitution to work inside the menu
          */
         if (!is_null($layoutObj->menu)) {
+          if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+              [
+                'eventClass' => 'MenuEvent',
+                'eventName' => 'PRERENDER',
+              ],
+              $layoutObj->menu,
+              ['userType' => $_SESSION['sess_userObj']->getType() ]
+            );
+          }
+
           $content_dataAr = array ('adamenu'=>$layoutObj->menu->getHtml()) + $content_dataAr;
+
+          if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+              [
+                'eventClass' => 'MenuEvent',
+                'eventName' => 'POSTRENDER',
+              ],
+              $layoutObj->menu,
+              ['userType' => $_SESSION['sess_userObj']->getType() ]
+            );
+          }
           $content_dataAr['isVertical'] = ($layoutObj->menu->isVertical()) ? ' vertical' : '';
         }
 
