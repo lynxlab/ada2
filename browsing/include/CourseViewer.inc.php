@@ -146,7 +146,7 @@ class CourseViewer
 
     $id_toc = $id_course.'_'.ADA_DEFAULT_NODE;
 
-    $index = CDOMElement::create('div', "id:$container_div");
+    $index = CDOMElement::create('div', "id:$container_div,class:mainIndex");
 
     if ( $order == 'alfa' ) {
       $index->addChild(self::ordered($course_data, $callback, $callback_params,$id_toc, $dh));
@@ -359,7 +359,7 @@ class CourseViewer
       }
     }
 
-    $index = CDOMElement::create('div', "id:$container_div");
+    $index = CDOMElement::create('div', "id:$container_div,class:forum");
 
     if ($order == 'chrono') {
       $index->addChild(self::ordered($forum_data, $callback, $callback_params, $forum_root_node));
@@ -840,6 +840,11 @@ class CourseViewer
 
     $list_item = CDOMElement::create('span');
     $list_item->addChild(self::getDisclosureElement($params, $external_params));
+    $container = \CDOMElement::create('div','class:listItem container');
+    $titleContainer = CDOMElement::create('div','class:noteTitle');
+    $container->addChild($titleContainer);
+    $titleContainer->addChild($list_item);
+
     if ($external_params['show_icons'] == TRUE) {
 //      $note_icon = self::forumGetNoteIcon($params['node'], $external_params['class_tutor_id']);
 //      $icon = CDOMElement::create('img');
@@ -852,6 +857,10 @@ class CourseViewer
     	$username = CDOMElement::create('span', 'class:username');
     	$username->addChild(new CText($params['node']['username']));
     }
+    if (isset($params['node']['data_creazione'])) {
+      $notedate = CDOMElement::create('span', 'class:notedate');
+      $notedate->addChild(new CText(ts2dFN($params['node']['data_creazione']).', '.ts2tmFN($params['node']['data_creazione'])));
+    }
     if (isset($params['node']['nome_nodo'])) {
     	$textlink = $params['node']['nome_nodo'];
     	$link_to_note = CDOMElement::create('a',"href:$http_root_dir/browsing/view.php?id_node={$params['node']['id_nodo']}");
@@ -863,18 +872,27 @@ class CourseViewer
     if (isset($link_to_note)) $link_to_note->addChild(new CText($textlink));
 
     if (isset($link_to_note)) $list_item->addChild($link_to_note);
-    if (isset($username)) $list_item->addChild($username);
+    $authorContainer = CDOMElement::create('div','class:noteAuthor');
+    if (isset($username)) {
+      $authorContainer->addChild($username);
+    }
+    if (isset($notedate)) {
+      $authorContainer->addChild($notedate);
+    }
+    $container->addChild($authorContainer);
 
+  $actionsContainer = CDOMElement::create('div','class:noteActions');
 	if (!empty($params['node']['testo'])) {
 		$link_zoom = CDOMElement::create('a');
 		$link_zoom->setAttribute('href','javascript:void(0);');
 		$link_zoom->setAttribute('onclick',"\$j('#messagePreview".$params['node']['id_nodo']."').slideToggle();");
 		$link_zoom->setAttribute('title',translateFN('Anteprima Messaggio'));
-		$link_zoom->setAttribute('class', 'previewMessage');
+		$link_zoom->setAttribute('class', 'previewMessage ui tiny button');
 		$zoom = CDOMElement::create('img','src:img/zoom.png, width:16, height:16');
 		$link_zoom->addChild($zoom);
-		$list_item->addChild($link_zoom);
+		$actionsContainer->addChild($link_zoom);
 	}
+  $titleContainer->addChild($actionsContainer);
 	/*
      * Display student visits to this node if required.
      */
@@ -886,7 +904,7 @@ class CourseViewer
       }
       $visit_item = CDOMElement::create('span','class:visitsCount');
       $visit_item->addChild(new CText(translateFN("Visite") . " $visits"));
-      $list_item->addChild($visit_item);
+      $titleContainer->addChild($visit_item);
     }
 
     if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
@@ -916,9 +934,9 @@ class CourseViewer
 			$div_text->addChild(new CText(' '));
 			$div_text->addChild($link_to_note);
 		}
-		$list_item->addChild($div_text);
+		$container->addChild($div_text);
 	}
-    return $list_item;
+    return $container;
   }
 
   public static function displayForumMenu($op, $userObj) {

@@ -108,7 +108,7 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 	text-decoration: none;
 	background-image: url(../../img/freccia_continua.png);
 	background-repeat: no-repeat;
-	background-position: left top;    
+	background-position: left top;
 }
 
 /*contenuto: infonodo*/
@@ -334,7 +334,7 @@ table.historytable .NODE_NOT_VIEWABLE::before {
 	font-size: 1.5em;
 	vertical-align: middle;
 	margin-right: 0.5rem;
-	color: #000;	
+	color: #000;
 }
 
 .ADA_NOTE_TYPE.YOUR_NOTE
@@ -350,7 +350,7 @@ table.historytable .NODE_NOT_VIEWABLE::before {
 	font-size: 1.5em;
 	vertical-align: middle;
 	margin-right: 0.5rem;
-	color: purple;	
+	color: purple;
 }
 
 .ADA_NOTE_TYPE.TUTOR_NOTE
@@ -364,7 +364,7 @@ table.historytable .NODE_NOT_VIEWABLE::before {
 	font-size: 1.5em;
 	vertical-align: middle;
 	margin-right: 0.5rem;
-	color: #f00;	
+	color: #f00;
 }
 .ADA_NOTE_TYPE.TUTOR_NOTE.YOUR_NOTE
 {
@@ -385,7 +385,7 @@ table.historytable .NODE_NOT_VIEWABLE::before {
 	font-size: 1.5em;
 	vertical-align: middle;
 	margin-right: 0.5rem;
-	color: #000;	
+	color: #000;
 }
 
 .ADA_NOTE_TYPE.TUTOR_NOTE.YOUR_NOTE.ADA_PRIVATE_NOTE_TYPE
@@ -521,7 +521,7 @@ table.historytable .NODE_NOT_VIEWABLE::before {
 	text-align: left;
     font-weight: bold;
 	}
-        
+
 /*for advanced search*/
 
 .search_formAdvanced
@@ -557,7 +557,7 @@ table.historytable .NODE_NOT_VIEWABLE::before {
 }
 
 /*for self_instruction*/
- 
+
 #IndexSelfInstruction
 {
     margin-top: -200px;
@@ -565,7 +565,7 @@ table.historytable .NODE_NOT_VIEWABLE::before {
 }
 #content_selfInstruction
 {
-  min-height: 200px;  
+  min-height: 200px;
 }
 
 /**
@@ -604,7 +604,7 @@ table.historytable .NODE_NOT_VIEWABLE::before {
 	top: 12px;
 	right: -32%;
 	left: inherit;
-	width: 62%;	
+	width: 62%;
 }
 
 #contentcontent div.media.sound div.jp-volume-bar {
@@ -643,3 +643,95 @@ div.media.video button.jp-repeat,
 div.media.video div.jp-details {
     display: none;
 }
+
+/**
+ * Forum, flex styled
+ */
+ #structIndex.forum .listItem.container {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: space-between;
+     align-items: center;
+ }
+
+ #structIndex.forum .ADA_GROUP_TYPE,
+ #structIndex.forum .ADA_NOTE_TYPE {
+     display: block;
+     margin-right: auto;
+ }
+
+ #structIndex.forum .courseNode {
+     margin-top: 0;
+     padding-left: 1em;
+ }
+
+ #structIndex.forum .ADA_NOTE_TYPE a.noteElement {
+     display: inline-block;
+ }
+
+#structIndex.forum .listItem.container .visitsCount {
+    order: 3;
+    margin-right: 1em;
+}
+
+#structIndex.forum .listItem.container .noteTitle {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    order: 4;
+}
+
+ #structIndex.forum .listItem.container .noteActions a.previewMessage {
+    margin-right: 1em;
+}
+
+#structIndex.forum  .listItem.container .noteActions a.previewMessage:after {
+    margin-right: initial;
+    width: initial;
+}
+
+#structIndex.forum .listItem.container .noteActions {
+     order: 2;
+ }
+
+ #structIndex.forum .listItem.container .noteAuthor {
+     flex: 100%;
+     order:3;
+     display: flex;
+     align-items: center;
+     margin-top: 1em;
+    }
+
+#structIndex.forum .listItem.container .noteAuthor .notedate {
+    margin-right: 1em;
+    font-style: italic;
+    opacity: 0.7;
+    font-size: 0.9em;
+    order: 1;
+    width: 15em;
+}
+
+#structIndex.forum .listItem.container .noteAuthor .username {
+    /* margin-right: auto; */
+    order: 2;
+    margin: 0;
+    line-height: 2rem;
+}
+
+ #structIndex.forum .listItem.container .preview_forum {
+     flex: 100%;
+     order: 4;
+     border: none;
+     border-radius: 0;
+     border-left: 5px solid #cdcdcd;
+     padding-left: 0.5em;
+     margin-bottom: 1em;
+ }
+
+ #structIndex.forum > ul > li.courseNode > ul.structIndex > li.courseNode:nth-child(even) {
+     background-color: #f2f2f2;
+ }
+
+ #structIndex.forum > ul > li.courseNode > ul.structIndex > li.courseNode {
+     padding-bottom: 0;
+ }
