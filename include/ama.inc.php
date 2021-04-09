@@ -12710,7 +12710,7 @@ public function get_updates_nodes($userObj, $pointer)
 			$sql = "
 				SELECT
 					N.id_nodo, N.id_utente, N.nome AS nome_nodo, N.titolo, N.testo, N.tipo, N.id_nodo_parent, N.data_creazione,
-					U.username, U.nome, U.cognome
+					U.username, U.nome, U.cognome, U.avatar
 				FROM nodo N
 				LEFT JOIN (SELECT id_nodo, count(id_nodo) AS numero_visite FROM history_nodi WHERE id_istanza_corso=".$id_course_instance." GROUP BY id_nodo) AS V ON (N.id_nodo=V.id_nodo)
 				LEFT JOIN utente AS U ON (U.id_utente=N.id_utente)
@@ -12723,7 +12723,7 @@ public function get_updates_nodes($userObj, $pointer)
 			$sql = "
 				SELECT
 					N.id_nodo, N.id_utente, N.nome AS nome_nodo, N.titolo, N.testo, N.tipo, N.id_nodo_parent, N.data_creazione,
-					U.username, U.nome, U.cognome
+					U.username, U.nome, U.cognome, U.avatar
 				FROM nodo N
 				LEFT JOIN utente AS U ON (U.id_utente=N.id_utente)
 				WHERE N.id_istanza=".$id_course_instance." AND (N.tipo = ".ADA_NOTE_TYPE." OR (N.tipo=".ADA_PRIVATE_NOTE_TYPE." AND N.id_utente=".$id_user.")) ".
