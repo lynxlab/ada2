@@ -45,9 +45,20 @@ final class ForumEvent extends GenericEvent
   const NOTEPOSTSAVE = self::namespace . '.note.postsave';
 
   /**
+   * The INDEXACTIONINIT event occurs before the first action is inserted into the default actions container
+   *
+   * This event allows you to add custom actions buttons to the beginning of the default buttons container
+   *
+   * @GenericEvent
+   *
+   * @var string
+   */
+  const INDEXACTIONINIT = self::namespace . '.index.action.init';
+
+  /**
    * The INDEXACTIONDONE event occurs after the action buttons for the forum index have been generated
    *
-   * This event allows you to add actions custom buttons to the default buttons container
+   * This event allows you to add custom actions buttons to the end of the default buttons container
    *
    * @GenericEvent
    *
