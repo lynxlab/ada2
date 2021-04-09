@@ -841,8 +841,43 @@ class CourseViewer
     $list_item = CDOMElement::create('span');
     $list_item->addChild(self::getDisclosureElement($params, $external_params));
     $container = \CDOMElement::create('div','class:listItem container');
+    $row = \CDOMElement::create('div','class:listItem row');
+    $container->addChild($row);
+
+    /**
+     * first item: avatar
+     */
+    if (isset($params['node']['id_utente'])) {
+      $img = null;
+      if (is_readable(ROOT_DIR . MEDIA_PATH_DEFAULT . $params['node']['id_utente'] . DIRECTORY_SEPARATOR .$params['node']['avatar'])) {
+        $img = str_replace([ROOT_DIR, '\\'], [HTTP_ROOT_DIR, '/'], ROOT_DIR . MEDIA_PATH_DEFAULT . $params['node']['id_utente'] . DIRECTORY_SEPARATOR .$params['node']['avatar']);
+      } else if (is_readable(ADA_UPLOAD_PATH . DIRECTORY_SEPARATOR . $params['node']['id_utente'] . DIRECTORY_SEPARATOR . $params['node']['avatar'])) {
+        $img = str_replace([ROOT_DIR, '\\'], [HTTP_ROOT_DIR, '/'], ADA_UPLOAD_PATH . DIRECTORY_SEPARATOR . $params['node']['id_utente'] . DIRECTORY_SEPARATOR . $params['node']['avatar']);
+      }
+      else if (is_readable(ADA_UPLOAD_PATH . ADA_DEFAULT_AVATAR)) {
+        $img = str_replace([ROOT_DIR, '\\'], [HTTP_ROOT_DIR, '/'], ADA_UPLOAD_PATH . ADA_DEFAULT_AVATAR);
+      }
+      if (!is_null($img)) {
+        $avatar = \CDOMElement::create('div','class:avatar');
+        $avatar->addChild(\CDOMElement::create('img','class:ui small circular image,src:'.$img));
+        $row->addChild($avatar);
+      }
+    }
+
+    /**
+     * second item: content
+     */
+    $itemContent = \CDOMElement::create('div','class:listItem content');
+    $row->addChild($itemContent);
+
+    /**
+     * content first item: details
+     */
+    $details = \CDOMElement::create('div','class:details');
+    $itemContent->addChild($details);
+
     $titleContainer = CDOMElement::create('div','class:noteTitle');
-    $container->addChild($titleContainer);
+    $details->addChild($titleContainer);
     $titleContainer->addChild($list_item);
 
     if ($external_params['show_icons'] == TRUE) {
@@ -856,6 +891,7 @@ class CourseViewer
     if (isset($params['node']['username'])) {
     	$username = CDOMElement::create('span', 'class:username');
     	$username->addChild(new CText($params['node']['username']));
+      $username->setAttribute('data-user-id',$params['node']['id_utente']);
     }
     if (isset($params['node']['data_creazione'])) {
       $notedate = CDOMElement::create('span', 'class:notedate');
@@ -879,20 +915,49 @@ class CourseViewer
     if (isset($notedate)) {
       $authorContainer->addChild($notedate);
     }
-    $container->addChild($authorContainer);
+    $details->addChild($authorContainer);
 
   $actionsContainer = CDOMElement::create('div','class:noteActions');
-	if (!empty($params['node']['testo'])) {
-		$link_zoom = CDOMElement::create('a');
-		$link_zoom->setAttribute('href','javascript:void(0);');
+  if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+    \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+      [
+        'eventClass' => 'ForumEvent',
+        'eventName' => 'INDEXACTIONINIT',
+      ],
+      $actionsContainer,
+      [
+        'userType' => $_SESSION['sess_userObj']->getType(),
+        'params' => $params,
+        'external_params' => $external_params,
+      ]
+    );
+  }
+  	if (!empty($params['node']['testo'])) {
+		$link_zoom = CDOMElement::create('button');
+		// $link_zoom->setAttribute('href','javascript:void(0);');
 		$link_zoom->setAttribute('onclick',"\$j('#messagePreview".$params['node']['id_nodo']."').slideToggle();");
 		$link_zoom->setAttribute('title',translateFN('Anteprima Messaggio'));
-		$link_zoom->setAttribute('class', 'previewMessage ui tiny button');
-		$zoom = CDOMElement::create('img','src:img/zoom.png, width:16, height:16');
-		$link_zoom->addChild($zoom);
+		$link_zoom->setAttribute('class', 'previewMessage ui tiny icon button');
+		$link_zoom->addChild(\CDOMElement::create('i','class:zoom in icon'));
+		// $zoom = CDOMElement::create('img','src:img/zoom.png, width:16, height:16');
+		// $link_zoom->addChild($zoom);
 		$actionsContainer->addChild($link_zoom);
 	}
-  $titleContainer->addChild($actionsContainer);
+  if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+    \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+      [
+        'eventClass' => 'ForumEvent',
+        'eventName' => 'INDEXACTIONDONE',
+      ],
+      $actionsContainer,
+      [
+        'userType' => $_SESSION['sess_userObj']->getType(),
+        'params' => $params,
+        'external_params' => $external_params,
+      ]
+    );
+  }
+  $itemContent->addChild($actionsContainer);
 	/*
      * Display student visits to this node if required.
      */
@@ -904,7 +969,7 @@ class CourseViewer
       }
       $visit_item = CDOMElement::create('span','class:visitsCount');
       $visit_item->addChild(new CText(translateFN("Visite") . " $visits"));
-      $titleContainer->addChild($visit_item);
+      $authorContainer->addChild($visit_item);
     }
 
     if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
@@ -914,7 +979,7 @@ class CourseViewer
 
     if (!empty($params['node']['testo'])) {
 		$div_text = CDOMElement::create('div', 'id:messagePreview'.$params['node']['id_nodo']);
-		$div_text->setAttribute('class', 'preview_forum');
+		$div_text->setAttribute('class', 'preview_forum listItem row');
 		$div_text->setAttribute('style', 'display:none;');
 		$char_limit = 525;
 		$text = strip_tags($params['node']['testo']);

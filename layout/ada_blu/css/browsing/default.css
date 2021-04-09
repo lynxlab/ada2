@@ -649,40 +649,44 @@ div.media.video div.jp-details {
  */
  #structIndex.forum .listItem.container {
      display: flex;
-     flex-wrap: wrap;
-     justify-content: space-between;
+     flex-direction: column;
+     padding: 0.5em;
+ }
+
+ #structIndex.forum .listItem.row {
+     display: flex;
+     flex-direction: row;
      align-items: center;
  }
 
+ #structIndex.forum .listItem.row .avatar {
+     margin-right: 0.5em;
+ }
+
+ #structIndex.forum .listItem.row .avatar .ui.small.circular.image {
+     width: 40px;
+     height: 40px;
+ }
+
+ .listItem.content {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
  #structIndex.forum .ADA_GROUP_TYPE,
  #structIndex.forum .ADA_NOTE_TYPE {
-     display: block;
-     margin-right: auto;
+     padding: 0;
  }
 
  #structIndex.forum .courseNode {
      margin-top: 0;
-     padding-left: 1em;
+     padding: 0;
  }
-
- #structIndex.forum .ADA_NOTE_TYPE a.noteElement {
-     display: inline-block;
- }
-
-#structIndex.forum .listItem.container .visitsCount {
-    order: 3;
-    margin-right: 1em;
-}
 
 #structIndex.forum .listItem.container .noteTitle {
-    display: flex;
-    flex-grow: 1;
-    align-items: center;
-    order: 4;
-}
-
- #structIndex.forum .listItem.container .noteActions a.previewMessage {
-    margin-right: 1em;
+    margin-bottom: 0.5em;
 }
 
 #structIndex.forum  .listItem.container .noteActions a.previewMessage:after {
@@ -690,37 +694,21 @@ div.media.video div.jp-details {
     width: initial;
 }
 
-#structIndex.forum .listItem.container .noteActions {
-     order: 2;
- }
-
- #structIndex.forum .listItem.container .noteAuthor {
-     flex: 100%;
-     order:3;
-     display: flex;
-     align-items: center;
-     margin-top: 1em;
-    }
-
+#structIndex.forum .listItem.container .visitsCount,
 #structIndex.forum .listItem.container .noteAuthor .notedate {
-    margin-right: 1em;
+    text-transform: lowercase;
     font-style: italic;
     opacity: 0.7;
     font-size: 0.9em;
-    order: 1;
-    width: 15em;
 }
 
 #structIndex.forum .listItem.container .noteAuthor .username {
-    /* margin-right: auto; */
-    order: 2;
     margin: 0;
-    line-height: 2rem;
+    width: initial;
+    font-weight: bold;
 }
 
  #structIndex.forum .listItem.container .preview_forum {
-     flex: 100%;
-     order: 4;
      border: none;
      border-radius: 0;
      border-left: 5px solid #cdcdcd;
@@ -734,4 +722,8 @@ div.media.video div.jp-details {
 
  #structIndex.forum > ul > li.courseNode > ul.structIndex > li.courseNode {
      padding-bottom: 0;
+ }
+
+ #structIndex.forum > ul > li.courseNode > ul.structIndex > li.courseNode:last-child {
+     margin-bottom: 3em;
  }
