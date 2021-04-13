@@ -34,6 +34,26 @@ class ARE
 
   	if (!isset($id_profile)) $id_profile = null;
 
+    if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+      $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+        [
+          'eventClass' => 'CoreEvent',
+          'eventName' => 'PAGEPRERENDER',
+        ],
+        ARE::class,
+        [
+          'layout_dataAr' => $layout_dataAr,
+          'content_dataAr' => $content_dataAr,
+          'renderer' => $renderer,
+          'options' => $options,
+          'menu_options' => $menuoptions,
+        ]
+      );
+      foreach($event->getArguments() as $key => $val) {
+        $$key = $val;
+      }
+    }
+
     switch($renderer) {
         case ARE_PRINT_RENDER:
 
