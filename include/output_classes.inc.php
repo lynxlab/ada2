@@ -39,8 +39,9 @@ class ARE
         [
           'eventClass' => 'CoreEvent',
           'eventName' => 'PAGEPRERENDER',
+          'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
         ],
-        ARE::class,
+        basename($_SERVER['SCRIPT_FILENAME']),
         [
           'layout_dataAr' => $layout_dataAr,
           'content_dataAr' => $content_dataAr,
@@ -485,7 +486,7 @@ class  Generic_Html extends Output
         <meta name=\"class\" content=\"generic HTML\">
         <meta name=\"description\" content=\"$description\">
         <meta name=\"keywords\" content=\"$keywords, $meta_keywords\">
-        <meta name=\"cachefile\" content=\"$static_filename\">
+        <meta name=\"cachefile\" content=\"$this->static_filename\">
         <!-- Stile -->\n";
     $this->htmlheader.= "<title>\n$title\n</title>\n";
     $this->htmlheader.= "</head>\n";

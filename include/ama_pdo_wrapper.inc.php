@@ -182,6 +182,7 @@ class AMA_PDO_wrapper
 					[
 						'eventClass' => 'CoreEvent',
 						'eventName' => 'AMAPDOPREGETALL',
+						'eventPrefix' => \GetCallingMethodName(),
 					],
 					\GetCallingMethodName(),
 					[
@@ -208,6 +209,7 @@ class AMA_PDO_wrapper
 				[
 					'eventClass' => 'CoreEvent',
 					'eventName' => 'AMAPDOPOSTGETALL',
+					'eventPrefix' => \GetCallingMethodName(),
 				],
 				\GetCallingMethodName(),
 				[
