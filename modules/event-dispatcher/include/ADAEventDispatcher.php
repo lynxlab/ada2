@@ -12,9 +12,12 @@ declare(strict_types=1);
 
 namespace Lynxlab\ADA\Module\EventDispatcher;
 
+use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAMethodSubscriberInterface;
+use Lynxlab\ADA\Module\EventDispatcher\Subscribers\ADAScriptSubscriberInterface;
 use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
@@ -28,6 +31,11 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
    * with getCalledListeners and getNotCalledListeners methods
    */
   const TRACEABLE = false;
+
+  /**
+   * Separator to build prefixed event Names
+   */
+  const PREFIX_SEPARATOR = '::';
 
   /**
    * This class is not allowed to call from outside: private!
@@ -85,7 +93,8 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
           $constantname = $classname . '::' . $eventData['eventName'];
           if (defined($constantname)) {
             $event = new $classname($subject, $arguments);
-            return self::getInstance()->dispatch($event, constant($constantname));
+            $eventPrefix = array_key_exists('eventPrefix', $eventData) ? trim($eventData['eventPrefix']) . self::PREFIX_SEPARATOR : '';
+            return self::getInstance()->dispatch($event, $eventPrefix . constant($constantname));
           } else throw new ADAEventException(sprintf("Event constant %s is not defined", $eventData['eventName']), ADAEventException::EVENTNAMENOTFOUND);
         } else throw new ADAEventException(sprintf("Class %s not found", $eventData['eventClass']), ADAEventException::EVENTCLASSNOTFOUND);
       } else throw new ADAEventException("Must pass an Event name", ADAEventException::NOEVENTNAME);
@@ -112,6 +121,34 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
       return $event;
     }
     return parent::dispatch($event, $eventName);
+  }
+
+  public function addSubscriber(EventSubscriberInterface $subscriber)
+  {
+    $prefixedListeners = [];
+    if ($subscriber instanceof ADAMethodSubscriberInterface) {
+      $prefixedListeners += $subscriber::getSubscribedMethods();
+    }
+    if ($subscriber instanceof ADAScriptSubscriberInterface) {
+      $prefixedListeners += $subscriber::getSubscribedScripts();
+    }
+    if (count($prefixedListeners)>0) {
+      foreach ($prefixedListeners as $methodName => $methodParams) {
+        foreach ($methodParams as $eventName => $params) {
+          $eventName = $methodName . self::PREFIX_SEPARATOR . $eventName;
+          if (\is_string($params)) {
+            $this->addListener($eventName, [$subscriber, $params]);
+          } elseif (\is_string($params[0])) {
+            $this->addListener($eventName, [$subscriber, $params[0]], $params[1] ?? 0);
+          } else {
+            foreach ($params as $listener) {
+              $this->addListener($eventName, [$subscriber, $listener[0]], $listener[1] ?? 0);
+            }
+          }
+        }
+      }
+    }
+    return parent::addSubscriber($subscriber);
   }
 
   /**
@@ -166,7 +203,10 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
       if (is_readable($filename)) {
         $classname = $fullNS . rtrim(basename($filename), $fileext);
         if (class_exists($classname)) {
-          $dispatcher->addSubscriber(new $classname());
+          $reflected = new \ReflectionClass($classname);
+          if ($reflected->isInstantiable()) {
+            $dispatcher->addSubscriber(new $classname());
+          }
         }
       }
     }
