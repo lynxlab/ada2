@@ -841,6 +841,7 @@ class CourseViewer
     $list_item = CDOMElement::create('span');
     $list_item->addChild(self::getDisclosureElement($params, $external_params));
     $container = \CDOMElement::create('div','class:listItem container');
+    $container->addChild(\CDOMElement::create('a','name:'.$params['node']['id_nodo']));
     $row = \CDOMElement::create('div','class:listItem row');
     $container->addChild($row);
 
@@ -972,10 +973,10 @@ class CourseViewer
       $authorContainer->addChild($visit_item);
     }
 
-    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
-      $image = CDOMElement::create('img','name:altri, src:img/_student.png');
-      $list_item->addChild($image);
-    }
+    // if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
+    //   $image = CDOMElement::create('img','name:altri, src:img/_student.png');
+    //   $list_item->addChild($image);
+    // }
 
     if (!empty($params['node']['testo'])) {
 		$div_text = CDOMElement::create('div', 'id:messagePreview'.$params['node']['id_nodo']);
