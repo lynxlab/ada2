@@ -28,4 +28,5 @@ ModuleLoaderHelper::loadModuleFromArray([
 	[ 'name' => 'collaboraacl', 'dirname' => 'collabora-access-list' ],
 	[ 'name' => 'impersonate' ],
 	[ 'name' => 'etherpad', 'dirname' => 'etherpad-integration' ],
+	[ 'name' => 'notifications' ],
 ]);
