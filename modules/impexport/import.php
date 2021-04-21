@@ -22,14 +22,22 @@ $variableToClearAR = array('node', 'layout', 'course', 'user');
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_AUTHOR);
 
 /**
  * Get needed objects
 */
 $neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
+		AMA_TYPE_SWITCHER => array('layout'),
+		AMA_TYPE_AUTHOR => array('layout'),
 );
+
+if (array_key_exists('id_course', $_GET) || array_key_exists('id_node', $_GET)) {
+    $neededObjAr[AMA_TYPE_AUTHOR] = array('node', 'layout', 'course');
+	$isAuthorImporting = true;
+} else {
+	$isAuthorImporting = false;
+}
 
 /**
  * Performs basic controls before entering this module
@@ -99,6 +107,9 @@ else
 		$authors[$author[0]] = $author[1];
 	}
 
+	$selAuthor = $isAuthorImporting ? $userObj->getId() : 0;
+	$selCourse = $isAuthorImporting ? $courseObj->getId() : 0;
+
 	/**
 	 * load course list from the DB
 	 */
@@ -131,11 +142,12 @@ else
 					HTTP_ROOT_DIR,
 					MODULES_IMPEXPORT_REPOBASEDIR . trim(urldecode($_GET['repofile']))
 				),
-				'forceRunImport' => true
+				'forceRunImport' => true,
+				'isAuthorImporting' => $isAuthorImporting,
 			];
 		} else $form1opts = [];
 		$form1 = new FormUploadImportFile('importStep1Form', $form1opts);
-		$form2 = new FormSelectDatasForImport('importStep2Form', $authors, $courses);
+		$form2 = new FormSelectDatasForImport('importStep2Form', $authors, $courses, $selAuthor, $selCourse);
 
 		$step1DIV = CDOMElement::create('div','class:importFormStep1');
 		$step1DIV->addChild (new CText($form1->getHtml()));
@@ -165,6 +177,10 @@ else
 		$spanSelCourse->setAttribute('style', 'display:none');
 		$spanSelNode = CDOMElement::create('span','id:selNode');
 		$spanSelNode->setAttribute('style', 'display:none');
+		if ($isAuthorImporting) {
+			$spanSelCourse->addChild(new \CText($courseObj->getId()));
+			$spanSelNode->addChild(new \CText($nodeObj->id));
+		}
 
 		$buttonDIV = CDOMElement::create('div','class:importSN2buttons');
 
@@ -187,8 +203,6 @@ else
 		$importSelectNode->addChild ($spanSelCourse);
 		$importSelectNode->addChild ($spanSelNode);
 		$importSelectNode->addChild ($buttonDIV);
-
-
 
 		$step3DIV = CDOMElement::create('div','class:importFormStep3');
 		$step3DIV->setAttribute('style', 'display:none');

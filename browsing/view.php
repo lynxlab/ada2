@@ -302,7 +302,7 @@ else {
 if (isset($tutor_uname)) {
 	$write_to_tutor_link = "<a href=\"$http_root_dir/comunica/send_message.php?destinatari=$tutor_uname\">$tutor_uname</a>";
 	if (isset($tutor_id)) {
-		$tutor_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$tutor_id\">$tutor_uname</a>";
+		$tutor_info_link = $tutor_uname;
 	} else $tutor_info_link = null;
 } else {
 	$write_to_tutor_link = null;
@@ -315,7 +315,7 @@ if (isset($node_author)) {
 	} else $write_to_author_link = null;
 
 	if (isset($node_author_id)) {
-		$author_info_link = "<a href=\"$http_root_dir/admin/zoom_user.php?id=$node_author_id\">$node_author</a>";
+		$author_info_link = $node_author;
 	} else {
 		$author_info_link = null;
 	}

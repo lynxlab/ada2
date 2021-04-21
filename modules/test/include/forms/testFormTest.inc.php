@@ -10,7 +10,7 @@
  */
 
 class TestFormTest extends RootFormTest {
-	
+
 	protected function content() {
 		parent::content();
 
@@ -23,7 +23,7 @@ class TestFormTest extends RootFormTest {
 			var livello_field = "livello";
 			document.write(\'<script type="text/javascript" src="'.MODULES_TEST_HTTP.'/js/testForm.js"><\/script>\');';
 		$this->setCustomJavascript($js);
-		
+
 		//barriera
 		$radios = array(
 			ADA_YES_TEST_BARRIER => translateFN('Si'),
@@ -52,7 +52,7 @@ class TestFormTest extends RootFormTest {
 
 
 		//livello
-		for($i=0;$i<=10;$i++) {
+		for($i=0;$i<=25;$i++) {
 			$options[$i]=$i;
 		}
 		$options[0] = translateFN('Nessun livello');

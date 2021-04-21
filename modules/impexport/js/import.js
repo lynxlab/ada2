@@ -9,6 +9,8 @@ var tree;
  * @param maxSize the max uploadable file size
  */
 function initDoc(maxSize) {
+	const isAuthorImporting = $j('#isAuthorImporting').length==1 && $j('#isAuthorImporting').val()=='1';
+	$j('#isAuthorImporting').remove();
 
 	$j("#importfile").pekeUpload({
 		// onSubmit: true,
@@ -16,7 +18,7 @@ function initDoc(maxSize) {
 		// onFileError:function(file,error){alert("error on file: "+file.name+"
 		// error: "+error+"");},
 		onFileSuccess : function(file) {
-			goToImportStepTwo(file);
+			goToImportStepTwo(file, isAuthorImporting);
 		},
 		btnText : "Sfoglia Files",
 		// multi: false,
@@ -58,11 +60,10 @@ function initDoc(maxSize) {
 	    return event.keyCode != 13;
 	});
 
-	// do the import from url
-	$j('#importUrlBtn').on('click',function() {
+	const getFileFromUrl = function() {
 		var theUrl = $j('#importURL').val();
 		if (theUrl.length>0) {
-			$j.ajax({
+			return $j.ajax({
 				type    : 'GET',
 				url     : HTTP_ROOT_DIR+ '/modules/impexport/getFileFromUrl.php',
 				dataType: 'json',
@@ -76,7 +77,7 @@ function initDoc(maxSize) {
 			})
 			.done(function(JSONObj){
 				if (JSONObj.status=='OK') {
-					goToImportStepTwo({ name: JSONObj.filename });
+					goToImportStepTwo({ name: JSONObj.filename }, isAuthorImporting);
 				} else {
 					if ('undefined' != JSONObj.msg && JSONObj.msg.length>0) {
 						alert (JSONObj.msg);
@@ -93,11 +94,27 @@ function initDoc(maxSize) {
 		} else {
 			alert ($j('#emptyURLMSG').text());
 		}
-	});
+	}
+
+	// do the import from url
+	$j('#importUrlBtn').on('click', getFileFromUrl);
 
 	if ($j('#forceRunImport').length==1 && $j('#forceRunImport').val()=='1') {
-		// $j('#importFormStep1').hide();
-		$j('#importUrlBtn').click();
+		$j.when(getFileFromUrl())
+		.done(function() {
+			if (isAuthorImporting && $j('#selNode').text().trim().length > 0) {
+				$j('.importFormStep3').effect('slide');
+				$j.when(doImport(isAuthorImporting))
+				.done(function() {
+					const courseID = $j('#selCourse').text();
+					const nodeID = $j('#selNode').text();
+					$j('.importFormStep3').html("<h1>Importazione completata!</h1><p>A breve sarai ridirezionato al nodo dell'importazione</p>").show();
+					window.setTimeout(function() {
+						document.location.href = `${HTTP_ROOT_DIR}/browsing/view.php?id_course=${courseID}&id_node=${nodeID}`;
+					}, 2500);
+				});
+			}
+		});
 	}
 }
 
@@ -157,6 +174,50 @@ function requestProgress()
 		} );
 }
 
+const doImport = function(isAuthorImporting) {
+	const authorSelect = document.getElementById('author');
+	const authorID = authorSelect.options[authorSelect.selectedIndex].value;
+	const fileName = $j('#importFileName').val();
+	const courseID = $j('#selCourse').text();
+	const nodeID = $j('#selNode').text();
+	var postData = new Object();
+
+	postData.importFileName = fileName;
+	postData.author = authorID;
+	postData.serviceLevel = ($j('#service_level').length>0) ? $j('#service_level').val() : 0;
+	postData.op = 'ajaximport';
+
+	if (courseID!='') postData.courseID = parseInt (courseID);
+	if (nodeID!='') postData.nodeID = $j.trim(nodeID);
+
+	return $j.ajax({
+		cache   : false,
+		type	: 'POST',
+		url		: HTTP_ROOT_DIR+ '/modules/impexport/import.php',
+		data	: postData,
+		dataType: 'json',
+		beforeSend : function () {
+			// this timer will be cleared when the import has finished
+			repeatTimer = window.setTimeout ( function() { requestProgress(); }, 1000 ); }
+		})
+		.done ( function (JSONObj) {
+			if (!isAuthorImporting) {
+				$j('.importFormStep3').effect('drop', function() {
+					$j('.importFormStep3').html(JSONObj.html).effect('slide');
+				});
+			}
+			// $j('.importFormStep3').html (html);
+			})
+		.fail ( function (JSONObj,t ,m) {
+				$j('.importFormStep3').effect('drop', function() {
+					$j('.importFormStep3').html('Completato, verificare l\'importazione navigando i nodi importati').effect('slide');
+				});
+			})
+		.always (function (JSONObj) {
+			window.clearTimeout (repeatTimer);
+		});
+}
+
 /**
  * performs actual import via an async post ajax call to the proper php file
  * prevents the displayed form to be submitted.
@@ -176,59 +237,17 @@ function goToImportStepThree ()
 	}
 	else
 	{
-		var fileName = $j('#importFileName').val();
-
-		var courseID = $j('#selCourse').text();
-		var nodeID = $j('#selNode').text();
-
-		var postData = new Object();
-
-		postData.importFileName = fileName;
-		postData.author = authorID;
-		postData.serviceLevel = ($j('#service_level').length>0) ? $j('#service_level').val() : 0;
-		postData.op = 'ajaximport';
-
-		if (courseID!='') postData.courseID = parseInt (courseID);
-		if (nodeID!='') postData.nodeID = $j.trim(nodeID);
-
 		if ($j('.importFormStep2').is(':visible'))
 		{
 			divToHide = '.importFormStep2';
-
 		} else {
 			divToHide = '.divImportSN';
 		}
-
 		$j(divToHide).effect('drop', function() {
 			$j('.importFormStep3').effect('slide');
 		});
-
-
 		/** make an ajax POST call to the script doing the import **/
-		$j.ajax({
-			cache   : false,
-			type	: 'POST',
-			url		: HTTP_ROOT_DIR+ '/modules/impexport/import.php',
-			data	: postData,
-			dataType: 'json',
-			beforeSend : function () {
-				// this timer will be cleared when the import has finished
-				repeatTimer = window.setTimeout ( function() { requestProgress(); }, 1000 ); }
-			})
-			.done ( function (JSONObj) {
-					$j('.importFormStep3').effect('drop', function() {
-						$j('.importFormStep3').html(JSONObj.html).effect('slide');
-					});
-				// $j('.importFormStep3').html (html);
-				})
-			.fail ( function (JSONObj,t ,m) {
-					$j('.importFormStep3').effect('drop', function() {
-						$j('.importFormStep3').html('Completato, verificare l\'importazione navigando i nodi importati').effect('slide');
-					});
-				})
-			.always (function (JSONObj) {
-				window.clearTimeout (repeatTimer);
-			});
+		doImport(false);
 	}
 	return false;
 }
@@ -245,8 +264,12 @@ function goToImportSelectNode()
 			$j('.divImportSN').effect('slide');
 		});
 
-		$j('#selCourse').text(courseID);
-		$j('#selNode').text(courseID + '_0');
+		if ($j('#selCourse').text().trim().length == 0) {
+			$j('#selCourse').text(courseID);
+		}
+		if ($j('#selNode').text().trim().length == 0) {
+			$j('#selNode').text(courseID + '_0');
+		}
 
 		// loads the treeview..
 
@@ -296,15 +319,16 @@ function returnToImportStepTwo()
  *
  * @param file uploaded file name to be displayed
  */
-function goToImportStepTwo(file) {
+function goToImportStepTwo(file, isAuthorImporting) {
 	if (typeof file !='undefined')
 	{
 		$j('#importFileName').val(file.name);
 		$j('#uploadedFileName').html(file.name);
 	}
 
-	$j('.importFormStep1').effect('drop', function() {
-		$j('.importFormStep2').effect('slide');
-	});
-
+	if (!isAuthorImporting) {
+		$j('.importFormStep1').effect('drop', function() {
+			$j('.importFormStep2').effect('slide');
+		});
+	}
 }

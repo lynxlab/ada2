@@ -37,7 +37,12 @@ session_start();// start session since we will be needing session parameters
 $URL = parse_url(HTTP_ROOT_DIR,  PHP_URL_HOST);
 if (strlen(parse_url(HTTP_ROOT_DIR,  PHP_URL_PATH)) > 1) $URL .= parse_url(HTTP_ROOT_DIR,  PHP_URL_PATH);
 if ($_SERVER['SERVER_NAME'] != $URL) {
-    $dir = str_replace(substr($_SERVER['DOCUMENT_ROOT'],0,-1),'',ROOT_DIR);
+	if (DIRECTORY_SEPARATOR === '/') {
+		$dir = str_replace($_SERVER['DOCUMENT_ROOT'],'',ROOT_DIR);
+		$dir = '/'.trim($dir,'/\\');
+	} else {
+		$dir = str_replace($_SERVER['DOCUMENT_ROOT'],'', str_replace('\\', '/', ROOT_DIR));
+	}
 } else {
     //$dir = str_replace($_SERVER['DOCUMENT_ROOT'],'',ROOT_DIR);
     $dir = '';
@@ -62,7 +67,7 @@ $Config['SecureImageUploads'] = true;
 $Config['ConfigAllowedCommands'] = array('QuickUpload', 'FileUpload', 'GetFolders', 'GetFoldersAndFiles', 'CreateFolder') ;
 
 // Allowed Resource Types.
-$Config['ConfigAllowedTypes'] = array('File', 'Image', 'Flash', 'Media') ;
+$Config['ConfigAllowedTypes'] = array('File', 'Image', 'Media') ;
 
 // For security, HTML is allowed in the first Kb of data for files having the
 // following extensions only.

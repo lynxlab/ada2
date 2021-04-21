@@ -146,7 +146,7 @@ class CourseViewer
 
     $id_toc = $id_course.'_'.ADA_DEFAULT_NODE;
 
-    $index = CDOMElement::create('div', "id:$container_div");
+    $index = CDOMElement::create('div', "id:$container_div,class:mainIndex");
 
     if ( $order == 'alfa' ) {
       $index->addChild(self::ordered($course_data, $callback, $callback_params,$id_toc, $dh));
@@ -359,7 +359,7 @@ class CourseViewer
       }
     }
 
-    $index = CDOMElement::create('div', "id:$container_div");
+    $index = CDOMElement::create('div', "id:$container_div,class:forum");
 
     if ($order == 'chrono') {
       $index->addChild(self::ordered($forum_data, $callback, $callback_params, $forum_root_node));
@@ -840,6 +840,47 @@ class CourseViewer
 
     $list_item = CDOMElement::create('span');
     $list_item->addChild(self::getDisclosureElement($params, $external_params));
+    $container = \CDOMElement::create('div','class:listItem container');
+    $container->addChild(\CDOMElement::create('a','name:'.$params['node']['id_nodo']));
+    $row = \CDOMElement::create('div','class:listItem row');
+    $container->addChild($row);
+
+    /**
+     * first item: avatar
+     */
+    if (isset($params['node']['id_utente'])) {
+      $img = null;
+      if (is_readable(ROOT_DIR . MEDIA_PATH_DEFAULT . $params['node']['id_utente'] . DIRECTORY_SEPARATOR .$params['node']['avatar'])) {
+        $img = str_replace([ROOT_DIR, '\\'], [HTTP_ROOT_DIR, '/'], ROOT_DIR . MEDIA_PATH_DEFAULT . $params['node']['id_utente'] . DIRECTORY_SEPARATOR .$params['node']['avatar']);
+      } else if (is_readable(ADA_UPLOAD_PATH . DIRECTORY_SEPARATOR . $params['node']['id_utente'] . DIRECTORY_SEPARATOR . $params['node']['avatar'])) {
+        $img = str_replace([ROOT_DIR, '\\'], [HTTP_ROOT_DIR, '/'], ADA_UPLOAD_PATH . DIRECTORY_SEPARATOR . $params['node']['id_utente'] . DIRECTORY_SEPARATOR . $params['node']['avatar']);
+      }
+      else if (is_readable(ADA_UPLOAD_PATH . ADA_DEFAULT_AVATAR)) {
+        $img = str_replace([ROOT_DIR, '\\'], [HTTP_ROOT_DIR, '/'], ADA_UPLOAD_PATH . ADA_DEFAULT_AVATAR);
+      }
+      if (!is_null($img)) {
+        $avatar = \CDOMElement::create('div','class:avatar');
+        $avatar->addChild(\CDOMElement::create('img','class:ui small circular image,src:'.$img));
+        $row->addChild($avatar);
+      }
+    }
+
+    /**
+     * second item: content
+     */
+    $itemContent = \CDOMElement::create('div','class:listItem content');
+    $row->addChild($itemContent);
+
+    /**
+     * content first item: details
+     */
+    $details = \CDOMElement::create('div','class:details');
+    $itemContent->addChild($details);
+
+    $titleContainer = CDOMElement::create('div','class:noteTitle');
+    $details->addChild($titleContainer);
+    $titleContainer->addChild($list_item);
+
     if ($external_params['show_icons'] == TRUE) {
 //      $note_icon = self::forumGetNoteIcon($params['node'], $external_params['class_tutor_id']);
 //      $icon = CDOMElement::create('img');
@@ -851,6 +892,11 @@ class CourseViewer
     if (isset($params['node']['username'])) {
     	$username = CDOMElement::create('span', 'class:username');
     	$username->addChild(new CText($params['node']['username']));
+      $username->setAttribute('data-user-id',$params['node']['id_utente']);
+    }
+    if (isset($params['node']['data_creazione'])) {
+      $notedate = CDOMElement::create('span', 'class:notedate');
+      $notedate->addChild(new CText(ts2dFN($params['node']['data_creazione']).', '.ts2tmFN($params['node']['data_creazione'])));
     }
     if (isset($params['node']['nome_nodo'])) {
     	$textlink = $params['node']['nome_nodo'];
@@ -863,18 +909,56 @@ class CourseViewer
     if (isset($link_to_note)) $link_to_note->addChild(new CText($textlink));
 
     if (isset($link_to_note)) $list_item->addChild($link_to_note);
-    if (isset($username)) $list_item->addChild($username);
+    $authorContainer = CDOMElement::create('div','class:noteAuthor');
+    if (isset($username)) {
+      $authorContainer->addChild($username);
+    }
+    if (isset($notedate)) {
+      $authorContainer->addChild($notedate);
+    }
+    $details->addChild($authorContainer);
 
-	if (!empty($params['node']['testo'])) {
-		$link_zoom = CDOMElement::create('a');
-		$link_zoom->setAttribute('href','javascript:void(0);');
+  $actionsContainer = CDOMElement::create('div','class:noteActions');
+  if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+    \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+      [
+        'eventClass' => 'ForumEvent',
+        'eventName' => 'INDEXACTIONINIT',
+      ],
+      $actionsContainer,
+      [
+        'userType' => $_SESSION['sess_userObj']->getType(),
+        'params' => $params,
+        'external_params' => $external_params,
+      ]
+    );
+  }
+  	if (!empty($params['node']['testo'])) {
+		$link_zoom = CDOMElement::create('button');
+		// $link_zoom->setAttribute('href','javascript:void(0);');
 		$link_zoom->setAttribute('onclick',"\$j('#messagePreview".$params['node']['id_nodo']."').slideToggle();");
 		$link_zoom->setAttribute('title',translateFN('Anteprima Messaggio'));
-		$link_zoom->setAttribute('class', 'previewMessage');
-		$zoom = CDOMElement::create('img','src:img/zoom.png, width:16, height:16');
-		$link_zoom->addChild($zoom);
-		$list_item->addChild($link_zoom);
+		$link_zoom->setAttribute('class', 'previewMessage ui tiny icon button');
+		$link_zoom->addChild(\CDOMElement::create('i','class:zoom in icon'));
+		// $zoom = CDOMElement::create('img','src:img/zoom.png, width:16, height:16');
+		// $link_zoom->addChild($zoom);
+		$actionsContainer->addChild($link_zoom);
 	}
+  if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+    \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+      [
+        'eventClass' => 'ForumEvent',
+        'eventName' => 'INDEXACTIONDONE',
+      ],
+      $actionsContainer,
+      [
+        'userType' => $_SESSION['sess_userObj']->getType(),
+        'params' => $params,
+        'external_params' => $external_params,
+      ]
+    );
+  }
+  $itemContent->addChild($actionsContainer);
 	/*
      * Display student visits to this node if required.
      */
@@ -886,17 +970,17 @@ class CourseViewer
       }
       $visit_item = CDOMElement::create('span','class:visitsCount');
       $visit_item->addChild(new CText(translateFN("Visite") . " $visits"));
-      $list_item->addChild($visit_item);
+      $authorContainer->addChild($visit_item);
     }
 
-    if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
-      $image = CDOMElement::create('img','name:altri, src:img/_student.png');
-      $list_item->addChild($image);
-    }
+    // if (isset($params['node']['is_someone_there']) && $params['node']['is_someone_there'] >= 1) {
+    //   $image = CDOMElement::create('img','name:altri, src:img/_student.png');
+    //   $list_item->addChild($image);
+    // }
 
     if (!empty($params['node']['testo'])) {
 		$div_text = CDOMElement::create('div', 'id:messagePreview'.$params['node']['id_nodo']);
-		$div_text->setAttribute('class', 'preview_forum');
+		$div_text->setAttribute('class', 'preview_forum listItem row');
 		$div_text->setAttribute('style', 'display:none;');
 		$char_limit = 525;
 		$text = strip_tags($params['node']['testo']);
@@ -916,9 +1000,9 @@ class CourseViewer
 			$div_text->addChild(new CText(' '));
 			$div_text->addChild($link_to_note);
 		}
-		$list_item->addChild($div_text);
+		$container->addChild($div_text);
 	}
-    return $list_item;
+    return $container;
   }
 
   public static function displayForumMenu($op, $userObj) {

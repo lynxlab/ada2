@@ -22,13 +22,14 @@ $variableToClearAR = array('node', 'layout', 'course', 'user');
 /**
  * Users (types) allowed to access this module.
 */
-$allowedUsersAr = array(AMA_TYPE_SWITCHER);
+$allowedUsersAr = array(AMA_TYPE_SWITCHER, AMA_TYPE_AUTHOR);
 
 /**
  * Get needed objects
 */
 $neededObjAr = array(
-		AMA_TYPE_SWITCHER => array('layout')
+		AMA_TYPE_SWITCHER => array('layout'),
+		AMA_TYPE_AUTHOR => array('layout'),
 );
 
 /**
@@ -69,7 +70,7 @@ if (!$error)
 
 	$form1 = new FormSelectExportCourse('exportStep1Form', $courses, $exportCourse);
 
-	$step1DIV = CDOMElement::create('div','class:exportFormStep1 initshown');
+	$step1DIV = CDOMElement::create('div','class:exportFormStep1 '. ($userObj->getType() == AMA_TYPE_SWITCHER ? 'initshown' : 'inithidden'));
 	$step1DIV->addChild (new CText($form1->getHtml()));
 
 	$step2DIV = CDOMElement::create('div','class:exportFormStep2 inithidden');
@@ -165,6 +166,9 @@ $layout_dataAr['CSS_filename'] = array(
 
 
 $optionsAr['onload_func'] = 'initDoc();';
+if ($userObj->getType() == AMA_TYPE_AUTHOR) {
+	$optionsAr['onload_func'] .= 'goToExportStepTwo();';
+}
 
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
 ?>

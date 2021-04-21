@@ -34,6 +34,27 @@ class ARE
 
   	if (!isset($id_profile)) $id_profile = null;
 
+    if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+      $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+        [
+          'eventClass' => 'CoreEvent',
+          'eventName' => 'PAGEPRERENDER',
+          'eventPrefix' => basename($_SERVER['SCRIPT_FILENAME']),
+        ],
+        basename($_SERVER['SCRIPT_FILENAME']),
+        [
+          'layout_dataAr' => $layout_dataAr,
+          'content_dataAr' => $content_dataAr,
+          'renderer' => $renderer,
+          'options' => $options,
+          'menu_options' => $menuoptions,
+        ]
+      );
+      foreach($event->getArguments() as $key => $val) {
+        $$key = $val;
+      }
+    }
+
     switch($renderer) {
         case ARE_PRINT_RENDER:
 
@@ -287,12 +308,35 @@ class ARE
          * for the template_field substitution to work inside the menu
          */
         if (!is_null($layoutObj->menu)) {
+          if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+              [
+                'eventClass' => 'MenuEvent',
+                'eventName' => 'PRERENDER',
+              ],
+              $layoutObj->menu,
+              ['userType' => $_SESSION['sess_userObj']->getType() ]
+            );
+          }
+
           $content_dataAr = array ('adamenu'=>$layoutObj->menu->getHtml()) + $content_dataAr;
+
+          if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+              [
+                'eventClass' => 'MenuEvent',
+                'eventName' => 'POSTRENDER',
+              ],
+              $layoutObj->menu,
+              ['userType' => $_SESSION['sess_userObj']->getType() ]
+            );
+          }
           $content_dataAr['isVertical'] = ($layoutObj->menu->isVertical()) ? ' vertical' : '';
         }
 
         if (isset($_SESSION['sess_userObj'])) {
           if (!array_key_exists('user_avatar', $content_dataAr)) {
+            require_once ROOT_DIR.'/include/HtmlLibrary/BaseHtmlLib.inc.php';
             $content_dataAr['user_avatar'] = CDOMElement::create('img','class,img_user_avatr,src:'.$_SESSION['sess_userObj']->getAvatar())->getHtml();
           }
 
@@ -442,7 +486,7 @@ class  Generic_Html extends Output
         <meta name=\"class\" content=\"generic HTML\">
         <meta name=\"description\" content=\"$description\">
         <meta name=\"keywords\" content=\"$keywords, $meta_keywords\">
-        <meta name=\"cachefile\" content=\"$static_filename\">
+        <meta name=\"cachefile\" content=\"$this->static_filename\">
         <!-- Stile -->\n";
     $this->htmlheader.= "<title>\n$title\n</title>\n";
     $this->htmlheader.= "</head>\n";

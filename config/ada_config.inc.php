@@ -111,10 +111,11 @@ if (!MULTIPROVIDER && isset($client) && !empty ($client) && is_readable(ROOT_DIR
 $pieces = parse_url(HTTP_ROOT_DIR);
 $domain = isset($pieces['host']) ? $pieces['host'] : '';
 $secure = isset($pieces['scheme']) && ($pieces['scheme'] === 'https');
+$path = isset($pieces['path']) ? '/'.trim($pieces['path'],'/') : '/';
 if (strlen($domain)>0) {
     session_set_cookie_params(
         0, // lifetime: ends when browser closes
-        '/; samesite='.($secure ? 'Strict' : 'Lax'),
+        $path.'; samesite='.($secure ? 'Strict' : 'Lax'),
         $domain,
         $secure,
         false // http only

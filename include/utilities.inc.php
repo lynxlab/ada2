@@ -700,4 +700,12 @@ function truncate ($num, $digits = 0) {
    return ((floor($num * $shift)) / $shift);
 }
 
+function GetCallingMethodName($backTrace = 2) {
+  $dbt=debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,$backTrace+1);
+  return implode('::',[
+    'class' => isset($dbt[1]['class']) ? $dbt[$backTrace]['class'] : null,
+    'method' => isset($dbt[1]['function']) ? $dbt[$backTrace]['function'] : null,
+  ]);
+}
+
 ?>

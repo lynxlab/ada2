@@ -671,11 +671,14 @@ else {
 		}
 	}
 
+	// must set the DH to the course provider one
+	$GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
+
 	/**
 	 * @author giorgio 22/feb/2016
 	 * get course description
 	 */
-	$cd_res = $provider_dh->find_courses_list(array('descrizione'),'id_corso='.$courseId);
+	$cd_res = $GLOBALS['dh']->find_courses_list(array('descrizione'),'id_corso='.$courseId);
 	if (!AMA_DB::isError($cd_res) && is_array($cd_res) && count($cd_res)>0) {
 		$cd_el = reset($cd_res);
 		$course_description = $cd_el['descrizione'];
@@ -718,9 +721,6 @@ else {
 	$layout_dataAr['widgets']['instanceReminder'] = [
 		'isActive' => (defined('MODULES_CLASSAGENDA') && MODULES_CLASSAGENDA) ? 1 : 0,
 	];
-
-	// must set the DH to the course provider one
-	$GLOBALS['dh'] = AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
 
 	if (defined('MODULES_SERVICECOMPLETE') && MODULES_SERVICECOMPLETE) {
 		// need the service-complete module data handler

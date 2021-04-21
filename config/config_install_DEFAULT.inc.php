@@ -31,9 +31,9 @@ define('ADA_COMMON_DB_HOST', getenv('MYSQL_HOST') ?:'localhost');
 define('ADA_PUBLIC_TESTER', getenv('DEFAULT_PROVIDER_POINTER') ?: 'client0');
 define('ADA_DEFAULT_TESTER_DB_TYPE', 'mysql');
 define('ADA_DEFAULT_TESTER_DB_NAME', getenv('DEFAULT_PROVIDER_DB') ?: 'ada2.0_provider0');
-define('ADA_DEFAULT_TESTER_DB_USER', getenv('MYSQL_USER') ?: 'root');
-define('ADA_DEFAULT_TESTER_DB_PASS', getenv('MYSQL_PASSWORD') ?: '');
-define('ADA_DEFAULT_TESTER_DB_HOST', getenv('MYSQL_HOST') ?: 'localhost');
+define('ADA_DEFAULT_TESTER_DB_USER', getenv('DEFAULT_PROVIDER_DB_USER') ?: (getenv('MYSQL_USER') ?: 'root'));
+define('ADA_DEFAULT_TESTER_DB_PASS', getenv('DEFAULT_PROVIDER_DB_PASS') ?: (getenv('MYSQL_PASSWORD') ?: ''));
+define('ADA_DEFAULT_TESTER_DB_HOST', getenv('DEFAULT_PROVIDER_DB_HOST') ?: (getenv('MYSQL_HOST') ?: 'localhost'));
 /*
  * Session Cookie Lifetime in days
  * If 0 the session end when the browser is closed

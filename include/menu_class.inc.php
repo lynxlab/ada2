@@ -324,6 +324,9 @@ class Menu
      */
     private function buildDropDownItem($item, $firstLevel) {
     	$DOMitem = CDOMElement::create('li');
+		if (array_key_exists('item_id', $item) && strlen($item['item_id'])>0) {
+			$DOMitem->setAttribute('data-item-id', $item['item_id']);
+		}
 
     	// set class attribute
     	/**
@@ -464,6 +467,9 @@ class Menu
     	$this->buildCommon($DOMitem,$item);
 
     	$LIitem = CDOMElement::create('li');
+		if (array_key_exists('item_id', $item) && strlen($item['item_id'])>0) {
+			$LIitem->setAttribute('data-item-id', $item['item_id']);
+		}
     	// set class attribute
     	$LIitem->setAttribute('class', trim('item '.trim($item['extraClass'])));
     	$LIitem->addChild($DOMitem);
@@ -484,6 +490,9 @@ class Menu
      */
     private function buildSpecialItem($item) {
     	$DOMitem = CDOMElement::create('li','class:item');
+		if (array_key_exists('item_id', $item) && strlen($item['item_id'])>0) {
+			$DOMitem->setAttribute('data-item-id', $item['item_id']);
+		}
     	if (!is_null($item['extraClass'])) {
     		$DOMitem->setAttribute('class', $DOMitem->getAttribute('class').' '.$item['extraClass']);
     	}
@@ -593,4 +602,52 @@ class Menu
     	}
     	return trim(str_replace($search, $replace, $string));
     }
+
+	/**
+	 * Get array of left hand side menu subtree
+	 *
+	 * @return  array
+	 */
+	public function get_leftItemsArray()
+	{
+		return $this->_leftItemsArray;
+	}
+
+	/**
+	 * Set array of left hand side menu subtree
+	 *
+	 * @param  array  $_leftItemsArray  array of left hand side menu subtree
+	 *
+	 * @return  self
+	 */
+	public function set_leftItemsArray(array $_leftItemsArray)
+	{
+		$this->_leftItemsArray = $_leftItemsArray;
+
+		return $this;
+	}
+
+	/**
+	 * Get array of right hand side menu subtree
+	 *
+	 * @return  array
+	 */
+	public function get_rightItemsArray()
+	{
+		return $this->_rightItemsArray;
+	}
+
+	/**
+	 * Set array of right hand side menu subtree
+	 *
+	 * @param  array  $_rightItemsArray  array of right hand side menu subtree
+	 *
+	 * @return  self
+	 */
+	public function set_rightItemsArray(array $_rightItemsArray)
+	{
+		$this->_rightItemsArray = $_rightItemsArray;
+
+		return $this;
+	}
 }
