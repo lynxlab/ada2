@@ -586,6 +586,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $self = whoami();
     $modulesAv = [];
     $modulesDIS = [ 'secretquestion','code_man' ];
+    $modulesHidden = [ 'event-dispatcher', 'gdpr', 'login', 'test' ];
     if (is_dir(MODULES_DIR)) {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(MODULES_DIR . DIRECTORY_SEPARATOR));
         $regIter = new RegexIterator($iterator, '/^[a-z:|\/].+[\/|\\\]config\_DEFAULT\.inc\.php$/i', RecursiveRegexIterator::GET_MATCH);
@@ -600,6 +601,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     }
+    $modulesAv = array_diff($modulesAv, $modulesHidden);
     sort($modulesAv);
     sort($modulesDIS);
     $modulesDIS = array_intersect($modulesDIS, $modulesAv);
