@@ -95,7 +95,7 @@ background: url(../../img/back.png) no-repeat center left; display:block; paddin
 }
 .firstnode {  }
 
-.search { width: 400px; background-color: #ECECEA;  padding: 10px 10px 0px 10px; }
+.search:not(.icon) { width: 400px; background-color: #ECECEA;  padding: 10px 10px 0px 10px; }
 .search form { padding: 10px 5px 0px 5px;  }
 .search_results {
     margin-right: 210px;
