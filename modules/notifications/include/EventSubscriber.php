@@ -235,6 +235,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                 'CSS_filename' => [
                     'initval' => [],
                     'additems' => [
+                        MODULES_NOTIFICATIONS_PATH . '/layout/' . $_SESSION['sess_template_family'] . '/css/main_index.css',
                         MODULES_NOTIFICATIONS_PATH . '/layout/' . $_SESSION['sess_template_family'] . '/css/showHideDiv.css',
                     ],
                 ],
