@@ -5683,7 +5683,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $more_fields = '';
 
         // build comma separated string out of $field_list_ar array
-        if (count($field_list_ar)) {
+        if (is_array($field_list_ar) && count($field_list_ar)) {
             $more_fields = ', '.implode(', ', $field_list_ar);
         }
 
@@ -9316,7 +9316,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
             return new AMA_Error(AMA_ERR_GET);
         }
 
-        ADALogger::log_db("got: ".count($ri_id). " records in risorse_nodi still referring to resource $res_id");
+        ADALogger::log_db("got: ".(is_array($ri_id) ? count($ri_id) : 0). " records in risorse_nodi still referring to resource $res_id");
         if (empty($ri_id)) {
             $sql = "delete from risorsa_esterna where id_risorsa_ext=$res_id";
             ADALogger::log_db("deleting record: $sql");
@@ -10188,7 +10188,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if ( AMA_DB::isError( $db ) ) return $db;
 
         // build comma separated string out of $field_list_ar array
-        if (count($field_list_ar)) {
+        if (is_array($field_list_ar) && count($field_list_ar)) {
             $more_fields = ', '.implode(', ', $field_list_ar);
         }
 
@@ -12710,7 +12710,7 @@ public function get_updates_nodes($userObj, $pointer)
 			$sql = "
 				SELECT
 					N.id_nodo, N.id_utente, N.nome AS nome_nodo, N.titolo, N.testo, N.tipo, N.id_nodo_parent, N.data_creazione,
-					U.username, U.nome, U.cognome
+					U.username, U.nome, U.cognome, U.avatar
 				FROM nodo N
 				LEFT JOIN (SELECT id_nodo, count(id_nodo) AS numero_visite FROM history_nodi WHERE id_istanza_corso=".$id_course_instance." GROUP BY id_nodo) AS V ON (N.id_nodo=V.id_nodo)
 				LEFT JOIN utente AS U ON (U.id_utente=N.id_utente)
@@ -12723,7 +12723,7 @@ public function get_updates_nodes($userObj, $pointer)
 			$sql = "
 				SELECT
 					N.id_nodo, N.id_utente, N.nome AS nome_nodo, N.titolo, N.testo, N.tipo, N.id_nodo_parent, N.data_creazione,
-					U.username, U.nome, U.cognome
+					U.username, U.nome, U.cognome, U.avatar
 				FROM nodo N
 				LEFT JOIN utente AS U ON (U.id_utente=N.id_utente)
 				WHERE N.id_istanza=".$id_course_instance." AND (N.tipo = ".ADA_NOTE_TYPE." OR (N.tipo=".ADA_PRIVATE_NOTE_TYPE." AND N.id_utente=".$id_user.")) ".

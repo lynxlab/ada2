@@ -39,7 +39,7 @@
                     <div class="first">
                         <template_field class="template_field" name="data">data</template_field>
                         <div class="ui basic segment" id="mainPage">
-                            <table id="repositoryList" class="hover row-border display ui table" cellspacing="0" width="100%">
+                            <table id="repositoryList" class="hover row-border display ui table" cellspacing="0" width="100%" <template_field class="template_field" name="tabledata">tabledata</template_field>>
                                 <thead>
                                     <tr>
                                         <th data-priority="1">

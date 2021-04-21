@@ -41,7 +41,7 @@
 	font-size: 1.1em;
 	margin-right: 0.5rem;
 	width: 1.3em;
-    font-weight: normal;	
+    font-weight: normal;
 }
 
 #structIndex span.username {
@@ -53,19 +53,19 @@
 /**
  * user icon
  */
-#structIndex span.username:before {
+#structIndex:not(.forum) span.username:before {
 	font-family: 'Icons';
 	content: '\f007';
 	font-size: 1.3em;
 	vertical-align: middle;
 	margin-right: 0.5rem;
-	font-weight: normal;		
+	font-weight: normal;
 }
 
 /**
  * adjust last viewed icon
  */
-#structIndex > ul > li.courseNode li.courseNode span.ADA_LEAF_TYPE > img, 
+#structIndex > ul > li.courseNode li.courseNode span.ADA_LEAF_TYPE > img,
 #structIndex > ul > li.courseNode li.courseNode span.ADA_GROUP_TYPE > img,
 #structIndex > ul > li.courseNode li.courseNode span.ADA_NOTE_TYPE > img {
 	zoom: 0.5;
@@ -77,4 +77,4 @@
 #structIndex > ul > li.courseNode li.courseNode span.ADA_GROUP_TYPE > img,
 #structIndex > ul > li.courseNode li.courseNode span.ADA_LEAF_TYPE > img {
 	margin-left: 0;
-}	
+}

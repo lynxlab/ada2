@@ -33,6 +33,15 @@ $neededObjAr = array(
         AMA_TYPE_AUTHOR => array('layout')
 );
 
+if (array_key_exists('id_course', $_REQUEST) || array_key_exists('id_node', $_REQUEST)) {
+    $neededObjAr[AMA_TYPE_AUTHOR] = array('node', 'layout', 'course');
+    $isAuthorImporting = true;
+} else {
+    $isAuthorImporting = false;
+    $courseObj = null;
+    $nodeObj = null;
+}
+
 /**
  * Performs basic controls before entering this module
  */
@@ -71,7 +80,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
             $list = $rdh->getRepositoryList($whereArr);
 
             if (!\AMA_DB::isError($list) && is_array($list) && count($list)>0) {
-                $result['data'] = array_map(function($el) use ($canDo) {
+                $result['data'] = array_map(function($el) use ($canDo, $userObj, $courseObj, $nodeObj, $isAuthorImporting) {
+                    if ($userObj->getType() == AMA_TYPE_AUTHOR) {
+                        $canDo['trash'] =  $isAuthorImporting ? false : $userObj->getId() == $el['exporter_userid'];
+                        $canDo['import'] = $isAuthorImporting;
+                    }
                     $actions = [];
                     // if ($canDo['edit']) {
                         //     $actions['edit'] = CDOMElement::create('a', 'class:tiny teal ui button, title:'.translateFN('Modifica'));
@@ -80,7 +93,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
                         // }
                     if ($canDo['import']) {
                         $actions['import'] = CDOMElement::create('a', 'class:tiny purple ui button, title:'.translateFN('Importa'));
-                        $actions['import']->setAttribute('href', MODULES_IMPEXPORT_HTTP . '/import.php?repofile='.urlencode($el['id_course'] . DIRECTORY_SEPARATOR . MODULES_IMPEXPORT_REPODIR. DIRECTORY_SEPARATOR. $el['filename']));
+                        $impHref = MODULES_IMPEXPORT_HTTP . '/import.php?repofile='.urlencode($el['id_course'] . DIRECTORY_SEPARATOR . MODULES_IMPEXPORT_REPODIR. DIRECTORY_SEPARATOR. $el['filename']);
+                        if ($isAuthorImporting) {
+                            $impHref .= sprintf("&id_course=%d&id_node=%s", $courseObj->getId(), $nodeObj->id);
+                        }
+                        $actions['import']->setAttribute('href', $impHref);
                         $actions['import']->addChild(new CText(translateFN('Importa')));
                     }
                     if ($canDo['trash']) {

@@ -25,7 +25,7 @@ CREATE TABLE `lingue` (
   `nome_lingua` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `codice_lingua` char(6) COLLATE utf8_unicode_ci NOT NULL,
   `identificatore_tabella` varchar(20) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `lingue`
@@ -62,7 +62,7 @@ CREATE TABLE `menu_items` (
   `specialItem` int(1) NOT NULL DEFAULT 0,
   `order` int(3) UNSIGNED NOT NULL DEFAULT 0,
   `enabledON` varchar(10240) COLLATE utf8_unicode_ci NOT NULL DEFAULT '%ALWAYS%'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `menu_items`
@@ -221,7 +221,7 @@ CREATE TABLE `menu_page` (
   `self_instruction` int(1) NOT NULL DEFAULT 0 COMMENT 'nonzero if course is in self instruction mode',
   `isVertical` int(1) NOT NULL DEFAULT 0 COMMENT 'nonzero if it''s a vertical menu',
   `linked_tree_id` int(11) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `menu_page`
@@ -397,7 +397,7 @@ CREATE TABLE `menu_tree` (
   `parent_id` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `item_id` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `extraClass` varchar(255) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `menu_tree`
@@ -1012,14 +1012,6 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 (34, 20, 140, ''),
 (9, 22, 149, ''),
 (79, 22, 150, ''),
-(172, 0, 1, ''),
-(172, 0, 9, ''),
-(172, 0, 16, ''),
-(172, 0, 24, ''),
-(172, 0, 111, ''),
-(172, 16, 17, ''),
-(172, 16, 18, ''),
-(172, 16, 152, ''),
 (162, 16, 152, ''),
 (161, 16, 152, ''),
 (148, 16, 152, ''),
@@ -1079,7 +1071,7 @@ INSERT INTO `menu_tree` (`tree_id`, `parent_id`, `item_id`, `extraClass`) VALUES
 CREATE TABLE `messaggi_bg` (
   `id_messaggio` smallint(5) UNSIGNED NOT NULL,
   `testo_messaggio` text COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `messaggi_bg`
@@ -2421,7 +2413,7 @@ INSERT INTO `messaggi_bg` (`id_messaggio`, `testo_messaggio`) VALUES
 CREATE TABLE `messaggi_de` (
   `id_messaggio` smallint(5) UNSIGNED NOT NULL,
   `testo_messaggio` text COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `messaggi_de`
@@ -3763,7 +3755,7 @@ INSERT INTO `messaggi_de` (`id_messaggio`, `testo_messaggio`) VALUES
 CREATE TABLE `messaggi_en` (
   `id_messaggio` smallint(5) UNSIGNED NOT NULL,
   `testo_messaggio` text COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `messaggi_en`
@@ -7526,7 +7518,7 @@ INSERT INTO `messaggi_en` (`id_messaggio`, `testo_messaggio`) VALUES
 CREATE TABLE `messaggi_es` (
   `id_messaggio` smallint(5) UNSIGNED NOT NULL,
   `testo_messaggio` text COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `messaggi_es`
@@ -8868,7 +8860,7 @@ INSERT INTO `messaggi_es` (`id_messaggio`, `testo_messaggio`) VALUES
 CREATE TABLE `messaggi_fr` (
   `id_messaggio` smallint(5) UNSIGNED NOT NULL,
   `testo_messaggio` text COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `messaggi_fr`
@@ -10210,7 +10202,7 @@ INSERT INTO `messaggi_fr` (`id_messaggio`, `testo_messaggio`) VALUES
 CREATE TABLE `messaggi_is` (
   `id_messaggio` smallint(5) UNSIGNED NOT NULL,
   `testo_messaggio` text COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `messaggi_is`
@@ -11552,7 +11544,7 @@ INSERT INTO `messaggi_is` (`id_messaggio`, `testo_messaggio`) VALUES
 CREATE TABLE `messaggi_it` (
   `id_messaggio` smallint(5) UNSIGNED NOT NULL,
   `testo_messaggio` text COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `messaggi_it`
@@ -15313,7 +15305,7 @@ INSERT INTO `messaggi_it` (`id_messaggio`, `testo_messaggio`) VALUES
 CREATE TABLE `messaggi_ro` (
   `id_messaggio` smallint(5) UNSIGNED NOT NULL,
   `testo_messaggio` text COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `messaggi_ro`
@@ -16655,7 +16647,7 @@ INSERT INTO `messaggi_ro` (`id_messaggio`, `testo_messaggio`) VALUES
 CREATE TABLE `messaggi_sistema` (
   `id_messaggio` smallint(5) UNSIGNED NOT NULL,
   `testo_messaggio` text COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `messaggi_sistema`
@@ -20423,7 +20415,7 @@ CREATE TABLE `service_type` (
   `custom_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `hiddenFromInfo` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
   `isPublic` tinyint(1) UNSIGNED NOT NULL DEFAULT 0
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dump dei dati per la tabella `service_type`
@@ -20501,7 +20493,7 @@ CREATE TABLE `token` (
   `timestamp_richiesta` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `azione` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `valido` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -20552,7 +20544,7 @@ INSERT INTO `utente` (`id_utente`, `nome`, `cognome`, `tipo`, `e_mail`, `usernam
 CREATE TABLE `utente_tester` (
   `id_utente` int(10) UNSIGNED NOT NULL,
   `id_tester` int(10) UNSIGNED NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Indici per le tabelle scaricate

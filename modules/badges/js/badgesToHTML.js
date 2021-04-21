@@ -1,5 +1,5 @@
 var badgesToHTML = function(data, messages, withRewardLabel) {
-    console.log(withRewardLabel);
+    // console.log(withRewardLabel);
     if ('undefined' === typeof withRewardLabel) withRewardLabel = true;
     // messages MUST HAVE the following properties: unrewarded, rewarded, nobadges, error
     var retval = messages.error;

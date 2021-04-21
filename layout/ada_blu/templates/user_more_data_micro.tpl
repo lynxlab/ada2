@@ -13,7 +13,7 @@
     </span>
     <span>
         <i18n>autore:</i18n>
-        <template_field class="template_field_disabled" name="author">author</template_field>
+        <template_field class="template_field" name="author">author</template_field>
     </span>
     <span>
         <i18n>livello nodo:</i18n>

@@ -30,7 +30,9 @@ if (is_file(realpath(dirname(__FILE__)).'/config_path.inc.php')) {
 /**
  * redirect to install if ADA is NOT installed, either with install script or manually
  */
-if (!is_dir(ROOT_DIR.'/clients')) redirect('install.php');
+if (!is_dir(ROOT_DIR.'/clients') || count(glob(ROOT_DIR."/clients/*/client_conf.inc.php"))===0) {
+	redirect('install.php');
+}
 
 /**
  * Clear node and layout variable in $_SESSION

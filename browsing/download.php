@@ -252,6 +252,7 @@ if (isset($_GET['file'])){
                                     case   AMA_TYPE_STUDENT:
                                     case   AMA_TYPE_AUTHOR:
                                     case   AMA_TYPE_TUTOR:
+                                    case   AMA_TYPE_SUPERTUTOR:
                                           $user_name_sender =  $sender_array['username'];
                                           $user_surname_sender =  $sender_array['cognome'];
                                           $user_name_sender = $sender_array['nome'];
