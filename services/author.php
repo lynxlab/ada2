@@ -143,6 +143,13 @@ else {
     if (defined('MODULES_SLIDEIMPORT') && MODULES_SLIDEIMPORT) {
     	$row[translateFN('Importa')] = "<a href=\"".MODULES_SLIDEIMPORT_HTTP."/?id_course=$id_course\"><img src=\"".MODULES_SLIDEIMPORT_HTTP."/layout/img/slideimport.png\" border=0></a>";
     }
+
+    if (defined('MODULES_IMPEXPORT') && MODULES_IMPEXPORT && defined('MODULES_IMPEXPORT_REPODIR') && strlen(MODULES_IMPEXPORT_REPODIR)>0) {
+      $row[translateFN('Repository')] = "<a href=\"".
+        MODULES_IMPEXPORT_HTTP."/export.php?exporttorepo=1&id_course=".$id_course.
+        "\"><img src=\"".MODULES_IMPEXPORT_HTTP."/layout/".$_SESSION['sess_template_family']."/img/export-to-repo.png\"/></a>";
+    }
+
     array_push($course_dataHa,$row);
   }
   $caption = translateFN("Corsi inviati e attivi il")." $ymdhms";

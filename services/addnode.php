@@ -437,6 +437,14 @@ else if ( $op == 'save' )
 
   unset($_SESSION['sess_node_editing']);
   header("Location: $http_root_dir/browsing/view.php?id_node={$node_data['id']}");
+
+  if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+    \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch([
+      'eventClass' => 'NodeEvent',
+      'eventName' => 'POSTADDREDIRECT',
+    ], $node_data);
+  }
+
   exit();
 }
 

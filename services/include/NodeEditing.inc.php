@@ -260,7 +260,22 @@ class NodeEditing {
             $node_data['icon'] = 'nodo.png';
         }
 
+        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch([
+                'eventClass' => 'NodeEvent',
+                'eventName' => 'PRESAVE',
+            ], $node_data, [ 'isUpdate' => true ]);
+        }
+
         $result = $dh->_edit_node($node_data);
+
+        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch([
+                'eventClass' => 'NodeEvent',
+                'eventName' => 'POSTSAVE',
+            ], $node_data, [ 'isUpdate' => true, 'saveResult' => $result ]);
+        }
+
         if ( AMA_DataHandler::isError($result) ) return $result;
 
         return true;
@@ -314,7 +329,22 @@ class NodeEditing {
         }
 
         $node_data['creation_date'] = "now";
+        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch([
+                'eventClass' => 'NodeEvent',
+                'eventName' => 'PRESAVE',
+            ], $node_data, [ 'isUpdate' => false ]);
+        }
+
         $result = $dh->add_node($node_data);
+
+        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch([
+                'eventClass' => 'NodeEvent',
+                'eventName' => 'POSTSAVE',
+            ], $node_data, [ 'isUpdate' => false, 'saveResult' => $result ]);
+        }
+
         if ( AMA_DataHandler::isError($result) ) {
             return $result;
         } else {

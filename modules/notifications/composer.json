@@ -1,0 +1,20 @@
+{
+    "name": "lynxlab/ada-notifications",
+    "description": "This is the ada notifications module.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Notifications\\" : ["include/"]
+	    }
+    },
+    "require": {
+        "greenlion/php-sql-parser": "^4.4",
+        "soundasleep/html2text": "^1.1"
+    }
+}

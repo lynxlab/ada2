@@ -92,16 +92,19 @@ function initDoc(userId)
 
 
 function ajaxSendEmail(element) {
-	var helpTypeID = $j('input[name="helptype"]').val();
+	const helpTypeID = $j('input[name="helptype"]').val();
 
 	if (helpTypeID.trim().length>0) {
-		var recipient = $j('.helptype.item[data-value="'+helpTypeID+'"]','.selection.helptype').data('email').trim();
-		var helpType  = $j('.helptype.item[data-value="'+helpTypeID+'"]','.selection.helptype').text().trim();
+		const recipient = $j('.helptype.item[data-value="'+helpTypeID+'"]','.selection.helptype').data('email').trim();
+		const helpType  = $j('.helptype.item[data-value="'+helpTypeID+'"]','.selection.helptype').text().trim();
 
 		if (recipient.length>0) {
 			$j.ajax({
 				type	:	'POST',
 				url		:	'ajax/sendEmail.php',
+				beforeSend: function() {
+					$j(element).addClass('loading');
+				},
 				data	:	{
 					helpType   : helpType,
 					helpTypeID : helpTypeID,
@@ -111,6 +114,9 @@ function ajaxSendEmail(element) {
 					selfSend   : $j('input[name="sendcopy"]').is(':checked') ? 1 :0,
 					attachments: uploadedFiles
 				}
+			})
+			.always(function() {
+				$j(element).removeClass('loading');
 			})
 			.done(function(JSONObj) {
 				if (JSONObj && JSONObj.status === "OK") {
