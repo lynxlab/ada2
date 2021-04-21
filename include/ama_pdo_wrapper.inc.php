@@ -177,6 +177,25 @@ class AMA_PDO_wrapper
 		if (!is_array($params)) $values = array ($params);
 
 		try {
+			if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+				$event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+					[
+						'eventClass' => 'CoreEvent',
+						'eventName' => 'AMAPDOPREGETALL',
+						'eventPrefix' => \GetCallingMethodName(),
+					],
+					\GetCallingMethodName(),
+					[
+						'query' => $query,
+						'params' => $params,
+						'fetchmode' => $fetchmode,
+						'col' => $col,
+					]
+				);
+				foreach($event->getArguments() as $key => $val) {
+					$$key = $val;
+				}
+			}
 			$stmt = $this->connection_object->prepare($query);
 			$stmt->execute($params);
 			if (is_null($col)) $retval = $stmt->fetchAll ($fetchmode);
@@ -184,6 +203,26 @@ class AMA_PDO_wrapper
 			else throw new PDOException("Soemthing went wrong in query execution ".__FILE__." line: ".__LINE__);
 		} catch (PDOException $e) {
 			$retval = self::handleException($e);
+		}
+		if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+			$event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+				[
+					'eventClass' => 'CoreEvent',
+					'eventName' => 'AMAPDOPOSTGETALL',
+					'eventPrefix' => \GetCallingMethodName(),
+				],
+				\GetCallingMethodName(),
+				[
+					'query' => $query,
+					'params' => $params,
+					'fetchmode' => $fetchmode,
+					'col' => $col,
+					'retval' => $retval,
+				]
+			);
+			foreach($event->getArguments() as $key => $val) {
+				$$key = $val;
+			}
 		}
 		return $retval;
 	}

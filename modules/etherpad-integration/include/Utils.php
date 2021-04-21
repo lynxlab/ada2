@@ -42,7 +42,16 @@ class Utils
     {
         try {
             $enabled = false;
-            $nodeId = false;
+            /**
+             * this method must be called by a a menu item,
+             * it should be safe to assume that $params is [ 'nodeId' => id_node|Pads::instancePadId ]
+             */
+            if (array_key_exists('nodeId', $params)) {
+                $nodeId = ($params['nodeId'] === Pads::instancePadId)  ? Pads::instancePadId : DataValidator::validate_node_id($params['nodeId']);
+            } else if (array_key_exists('sess_id_node', $_SESSION)) {
+                // if no $params['nodeId'] then use session node
+                $nodeId = $_SESSION['sess_id_node'];
+            }
             if (array_key_exists('sess_selected_tester', $_SESSION) && array_key_exists('sess_id_course_instance', $_SESSION)) {
                 $etDH = AMAEtherpadDataHandler::instance(\MultiPort::getDSN($_SESSION['sess_selected_tester']));
                 if (EtherpadActions::canDo(EtherpadActions::ACCESS_PAD)) {
@@ -53,16 +62,6 @@ class Utils
                         'isActive' => true,
                     ]);
                     if ($group instanceof Groups) {
-                        /**
-                         * this method must be called by a a menu item,
-                         * it should be safe to assume that $params is [ 'nodeId' => id_node|Pads::instancePadId ]
-                         */
-                        if (array_key_exists('nodeId', $params)) {
-                            $nodeId = ($params['nodeId'] === Pads::instancePadId)  ? Pads::instancePadId : DataValidator::validate_node_id($params['nodeId']);
-                        } else if (array_key_exists('sess_id_node', $_SESSION)) {
-                            // if no $params['nodeId'] then use session node
-                            $nodeId = $_SESSION['sess_id_node'];
-                        }
                         $pad = $etDH->findOneBy('Pads', [
                             'groupId' => $group->getGroupId(),
                             'nodeId' => $nodeId,
