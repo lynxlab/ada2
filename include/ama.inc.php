@@ -10151,6 +10151,7 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
+        $more_fields = '';
         // build comma separated string out of $field_list_ar array
         if (count($field_list_ar)) {
             $more_fields = ', '.implode(', ', $field_list_ar);
