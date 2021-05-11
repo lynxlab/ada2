@@ -1,0 +1,122 @@
+#editor_form_div {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    border-top: 1px solid #d8d8d8;
+    padding: 1.5em 0 0 0;
+}
+
+body.ada-autore #editor_form_div {
+    border: none;
+}
+
+#jseditor_form {
+    flex-grow: 1;
+    width: initial;
+}
+
+#editPanel {
+    margin: 0 0 0 1em;
+    width: 29em;
+}
+
+#jsbuttons, #jsaddons, #jsnode_data_div {
+    position: initial;
+    width: initial;
+    right: initial;
+    border: none;
+    background: none;
+}
+
+#jsaddons, #jsnode_data_div {
+    margin: 0;
+}
+
+#jsaddons {
+    border-top: none;
+    border-bottom: none;
+    border-radius: initial;
+}
+
+#editPanel > .editPanelContent {
+    border-radius: 5px;
+    border: 1px solid #bfbfbf;
+    background: #dcdcdc;
+}
+
+#editPanel > .editPanelContent > #jsnode_data_div > .editor_input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#editPanel > .editPanelContent > #jsnode_data_div > .editor_input label {
+    width: 6em;
+}
+
+#editPanel > .editPanelContent > #jsnode_data_div > .editor_input select,
+#editPanel > .editPanelContent > #jsnode_data_div > .editor_input input {
+    flex-grow: 1;
+    margin-left: 0.5em;
+    width: 100%;
+}
+
+#editPanel > .editPanelContent #jsparent_node_selector span:not(.jsparent_node_selector).selectable {
+    width: 16em;
+    vertical-align: top;
+    display: inline-block;
+}
+
+#editPanel > .editPanelContent #jsparent_node_selector ul {
+    margin: 0;
+    padding: 0 0 0 1em;
+    list-style-type: decimal-leading-zero;
+}
+
+@media only screen and (max-width: 767px) {
+    #editPanel {
+        width: 15rem;
+    }
+    #editPanel > .editPanelContent > #jsnode_data_div > .editor_input:not(#show_node_forcecreationupdate):not(#show_node_isforkedpaths) {
+        flex-direction: column;
+        align-items: start;
+    }
+    #editPanel > .editPanelContent > #jsnode_data_div > .editor_input select,
+    #editPanel > .editPanelContent > #jsnode_data_div > .editor_input input {
+    margin-left: 0;
+    }
+
+    #editPanel > .editPanelContent #jsparent_node_selector ul {
+        margin: 0;
+        padding: 0 0 0 0.5em;
+    }
+    #editPanel > .editPanelContent #jsparent_node_selector span:not(.jsparent_node_selector).selectable {
+        width: 8em;
+    }
+}
+
+#editPanel > .editPanelContent #jsparent_node_selector span:not(.jsparent_node_selector).selectable:hover {
+    color: #dedede;
+    background: #838383;
+}
+
+#editPanel > .editPanelContent #jsparent_node_selector li {
+    margin-top: 1em;
+}
+
+#editPanel > .editPanelContent > #jsnode_data_div > #show_node_forcecreationupdate,
+#editPanel > .editPanelContent > #jsnode_data_div > #show_node_isforkedpaths {
+    justify-content: start;
+}
+
+#editPanel > .editPanelContent > #jsnode_data_div > #show_node_forcecreationupdate input,
+#editPanel > .editPanelContent > #jsnode_data_div > #show_node_isforkedpaths input {
+    flex-grow: 0;
+    margin-left: 0;
+    width: initial;
+}
+
+#editPanel > .editPanelContent > #jsnode_data_div > #show_node_forcecreationupdate label,
+#editPanel > .editPanelContent > #jsnode_data_div > #show_node_isforkedpaths label {
+    width: initial;
+}
