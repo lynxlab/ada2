@@ -115,7 +115,7 @@ $path = isset($pieces['path']) ? '/'.trim($pieces['path'],'/') : '/';
 if (strlen($domain)>0) {
     session_set_cookie_params(
         0, // lifetime: ends when browser closes
-        $path.'; samesite='.($secure ? 'Strict' : 'Lax'),
+        $path.'; samesite='.($secure ? 'None' : 'Lax'),
         $domain,
         $secure,
         false // http only

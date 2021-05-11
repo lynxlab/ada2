@@ -1,0 +1,13 @@
+div.right.sidebar .accordion .content.field> .noteActions {
+    margin:0 9px 0 47px;
+    text-decoration: none;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 47px;
+ }
+
+ div.right.sidebar .accordion .content.field> .noteActions .noteSubscribe.button {
+     transform: scale(0.8);
+ }

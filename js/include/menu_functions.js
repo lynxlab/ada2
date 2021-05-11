@@ -231,7 +231,7 @@ function navigationPanelToggle(options) {
 		$j('#menuright').sidebar({
 				overlay:overlay,
 				onShow: function() {
-					document.cookie = "closeRightPanel = ; expires = -1; path=/";
+					document.cookie = "closeRightPanel = ; expires = -1; samesite=lax; path=/";
 				},
 				onHide: function() {
 					if (options.removeCookie) {
@@ -240,7 +240,7 @@ function navigationPanelToggle(options) {
 						myDate.setTime(myDate.getTime()+(days*24*60*60*1000));
 						document.cookie = "closeRightPanel = 1; " +
 						"expires = " + myDate.toGMTString() + "; " +
-						"path=/"; //creates the cookie: name|value|expiry
+						"samesite=lax; path=/"; //creates the cookie: name|value|expiry
 					}
 				}
 			})

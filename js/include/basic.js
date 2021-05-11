@@ -202,7 +202,7 @@ function doDownload(options) {
 	        	// removes the cookie by setting its expire time to yesterday
 	       	 	myDate = new Date();
 	       	 	myDate.setTime(myDate.getTime()+(-1*24*60*60*1000));
-	       	 	document.cookie = fileDownloadCookie +" = ; expires = " + myDate.toGMTString();
+	       	 	document.cookie = fileDownloadCookie +" = ; samesite=lax; expires = " + myDate.toGMTString();
 	        	if ('function' == typeof options.afterDownload) options.afterDownload(fileDownloadCheckAttempts<=0);
 	        }
 	      }, 1000); // check cookie arrival every 1 second

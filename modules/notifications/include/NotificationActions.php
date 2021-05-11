@@ -41,10 +41,10 @@ class NotificationActions
     {
         return array(
             self::ADDNOTIFICATION => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT, AMA_TYPE_AUTHOR]);
+                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
             },
             self::DELNOTIFICATION => function ($object = null, $userType = null) {
-                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT, AMA_TYPE_AUTHOR]);
+                return in_array($userType, [AMA_TYPE_SWITCHER, AMA_TYPE_TUTOR, AMA_TYPE_SUPERTUTOR, AMA_TYPE_STUDENT]);
             },
         );
     }
