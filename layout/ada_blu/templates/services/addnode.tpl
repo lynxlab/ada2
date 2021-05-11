@@ -42,14 +42,14 @@
             <div id="content">
                 <div id="contentcontent" class="contentcontent_view">
                     <div class="firstnode">
+                        <p>
+                            <template_field class="template_field" name="form">form</template_field>
+                        </p>
                         <div id="text">
                             <template_field class="template_field" name="head">head</template_field>
                             <template_field class="template_field" name="node_links">node_links</template_field>
 
                         </div>
-                        <p>
-                            <template_field class="template_field" name="form">form</template_field>
-                        </p>
                     </div>
                 </div>
                 <div id="bottomcont">
