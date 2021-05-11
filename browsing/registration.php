@@ -177,7 +177,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	        $admList = $dh->get_users_by_type($admTypeAr, $extended_data);
 	        if (!AMA_DataHandler::isError($admList) && array_key_exists('username',$admList[0]) && $admList[0]['username'] != '' && $admList[0]['username'] != null){
 	            $adm_uname = $admList[0]['username'];
-	            $adm_email = $admList[0]['e_mail'];
+	            $adm_email = strlen($admList[0]['e_mail']) ? $admList[0]['e_mail'] : ADA_NOREPLY_MAIL_ADDRESS;
 	        } else {
 	            $adm_uname = ADA_ADMIN_MAIL_ADDRESS;
 	            $adm_email = ADA_ADMIN_MAIL_ADDRESS;

@@ -50,10 +50,12 @@
                                 button.data('notification-id', response.data.notificationId);
                             }
                             if ('isActive' in response.data) {
+                                const colorClass = response.data.isActive ? 'green' : 'red';
                                 button.removeClass('green red');
-                                button.addClass(response.data.isActive ? 'green' : 'red');
+                                button.addClass(colorClass);
                                 button.attr('data-is-active', response.data.isActive ? 1 : 0);
                                 button.data('is-active', response.data.isActive ? 1 : 0);
+                                button.prop('title', button.data(`title-${colorClass}`));
                             }
                         }
                         if ($j('#ADAJAX').length <= 0) {

@@ -132,6 +132,7 @@
                       -->
                             <template_field class="template_field" name="add_note">add_note</template_field>
                             <template_field class="template_field" name="add_private_note">add_private_note</template_field>
+                            <template_field class="template_field" name="notification_subscribe">notification_subscribe</template_field>
                             <template_field class="template_field" name="edit_note">edit_note</template_field>
                             <template_field class="template_field" name="delete_note">delete_note</template_field>
                             <template_field class="template_field" name="publish_note">publish_note</template_field>

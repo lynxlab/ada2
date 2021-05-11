@@ -254,6 +254,27 @@ class AMANotificationsDataHandler extends \AMA_DataHandler
     }
 
     /**
+     * loads the first one of the array of objects of the passed className with matching where values
+     * and ordered using the passed values by performing a select query on the DB
+     *
+     * @param string $className to use a class from your namespace, this string must start with "\"
+     * @param array $whereArr
+     * @param array $orderByArr
+     * @param \Abstract_AMA_DataHandler $dbToUse object used to run the queries. If null, use 'this'
+     * @throws NotificationException
+     * @return object
+     */
+    public function findOneBy($className, array $whereArr = null, array $orderByArr = null, \Abstract_AMA_DataHandler $dbToUse = null) {
+        $retval = $this->findBy($className,$whereArr, $orderByArr, $dbToUse);
+        if (is_array($retval) && count($retval)>0) {
+            $retval = reset($retval);
+        } else {
+            $retval = null;
+        }
+        return $retval;
+    }
+
+    /**
      * Builds an sql update query as a string
      *
      * @param string $table
