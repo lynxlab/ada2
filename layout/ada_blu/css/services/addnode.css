@@ -116,6 +116,7 @@ body.ada-autore #editor_form_div {
     width: initial;
 }
 
+#replied_node_data,
 #editPanel > .editPanelContent > #jsnode_data_div > #show_node_forcecreationupdate label,
 #editPanel > .editPanelContent > #jsnode_data_div > #show_node_isforkedpaths label {
     width: initial;
