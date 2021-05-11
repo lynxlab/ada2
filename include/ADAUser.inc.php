@@ -216,7 +216,7 @@ class ADAUser extends ADAAbstractUser
 				if (property_exists($this, $property)) $this->$property = $value;
 				// next check if $property is an array, which means
 				// it's a value coming from a table that has a 1:n relationship with the student
-				else if (is_array($value))
+				else if (is_array($value) && class_exists($property) && method_exists($property, 'getKeyProperty'))
 				{
 					// in this case must return the key of the new or substituted element
 					$classPropertyName = 'tbl_'.$property;

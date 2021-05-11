@@ -84,6 +84,7 @@ class QueueManager extends NotificationBase
         /**
          * Initializre the PHPMailer
          */
+        require_once ROOT_DIR.'/include/phpMailer/ADAPHPMailer.php';
         $phpmailer = new \PHPMailer\PHPMailer\ADAPHPMailer();
         $phpmailer->CharSet = strtolower(ADA_CHARSET);
         $phpmailer->configSend();

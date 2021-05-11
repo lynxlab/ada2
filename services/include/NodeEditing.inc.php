@@ -635,10 +635,6 @@ class NodeEditingViewer {
 //    $editing_form->addChild($span_preview);
         $fckeditor_div->addChild($span_preview);
 
-        //vito, 18 feb 2009
-        //$editor = CDOMElement::create('div');
-        $editing_form->addChild(self::getNodeDataDiv($flags, $node_to_edit, $id_course));
-
         $editor_form_div = CDOMElement::create('div','id:editor_form_div');
         $editor_form_div->addChild($editing_form);
         //vito, 18 feb 2009
@@ -646,8 +642,14 @@ class NodeEditingViewer {
 //    $editor->addChild(self::getButtons($flags));
 //    $editor->addChild(self::getAddOns($flags, $id_course, $id_course_instance, $id_user, $node_to_edit['id']));
 
-        $editor_form_div->addChild(self::getButtons($flags));
-        $editor_form_div->addChild(self::getAddOns($flags, $id_course, $id_course_instance, $id_user, $node_to_edit['id']));
+        $edit_panel = \CDOMElement::create('div','id:editPanel');
+        $edit_panel_content = \CDOMElement::create('div','class:editPanelContent');
+        $edit_panel->addChild($edit_panel_content);
+        $edit_panel_content->addChild(self::getButtons($flags));
+        $edit_panel_content->addChild(self::getAddOns($flags, $id_course, $id_course_instance, $id_user, $node_to_edit['id']));
+        $edit_panel_content->addChild(self::getNodeDataDiv($flags, $node_to_edit, $id_course));
+
+        $editor_form_div->addChild($edit_panel);
         //vito, 18 feb 2009
 //    return $editor;
         return $editor_form_div;

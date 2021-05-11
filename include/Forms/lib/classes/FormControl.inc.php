@@ -60,14 +60,14 @@ abstract class FormControl
                 return new FCFieldset($controlType, $controlId, $labelText);
             case self::INPUT_BUTTON:
             	return new FCButton($controlType, $controlId, $labelText);
-            case self::INPUT_IMAGE:            	
+            case self::INPUT_IMAGE:
             default:
                 return new FCNullControl($controlType, $controlId, $labelText);
         }
     }
     /**
      * Returns the label for this form control.
-     * 
+     *
      * @return string the html for the control's label
      */
     protected function label() {
@@ -98,7 +98,7 @@ abstract class FormControl
 
     /**
      * Sets the data of this form control to $data.
-     * 
+     *
      * @param mixed $data
      * @return FormControl
      */
@@ -132,7 +132,7 @@ abstract class FormControl
 
     /**
      * Sets this form control as required.
-     * 
+     *
      * @return FormControl
      */
     public function setRequired() {
@@ -147,11 +147,11 @@ abstract class FormControl
         $this->_isMissing = TRUE;
         return $this;
     }
-    
+
     public function getIsMissing() {
     	return $this->_isMissing;
     }
-    
+
     /**
      * Sets this form control as attribute.
      * @return FormControl
@@ -180,7 +180,7 @@ abstract class FormControl
     }
     /**
      * Returns true if this form control was marked as required.
-     * 
+     *
      * @return boolean
      */
     public function isRequired() {
@@ -188,7 +188,7 @@ abstract class FormControl
     }
     /**
      * Returns the id of this form control.
-     * 
+     *
      * @return string
      */
     public function getId() {
@@ -204,7 +204,7 @@ abstract class FormControl
     }
     /**
      * Returns the validator assigned to this form control.
-     * 
+     *
      * @return integer
      */
     public function getValidator() {
@@ -214,7 +214,7 @@ abstract class FormControl
      * Sets the validator for this form control.
      *
      * @param integer $validator
-     * 
+     *
      * @return FormControl
      */
     public function setValidator($validator) {
@@ -309,7 +309,7 @@ class FCInput extends FormControl {
     }
 }
 /**
- * 
+ *
  */
 class FCInputHidden extends FormControl {
 	public function __construct($controlType, $controlId, $labelText) {
@@ -331,7 +331,7 @@ class FCInputHidden extends FormControl {
     }
 }
 /**
- * 
+ *
  */
 class FCInputCheckable extends FormControl {
     public function render() {
@@ -358,7 +358,7 @@ class FCInputCheckable extends FormControl {
               . '<label for="'.$this->_controlId.'">'.$this->_labelText.'</label>';
         return $html;
     }
-    
+
     public function withData($data) {
         if (is_null($this->_controlData)) parent::withData($data);
         else if ($this->getData() == $data) $this->setSelected ();
@@ -367,14 +367,14 @@ class FCInputCheckable extends FormControl {
     }
 }
 /**
- * 
+ *
  */
 class FCSelect extends FormControl {
     public function withData($options, $checked='') {
         if(is_array($this->_options) && count($this->_options) > 0) {
             return $this->setSelectedOption($options);
         }
-        if(is_array($options) && count($options) > 0) {            
+        if(is_array($options) && count($options) > 0) {
             foreach($options as $value => $text) {
                 $control =  FormControl::create(FormControl::OPTION, '', $text);
                 $control->withData($value);
@@ -384,6 +384,11 @@ class FCSelect extends FormControl {
                 $this->_options[] = $control;
             }
         }
+        return $this;
+    }
+
+    public function addOption(FCOption $option) {
+        $this->_options[] = $option;
         return $this;
     }
 
@@ -411,7 +416,7 @@ class FCSelect extends FormControl {
         }
         return $this;
     }
-    
+
     public function render() {
         $html = '<select id="' . $this->_controlId .'" name="' . $this->_controlId . '"';
         $html .= $this->renderAttributes();
@@ -427,7 +432,7 @@ class FCSelect extends FormControl {
     private $_options = array();
 }
 /**
- * 
+ *
  */
 class FCOption extends FormControl {
     public function render() {
@@ -444,7 +449,7 @@ class FCOption extends FormControl {
     }
 }
 /**
- * 
+ *
  */
 class FCTextarea extends FormControl {
     public function render() {
@@ -453,13 +458,13 @@ class FCTextarea extends FormControl {
     }
 }
 /**
- * 
+ *
  */
 class FCFieldset extends FormControl {
-    public function withData($data) {   	    	
+    public function withData($data) {
         if(empty ($this->_controls) && is_array($data) && count($data) > 0) {
             $this->_controls = $data;
-        } else if(is_array($this->_controls)) {		
+        } else if(is_array($this->_controls)) {
             foreach($this->_controls as $control) {
                 if($control->getData() === $data) {
                     $control->setSelected();
@@ -467,12 +472,12 @@ class FCFieldset extends FormControl {
                     $control->setNotSelected();
                 } else {
                 	$control->withData($data);
-                }                
+                }
             }
         }
         return $this;
     }
-    
+
     public function getControls()
     {
     	return $this->_controls;
@@ -503,7 +508,7 @@ class FCButton extends FormControl {
 }
 
 /**
- * 
+ *
  */
 class FCNullControl extends FormControl {
     public function render() {
