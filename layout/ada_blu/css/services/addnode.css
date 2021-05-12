@@ -1,7 +1,11 @@
-#editor_form_div {
+#jseditor_form {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
+    width: initial;
+}
+
+#editor_form_div {
     border-bottom: 1px solid #d8d8d8;
     padding: 1.5em 0 1.5em 0;
 }
@@ -10,7 +14,8 @@ body.ada-autore #editor_form_div {
     border: none;
 }
 
-#jseditor_form {
+#jsfckeditor_div,
+#jstextarea_div {
     flex-grow: 1;
     width: initial;
 }
