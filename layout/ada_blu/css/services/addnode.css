@@ -1,16 +1,21 @@
-#editor_form_div {
+#jseditor_form {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
-    border-top: 1px solid #d8d8d8;
-    padding: 1.5em 0 0 0;
+    width: initial;
+}
+
+#editor_form_div {
+    border-bottom: 1px solid #d8d8d8;
+    padding: 1.5em 0 1.5em 0;
 }
 
 body.ada-autore #editor_form_div {
     border: none;
 }
 
-#jseditor_form {
+#jsfckeditor_div,
+#jstextarea_div {
     flex-grow: 1;
     width: initial;
 }
@@ -116,6 +121,7 @@ body.ada-autore #editor_form_div {
     width: initial;
 }
 
+#replied_node_data,
 #editPanel > .editPanelContent > #jsnode_data_div > #show_node_forcecreationupdate label,
 #editPanel > .editPanelContent > #jsnode_data_div > #show_node_isforkedpaths label {
     width: initial;

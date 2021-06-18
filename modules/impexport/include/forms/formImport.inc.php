@@ -30,7 +30,7 @@ class FormUploadImportFile extends FForm {
 		}
 
 		if (array_key_exists('isAuthorImporting', $options)) {
-			$formElements[] = FormControl::create(FormControl::INPUT_HIDDEN, 'isAuthorImporting','')->withData(1);
+			$formElements[] = FormControl::create(FormControl::INPUT_HIDDEN, 'isAuthorImporting','')->withData($options['isAuthorImporting'] ? 1 :0);
 		}
 
 		$importURL = FormControl::create(FormControl::INPUT_TEXT, 'importURL', translateFN('URL per l\'importazione'));
