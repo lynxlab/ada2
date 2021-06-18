@@ -649,7 +649,7 @@ class NodeEditingViewer {
         $edit_panel_content->addChild(self::getAddOns($flags, $id_course, $id_course_instance, $id_user, $node_to_edit['id']));
         $edit_panel_content->addChild(self::getNodeDataDiv($flags, $node_to_edit, $id_course));
 
-        $editor_form_div->addChild($edit_panel);
+        $editing_form->addChild($edit_panel);
         //vito, 18 feb 2009
 //    return $editor;
         return $editor_form_div;

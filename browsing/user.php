@@ -190,10 +190,20 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 				// check service completeness
 				$provider = $common_dh->get_tester_info_from_id_course($courseId);
 				if (array_key_exists('puntatore', $provider)) {
+					if (isset($GLOBALS['dh'])) {
+						$oldDH = $GLOBALS['dh'];
+					}
+					$GLOBALS['dh'] = \AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
 					$_SESSION['sess_selected_tester'] = $provider['puntatore'];
 					BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId);
 					BrowsingHelper::checkRewardedBadges($userObj, $courseId, $courseInstanceId);
 					unset($_SESSION['sess_selected_tester']);
+					if (isset($oldDH)) {
+						$GLOBALS['dh'] = $oldDH;
+						unset($oldDH);
+					} else {
+						unset($GLOBALS['dh']);
+					}
 				}
 				unset($provider);
 
@@ -342,10 +352,20 @@ if(!AMA_DataHandler::isError($courseInstances)) {
 				// check service completeness
 				$provider = $common_dh->get_tester_info_from_id_course($courseId);
 				if (array_key_exists('puntatore', $provider)) {
+					if (isset($GLOBALS['dh'])) {
+						$oldDH = $GLOBALS['dh'];
+					}
+					$GLOBALS['dh'] = \AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
 					$_SESSION['sess_selected_tester'] = $provider['puntatore'];
 					BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId);
 					BrowsingHelper::checkRewardedBadges($userObj, $courseId, $courseInstanceId);
 					unset($_SESSION['sess_selected_tester']);
+					if (isset($oldDH)) {
+						$GLOBALS['dh'] = $oldDH;
+						unset($oldDH);
+					} else {
+						unset($GLOBALS['dh']);
+					}
 				}
 				unset($provider);
 
