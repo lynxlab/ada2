@@ -1271,16 +1271,16 @@ class NodeEditingViewer {
             $form->setAttribute('onclick','enterUploadFileState();');
 
             $span_file = CDOMElement::create('div','id:span_upload_file_input, class:editor_input');
-            $input_file = CDOMElement::create('file','id:id_multimedia, name:file_up');
+            $input_file = CDOMElement::create('file','id:id_multimedia, name:file_up, class:donotDisable');
             $span_file->addChild($input_file);
 
-            $input_hidden_1 = CDOMElement::create('hidden',"name:course_id, value:$id_course");
-            $input_hidden_2 = CDOMElement::create('hidden',"name:course_instance_id, value:$id_course_instance");
-            $input_hidden_3 = CDOMElement::create('hidden',"name:user_id, value:$id_user");
-            $input_hidden_4 = CDOMElement::create('hidden',"name:node_id, value:$id_node");
+            $input_hidden_1 = CDOMElement::create('hidden',"class:donotDisable,name:course_id, value:$id_course");
+            $input_hidden_2 = CDOMElement::create('hidden',"class:donotDisable,name:course_instance_id, value:$id_course_instance");
+            $input_hidden_3 = CDOMElement::create('hidden',"class:donotDisable,name:user_id, value:$id_user");
+            $input_hidden_4 = CDOMElement::create('hidden',"class:donotDisable,name:node_id, value:$id_node");
 
             $span_button = CDOMElement::create('div','id:span_upload_file_button, class:editor_input');
-            $input_button = CDOMElement::create('submit');
+            $input_button = CDOMElement::create('submit','class:donotDisable');
             $input_button->setAttribute('value', translateFN("Invia questo file"));
             $span_button->addChild($input_button);
 
