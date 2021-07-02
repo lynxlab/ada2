@@ -171,6 +171,8 @@ var ADA_FILE_UPLOAD_ERROR_UPLOAD_PATH = 104;
 var SAVE_MEDIA_URL   = HTTP_ROOT_DIR + '/services/media_manager.php';
 var READ_MEDIA_URL   = HTTP_ROOT_DIR + '/services/media_manager.php?op=read';
 
+var DO_NOT_DISABLE_EL_CLASS = 'donotDisable';
+
 /**
  * function createEditor
  *
@@ -852,7 +854,8 @@ function enterUploadFileState() {
 	 */
 
 	//disable form
-	$(EDITING_FORM).disable();
+	// $(EDITING_FORM).disable();
+	$j(`#${EDITING_FORM} :input:not(.${DO_NOT_DISABLE_EL_CLASS})`).prop("disabled", true);
 
 	var oFCKeditor = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_NAME);
 
@@ -883,7 +886,8 @@ function exitUploadFileState(error, filename, filetype) {
 	 * enable previously disabled controls on node editing page
 	 */
 	//enable form
-	$(EDITING_FORM).enable();
+	// $(EDITING_FORM).enable();
+	$j(`#${EDITING_FORM} :input:not(.${DO_NOT_DISABLE_EL_CLASS})`).prop("disabled", false);
 
 	var oFCKeditor = FCKeditorAPI.GetInstance(FCKEDITOR_INSTANCE_NAME);
 
