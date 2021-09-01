@@ -168,6 +168,7 @@ class BrowsingHelper extends ViewBaseHelper
             $s = new Subscription($userObj->getId(), $courseInstanceId);
             $s->setSubscriptionStatus(ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED);
             if (isset($userObj->livello) && intval($userObj->livello) > 0) $s->setStartStudentLevel($userObj->livello);
+            else $s->setStartStudentLevel(null); // null means no level update
             $subscribedCount = Subscription::updateSubscription($s);
           }
         }
