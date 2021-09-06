@@ -45,7 +45,7 @@
 }
 
 #contentcontent h3.ui.header,
-#contentcontent div.ui.list .item a:not(.button),
+#contentcontent div.ui.list:not(.students) .item a:not(.button):not(.dontcapitalize),
 #contentcontent div.ui.list .item span.disabled {
 	text-transform: capitalize;
 }

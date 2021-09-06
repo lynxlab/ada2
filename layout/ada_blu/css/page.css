@@ -653,3 +653,6 @@ html, body {
     padding: 1em;
     border-radius: 5px;
 }
+.close.icon {
+    background-image: none;
+}
