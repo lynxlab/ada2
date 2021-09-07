@@ -33,4 +33,25 @@
 		<id>instanceReminder</id>
 		<module>getInstanceReminder.php</module>
 	</widget>
+	<widget>
+		<active>0</active>
+		<async>1</async>
+		<field>studentsOfInstance</field>
+		<id>studentsOfInstance</id>
+		<module>getStudentsOfInstance.php</module>
+
+		<!-- following parameters are passed by php CODE-->
+		<!-- <param name="courseId" value="COURSE_ID_HERE" /> -->
+		<!-- <param name="courseInstanceId" value="COURSE_INSTANCE_ID_HERE" /> -->
+
+		<!-- following parameters are optional -->
+		<!-- <param name="filterStatus" value="SUBSCRIPTION_STATUS_TO_FILTER" /> -->
+		<param name="styleHeight" value="45em;" />
+		<param name="styleOverflow" value="overlay;" />
+		<param name="addHeader" value="0" />
+		<param name="showStatus" value="1" />
+		<param name="showEmail" value="1" />
+		<!-- used only if showEmail is 1 -->
+		<param name="emailIsLink" value="1" />
+	</widget>
 </widgets>

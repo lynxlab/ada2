@@ -77,6 +77,7 @@ class Subscription
                 $subscription->setSubscriberFullname($r['nome'] . ' ' . $r['cognome']);
                 $subscription->setSubscriberFirstname($r['nome']);
                 $subscription->setSubscriberLastname($r['cognome']);
+                $subscription->setSubscriberEmail($r['e_mail']);
                 $subscription->setSubscriptionStatus($r['status']);
                 $subscription->setLastStatusUpdate($r['laststatusupdate']);
                 $subscription->_loadedStatus = $subscription->getSubscriptionStatus();
@@ -220,6 +221,13 @@ class Subscription
     }
     /**
      *
+     * @return string the email of the subscriber
+     */
+    public function getSubscriberEmail() {
+        return $this->_subscriberEmail;
+    }
+    /**
+     *
      * @return string a string representation of the subscription date
      */
     public function getSubscriptionDate() {
@@ -256,6 +264,9 @@ class Subscription
     public function setSubscriberLastname($lastname) {
         $this->_subscriberLastname = $lastname;
     }
+    public function setSubscriberEmail($email) {
+        $this->_subscriberEmail = $email;
+    }
     public function setSubscriptionStatus($status) {
         $this->_subscriptionStatus = $status;
         if ($this->_loadedStatus != $status) $this->setLastStatusUpdate(time());
@@ -290,6 +301,7 @@ class Subscription
     private $_subscriberFullname;
     private $_subscriberFirstname;
     private $_subscriberLastname;
+    private $_subscriberEmail;
     private $_classRoomId;
     private $_subscriptionDate;
     private $_subscriptionStatus;
