@@ -90,6 +90,7 @@
                                     <i class="ok circle large icon"></i>
                                     <i18n>Stato</i18n>
                                 </h3>
+                                <template_field class="template_field" name="studentsOfInstance">studentsOfInstance</template_field>
                                 <div class="ui large list">
                                     <template_field class="template_field" name="completeSummary">completeSummary</template_field>
                                     <div class="item">
