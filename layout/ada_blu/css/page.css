@@ -48,6 +48,7 @@ a:visited {text-decoration: none; }
 .clearfix {height:1px; clear:both; margin:0; padding:0; font-size: 1px;line-height: 0px;}
 
 .first { margin-top: 10px; padding-top: 5px;}
+.first iframe { border: none; }
 .first ul li{color:#666;line-height:1.5em;border-bottom:1px solid #eee;}
 .first ul li b{padding-right:10px;color:#222;}
 
@@ -648,6 +649,10 @@ html, body {
     color: #A95252;
     padding: 1em;
     border-radius: 5px;
+}
+
+.close.icon {
+    background-image: none;
 }
 
 /* 2021 Added by Enrico */
