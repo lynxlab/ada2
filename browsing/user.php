@@ -813,5 +813,7 @@ $layout_dataAr['JS_filename'] = array(
 		'user.js' // this file may use different templates, force user.js inclusion here
 );
 
+$layout_dataAr['widgets']['studentsOfInstance'] = compact(['courseId', 'courseInstanceId']);
+
 ARE::render($layout_dataAr,$content_dataAr,NULL,array('onload_func'=>'initDoc();'));
 

@@ -63,9 +63,10 @@ function getBaseUrl()
     // output: http://
     $proto = isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ? $_SERVER['HTTP_X_FORWARDED_PROTO'] : $_SERVER["SERVER_PROTOCOL"];
     $protocol = strtolower(substr($proto,0,5))=='https'?'https':'http';
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https' : $protocol;
 
     // return: http://localhost/myproject/
-    return $protocol.'://'.$hostName.$pathInfo['dirname']."/";
+    return $protocol.'://'.$hostName.trim($pathInfo['dirname']," /")."/";
 }
 
 function sendToBrowser ($message) {
