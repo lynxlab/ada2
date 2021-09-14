@@ -20,6 +20,8 @@
  *                                           if invalid or omitted, description will be hidden
  *	name="count"		   optional,  value: how many news to display
  *                                           if invalid or omitted NEWS_COUNT entries are displayed
+ *	name="orderby"		   optional,  value: orderby section of the query string
+ *                                           if invalid or omitted its value is 'data_creazione' DESC
  *
  *  NOTE: THIS WIDGET WORKS ONLY IN SYNC MODE FOR SESSION SETTING PROBLEMS!
  *  	  async XML param is IGNORED
@@ -65,6 +67,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 if (!isset($course_id) || intval($course_id)<=0) $course_id = PUBLIC_COURSE_ID_FOR_NEWS;
 if (!isset($showDescription) || !is_numeric($showDescription)) $showDescription=0;
 if (!isset($count) || !is_numeric($count)) $count=NEWS_COUNT;
+if (!isset($orderby) || strlen($orderby)<=0) $orderby = 'data_creazione DESC';
 
 /**
  * get the correct testername
@@ -110,7 +113,7 @@ if (isset($testerName)) {
 		// select nome or empty string (whoever is not null) as title to diplay for the news
 		$newscontent = $tester_dh->find_course_nodes_list(
 				array ( "COALESCE(if(nome='NULL' OR ISNULL(nome ),NULL, nome), '')", "testo" ) ,
-				"tipo IN (". ADA_LEAF_TYPE .",". ADA_GROUP_TYPE .") ORDER BY data_creazione DESC LIMIT ".$count,
+				"tipo IN (". ADA_LEAF_TYPE .",". ADA_GROUP_TYPE .") ORDER BY $orderby LIMIT ".$count,
 				$course_id);
 
 		// watch out: $newscontent is NOT associative
@@ -297,4 +300,3 @@ function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $co
 	}
 	return $truncate;
 }
-?>
