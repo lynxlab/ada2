@@ -52,7 +52,7 @@ $credits_data = "<p>"
               . translateFN("ADA &egrave; un software libero sviluppato da")
               . ' ' ."<a href='http://www.lynxlab.com'; target='_blank'>Lynx s.r.l.</a>"
               .  "<p>".translateFN("E' rilasciato con licenza ")." <a href='".HTTP_ROOT_DIR . "/browsing/external_link.php?file=gpl.txt'; target='_blank'>GNU GPL.</a></p>".
-              "Hanno contribuito allo sviluppo:".
+              translateFN("Hanno contribuito allo sviluppo:").
               "<ul>
               <li>Maurizio Mazzoneschi</li>
               <li>Stefano Penge</li>
@@ -63,7 +63,7 @@ $credits_data = "<p>"
               <li>Guglielmo Celata</li>
               <li>Stamatis Filippis</li>
               </ul>".
-              "Hanno contribuito al disegno dell'interfaccia:".
+              translateFN("Hanno contribuito al disegno dell'interfaccia:").
               "<ul>
               <li>Gianluca Toni</li>
               <li>Francesco Fagnini</li>
