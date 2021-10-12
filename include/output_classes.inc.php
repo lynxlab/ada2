@@ -880,7 +880,7 @@ class  Generic_Html extends Output
       }
     }
 
-    $jsAr = explode(";",$this->JS_filename);
+    $jsAr = array_unique(explode(";",$this->JS_filename));
     $html_js_code = "";
     /*
      * vito, 6 ottobre 2008: import PHP defines from ada_config.php as javascript variables.

@@ -459,8 +459,10 @@ abstract class FForm
 			$v = $control->getValidator();
 			if (!is_null($v)) {
 				if (! $control instanceof FCFieldset) {
-					$jsFields[] = $control->getId();
-					$jsRegexps[] = $validator->getRegexpForValidator($control->getValidator());
+                    if ($control->isRequired()) {
+                        $jsFields[] = $control->getId();
+                        $jsRegexps[] = $validator->getRegexpForValidator($control->getValidator());
+                    }
 				}
 				else {
 					foreach ($control->getControls() as $field) {

@@ -83,6 +83,7 @@ html,body {
 #label_remindme label {
 	cursor: pointer;
 	display: inline-block;
+	width: 95%;
 }
 
 .RSSContent a { margin-top: 10px; display: inline-block; }
