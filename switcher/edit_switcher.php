@@ -89,6 +89,9 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($form->isValid()) {
         $userObj->fillWithArrayData($_POST);
+		if($password != '') {
+			$userObj->setPassword($password);
+		}
         if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
 			if (array_key_exists('secretquestion', $_POST) &&
 				array_key_exists('secretanswer', $_POST) &&

@@ -112,6 +112,9 @@ if (!$isEditingAStudent) {
 	        if($userId > 0) {
 	            $editedUserObj = MultiPort::findUser($userId);
 				$editedUserObj->fillWithArrayData($_POST);
+				if($password != '') {
+					$editedUserObj->setPassword($password);
+				}
 				if (defined('MODULES_SECRETQUESTION') && MODULES_SECRETQUESTION === true) {
 					if (array_key_exists('secretquestion', $_POST) &&
 						array_key_exists('secretanswer', $_POST) &&
