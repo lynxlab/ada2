@@ -128,6 +128,10 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
         // set user datas
         $editUserObj->fillWithArrayData($_POST);
 
+		if($password != '') {
+			$editUserObj->setPassword($password);
+		}
+
         // set user extra datas if any
 		if ($editUserObj->hasExtra()) $editUserObj->setExtras($_POST);
 
