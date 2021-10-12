@@ -63,11 +63,11 @@ class TestTest extends RootTest
 		$dh = $GLOBALS['dh'];
 
 		$r = parent::saveTest();
-                
+
                 $sess_id_course = $_SESSION['sess_id_course'];
-                $sess_id_course_instance= $_SESSION['sess_id_course_instance'];        
+                $sess_id_course_instance= $_SESSION['sess_id_course_instance'];
                 if ($this->id_istanza == 0 || $this->id_istanza == NULL) {
-                    $this->id_istanza = $sess_id_course_instance; 
+                    $this->id_istanza = $sess_id_course_instance;
                 }
 
 		if ($r) {
@@ -169,6 +169,12 @@ class TestTest extends RootTest
 				}
 			}
 		}
+
+		// call helper function to check service completeness using modules/service-complete
+		require_once ROOT_DIR . '/browsing/include/browsing_functions.inc.php';
+		$userObj = read_user($_SESSION['sess_id_user']);
+		\BrowsingHelper::checkServiceComplete($userObj, $sess_id_course, $sess_id_course_instance);
+
 		return true;
 	}
 

@@ -77,7 +77,11 @@ if (debug) {
 }
 
 ZoomMtg.preLoadWasm();
-ZoomMtg.prepareJssdk();
+if ('function' == typeof ZoomMtg.prepareWebSDK) {
+    typeof ZoomMtg.prepareWebSDK();
+} else {
+    ZoomMtg.prepareJssdk();
+}
 
 //Add the language code to the internationalization.reload method.
 ZoomMtg.i18n.load("<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");

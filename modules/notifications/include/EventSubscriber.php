@@ -167,7 +167,7 @@ class EventSubscriber implements ADAMethodSubscriberInterface, ADAScriptSubscrib
                 }
                 $container = \CDOMElement::create('div','class:noteActions');
                 $span = \CDOMElement::create('span');
-                $span->addChild(new \CText('Notifiche'));
+                $span->addChild(new \CText(\translateFN('Notifiche')));
                 $button = self::buildNotificationButton($nodeData, Notification::getNotificationFromNodeType(ADA_NOTE_TYPE));
                 $container->addChild($span);
                 $container->addChild($button);
