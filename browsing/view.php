@@ -536,6 +536,7 @@ if ($id_profile == AMA_TYPE_STUDENT)
 {
 	$content_dataAr['exercise_history'] = '<a href="exercise_history.php?id_course_instance='.$sess_id_course_instance.'">'.translateFN('storico esercizi').'</a>';
 }
+$content_dataAr['id_node_parent'] = strcasecmp('null', $node_parent) !=0 ? $node_parent : $sess_id_node;
 
 $op = isset($op) ? $op : null;
 switch ($op){
