@@ -100,7 +100,7 @@ $node_path = $nodeObj->findPathFN('map');
 
 // THE MAP
 //$data = "<div><b>MAPPA DEL GRUPPO {$nodeObj->name}</b></div>\n\n";
-$data = '<div><b>'.translateFN('MAPPA DEL GRUPPO') ." {$nodeObj->name}.</b></div>\n\n";
+$data = "<h1 class='ui header map-title'>{$nodeObj->name}</h1>\n\n";
 $data .= "<div id=\"map_content\" style=\"position:relative;top:0px;left:0px;\">\n";
 
 $nodeList = $nodeObj->graph_indexFN();
