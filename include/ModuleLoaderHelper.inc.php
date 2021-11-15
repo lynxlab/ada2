@@ -60,7 +60,7 @@ class ModuleLoaderHelper
 				MODULES_DIR . DIRECTORY_SEPARATOR . $moduledir . DIRECTORY_SEPARATOR . self::configdir . DIRECTORY_SEPARATOR . $configfile
 			);
 		}
-		foreach ($checks as $check) {
+		foreach (array_unique($checks) as $check) {
 			if (file_exists($check)) return $check;
 		}
 		return (in_array($modulename, $noconfig) ? '' : null);
