@@ -203,7 +203,8 @@ $content_dataAr = array(
     'path' => $node_path,
     'data' => $data,
     'edit_profile'=> $userObj->getEditProfilePage(),
-    'help' => isset($help) ? $help : ''
+    'help' => isset($help) ? $help : '',
+	'id_node_parent' => strcasecmp('null', $nodeObj->parent_id) !=0 ? $nodeObj->parent_id : $$nodeObj->id,
 );
 $options = array('onload_func' => "var map = new Map()");
 ARE::render($layout_dataAr, $content_dataAr, NULL, $options);
