@@ -291,7 +291,7 @@ class Node
           // Vengono mostrati nella mappa solo i nodi dei tipi che sono nel seguente array
           $nodeTypesToShow = array(ADA_LEAF_TYPE, ADA_GROUP_TYPE, ADA_LEAF_WORD_TYPE,
           		ADA_GROUP_WORD_TYPE, ADA_PERSONAL_EXERCISE_TYPE, ADA_STANDARD_EXERCISE_TYPE);
-          if (in_array($child_dataHa['type']{0}, $nodeTypesToShow)) {
+          if (in_array($child_dataHa['type'][0], $nodeTypesToShow)) {
             //mydebug(__LINE__,__FILE__,$child_dataHa);
             $linksAr = array();
 
