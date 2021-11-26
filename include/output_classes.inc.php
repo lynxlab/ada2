@@ -665,7 +665,7 @@ class  Generic_Html extends Output
       }
       $tpl_new_ar[]=$tpl_row;
     }
-    $tpl = implode($tpl_new_ar,"\n");
+    $tpl = implode("\n", $tpl_new_ar);
     return $tpl;
   }
   public function include_microtemplates_tree(){
@@ -721,7 +721,7 @@ class  Generic_Html extends Output
       }
       $tpl_new_ar[]=$tpl_row;
     }
-    $tpl = implode($tpl_new_ar,"\n");
+    $tpl = implode("\n", $tpl_new_ar);
     return $tpl;
   }
 
