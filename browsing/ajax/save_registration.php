@@ -105,6 +105,11 @@ if (!is_null($editUserObj) && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQ
 
 		$editUserObj->fillWithArrayData($_POST);
 
+		$password = trim($_POST['password']);
+		if($password != '') {
+			$editUserObj->setPassword($password);
+		}
+
 		// save extra datas if it has been forced
 		if (isset($_POST['forceSaveExtra']) && $editUserObj->hasExtra()) $editUserObj->setExtras($_POST);
 

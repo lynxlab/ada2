@@ -186,7 +186,7 @@ if (!is_null($submit)) {
             $studenLevel = (int) $userObj->get_student_level($userObj->getId(), $courseInstanceObj->getId());
             $resHa = array_filter($resHa, function($row) use ($studenLevel) {
                 // livello is row[6]
-                return (int) $row[6] < $studenLevel;
+                return (int) $row[6] <= $studenLevel;
             });
         }
     }

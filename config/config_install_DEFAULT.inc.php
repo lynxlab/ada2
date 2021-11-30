@@ -90,6 +90,11 @@ if (MULTIPROVIDER) {
      * NOTE: will send an email only if the subscribing user has a non empty email address
      */
     define ('ADA_SEND_INSTANCE_SUBSCRIPTION_EMAIL', true);
+
+    /**
+     * set here the url to redirect the student after login
+     */
+    define ('FORCE_STUDENT_LOGIN_REDIRECT', '');
 }
 
 /**
