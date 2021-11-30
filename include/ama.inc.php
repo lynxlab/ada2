@@ -247,9 +247,7 @@ abstract class Abstract_AMA_DataHandler {
      * @return the prepared string
      */
     public function sql_prepared($s) {
-        if (!get_magic_quotes_gpc()) {
-            $s =  addslashes($s);
-        }
+        $s =  addslashes($s);
         return "'$s'";
     }
 

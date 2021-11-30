@@ -1238,7 +1238,12 @@ abstract class ADALoggableUser extends ADAGenericUser {
     			$loginProviderObj->addLoginToHistory($userObj->getId());
     		}
     		if (is_null($redirectURL)) {
-                $redirectURL = $userObj->getHomePage();
+                if ($userObj->getType() == AMA_TYPE_STUDENT && defined('FORCE_STUDENT_LOGIN_REDIRECT') && strlen(FORCE_STUDENT_LOGIN_REDIRECT)>0) {
+                    $redirectURL = FORCE_STUDENT_LOGIN_REDIRECT;
+                } else {
+                    $redirectURL = $userObj->getHomePage();
+                }
+
                 if (isset($_REQUEST['r']) && strlen(trim($_REQUEST['r']))>0) {
                     $r = trim($_REQUEST['r']);
                     // redirect only if passed URL host matches HTTP_ROOT_DIR host

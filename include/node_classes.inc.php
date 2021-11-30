@@ -291,7 +291,7 @@ class Node
           // Vengono mostrati nella mappa solo i nodi dei tipi che sono nel seguente array
           $nodeTypesToShow = array(ADA_LEAF_TYPE, ADA_GROUP_TYPE, ADA_LEAF_WORD_TYPE,
           		ADA_GROUP_WORD_TYPE, ADA_PERSONAL_EXERCISE_TYPE, ADA_STANDARD_EXERCISE_TYPE);
-          if (in_array($child_dataHa['type']{0}, $nodeTypesToShow)) {
+          if (in_array($child_dataHa['type'][0], $nodeTypesToShow)) {
             //mydebug(__LINE__,__FILE__,$child_dataHa);
             $linksAr = array();
 
@@ -1182,7 +1182,7 @@ function search_text_in_glosary($text) {
 			$nwURL = HTTP_ROOT_DIR.'/adaProxy.php?q=';
 			$urlhashes = array();
 			foreach ($unique as $i=>$url) {
-				if (stripos($url, 'youtube.com') === false && strncmp($url, HTTP_ROOT_DIR, strlen(HTTP_ROOT_DIR)) !== 0) {
+				if (stripos($url, 'vimeo.com') === false && stripos($url, 'youtube.com') === false && strncmp($url, HTTP_ROOT_DIR, strlen(HTTP_ROOT_DIR)) !== 0) {
           			$enc = openssl_encrypt($url, 'BF-ECB', ADAPROXY_ENC_KEY);
           			if (false === $enc) {
             			$enc = $url;

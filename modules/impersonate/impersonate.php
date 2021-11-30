@@ -84,6 +84,6 @@ if ($impersonateObj instanceof \ADALoggableUser) {
         false,
         $impersonateObj->getLanguage(),
         null,
-        $impersonateObj->getHomePage()
+        isset($_SERVER['HTTP_REFERER']) && strlen($_SERVER['HTTP_REFERER'])>0 ? $_SERVER['HTTP_REFERER'] : $impersonateObj->getHomePage()
     );
 }
