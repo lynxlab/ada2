@@ -520,7 +520,7 @@ class Menu
     private function _isEnabled($item) {
     	if ($item['enabledON']===self::ALWAYS_ENABLED) return true;
     	else if ($item['enabledON']===self::NEVER_ENABLED) return false;
-    	else if ($item['enabledON']{0}==='$') {
+    	else if ($item['enabledON'][0]==='$') {
     		/**
     		 * 01. remove the dollar sign at first position of string
     		 */
@@ -535,7 +535,7 @@ class Menu
     			 */
     			return (isset($GLOBALS[$globalToCheck]) ? (bool)($GLOBALS[$globalToCheck]) : true);
     		} else return true;
-    	} else if ($item['enabledON']{0}==='%') {
+    	} else if ($item['enabledON'][0]==='%') {
     		/**
     		 * must put into a var because of a limitation with PHP<5.5
     		 * see Note at http://php.net/manual/en/function.empty.php

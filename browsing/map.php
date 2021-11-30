@@ -100,7 +100,7 @@ $node_path = $nodeObj->findPathFN('map');
 
 // THE MAP
 //$data = "<div><b>MAPPA DEL GRUPPO {$nodeObj->name}</b></div>\n\n";
-$data = '<div><b>'.translateFN('MAPPA DEL GRUPPO') ." {$nodeObj->name}.</b></div>\n\n";
+$data = "<h1 class='ui header map-title'>{$nodeObj->name}</h1>\n\n";
 $data .= "<div id=\"map_content\" style=\"position:relative;top:0px;left:0px;\">\n";
 
 $nodeList = $nodeObj->graph_indexFN();
@@ -203,7 +203,8 @@ $content_dataAr = array(
     'path' => $node_path,
     'data' => $data,
     'edit_profile'=> $userObj->getEditProfilePage(),
-    'help' => isset($help) ? $help : ''
+    'help' => isset($help) ? $help : '',
+	'id_node_parent' => strcasecmp('null', $nodeObj->parent_id) !=0 ? $nodeObj->parent_id : $nodeObj->id,
 );
 $options = array('onload_func' => "var map = new Map()");
 ARE::render($layout_dataAr, $content_dataAr, NULL, $options);
