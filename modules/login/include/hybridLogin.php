@@ -136,6 +136,7 @@ class hybridLogin extends abstractLogin
 		switch ($providerName) {
 			case 'Google':
 			case 'Facebook':
+			case 'Microsoftgraph':
 				$config = array(
 					'callback' => trim(HttpClient\Util::getCurrentUrl()),
 					'providers' => array (
