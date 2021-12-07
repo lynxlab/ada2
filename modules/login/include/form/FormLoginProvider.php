@@ -1,15 +1,19 @@
 <?php
+
 /**
- * LOGIN MODULE - login provider edit form class
- * 
- * @package 	login module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2015, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * LOGIN MODULE
+ *
+ * @package     login module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2015-2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
 
-require_once(ROOT_DIR.'/include/Forms/lib/classes/FForm.inc.php');
+namespace Lynxlab\ADA\Module\Login;
+
+use FForm;
+use FormValidator;
 
 /**
  * class for handling LDAP config
@@ -26,9 +30,9 @@ class FormLoginProvider extends FForm {
 		parent::__construct();
 		if (!is_null($formName)) $this->setName($formName);
 		if (!is_null($action)) $this->setAction($action);
-		
+
 		$this->addHidden('provider_id');
-		
+
 		$this->addSelect('className',
 				translateFN('Classe PHP'),
 				$selectOptions,
@@ -41,7 +45,7 @@ class FormLoginProvider extends FForm {
 		$this->addTextInput('buttonLabel', translateFN('Testo per il bottone'))->setRequired()
 			 ->setAttribute('maxlength', $this->maxlength)
 			 ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
-		
+
 		$this->fillWithArrayData($data);
 	}
 } // class ends here
