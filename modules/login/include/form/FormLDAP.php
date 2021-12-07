@@ -1,13 +1,18 @@
 <?php
 /**
- * LOGIN MODULE - ldap login provider options edit form class
- * 
- * @package 	login module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2015, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * LOGIN MODULE
+ *
+ * @package     login module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2015-2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
+
+namespace Lynxlab\ADA\Module\Login;
+
+use FForm;
+use FormValidator;
 
 require_once(ROOT_DIR.'/include/Forms/lib/classes/FForm.inc.php');
 
@@ -26,7 +31,7 @@ class FormLDAP extends FForm {
 		parent::__construct();
 		if (!is_null($formName)) $this->setName($formName);
 		if (!is_null($action)) $this->setAction($action);
-		
+
 		$this->addHidden('option_id');
 		$this->addTextInput('name', translateFN('Nome'))->setRequired()
 			  ->setAttribute('maxlength', $this->maxlength)
@@ -36,10 +41,10 @@ class FormLDAP extends FForm {
 			 ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
 		$this->addTextInput('authdn', translateFN('DN Autenticazione'))->setRequired()
 			 ->setAttribute('maxlength', $this->maxlength)
-			 ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);		
+			 ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
 		$this->addTextInput('basedn', translateFN('DN Ricerca'))->setRequired()
 			 ->setAttribute('maxlength', $this->maxlength)
-			 ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);		
+			 ->setValidator(FormValidator::NOT_EMPTY_STRING_VALIDATOR);
 		$this->addTextInput('filter', translateFN('Filtro'))
 			 ->setAttribute('maxlength', $this->maxlength);
 		$this->addSelect('usertype',
@@ -55,7 +60,7 @@ class FormLDAP extends FForm {
 				0)
 				->setRequired()
 				->setValidator(FormValidator::POSITIVE_NUMBER_VALIDATOR);
-		
+
 		$this->fillWithArrayData($data);
 	}
 } // class ends here

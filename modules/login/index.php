@@ -9,6 +9,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Module\Login\abstractLogin;
+
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
  * Base config file
@@ -178,4 +180,3 @@ $layout_dataAr['CSS_filename'] = array(
 		MODULES_LOGIN_PATH.'/layout/tooltips.css'
 );
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
-?>
