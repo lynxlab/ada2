@@ -1,13 +1,16 @@
 <?php
 /**
- * LOGIN MODULE - config page for login provider
+ * LOGIN MODULE
  *
- * @package 	login module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2015, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     login module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2015-2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
+
+use Lynxlab\ADA\Module\Login\abstractLogin;
+use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
@@ -49,14 +52,15 @@ $optionsClassName = null;
 if (isset($_REQUEST['providerClassName']) && strlen($_REQUEST['providerClassName'])>0) {
 	$type = trim($_REQUEST['providerClassName']);
 	if (in_array($type, abstractLogin::getLoginProviders(null))) {
-		require_once MODULES_LOGIN_PATH . '/include/'.$type.'.class.inc.php';
-		$optionsClassName = $type::MANAGEMENT_CLASS;
+		// require_once MODULES_LOGIN_PATH . '/include/'.$type.'.class.inc.php';
+		$className = abstractLogin::getNamespaceName()."\\".$type;
+		$optionsClassName = $className::MANAGEMENT_CLASS;
 	}
 }
 
 if (!is_null($optionsClassName)) {
 
-	require_once MODULES_LOGIN_PATH.'/include/management/'.$optionsClassName.'.inc.php';
+	// require_once MODULES_LOGIN_PATH.'/include/management/'.$optionsClassName.'.inc.php';
 
 	if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 		/**

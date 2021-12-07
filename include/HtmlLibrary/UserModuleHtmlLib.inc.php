@@ -11,6 +11,8 @@
  * @version		0.1
  */
 
+use Lynxlab\ADA\Module\Login\abstractLogin;
+
 require_once CORE_LIBRARY_PATH .'/includes.inc.php';
 require_once ROOT_DIR . '/include/HtmlLibrary/FormElementCreator.inc.php';
 
@@ -76,7 +78,6 @@ class UserModuleHtmlLib {
     $div_submit = CDOMElement::create('div','id:login_button');
     if (defined('MODULES_LOGIN') && MODULES_LOGIN) {
     	// load login providers
-    	require_once MODULES_LOGIN_PATH . '/include/abstractLogin.class.inc.php';
     	$loginProviders = abstractLogin::getLoginProviders();
     } else $loginProviders = null;
 
@@ -86,9 +87,9 @@ class UserModuleHtmlLib {
     	$form->addChild(CDOMElement::create('hidden','id:selectedLoginProviderID, name:selectedLoginProviderID'));
     	// add a DOM element (or html) foreach loginProvider
     	foreach ($loginProviders as $providerID=>$loginProvider) {
-    		include_once  MODULES_LOGIN_PATH . '/include/'.$loginProvider.'.class.inc.php';
-    		if (class_exists($loginProvider)) {
-    			$loginObject = new $loginProvider($providerID);
+        $className = abstractLogin::getNamespaceName()."\\".$loginProvider;
+    		if (class_exists($className)) {
+    			$loginObject = new $className($providerID);
     			$CDOMElement = $loginObject->getCDOMElement();
     			if (!is_null($CDOMElement)) {
     				$submit->addChild($CDOMElement);

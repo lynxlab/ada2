@@ -1,22 +1,23 @@
 @CHARSET 'UTF-8';
 
-button.hybridLogin.login {
-   float: none;
+.ui.login.button {
+  /* float: none; */
   display: block;
-   margin-top: 10px;
-  color: #fff;
-  background-repeat: no-repeat;
-  background-size: 32px;
-  background-position: left center;
-  cursor: pointer; */
+  margin-top: 10px;
+  /* background-repeat: no-repeat; */
+  /* background-size: 32px; */
+  /* background-position: left center; */
+  cursor: pointer;
   text-align: left;
 }
 
 #google-button {
+  color: #fff;
   background-color: #D34836;
 }
 
 #facebook-button {
+  color: #fff;
   background-color: #3B579D;
 }
 

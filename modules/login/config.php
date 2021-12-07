@@ -1,13 +1,15 @@
 <?php
 /**
- * LOGIN MODULE - config page for option sets of the provider type
+ * LOGIN MODULE
  *
- * @package 	login module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2015, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     login module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2015-2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
+
+use Lynxlab\ADA\Module\Login\abstractLogin;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
@@ -40,13 +42,13 @@ $self = whoami();
 foreach (abstractLogin::getLoginProviders(null) as $id=>$className) {
 	if (intval($id)===intval($_GET['id'])) {
 		$providerClassName = $className;
-		require_once MODULES_LOGIN_PATH . '/include/'.$providerClassName.'.class.inc.php';
-		$loginObj = new $providerClassName($id);
+		$providerFQCN = abstractLogin::getNamespaceName()."\\".$className;
+		$loginObj = new $providerFQCN($id);
 		break;
 	}
 }
 
-if (isset($loginObj) && is_object($loginObj) && is_a($loginObj, 'abstractLogin')) {
+if (isset($loginObj) && is_object($loginObj) && is_a($loginObj, abstractLogin::getNamespaceName().'\\abstractLogin')) {
 	$data = $loginObj->generateConfigPage()->getHtml();
 	$title = translateFN('Configurazioni '.ucfirst(strtolower($loginObj->loadProviderName())));
 	$optionsAr['onload_func'] = 'initDoc(\''.$providerClassName.'\');';
@@ -81,4 +83,3 @@ $layout_dataAr['CSS_filename'] = array(
 		MODULES_LOGIN_PATH.'/layout/tooltips.css'
 );
 ARE::render($layout_dataAr, $content_dataAr, NULL, $optionsAr);
-?>

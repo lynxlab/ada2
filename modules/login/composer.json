@@ -1,0 +1,19 @@
+{
+    "name": "lynxlab/login",
+    "description": "This is the ada login module",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Giorgio Consorti",
+            "email": "g.consorti@lynxlab.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\Login\\" : ["include/", "include/form", "include/management"]
+	    }
+    },
+    "require": {
+        "hybridauth/hybridauth": "^3.7"
+    }
+}
