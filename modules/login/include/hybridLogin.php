@@ -2,24 +2,27 @@
 /**
  * LOGIN MODULE
  *
- * @package 	login module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2015, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     login module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2015-2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
+
+namespace Lynxlab\ADA\Module\Login;
+
+use Hybridauth\Hybridauth;
+use Hybridauth\HttpClient;
 
 /**
  * google login provider implementation
  */
-require_once MODULES_LOGIN_PATH . '/include/Hybrid/Auth.php';
-
-class hybridLogin extends AbstractLogin
+class hybridLogin extends abstractLogin
 {
 	/**
 	 * class for managing options data
 	 */
-	const MANAGEMENT_CLASS = 'hybridManagement';
+	const MANAGEMENT_CLASS = __NAMESPACE__ . '\\hybridManagement';
 
 	/**
 	 * Hybrid_Auth object
@@ -44,7 +47,7 @@ class hybridLogin extends AbstractLogin
 	 */
 	public function loadHybridAuth()
 	{
-		$this->hybridauth = new Hybrid_Auth($this->getConfigFromOptions());
+		$this->hybridauth = new Hybridauth($this->getConfigFromOptions());
 	}
 
 	/**
@@ -73,7 +76,7 @@ class hybridLogin extends AbstractLogin
 	public function addADASuccessCallBack($userObj, $downloadURL, $avatar)
 	{
 
-		if (is_object($userObj) && $userObj instanceof ADALoggableUser) {
+		if (is_object($userObj) && $userObj instanceof \ADALoggableUser) {
 
 			if (!is_null($avatar) && !is_null($downloadURL)) {
 				$destDir = ADA_UPLOAD_PATH.$userObj->getId();
@@ -94,7 +97,7 @@ class hybridLogin extends AbstractLogin
 				 * resize the image if needed
 				*/
 				require_once ROOT_DIR .'/browsing/include/class_image.inc.php';
-				$id_img = new ImageDevice();
+				$id_img = new \ImageDevice();
 				$new_img = $id_img->resize_image($destFile, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
 				if(stristr($destFile, 'png')) {
 					imagepng($new_img,$destFile);
@@ -133,8 +136,9 @@ class hybridLogin extends AbstractLogin
 		switch ($providerName) {
 			case 'Google':
 			case 'Facebook':
+			case 'Microsoftgraph':
 				$config = array(
-					'base_url' =>   $options['base_url'],
+					'callback' => trim(HttpClient\Util::getCurrentUrl()),
 					'providers' => array (
 						$providerName => array (
 							'enabled' => true,
@@ -177,7 +181,7 @@ class hybridLogin extends AbstractLogin
 	 * @access public
 	 */
 	public function getUserProfile() {
-		if (is_null($this->authProvider)) $this->authenticate();
+		if (is_null($this->authProvider)) $this->authenticate($this->loadProviderName());
 		return $this->authProvider->getUserProfile();
 	}
 
@@ -243,7 +247,7 @@ class hybridLogin extends AbstractLogin
 				$lang = substr($user_profile->language, 0,2);
 			} else $lang = $user_profile->language;
 
-			foreach (Translator::getSupportedLanguages() as $supportedLang) {
+			foreach (\Translator::getSupportedLanguages() as $supportedLang) {
 				if (strtolower($supportedLang['codice_lingua']) === strtolower($lang)) {
 					$language = $supportedLang['id_lingua'];
 					break;
@@ -290,18 +294,18 @@ class hybridLogin extends AbstractLogin
 		// If no option id return abstract config page (aka 'no options to configure' message)
 		if (is_null($optionID)) return parent::generateConfigPage();
 
-		$configIndexDIV = CDOMElement::create('div','id:configindex');
+		$configIndexDIV = \CDOMElement::create('div','id:configindex');
 
-		$newButton = CDOMElement::create('button');
+		$newButton = \CDOMElement::create('button');
 		$newButton->setAttribute('class', 'newButton tooltip top');
 		$newButton->setAttribute('title', translateFN('Clicca per creare un nuova chiave'));
 		$newButton->setAttribute('onclick', 'javascript:addOptionRow();');
-		$newButton->addChild (new CText(translateFN('Nuova Chiave')));
+		$newButton->addChild (new \CText(translateFN('Nuova Chiave')));
 		$configIndexDIV->addChild($newButton);
-		$configIndexDIV->addChild(CDOMElement::create('div','class:clearfix'));
+		$configIndexDIV->addChild(\CDOMElement::create('div','class:clearfix'));
 
 		$tableOutData = array();
-		if (!AMA_DB::isError($optionSetList)) {
+		if (!\AMA_DB::isError($optionSetList)) {
 			unset ($optionSetList['optionscount']);
 			unset ($optionSetList['providers_options_id']);
 			/**
@@ -325,8 +329,8 @@ class hybridLogin extends AbstractLogin
 					}
 
 					if (isset($type)) {
-						$links[$j] = CDOMElement::create('li','class:liactions');
-						$linkshref = CDOMElement::create('button');
+						$links[$j] = \CDOMElement::create('li','class:liactions');
+						$linkshref = \CDOMElement::create('button');
 						$linkshref->setAttribute('onclick','javascript:'.$link);
 						$linkshref->setAttribute('class', $type.'Button tooltip');
 						$linkshref->setAttribute('title',$title);
@@ -337,7 +341,7 @@ class hybridLogin extends AbstractLogin
 					}
 				}
 				if (!empty($links)) {
-					$linksul = CDOMElement::create('ul','class:ulactions');
+					$linksul = \CDOMElement::create('ul','class:ulactions');
 					foreach ($links as $link) $linksul->addChild ($link);
 					$linksHtml = $linksul->getHtml();
 				} else $linksHtml = '';
@@ -349,11 +353,11 @@ class hybridLogin extends AbstractLogin
 			}
 
 			$emptyrow = array(array_shift($tableOutData));
-			$EmptyTable = BaseHtmlLib::tableElement('id:empty'.strtoupper(get_class($this)),$labels,$emptyrow);
+			$EmptyTable = \BaseHtmlLib::tableElement('id:empty'.strtoupper((new \ReflectionClass($this))->getShortName()),$labels,$emptyrow);
 			$EmptyTable->setAttribute('style', 'display:none');
 			$EmptyTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);
 
-			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper(get_class($this)).'List',
+			$OutTable = \BaseHtmlLib::tableElement('id:complete'.strtoupper((new \ReflectionClass($this))->getShortName()).'List',
 					$labels,$tableOutData,'',translateFN('Opzioni '.strtoupper($this->loadProviderName())));
 			$OutTable->setAttribute('data-optionid', $optionID);
 			$OutTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);

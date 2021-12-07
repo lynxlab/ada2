@@ -1,13 +1,17 @@
 <?php
 /**
- * LOGIN MODULE - config page for login provider
+ * LOGIN MODULE
  *
- * @package 	login module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2015, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     login module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2015-2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
+
+use AMA_DB;
+use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
+use Lynxlab\ADA\Module\Login\loginProviderManagement;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
@@ -41,8 +45,6 @@ require_once(ROOT_DIR.'/include/module_init.inc.php');
 $GLOBALS['dh'] = AMALoginDataHandler::instance();
 
 $retArray = array('status'=>'ERROR');
-
-require_once MODULES_LOGIN_PATH.'/include/management/loginProviderManagement.inc.php';
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 	/**
