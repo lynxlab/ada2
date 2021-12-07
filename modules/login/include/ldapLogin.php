@@ -2,24 +2,33 @@
 /**
  * LOGIN MODULE
  *
- * @package 	login module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2015, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     login module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2015-2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
+
+namespace Lynxlab\ADA\Module\Login;
+
+use \ADALoggableUser;
+use AMA_DB;
+use BaseHtmlLib;
+use CDOMElement;
+use CText;
+use \Exception;
 
 /**
  * LDAP login provider implementation
  */
-class ldapLogin extends AbstractLogin
+class ldapLogin extends abstractLogin
 {
 	const INVALID_USERNAME_EXECEPTION_CODE = 49;
 
 	/**
 	 * class for managing options data
 	 */
-	const MANAGEMENT_CLASS = 'ldapManagement';
+	const MANAGEMENT_CLASS = __NAMESPACE__ . '\\ldapManagement';
 
 	/**
 	 * performs user login using an LDAP server
@@ -262,7 +271,7 @@ class ldapLogin extends AbstractLogin
 						$labels[3]=>$linksHtml);
 			}
 
-			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper(get_class($this)).'List',
+			$OutTable = BaseHtmlLib::tableElement('id:complete'.strtoupper((new \ReflectionClass($this))->getShortName()).'List',
 					$labels,$tableOutData,'',translateFN('Elenco delle fonti '.strtoupper($this->loadProviderName())));
 			$OutTable->setAttribute('class', ADA_SEMANTICUI_TABLECLASS);
 			$configIndexDIV->addChild($OutTable);

@@ -1,13 +1,15 @@
 <?php
 /**
- * LOGIN MODULE - config page for login provider
+ * LOGIN MODULE
  *
- * @package 	login module
- * @author		giorgio <g.consorti@lynxlab.com>
- * @copyright	Copyright (c) 2015, Lynx s.r.l.
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
- * @version		0.1
+ * @package     login module
+ * @author      giorgio <g.consorti@lynxlab.com>
+ * @copyright   Copyright (c) 2015-2021, Lynx s.r.l.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU Public License v.2
+ * @version     0.1
  */
+
+use Lynxlab\ADA\Module\Login\AMALoginDataHandler;
 
 ini_set('display_errors', '0'); error_reporting(E_ALL);
 /**
@@ -70,4 +72,3 @@ else {
 if (empty($retArray)) $retArray = array("status"=>"ERROR", "msg"=>translateFN("Errore sconosciuto"));
 
 echo json_encode($retArray);
-?>
