@@ -6,10 +6,10 @@
 ---------------------------------------------------------------*/
 
 
-.ui.ada.menu { float:left; width: 100%; background-color: #f1812d; color: white;
+.ui.ada.menu { float:left; width: 100%; background-color: #73a3ad; color: white;
 
     border-radius:0;
-    border-bottom: 1px solid #f1812d;
+    border-bottom: 1px solid #73a3ad;
     }
 
 #msglabel, #menuright { display: none; }
