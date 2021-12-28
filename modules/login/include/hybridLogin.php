@@ -191,7 +191,7 @@ class hybridLogin extends abstractLogin
 	 * @access public
 	 */
 	public function logOutFromProvider() {
-		return $this->authProvider->logout();
+		return $this->authProvider->disconnect();
 	}
 
 	/**

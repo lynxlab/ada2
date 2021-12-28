@@ -358,7 +358,7 @@ abstract class ADAGenericUser {
     protected function setEditProfilePage ($relativeUrl) {
     	if (isset($relativeUrl) && strlen($relativeUrl)>0) {
     		// make it leading slash-agnostic
-    		if ($relativeUrl{0}!== DIRECTORY_SEPARATOR) $relativeUrl = DIRECTORY_SEPARATOR .$relativeUrl;
+    		if ($relativeUrl[0]!== DIRECTORY_SEPARATOR) $relativeUrl = DIRECTORY_SEPARATOR .$relativeUrl;
 
     		if (is_file(ROOT_DIR . $relativeUrl)) $this->editprofilepage = $relativeUrl;
     		else $this->editprofilepage = '';
