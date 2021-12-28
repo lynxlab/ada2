@@ -454,7 +454,7 @@ function convertDoc2HTML($txt){
   $len = strlen($txt);
   $res = "";
   for($i = 0; $i < $len; ++$i) {
-    $ord = ord($txt{$i});
+    $ord = ord($txt[$i]);
     // check only non-standard chars
     if($ord >= 126){
       $res .= "&#".$ord.";";
@@ -472,7 +472,7 @@ function convertDoc2HTML($txt){
           $res .= "\\\\";
           break;
         default : // the rest does not have to be modified
-          $res .= $txt{$i};
+          $res .= $txt[$i];
       }
     }
   }
