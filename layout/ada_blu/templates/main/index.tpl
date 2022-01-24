@@ -42,13 +42,23 @@
                         </div>
                     </div>
                 </div>
+<!--
                 <div class="ada-column">
                   <div class="lynxRSS portlet">
                     <div class="portlet-header">RSS Feeds</div>
                     <div class="portlet-content">
-                        <template_field class="template_field" name="lynxRSS">lynxRSS</template_field>
+                        <template_field class="template_field_disabled" name="lynxRSS">lynxRSS</template_field>
                     </div>
                   </div>
+                </div>
+-->
+                <div class="ada-column">
+                     <div class="TwitterTimeLine portlet">
+                           <div class="portlet-header">Twitter</div>
+                           <div class="portlet-content">
+                                 <template_field class="template_field" name="twitterTimeLine">twitterTimeLine</template_field>
+                           </div>
+                     </div>
                 </div>
             </div>
             <div class="dx ui five wide column">
@@ -85,29 +95,21 @@
                         </div>
                     </div>
                 </div>
-		<div class="helpcont ada-column">
-                  <div class="TwitterTimeLine portlet">
-                    <div class="portlet-header">Twitter</div>
-                    <div class="portlet-content">
-                    <template_field class="template_field" name="twitterTimeLine">twitterTimeLine</template_field>
-                  </div>
-                  </div>
-                </div>
-
-            </div>
          </div>
          </div>
 <br class="clearfix">
 </div>
 
+<!--
 <div id="newscont" class="ada-column">
    <div class="portlet">
      <div class="portlet-header"><i18n>Ultime news</i18n></div>
         <div class="portlet-content">
-	  <template_field class="template_field" name="bottomnews">bottomnews</template_field>
+	  <template_field class="template_field_disabled" name="bottomnews">bottomnews</template_field>
 	</div>
    </div>
 </div>
+-->
 <br class="clearfix">
 <div id="bottomcont"></div>
 </div> <!--  / contenuto -->
@@ -120,6 +122,6 @@
 		 <template_field class="microtemplate_field" name="footer">footer</template_field>
 </div> <!-- / piede -->
 <div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v6.0"></script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/it_IT/sdk.js#xfbml=1&version=v9.0" nonce="ye20hOfW"></script>
 </body>
 </html>
