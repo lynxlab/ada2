@@ -77,9 +77,9 @@
                     <div class="portlet">
                         <div class="portlet-header"><i18n>facebook</i18n></div>
                         <div class="portlet-content">
-                            <div class="fb-page" data-href="https://www.facebook.com/FoliasCooperativaSociale" data-tabs="timeline" data-width="500" data-height="" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false">
-                                <blockquote cite="https://www.facebook.com/FoliasCooperativaSociale" class="fb-xfbml-parse-ignore">
-                                    <a href="https://www.facebook.com/FoliasCooperativaSociale">ADHR FORMAZIONE</a>
+                            <div class="fb-page" data-href="https://www.facebook.com/FoliasFormazione" data-tabs="timeline" data-width="500" data-height="" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false">
+                                <blockquote cite="https://www.facebook.com/FoliasFormazione" class="fb-xfbml-parse-ignore">
+                                    <a href="https://www.facebook.com/FoliasFormazione">Folias FORMAZIONE</a>
                                 </blockquote>
                             </div>
                         </div>
