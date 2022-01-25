@@ -46,7 +46,7 @@
                             <div class="firstcol column">
                                 <h3 class="ui header">
                                     <i class="info large icon"></i>
-                                    <i18n>Informazioni</i18n>
+                                    <template_field class="template_field" name="firstcol_title">firstcol_title</template_field>
                                 </h3>
                                 <div class="ui large list">
                                     <div class="ui item">
