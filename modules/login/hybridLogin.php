@@ -30,9 +30,10 @@ $trackPageToNavigationHistory = false;
 require_once ROOT_DIR . '/include/module_init.inc.php';
 
 try {
+	$loginProviderId = null;
 	if (isset($_SESSION['login-provider-id'])) {
 		$loginProviderId = (int) $_SESSION['login-provider-id'];
-		unset($_SESSION['login-provider-id']);
+		// unset($_SESSION['login-provider-id']);
 	} else {
 		$loginProviderId = (int) $_GET['id'] ?? 0;
 		$_SESSION['login-provider-id'] = $loginProviderId;
@@ -87,6 +88,7 @@ try {
 			if (!is_null($language)) $selectedLanguage = $language;
 			// WARNING!! only one set of options is supported on this login provider
 			$hybridLogin->setSuccessfulOptionsID($successfulOptionsID);
+			unset($_SESSION['login-provider-id']);
 			// set session and redirect
 			ADALoggableUser::setSessionAndRedirect($userObj, $remindme, $selectedLanguage, $hybridLogin);
 		} else {
