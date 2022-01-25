@@ -39,9 +39,14 @@
 	line-height: 2rem;
 }
 
+#contentcontent .column.firstcol div.ui.list ol>li,
 #contentcontent .column.secondcol div.ui.list .item,
 #contentcontent .column.thirdcol div.ui.list .item {
 	margin-top: 2rem;
+}
+
+#contentcontent .column.firstcol div.ui.list ol>li:first-child {
+	margin-top: -0.4rem;
 }
 
 #contentcontent h3.ui.header,
