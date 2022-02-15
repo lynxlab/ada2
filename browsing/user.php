@@ -175,7 +175,9 @@ if (!AMA_DataHandler::isError($courseInstances)) {
             }
             $GLOBALS['dh'] = \AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
             $_SESSION['sess_selected_tester'] = $provider['puntatore'];
-            BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId);
+            if ($new_status = BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId) > 0) {
+                $subscription_status = $new_status;
+            }
             BrowsingHelper::checkRewardedBadges($userObj, $courseId, $courseInstanceId);
             unset($_SESSION['sess_selected_tester']);
             if (isset($oldDH)) {
