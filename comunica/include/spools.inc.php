@@ -1632,10 +1632,14 @@ class Mailer
           $phpmailer->AddReplyTo($sender_email);
           $phpmailer->IsHTML(true);
           $phpmailer->Subject = $subject;
-          $phpmailer->AddAddress($recipient_list);
           $phpmailer->Body = nl2br($message);
           $phpmailer->AltBody = strip_tags(html_entity_decode($message, ENT_QUOTES, ADA_CHARSET));
-          $res = $phpmailer->Send();
+          $phpmailer->clearAllRecipients();
+          foreach($recipients_emails_ar as $recipient) {
+            $phpmailer->addAddress($recipient);
+            $res = $phpmailer->Send();
+            $phpmailer->clearAllRecipients();
+          }
         } else {
           $res =  @mail($recipient_list,'=?UTF-8?B?' . base64_encode($subject) . '?=',$message,$headers);
         }
