@@ -317,10 +317,11 @@ abstract class abstractLogin implements iLogin
 			isset($_SESSION['sess_loginProviderArr']['id'])
 		) {
 
-			require_once MODULES_LOGIN_PATH . '/include/' .
-				$_SESSION['sess_loginProviderArr']['className'] . '.class.inc.php';
+			$className = abstractLogin::getNamespaceName()."\\".$_SESSION['sess_loginProviderArr']['className'];
+			if (class_exists($className)) {
+				return new $className($_SESSION['sess_loginProviderArr']['id']);
+			}
 
-			return new $_SESSION['sess_loginProviderArr']['className']($_SESSION['sess_loginProviderArr']['id']);
 		} else {
 			return null;
 		}
