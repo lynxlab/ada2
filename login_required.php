@@ -16,6 +16,7 @@
  */
 use Lynxlab\ADA\Module\GDPR\GdprAcceptPoliciesForm;
 use Lynxlab\ADA\Module\GDPR\GdprPolicy;
+use Lynxlab\ADA\Module\Login\abstractLogin;
 
 require_once realpath(dirname(__FILE__)) . '/config_path.inc.php';
 
@@ -93,17 +94,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     		}
     	} else if (defined('MODULES_LOGIN') && MODULES_LOGIN &&
     			isset($selectedLoginProvider) && strlen($selectedLoginProvider)>0) {
-    				include_once  MODULES_LOGIN_PATH . '/include/'.$selectedLoginProvider.'.class.inc.php';
-    				if (class_exists($selectedLoginProvider)) {
+    				$className = abstractLogin::getNamespaceName()."\\".$selectedLoginProvider;
+    				if (class_exists($className)) {
     					$loginProviderID = isset($selectedLoginProviderID) ? $selectedLoginProviderID : null;
-    					$loginObj = new $selectedLoginProvider($selectedLoginProviderID);
+    					$loginObj = new $className($selectedLoginProviderID);
     					$userObj = $loginObj->doLogin($username, $password, $p_remindme, $p_selected_language);
     					if ((is_object($userObj)) && ($userObj instanceof Exception)) {
     						// try the adalogin before giving up the login process
     						$lastTry = MultiPort::loginUser($username, $password);
     						if ((is_object($lastTry)) && ($lastTry instanceof ADALoggableUser)) {
-    	  				$loginObj = null;
-    	  				$userObj = $lastTry;
+    							$loginObj = null;
+    							$userObj = $lastTry;
     						}
     					}
     				}

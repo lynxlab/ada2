@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @package		Subscription Confirm from Paypal
@@ -88,7 +89,7 @@ $instanceId = DataValidator::is_uinteger($_GET['instance']);
 $studentId = DataValidator::is_uinteger($_GET['student']);
 
 $testerInfoAr = $common_dh->get_tester_info_from_id($providerId, AMA_FETCH_BOTH);
-if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
+if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $provider_name = $testerInfoAr[1];
     $tester = $testerInfoAr[10];
     $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
@@ -102,49 +103,48 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $logStr = "";
     if (!is_dir(ROOT_DIR . '/log/paypal/')) {
         $oldmask = umask(0);
-        mkdir (ROOT_DIR . '/log/paypal/', 0775, true);
+        mkdir(ROOT_DIR . '/log/paypal/', 0775, true);
         umask($oldmask);
     }
-    $log_file = ROOT_DIR . '/log/paypal/'.PAYPAL_PDT_LOG;
-    // $logFd = fopen($log_file, "a");
+    $log_file = ROOT_DIR . '/log/paypal/' . PAYPAL_PDT_LOG;
     $fpx = fopen($log_file, 'a');
-
     $debug = 1;
-    if ($debug == 1) {
-      fwrite($fpx, "INIZIO processo Confirm \n");
-      fwrite($fpx, "Student: $studentId \n");
 
-    }
     // id dello studente
     if (!isset($studentId)) {
-            $studentId = $sess_id_user ;
+        $studentId = $sess_id_user;
+    }
+
+    if ($debug == 1) {
+        fwrite($fpx, "INIZIO processo Confirm \n");
+        fwrite($fpx, "Student: $studentId \n");
     }
     /*
      * Instance Object
      */
     $instanceObj = new course_instance($instanceId);
-//    print_r($instanceObj);
+    //    print_r($instanceObj);
     $price = $instanceObj->getPrice();
     $course = $dh->get_course($courseId);
     $course_name = $course['titolo'];
 
     if (!isset($back_url)) {
-            $back_url = "student.php";
+        $back_url = "student.php";
     }
 
     // preparazione output HTML e print dell' output
     $title = translateFN("Conferma pagamento iscrizione al corso");
-//    $link_annulla_iscrizione = "<a href=\"".$http_root_dir . "/iscrizione/student_course_instance_unsubscribe.php?id_instance=".
-    $instanceId ."&id_student=" . $studentId . "&back_url=student_course_instance_menu.php\">". translateFN('Annulla iscrizione') . "</a>";
-    $link_torna_home = "<a href=\"".$http_root_dir . "/browsing/student.php\">". translateFN('Torna alla Home') . "</a>";
+    //    $link_annulla_iscrizione = "<a href=\"".$http_root_dir . "/iscrizione/student_course_instance_unsubscribe.php?id_instance=".
+    $instanceId . "&id_student=" . $studentId . "&back_url=student_course_instance_menu.php\">" . translateFN('Annulla iscrizione') . "</a>";
+    $link_torna_home = "<a href=\"" . $http_root_dir . "/browsing/student.php\">" . translateFN('Torna alla Home') . "</a>";
 
     $info_div = CDOMElement::create('DIV', 'id:info_div');
     $info_div->setAttribute('class', 'info_div');
-    $label_text = CDOMElement::create('span','class:info');
+    $label_text = CDOMElement::create('span', 'class:info');
     $label_text->addChild(new CText(translateFN('La tua iscrizione è stata effettuata con successo.')));
     $info_div->addChild($label_text);
     $homeUser = $userObj->getHomePage();
-    $link_span = CDOMElement::create('span','class:info_link');
+    $link_span = CDOMElement::create('span', 'class:info_link');
     $link_to_home = BaseHtmlLib::link($homeUser, translateFN('vai alla home per accedere.'));
     $link_span->addChild($link_to_home);
     $info_div->addChild($link_span);
@@ -160,59 +160,47 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
     $paypal_email_address = PAYPAL_ACCOUNT;
     $product_price = $price;
     $price_currency = CURRENCY_CODE;
-    $paypal_ipn_url = PAYPAL_IPN_URL;
 
-    // read the post from PayPal system and add 'cmd'
-    $req = 'cmd=_notify-synch';
+    // Init cURL
+    $request = curl_init();
+    // Set request options
+    $req = array(
+        'cmd' => '_notify-synch',
+        'tx' => trim($_GET['tx']),
+        'at' => IDENTITY_CHECK,
+    );
+    if ($debug == 1) {
+        fwrite($fpx, sprintf("sending to Paypal...\n%s\n", print_r($req, true)));
+    }
+    curl_setopt_array($request, array(
+        CURLOPT_URL => 'https://' . PAYPAL_IPN_URL . '/cgi-bin/webscr',
+        CURLOPT_POST => TRUE,
+        CURLOPT_POSTFIELDS => http_build_query($req),
+        CURLOPT_RETURNTRANSFER => TRUE,
+        CURLOPT_HEADER => FALSE,
+        CURLOPT_SSL_VERIFYPEER => TRUE,
+    ));
 
-    $tx_token = $_GET['tx'];
-    $auth_token = IDENTITY_CHECK;
-    $req .= "&tx=$tx_token&at=$auth_token";
+    // Execute request and get response and status code
+    $response = curl_exec($request);
+    $status   = curl_getinfo($request, CURLINFO_HTTP_CODE);
+    // Close connection
+    curl_close($request);
 
-    // post back to PayPal system to validate
-    $header  = "POST /cgi-bin/webscr HTTP/1.1\r\n";
-    $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-    $header .= "Content-Length: " . strlen($req) . "\r\n";
-    $header .= "Host: $paypal_ipn_url\r\n";
-    $header .= "Connection: close\r\n\r\n";
-    //$fp = fsockopen ($paypal_ipn_url, 80, $errno, $errstr, 30);
-    // If possible, securely post back to paypal using HTTPS
-    // Your PHP server will need to be SSL enabled
-    $fp = fsockopen ('ssl://'.$paypal_ipn_url, 443, $errno, $errstr, 30);
-
-    if (!$fp) {
+    if ($status != 200) {
         $ipn_log .= "Error connecting to Paypal\n";
         $message = translateFN("Errore di comunicazione con Paypal. Impossibile proseguire.");
-        $message .= "<br />".translateFN("Se non riceverei una mail di comunicazione, scrivi a") . ADA_ADMIN_MAIL_ADDRESS;
-        if ($debug == 1) { fwrite($fpx, "Error connecting to Paypal\n"); }
-    } else {
-        if ($debug == 1) { fwrite($fpx, sprintf("sending to Paypal...\n%s\n%s", $header, $req)); }
-
-        fputs ($fp, $header . $req);
-        // read the body data
-        $res = '';
-        $headerdone = false;
-        while (!feof($fp)) {
-            $line = fgets ($fp, 1024);
-//            if ($debug == 1) { fwrite($fpx, $line."\n"); }
-            if (strcmp($line, "\r\n") == 0) {
-                // read the header
-                $headerdone = true;
-            }
-            else if ($headerdone)
-            {
-                // header has been read. now read the contents
-                $res .= $line;
-            }
+        $message .= "<br />" . translateFN("Se non riceverei una mail di comunicazione, scrivi a") . ADA_ADMIN_MAIL_ADDRESS;
+        if ($debug == 1) {
+            fwrite($fpx, "Error connecting to Paypal\nSTATUS: %s\nRESPONSE: %s\n", $status, print_r($response, true));
         }
-        // parse the data
-        $lines = explode("\n", $res);
-        if ($debug == 1) { fwrite($fpx, $lines[0]."\n"); }
+    } else {
+        $lines = explode("\n", $response);
         $keyarray = array();
-        if (strcmp ($lines[0], "SUCCESS") == 0) {
-    //        print_r($lines);
-            for ($i=1; $i<count($lines);$i++){
-                list($key,$val) = explode("=", $lines[$i]);
+        if (in_array('SUCCESS', $lines)) {
+            //        print_r($lines);
+            for ($i = 1; $i < count($lines); $i++) {
+                list($key, $val) = explode("=", $lines[$i]);
                 $keyarray[urldecode($key)] = urldecode($val);
             }
             // check the payment_status is Completed
@@ -244,20 +232,20 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
                 $first_name = $userObj->getFirstName();
                 $last_name = $userObj->getLastName();
 
-//                $body = translateFN("Hai effettuato il pagamento di") . " ". $payment_amount ." EUR ". translateFN('tramite Paypal' . "\n\r").
-//                $body .= translateFN('Questo addebito verrà visualizzato sull\'estratto conto della carta di credito o prepagata come pagamento a PAYPAL *Lynx s.r.l.');
-                $message_ha["testo"] = translateFN('Gentile') . " " . $first_name .",\r\n" . translateFN("grazie per aver eseguito l'iscrizione al") . " " . $course_name . "\n\r\n\r";
-//                $message_ha["testo"] .=  $body_mail;
+                //                $body = translateFN("Hai effettuato il pagamento di") . " ". $payment_amount ." EUR ". translateFN('tramite Paypal' . "\n\r").
+                //                $body .= translateFN('Questo addebito verrà visualizzato sull\'estratto conto della carta di credito o prepagata come pagamento a PAYPAL *Lynx s.r.l.');
+                $message_ha["testo"] = translateFN('Gentile') . " " . $first_name . ",\r\n" . translateFN("grazie per aver eseguito l'iscrizione al") . " " . $course_name . "\n\r\n\r";
+                //                $message_ha["testo"] .=  $body_mail;
                 //$message_ha["testo"] .= "\n\r\n\r". translateFN("I tuoi dati di accesso sono. username: ") . $username . "\n\r" . translateFN("password:" . " " . $password );
                 //$message_ha["testo"] .= "\n\r". translateFN("Buono studio.");
                 $message = nl2br($message_ha["testo"]);
                 $message .= "<br />" . translateFN('Ti abbiamo inviato una mail di conferma dell\'iscrizione. Cliccando sul link inserito nella mail potrai accedere al corso');
                 $message .= "<br />--------<br />" . translateFN('Dettagli di pagamento.');
-                $message .= "<br />" . translateFN('Nome e cognome:') . " ". $first_name ." ". $last_name;
-                $message .= "<br />" . translateFN('Importo:') . " ". $payment_currency ." ". $payment_amount;
-                $message .= "<br />" . translateFN('Iscrizione al corso:')." ". $course_name;
-                $message .= "<br />" . translateFN('Data della transazione:')." ". $date;
-                $message .= "<br />" . translateFN('ID della transazione:')." ". $txn_id;
+                $message .= "<br />" . translateFN('Nome e cognome:') . " " . $first_name . " " . $last_name;
+                $message .= "<br />" . translateFN('Importo:') . " " . $payment_currency . " " . $payment_amount;
+                $message .= "<br />" . translateFN('Iscrizione al corso:') . " " . $course_name;
+                $message .= "<br />" . translateFN('Data della transazione:') . " " . $date;
+                $message .= "<br />" . translateFN('ID della transazione:') . " " . $txn_id;
                 $message .= "<br />--------<br />";
 
                 // subscribe student
@@ -278,27 +266,32 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
                         }
                     }
                 } else {
-                    if ($debug == 1) { fwrite($fpx, "Was already subscribed!!\n"); }
+                    if ($debug == 1) {
+                        fwrite($fpx, "Was already subscribed!!\n");
+                    }
                 }
-
             } else {
-                $message = translateFN('Gentile') . " " . $first_name .", <BR />";
-                $message .= translateFN('il corso pagato non corrisponde ai dettagli in nostro possesso')."<BR />";
-                $message .= translateFN('se hai bisogno di maggiori informazioni scrivi una mail a:') . " " . ADA_ADMIN_MAIL_ADDRESS ."<br />";
+                $message = translateFN('Gentile') . " " . $first_name . ", <BR />";
+                $message .= translateFN('il corso pagato non corrisponde ai dettagli in nostro possesso') . "<BR />";
+                $message .= translateFN('se hai bisogno di maggiori informazioni scrivi una mail a:') . " " . ADA_ADMIN_MAIL_ADDRESS . "<br />";
 
-                if ($debug == 1) { fwrite($fpx, "Purchase does not match product details\n"); }
+                if ($debug == 1) {
+                    fwrite($fpx, "Purchase does not match product details\n");
+                }
             }
-        }
-            else if (strcmp ($lines[0], "FAIL") == 0) {
-                $ipn_log .= "Error connecting to Paypal\n";
-                $message = translateFN("Errore di comunicazione con Paypal. Impossibile proseguire.");
-                $message .= "<br />".translateFN("Se non riceverei una mail di comunicazione, scrivi a ") . ADA_ADMIN_MAIL_ADDRESS ."<br />";
-                if ($debug == 1) { fwrite($fpx, "FAIL Error connecting to Paypal\n"); }        // log for manual investigation
+        } else if (in_array('FAIL', $lines)) {
+            $ipn_log .= "Error connecting to Paypal\n";
+            $message = translateFN("Errore di comunicazione con Paypal. Impossibile proseguire.");
+            $message .= "<br />" . translateFN("Se non riceverei una mail di comunicazione, scrivi a ") . ADA_ADMIN_MAIL_ADDRESS . "<br />";
+            if ($debug == 1) {
+                fwrite($fpx, "FAIL Error connecting to Paypal\nSTATUS: %s\nRESPONSE: %s\n", $status, print_r($response, true));
+            } // log for manual investigation
         }
     }
 
     if ($debug == 1) {
-            fclose($fpx);
+        fwrite($fpx, "FINE processo Confirm \n======================\n\n");
+        fclose($fpx);
     }
     /*
      * FINE GESTIONE PDT DA PAYPAL
@@ -306,17 +299,17 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
      */
 
     //$dati = $message;
-//    print_r($message);
+    //    print_r($message);
     $info_div = CDOMElement::create('DIV', 'id:info_div');
     $info_div->setAttribute('class', 'info_div');
-    $label_text = CDOMElement::create('span','class:info');
+    $label_text = CDOMElement::create('span', 'class:info');
     $label_text->addChild(new CText($message));
     $info_div->addChild($label_text);
     if ($userObj->getStatus() == ADA_STATUS_PRESUBSCRIBED) {
         /**
          * add a message to info_div
          */
-        $more_text = CDOMElement::create('span','class:moreinfo');
+        $more_text = CDOMElement::create('span', 'class:moreinfo');
         $more_text->addChild(new CText(translateFN("se ci sono problemi nel confemrare o concludere la tua iscrizione, contatta la segreteria")));
         $info_div->addChild($more_text);
         /**
@@ -337,50 +330,47 @@ if(!AMA_Common_DataHandler::isError($testerInfoAr)) {
          * user is registered and logged in, show the link to the homepage
          */
         $homeUser = $userObj->getHomePage();
-        $link_span = CDOMElement::create('span','class:info_link');
+        $link_span = CDOMElement::create('span', 'class:info_link');
         $link_to_home = BaseHtmlLib::link($homeUser, translateFN('vai alla home per accedere.'));
         $link_span->addChild($link_to_home);
         $info_div->addChild($link_span);
     }
     //$data = new CText(translateFN('La tua iscrizione è stata effettuata con successo.'));
     $data = $info_div;
-//    print_r($data->getHtml());
+    //    print_r($data->getHtml());
     $path = translateFN('modulo di iscrizione');
     $dati = $link_torna_home;
 
     $field_data = array(
-     'menu'=>"", //$menu,
-     // 'banner'=>$banner,
-     'path'=>$path,
-     //'data'=>$dati,
-     'data'=>$info_div->getHtml(),
-     'help'=>'', // $help,
-     'user_name'=>$user_name,
-     'user_type'=>$user_type,
-     'messages'=>$user_messages->getHtml(),
-     'agenda'=>$user_agenda->getHtml(),
-     'titolo_corso'=>$course_name,
-     'annulla_iscrizione'=>isset($link_annulla_iscrizione) ? $link_annulla_iscrizione : '',
-     'price'=>$price
+        'menu' => "", //$menu,
+        // 'banner'=>$banner,
+        'path' => $path,
+        //'data'=>$dati,
+        'data' => $info_div->getHtml(),
+        'help' => '', // $help,
+        'user_name' => $user_name,
+        'user_type' => $user_type,
+        'messages' => $user_messages->getHtml(),
+        'agenda' => $user_agenda->getHtml(),
+        'titolo_corso' => $course_name,
+        'annulla_iscrizione' => isset($link_annulla_iscrizione) ? $link_annulla_iscrizione : '',
+        'price' => $price
     );
-
-
 } else {
     $dati = translateFN('Impossibile proseguire, Provider non trovato');
     $field_data = array(
-     'menu'=>"", //$menu,
-     'banner'=>$banner,
-     'data'=>$dati,
-     'help'=>'', // $help,
-     'user_name'=>$user_name,
-     'user_type'=>$user_type,
-     'messages'=>$user_messages->getHtml(),
-     'agenda'=>$user_agenda->getHtml(),
-     'titolo_corso'=>$course_name,
-     'annulla_iscrizione'=>$link_annulla_iscrizione,
-     'price'=>$price
+        'menu' => "", //$menu,
+        'banner' => $banner,
+        'data' => $dati,
+        'help' => '', // $help,
+        'user_name' => $user_name,
+        'user_type' => $user_type,
+        'messages' => $user_messages->getHtml(),
+        'agenda' => $user_agenda->getHtml(),
+        'titolo_corso' => $course_name,
+        'annulla_iscrizione' => $link_annulla_iscrizione,
+        'price' => $price
     );
-
 }
 
 /**

@@ -87,12 +87,15 @@ if (file_exists(ROOT_DIR . '/browsing/paypal/paypal_conf.inc.php')) {
 $logStr = "";
 if (!is_dir(ROOT_DIR . '/log/paypal/')) {
     $oldmask = umask(0);
-    mkdir (ROOT_DIR . '/log/paypal/', 0775, true);
+    mkdir(ROOT_DIR . '/log/paypal/', 0775, true);
     umask($oldmask);
 }
 $log_file = ROOT_DIR . '/log/paypal/' . PAYPAL_IPN_LOG;
-$logFd = fopen($log_file, "a");
 $fpx = fopen($log_file, 'a');
+
+error_reporting(E_ALL);
+ini_set("log_errors", 1);
+ini_set("error_log", ROOT_DIR . '/log/paypal/paypal-ipn-error.log');
 
 $debug = 1;
 if ($debug == 1) {
@@ -100,92 +103,122 @@ if ($debug == 1) {
     fwrite($fpx, "Prima di init \n");
 }
 
-$today_date = today_dateFN();
-$providerId = DataValidator::is_uinteger($_REQUEST['provider']);
-$courseId = DataValidator::is_uinteger($_REQUEST['course']);
-$instanceId = DataValidator::is_uinteger($_REQUEST['instance']);
-$studentId = DataValidator::is_uinteger($_REQUEST['student']);
+$lockfile = ADA_UPLOAD_PATH . $_POST['ipn_track_id'] . '.lock';
 
-$testerInfoAr = $common_dh->get_tester_info_from_id($providerId, AMA_FETCH_BOTH);
-$buyerObj = read_user($studentId);
-if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
-    if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
-        $provider_name = $testerInfoAr[1];
-        $tester = $testerInfoAr[10];
-        $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
-        // $currentTesterId = $newTesterId;
-        $GLOBALS['dh'] = $tester_dh;
-        $dh = $tester_dh;
+if (!is_file($lockfile)) {
 
-        // id dello studente
-        if (!isset($instanceId)) {
-            $instanceId = $sess_id_user; // ??????
-        }
+    if (touch($lockfile)) {
+        if ($debug == 1) fwrite($fpx, "Lockfile $lockfile creato\n");
+    } else {
+        if ($debug == 1) fwrite($fpx, "Lockfile $lockfile NON creato!!!!\n");
+    }
 
-        /*
-         * Instance Object
-         */
-        $instanceObj = new course_instance($instanceId);
-        $price = $instanceObj->getPrice();
-        $user_level = $instanceObj->getStartLevelStudent();
-        $course = $dh->get_course($courseId);
-        $course_name = $course['titolo'];
+    // buffer the output, close the connection with the browser and run a "background" task
+    ob_end_clean();
+    ignore_user_abort(true);
+    // capture output
+    ob_start();
+    // these headers tell the browser to close the connection
+    header("HTTP/1.1 200 OK");
+    // flush all output
+    ob_end_flush();
+    flush();
+    @ob_end_clean();
+    if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
 
-        /*
-         * GESTIONE IPN DA PAYPAL
-         *
-         */
+    error_reporting(E_ALL);
+    ini_set("log_errors", 1);
+    ini_set("error_log", ROOT_DIR . '/log/paypal/paypal-ipn-error.log');
 
-        // assigned session variables to local variables
-        $paypal_email_address = PAYPAL_ACCOUNT;
-        $product_price = $price;
-        $price_currency = CURRENCY_CODE;
-        $paypal_ipn_url = PAYPAL_IPN_URL;
+    $today_date = today_dateFN();
+    $providerId = DataValidator::is_uinteger($_REQUEST['provider']);
+    $courseId = DataValidator::is_uinteger($_REQUEST['course']);
+    $instanceId = DataValidator::is_uinteger($_REQUEST['instance']);
+    $studentId = DataValidator::is_uinteger($_REQUEST['student']);
 
-        // read the post from PayPal system and add 'cmd'
-        $req = 'cmd=_notify-validate';
-        foreach ($_POST as $key => $value) {
-            $value = urlencode(stripslashes($value));
-            $req .= "&$key=$value";
-            //            if ($debug == 1) { fwrite($fpx, "$key = $value \n"); }
-        }
+    $testerInfoAr = $common_dh->get_tester_info_from_id($providerId, AMA_FETCH_BOTH);
+    $buyerObj = read_user($studentId);
+    if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
+        if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
+            $provider_name = $testerInfoAr[1];
+            $tester = $testerInfoAr[10];
+            $tester_dh = AMA_DataHandler::instance(MultiPort::getDSN($tester));
+            // $currentTesterId = $newTesterId;
+            $GLOBALS['dh'] = $tester_dh;
+            $dh = $tester_dh;
 
-        // post back to PayPal system to validate
-        $header  = "POST /cgi-bin/webscr HTTP/1.1\r\n";
-        $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-        $header .= "Content-Length: " . strlen($req) . "\r\n";
-        $header .= "Host: $paypal_ipn_url\r\n";
-        $header .= "User-Agent: PHP-IPN-Verification-Script\r\n";
-        $header .= "Connection: close\r\n\r\n";
-
-        //$fp = fsockopen ($paypal_ipn_url, 80, $errno, $errstr, 30);
-        $fp = fsockopen('ssl://' . $paypal_ipn_url, 443, $errno, $errstr, 30);
-
-        // assign posted variables to local variables
-        $payment_status = $_POST['payment_status'];
-        $payment_amount = $_POST['mc_gross'];
-        $payment_currency = $_POST['mc_currency'];
-        $txn_id = $_POST['txn_id'];
-        $receiver_email = $_POST['receiver_email'];
-        $payer_email = $_POST['payer_email'];
-        // $invoice = $_POST['invoice'];
-        $customeripaddress = $_POST['custom'];
-        $productname = $_POST['item_name1'];
-
-        if (!$fp) {
-            //print "<b>Error Communicating with Paypal.<br>";
-            $log_error = 'http error=' . $errno;
-            $message = translateFN("Errore di comunicazione con Paypal. Impossibile proseguire");
-            if ($debug == 1) {
-                fwrite($fpx, "Error connecting to Paypal\n");
-                fwrite($fpx, $log_error . "\n");
+            // id dello studente
+            if (!isset($instanceId)) {
+                $instanceId = $sess_id_user; // ??????
             }
-        } else {
-            fputs($fp, $header . $req);
-            while (!feof($fp)) {
-                $res = fgets($fp, 1024);
-                if (strcmp($res, "VERIFIED") == 0) {
-                    // $ipn_log .= "Paypal IPN VERIFIED\n";
+
+            /**
+             * Instance Object
+             */
+            $instanceObj = new course_instance($instanceId);
+            $price = $instanceObj->getPrice();
+            $user_level = $instanceObj->getStartLevelStudent();
+            $course = $dh->get_course($courseId);
+            $course_name = $course['titolo'];
+
+            /**
+             * GESTIONE IPN DA PAYPAL
+             */
+            // assigned session variables to local variables
+            $paypal_email_address = PAYPAL_ACCOUNT;
+            $product_price = $price;
+            $price_currency = CURRENCY_CODE;
+
+            $req = array_merge([
+                'cmd' => '_notify-validate',
+            ], $_POST);
+
+            $request = curl_init();
+            if ($debug == 1) {
+                fwrite($fpx, sprintf("sending to Paypal...\n%s\n", print_r($req, true)));
+            }
+            curl_setopt_array($request, array(
+                CURLOPT_URL => 'https://' . PAYPAL_IPN_URL . '/cgi-bin/webscr',
+                CURLOPT_POST => TRUE,
+                CURLOPT_POSTFIELDS => http_build_query($req),
+                CURLOPT_RETURNTRANSFER => TRUE,
+                CURLOPT_HEADER => FALSE,
+                CURLOPT_SSL_VERIFYPEER => TRUE,
+                CURLOPT_ENCODING => 'gzip',
+                CURLOPT_FORBID_REUSE => TRUE,
+                CURLOPT_FRESH_CONNECT => TRUE,
+                CURLOPT_CONNECTTIMEOUT => 30,
+                CURLOPT_TIMEOUT => 60,
+                CURLINFO_HEADER_OUT => TRUE,
+                CURLOPT_HTTPHEADER => [
+                    'Connection: close',
+                    'Expect: ',
+                ],
+            ));
+
+            // Execute request and get response and status code
+            $response = curl_exec($request);
+            $status   = curl_getinfo($request, CURLINFO_HTTP_CODE);
+            curl_close($request);
+
+            // assign posted variables to local variables
+            $payment_status = $_POST['payment_status'];
+            $payment_amount = $_POST['mc_gross'];
+            $payment_currency = $_POST['mc_currency'];
+            $txn_id = $_POST['txn_id'];
+            $receiver_email = $_POST['receiver_email'];
+            $payer_email = $_POST['payer_email'];
+            // $invoice = $_POST['invoice'];
+            $customeripaddress = $_POST['custom'];
+            $productname = $_POST['item_name1'];
+
+            if ($status != 200) {
+                $message = translateFN("Errore di comunicazione con Paypal. Impossibile proseguire");
+                if ($debug == 1) {
+                    fwrite($fpx, "Error connecting to Paypal\nSTATUS: %s\nRESPONSE: %s\n", $status, print_r($response, true));
+                }
+            } else {
+                if (strcmp('VERIFIED', $response) === 0) {
                     if ($debug == 1) {
                         fwrite($fpx, "Paypal IPN VERIFIED\n");
                     }
@@ -196,11 +229,6 @@ if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
                     if (trim($receiver_email) == '') {
                         $receiver_email = $_POST['receiver_email'];
                     }
-                    $ipn_log  = "\nPRODUCT DETAILS CHECK\n";
-                    $ipn_log .= "|$receiver_email| : |$paypal_email_address|\n";
-                    $ipn_log .= "|$payment_amount| : |$product_price|\n";
-                    $ipn_log .= "|$payment_currency| : |$price_currency\n";
-                    $ipn_log .= "|$payment_status| : |Completed|\n\n";
 
                     if ($debug == 1) {
                         fwrite($fpx, "\nStudent: $studentId , Class: $instanceId \n");
@@ -216,12 +244,11 @@ if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
                         ($payment_currency == $price_currency) &&
                         ($payment_status == 'Completed')
                     ) {
-                        $ipn_log .= "Paypal IPN DATA OK\n";
                         if ($debug == 1) {
                             fwrite($fpx, "Paypal IPN DATA OK\n");
                         }
                         $body_mail = translateFN("Hai effettuato il pagamento di") . " " . $payment_amount . " EUR " . translateFN('tramite Paypal' . "\n\r");
-                        $body_mail .= translateFN('Questo addebito verrà visualizzato sull\'estratto conto della carta di credito o prepagata come pagamento a PAYPAL') . ' '. PAYPAL_NAME_ACCOUNT;
+                        $body_mail .= translateFN('Questo addebito verrà visualizzato sull\'estratto conto della carta di credito o prepagata come pagamento a PAYPAL') . ' ' . PAYPAL_NAME_ACCOUNT;
                         $message_ha["titolo"] = PORTAL_NAME . " - " . translateFN('Conferma di pagamento') . ' - ' . translateFN("Iscrizione al corso:") . " " . $course_name;
                         $sender_email = ADA_ADMIN_MAIL_ADDRESS;
                         $recipients_emails_ar = array($payer_email);
@@ -252,6 +279,9 @@ if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
                                 $switcher_email = $switcherList[0]['e_mail'];
                             } else {
                                 $switcher_email = ADA_ADMIN_MAIL_ADDRESS;
+                                if ($debug == 1) {
+                                    fwrite($fpx, "switcher email from ADMIN" . PHP_EOL);
+                                }
                             }
                             $notice_mail = sprintf(translateFN('Questa è una risposta automatica. Si prega di non rispondere a questa mail. Per informazioni scrivere a %s'), $switcher_email);
                             $message_ha["testo"] = $notice_mail . "\n\r\n\r";
@@ -288,59 +318,50 @@ if ((is_object($buyerObj)) && (!AMA_dataHandler::isError($buyerObj))) {
                             fwrite($fpx, "Purchase does not match product details\n");
                         }
                     }
-                } else if (strcmp($res, "INVALID") == 0) {
+                } else if (strcmp('INVALID', $response) === 0) {
                     /*
                         $message = translateFN('Gentile') . " " . $firstname .", <BR />";
                         $message .= translateFN('Non è possibile verificare il tuo acquisto')."<BR />";
                         $message .= translateFN('Forse provando più tardi riuscirai ad acquistare il corso.');
-         *
-         */
-
-                    $ipn_log .= "INVALID: We cannot verify the purchase\n";
+                        *
+                        */
                     if ($debug == 1) {
-                        fwrite($fpx, "INVALID: We cannot verify your purchase\n");
+                        fwrite($fpx, "INVALID: We cannot verify your purchase\nSTATUS: %s\nRESPONSE: %s\n", $status, print_r($response, true));
                     }
                 }
             }
-            fclose($fp);
-        }
 
-        $ipn_log = "\nPOST DATA\n";
-        if ($debug == 1) {
-            fwrite($fpx, "\nPOST DATA\n");
-        }
+            $unlinkStatus = unlink($lockfile);
 
-        foreach ($_POST as $key => $value) {
-            $ipn_log .= "$key: $value\n";
             if ($debug == 1) {
-                fwrite($fpx, "$key: $value\n");
+                if ($unlinkStatus) {
+                    fwrite($fpx, "Lockfile $lockfile rimosso\n");
+                } else {
+                    fwrite($fpx, "Lockfile $lockfile NON rimosso\n");
+                }
+                fwrite($fpx, "FINE processo IPN\n======================\n\n");
+            }
+            /**
+             * FINE GESTIONE IPN DA PAYPAL
+             *
+             */
+        } else {
+            if ($debug == 1) {
+                fwrite($fpx, "IPN Process started \n");
+                fwrite($fpx, "IPN internal error of ADA \n");
             }
         }
-
-        if ($debug == 1) {
-            fclose($fpx);
-        }
-        /*
-         * FINE GESTIONE IPN DA PAYPAL
-         *
-         */
-    } else {
-        /*
-        * GESTIONE LOG
-        */
-        $logStr = "";
-        $log_file = ROOT_DIR . '/browsing/paypal/' . PAYPAL_IPN_LOG;
-        $logFd = fopen($log_file, "a");
-        $fpx = fopen($log_file, 'a');
-
-        $debug = 1;
-        if ($debug == 1) {
-            fwrite($fpx, "IPN Process started \n");
-            fwrite($fpx, "IPN internal error of ADA \n");
-        }
-        fclose($fp);
     }
+} else {
+    if ($debug == 1 && $fpx) {
+        fwrite($fpx, "Lockfile trovato, rispondo ok\r\n");
+    }
+    // Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
+    header("HTTP/1.1 200 OK");
 }
-// Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
-header("HTTP/1.1 200 OK");
+
+if ($fpx) {
+    fclose($fpx);
+}
+
 die();
