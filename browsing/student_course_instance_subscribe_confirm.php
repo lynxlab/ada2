@@ -199,8 +199,9 @@ if (!AMA_Common_DataHandler::isError($testerInfoAr)) {
         $keyarray = array();
         if (in_array('SUCCESS', $lines)) {
             //        print_r($lines);
-            for ($i = 1; $i < count($lines); $i++) {
-                list($key, $val) = explode("=", $lines[$i]);
+            array_shift($lines); // remove 'SUCCESS' line
+            foreach($lines as $line) {
+                list($key, $val) = explode("=", $line, 2);
                 $keyarray[urldecode($key)] = urldecode($val);
             }
             // check the payment_status is Completed
