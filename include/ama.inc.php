@@ -9,6 +9,8 @@
  * @copyright (c) 2001-2009 Lynx s.r.l.
  */
 
+use Lynxlab\ADA\Module\EventDispatcher\Events\CourseEvent;
+
 /**
  * DB abstraction layer
  */
@@ -6608,6 +6610,22 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
+        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseEvent::class,
+                    'eventName' => CourseEvent::PRESAVE,
+                ],
+                $course_ha,
+                ['isUpdate' => false]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                if (array_key_exists($key, $course_ha)) {
+                    $course_ha[$key] = $val;
+                }
+            }
+        }
+
         // prepare values
         // *(dovrei aggiungere le funzioni per le date)*
         $nome = $this->sql_prepared($course_ha['nome']);
@@ -6677,6 +6695,16 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $id =  $db->getOne("select id_corso from modello_corso where nome = $nome");
         if(AMA_DB::isError($id)) {
             return new AMA_Error(AMA_ERR_GET);
+        }
+        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseEvent::class,
+                    'eventName' => CourseEvent::POSTSAVE,
+                ],
+                array_merge(['id' => $id], $course_ha),
+                ['isUpdate' => false]
+            );
         }
         return $id;
     }
@@ -7127,6 +7155,22 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         $db =& $this->getConnection();
         if ( AMA_DB::isError( $db ) ) return $db;
 
+        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseEvent::class,
+                    'eventName' => CourseEvent::PRESAVE,
+                ],
+                array_merge(['id' => $id], $course_ha),
+                ['isUpdate' => true]
+            );
+            foreach ($event->getArguments() as $key => $val) {
+                if (array_key_exists($key, $course_ha)) {
+                    $course_ha[$key] = $val;
+                }
+            }
+        }
+
         // prepare values
         // (dovrei aggiungere le funzioni per le date)
         $nome = $this->sql_prepared($course_ha['nome']);
@@ -7190,7 +7234,16 @@ abstract class AMA_Tester_DataHandler extends Abstract_AMA_DataHandler {
         if (AMA_DB::isError($res)) {
             return new AMA_Error(AMA_ERR_UPDATE);
         }
-
+        if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+            $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+                [
+                    'eventClass' => CourseEvent::class,
+                    'eventName' => CourseEvent::POSTSAVE,
+                ],
+                array_merge(['id' => $id], $course_ha),
+                ['isUpdate' => true]
+            );
+        }
         return true;
     }
 
