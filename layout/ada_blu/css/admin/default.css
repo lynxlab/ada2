@@ -1,1 +1,106 @@
 @import url("../page.css");
+/* 2021 Added by Enrico */
+
+/* .default_table A:link { color:#222; background:#a7e8e5; padding:1px; display:block; padding:2px; text-decoration:underline;} */
+/* .default_table A:hover {background:#00b5ad; color:#fff;} */
+
+#com_tools {
+    display: none;
+}
+
+#contentcontent, .contentlabel {
+    display: block;
+    width: 85%;
+    margin: auto;
+}
+
+form.fec label, form.fec input, form.fec select, form.fec textarea, form.fec .error {
+    display: block;
+    width: calc(75% - 1em);
+    margin: 0 auto;
+    clear: both;
+    position:inherit;
+    border-left: 1px solid lightgray;
+    border-top: none;
+    border-right: none;
+    border-bottom:  1px solid lightgray;
+    padding: 0.6em 0.5em;
+}
+
+form.fec input:focus, form.fec select:focus, form.fec textarea:focus {
+    outline: none;
+}
+
+form.fec input:focus, form.fec textarea:focus {
+    border-left: 4px solid lightgray;
+    width: calc(75% - 1em - 4px);
+}
+
+form.fec textarea {
+    resize: vertical;
+}
+
+form.fec .error {
+    border: none !important;
+}
+
+form.fec :not(label).error {
+    color: #d90000ad;
+    font-weight: normal;
+}
+
+form.fec label {
+    border-left: none;
+    border-bottom: none;
+    padding-top: 5px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding-bottom: 0.5em;
+    padding-top: 15px;
+}
+
+form.fec select {
+    background: transparent;
+    width: 75%;
+}
+
+#tester_form #submit, #service_form #submit, #user_form #submit, #buttons #submit,
+#tester_form #reset, #service_form #reset, #user_form #reset, #buttons #reset {
+    display: block;
+    margin: 5px auto;
+    width: 10%;
+}
+
+#tester_form #submit, #service_form #submit, #user_form #submit, #buttons #submit {
+    margin-top: 15px;
+}
+/*
+#buttons input:hover {
+    background: #00b5ad;
+    color: #fff;
+} */
+
+@media screen and (max-width: 768px) {
+    #tester_info, #tester_form.fec textarea, #service_form textarea, #user_form.fec input, #user_form.fec select, #user_form.fec textarea, #user_form label, #user_form input, #tester_form label, #tester_form input, #service_form label, #service_form input, #user_form select, #tester_form.fec input, #tester_form.fec select, #service_form input, #service_form select, #user_form input, #user_form select {
+    width:  100%;
+    }
+}
+
+form.fec select option {
+    color: #000;
+}
+
+/**
+ * DataTables styles
+*/
+.dataTables_wrapper caption { width: 100%; position: relative; top: -10px; font-weight: bold; }
+.dataTables_wrapper tbody td { height: 2.5em; vertical-align: middle; }
+.dataTables_wrapper thead th { padding-right: 5px; }
+.dataTables_wrapper .DataTables_sort_wrapper { padding: 5px 0 5px 0; width:90%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.dataTables_wrapper .DataTables_sort_icon { float: right; margin-top: -20px; }
+.dataTables_wrapper .dataTables_paginate > a { margin:0; padding: 3px; }
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_paginate { padding: 5px; }
+.dataTables_wrapper .dataTables_info { padding: 8px 0 0 5px; }
+.dataTables_wrapper thead th.sorting, .dataTables_wrapper thead th.sorting_asc, .dataTables_wrapper thead th.sorting_desc { cursor: pointer; }

@@ -165,7 +165,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $testers_dataAr = $common_dh->get_all_testers(array('id_tester','nome'));
 
     if(AMA_Common_DataHandler::isError($testers_dataAr)) {
-      $errObj = new ADA_Error($testersAr,translateFN("Errore nell'ottenimento delle informazioni sui tester"));
+      $errObj = new ADA_Error($testersAr,translateFN("Errore nell'ottenimento delle informazioni sui provider"));
     }
     else {
       $testersAr = array();
@@ -267,7 +267,7 @@ else {
 
   if(AMA_Common_DataHandler::isError($testers_dataAr)) {
 
-    $errObj = new ADA_Error($testersAr,translateFN("Errore nell'ottenimento delle informazioni sui tester"));
+    $errObj = new ADA_Error($testersAr,translateFN("Errore nell'ottenimento delle informazioni sui provider"));
   }
   else {
     $testersAr = array();
@@ -284,9 +284,6 @@ $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 $module = $home_link->getHtml() . ' > ' . $label;
 
-$menu_dataAr = array();
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
-
 $layout_dataAr['JS_filename'] = array(
 		JQUERY,
 		JQUERY_MASKEDINPUT,
@@ -299,12 +296,10 @@ $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
   'data'         => $form->getHtml(),
   'module'       => $module,
-  'messages'     => $user_messages->getHtml()
 );
 
 ARE::render($layout_dataAr, $content_dataAr,NULL,$optionsAr);
