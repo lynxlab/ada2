@@ -2204,7 +2204,7 @@ class MultiPort
     static public function log_report($pointer=NULL,$Services_Type=NULL) {
     $log_dataAr = array();
     $common_dh = $GLOBALS['common_dh'];
-    $filedArray = array('nome','ragione_sociale');
+    $filedArray = array('nome','ragione_sociale','id_tester');
     if(isset($pointer)){
         $testers_list=$common_dh->get_tester_info_from_pointer($pointer);
         if (!AMA_DB::isError($testers_list)) {
@@ -2216,6 +2216,7 @@ class MultiPort
                 $result = $tester_dh->tester_log_report($tester_name,null);
                 if (!AMA_DB::isError($result)) {
                     $result['provider']= $tester_name;
+                    $result['provider_id'] = (int) $testers_list[0];
                     $log_dataAr[$tester] = $result;
                 }
             }
@@ -2232,6 +2233,7 @@ class MultiPort
                     $result = $tester_dh->tester_log_report($tester_name,$Services_Type);
                     if (!AMA_DB::isError($result)) {
                         $result['provider']= $tester_name;
+                        $result['provider_id'] = (int) $testerAr['id_tester'];
                         $log_dataAr[$tester] = $result;
                     }
                 }
