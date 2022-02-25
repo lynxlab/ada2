@@ -28,7 +28,7 @@ class FormElementCreator
   static public function addDateInput($name, $label_text, $valuesAr=array(),$errorsAr=array(), $attributes='', $required=false) {
   	$input = CDOMElement::create('text',"id:$name, name:$name");
   	$input->setAttributes($attributes);
-  
+
   	if(is_array($valuesAr) && isset($valuesAr[$name])) {
   		$input->setAttribute('value', $valuesAr[$name]);
   	}
@@ -43,9 +43,9 @@ class FormElementCreator
   	if($required) {
   		$div->addChild(new CText('(*)'));
   	}
-  
+
   	return $div;
-  }  
+  }
   static public function addPasswordInput($name, $label_text, $errorsAr=array(), $attributes='', $required=false) {
     $password = CDOMElement::create('password',"id:$name, name:$name");
     $password->setAttributes($attributes);
@@ -110,26 +110,34 @@ class FormElementCreator
     return $div;
   }
 
-  static public function addSubmitAndResetButtons() {
+  static public function addSubmitAndResetButtons($submitClass='', $resetClass = '') {
     $div = CDOMElement::create('div','id:buttons');
     $submit = CDOMElement::create('submit','id:submit, name:submit');
     $submit->setAttribute('value', translateFN('Invia'));
-    $reset = CDOMElement::create('reset');
+    if (strlen($submitClass)>0) {
+      $submit->setAttribute('class', $submitClass);
+    }
+    $reset = CDOMElement::create('reset','id:reset, name:reset');
+    if (strlen($resetClass)>0) {
+      $reset->setAttribute('class', $resetClass);
+    }
     $div->addChild($submit);
+    $div->addChild($reset);
 
     return $div;
   }
 
   static private function controlContainer($name, $label_text, $error_message=NULL) {
     $div   = CDOMElement::create('div',"id:div_$name");
+    $label = CDOMElement::create('label',"for:$name");
+    $label->addChild(new CText(translateFN($label_text)));
+    $div->addChild($label);
     if($error_message != NULL) {
+      $label->setAttribute('class', $label->getAttribute('class').' error');
       $error_div = CDOMElement::create('div','class:error');
       $error_div->addChild(new CText($error_message));
       $div->addChild($error_div);
     }
-    $label = CDOMElement::create('label',"for:$name");
-    $label->addChild(new CText(translateFN($label_text)));
-    $div->addChild($label);
 
     return $div;
   }
