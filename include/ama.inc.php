@@ -11838,7 +11838,7 @@ public function get_updates_nodes($userObj, $pointer)
 
         $type = implode(',', $user_type);
         if ($retrieve_extended_data) {
-            $sql = "SELECT nome, cognome, tipo, username, e_mail FROM utente WHERE tipo IN ($type) ORDER BY cognome ASC";
+            $sql = "SELECT id_utente, nome, cognome, tipo, username, e_mail FROM utente WHERE tipo IN ($type) ORDER BY cognome ASC";
         } else {
             $sql = "SELECT tipo, username FROM utente WHERE tipo IN ($type)";
         }
