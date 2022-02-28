@@ -133,7 +133,7 @@ class AdminModuleHtmlLib
     $user_address = FormElementCreator::addTextInput('user_address','Indirizzo', $user_dataAr, $errorsAr);
     $form->addChild($user_address);
 
-    $user_city = FormElementCreator::addTextInput('user_city','Citt&agrave;', $user_dataAr, $errorsAr);
+    $user_city = FormElementCreator::addTextInput('user_city','Citt&agrave', $user_dataAr, $errorsAr);
     $form->addChild($user_city);
 
     $user_province = FormElementCreator::addTextInput('user_province','Provincia', $user_dataAr, $errorsAr);
@@ -165,7 +165,7 @@ class AdminModuleHtmlLib
     $user_phone = FormElementCreator::addTextInput('user_phone','Telefono',$user_dataAr, $errorsAr);
     $form->addChild($user_phone);
 
-    $buttons = FormElementCreator::addSubmitAndResetButtons();
+    $buttons = FormElementCreator::addSubmitAndResetButtons('ui green button','ui red button');
     $form->addChild($buttons);
     return $form;
   }
@@ -200,12 +200,12 @@ class AdminModuleHtmlLib
     $tbody_dataAr = array();
     foreach($testers_dataAr as $tester_dataAr) {
       $href = 'tester_profile.php?id_tester='.$tester_dataAr['id_tester'];
-      $link = CDOMElement::create('a',"href:$href");
+      $link = CDOMElement::create('a',"class:ui tiny button,href:$href");
       $link->addChild(new CText(translateFN("Profilo del tester")));
       $tbody_dataAr[] = array($tester_dataAr['nome'], $link, $tester_dataAr['numero_utenti'], $tester_dataAr['eg_attive']);
     }
 
-    $table = BaseHtmlLib::tableElement('',$thead_dataAr, $tbody_dataAr);
+    $table = BaseHtmlLib::tableElement('id:provider_profile,class:admin ui table',$thead_dataAr, $tbody_dataAr);
     return $table;
   }
 
@@ -223,10 +223,10 @@ class AdminModuleHtmlLib
 
   static public function displayTesterInfo($id_tester,$tester_dataAr = array()) {
     $div = CDOMElement::create('div','id:tester_info');
-    $div->addChild(new CText(translateFN('Informazioni sul tester')));
+    // $div->addChild(new CText(translateFN('Informazioni sul tester')));
 
     $table = BaseHtmlLib::tableElement('',array(),$tester_dataAr);
-    $link = CDOMElement::create('a','href:edit_tester.php?id_tester='.$id_tester);
+    $link = CDOMElement::create('a','class:ui button,href:edit_tester.php?id_tester='.$id_tester);
     $link->addChild(new CText(translateFN('Modifica')));
 
     $div->addChild($table);
@@ -269,23 +269,25 @@ class AdminModuleHtmlLib
     return $div;
   }
 
-  static public function displayUsersOnThisTester($id_tester, $current_page, $total_pages, $users_dataAr=array()) {
+  static public function displayUsersOnThisTester($id_tester, $current_page, $total_pages, $users_dataAr=array(), $withPaginator = true) {
     $div = CDOMElement::create('div');
-    $pages = CDOMElement::create('div','id:pages');
-    $pages->addChild(new CText('|'));
-    for($i = 1; $i <= $total_pages; $i++) {
-      if($i == $current_page) {
-        $pages->addChild(new CText(" $current_page |"));
+    if ($withPaginator) {
+      $pages = CDOMElement::create('div','id:pages');
+      $pages->addChild(new CText('|'));
+      for($i = 1; $i <= $total_pages; $i++) {
+        if($i == $current_page) {
+          $pages->addChild(new CText(" $current_page |"));
+        }
+        else {
+          $link = CDOMElement::create('a',"href:list_users.php?id_tester=$id_tester&page=$i");
+          $link->addChild(new CText(" $i "));
+          $pages->addChild($link);
+          $pages->addChild(new CText('|'));
+        }
       }
-      else {
-        $link = CDOMElement::create('a',"href:list_users.php?id_tester=$id_tester&page=$i");
-        $link->addChild(new CText(" $i "));
-        $pages->addChild($link);
-        $pages->addChild(new CText('|'));
-      }
-    }
 
-    $div->addChild($pages);
+      $div->addChild($pages);
+    }
 
     $thead_dataAr = array(
       translateFN('Id'),
@@ -301,7 +303,7 @@ class AdminModuleHtmlLib
     foreach($users_dataAr as $user_dataAr) {
       $user_type = ADAGenericUser::convertUserTypeFN($user_dataAr['tipo']);
       $href = 'edit_user.php?id_user='.$user_dataAr['id_utente'].'&id_tester='.$id_tester.'&page='.$current_page;
-      $edit_user_link = CDOMElement::create('a',"href:$href");
+      $edit_user_link = CDOMElement::create('a',"class:ui tiny button,href:$href");
       $edit_user_link->addChild(new CText(translateFN('Modifica')));
       $tbody_dataAr[] = array(
         $user_dataAr['id_utente'],
@@ -333,7 +335,7 @@ class AdminModuleHtmlLib
       }
     }
 
-    $table = BaseHtmlLib::tableElement('class:sortable',$thead_dataAr,$tbody_dataAr);
+    $table = BaseHtmlLib::tableElement('id:admin_list_users,class:ui table',$thead_dataAr,$tbody_dataAr);
     $div->addChild($table);
 
     return $div;
@@ -440,7 +442,7 @@ class AdminModuleHtmlLib
     $user_address = FormElementCreator::addTextInput('user_address','Indirizzo', $user_dataAr, $errorsAr);
     $form->addChild($user_address);
 
-    $user_city = FormElementCreator::addTextInput('user_city','Citt&agrave;', $user_dataAr, $errorsAr);
+    $user_city = FormElementCreator::addTextInput('user_city','Citt&agrave', $user_dataAr, $errorsAr);
     $form->addChild($user_city);
 
     $user_province = FormElementCreator::addTextInput('user_province','Provincia', $user_dataAr, $errorsAr);
@@ -472,7 +474,7 @@ class AdminModuleHtmlLib
     $user_phone = FormElementCreator::addTextInput('user_phone','Telefono',$user_dataAr, $errorsAr);
     $form->addChild($user_phone);
 
-    $buttons = FormElementCreator::addSubmitAndResetButtons();
+    $buttons = FormElementCreator::addSubmitAndResetButtons('ui green button','ui red button');
     $form->addChild($buttons);
     return $form;
   }
@@ -481,10 +483,38 @@ class AdminModuleHtmlLib
     $form = CDOMElement::create('form','id:tester_form, name:tester_form, method:post, class:fec');
     $form->setAttribute('action', $form_action);
 
+    $isAdd = true;
+
     if(is_array($tester_dataAr) && isset($tester_dataAr['tester_id'])) {
       $tester_id = CDOMElement::create('hidden','id:tester_id, name:tester_id');
       $tester_id->setAttribute('value',$tester_dataAr['tester_id']);
       $form->addChild($tester_id);
+      $isAdd = false;
+    }
+
+    if ($isAdd) {
+      $p = CDOMElement::create('div','class:add_tester_info');
+      $text = [
+        translateFN("Per aggiungere un nuovo provider è necessario creare prima un database nuovo, e fornirne le credenziali d'accesso"),
+        translateFN("Nel campo host può essere specificata la porta di connessione, per esempio <i>localhost:3306</i>")
+      ];
+      $p->addChild(new \CText(implode("<br/>",$text)));
+
+      $dbfiels = CDOMElement::create('div','class:db_fields');
+      $dbfiels->addChild(
+        FormElementCreator::addTextInput('db_host','Host DB',$tester_dataAr, $errorsAr, 'value:localhost')
+      );
+      $dbfiels->addChild(
+        FormElementCreator::addTextInput('db_name','Nome DB',$tester_dataAr, $errorsAr)
+      );
+      $dbfiels->addChild(
+        FormElementCreator::addTextInput('db_user','Username DB',$tester_dataAr, $errorsAr)
+      );
+      $dbfiels->addChild(
+        FormElementCreator::addTextInput('db_password','Password DB',$tester_dataAr, $errorsAr)
+      );
+      $form->addChild($p);
+      $form->addChild($dbfiels);
     }
 
     $tester_name = FormElementCreator::addTextInput('tester_name','Nome',$tester_dataAr, $errorsAr);
@@ -524,7 +554,7 @@ class AdminModuleHtmlLib
     $form->addChild($tester_pointer);
 
 
-    $buttons = FormElementCreator::addSubmitAndResetButtons();
+    $buttons = FormElementCreator::addSubmitAndResetButtons('ui green button','ui red button');
     $form->addChild($buttons);
     return $form;
   }
@@ -567,7 +597,7 @@ class AdminModuleHtmlLib
     $service_meeting_duration = FormElementCreator::addTextInput('service_meeting_duration','Durata massima di un incontro (in minuti)',$service_dataAr, $errorsAr);
     $form->addChild($service_meeting_duration);
 
-    $buttons = FormElementCreator::addSubmitAndResetButtons();
+    $buttons = FormElementCreator::addSubmitAndResetButtons('ui green button','ui red button');
     $form->addChild($buttons);
     return $form;
   }
@@ -653,7 +683,7 @@ class AdminModuleHtmlLib
     $form->addChild($delete_sistema);
 
 
-    $buttons = FormElementCreator::addSubmitAndResetButtons();
+    $buttons = FormElementCreator::addSubmitAndResetButtons('ui green button','ui red button');
     $form->addChild($buttons);
     return $form;
   }
@@ -675,7 +705,7 @@ class AdminModuleHtmlLib
         $reqTypeForm->setAttribute('value', $type);
         $form->addChild ($reqTypeForm);
 
-        $buttons = FormElementCreator::addSubmitAndResetButtons();
+        $buttons = FormElementCreator::addSubmitAndResetButtons('ui green button','ui red button');
         $form->addChild($buttons);
 
         return $form;

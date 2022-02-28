@@ -191,34 +191,21 @@ switch ($op) {
 $label = translateFN('Modifica dei contenuti');
 $help = translateFN('Da qui puoi modificare i contenuti di tipo '.$reqType.' che appaiono in home page');
 
-if ($userObj->getType()==AMA_TYPE_ADMIN)
-{
-$menu_dataAr = array(
-  array('href' => 'add_tester.php', 'text' => translateFN('Aggiungi tester')),
-  array('href' => 'add_service.php', 'text' => translateFN('Aggiungi servizio')),
-  array('href' => 'add_user.php', 'text' => translateFN('Aggiungi utente')),
-  array('href' => 'import_language.php', 'text' => translateFN('Import Language'))
-  );
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
-}
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
-//    'actions_menu' => $actions_menu->getHtml(),
     'data' => $data->getHtml(),
     'module' => isset($module) ? $module : '',
-    'messages' => $user_messages->getHtml()
 );
 /**
  * giorgio 12/ago/2013
  *
- *  if it's the admin, load the menu. if it's the swithcer force the template in the swithcer dir
+ *  if it's the swithcer force the template in the swithcer dir
  */
-if ($userObj->getType()==AMA_TYPE_ADMIN) $content_dataAr['actions_menu'] = $actions_menu->getHtml();
-else if ($userObj->getType()==AMA_TYPE_SWITCHER) $layout_dataAr['module_dir'] = 'switcher';
+if ($userObj->getType()==AMA_TYPE_SWITCHER) $layout_dataAr['module_dir'] = 'switcher';
 //print_r($options);
 //ARE::render($layout_dataAr, $content_dataAr, $options);
 ARE::render($layout_dataAr, $content_dataAr, NULL, $options);

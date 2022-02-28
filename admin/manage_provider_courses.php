@@ -136,36 +136,29 @@ else {
 
 
 
-//$tester_services = new CText('servizi offerti da questo tester<br />');
-//$user_list_link  = new CText('numero di utenti presenti sul tester e link alista utenti');
+//$tester_services = new CText('servizi offerti da questo provider<br />');
+//$user_list_link  = new CText('numero di utenti presenti sul provider e link alista utenti');
 
 
 
-$label = translateFN("Gestisci servizi associati al tester");
+$label = translateFN("Gestisci servizi associati al provider");
 
 $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 $tester_profile_link = CDOMElement::create('a','href:tester_profile.php?id_tester='.$id_tester);
-$tester_profile_link->addChild(new CText(translateFN("Profilo del tester")));
+$tester_profile_link->addChild(new CText(translateFN("Profilo del provider")));
 $module = $home_link->getHtml() . ' > ' . $tester_profile_link->getHtml() . ' > ' .$label;
 
-$help  = translateFN("Gestisci servizi associati al tester");
-
-$menu_dataAr = array(
-  array('href' => 'edit_tester.php?id_tester='.$_GET['id_tester'], 'text' => translateFN('Modifica il profilo del tester'))
-);
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
+$help  = translateFN("Gestisci servizi associati al provider");
 
 $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
   'data'         => $data,
   'module'       => $module,
-  'messages'     => $user_messages->getHtml()
 );
 
 ARE::render($layout_dataAr, $content_dataAr);

@@ -166,19 +166,14 @@ $label = translateFN("Modifica servizio");
 
 $help  = translateFN("Da qui l'amministratore puo' apportare modifiche ad un servizio esistente");
 
-$menu_dataAr = array();
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
-
 $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
   'data'         => $form->getHtml(),
   'module'       => $label,
-  'messages'     => $user_messages->getHtml()
 );
 
 ARE::render($layout_dataAr, $content_dataAr);

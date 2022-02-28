@@ -154,19 +154,14 @@ $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 $module = $home_link->getHtml() . ' > ' . $label;
 
-$menu_dataAr = array();
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
-
 $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
   'data'         => $form->getHtml(),
   'module'       => $module,
-  'messages'     => $user_messages->getHtml()
 );
 
 ARE::render($layout_dataAr, $content_dataAr);
