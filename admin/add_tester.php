@@ -194,7 +194,9 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!AMA_DB::isError($adminUsersArr) && is_array($adminUsersArr) && count($adminUsersArr)>0) {
           foreach ($adminUsersArr as $adminUser) {
             $adminUserObj = MultiPort::findUserByUsername($adminUser['username']);
-          $common_dh->add_user_to_tester($adminUserObj->getId(),$result);
+            if (!AMA_DB::isError($adminUserObj)) {
+              MultiPort::setUser($adminUserObj, [ $tester_dataAr['tester_pointer'] ]);
+            }
           }
         }
         header('Location: ' . $userObj->getHomePage());
