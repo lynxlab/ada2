@@ -483,10 +483,38 @@ class AdminModuleHtmlLib
     $form = CDOMElement::create('form','id:tester_form, name:tester_form, method:post, class:fec');
     $form->setAttribute('action', $form_action);
 
+    $isAdd = true;
+
     if(is_array($tester_dataAr) && isset($tester_dataAr['tester_id'])) {
       $tester_id = CDOMElement::create('hidden','id:tester_id, name:tester_id');
       $tester_id->setAttribute('value',$tester_dataAr['tester_id']);
       $form->addChild($tester_id);
+      $isAdd = false;
+    }
+
+    if ($isAdd) {
+      $p = CDOMElement::create('div','class:add_tester_info');
+      $text = [
+        translateFN("Per aggiungere un nuovo provider è necessario creare prima un database nuovo, e fornirne le credenziali d'accesso"),
+        translateFN("Nel campo host può essere specificata la porta di connessione, per esempio <i>localhost:3306</i>")
+      ];
+      $p->addChild(new \CText(implode("<br/>",$text)));
+
+      $dbfiels = CDOMElement::create('div','class:db_fields');
+      $dbfiels->addChild(
+        FormElementCreator::addTextInput('db_host','Host DB',$tester_dataAr, $errorsAr, 'value:localhost')
+      );
+      $dbfiels->addChild(
+        FormElementCreator::addTextInput('db_name','Nome DB',$tester_dataAr, $errorsAr)
+      );
+      $dbfiels->addChild(
+        FormElementCreator::addTextInput('db_user','Username DB',$tester_dataAr, $errorsAr)
+      );
+      $dbfiels->addChild(
+        FormElementCreator::addTextInput('db_password','Password DB',$tester_dataAr, $errorsAr)
+      );
+      $form->addChild($p);
+      $form->addChild($dbfiels);
     }
 
     $tester_name = FormElementCreator::addTextInput('tester_name','Nome',$tester_dataAr, $errorsAr);
