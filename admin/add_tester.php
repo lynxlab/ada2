@@ -136,6 +136,26 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $errorsAr['tester_iban'] = true;
   }
 
+  if (DataValidator::validate_not_empty_string($_POST['db_host']) === FALSE) {
+    $errorsAr['db_host'] = true;
+  } else {
+    list($h, $p) = array_pad(explode(':',$_POST['db_host']), 2, '');
+    if (strlen($h)>0 && strlen($p)>0 && intval($p)<=0) {
+      $errorsAr['db_host'] = true;
+    }
+  }
+
+  if (DataValidator::validate_not_empty_string($_POST['db_name']) === FALSE) {
+    $errorsAr['db_name'] = true;
+  }
+
+  if (DataValidator::validate_not_empty_string($_POST['db_user']) === FALSE) {
+    $errorsAr['db_user'] = true;
+  }
+
+  if (DataValidator::validate_not_empty_string($_POST['db_password']) === FALSE) {
+    $errorsAr['db_password'] = true;
+  }
 
   if(count($errorsAr) > 0) {
     $tester_dataAr = $_POST;
@@ -146,21 +166,40 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     unset($_POST['submit']);
     $tester_dataAr = $_POST;
 
-    $result = $common_dh->add_tester($tester_dataAr);
-    if(AMA_Common_DataHandler::isError($result)) {
-      $errObj = new ADA_Error($result);
-      $form = new CText('');
-    }
-    else {
-      $adminUsersArr = $common_dh->get_users_by_type(array(AMA_TYPE_ADMIN));
-      if (!AMA_DB::isError($adminUsersArr) && is_array($adminUsersArr) && count($adminUsersArr)>0) {
-      	foreach ($adminUsersArr as $adminUser) {
-      		$adminUserObj = MultiPort::findUserByUsername($adminUser['username']);
-		    $common_dh->add_user_to_tester($adminUserObj->getId(),$result);
-      	}
+    $createProvider = AdminHelper::createProvider(array_map('trim',[
+      'host' => $h . (strlen($p) > 0 ? ':'.$p : ''),
+      'dbname' => $_POST['db_name'],
+      'username' => $_POST['db_user'],
+      'password' => $_POST['db_password'],
+      'pointer' => $_POST['tester_pointer'],
+    ]));
+    if ($createProvider['status'] == false) {
+      $errorBox = '<div class="ui icon error message"><i class="ban circle icon"></i><div class="content">';
+      $errorBox .= '<div class="header">' . translateFN('Errore nel creare il provider') . '</div>';
+      if (array_key_exists('message', $createProvider) && strlen($createProvider['message']) > 0) {
+          $errorBox .= '<p>' . $createProvider['message'] . '</p>';
       }
-      header('Location: ' . $userObj->getHomePage());
-      exit();
+      $errorBox .= '</div></div>';
+      $tester_dataAr = $_POST;
+      $testersAr = array();
+      $form = AdminModuleHtmlLib::getAddTesterForm($testersAr,$tester_dataAr,$errorsAr);
+    } else {
+      $result = $common_dh->add_tester($tester_dataAr);
+      if(AMA_Common_DataHandler::isError($result)) {
+        $errObj = new ADA_Error($result);
+        $form = new CText('');
+      }
+      else {
+        $adminUsersArr = $common_dh->get_users_by_type(array(AMA_TYPE_ADMIN));
+        if (!AMA_DB::isError($adminUsersArr) && is_array($adminUsersArr) && count($adminUsersArr)>0) {
+          foreach ($adminUsersArr as $adminUser) {
+            $adminUserObj = MultiPort::findUserByUsername($adminUser['username']);
+          $common_dh->add_user_to_tester($adminUserObj->getId(),$result);
+          }
+        }
+        header('Location: ' . $userObj->getHomePage());
+        exit();
+      }
     }
   }
 }
@@ -184,7 +223,7 @@ $content_dataAr = array(
   'status'       => $status,
   'label'        => $label,
   'help'         => $help,
-  'data'         => $form->getHtml(),
+  'data'         => (isset($errorBox) ? $errorBox : '').$form->getHtml(),
   'module'       => $module,
 );
 
