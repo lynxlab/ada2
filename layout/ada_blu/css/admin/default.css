@@ -14,9 +14,14 @@
     margin: auto;
 }
 
+form.fec {
+    width: 75%;
+    margin: 0 auto;
+}
+
 form.fec label, form.fec input, form.fec select, form.fec textarea, form.fec .error {
     display: block;
-    width: calc(75% - 1em);
+    width: calc(100% - 1em);
     margin: 0 auto;
     clear: both;
     position:inherit;
@@ -24,16 +29,20 @@ form.fec label, form.fec input, form.fec select, form.fec textarea, form.fec .er
     border-top: none;
     border-right: none;
     border-bottom:  1px solid lightgray;
-    padding: 0.6em 0.5em;
+    padding: 0.6em;
 }
 
 form.fec input:focus, form.fec select:focus, form.fec textarea:focus {
     outline: none;
 }
 
-form.fec input:focus, form.fec textarea:focus {
+form.fec input:focus, form.fec textarea:focus, form.fec select:focus {
     border-left: 4px solid lightgray;
-    width: calc(75% - 1em - 4px);
+    padding-left: calc(0.6em - 4px + 1px);
+}
+
+form.fec input:focus, form.fec textarea:focus {
+    width: calc(100% - 1em - 4px);
 }
 
 form.fec textarea {
@@ -61,14 +70,14 @@ form.fec label {
 
 form.fec select {
     background: transparent;
-    width: 75%;
+    width: 100%;
 }
 
 #tester_form #submit, #service_form #submit, #user_form #submit, #buttons #submit,
 #tester_form #reset, #service_form #reset, #user_form #reset, #buttons #reset {
     display: block;
     margin: 5px auto;
-    width: 10%;
+    width: 12em;
 }
 
 #tester_form #submit, #service_form #submit, #user_form #submit, #buttons #submit {
@@ -79,6 +88,11 @@ form.fec select {
     background: #00b5ad;
     color: #fff;
 } */
+
+.add_tester_info {
+    margin-top: 1em;
+    line-height: 2em;
+}
 
 @media screen and (max-width: 768px) {
     #tester_info, #tester_form.fec textarea, #service_form textarea, #user_form.fec input, #user_form.fec select, #user_form.fec textarea, #user_form label, #user_form input, #tester_form label, #tester_form input, #service_form label, #service_form input, #user_form select, #tester_form.fec input, #tester_form.fec select, #service_form input, #service_form select, #user_form input, #user_form select {
