@@ -24,6 +24,11 @@ class Menu
 	const NEVER_ENABLED = '%NEVER%';
 
 	/**
+	 * set this to false to have a visibile, disabled, empty dropdown
+	 */
+	const SKIP_IF_NO_CHILDREN = true;
+
+	/**
 	 * tree id of the menu
 	 *
 	 * @var number
@@ -347,15 +352,19 @@ class Menu
 
     	if (!is_null($item['extraHTML'])) $DOMitem->addChild(new CText($item['extraHTML']));
 
-    	if ($firstLevel) $DOMitem->addChild($this->buildDropDownIcon());
+    	if ($firstLevel) {
+			$DOMitem->addChild($this->buildDropDownIcon());
+			if (!is_null($item['menuExtraClass'])) {
+				$DOMitem->setAttribute('class', $DOMitem->getAttribute('class').' '.$item['menuExtraClass']);
+			}
+		}
 
     	$subContainer = CDOMElement::create('ul','class:menu');
-    	if (!is_null($item['menuExtraClass'])) {
-    		$subContainer->setAttribute('class', $subContainer->getAttribute('class').' '.$item['menuExtraClass']);
-    	}
-
     	foreach ($item['children'] as $child) {
-    		$this->buildAll($subContainer, $child, false);
+			$this->buildAll($subContainer, $child, false);
+			if (!is_null($child['menuExtraClass'])) {
+				$subContainer->setAttribute('class', $subContainer->getAttribute('class').' '.$child['menuExtraClass']);
+			}
     	}
 
     	$DOMitem->addChild($subContainer);
@@ -460,6 +469,9 @@ class Menu
     		// if element has no link and no children, add disabled class
     		if (!$item['specialItem'] && !$hasOnClick && (is_null($item['children']) || !isset($item['children']) || count($item['children'])<=0)) {
     			$item['extraClass'] .= ' disabled';
+				if (self::SKIP_IF_NO_CHILDREN) {
+					return new CText('');
+				}
     		}
     	}
 
