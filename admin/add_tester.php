@@ -136,26 +136,39 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $errorsAr['tester_iban'] = true;
   }
 
-  if (DataValidator::validate_not_empty_string($_POST['db_host']) === FALSE) {
-    $errorsAr['db_host'] = true;
-  } else {
-    list($h, $p) = array_pad(explode(':',$_POST['db_host']), 2, '');
-    if (strlen($h)>0 && strlen($p)>0 && intval($p)<=0) {
+  if (array_key_exists('db_host', $_POST)) {
+    if (DataValidator::validate_not_empty_string($_POST['db_host']) === FALSE) {
       $errorsAr['db_host'] = true;
+    } else {
+      list($h, $p) = array_pad(explode(':',$_POST['db_host']), 2, '');
+      if (strlen($h)>0 && strlen($p)>0 && intval($p)<=0) {
+        $errorsAr['db_host'] = true;
+      }
     }
+  } else {
+    $h = $p = '';
   }
 
   if (DataValidator::validate_not_empty_string($_POST['db_name']) === FALSE) {
     $errorsAr['db_name'] = true;
   }
 
-  if (DataValidator::validate_not_empty_string($_POST['db_user']) === FALSE) {
-    $errorsAr['db_user'] = true;
+  if (array_key_exists('db_user', $_POST)) {
+    if (DataValidator::validate_not_empty_string($_POST['db_user']) === FALSE) {
+      $errorsAr['db_user'] = true;
+    }
+  } else {
+    $_POST['db_user'] = null;
   }
 
-  if (DataValidator::validate_not_empty_string($_POST['db_password']) === FALSE) {
-    $errorsAr['db_password'] = true;
+  if (array_key_exists('db_password', $_POST)) {
+    if (DataValidator::validate_not_empty_string($_POST['db_password']) === FALSE) {
+      $errorsAr['db_password'] = true;
+    }
+  } else {
+    $_POST['db_password'] = null;
   }
+
 
   if(count($errorsAr) > 0) {
     $tester_dataAr = $_POST;
