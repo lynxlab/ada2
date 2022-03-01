@@ -193,6 +193,14 @@ $label = translateFN('mappa');
 
 //$help = translateFN('mappa');
 
+$menuOptions['self_instruction'] = $self_instruction;
+$menuOptions['id_course'] = $sess_id_course;
+$menuOptions['id_course_instance'] = $sess_id_course_instance;
+$menuOptions['id_node'] = $sess_id_node;
+$menuOptions['id_parent'] = $sess_id_node;
+$menuOptions['id_student'] = $userObj->getId();
+$menuOptions['type'] = $nodeObj->type;
+
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
@@ -207,5 +215,5 @@ $content_dataAr = array(
 	'id_node_parent' => strcasecmp('null', $nodeObj->parent_id) !=0 ? $nodeObj->parent_id : $nodeObj->id,
 );
 $options = array('onload_func' => "var map = new Map()");
-ARE::render($layout_dataAr, $content_dataAr, NULL, $options);
+ARE::render($layout_dataAr, $content_dataAr, NULL, $options, $menuOptions);
 
