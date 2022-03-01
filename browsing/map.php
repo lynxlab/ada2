@@ -193,11 +193,11 @@ $label = translateFN('mappa');
 
 //$help = translateFN('mappa');
 
-$menuOptions['self_instruction'] = $self_instruction;
+$menuOptions['self_instruction'] = isset($courseInstanceObj) && $courseInstanceObj instanceof Course_instance ? $courseInstanceObj->getSelfInstruction() : 0;
 $menuOptions['id_course'] = $sess_id_course;
 $menuOptions['id_course_instance'] = $sess_id_course_instance;
 $menuOptions['id_node'] = $sess_id_node;
-$menuOptions['id_parent'] = $sess_id_node;
+$menuOptions['id_parent'] = $nodeObj->parent_id;
 $menuOptions['id_student'] = $userObj->getId();
 $menuOptions['type'] = $nodeObj->type;
 
