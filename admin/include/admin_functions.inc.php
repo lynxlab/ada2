@@ -53,13 +53,19 @@ class AdminHelper extends ViewBaseHelper
       'message' => translateFN('Errore sconosciuto'),
     ];
     $DBoptions = [
-      // PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'',
+      PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'',
       PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ];
     $modulesSQL = [];
     $inCommon = ModuleLoaderHelper::inCommon();
     $inCommonIfMulti = ModuleLoaderHelper::inCommonIfMulti();
+    if ($hasConfigWithEnv = self::hasConfigWithEnv()) {
+      $providerData['dbhost'] = getenv('MYSQL_HOST');
+      $providerData['username'] = getenv('MYSQL_USER');
+      $providerData['password'] = getenv('MYSQL_PASSWORD');
+    }
+
     try {
       // create and import DB
       $providerPDO = self::checkDB([
@@ -116,7 +122,7 @@ class AdminHelper extends ViewBaseHelper
             $providerData['password'],
             $providerData['host'],
           ],
-          file_get_contents(ROOT_DIR . '/clients_DEFAULT/install-templates/client_conf.inc.php')
+          file_get_contents(ROOT_DIR . '/clients_DEFAULT/'.($hasConfigWithEnv ? 'docker' : 'install').'-templates/client_conf.inc.php')
         );
         if (false === file_put_contents(ROOT_DIR . '/clients/' . $providerData['pointer'] . '/client_conf.inc.php', $outfile)) {
           $retarray['message'] = translateFN('Impossibile scrivere il file di configurazione del provider');
@@ -201,5 +207,10 @@ class AdminHelper extends ViewBaseHelper
         }
       }
     } else throw new Exception(translateFN('File non trovato') . ' ' . $filename);
+  }
+
+  public static function hasConfigWithEnv()
+  {
+    return defined('ENV_FILENAME') && is_file(ENV_FILENAME) && is_readable(ENV_FILENAME);
   }
 }

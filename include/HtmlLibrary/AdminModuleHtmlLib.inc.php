@@ -494,24 +494,33 @@ class AdminModuleHtmlLib
 
     if ($isAdd) {
       $p = CDOMElement::create('div','class:add_tester_info');
-      $text = [
-        translateFN("Per aggiungere un nuovo provider è necessario creare prima un database nuovo, e fornirne le credenziali d'accesso"),
-        translateFN("Nel campo host può essere specificata la porta di connessione, per esempio <i>localhost:3306</i>")
-      ];
+      $dbfiels = CDOMElement::create('div','class:db_fields');
+
+      if (AdminHelper::hasConfigWithEnv()) {
+        $text = [
+          translateFN("Per aggiungere un nuovo provider è necessario creare prima un database nuovo"),
+          '<strong>'.translateFN("Saranno usati i parametri di connessione al database usati durante l'installazione").'</strong>',
+          '<strong>'.translateFN("Specificare solo il nome del database da usare").'</strong>',
+        ];
+      } else {
+        $text = [
+          translateFN("Per aggiungere un nuovo provider è necessario creare prima un database nuovo, e fornirne le credenziali d'accesso"),
+          translateFN("Nel campo host può essere specificata la porta di connessione, per esempio <i>localhost:3306</i>"),
+        ];
+        $dbfiels->addChild(
+          FormElementCreator::addTextInput('db_host','Host DB',$tester_dataAr, $errorsAr, 'value:localhost')
+        );
+        $dbfiels->addChild(
+          FormElementCreator::addTextInput('db_user','Username DB',$tester_dataAr, $errorsAr)
+        );
+        $dbfiels->addChild(
+          FormElementCreator::addTextInput('db_password','Password DB',$tester_dataAr, $errorsAr)
+        );
+      }
       $p->addChild(new \CText(implode("<br/>",$text)));
 
-      $dbfiels = CDOMElement::create('div','class:db_fields');
-      $dbfiels->addChild(
-        FormElementCreator::addTextInput('db_host','Host DB',$tester_dataAr, $errorsAr, 'value:localhost')
-      );
       $dbfiels->addChild(
         FormElementCreator::addTextInput('db_name','Nome DB',$tester_dataAr, $errorsAr)
-      );
-      $dbfiels->addChild(
-        FormElementCreator::addTextInput('db_user','Username DB',$tester_dataAr, $errorsAr)
-      );
-      $dbfiels->addChild(
-        FormElementCreator::addTextInput('db_password','Password DB',$tester_dataAr, $errorsAr)
       );
       $form->addChild($p);
       $form->addChild($dbfiels);
