@@ -21,7 +21,7 @@ if (!isset($_SESSION['ada-zoom-bridge'])) {
 }
 
 if (!defined('ZOOM_WEBSDK_VERSION')) {
-  define('ZOOM_WEBSDK_VERSION', '1.9.8');
+  define('ZOOM_WEBSDK_VERSION', '2.3.5');
 }
 
 ?>
