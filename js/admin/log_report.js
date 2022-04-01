@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -12,20 +12,20 @@ function initDoc(isAdmin)
 }
 function createDataTable(showElements)
 {
-    datatable = $j('#table_log_report').dataTable({
-        "bJQueryUI": true,
-        "bFilter": showElements,
-        "bInfo": showElements,
-        "bSort": showElements,
-        "bAutoWidth": true,
-        "bPaginate" : showElements,
-        "oLanguage": 
-        {
-           "sUrl": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
-        }
+    datatable = $j('#table_log_report').DataTable({
+        "paging": showElements,
+        "ordering": showElements,
+        "info": showElements,
+        "filter": showElements,
+        "autoWidth": true,
+        "stateSave": true,
+        "order": [[0, 'asc']],
+        "language": {
+            "url": HTTP_ROOT_DIR + "/js/include/jquery/dataTables/dataTablesLang.php"
+        },
     });
-    
 }
+
 function initToolTips(){
     $j('.tooltip').tooltip({
         show : {

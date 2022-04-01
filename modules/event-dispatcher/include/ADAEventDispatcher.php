@@ -86,15 +86,27 @@ class ADAEventDispatcher extends EventDispatcher implements EventDispatcherInter
   public static function buildEventAndDispatch(array $eventData = [], $subject = null, array $arguments = [])
   {
     $eventsNS = 'Events';
+    $eventName = null;
     if (array_key_exists('eventClass', $eventData)) {
       if (array_key_exists('eventName', $eventData)) {
-        $classname = __NAMESPACE__ . '\\' . $eventsNS . '\\' . $eventData['eventClass'];
+        if (class_exists($eventData['eventClass'])) {
+          $classname = $eventData['eventClass'];
+        } else {
+          $classname = __NAMESPACE__ . '\\' . $eventsNS . '\\' . $eventData['eventClass'];
+        }
         if (class_exists($classname)) {
-          $constantname = $classname . '::' . $eventData['eventName'];
-          if (defined($constantname)) {
+          if (in_array($eventData['eventName'], $classname::getConstants())) {
+            $eventName = $eventData['eventName'];
+          } else {
+            $constantname = $classname . '::' . $eventData['eventName'];
+            if (defined($constantname)) {
+              $eventName = constant($constantname);
+            }
+          }
+          if (!is_null($eventName)) {
             $event = new $classname($subject, $arguments);
             $eventPrefix = array_key_exists('eventPrefix', $eventData) ? trim($eventData['eventPrefix']) . self::PREFIX_SEPARATOR : '';
-            return self::getInstance()->dispatch($event, $eventPrefix . constant($constantname));
+            return self::getInstance()->dispatch($event, $eventPrefix . $eventName);
           } else throw new ADAEventException(sprintf("Event constant %s is not defined", $eventData['eventName']), ADAEventException::EVENTNAMENOTFOUND);
         } else throw new ADAEventException(sprintf("Class %s not found", $eventData['eventClass']), ADAEventException::EVENTCLASSNOTFOUND);
       } else throw new ADAEventException("Must pass an Event name", ADAEventException::NOEVENTNAME);

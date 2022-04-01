@@ -191,29 +191,24 @@ else {
   }
 
 }
-$label = translateFN("Modifica tester");
+$label = translateFN("Modifica provider");
 
-$help  = translateFN("Da qui l'amministratore puo' apportare modifiche ad un tester esistente");
+$help  = translateFN("Da qui l'amministratore puo' apportare modifiche ad un provider esistente");
 
 $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 $tester_profile_link = CDOMElement::create('a','href:tester_profile.php?id_tester='.$id_tester);
-$tester_profile_link->addChild(new CText(translateFN("Profilo del tester")));
+$tester_profile_link->addChild(new CText(translateFN("Profilo del provider")));
 $module = $home_link->getHtml() . ' > ' . $tester_profile_link->getHtml() . ' > ' .$label;
-
-$menu_dataAr = array();
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
 
 $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
   'data'         => $form->getHtml(),
   'module'       => $module,
-  'messages'     => $user_messages->getHtml()
 );
 
 ARE::render($layout_dataAr, $content_dataAr);

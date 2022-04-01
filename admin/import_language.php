@@ -102,7 +102,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $testers_dataAr = $common_dh->get_all_testers(array('id_tester','nome'));
 
     if(AMA_Common_DataHandler::isError($testers_dataAr)) {
-      $errObj = new ADA_Error($testersAr,"Errore nell'ottenimento delle informazioni sui tester");
+      $errObj = new ADA_Error($testersAr,"Errore nell'ottenimento delle informazioni sui provider");
     }
     else {
       $testersAr = array();
@@ -134,7 +134,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($tester == "all") {
       $testers_dataAr = $common_dh->get_all_testers(array('id_tester','nome'));
       if(AMA_Common_DataHandler::isError($testers_dataAr)) {
-        $errObj = new ADA_Error($testersAr,"Errore nell'ottenimento delle informazioni sui tester");
+        $errObj = new ADA_Error($testersAr,"Errore nell'ottenimento delle informazioni sui provider");
         header('Location:'.$http_root_dir.'/admin/admin.php');
         exit();
       }
@@ -213,7 +213,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $testers_dataAr = $common_dh->get_all_testers(array('id_tester','nome'));
 
     if(AMA_Common_DataHandler::isError($testers_dataAr)) {
-      $errObj = new ADA_Error($testersAr,"Errore nell'ottenimento delle informazioni sui tester");
+      $errObj = new ADA_Error($testersAr,"Errore nell'ottenimento delle informazioni sui provider");
     }
     else {
       $testersAr = array();
@@ -232,7 +232,7 @@ else {
 
   if(AMA_Common_DataHandler::isError($testers_dataAr)) {
 
-    $errObj = new ADA_Error($testersAr,"Errore nell'ottenimento delle informazioni sui tester");
+    $errObj = new ADA_Error($testersAr,"Errore nell'ottenimento delle informazioni sui provider");
   }
   else {
     $testersAr = array();
@@ -250,7 +250,7 @@ $label = "Import language file";
 //$link_ex_created = $link_example->getHtml() . ' > ' . $label;
 
 $link_example = "<a href://\"".HTTP_ROOT_DIR."/db/messaggi/example_message_to_translahome_te.xml\">" . ("see example") . "</a>)";
-$help  = "The Admin can import a language file (XML format. ". $link_example . " in all the tester in the language selected. <br />Suggestion: It's better to delete the system message only for the first import. <br />The system import the content of file <strong>ADA_messaggi_sistema.xml</strong>. When you make an update of the messagge it's better DON'T delete the system messages.";
+$help  = "The Admin can import a language file (XML format. ". $link_example . " in all the provider in the language selected. <br />Suggestion: It's better to delete the system message only for the first import. <br />The system import the content of file <strong>ADA_messaggi_sistema.xml</strong>. When you make an update of the messagge it's better DON'T delete the system messages.";
 
 $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText("Home dell'Amministratore"));

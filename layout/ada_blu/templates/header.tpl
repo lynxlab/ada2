@@ -1,6 +1,6 @@
 <div id="intestazione">
     <div class="ui image">
-        <a href="http://www.amesci.org" target="_blank">
+        <a href="<template_field class="template_field" name="HTTP_ROOT_DIR">HTTP_ROOT_DIR</template_field>" target="_blank">
             <img src="img/header-logo.png" height="70">
         </a>
     </div>

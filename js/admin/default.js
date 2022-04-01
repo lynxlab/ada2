@@ -1,6 +1,6 @@
 // vito, 28 nov 2008
 document.write("<script type='text/javascript' src='../js/include/menu_functions.js'></script>");
-document.write("<script type='text/javascript' src='../js/include/tablekit/tablekit.js'></script>");
+// document.write("<script type='text/javascript' src='../js/include/tablekit/tablekit.js'></script>");
 document.write("<script type='text/javascript' src='../js/include/basic.js'></script>");
 
 // vito, 21 luglio 2008
@@ -16,7 +16,7 @@ function toggleVisibilityByClassName(container_div, item_class)
 	 * to get its id in this way.
 	 */
 	var span_element_id = ($(container_div).select('[title='+container_div+item_class+']')).first().identify();
-	
+
 	if ($(span_element_id).hasClassName('hideNodeChildren'))
 	{
 		$(span_element_id).update();
@@ -31,10 +31,10 @@ function toggleVisibilityByClassName(container_div, item_class)
 		$(span_element_id).removeClassName('viewNodeChildren');
 		$(span_element_id).toggleClassName('hideNodeChildren');
 	}
-	
+
 }
 
-function printit() 
+function printit()
 {
   if (typeof window.print == 'function') {
     window.print();

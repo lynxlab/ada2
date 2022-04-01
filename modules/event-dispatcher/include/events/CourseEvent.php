@@ -14,36 +14,35 @@ use Lynxlab\ADA\Module\EventDispatcher\ADAEventTrait;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
- * MenuEvent class
+ * CourseEvent class
  */
-final class MenuEvent extends GenericEvent
+final class CourseEvent extends GenericEvent
 {
   use ADAEventTrait;
 
   /**
    * event own namespace
    */
-  const namespace = 'menu';
+  const namespace = 'course';
 
   /**
-   * The PRERENDER event occurs before the menu tree is rendered.
+   * The PRESAVE event occurs before the course is saved in the DB
    *
-   * This event allows you to add, remove or replace menu items
+   * This event allows you to add, remove or replace course data
    *
-   * @Event
+   * @CourseEvent
    *
    * @var string
    */
-  const PRERENDER = self::namespace . '.prerender';
+  const PRESAVE = self::namespace . '.presave';
 
   /**
-   * The POSTRENDER event occurs after the menu tree is rendered.
+   * The POSTSAVE event occurs after the course is saved in the DB
    *
-   * This event allows you to add actions after the menu tree has been rendered.
-   *
-   * @Event
+   * @CourseEvent
    *
    * @var string
    */
-  const POSTRENDER = self::namespace . '.postrender';
+  const POSTSAVE = self::namespace . '.postsave';
+
 }

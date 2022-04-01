@@ -165,7 +165,7 @@ if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $testers_dataAr = $common_dh->get_all_testers(array('id_tester','nome'));
 
     if(AMA_Common_DataHandler::isError($testers_dataAr)) {
-      $errObj = new ADA_Error($testersAr,translateFN("Errore nell'ottenimento delle informazioni sui tester"));
+      $errObj = new ADA_Error($testersAr,translateFN("Errore nell'ottenimento delle informazioni sui provider"));
     }
     else {
       $testersAr = array();
@@ -276,7 +276,7 @@ else {
 
     if(AMA_Common_DataHandler::isError($testers_dataAr)) {
 
-      $errObj = new ADA_Error($testersAr,translateFN("Errore nell'ottenimento delle informazioni sui tester"));
+      $errObj = new ADA_Error($testersAr,translateFN("Errore nell'ottenimento delle informazioni sui provider"));
     }
     else {
       $testersAr = array();
@@ -299,7 +299,7 @@ $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 
 if (isset($id_tester)) {
 	$tester_profile_link = CDOMElement::create('a','href:tester_profile.php?id_tester='.$id_tester);
-	$tester_profile_link->addChild(new CText(translateFN("Profilo del tester")));
+	$tester_profile_link->addChild(new CText(translateFN("Profilo del provider")));
 	$list_users_link = CDOMElement::create('a','href:list_users.php?id_tester='.$id_tester.'&page='.$page);
 	$list_users_link->addChild(new CText(translateFN("Lista utenti")));
 
@@ -310,20 +310,16 @@ if (isset($tester_profile_link)) $module .= ' > ' . $tester_profile_link->getHtm
 if (isset($list_users_link)) $module .= ' > ' .$list_users_link->getHtml();
 $module .= ' > ' . $label;
 
-$help  = translateFN("Lista degli utenti presenti sul tester");
-$menu_dataAr = array();
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
+$help  = translateFN("Lista degli utenti presenti sul provider");
 
 $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
   'data'         => $form->getHtml(),
   'module'       => $module,
-  'messages'     => $user_messages->getHtml()
 );
 
 $layout_dataAr['JS_filename'] = array(

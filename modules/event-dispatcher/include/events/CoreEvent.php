@@ -10,6 +10,7 @@
 
 namespace Lynxlab\ADA\Module\EventDispatcher\Events;
 
+use Lynxlab\ADA\Module\EventDispatcher\ADAEventTrait;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
@@ -17,6 +18,8 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  */
 final class CoreEvent extends GenericEvent
 {
+  use ADAEventTrait;
+
   /**
    * event own namespace
    */

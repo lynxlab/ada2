@@ -316,6 +316,12 @@ if(defined('CONFIG_LOG_REPORT') && CONFIG_LOG_REPORT && is_array($GLOBALS['LogRe
                     }
                     if(!isset($testersData_Ar[$providerName][$key])){
                         $testersData_Ar[$providerName][$key]=$providerData[$key];
+                        if (strcmp($key,'provider')===0 && $userObj->getType()==AMA_TYPE_ADMIN) {
+                            $provider_link = BaseHtmlLib::link('tester_profile.php?id_tester='.$providerData['provider_id'], $providerData[$key]);
+                            $provider_link->setAttribute('class', 'provider_link ui tiny button');
+                            $testersData_Ar[$providerName][$key] = $provider_link->getHtml();
+                            unset($log_dataAr[$providerName]['provider_id']);
+                        }
                     }
                 }else{
                     /* rates calculation */
@@ -429,39 +435,34 @@ elseif($userObj->tipo==AMA_TYPE_SWITCHER){
     $home_link->addChild(new CText(translateFN("Home del provider admin")));
     $totalAr=null;
 }
-$table = BaseHtmlLib::tableElement('id:table_log_report',$thead_data, $testersData_Ar,$totalAr,$caption);
+$table = BaseHtmlLib::tableElement('id:table_log_report,class:ui table',$thead_data, $testersData_Ar,$totalAr,$caption);
 $module = $home_link->getHtml() . ' > ' . $label;
 
 $help  = null;
-
-$menu_dataAr = array(
-);
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
 
 $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
   'data'         => $table->getHtml(),
   'module'       => $module,
-  'messages'     => $user_messages->getHtml()
 );
 
 $layout_dataAr['JS_filename'] = array(
-                JQUERY,
-                JQUERY_UI,
-                JQUERY_DATATABLE,
-                JQUERY_DATATABLE_DATE,
-                JQUERY_NO_CONFLICT
-        );
+    JQUERY,
+    JQUERY_UI,
+    JQUERY_DATATABLE,
+    SEMANTICUI_DATATABLE,
+    JQUERY_DATATABLE_DATE,
+    JQUERY_NO_CONFLICT,
+);
 
 $layout_dataAr['CSS_filename']= array(
-                JQUERY_UI_CSS,
-                JQUERY_DATATABLE_CSS
-        );
+    JQUERY_UI_CSS,
+    SEMANTICUI_DATATABLE_CSS,
+);
 $render = null;
 $options['onload_func'] = 'initDoc('.(($userObj->getType()==AMA_TYPE_ADMIN) ? 1 : 0).')';
   /**
