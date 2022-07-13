@@ -53,6 +53,7 @@ FCKConfig.PluginsPath = FCKConfig.BasePath + 'plugins/' ;
 // FCKConfig.Plugins.Add( 'autogrow' ) ;
 // FCKConfig.Plugins.Add( 'dragresizetable' );
 FCKConfig.Plugins.Add('youtube', 'en,it');
+FCKConfig.Plugins.Add('vimeo', 'en,it');
 FCKConfig.Plugins.Add('clozemarker', 'en,it');
 FCKConfig.Plugins.Add('media', 'en,it');
 
@@ -170,7 +171,7 @@ FCKConfig.ToolbarSets["Basic"] = [
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
     ['Cut','Copy','Paste','PasteText','PasteWord', 'FitWindow'],
 	'/',
-	['Templates'/*,'-','Style'*/],['YouTube'],['Link','Unlink','Anchor'],['Image','Table','Rule','Smiley','SpecialChar']
+	['Templates'/*,'-','Style'*/],['YouTube', 'Vimeo'],['Link','Unlink','Anchor'],['Image','Table','Rule','Smiley','SpecialChar']
 ] ;
 
 FCKConfig.EnterMode = 'p' ;			// p | div | br
