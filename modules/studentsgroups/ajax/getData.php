@@ -113,8 +113,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET') {
 
 					$tmpData['label'] = $group->getLabel();
 					foreach($group->getCustomFields() as $key => $val) {
-						if (array_key_exists($key, Groups::customFieldsVal) && array_key_exists($val, Groups::customFieldsVal[$key])) {
-							$tmpData[Groups::customFieldPrefix.$key] = Groups::customFieldsVal[$key][$val];
+						if (array_key_exists($key, Groups::getCustomFieldsVal()) && array_key_exists($val, Groups::getCustomFieldsVal()[$key])) {
+							$tmpData[Groups::customFieldPrefix.$key] = Groups::getCustomFieldsVal()[$key][$val];
 						} else $tmpData[Groups::customFieldPrefix.$key] = null;
 					}
 					if ($withGroupDetails) {

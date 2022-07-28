@@ -44,7 +44,7 @@ class GroupForm extends StudentsGroupsAbstractForm {
 
 		// make a row with 2 fields for each customField
 		$j = 0;
-		foreach (Groups::customFieldLbl as $cIndex => $cLbl) {
+		foreach (Groups::getCustomFieldLbl() as $cIndex => $cLbl) {
 			if ($j++ % 2 == 0) {
 				$row = \CDOMElement::create('div','class:two fields');
 				$this->addCDOM($row);
@@ -66,7 +66,7 @@ class GroupForm extends StudentsGroupsAbstractForm {
 			$dd->addChild(CDOMElement::create('i','class: dropdown icon'));
 			$dm = CDOMElement::create('div','class:menu');
 			$dd->addChild($dm);
-			foreach(Groups::customFieldsVal[$cIndex] as $fieldVal => $fieldLbl) {
+			foreach(Groups::getCustomFieldsVal()[$cIndex] as $fieldVal => $fieldLbl) {
 				$item = CDOMElement::create('div','class:item');
 				$item->setAttribute('data-value', $fieldVal);
 				$item->addChild(new \CText($fieldLbl));

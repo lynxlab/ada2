@@ -57,7 +57,7 @@ $labels = [
     translateFN('nome'),
 ];
 
-foreach(Groups::customFieldLbl as $cLbl) {
+foreach(Groups::getCustomFieldLbl() as $cLbl) {
     array_push($labels, translateFN($cLbl));
 }
 
