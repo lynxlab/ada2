@@ -74,7 +74,7 @@ class Groups extends StudentsGroupsBase
     {
         parent::__construct($data);
         $customFieldsArr = [];
-        foreach(self::customFieldLbl as $lKey => $lVal) {
+        foreach(self::getCustomFieldLbl() as $lKey => $lVal) {
             if (array_key_exists(self::customFieldPrefix.$lKey, $data)) {
                 $customFieldsArr[$lKey] = $data[self::customFieldPrefix.$lKey];
             }
@@ -221,5 +221,23 @@ class Groups extends StudentsGroupsBase
         $this->members[] = $member;
 
         return $this;
+    }
+
+    /**
+     * Gets the array of customFieldLbl
+     *
+     * @return array
+     */
+    public static function getCustomFieldLbl() {
+        return self::customFieldLbl;
+    }
+
+    /**
+     * Gets the array of customFieldsVal
+     *
+     * @return array
+     */
+    public static function getCustomFieldsVal() {
+        return self::customFieldsVal;
     }
 }
