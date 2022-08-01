@@ -7,6 +7,7 @@ define ('REPORT_COLUMN_ID',               1);
 define ('REPORT_COLUMN_STUDENT',          2);
 define ('REPORT_COLUMN_HISTORY',          3);
 define ('REPORT_COLUMN_LAST_ACCESS',      4);
+define ('REPORT_COLUMN_TIME_IN_COURSE',  20);
 define ('REPORT_COLUMN_EXERCISES',        5);
 define ('REPORT_COLUMN_EXERCISES_TEST',   6);
 define ('REPORT_COLUMN_EXERCISES_SURVEY', 7);
@@ -26,5 +27,5 @@ define ('REPORT_COLUMN_LEVEL_LESS',       17);
 
 // add to the relative array only unwanted cols constants
 
-$GLOBALS['reportHTMLColArray'] = array ( 'REPORT_COLUMN_EXERCISES', 'REPORT_COLUMN_BOOKMARKS' );
-$GLOBALS['reportFILEColArray'] = array ( 'REPORT_COLUMN_EXERCISES', 'REPORT_COLUMN_BOOKMARKS' );
+$GLOBALS['reportHTMLColArray'] = array ( 'REPORT_COLUMN_EXERCISES', 'REPORT_COLUMN_BOOKMARKS', 'REPORT_COLUMN_TIME_IN_COURSE' );
+$GLOBALS['reportFILEColArray'] = array ( 'REPORT_COLUMN_EXERCISES', 'REPORT_COLUMN_BOOKMARKS', 'REPORT_COLUMN_TIME_IN_COURSE' );
