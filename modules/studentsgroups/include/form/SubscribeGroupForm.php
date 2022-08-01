@@ -39,7 +39,7 @@ class SubscribeGroupForm extends StudentsGroupsAbstractForm {
 			$opt = \CDOMElement::create('option', 'value:'.$group->getId());
 			$customFStr = [];
 			foreach($group->getCustomFields() as $fKey => $fVal) {
-				$customFStr[] = Groups::customFieldsVal[$fKey][$fVal];
+				$customFStr[] = Groups::getCustomFieldsVal()[$fKey][$fVal];
 			}
 			$opt->addChild(new \CText($group->getLabel().' - '.implode(' - ', $customFStr)));
 			$sel->addChild($opt);

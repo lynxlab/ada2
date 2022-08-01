@@ -16,6 +16,9 @@
  * @link		confirm
  * @version		0.1
  */
+
+use Lynxlab\ADA\Module\GDPR\GdprAPI;
+
 /**
  * Base config file
  */
@@ -145,32 +148,31 @@ switch ($op){
     if ((is_object($userObj)) && ($userObj instanceof ADALoggableUser)) {
         $status = $userObj->getStatus();
         if ($status == ADA_STATUS_REGISTERED) {
-        	// language has already been negotiated
-            // $_SESSION['sess_user_language'] = $p_selected_language;
-            $_SESSION['sess_id_user'] = $userObj->getId();
-            $GLOBALS['sess_id_user'] = $userObj->getId();
-            $_SESSION['sess_id_user_type'] = $userObj->getType();
-            $GLOBALS['sess_id_user_type'] = $userObj->getType();
-            $_SESSION['sess_userObj'] = $userObj;
-            $user_default_tester = $userObj->getDefaultTester();
-            if ($user_default_tester !== NULL) {
-                $_SESSION['sess_selected_tester'] = $user_default_tester;
-            }
              /*
              *  In case the user has done a subscription to a course class
              *  he/she will redirect to the subscription page
              */
-//            print_r($_SESSION);
             if (isset($_SESSION['subscription_page'])) {
                 $redirectURL = $_SESSION['subscription_page'];
                 unset ($_SESSION['subscription_page']);
-                header('Location:' . $redirectURL);
-                exit();
-            } else {
-                $homepage = $userObj->getHomePage();
-                header('Location:' . $homepage);
-//                header('Location:' . HTTP_ROOT_DIR . '/info.php');
-                exit();
+            }
+            if (isset($redirectURL) && defined('MODULES_GDPR') && MODULES_GDPR === true) {
+              // check if user has accepted the mandatory privacy policies
+              $gdprApi = new GdprAPI();
+              if ($gdprApi->checkMandatoryPoliciesForUser($userObj)) {
+        	      // language has already been negotiated
+                // $_SESSION['sess_user_language'] = $p_selected_language;
+                $_SESSION['sess_id_user'] = $userObj->getId();
+                $GLOBALS['sess_id_user'] = $userObj->getId();
+                $_SESSION['sess_id_user_type'] = $userObj->getType();
+                $GLOBALS['sess_id_user_type'] = $userObj->getType();
+                $_SESSION['sess_userObj'] = $userObj;
+                $user_default_tester = $userObj->getDefaultTester();
+                if ($user_default_tester !== NULL) {
+                    $_SESSION['sess_selected_tester'] = $user_default_tester;
+                }
+                redirect($redirectURL);
+              }
             }
         }
     } else {
@@ -240,12 +242,12 @@ switch ($op){
   }
   $title = translateFN('Registrazione confermata');
 //  $title = translateFN('Registration confirmed');
-  $dati  = sprintf(translateFN('Hai confermato la tua registrazione a %s. %s Puoi accedere a %s inserendo il tuo username (%s) e la tua password nella pagina di login di %s.'),PORTAL_NAME, '<br />', PORTAL_NAME, $userObj->getUserName(), PORTAL_NAME);
+  $dati  = sprintf(translateFN('Hai confermato la tua registrazione a %s. %s Puoi accedere a %s inserendo il tuo username (%s) e la tua password nella pagina di login di %s.'),PORTAL_NAME, '<br /><br />', PORTAL_NAME, $userObj->getUserName(), PORTAL_NAME);
 //  $dati  = sprintf(translateFN('You have successfully confirmed your registration to ICON. %s You can access ICON by entering your username (%s) and your password in the ADA login page.'),'<br />', $userObj->getUserName());
 
-  $login_page_link = CDOMElement::create('a', 'href:'.HTTP_ROOT_DIR);
+  $login_page_link = CDOMElement::create('a', 'class:ui button,href:'.HTTP_ROOT_DIR);
   $login_page_link->addChild(new CText(translateFN('Pagina di login')));
-  $dati .= '<br />' . $login_page_link->getHtml();
+  $dati .= '<br /><br />' . $login_page_link->getHtml();
 
 break;
 

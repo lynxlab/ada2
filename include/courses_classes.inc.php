@@ -1530,6 +1530,7 @@ class Student_class {
 
             $start_date =  AMA_DataHandler::ts_to_date($instance_course_ha['data_inizio'], ADA_DATE_FORMAT);
             $tot_history_count = 0;
+            $tot_time_in_course = 0;
             $tot_exercises_score = 0;
             $tot_exercises_number = 0;
             $tot_added_notes = 0;
@@ -1559,6 +1560,7 @@ class Student_class {
                 // in  $data_to_get we choose what fields to get back and the order of fields
                 $columns = [
                     REPORT_COLUMN_HISTORY => 'history',
+                    REPORT_COLUMN_TIME_IN_COURSE => 'time_in_course',
                     REPORT_COLUMN_LAST_ACCESS => 'last_access',
                     REPORT_COLUMN_EXERCISES_TEST => 'exercises_test',
                     REPORT_COLUMN_EXERCISES_SURVEY => 'exercises_survey',
@@ -1589,8 +1591,18 @@ class Student_class {
                 $to_not_get = $GLOBALS['report' . $type . 'ColArray'];
 
                 foreach ($to_not_get as $to_delete) {
-                    unset($columns[constant($to_delete)]);
+                    if (isset($columns[constant($to_delete)])) unset($columns[constant($to_delete)]);
                     if (isset($weights[constant($to_delete)])) unset($weights[constant($to_delete)]);
+                }
+
+                $ticIndex = null;
+                if (array_key_exists(REPORT_COLUMN_TIME_IN_COURSE, $columns)) {
+                    require_once ROOT_DIR. '/include/history_class.inc.php';
+                    $tmp = array_search(REPORT_COLUMN_TIME_IN_COURSE, array_keys($columns), true);
+                    if ($tmp !== false) {
+                        // add two to take into account id ands tudent name columns
+                        $ticIndex = $tmp + 2;
+                    }
                 }
 
                 if (array_key_exists(REPORT_COLUMN_BADGES, $columns)) {
@@ -1634,6 +1646,19 @@ class Student_class {
                     $tot_bookmarks_count += isset($dati_stude[$key]['bookmarks']) ? $dati_stude[$key]['bookmarks'] :0;
                     $tot_index += isset($dati_stude[$key]['index']) ? $dati_stude[$key]['index'] : 0;
                     $tot_level += $dati_stude[$key]['level'];
+
+                    if (array_key_exists(REPORT_COLUMN_TIME_IN_COURSE, $columns) && !empty($ticIndex)) {
+                        $history = new History($id_instance, $id_student);
+                        if (is_numeric($id_course)) $history->setCourse($id_course);
+                        $history->get_visit_time();
+                        $tic = ($history->total_time>0) ? $history->total_time : 0;
+                        $dati_stude[$key] = array_merge(
+                            array_slice($dati_stude[$key], 0, $ticIndex),
+                            [$columns[REPORT_COLUMN_TIME_IN_COURSE] => sprintf("%02d:%02d", floor($tic/3600), floor(($tic/60)%60)) ],
+                            array_slice($dati_stude[$key], $ticIndex)
+                        );
+                        $tot_time_in_course += $tic;
+                    }
 
                     //if in this installation module test is active
                     if (MODULES_TEST) {
@@ -1741,6 +1766,12 @@ class Student_class {
                     $dati_stude[$av_student]['history'] = round($av_history, 2);
                 }
 
+                if (array_key_exists(REPORT_COLUMN_TIME_IN_COURSE, $columns)) {
+                    $tableHeader[$columns[REPORT_COLUMN_TIME_IN_COURSE]] = translateFN("Tempo");
+                    $av_time_in_course = floor($tot_time_in_course / $tot_students);
+                    $dati_stude[$av_student][$columns[REPORT_COLUMN_TIME_IN_COURSE]] = sprintf("%02d:%02d", floor($av_time_in_course/3600), floor(($av_time_in_course/60)%60));
+                }
+
                 if (array_key_exists(REPORT_COLUMN_LAST_ACCESS, $columns)) {
                     $tableHeader['last_access'] = translateFN("Recente");
                     $dati_stude[$av_student]['last_access'] = "-";
@@ -1829,7 +1860,6 @@ class Student_class {
                     \Lynxlab\ADA\Module\Badges\RewardedBadge::loadInstanceRewards($id_course, $id_instance);
                 }
                 foreach ($student_list_ar as $one_student) {
-                    $num_student++; //starts with 0
                     $id_student = $one_student['id_utente_studente'];
                     $student_level = $one_student['livello'];
                     $status_student = $one_student['status'];
@@ -1847,6 +1877,8 @@ class Student_class {
                         if ($studentObj->full != 0) { //==0) {
                             $err_msg = $studentObj->error_msg;
                         } else {
+
+                            $num_student++; //starts with 0
 
                             if ($studentObj instanceof ADAPractitioner) {
                                 /**
@@ -1960,6 +1992,13 @@ class Student_class {
                             // history
                             $dati_stude[$num_student]['history'] = $st_history;
                             $tot_history_count += $st_history_count;
+
+                            // time in course
+                            $studentObj->history->get_visit_time();
+                            $tic = ($studentObj->history->total_time>0) ? $studentObj->history->total_time : 0;
+                            $tot_time_in_course += $tic;
+                            $dati_stude[$num_student]['time_in_course'] = sprintf("%02d:%02d", floor($tic/3600), floor(($tic/60)%60));
+
                             if ($st_history_last_access != "-") {
 
                                 $dati_stude[$num_student]['last_access'] = "<a href=\"$http_root_dir/tutor/tutor_history_details.php?period=1&id_student=$id_student&id_course_instance=$id_instance&id_course=$id_course\">" . $st_history_last_access . "</a>";
@@ -2108,8 +2147,9 @@ class Student_class {
                 }
 
                 // average data
-                $tot_students = ($num_student==0) ? 1 : $num_student;
+                $tot_students = ($num_student==0) ? 1 : $num_student + 1 ;
                 $av_history = ($tot_history_count / $tot_students);
+                $av_time_in_course = floor($tot_time_in_course / $tot_students);
                 $av_exercises = ($tot_exercises_score / $tot_students) . " " . translateFN("su") . " " . floor($tot_exercises_number * ADA_MAX_SCORE / $tot_students);
 
                 if (MODULES_TEST) {
@@ -2131,6 +2171,7 @@ class Student_class {
                 $dati_stude[$av_student]['student'] = translateFN("Media");
                 $dati_stude[$av_student]['lastname'] = "&nbsp;";
                 $dati_stude[$av_student]['history'] = round($av_history, 2);
+                $dati_stude[$av_student]['time_in_course'] = sprintf("%02d:%02d", floor($av_time_in_course/3600), floor(($av_time_in_course/60)%60) );
                 $dati_stude[$av_student]['last_access'] = "-";
                 $dati_stude[$av_student]['exercises'] = '<span class="dontwrap">' . $av_exercises . '</span>';
 
@@ -2230,6 +2271,7 @@ class Student_class {
         $tableHeader['student'] = translateFN("Nome");
         $tableHeader['lastname'] = translateFN("Cognome");
     	$tableHeader['history'] = translateFN("Visite");
+        $tableHeader['time_in_course'] = translateFN("Tempo");
     	$tableHeader['last_access'] = translateFN("Recente");
     	$tableHeader['exercises'] = translateFN("Punti A");
 
