@@ -120,8 +120,19 @@ if (!defined('PORTAL_NAME')) {
  * set to true to always display the maintenance page
  * and set the template to be used if you wish
  */
-if (!defined('MAINTENANCE_MODE')) define('MAINTENANCE_MODE', false);
+
+// list only the IPs for which maintenance mode will be disabled!
+$allowedIPs = [];
+if (!defined('MAINTENANCE_MODE')) {
+    if (!empty($allowedIPs)) {
+        require_once ROOT_DIR . '/include/utilities.inc.php';
+        define('MAINTENANCE_MODE', true !== in_array(getUserIpAddr(), $allowedIPs) );
+    } else {
+        define('MAINTENANCE_MODE', false);
+    }
+}
 if (!defined('MAINTENANCE_TPL') && MAINTENANCE_MODE === true) define ('MAINTENANCE_TPL', 'maintenancemode');
+unset($allowedIPs);
 
 /**
  * set to true to enable the videocahtroom report for the tutor

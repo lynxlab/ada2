@@ -76,7 +76,7 @@ $_SESSION['sess_user_language'] = $login_page_language_code;
 /**
  *
  */
-$_SESSION['ada_remote_address'] = $_SERVER['REMOTE_ADDR'];
+$_SESSION['ada_remote_address'] = getUserIpAddr();
 
 /**
  * giorgio 12/ago/2013
