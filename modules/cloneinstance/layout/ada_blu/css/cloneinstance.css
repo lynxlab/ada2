@@ -1,0 +1,51 @@
+@CHARSET "UTF-8";
+@import url("showHideDiv.css");
+@import url("moduleADAForm.css");
+@import url("../../css/select-multiple.css");
+
+.first {
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+.ui.green.item {
+    color: #29a329;
+}
+
+.ui.red.item {
+    color: #e94141;
+}
+
+div.fform {
+    width: 100%;
+    padding: 0;
+}
+
+div.fform fieldset.form {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+div.fform form#cloneinstance li.form {
+    padding: 0;
+}
+
+.ms-container.selectedCourses h3 {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.ms-container.selectedCourses {
+    width: 100%;
+}
+
+.ms-container.selectedCourses .ms-selectable li.ms-elem-selectable {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 1.1em;
+}
+
+div.fform .ms-container.selectedCourses input.search-input {
+    margin-bottom: 0.8em;
+}
