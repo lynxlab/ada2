@@ -1,0 +1,14 @@
+{
+    "name" : "lynxlab/ada-cloneinstance",
+    "description" : "This is the ada module to clone course instances.",
+    "license" : "GPL",
+    "authors" : [{
+        "name" : "Giorgio Consorti",
+        "email" : "g.consorti@lynxlab.com"
+    }],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\CloneInstance\\" : ["include/", "include/form"]
+	    }
+    }
+}

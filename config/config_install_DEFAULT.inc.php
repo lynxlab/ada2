@@ -120,8 +120,19 @@ if (!defined('PORTAL_NAME')) {
  * set to true to always display the maintenance page
  * and set the template to be used if you wish
  */
-if (!defined('MAINTENANCE_MODE')) define('MAINTENANCE_MODE', false);
+
+// list only the IPs for which maintenance mode will be disabled!
+$allowedIPs = [];
+if (!defined('MAINTENANCE_MODE')) {
+    if (!empty($allowedIPs)) {
+        require_once ROOT_DIR . '/include/utilities.inc.php';
+        define('MAINTENANCE_MODE', true !== in_array(getUserIpAddr(), $allowedIPs) );
+    } else {
+        define('MAINTENANCE_MODE', false);
+    }
+}
 if (!defined('MAINTENANCE_TPL') && MAINTENANCE_MODE === true) define ('MAINTENANCE_TPL', 'maintenancemode');
+unset($allowedIPs);
 
 /**
  * set to true to enable the videocahtroom report for the tutor
@@ -222,7 +233,7 @@ define('AVATAR_MAX_HEIGHT', "500");
 /**
  * Default admin mail address
  */
-define('ADA_ADMIN_MAIL_ADDRESS', getenv('ADA_ADMIN_MAIL_ADDRESS') ?: 'graffio@lynxlab.com');
+define('ADA_ADMIN_MAIL_ADDRESS', getenv('ADA_ADMIN_MAIL_ADDRESS') ?: 'noreply@lynxlab.com');
 
 /**
  * Default noreply mail address
@@ -421,6 +432,7 @@ $ADA_MIME_TYPE["application/x-pdf"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/x-zip-compressed"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/zip-compressed"]['permission'] = _GO;
 $ADA_MIME_TYPE["application/zip"]['permission'] = _GO;
+$ADA_MIME_TYPE["application/epub+zip"]['permission'] = _GO;
 $ADA_MIME_TYPE["audio/mpeg"]['permission'] = _GO;
 $ADA_MIME_TYPE["audio/x-mp3"]['permission'] = _GO;
 $ADA_MIME_TYPE["audio/basic"]['permission'] = _GO;
@@ -489,6 +501,7 @@ $ADA_MIME_TYPE["application/x-pdf"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/x-zip-compressed"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/zip-compressed"]['type'] = _DOC;
 $ADA_MIME_TYPE["application/zip"]['type'] = _DOC;
+$ADA_MIME_TYPE["application/epub+zip"]['type'] = _DOC;
 $ADA_MIME_TYPE["audio/mpeg"]['type'] = _SOUND;
 $ADA_MIME_TYPE["audio/x-mp3"]['type'] = _SOUND;
 $ADA_MIME_TYPE["audio/basic"]['type'] = _SOUND;
