@@ -106,7 +106,9 @@ function initDoc() {
             });
             // select all button
             $j(`#ms-${selectID}`).on('click', '#selectAllBtn', (event) => {
-                // must select all visible options
+                // first deselct all...
+                $j(`#${selectID}`).selectMultiple('deselect_all');
+                // ... then select all visible options
                 const vislist = $j(`#ms-${selectID} .ms-elem-selectable`).find(':visible');
                 // get all visibile elements text
                 const vistxt = vislist.map((i, el) => $j(el).text()).toArray();
