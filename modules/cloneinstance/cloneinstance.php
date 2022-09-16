@@ -141,7 +141,12 @@ if (count($summaryArr) > 0) {
     $summaryEl = new \CText(translateFN("Impossibile costruire il riepilogo dell'instanza"));
 }
 
-$courses = $dh->get_courses_list(array('nome', 'titolo'));
+$publicServiceLevels = array_keys(
+    array_filter($_SESSION['service_level_info'], function($el) { return true === (bool) $el['isPublic']; })
+);
+$clause = (count($publicServiceLevels)>0) ? '`tipo_servizio` NOT IN ('.implode(',', $publicServiceLevels).')': '';
+/** @var array $courses */
+$courses = $dh->find_courses_list(array('nome', 'titolo'), $clause);
 
 if (!\AMA_DB::isError($courses) && $courses !== false && count($courses) > 0) {
     $form = new CloneInstanceForm('cloneinstance', null, $courses, $courseInstanceObj);
