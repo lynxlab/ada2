@@ -49,6 +49,15 @@
                                 <template_field class="template_field" name="summary">summary</template_field>
                             </div> <!-- /segment -->
                             <div class="ui segment bottom attached">
+                                <div id="recapContainer" class="ui info message">
+                                    <div class="header">
+                                        <i18n>Riepilogo clonazione istanza</i18n>
+                                    </div>
+                                    <ol class="list"></ol>
+                                    <div style="display:flex;">
+                                        <a id="recapDownload" class="ui right floated blue tiny button">Download CSV</a>
+                                    </div>
+                                </div>
                                 <template_field class="template_field" name="form">form</template_field>
                             </div> <!-- /bottom segment -->
                         </div>
@@ -88,6 +97,13 @@
     <span id="oneitemselectedTPL" style="display:none;"><i18n>Un corso selezionato</i18n></span>
     <span id="moreitemselectedTPL" style="display:none;"><i18n>%d corsi selezionati</i18n></span>
     <span id="submitbuttonTPL" style="display:none;"><i18n>Clona</i18n></span>
+    <span id="recapRowTPL" style="display:none;">
+        <i18n>Istanza clonata con ID</i18n>: <strong>:clonedId</strong>
+        <i18n>nel corso</i18n> <strong>:courseName</strong> (<i18n>ID Corso</i18n>: <strong>:courseId</strong>)
+    </span>
+    <span id="recapCSVheaderTPL" data-filename="<i18n>riepilogo-clonazione-istanza</i18n>" style="display:none;">
+        <i18n>Titolo corso</i18n>,<i18n>ID Corso</i18n>,<i18n>ID istanza clonata</i18n>
+    </span>
 
 </body>
 
