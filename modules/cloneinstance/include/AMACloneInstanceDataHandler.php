@@ -35,6 +35,8 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
     {
         if ($sourceInstanceID > 0) {
             if (count($destCoursesID) > 0) {
+                $cloneRecap = [];
+                $userId = $_SESSION['sess_userObj']->getID();
                 // ok to clone, load instance data
                 $instanceArr = $this->course_instance_get($sourceInstanceID);
                 if (!\AMA_DB::isError($instanceArr)) {
@@ -63,28 +65,43 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                                     $saveSubsArr = array_map(function ($el) use ($instanceID) {
                                         return (array_merge($el, ['id_istanza_corso' => $instanceID]));
                                     }, $subscriptionArr);
-                                    $result = $this->queryPrepared(
-                                        $this->insertMultiRow(
-                                            $saveSubsArr,
-                                            'iscrizioni'
-                                        ),
-                                        array_values($saveSubsArr)
-                                    );
+                                    if (count($saveSubsArr)>0) {
+                                        $result = $this->queryPrepared(
+                                            $this->insertMultiRow(
+                                                $saveSubsArr,
+                                                'iscrizioni'
+                                            ),
+                                            array_values($saveSubsArr)
+                                        );
+                                    } else {
+                                        $result = true;
+                                    }
                                     if (!\AMA_DB::isError($result)) {
                                         // add tutors
                                         // this will be modified by inserMultiRow
                                         $saveTutorsArr = array_map(function ($el) use ($instanceID) {
                                             return (array_merge($el, ['id_istanza_corso' => $instanceID]));
                                         }, $tutorsList);
-                                        $result = $this->queryPrepared(
-                                            $this->insertMultiRow(
-                                                $saveTutorsArr,
-                                                'tutor_studenti'
-                                            ),
-                                            array_values($saveTutorsArr)
-                                        );
+                                        if (count($saveTutorsArr)>0) {
+                                            $result = $this->queryPrepared(
+                                                $this->insertMultiRow(
+                                                    $saveTutorsArr,
+                                                    'tutor_studenti'
+                                                ),
+                                                array_values($saveTutorsArr)
+                                            );
+                                        } else {
+                                            $result = true;
+                                        }
                                         if (!\AMA_DB::isError($result)) {
                                             // done!
+                                            $cloneRecap[] = [
+                                                'instanceId' => (int) $sourceInstanceID,
+                                                'clonedInCourse' => (int) $courseID,
+                                                'clonedInstanceId' => (int) $instanceID,
+                                                'userId' => (int) $userId,
+                                                'cloneTimestamp' => $this->date_to_ts('now'),
+                                            ];
                                         } else {
                                             $errMsg = $result->getMessage();
                                         }
@@ -101,12 +118,28 @@ class AMACloneInstanceDataHandler extends \AMA_DataHandler
                                 }
                             }
 
+                            // save clone recap
+                            $saveRecap = $cloneRecap;
+                            if (count($saveRecap) > 0) {
+                                $result = $this->queryPrepared(
+                                    $this->insertMultiRow(
+                                        $saveRecap,
+                                        self::PREFIX . 'history',
+                                    ),
+                                    array_values($saveRecap)
+                                );
+                                if (\AMA_DB::isError($result)) {
+                                    $errMsg = $result->getMessage();
+                                }
+                            }
+
                             // final commit or rollback
                             if (!empty($errMsg)) {
                                 $this->rollBack();
                                 throw new CloneInstanceException($errMsg);
                             } else {
                                 $this->commit();
+                                return $cloneRecap;
                             }
 
                         } else {
