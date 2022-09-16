@@ -49,3 +49,13 @@ div.fform form#cloneinstance li.form {
 div.fform .ms-container.selectedCourses input.search-input {
     margin-bottom: 0.8em;
 }
+
+#recapContainer {
+    display: none;
+    margin-bottom: 0;
+}
+
+#recapContainer li {
+    color: inherit;
+    line-height: 2em;
+}

@@ -8,7 +8,7 @@
 
 function initDoc() {
     let selectcount = 0;
-    const debugForm = false;
+    const debugForm = true;
     const formID = 'cloneinstance';
     const footerID = 'selectableFooter';
     const selectID = 'selectedCourses';
@@ -19,7 +19,22 @@ function initDoc() {
     };
     const submitBtnID = `submit_${formID}`;
 
-    updateSelectableFooter = () => {
+    const downloadCSV = (csv, filename) => {
+        var csvFile;
+        var downloadLink;
+
+        //define the file type to text/csv
+        csvFile = new Blob([csv], {type: 'text/csv'});
+        downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+
+    const updateSelectableFooter = () => {
         if (selectcount == 0) {
             $j(`#${footerID}`).html(selectionTXT['0']);
             $j(`#${submitBtnID}`).addClass('disabled').prop('disabled', true);
@@ -30,6 +45,43 @@ function initDoc() {
             $j(`#${footerID}`).html(selectionTXT['more'].replace(/%d/, selectcount));
             $j(`#${submitBtnID}`).removeClass('disabled').prop('disabled', false);
         }
+    }
+
+    const updateCloneRecap = (recapData) => {
+        if (debugForm) {
+            console.log('doing updateCloneRecap with data ', recapData);
+        }
+        $j('#recapContainer .list').html('');
+        htmlArr = [];
+        csv = [];
+        recapData.forEach((el) => {
+            const courseName = $j(`#${selectID} option[value="${el.clonedInCourse}"]`).text();
+            const text = $j('#recapRowTPL').html()
+                .replace(":courseName", courseName)
+                .replace(":courseId", el.clonedInCourse)
+                .replace(":clonedId", el.clonedInstanceId);
+            htmlArr.push(`<li>${text}</li>`);
+            csv.push(`${courseName},${el.clonedInCourse},${el.clonedInstanceId}`);
+        });
+        $j('#recapContainer .list').html(htmlArr.join("\n"));
+        if (csv.length == 0) {
+            $j('#recapContainer #recapDownload').hide();
+        }
+        $j('#contentcontent .fform.form.ui').slideUp(function () {
+            $j('#recapContainer').slideDown();
+        });
+
+        $j('#recapContainer #recapDownload').click(() => {
+            if (csv.length > 0) {
+                const now = new Date();
+                const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+                const dateLocal = new Date(now.getTime() - offsetMs);
+                const datestr = dateLocal.toISOString().slice(0, 19);
+                const filename = `${$j('#recapCSVheaderTPL').data('filename')}-${datestr}.csv`;
+                csv.unshift($j('#recapCSVheaderTPL').text().trim());
+                downloadCSV(csv.join("\n"), filename);
+            }
+        });
     }
 
     $j(`#${submitBtnID}`)
@@ -76,11 +128,14 @@ function initDoc() {
                 }
             })
             .always(function (response) {
-                if (debugForm) console.log('always callback');
+                if (debugForm) console.log('always callback', response);
                 $j.when(showHidePromise).then(function () {
                     $j(`#${selectID}`).removeAttr('disabled');
                     $j(`#${selectID}`).selectMultiple('refresh');
                     $j(`#${selectID}`).selectMultiple('deselect_all');
+                    if ('status' in response && 'cloneRecap' in response && response.status == 'OK') {
+                        updateCloneRecap(response.cloneRecap);
+                    }
                 });
             });
         });
@@ -89,7 +144,7 @@ function initDoc() {
         selectableHeader: $j('#selectableHeaderTPL').html(),
         selectableFooter: $j('#selectableFooterTPL').html(),
         cssClass: selectID,
-        afterInit: function(ms) {
+        afterInit: function (ms) {
             $j('#selectableHeaderTPL, #selectableFooterTPL, #noitemselectedTPL, #oneitemselectedTPL, #moreitemselectedTPL').remove();
             updateSelectableFooter();
             // init search input
@@ -98,7 +153,7 @@ function initDoc() {
                 $selectableSearch = $j(`#ms-${selectID} input[type="text"]`).first(),
                 selectableSearchString = `#ms-${selectID} .ms-elem-selectable`;
             that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-            .on('keydown', function(e) {
+            .on('keydown', function (e) {
                 if (e.which === 40 || e.which === 13) {
                     that.$selectableUl.focus();
                     return false;
@@ -126,12 +181,12 @@ function initDoc() {
                 $j(`#${selectID}`).selectMultiple('deselect_all');
             });
         },
-        afterSelect: function() {
+        afterSelect: function () {
             this.qs1.cache();
             selectcount = $j(`#${selectID}`).find(':selected').length;
             updateSelectableFooter();
         },
-        afterDeselect: function() {
+        afterDeselect: function () {
             this.qs1.cache();
             selectcount = $j(`#${selectID}`).find(':selected').length;
             updateSelectableFooter();

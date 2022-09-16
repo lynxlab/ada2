@@ -46,6 +46,7 @@ $data = new stdClass();
 $data->title = '<i class="basic error icon"></i>' . translateFN('Errore clonazione');
 $data->status = 'ERROR';
 $data->message = translateFN("Errore durante la clonazione dell'istanza");
+$data->cloneRecap = [];
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
@@ -60,7 +61,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                 'flags' => FILTER_REQUIRE_ARRAY,
             ],
         ]);
-        $result = $dh->cloneInstance($postParams['id_course_instance'], $postParams['selectedCourses']);
+        $data->cloneRecap = $dh->cloneInstance($postParams['id_course_instance'], $postParams['selectedCourses']);
         $data->title = '<i class="info icon"></i>' . translateFN('Istanza clonata');
         $data->status = 'OK';
         $data->message = translateFN("L'istanza è stata clonata correttamente");
