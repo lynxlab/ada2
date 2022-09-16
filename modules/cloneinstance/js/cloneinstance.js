@@ -8,7 +8,7 @@
 
 function initDoc() {
     let selectcount = 0;
-    const debugForm = true;
+    const debugForm = false;
     const formID = 'cloneinstance';
     const footerID = 'selectableFooter';
     const selectID = 'selectedCourses';
@@ -168,7 +168,21 @@ function initDoc() {
                 // get all visibile elements text
                 const vistxt = vislist.map((i, el) => $j(el).text()).toArray();
                 // get all visibile elements val
-                const visval = vistxt.map((el) => $j(`#${selectID} option:contains('${el}')`).first().val());
+                const optlist = [], visval = [];
+                $j(`#${selectID} option`).each((i,el) => {
+                    optlist[$j(el).text().trim()] = $j(el).val();
+                });
+                vistxt.forEach((el) => {
+                    if ('undefined' !== typeof optlist[el]) {
+                        visval.push(optlist[el]);
+                    } else {
+                        if (debugForm) {
+                            console.log("optlist[el] is undefined");
+                            console.log(optlist, el);
+                        }
+                    }
+                });
+
                 if (visval.length > 0) {
                     $j(`#${selectID}`).selectMultiple('select', visval);
                 }
