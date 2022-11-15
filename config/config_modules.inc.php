@@ -30,4 +30,5 @@ ModuleLoaderHelper::loadModuleFromArray([
 	[ 'name' => 'etherpad', 'dirname' => 'etherpad-integration' ],
 	[ 'name' => 'notifications' ],
 	[ 'name' => 'cloneinstance' ],
+	[ 'name' => 'instancesreport' ],
 ]);

@@ -1,0 +1,17 @@
+{
+    "name" : "lynxlab/ada-instancesreport",
+    "description" : "This is the ada module to build report of all instances of a course.",
+    "license" : "GPL",
+    "authors" : [{
+        "name" : "Giorgio Consorti",
+        "email" : "g.consorti@lynxlab.com"
+    }],
+    "autoload" : {
+        "psr-4" : {
+            "Lynxlab\\ADA\\Module\\InstancesReport\\" : ["include/", "include/form"]
+	    }
+    },
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.25"
+    }
+}
