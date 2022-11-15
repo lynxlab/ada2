@@ -47,7 +47,7 @@ class ARE
           'content_dataAr' => $content_dataAr,
           'renderer' => $renderer,
           'options' => $options,
-          'menu_options' => $menuoptions,
+          'menuoptions' => $menuoptions,
         ]
       );
       foreach($event->getArguments() as $key => $val) {
