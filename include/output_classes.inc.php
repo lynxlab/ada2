@@ -47,7 +47,7 @@ class ARE
           'content_dataAr' => $content_dataAr,
           'renderer' => $renderer,
           'options' => $options,
-          'menu_options' => $menuoptions,
+          'menuoptions' => $menuoptions,
         ]
       );
       foreach($event->getArguments() as $key => $val) {
@@ -243,6 +243,18 @@ class ARE
 		 * add $CSSToUse last
 		 */
 		$tmp[] = $CSSToUse;
+
+		/**
+		 * @author giorgio 27/jul/2022
+		 * add provider custom JQUERY_UI_CSS
+		 */
+		if (!MULTIPROVIDER && isset($GLOBALS['user_provider']) && in_array(JQUERY_UI_CSS, $tmp)) {
+			$clientJQCSS = ROOT_DIR . '/clients/' . $GLOBALS['user_provider'] . '/layout/' .
+			$layoutObj->family . '/css/' . basename(JQUERY_UI_CSS);
+			if (is_readable($clientJQCSS)) {
+				$tmp[] = $clientJQCSS;
+			}
+		}
 
 		//$tmp = array_merge($layout_dataAr['JS_filename'],$tmp);
 		$layoutObj->CSS_filename = implode(';',$tmp);

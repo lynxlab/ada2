@@ -250,3 +250,8 @@ div.right.sidebar #menurightcontent span.index.item a { color: #4CB164; }
 div.right.sidebar #menurightcontent .resources table.table_link_table { width: 100%; table-layout:fixed; }
 div.right.sidebar #menurightcontent .resources table.table_link_table tbody tr td:first-child { display: none; }
 div.right.sidebar #menurightcontent .resources table.table_link_table tbody td a { width: 100%; display: inline-block; overflow: hidden; text-indent: 0.8rem;  ellipsis; line-height: 25px; }
+
+.ui.menu.ada .ui.hidden.item,
+.ui.menu.ada .ui.item .hidden.menu {
+    display: none;
+}

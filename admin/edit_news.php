@@ -149,24 +149,14 @@ switch ($op) {
 $label = translateFN('Modifica delle news');
 $help = translateFN('Da qui l\'admin può modificare le news che appaiono in home page');
 
-$menu_dataAr = array(
-  array('href' => 'add_tester.php', 'text' => translateFN('Aggiungi tester')),
-  array('href' => 'add_service.php', 'text' => translateFN('Aggiungi servizio')),
-  array('href' => 'add_user.php', 'text' => translateFN('Aggiungi utente')),
-  array('href' => 'import_language.php', 'text' => translateFN('Import Language'))
-  );
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
-
 $content_dataAr = array(
     'user_name' => $user_name,
     'user_type' => $user_type,
     'status' => $status,
     'label' => $label,
     'help' => $help,
-    'actions_menu' => $actions_menu->getHtml(),
     'data' => $data->getHtml(),
     'module' => $module,
-    'messages' => $user_messages->getHtml()
 );
 //print_r($options);
 //ARE::render($layout_dataAr, $content_dataAr, $options);

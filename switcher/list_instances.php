@@ -13,6 +13,9 @@
  * @link
  * @version		0.1
  */
+
+use Lynxlab\ADA\Module\EventDispatcher\Events\ActionsEvent;
+
 /**
  * Base config file
  */
@@ -159,6 +162,23 @@ if ($courseObj instanceof Course && $courseObj->isFull()) {
                  */
                 array_splice($actionsArr, count($actionsArr) - 1, 0, [$subscribeGroup_link]);
             }
+
+            if (defined('MODULES_EVENTDISPATCHER') && MODULES_EVENTDISPATCHER) {
+                $event = \Lynxlab\ADA\Module\EventDispatcher\ADAEventDispatcher::buildEventAndDispatch(
+                    [
+                        'eventClass' => ActionsEvent::class,
+                        'eventName' => ActionsEvent::LIST_INSTANCES,
+                    ],
+                    ['id_course' => $courseId, 'id_course_instance' => $instanceId],
+                    ['actionsArr' => $actionsArr]
+                );
+                try {
+                    $actionsArr = $event->getArgument('actionsArr');
+                } catch (InvalidArgumentException $e) {
+                    // do nothing
+                }
+            }
+
             $actions = BaseHtmlLib::plainListElement('class:actions inline_menu', $actionsArr);
 
             if ($instance[1] > 0) {

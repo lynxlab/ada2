@@ -175,7 +175,11 @@ if (!AMA_DataHandler::isError($courseInstances)) {
             }
             $GLOBALS['dh'] = \AMA_DataHandler::instance(MultiPort::getDSN($provider['puntatore']));
             $_SESSION['sess_selected_tester'] = $provider['puntatore'];
-            BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId);
+            if ($subscription_status != ADA_SERVICE_SUBSCRIPTION_STATUS_COMPLETED) {
+                if ($new_status = BrowsingHelper::checkServiceComplete($userObj, $courseId, $courseInstanceId) > 0) {
+                    $subscription_status = $new_status;
+                }
+            }
             BrowsingHelper::checkRewardedBadges($userObj, $courseId, $courseInstanceId);
             unset($_SESSION['sess_selected_tester']);
             if (isset($oldDH)) {
@@ -478,25 +482,6 @@ if ($displayTable) {
         $gohistory = CDOMElement::create('span', 'class:disabled');
         $gohistory->addChild(new CText(translateFN('Cronologia')));
     } elseif ($isStarted && !$isEnded) {
-        /**
-         * @author giorgio 03/apr/2015
-         *
-         * if user is subscribed or completed and the subscription date + subscription_duration
-         * falls after 'now', must set the subscription status to terminated
-         */
-        if (in_array($subscription_status, array(ADA_STATUS_SUBSCRIBED, ADA_STATUS_COMPLETED))) {
-            if (!isset($c['data_iscrizione']) || is_null($c['data_iscrizione']) || intval($c['data_iscrizione']) === 0) $c['data_iscrizione'] = time();
-            if (!isset($c['duration_subscription']) || is_null($c['duration_subscription'])) $c['duration_subscription'] = PHP_INT_MAX;
-            $subscritionEndDate = $common_dh->add_number_of_days($c['duration_subscription'], intval($c['data_iscrizione']));
-            /**
-             * giorgio 13/01/2021: force end_date to have time set to 23:59:59
-             */
-            $subscritionEndDate = strtotime('tomorrow midnight', $subscritionEndDate) - 1;
-            if ($isEnded || time() >= $subscritionEndDate) {
-                $userObj->setTerminatedStatusForInstance($courseId, $courseInstanceId);
-                $subscription_status = ADA_STATUS_TERMINATED;
-            }
-        }
 
         if ($isEnded || $subscription_status == ADA_STATUS_TERMINATED || $subscription_status == ADA_STATUS_COMPLETED) {
             $startLabel = translateFN('Rivedi il corso');

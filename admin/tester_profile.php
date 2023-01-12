@@ -106,8 +106,9 @@ if($id_tester !== FALSE) {
       );
     //$tester_data = BaseHtmlLib::tableElement('',array(),$tester_dataAr);
 
-    $tester_data = AdminModuleHtmlLib::displayTesterInfo($id_tester, $tester_dataAr);
 
+
+    /*
     $services_dataAr = $common_dh->get_info_for_tester_services($id_tester);
     if(AMA_Common_DataHandler::isError($services_dataAr)) {
       $errObj = new ADA_Error($services_dataAr);
@@ -115,6 +116,7 @@ if($id_tester !== FALSE) {
     else {
       $tester_services = AdminModuleHtmlLib::displayServicesOnThisTester($id_tester, $services_dataAr);
     }
+    */
 
     $tester_dsn = MultiPort::getDSN($tester_infoAr[10]);
     if($tester_dsn != NULL) {
@@ -124,12 +126,15 @@ if($id_tester !== FALSE) {
         $errObj = new ADA_Error($users_on_this_tester);
       }
       else {
-        $users_list_link = CDOMElement::create('div','id:tester_users');
-        $users_list_link->addChild(new CText(translateFN('Numero di utenti presenti sul tester: ').$users_on_this_tester));
-        $link = CDOMElement::create('a','href:list_users.php?id_tester='.$id_tester);
-        $link->addChild(new CText(translateFN('Lista utenti')));
-        $users_list_link->addChild($link);
+        // $users_list_link = CDOMElement::create('div','id:tester_users');
+        $tester_dataAr[] = [translateFN('Numero di utenti presenti sul provider: '),  $users_on_this_tester];
       }
+    }
+    $tester_data = AdminModuleHtmlLib::displayTesterInfo($id_tester, $tester_dataAr);
+    if (isset($users_on_this_tester) && intval($users_on_this_tester)>0) {
+      $link = CDOMElement::create('a','class:ui button,href:list_users.php?id_tester='.$id_tester);
+      $link->addChild(new CText(translateFN('Lista utenti')));
+      $tester_data->addChild($link);
     }
   }
 }
@@ -142,38 +147,29 @@ else {
 
 
 
-//$tester_services = new CText('servizi offerti da questo tester<br />');
-//$user_list_link  = new CText('numero di utenti presenti sul tester e link alista utenti');
+//$tester_services = new CText('servizi offerti da questo provider<br />');
+//$user_list_link  = new CText('numero di utenti presenti sul provider e link alista utenti');
 
 
 
-$label = translateFN("Profilo del tester");
+$label = translateFN("Profilo del provider");
 
 $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 $module = $home_link->getHtml() . ' > ' . $label;
 
-$help  = translateFN("Profilo del tester");
-
-$menu_dataAr = array(
-  array('href' => 'edit_tester.php?id_tester='.$_GET['id_tester'], 'text' => translateFN('Modifica il profilo del tester')),
-  array('href' => 'manage_provider_courses.php?id_tester='.$_GET['id_tester'], 'text' => translateFN('Gestisci associazione corsi ')),
-  array('href' => 'list_users.php?id_tester='.$_GET['id_tester'], 'text' => translateFN('Lista utenti'))
-);
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
+// $help  = translateFN("Profilo del provider");
 
 $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
-  'help'         => $help,
-  'data'         => $tester_data->getHtml() .
-                    $tester_services->getHtml() .
-                    $users_list_link->getHtml(),
+  // 'help'         => $help,
+  'data'         => $tester_data->getHtml(),
+                    // $tester_services->getHtml() .
+                    // $users_list_link->getHtml(),
   'module'       => $module,
-  'messages'     => $user_messages->getHtml()
 );
 
 

@@ -153,4 +153,47 @@ class ModuleLoaderHelper
 			}
 		}
 	}
+
+	/**
+	 * returns an array of sql files to be imported
+	 * in the common db and each provider db if multiprovider eq 0
+	 *
+	 * @return array
+	 */
+	public static function inBothIfNonMulti()
+	{
+		// put here filenames to be imported in the common db and each provider db if multiprovider eq 0
+		$inBothIfNonMulti=[];
+
+		return $inBothIfNonMulti;
+	}
+
+
+	/**
+	 * returns an array of sql files to be imported
+	 * in the common db if multiprovider eq 1
+	 *
+	 * @return array
+	 */
+	public static function inCommonIfMulti()
+	{
+		// put here filenames to be imported in the common db if multiprovider eq 1
+		$inCommonIfMulti=['ada_gdpr_policy.sql', 'ada_login_module.sql'];
+
+		return $inCommonIfMulti;
+	}
+
+	/**
+	 * returns an array of sql files to be imported
+	 * ALWAYS in the common db
+	 *
+	 * @return array
+	 */
+	public static function inCommon()
+	{
+		// put here filenames to be ALWAYS imported in the common db
+		$inCommon=['ada_apps_module.sql',  'ada_secretquestion_module.sql', 'ada_impexport_module.sql'];
+
+		return $inCommon;
+	}
 }

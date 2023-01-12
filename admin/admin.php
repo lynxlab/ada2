@@ -79,53 +79,17 @@ $testers_dataAr = MultiPort::getDataForTesterActivityReport();
 $table = AdminModuleHtmlLib::getTestersActivityReport($testers_dataAr);
 
 $label = translateFN("Home dell'amministratore");
-$help  = translateFN("Report sintetico dell'attivit&agrave; dei tester");
-
-$menu_dataAr = array(
-  array('href' => 'add_tester.php', 'text' => translateFN('Aggiungi provider')),
-  array('href' => 'add_service.php', 'text' => translateFN('Aggiungi servizio')),
-  array('href' => 'add_user.php', 'text' => translateFN('Aggiungi utente')),
-//  array('href' => 'edit_news.php', 'text' => translateFN('Edit home page news')),
-  array('href' => 'import_language.php', 'text' => translateFN('Import Language'))
-  );
-
-/**
- * giorgio 12/ago/2013
- *
- * add content editing to menu only if it's a multiprovider environment
- */
-// grab available content types for editing and build menu items
-// $availableTypes = ;
-// if (MULTIPROVIDER)
-// {
-	foreach (dirTree (ROOT_DIR.'/docs') as $aType) {
-		/**
-		 * if is singleprovider, admin cannot edit news content
-		 * It will not be shown anyway
-		 */
-		if (!MULTIPROVIDER && $aType=='news') continue;
-    	array_push($menu_dataAr,
-    		array ('href' => 'edit_content.php?type='.$aType, 'text' => 'Edit '.$aType.' content' )
-    	);
-	}
-// }
-
-
-
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
+$help  = translateFN("Report sintetico dell'attivit&agrave; dei provider");
 
 $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
   'data'         => $table->getHtml(),
   'module'       => $label,
-  'messages'     => $user_messages->getHtml()
 );
-
 
 /**
  * Sends data to the rendering engine

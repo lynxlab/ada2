@@ -1,0 +1,28 @@
+#help {
+    display: none;
+}
+
+.first {
+    margin:0;
+    padding: 0;
+}
+
+#tester_info {
+    width: 75%;
+    display: block;
+    margin: 0 auto;
+}
+
+#tester_info table {
+    margin-bottom: 1em;
+}
+
+#tester_info table tbody tr:last-child td {
+    border: none;
+}
+
+#tester_info table tbody td {
+    height: initial;
+    line-height: initial;
+    padding: 1em 0;
+}

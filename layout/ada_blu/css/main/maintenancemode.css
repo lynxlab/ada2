@@ -7,7 +7,6 @@ html, body {
 body {
 	display: table;
 	width: calc(100% - 1rem);
-	padding: 0.5rem;
 }
 
 .page-row {
@@ -35,6 +34,7 @@ footer.page-row {
 	height: 70px;
 	display: block;
 	position: relative;
+	margin-bottom: 1rem;
 }
 
 footer.page-row .footerright {

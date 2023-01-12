@@ -708,4 +708,20 @@ function GetCallingMethodName($backTrace = 2) {
   ]);
 }
 
-?>
+function getUserIpAddr() {
+  if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+      //ip from share internet
+      $ip = $_SERVER['HTTP_CLIENT_IP'];
+  }elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+      //ip pass from proxy
+      $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+  }else{
+      $ip = $_SERVER['REMOTE_ADDR'];
+  }
+  $parts = explode('.', $ip);
+  if ($parts[0] == "173" && $parts[1] == "0") {
+      // paypal sandbox ips
+      return $parts[0].$parts[1];
+  }
+  return $ip;
+}

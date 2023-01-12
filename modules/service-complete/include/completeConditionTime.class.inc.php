@@ -124,8 +124,8 @@ class CompleteConditionTime extends CompleteCondition
 	 */
 	public static function getCDOMSummary($param) {
 		$el = parent::getCDOMSummary($param);
-		$formatCheck = sprintf("%02d:%02d", floor($param['check']/3600), ($param['check']/60)%60 );
-		$formatParam = sprintf("%02d:%02d", floor($param['param']/3600), ($param['param']/60)%60 );
+		$formatCheck = sprintf("%02d:%02d", floor($param['check']/3600), floor(($param['check']/60)%60) );
+		$formatParam = sprintf("%02d:%02d", floor($param['param']/3600), floor(($param['param']/60)%60) );
 		$el->addChild(new CText(sprintf(translateFN(self::$summaryStr), $formatCheck, $formatParam)));
 		return $el;
 	}

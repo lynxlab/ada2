@@ -100,13 +100,7 @@ if($id_tester !== FALSE) {
       $errObj = new ADA_Error($users_count);
     }
     else {
-      $pages = ceil($users_count / $users_per_page);
-      if($page > $pages) {
-        $page = $pages;
-      }
-      $start = ($page-1)*$users_per_page;
-
-      $users_dataAr = $tester_dh->get_users_by_type_from_position_to_position($user_typesAr,$start, $users_per_page);
+      $users_dataAr = $tester_dh->get_users_by_type($user_typesAr, true);
       if (AMA_DataHandler::isError($users_dataAr)) {
             $user_type = ADAGenericUser::convertUserTypeFN($userTypeToFilter);
             $data = CDOMElement::create('div');
@@ -114,7 +108,7 @@ if($id_tester !== FALSE) {
 //        $errObj = new ADA_Error($users_dataAr);
       }
       else {
-        $data = AdminModuleHtmlLib::displayUsersOnThisTester($id_tester,$page,$pages,$users_dataAr);
+        $data = AdminModuleHtmlLib::displayUsersOnThisTester($id_tester, null, null, $users_dataAr, false);
       }
     }
   }
@@ -125,40 +119,42 @@ else {
    */
 }
 
-$label = translateFN("Lista degli utenti presenti sul tester");
+$label = translateFN("Lista degli utenti presenti sul provider");
 
 $home_link = CDOMElement::create('a','href:admin.php');
 $home_link->addChild(new CText(translateFN("Home dell'Amministratore")));
 $tester_profile_link = CDOMElement::create('a','href:tester_profile.php?id_tester='.$id_tester);
-$tester_profile_link->addChild(new CText(translateFN("Profilo del tester")));
+$tester_profile_link->addChild(new CText(translateFN("Profilo del provider")));
 $module = $home_link->getHtml() . ' > ' . $tester_profile_link->getHtml() . ' > ' .$label;
 
-$help  = translateFN("Lista degli utenti presenti sul tester");
-
-//$menu_dataAr = array();
-$menu_dataAr = array(
-  array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_ADMIN, 'text' => translateFN('Admins list')),
-  array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_SWITCHER, 'text' => translateFN('Switcher list')),
-  array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_AUTHOR, 'text' => translateFN('Authors list')),
-  array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_TUTOR, 'text' => translateFN('Tutors list')),
-  array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_SUPERTUTOR, 'text' => translateFN('SuperTutors list')),
-  array('href' => 'list_users.php?id_tester='. $id_tester.'&user_type='.AMA_TYPE_STUDENT, 'text' => translateFN('Students list')),
-  array('href' => 'list_users.php?id_tester='. $id_tester, 'text' => translateFN('All Users list')),
-  );
-
-$actions_menu = AdminModuleHtmlLib::createActionsMenu($menu_dataAr);
+$help  = translateFN("Lista degli utenti presenti sul provider");
 
 $content_dataAr = array(
   'user_name'    => $user_name,
   'user_type'    => $user_type,
   'status'       => $status,
-  'actions_menu' => $actions_menu->getHtml(),
   'label'        => $label,
   'help'         => $help,
   'data'         => $data->getHtml(),
   'module'       => $module,
-  'messages'     => $user_messages->getHtml()
 );
 $menuOptions['id_tester'] = $id_tester;
-ARE::render($layout_dataAr, $content_dataAr,NULL,NULL,$menuOptions);
+
+$layout_dataAr['JS_filename'] = array(
+  JQUERY,
+  JQUERY_UI,
+  JQUERY_DATATABLE,
+  SEMANTICUI_DATATABLE,
+  JQUERY_DATATABLE_DATE,
+  JQUERY_NO_CONFLICT,
+);
+
+$layout_dataAr['CSS_filename']= array(
+  JQUERY_UI_CSS,
+  SEMANTICUI_DATATABLE_CSS,
+);
+$render = null;
+$options['onload_func'] = 'initDoc('.(($userObj->getType()==AMA_TYPE_ADMIN) ? 1 : 0).')';
+
+ARE::render($layout_dataAr, $content_dataAr, $render, $options, $menuOptions);
 ?>
