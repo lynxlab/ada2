@@ -238,6 +238,9 @@ abstract class ADAGenericUser {
 
     public function getDefaultTester() {
         if(is_array($this->testers) && sizeof($this->testers) > 0) {
+            if (!MULTIPROVIDER && isset ($GLOBALS['user_provider']) && in_array($GLOBALS['user_provider'], $this->testers)) {
+                return $GLOBALS['user_provider'];
+            }
             return $this->testers[0];
         }
         return NULL;
