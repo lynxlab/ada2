@@ -194,6 +194,34 @@ $content_dataAr   = array(
  'courseDurationSentence' => isset($courseDurationSentence) ? $courseDurationSentence : null
  );
 
+/**
+ * Look for a certificate template to use, can be either:
+ * - $self . '-instance-' . <COURSE_INSTANCE_ID>
+ * - $self . '-course-' . <COURSE_ID>
+ * - $self . '-servicelevel-' . <COURSE_SERVICE_LEVEL>
+ */
+$foundtpl = false;
+foreach ([$userObj->template_family, $_SESSION['sess_template_family']] as $tpldir) {
+    if (!$foundtpl && strlen($tpldir) > 0) {
+        $basetpl = ROOT_DIR . '/layout/'.$tpldir.'/templates/browsing/';
+        $suffixes = [
+            'instance-'.$courseInstanceObj->getId(),
+            'course-'.$courseObj->getId(),
+            'servicelevel-'.$courseObj->getServiceLevel(),
+        ];
+        foreach ($suffixes as $suffix) {
+            if (!$foundtpl) {
+                $path = $basetpl . $self . '-' . $suffix . '.tpl';
+                if (is_file($path) && is_readable($path)) {
+                    // template found, set the $self global accordingly
+                    $self = $self . '-' . $suffix;
+                    $foundtpl = true;
+                }
+            }
+        }
+    }
+}
+
  if ($forcereturn) {
     return [
         'filename' => translateFN('Attestato').'-['.$codice_corso.']-['.$id_user.'].pdf',
