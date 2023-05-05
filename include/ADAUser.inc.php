@@ -406,6 +406,7 @@ class ADAUser extends ADAAbstractUser
 			{
 				$testersArr = array_values(array_diff ($testersArr, array(ADA_PUBLIC_TESTER)));
 				if (count($testersArr)===1) $candidate = $testersArr[0];
+				else if (isset($GLOBALS['user_provider'])) $candidate = $GLOBALS['user_provider'];
 			}
 
 			$tester = DataValidator::validate_testername($candidate,MULTIPROVIDER);
