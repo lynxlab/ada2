@@ -72,8 +72,8 @@ $role = ($userObj->getType() == AMA_TYPE_TUTOR ? '1' : '0');
 ?>
 const debug = false;
 if (debug) {
-    console.log("checkSystemRequirements");
-    console.log(JSON.stringify(ZoomMtg.checkSystemRequirements()));
+    console.log("checkFeatureRequirements");
+    console.log(JSON.stringify(ZoomMtg.checkFeatureRequirements()));
 }
 
 ZoomMtg.preLoadWasm();
@@ -88,6 +88,7 @@ ZoomMtg.i18n.load("<?php echo strtolower($_SESSION['sess_user_language']).'-'.st
 ZoomMtg.i18n.reload("<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>");
 //Add the language code to the ZoomMtg.reRender method.
 ZoomMtg.reRender({lang: "<?php echo strtolower($_SESSION['sess_user_language']).'-'.strtoupper($_SESSION['sess_user_language']); ?>"});
+ZoomMtg.setZoomJSLib('https://source.zoom.us/<?php echo ZOOM_WEBSDK_VERSION; ?>/lib', '/av');
 
 const API_KEY = "<?php echo ZOOMCONF_APIKEY; ?>";
 
@@ -126,7 +127,7 @@ ZoomMtg.init({
         }
         ZoomMtg.join({
             signature: '<?php echo $videoroomObj->generateSignature($role); ?>',
-            apiKey: meetingConfig.apiKey,
+            sdkKey: meetingConfig.apiKey,
             meetingNumber: meetingConfig.meetingNumber,
             userName: meetingConfig.userName,
             // password optional; set by Host
