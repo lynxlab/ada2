@@ -30,7 +30,7 @@ class ADAZoomApi
             $this->dh = AMAZoomIntegrationDataHandler::instance(\MultiPort::getDSN($tester));
         }
 
-        $this->zoom = new ZoomAPIWrapper(ZOOMCONF_APIKEY, ZOOMCONF_APISECRET);
+        $this->zoom = new ZoomAPIWrapper(ZOOMCONF_S2S_CLIENTID, ZOOMCONF_S2S_CLIENTSECRET);
     }
 
     public function create($meetingData)

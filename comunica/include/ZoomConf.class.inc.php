@@ -1,5 +1,6 @@
 <?php
 
+use Lynxlab\ADA\Module\ZoomIntegration\ZoomAPIWrapper;
 use Lynxlab\ADA\Module\ZoomIntegration\ZoomIntegrationException;
 
 /**
@@ -46,6 +47,7 @@ class ZoomConf extends videoroom implements iVideoRoom
             $videoroom_dataAr['tempo_avvio'] = time();
             $videoroom_dataAr['tempo_fine'] = strtotime('tomorrow midnight')-1;
             $videoroom_dataAr['room_name'] = $course_title;
+            $videoroom_dataAr['zoomUser'] = defined('ZOOMCONF_ZOOMUSER') ? ZOOMCONF_ZOOMUSER : 'me';
             $videoroom_data = $this->zoomAPI->create($videoroom_dataAr);
             $this->id_room = $videoroom_data['openmeetings_room_id'];
             $this->id_istanza_corso = $videoroom_data['id_istanza_corso'];
@@ -89,12 +91,32 @@ class ZoomConf extends videoroom implements iVideoRoom
 
     public function generateSignature($role = 0, $apiKey = ZOOMCONF_APIKEY, $apiSecret=ZOOMCONF_APISECRET)
     {
-        $time = time() * 1000 - 30000; //time in milliseconds (or close enough)
-        $data = base64_encode($apiKey . $this->getMeetingID() . $time . $role);
-        $hash = hash_hmac('sha256', $data, $apiSecret, true);
-        $_sig = $apiKey . "." . $this->getMeetingID() . "." . $time . "." . $role . "." . base64_encode($hash);
-        //return signature, url safe base64 encoded
-        return rtrim(strtr(base64_encode($_sig), '+/', '-_'), '=');
+        // issued at...
+        $iat = time() - 30;
+        // expires 2h later
+        $exp = $iat + (2 * 60 * 60);
+
+        $header = [
+            'alg' => 'HS256',
+            'typ' => 'JWT',
+        ];
+        $payLoad = [
+            'sdkKey' => $apiKey,
+            'mn' => $this->getMeetingID(),
+            'role' => $role,
+            'iat' => $iat,
+            'exp' => $exp,
+            'appKey' => $apiKey,
+            'tokenExp' => $exp,
+        ];
+
+        $toSign =
+            ZoomAPIWrapper::urlsafeB64Encode(json_encode($header))
+            . '.' .
+            ZoomAPIWrapper::urlsafeB64Encode(json_encode($payLoad));
+        $signature = hash_hmac('SHA256', $toSign, $apiSecret, true);
+        $sSignature = $toSign . '.' . ZoomAPIWrapper::urlsafeB64Encode($signature);
+        return $sSignature;
     }
 
     public function getLogoutUrl()

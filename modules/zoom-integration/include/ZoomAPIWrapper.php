@@ -60,7 +60,10 @@ class ZoomAPIWrapper
     private $apiKey;
     private $apiSecret;
     private $baseUrl;
+    private $tokenUrl;
     private $timeout;
+
+    const S2STOKEN = 'ZOOMS2S_SESSTOKEN';
 
     public function __construct($apiKey, $apiSecret, $options = array())
     {
@@ -69,6 +72,7 @@ class ZoomAPIWrapper
         $this->apiSecret = $apiSecret;
 
         $this->baseUrl = 'https://api.zoom.us/v2';
+        $this->tokenUrl = 'https://zoom.us';
         $this->timeout = 30;
 
         // Store any options if they map to valid properties
@@ -82,25 +86,28 @@ class ZoomAPIWrapper
         return str_replace('=', '', strtr(base64_encode($string), '+/', '-_'));
     }
 
+    private function generateAccessToken()
+    {
+        $token = $this->doRequest('POST','/oauth/token',[
+            'grant_type' => 'account_credentials',
+            'account_id' => ZOOMCONF_S2S_ACCOUNTID,
+        ]);
+        $token['expire_ts'] = time() + $token['expires_in'];
+        return $token;
+    }
+
     private function generateJWT()
     {
-        $token = array(
-            'iss' => $this->apiKey,
-            'exp' => time() + 60,
-        );
-        $header = array(
-            'typ' => 'JWT',
-            'alg' => 'HS256',
-        );
-
-        $toSign =
-            self::urlsafeB64Encode(json_encode($header))
-            . '.' .
-            self::urlsafeB64Encode(json_encode($token));
-
-        $signature = hash_hmac('SHA256', $toSign, $this->apiSecret, true);
-
-        return $toSign . '.' . self::urlsafeB64Encode($signature);
+        if (isset($_SESSION[self::S2STOKEN])) {
+            // check token exp
+            $validtoken = time() < $_SESSION[self::S2STOKEN]['expire_ts'];
+        } else {
+            $validtoken = false;
+        }
+        if (!$validtoken) {
+            $_SESSION[self::S2STOKEN] = $this->generateAccessToken();
+        }
+        return $_SESSION[self::S2STOKEN]['access_token'];
     }
 
     private function headers()
@@ -143,8 +150,11 @@ class ZoomAPIWrapper
 
         if (count($this->errors)) return false;
 
+        // Check if it's a call to token endpoint
+        $isToken = stripos($path, 'token') !== false;
+
         $method = strtoupper($method);
-        $url = $this->baseUrl . $path;
+        $url = ($isToken ? $this->tokenUrl : $this->baseUrl) . $path;
 
         // Add on any query parameters
         if (count($queryParams)) $url .= '?' . http_build_query($queryParams);
@@ -152,7 +162,12 @@ class ZoomAPIWrapper
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers());
+        // Check if it's a call to token endpoint
+        if ($isToken) {
+            curl_setopt($ch, CURLOPT_USERPWD, $this->apiKey . ":" . $this->apiSecret);
+        } else {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers());
+        }
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 

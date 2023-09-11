@@ -14,14 +14,11 @@ $neededObjAr = array(
 $trackPageToNavigationHistory = false;
 
 require_once ROOT_DIR . '/include/module_init.inc.php';
+require_once ROOT_DIR . '/comunica/include/ZoomConf.config.inc.php';
 
 if (!isset($_SESSION['ada-zoom-bridge'])) {
   // the ada-zoom.js will be served only if the session var is found
   $_SESSION['ada-zoom-bridge'] = true;
-}
-
-if (!defined('ZOOM_WEBSDK_VERSION')) {
-  define('ZOOM_WEBSDK_VERSION', '2.3.5');
 }
 
 ?>
