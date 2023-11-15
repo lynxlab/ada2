@@ -1,6 +1,6 @@
 ADA
 ==========
-ADA stand for __Ambiente Digitale di Apprendimento__. It is a knowledge and e-learning management system that allows you to create, administer and follow courses via the Internet or intranet with ease and flexibility.
+"ADA" stands for __Ambiente Digitale di Apprendimento__, i.e. Digital Learning Environment. It is a knowledge and e-learning management system that allows you to create, administer and follow courses via the Internet or intranet with ease and flexibility.
 
 CONTENTS OF THIS FILE
 ---------------
