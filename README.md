@@ -1,4 +1,4 @@
-# WARNING!! THIS IS THE ARCHIVED REPOSITORY OF ADA FOR PHP7.4!! PLEASE USE [ADA FOR PHP8](https://github.com/lynxlab/ada3)
+# WARNING!! THIS IS THE ARCHIVED REPOSITORY OF ADA FOR PHP7.4!! PLEASE USE [ADA FOR PHP8](https://github.com/lynxlab/ada)
 
 ADA
 ==========
